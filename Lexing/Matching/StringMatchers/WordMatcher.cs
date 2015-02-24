@@ -20,7 +20,8 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             String peek = data.CurrentItem;
             String word = null;
             while (!data.AtEnd() && !String.IsNullOrWhiteSpace(peek) 
-                && Delimiters.All(d => d.Keyword != peek))
+                && Delimiters.All(d => d.Keyword != peek)
+                && peek != "\"" && peek != "'")
             {
                 word += peek;
                 data.Advance();
