@@ -41,7 +41,7 @@ namespace ME3Script
         LeftParenth,    // (
         RightParenth,   // )
         LeftSqrBracket, // [
-        RightSqrBracker,// ]
+        RightSqrBracket,// ]
         WhiteSpace,     // 
         NewLine,        // \n
         Assign,         // =
