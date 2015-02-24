@@ -119,6 +119,8 @@ namespace ME3Script
                 new KeywordMatcher("ArrayCount", TokenType.ArrayCount, delimiters, false)
             };
 
+            TokenMatchers.Add(new StringLiteralMatcher());
+            TokenMatchers.Add(new NameLiteralMatcher());
             TokenMatchers.AddRange(delimiters);
             TokenMatchers.AddRange(keywords);
             TokenMatchers.Add(new WhiteSpaceMatcher());
