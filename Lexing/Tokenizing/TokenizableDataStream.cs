@@ -32,12 +32,12 @@ namespace ME3Script
             Snapshots.Push(CurrentIndex);
         }
 
-        public void PopSnapshot()
+        public void DiscardSnapshot()
         {
             Snapshots.Pop();
         }
 
-        public void DiscardSnapshot()
+        public void PopSnapshot()
         {
             CurrentIndex = Snapshots.Pop();
         }

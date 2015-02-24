@@ -16,9 +16,9 @@ namespace ME3Script
 
             Token<T> token = Match(data);
             if (token == null)
-                data.DiscardSnapshot();
-            else 
                 data.PopSnapshot();
+            else 
+                data.DiscardSnapshot();
 
             return token;
         }
