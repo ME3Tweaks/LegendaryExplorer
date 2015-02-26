@@ -5,10 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Script.Lexing.Matching
+namespace ME3Script.Language
 {
-    public interface ITokenMatcher<T> where T : class
+    public abstract class AbstractSyntaxTree
     {
-        Token<T> MatchNext(TokenizableDataStream<T> data);
+
+        public AbstractSyntaxTree(TokenType type)
+        {
+
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Lexing.Tokenizing;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

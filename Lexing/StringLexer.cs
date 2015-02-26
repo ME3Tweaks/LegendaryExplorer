@@ -1,11 +1,13 @@
-﻿using ME3Script.Lexing.Matching.StringMatchers;
+﻿using ME3Script.Lexing.Matching;
+using ME3Script.Lexing.Matching.StringMatchers;
+using ME3Script.Lexing.Tokenizing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Script
+namespace ME3Script.Lexing
 {
     public class StringLexer : LexerBase<String>
     {

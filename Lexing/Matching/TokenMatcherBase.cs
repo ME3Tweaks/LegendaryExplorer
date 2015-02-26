@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ME3Script.Lexing.Tokenizing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Script
+namespace ME3Script.Lexing.Matching
 {
     public abstract class TokenMatcherBase<T> : ITokenMatcher<T> where T : class
     {

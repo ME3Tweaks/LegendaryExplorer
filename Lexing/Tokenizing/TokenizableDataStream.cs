@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Script
+namespace ME3Script.Lexing.Tokenizing
 {
     public class TokenizableDataStream<D> where D : class
     {

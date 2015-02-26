@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace ME3Script
+namespace ME3Script.Lexing.Tokenizing
 {
     public class StringTokenizer : TokenizableDataStream<String>
     {
