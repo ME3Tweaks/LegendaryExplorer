@@ -107,7 +107,7 @@ namespace ME3Script.Lexing
                 new KeywordMatcher("bool", TokenType.Bool, delimiters, false),
                 new KeywordMatcher("float", TokenType.Float, delimiters, false),
                 new KeywordMatcher("string", TokenType.String, delimiters, false),
-                new KeywordMatcher("enumeration", TokenType.Enumeration, delimiters, false),
+                new KeywordMatcher("enum", TokenType.Enumeration, delimiters, false),
                 new KeywordMatcher("array", TokenType.Array, delimiters, false),
                 new KeywordMatcher("struct", TokenType.Struct, delimiters, false),
                 new KeywordMatcher("class", TokenType.Class, delimiters, false),

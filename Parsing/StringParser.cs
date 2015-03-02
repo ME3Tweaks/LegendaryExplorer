@@ -132,8 +132,8 @@ namespace ME3Script.Parsing
 
                     var node = new ClassNode(classToken.Type, nameToken.Value, parent, specifiers);
                     node.AddProperties(properties);
-
-                    return node;
+                    
+                    return RegisterType(node.TypeName, node);
                 };
             return Tokens.TryGetTree(parser);
         }
@@ -184,12 +184,15 @@ namespace ME3Script.Parsing
 
                 String enumName = Tokens.ConsumeToken(TokenType.Word).Value;
                 //TODO: check that type is valid etc!
-                var enumValues = ParseScopedContents(
-                    TokenType.LeftBracket, TokenType.RightBracket,
-                    () => { return ParseDelimitedString(TokenType.Comma, TokenType.RightBracket); });
-
-
-                return null;
+                var contentValues = ParseScopedTokens(
+                    TokenType.LeftBracket, TokenType.RightBracket);
+                var enumValues = TokensToDelimitedStrings(contentValues, TokenType.Comma);
+                if (enumValues.Count == 0)
+                    return null; // ERROR: enum has no values!
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                    return null; // ERROR: semicolo expected
+                return RegisterType(enumName, 
+                    new EnumerationNode(TokenType.Enumeration, enumName, enumValues));
             };
             return Tokens.TryGetTree(parser);
         }
@@ -231,7 +234,7 @@ namespace ME3Script.Parsing
             var parent = ParseTokenFromList(ClassKeywords) ?? Tokens.ConsumeToken(TokenType.Word);
             if (parent == null)
                 return null; // ERROR: Expected parent class name!
-            // TODO: check symbol validity?
+            // TODO: check identifier validity?
             return parent.Value;
         }
 
@@ -250,24 +253,29 @@ namespace ME3Script.Parsing
             return null;
         }
 
-        private String ParseDelimitedString(TokenType delimiter, TokenType scopeEnd = TokenType.INVALID)
+        private List<String> TokensToDelimitedStrings(List<Token<String>> tokens, TokenType delimiter)
         {
-            String str = null;
-            var token = Tokens.ConsumeToken(TokenType.Word);
-            if (token == null)
-                return null; // ERROR?
-
-            if (Tokens.ConsumeToken(delimiter) != null || 
-                (scopeEnd != TokenType.INVALID && CurrentTokenType == scopeEnd))
+            List<String> strings = new List<String>();
+            IEnumerator<Token<String>> iterator = tokens.GetEnumerator();
+            iterator.MoveNext();
+            do
             {
-                str = token.Value;
-            }
-            return str;
+                var token = iterator.Current;
+                if (token.Type != TokenType.Word)
+                    return null; // ERROR?
+                bool end = !iterator.MoveNext();
+                if ((!end && iterator.Current.Type == delimiter) || end)
+                    strings.Add(token.Value);
+                else 
+                    return null;  // ERROR?
+            } while (iterator.MoveNext());
+
+            return strings;
         }
 
-        private List<AbstractSyntaxTree> ParseScopedContents(TokenType scopeStart, TokenType scopeEnd, Func<AbstractSyntaxTree> func)
+        private List<Token<String>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
         {
-            var scopedContents = new List<AbstractSyntaxTree>();
+            var scopedTokens = new List<Token<String>>();
             if (Tokens.ConsumeToken(scopeStart) == null)
                 return null; // ERROR: expected 'scopeStart' at start of a scope
 
@@ -277,22 +285,16 @@ namespace ME3Script.Parsing
                 if (Tokens.AtEnd())
                     return null; // ERROR: Scope ended prematurely, are your scoped unbalanced?
                 if (CurrentTokenType == scopeStart)
-                {
                     nestedLevel++;
-                    continue;
-                }
                 else if (CurrentTokenType == scopeEnd)
-                {
                     nestedLevel--;
-                    continue;
-                }
 
-                var tree = Tokens.TryGetTree(func);
-                if (tree == null)
-                    return null; // ERROR: Unexpected scope contents!
-                scopedContents.Add(tree);
+                scopedTokens.Add(Tokens.CurrentItem);
+                Tokens.Advance();
             }
-            return scopedContents;
+            // Remove the ending scope token:
+            scopedTokens.RemoveAt(scopedTokens.Count - 1);
+            return scopedTokens;
         }
 
         private bool IsValidType(Token<String> token)
@@ -300,9 +302,9 @@ namespace ME3Script.Parsing
             return Types.SymbolExists(token.Value);
         }
 
-        private bool RegisterType(String name, AbstractSyntaxTree tree)
+        private AbstractSyntaxTree RegisterType(String name, AbstractSyntaxTree tree)
         {
-            return Types.TryRegisterType(name, tree);
+            return Types.TryRegisterType(name, tree) ? tree : null;
         }
 
         #endregion
