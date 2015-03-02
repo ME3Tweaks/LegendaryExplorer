@@ -119,7 +119,8 @@ namespace ME3Script.Lexing
                 new KeywordMatcher("None", TokenType.None, delimiters, false),
                 new KeywordMatcher("Self", TokenType.Self, delimiters, false),
                 new KeywordMatcher("EnumCount", TokenType.EnumCount, delimiters, false),
-                new KeywordMatcher("ArrayCount", TokenType.ArrayCount, delimiters, false)
+                new KeywordMatcher("ArrayCount", TokenType.ArrayCount, delimiters, false),
+                new KeywordMatcher("Extends", TokenType.Extends, delimiters, false)
             };
 
             TokenMatchers.Add(new StringLiteralMatcher());

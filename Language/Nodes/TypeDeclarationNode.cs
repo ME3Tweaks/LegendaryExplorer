@@ -9,11 +9,11 @@ namespace ME3Script.Language.Nodes
 {
     public abstract class TypeDeclarationNode : AbstractSyntaxTree
     {
-        public String Name { get; protected set; }
+        public String TypeName { get; protected set; }
 
-        public TypeDeclarationNode(TokenType type, String name) : base(type)
+        public TypeDeclarationNode(TokenType type, String typeName) : base(type)
         {
-            Name = name;
+            TypeName = typeName;
         }
     }
 }

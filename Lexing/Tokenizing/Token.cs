@@ -139,6 +139,15 @@ namespace ME3Script.Lexing.Tokenizing
         // Operator functions only:
         SkipSpecifier,
 
+        // Class Specifiers:
+        AbstractSpecifier,
+        DependsOnSpecifier,
+        ImplementsSpecifier,
+        ParseConfigSpecifier,
+        PerObjectConfigSpecifier,
+        PerObjectLocalizedSpecifier,
+        NonTransientSpecifier,
+
         // Variable types:
         Byte,
         Int,
@@ -174,6 +183,7 @@ namespace ME3Script.Lexing.Tokenizing
         FloatingNumber,
         Scope,
         StructMember,
+        Extends,
 
         INVALID
     }

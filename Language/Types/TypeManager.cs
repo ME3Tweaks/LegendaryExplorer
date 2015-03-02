@@ -17,12 +17,12 @@ namespace ME3Script.Language.Types
             CurrentNamespace.AddRange(GlobalNamespace);
         }
 
-        public static void InitializeGlobalNamespace(List<AbstractType> symbols)
+        public static void InitializeGlobalNamespace(List<AbstractType> types)
         {
             if (GlobalNamespace == null)
             {
                 GlobalNamespace = new List<AbstractType>();
-                GlobalNamespace.AddRange(symbols);
+                GlobalNamespace.AddRange(types);
             }
         }
 

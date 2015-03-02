@@ -27,7 +27,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
         {
             foreach (char c in Keyword)
             {
-                if (data.CurrentItem != c.ToString(CultureInfo.InvariantCulture))
+                if (data.CurrentItem.ToLower() != c.ToString(CultureInfo.InvariantCulture).ToLower())
                     return null;
                 data.Advance();
             }

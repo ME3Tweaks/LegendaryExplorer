@@ -54,6 +54,21 @@ namespace ME3Script.Parsing
             TokenType.AllowAbstractSpecifier
         };
 
+        private List<TokenType> ClassSpecifiers = new List<TokenType>
+        {
+            TokenType.AbstractSpecifier,
+            TokenType.ConfigSpecifier,
+            TokenType.DependsOnSpecifier,
+            TokenType.ImplementsSpecifier,
+            TokenType.InstancedSpecifier,
+            TokenType.ParseConfigSpecifier,
+            TokenType.PerObjectConfigSpecifier,
+            TokenType.PerObjectLocalizedSpecifier,
+            TokenType.TransientSpecifier,
+            TokenType.NonTransientSpecifier,
+            TokenType.DeprecatedSpecifier
+        };
+
         private List<TokenType> BasicSymbols = new List<TokenType>
         {
             TokenType.Byte,
@@ -61,6 +76,20 @@ namespace ME3Script.Parsing
             TokenType.Bool,
             TokenType.Float,
             TokenType.String
+        };
+
+        // Update!
+        private List<TokenType> ClassKeywords = new List<TokenType>
+        {
+            TokenType.Object,
+            TokenType.Actor
+        };
+
+        private List<TokenType> PropertyTypes = new List<TokenType>
+        {
+            TokenType.InstanceVariable,
+            TokenType.Struct,
+            TokenType.Enumeration
         };
 
         public StringParser(StringLexer lexer, TypeManager symbols)
@@ -74,12 +103,42 @@ namespace ME3Script.Parsing
             throw new NotImplementedException();
         }
 
-        public void BuildClassSkeleton()
+        public AbstractSyntaxTree ParseClassSkeleton()
         {
-            throw new NotImplementedException();
+            Func<AbstractSyntaxTree> parser = () =>
+                {
+                    Token<String> classToken = Tokens.ConsumeToken(TokenType.Class);
+                    if (classToken == null)
+                        return null; // ERROR: Malformed file, class keyword expected.
+
+                    Token<String> nameToken = Tokens.ConsumeToken(TokenType.Word);
+                    if (nameToken == null)
+                        return null; // ERROR: Malformed file, class name expected.
+                    if (IsValidType(nameToken))
+                        return null; // ERROR: A class with that name already exists!
+
+                    String parent = ParseParentClass();
+                    if (parent == null)
+                        return null; // ERROR: Class must have a parent class!
+                    // TODO: support optional within clause here.
+
+                    var specifiers = ParseTokensFromList(ClassSpecifiers);
+
+                    if (CurrentTokenType != TokenType.SemiColon)
+                        return null; // ERROR: ';' expected after class declaration header.
+                    Tokens.Advance();
+
+                    List<AbstractSyntaxTree> properties = ParseProperties(PropertyTypes);
+
+                    var node = new ClassNode(classToken.Type, nameToken.Value, parent, specifiers);
+                    node.AddProperties(properties);
+
+                    return node;
+                };
+            return Tokens.TryGetTree(parser);
         }
 
-        public void GetDefaultProperties()
+        public void ParseDefaultProperties()
         {
             throw new NotImplementedException();
         }
@@ -95,31 +154,84 @@ namespace ME3Script.Parsing
                         scope = CurrentTokenType;
                         Tokens.Advance();
                     }
-                    List<TokenType> specifiers = ParseSpecifiers(VariableSpecifiers);
+                    List<TokenType> specifiers = ParseTokensFromList(VariableSpecifiers);
                     Token<String> type = Tokens.CurrentItem;
                     Tokens.Advance();
                     String variableName = Tokens.ConsumeToken(TokenType.Word).Value;
 
-                    if (variableName != null && CurrentTokenType == delimiter && IsValidType(type))
+                    if (variableName != null && Tokens.ConsumeToken(delimiter) != null && IsValidType(type))
                     {
-                        return new VariableNode(scope, variableName, specifiers);
+                        return new VariableNode(scope, variableName, type.Value, specifiers);
                     }
                     return null;
                 };
             return Tokens.TryGetTree(parser);
         }
 
+        private AbstractSyntaxTree TryParseStruct()
+        {
+            return null;
+        }
+
+        private AbstractSyntaxTree TryParseEnum()
+        {
+            return null;
+        }
+
         #region Helpers
 
-        private List<TokenType> ParseSpecifiers(List<TokenType> specifierList)
+        private List<TokenType> ParseTokensFromList(List<TokenType> typeList)
         {
-            var specifiers = new List<TokenType>();
-            while (specifierList.Contains(CurrentTokenType))
+            var tokens = new List<TokenType>();
+            while (typeList.Contains(CurrentTokenType))
             {
-                specifiers.Add(CurrentTokenType);
+                tokens.Add(CurrentTokenType);
                 Tokens.Advance();
             }
-            return specifiers;
+            return tokens;
+        }
+
+        private List<AbstractSyntaxTree> ParseProperties(List<TokenType> typeList)
+        {
+            var properties = new List<AbstractSyntaxTree>();
+            while (typeList.Contains(CurrentTokenType))
+            {
+                AbstractSyntaxTree tree = 
+                    TryParseVariable(TokenType.SemiColon) ??
+                    TryParseStruct() ??
+                    TryParseEnum();
+                
+                if (tree == null)
+                    break; // ERROR: ?
+                properties.Add(tree);
+            }
+            return properties;
+        }
+
+        private String ParseParentClass()
+        {
+            if (Tokens.ConsumeToken(TokenType.Extends) == null)
+                return null; // ERROR: Expected 'extends' keyword!
+            var parent = ParseTokenFromList(ClassKeywords) ?? Tokens.ConsumeToken(TokenType.Word);
+            if (parent == null)
+                return null; // ERROR: Expected parent class name!
+            // TODO: check symbol validity?
+            return parent.Value;
+        }
+
+        private Token<String> ParseTokenFromList(List<TokenType> types)
+        {
+            Token<String> token = null;
+            if (!types.Contains(CurrentTokenType))
+                return null; // ERROR?
+
+            foreach (var type in types)
+            {
+                token = Tokens.ConsumeToken(type);
+                if (token != null)
+                    return token;
+            }
+            return null;
         }
 
         private bool IsValidType(Token<String> token)

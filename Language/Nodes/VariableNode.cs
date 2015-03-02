@@ -12,10 +12,13 @@ namespace ME3Script.Language.Nodes
         public bool IsLocal { get { return Type == TokenType.LocalVariable; } }
         public bool IsInstance { get { return Type == TokenType.InstanceVariable; } }
 
+        public String Name { get; private set; }
+
         private List<TokenType> Specifiers;
 
-        public VariableNode(TokenType type, String name, List<TokenType> specifiers) : base(type, name)
+        public VariableNode(TokenType type, String name, String typeName, List<TokenType> specifiers) : base(type, typeName)
         {
+            Name = name;
             Specifiers = specifiers;
         }
 
