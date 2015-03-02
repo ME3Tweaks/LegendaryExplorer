@@ -54,7 +54,9 @@ namespace ME3Script.Lexing
                 new KeywordMatcher("^", TokenType.BinaryXor, null),     
                 new KeywordMatcher("?", TokenType.Conditional, null),   
                 new KeywordMatcher(":", TokenType.Colon, null),
-                new KeywordMatcher(";", TokenType.SemiColon, null)
+                new KeywordMatcher(";", TokenType.SemiColon, null),
+                new KeywordMatcher(",", TokenType.Comma, null),
+                new KeywordMatcher(".", TokenType.Dot, null)
             };
 
             var keywords = new List<KeywordMatcher>

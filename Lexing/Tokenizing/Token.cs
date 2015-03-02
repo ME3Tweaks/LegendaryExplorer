@@ -79,6 +79,8 @@ namespace ME3Script.Lexing.Tokenizing
         Conditional,    // ?
         Colon,          // :
         SemiColon,      // ;
+        Comma,          // ,
+        Dot,            // .
 
 
         #endregion

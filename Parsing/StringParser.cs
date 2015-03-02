@@ -159,7 +159,8 @@ namespace ME3Script.Parsing
                     Tokens.Advance();
                     String variableName = Tokens.ConsumeToken(TokenType.Word).Value;
 
-                    if (variableName != null && Tokens.ConsumeToken(delimiter) != null && IsValidType(type))
+                    if (variableName != null && IsValidType(type)
+                        && Tokens.ConsumeToken(delimiter) != null)
                     {
                         return new VariableNode(scope, variableName, type.Value, specifiers);
                     }
@@ -175,7 +176,22 @@ namespace ME3Script.Parsing
 
         private AbstractSyntaxTree TryParseEnum()
         {
-            return null;
+            Func<AbstractSyntaxTree> parser = () =>
+            {
+                var enumToken = Tokens.ConsumeToken(TokenType.Enumeration);
+                if (enumToken == null)
+                    return null;
+
+                String enumName = Tokens.ConsumeToken(TokenType.Word).Value;
+                //TODO: check that type is valid etc!
+                var enumValues = ParseScopedContents(
+                    TokenType.LeftBracket, TokenType.RightBracket,
+                    () => { return ParseDelimitedString(TokenType.Comma, TokenType.RightBracket); });
+
+
+                return null;
+            };
+            return Tokens.TryGetTree(parser);
         }
 
         #region Helpers
@@ -232,6 +248,51 @@ namespace ME3Script.Parsing
                     return token;
             }
             return null;
+        }
+
+        private String ParseDelimitedString(TokenType delimiter, TokenType scopeEnd = TokenType.INVALID)
+        {
+            String str = null;
+            var token = Tokens.ConsumeToken(TokenType.Word);
+            if (token == null)
+                return null; // ERROR?
+
+            if (Tokens.ConsumeToken(delimiter) != null || 
+                (scopeEnd != TokenType.INVALID && CurrentTokenType == scopeEnd))
+            {
+                str = token.Value;
+            }
+            return str;
+        }
+
+        private List<AbstractSyntaxTree> ParseScopedContents(TokenType scopeStart, TokenType scopeEnd, Func<AbstractSyntaxTree> func)
+        {
+            var scopedContents = new List<AbstractSyntaxTree>();
+            if (Tokens.ConsumeToken(scopeStart) == null)
+                return null; // ERROR: expected 'scopeStart' at start of a scope
+
+            int nestedLevel = 1;
+            while(nestedLevel > 0)
+            {
+                if (Tokens.AtEnd())
+                    return null; // ERROR: Scope ended prematurely, are your scoped unbalanced?
+                if (CurrentTokenType == scopeStart)
+                {
+                    nestedLevel++;
+                    continue;
+                }
+                else if (CurrentTokenType == scopeEnd)
+                {
+                    nestedLevel--;
+                    continue;
+                }
+
+                var tree = Tokens.TryGetTree(func);
+                if (tree == null)
+                    return null; // ERROR: Unexpected scope contents!
+                scopedContents.Add(tree);
+            }
+            return scopedContents;
         }
 
         private bool IsValidType(Token<String> token)
