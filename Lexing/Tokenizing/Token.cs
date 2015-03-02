@@ -78,6 +78,7 @@ namespace ME3Script.Lexing.Tokenizing
 
         Conditional,    // ?
         Colon,          // :
+        SemiColon,      // ;
 
 
         #endregion
@@ -171,6 +172,8 @@ namespace ME3Script.Lexing.Tokenizing
         Word,
         IntegerNumber,
         FloatingNumber,
+        Scope,
+        StructMember,
 
         INVALID
     }

@@ -52,6 +52,11 @@ namespace ME3Script.Parsing
             return entry.AST;
         }
 
+        public AbstractSyntaxTree TryGetTree(Func<AbstractSyntaxTree> nodeParser)
+        {
+            return TryRoute(nodeParser) ? GetTree(nodeParser) : null;
+        }
+
         public Token<T> ConsumeToken(TokenType type)
         {
             Token<T> token = null;

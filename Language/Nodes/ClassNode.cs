@@ -5,15 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Script.Language
+namespace ME3Script.Language.Nodes
 {
-    public abstract class AbstractSyntaxTree
+    public class ClassNode : TypeDeclarationNode
     {
-        public TokenType Type;
-
-        public AbstractSyntaxTree(TokenType type)
+        public ClassNode(TokenType type, String name) : base(type, name)
         {
-            Type = type;
+
         }
     }
 }
