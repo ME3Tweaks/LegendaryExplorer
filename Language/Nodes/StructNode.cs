@@ -10,13 +10,13 @@ namespace ME3Script.Language.Nodes
     public class StructNode : TypeDeclarationNode
     {
         private List<TokenType> Specifiers;
-        public ScopeNode Scope;
+        public List<VariableNode> Contents;
 
-        public StructNode(String name, ScopeNode contents, List<TokenType> specifiers)
+        public StructNode(String name, List<VariableNode> contents, List<TokenType> specifiers)
             : base(TokenType.Struct, name)
         {
             Specifiers = specifiers;
-            Scope = contents;
+            Contents = contents;
         }
 
         public bool HasSpecifier(TokenType spec)
