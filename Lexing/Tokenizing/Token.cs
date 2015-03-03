@@ -150,6 +150,13 @@ namespace ME3Script.Lexing.Tokenizing
         PerObjectLocalizedSpecifier,
         NonTransientSpecifier,
 
+        // Struct Specifiers:
+        ImmutableSpecifier,
+        ImmutableWhenCookedSpecifier,
+        AtomicSpecifier,
+        AtomicWhenCookedSpecifier,
+        StrictConfigSpecifier,
+
         // Variable types:
         Byte,
         Int,
@@ -168,6 +175,10 @@ namespace ME3Script.Lexing.Tokenizing
         Delegate,
         Vector,
         Rotator,
+        Plane,
+        Coords,
+        Color,
+        Region,
         // Constants:
         Constant,
         None,

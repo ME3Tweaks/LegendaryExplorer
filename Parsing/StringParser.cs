@@ -69,7 +69,18 @@ namespace ME3Script.Parsing
             TokenType.DeprecatedSpecifier
         };
 
-        private List<TokenType> BasicSymbols = new List<TokenType>
+        private List<TokenType> StructSpecifiers = new List<TokenType>
+        {
+            TokenType.ImmutableSpecifier,
+            TokenType.ImmutableWhenCookedSpecifier,
+            TokenType.AtomicSpecifier,
+            TokenType.AtomicWhenCookedSpecifier,
+            TokenType.StrictConfigSpecifier,
+            TokenType.TransientSpecifier,
+            TokenType.NativeSpecifier
+        };
+
+        private List<TokenType> BasicTypes = new List<TokenType>
         {
             TokenType.Byte,
             TokenType.Int,
@@ -83,6 +94,16 @@ namespace ME3Script.Parsing
         {
             TokenType.Object,
             TokenType.Actor
+        };
+
+        private List<TokenType> StructKeywords = new List<TokenType>
+        {
+            TokenType.Vector,
+            TokenType.Plane,
+            TokenType.Rotator,
+            TokenType.Coords,
+            TokenType.Color,
+            TokenType.Region
         };
 
         private List<TokenType> PropertyTypes = new List<TokenType>
@@ -117,15 +138,15 @@ namespace ME3Script.Parsing
                     if (IsValidType(nameToken))
                         return null; // ERROR: A class with that name already exists!
 
-                    String parent = ParseParentClass();
+                    String parent = ParseParent(ClassKeywords);
                     if (parent == null)
-                        return null; // ERROR: Class must have a parent class!
+                        parent = "Object"; // WARNING: No parent class supplied, inheriting from Object
                     // TODO: support optional within clause here.
 
                     var specifiers = ParseTokensFromList(ClassSpecifiers);
 
                     if (CurrentTokenType != TokenType.SemiColon)
-                        return null; // ERROR: ';' expected after class declaration header.
+                        return null; // ERROR: ';' expected after class definition header.
                     Tokens.Advance();
 
                     List<AbstractSyntaxTree> properties = ParseProperties(PropertyTypes);
@@ -144,44 +165,36 @@ namespace ME3Script.Parsing
         }
 
         // Function from hell... Refactor!
-        private List<AbstractSyntaxTree> TryParseVariables()
+        private List<AbstractSyntaxTree> TryParseVariables(TokenType variableScope, bool allowDeclaration = false)
         {
-            if (CurrentTokenType != TokenType.InstanceVariable)
-                return null;
-            var variables = new List<AbstractSyntaxTree>();
             Tokens.PushSnapshot();
-            Tokens.Advance();
-            List<TokenType> specifiers = new List<TokenType>();
-            if (CurrentTokenType != TokenType.Enumeration)
-                specifiers = ParseTokensFromList(VariableSpecifiers);
-
-            Token<String> type = null;
-            if (CurrentTokenType == TokenType.Enumeration || CurrentTokenType == TokenType.Struct)
+            if (Tokens.ConsumeToken(variableScope) == null)
             {
-                var tree = TryParseEnum() ?? TryParseStruct();
-                if (tree == null)
-                {
-                    Tokens.PopSnapshot();
-                    return null; // ERROR: Malformed declaration (?)
-                }
-                else
-                {
-                    type = new Token<String>(TokenType.Word, (tree as TypeDeclarationNode).TypeName);
-                    variables.Add(tree);
-                }
+                Tokens.PopSnapshot();
+                return null;
+            }
+
+            var variables = new List<AbstractSyntaxTree>();
+            List<TokenType> specifiers = ParseTokensFromList(VariableSpecifiers);
+
+            Token<String> type = Tokens.CurrentItem;
+            AbstractSyntaxTree tree = TryParseEnum() ?? TryParseStruct();
+            if (tree != null && allowDeclaration)
+            {
+                type = new Token<String>(TokenType.Word, (tree as TypeDeclarationNode).TypeName);
+                variables.Add(tree);
             }
             else
             {
-                type = Tokens.CurrentItem;
                 Tokens.Advance();
                 if (!IsValidType(type))
                 {
                     Tokens.PopSnapshot();
-                    return null; // ERROR: unknown variable type!
+                    return null; // ERROR: invalid variable type!
                 }
             }
 
-            List<String> variableNames = TokensToDelimitedStrings(
+            List<String> variableNames = ParseDelimitedStringTokens(
                 ParseTokensBefore(TokenType.SemiColon), TokenType.Comma);
             if (variableNames.Count == 0)
             {
@@ -197,33 +210,29 @@ namespace ME3Script.Parsing
 
             Tokens.DiscardSnapshot();
             return variables;
-            /*Func<AbstractSyntaxTree> parser = () =>
-                {
-                    TokenType scope = TokenType.StructMember;
-                    if (CurrentTokenType == TokenType.InstanceVariable
-                        || CurrentTokenType == TokenType.LocalVariable)
-                    {
-                        scope = CurrentTokenType;
-                        Tokens.Advance();
-                    }
-                    List<TokenType> specifiers = ParseTokensFromList(VariableSpecifiers);
-                    Token<String> type = Tokens.CurrentItem;
-                    Tokens.Advance();
-                    String variableName = Tokens.ConsumeToken(TokenType.Word).Value;
-
-                    if (variableName != null && IsValidType(type)
-                        && Tokens.ConsumeToken(delimiter) != null)
-                    {
-                        return new VariableNode(scope, variableName, type.Value, specifiers);
-                    }
-                    return null;
-                };
-            return Tokens.TryGetTree(parser);*/
         }
 
         private AbstractSyntaxTree TryParseStruct()
         {
-            return null;
+            Func<AbstractSyntaxTree> parser = () =>
+            {
+                var structToken = Tokens.ConsumeToken(TokenType.Struct);
+                if (structToken == null)
+                    return null;
+
+                List<TokenType> specifiers = ParseTokensFromList(StructSpecifiers);
+                var structName = Tokens.ConsumeToken(TokenType.Word);
+                if (IsValidType(structName))
+                    return null; // ERROR: redefenition of 'name'
+                String parent = ParseParent(StructKeywords);
+                var contents = TryParseScope(TokenType.LeftBracket, TokenType.RightBracket, 
+                    () => TryParseVariables(TokenType.InstanceVariable), TokenType.SemiColon);
+                if (contents == null)
+                    return null; // ERROR: Malformed struct contents!
+                return RegisterType(structName.Value,
+                    new StructNode(structName.Value, contents as ScopeNode, parent, specifiers));
+            };
+            return Tokens.TryGetTree(parser);
         }
 
         private AbstractSyntaxTree TryParseEnum()
@@ -234,17 +243,45 @@ namespace ME3Script.Parsing
                 if (enumToken == null)
                     return null;
 
-                String enumName = Tokens.ConsumeToken(TokenType.Word).Value;
-                //TODO: check that type is valid etc!
+                var enumName = Tokens.ConsumeToken(TokenType.Word);
+                if (IsValidType(enumName))
+                    return null; // ERROR: redefinition of 'name'
                 var contentValues = ParseScopedTokens(
                     TokenType.LeftBracket, TokenType.RightBracket);
-                var enumValues = TokensToDelimitedStrings(contentValues, TokenType.Comma);
+                var enumValues = ParseDelimitedStringTokens(contentValues, TokenType.Comma);
                 if (enumValues.Count == 0)
                     return null; // ERROR: enum has no values!
-                return RegisterType(enumName, 
-                    new EnumerationNode(TokenType.Enumeration, enumName, enumValues));
+                return RegisterType(enumName.Value, 
+                    new EnumerationNode(enumName.Value, enumValues));
             };
             return Tokens.TryGetTree(parser);
+        }
+
+        private AbstractSyntaxTree TryParseScope(TokenType scopeStart, 
+            TokenType scopeEnd, Func<List<AbstractSyntaxTree>> contentParser, TokenType delimiter = TokenType.INVALID)
+        {
+            Func<AbstractSyntaxTree> scopeParser = () =>
+            {
+                if (Tokens.ConsumeToken(scopeStart) == null)
+                    return null;
+                var contentTree = new List<AbstractSyntaxTree>();
+                List<AbstractSyntaxTree> trees = null;
+                while (CurrentTokenType != TokenType.EOF)
+                {
+                    trees = contentParser();
+                    if (trees == null)
+                        return null; // ERROR: Unexpected scope contents!
+                    contentTree.AddRange(trees);
+                    if (delimiter != TokenType.InstanceVariable && Tokens.ConsumeToken(delimiter) == null)
+                        return null; // ERROR: 'delimiter' expected!
+                    if (CurrentTokenType == scopeEnd)
+                        break;
+                }
+                if (Tokens.ConsumeToken(scopeEnd) == null)
+                    return null; // ERROR: Expected end of scope!
+                return new ScopeNode(contentTree);
+            };
+            return Tokens.TryGetTree(scopeParser);
         }
 
         #region Helpers
@@ -265,7 +302,8 @@ namespace ME3Script.Parsing
             var properties = new List<AbstractSyntaxTree>();
             while (typeList.Contains(CurrentTokenType))
             {
-                List<AbstractSyntaxTree> trees = TryParseVariables() ?? new List<AbstractSyntaxTree>();
+                List<AbstractSyntaxTree> trees = TryParseVariables(TokenType.InstanceVariable, true) 
+                    ?? new List<AbstractSyntaxTree>();
                 if (trees.Count == 0)
                 {
                     var tree = TryParseStruct() ?? TryParseEnum();
@@ -282,21 +320,11 @@ namespace ME3Script.Parsing
             return properties;
         }
 
-        private List<AbstractSyntaxTree> Properties(List<TokenType> typeList)
-        {
-            var properties = new List<AbstractSyntaxTree>();
-            while (typeList.Contains(CurrentTokenType))
-            {
-
-            }
-            return properties;
-        }
-
-        private String ParseParentClass()
+        private String ParseParent(List<TokenType> validKeywords)
         {
             if (Tokens.ConsumeToken(TokenType.Extends) == null)
                 return null; // ERROR: Expected 'extends' keyword!
-            var parent = ParseTokenFromList(ClassKeywords) ?? Tokens.ConsumeToken(TokenType.Word);
+            var parent = ParseTokenFromList(validKeywords) ?? Tokens.ConsumeToken(TokenType.Word);
             if (parent == null)
                 return null; // ERROR: Expected parent class name!
             // TODO: check identifier validity?
@@ -308,21 +336,17 @@ namespace ME3Script.Parsing
             Token<String> token = null;
             if (!types.Contains(CurrentTokenType))
                 return null; // ERROR?
-
-            foreach (var type in types)
-            {
-                token = Tokens.ConsumeToken(type);
-                if (token != null)
-                    return token;
-            }
-            return null;
+            token = Tokens.CurrentItem;
+            Tokens.Advance();
+            return token;
         }
 
-        private List<String> TokensToDelimitedStrings(List<Token<String>> tokens, TokenType delimiter)
+        private List<String> ParseDelimitedStringTokens(List<Token<String>> tokens, TokenType delimiter)
         {
             List<String> strings = new List<String>();
             IEnumerator<Token<String>> iterator = tokens.GetEnumerator();
-            iterator.MoveNext();
+            if (!iterator.MoveNext())
+                return null; // ERROR: expected token before 'delimiter'!
             do
             {
                 var token = iterator.Current;
@@ -347,7 +371,7 @@ namespace ME3Script.Parsing
             int nestedLevel = 1;
             while(nestedLevel > 0)
             {
-                if (Tokens.AtEnd())
+                if (CurrentTokenType == TokenType.EOF)
                     return null; // ERROR: Scope ended prematurely, are your scoped unbalanced?
                 if (CurrentTokenType == scopeStart)
                     nestedLevel++;

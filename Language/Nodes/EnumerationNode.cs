@@ -11,7 +11,7 @@ namespace ME3Script.Language.Nodes
     {
         public List<String> Values { get; private set; }
 
-        public EnumerationNode(TokenType type, String name, List<String> values) : base(type, name)
+        public EnumerationNode(String name, List<String> values) : base(TokenType.Enumeration, name)
         {
             Values = values;
         }
