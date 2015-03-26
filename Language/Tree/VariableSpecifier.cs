@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class UnaryOperator : ASTNode
+    public class VariableSpecifier : ASTNode
     {
-        public UnaryOperator() : base(ASTNodeType.UnaryOperation) { }
+        public VariableSpecifier() : base(ASTNodeType.VariableSpecifier) { }
     }
 }

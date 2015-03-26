@@ -12,12 +12,24 @@ namespace ME3Script.Language.Tree
         BinaryOperation,
         AssignStatement,
         IfStatement,
-        Body
+        Body,
+        VariableType,
+        VariableSpecifier,
+        VariableDeclaration,
+        Variable,
+        StaticArrayVariable,
+        Struct,
+        Enumeration,
+        Class,
+        Function,
+        State
     }
 
     public abstract class ASTNode
     {
         public ASTNodeType Type;
+
+        public ASTNode Parent;
 
         public ASTNode(ASTNodeType type)
         {
