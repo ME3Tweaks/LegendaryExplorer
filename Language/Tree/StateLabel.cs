@@ -13,6 +13,7 @@ namespace ME3Script.Language.Tree
         public StateLabel(String name, int offset) : base(name)
         {
             StartOffset = offset;
+            Type = ASTNodeType.StateLabel;
         }
     }
 }

@@ -22,7 +22,8 @@ namespace ME3Script.Language.Tree
         Enumeration,
         Class,
         Function,
-        State
+        State,
+        StateLabel
     }
 
     public abstract class ASTNode

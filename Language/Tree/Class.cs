@@ -16,6 +16,17 @@ namespace ME3Script.Language.Tree
         public List<Function> Functions;
         public List<State> States;
 
-
+        public Class(String name, List<Specifier> specs, 
+            List<VariableDeclaration> vars, List<Function> funcs,
+            List<State> states, Class parent, Class outer) : base(ASTNodeType.Class)
+        {
+            Name = name;
+            Parent = parent;
+            OuterClass = outer;
+            Specifiers = specs;
+            Variables = vars;
+            Functions = funcs;
+            States = states;
+        }
     }
 }
