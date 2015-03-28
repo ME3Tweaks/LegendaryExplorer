@@ -1,4 +1,5 @@
 ﻿using ME3Script.Language;
+using ME3Script.Language.Tree;
 using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
 using System;
@@ -11,7 +12,7 @@ namespace ME3Script.Parsing
 {
     internal struct ASTCacheEntry
     {
-        public AbstractSyntaxTree AST;
+        public ASTNode AST;
         public int EndIndex;
     }
 
@@ -25,7 +26,7 @@ namespace ME3Script.Parsing
             Cache = new Dictionary<int, ASTCacheEntry>();
         }
 
-        public bool TryRoute(Func<AbstractSyntaxTree> nodeParser)
+        public bool TryRoute(Func<ASTNode> nodeParser)
         {
             PushSnapshot();
             bool valid = false;
@@ -42,7 +43,7 @@ namespace ME3Script.Parsing
             return valid;
         }
 
-        public AbstractSyntaxTree GetTree(Func<AbstractSyntaxTree> nodeParser)
+        public ASTNode GetTree(Func<ASTNode> nodeParser)
         {
             ASTCacheEntry entry;
             if (!Cache.TryGetValue(CurrentIndex, out entry))
@@ -52,7 +53,7 @@ namespace ME3Script.Parsing
             return entry.AST;
         }
 
-        public AbstractSyntaxTree TryGetTree(Func<AbstractSyntaxTree> nodeParser)
+        public ASTNode TryGetTree(Func<ASTNode> nodeParser)
         {
             return TryRoute(nodeParser) ? GetTree(nodeParser) : null;
         }

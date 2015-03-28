@@ -169,16 +169,16 @@ namespace ME3Script.Lexing.Tokenizing
         Struct,
         Class,
         // Unrealengine types:
-        Name,
-        Object,
-        Actor,
+        //Name,
+        //Object,
+        //Actor,
         Delegate,
-        Vector,
-        Rotator,
-        Plane,
-        Coords,
-        Color,
-        Region,
+        //Vector,
+        //Rotator,
+        //Plane,
+        //Coords,
+        //Color,
+        //Region,
         // Constants:
         Constant,
         None,
@@ -197,6 +197,7 @@ namespace ME3Script.Lexing.Tokenizing
         Scope,
         StructMember,
         Extends,
+        Within,
 
         INVALID
     }

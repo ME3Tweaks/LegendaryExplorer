@@ -11,13 +11,13 @@ namespace ME3Script.Language.Tree
         public String Name;
         public CodeBody Body;
         public List<Specifier> Specifiers;
-        public State Parent;
+        public Variable Parent;
         public List<Function> Functions;
         public List<Variable> Ignores;
         public List<StateLabel> Labels;
 
         public State(String name, CodeBody body, List<Specifier> specs,
-            State parent, List<Function> funcs, List<Variable> ignores,
+            Variable parent, List<Function> funcs, List<Variable> ignores,
             List<StateLabel> labels) : base(ASTNodeType.State)
         {
             Name = name;

@@ -111,18 +111,19 @@ namespace ME3Script.Lexing
                 new KeywordMatcher("array", TokenType.Array, delimiters, false),
                 new KeywordMatcher("struct", TokenType.Struct, delimiters, false),
                 new KeywordMatcher("class", TokenType.Class, delimiters, false),
-                new KeywordMatcher("Name", TokenType.Name, delimiters, false),
-                new KeywordMatcher("Object", TokenType.Object, delimiters, false),
-                new KeywordMatcher("Actor", TokenType.Actor, delimiters, false),
+                //new KeywordMatcher("Name", TokenType.Name, delimiters, false),
+                //new KeywordMatcher("Object", TokenType.Object, delimiters, false),
+                //new KeywordMatcher("Actor", TokenType.Actor, delimiters, false),
                 new KeywordMatcher("delegate", TokenType.Delegate, delimiters, false),
-                new KeywordMatcher("Vector", TokenType.Vector, delimiters, false),
-                new KeywordMatcher("Rotator", TokenType.Rotator, delimiters, false),
+                //new KeywordMatcher("Vector", TokenType.Vector, delimiters, false),
+                //new KeywordMatcher("Rotator", TokenType.Rotator, delimiters, false),
                 new KeywordMatcher("constant", TokenType.Constant, delimiters, false),
                 new KeywordMatcher("None", TokenType.None, delimiters, false),
                 new KeywordMatcher("Self", TokenType.Self, delimiters, false),
                 new KeywordMatcher("EnumCount", TokenType.EnumCount, delimiters, false),
                 new KeywordMatcher("ArrayCount", TokenType.ArrayCount, delimiters, false),
-                new KeywordMatcher("Extends", TokenType.Extends, delimiters, false)
+                new KeywordMatcher("extends", TokenType.Extends, delimiters, false),
+                new KeywordMatcher("within", TokenType.Within, delimiters, false)
             };
 
             TokenMatchers.Add(new StringLiteralMatcher());
