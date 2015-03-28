@@ -8,6 +8,12 @@ namespace ME3Script.Language.Tree
 {
     public class AssignStatement : Statement
     {
-        public AssignStatement() : base(ASTNodeType.AssignStatement) { }
+        public Variable Target;
+        public Expression Value;
+        public AssignStatement(Variable target, Expression value) : base(ASTNodeType.AssignStatement) 
+        {
+            Target = target;
+            Value = value;
+        }
     }
 }

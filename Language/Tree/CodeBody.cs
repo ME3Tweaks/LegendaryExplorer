@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class Body : Statement
+    public class CodeBody : Statement
     {
         public List<Statement> Statements;
 
-        public Body() : base(ASTNodeType.Body) { }
+        public CodeBody(List<Statement> contents) : base(ASTNodeType.CodeBody) 
+        {
+            Statements = contents;
+        }
     }
 }

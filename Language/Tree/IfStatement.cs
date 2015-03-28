@@ -12,6 +12,11 @@ namespace ME3Script.Language.Tree
         public Statement Then;
         public Statement Else;
 
-        public IfStatement() : base(ASTNodeType.IfStatement) { }
+        public IfStatement(Expression cond, Statement then, Statement optelse = null) : base(ASTNodeType.IfStatement) 
+        {
+            Condition = cond;
+            Then = then;
+            Else = optelse;
+        }
     }
 }
