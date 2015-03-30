@@ -124,6 +124,40 @@ namespace ME3Script.Parsing
             return (Class)Tokens.TryGetTree(classParser);
         }
 
+        public VariableDeclaration TryParseVarDecl(bool allowInline = false)
+        {
+            Func<ASTNode> declarationParser = () =>
+                {
+                    if (Tokens.ConsumeToken(TokenType.InstanceVariable) == null)
+                        return null;
+
+
+                    return null;
+                };
+            return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
+        }
+
+        public VariableDeclaration TryParseLocalVar(bool allowInline = false)
+        {
+            Func<ASTNode> declarationParser = () =>
+                {
+                    if (Tokens.ConsumeToken(TokenType.LocalVariable) == null)
+                        return null;
+
+                    // word or basic datatype? (int float etc)
+                    var type = Tokens.ConsumeToken(TokenType.Word);
+                    if (type == null)
+                        return null; // ERROR: expected variable type
+
+                    var vars = ParseVariableNames();
+                    if (vars == null)
+                        return null; // ERROR(?): malformed variable names?
+
+                    return new VariableDeclaration(new VariableType(type.Value), null, vars);
+                };
+            return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
+        }
+
         #endregion
         #region Expressions
         #endregion
@@ -170,6 +204,44 @@ namespace ME3Script.Parsing
         #endregion
         #endregion
         #region Helpers
+
+        public List<Variable> ParseVariableNames()
+        {
+            List<Variable> vars = new List<Variable>();
+            do
+            {
+                Variable variable = TryParseVariable();
+                if (variable == null)
+                    return null; // ERROR: Expected a variable name
+                vars.Add(variable);
+            } while (Tokens.ConsumeToken(TokenType.Comma) != null);
+            // TODO: This allows a trailing comma before semicolon, intended?
+            return vars;
+        }
+
+        public Variable TryParseVariable()
+        {
+            Func<ASTNode> variableParser = () =>
+                {
+                    var name = Tokens.ConsumeToken(TokenType.Word);
+                    if (name == null)
+                        return null;
+
+                    if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) != null)
+                    {
+                        var size = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                        if (size == null)
+                            return null; // ERROR: expected integer size
+                        if (Tokens.ConsumeToken(TokenType.RightSqrBracket) != null)
+                            return null; // ERROR: expected closing bracket
+
+                        return new StaticArrayVariable(name.Value, Int32.Parse(size.Value));
+                    }
+
+                    return new Variable(name.Value);
+                };
+            return (Variable)Tokens.TryGetTree(variableParser);
+        }
 
         #endregion
     }
