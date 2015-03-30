@@ -110,42 +110,50 @@ namespace ME3Script.Parsing
 
                     var outerClass = TryParseOuter();
 
-                    List<Specifier> specs = new List<Specifier>();
-                    while (CurrentTokenType != TokenType.SemiColon)
-                    {
-                        Specifier spec = TryParseSpecifier(ClassSpecifiers);
-                        if (spec == null)
-                            return null; // ERROR: Expected class specifier or semicolon!
-                        specs.Add(spec);
-                    }
+                    var specs = ParseSpecifiers(ClassSpecifiers);
 
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                        return null; // ERROR: did you miss a semi-colon?
+
+                    // TODO: should AST-nodes accept null values? should they make sure they dont present any?
                     return new Class(name.Value, specs, null, null, null, parentClass, outerClass);
                 };
             return (Class)Tokens.TryGetTree(classParser);
         }
 
-        public VariableDeclaration TryParseVarDecl(bool allowInline = false)
+        public VariableDeclaration TryParseVarDecl()
         {
             Func<ASTNode> declarationParser = () =>
                 {
                     if (Tokens.ConsumeToken(TokenType.InstanceVariable) == null)
                         return null;
 
+                    var specs = ParseSpecifiers(VariableSpecifiers);
 
-                    return null;
+                    var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
+                    if (type == null)
+                        return null; // ERROR: expected variable type or struct/enum type declaration.
+
+                    var vars = ParseVariableNames();
+                    if (vars == null && type.Type != ASTNodeType.Struct && type.Type != ASTNodeType.Enumeration)
+                        return null; // ERROR(?): malformed variable names?
+
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                        return null; // ERROR: did you miss a semi-colon?
+
+                    return new VariableDeclaration(type, specs, vars);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
 
-        public VariableDeclaration TryParseLocalVar(bool allowInline = false)
+        public VariableDeclaration TryParseLocalVar()
         {
             Func<ASTNode> declarationParser = () =>
                 {
                     if (Tokens.ConsumeToken(TokenType.LocalVariable) == null)
                         return null;
 
-                    // word or basic datatype? (int float etc)
-                    var type = Tokens.ConsumeToken(TokenType.Word);
+                    var type = TryParseType();
                     if (type == null)
                         return null; // ERROR: expected variable type
 
@@ -153,15 +161,68 @@ namespace ME3Script.Parsing
                     if (vars == null)
                         return null; // ERROR(?): malformed variable names?
 
-                    return new VariableDeclaration(new VariableType(type.Value), null, vars);
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                        return null; // ERROR: did you miss a semi-colon?
+
+                    return new VariableDeclaration(type, null, vars);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
+        }
+
+        public Struct TryParseStruct()
+        {
+            Func<ASTNode> structParser = () =>
+                {
+                    if (Tokens.ConsumeToken(TokenType.Struct) == null)
+                        return null;
+
+                    var specs = ParseSpecifiers(StructSpecifiers);
+
+                    var name = Tokens.ConsumeToken(TokenType.Word);
+                    if (name == null)
+                        return null; // ERROR: expected struct name!
+
+                    var parent = TryParseParent();
+
+                    if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
+                        return null; // ERROR: expected struct body!
+
+                    var vars = new List<VariableDeclaration>();
+                    while (Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                    {
+                        var variable = TryParseVarDecl();
+                        if (variable == null)
+                            return null; //ERROR: expected variable declaration in struct body.
+                        vars.Add(variable);
+                    }
+
+                    return new Struct(name.Value, specs, vars, parent);
+                };
+            return (Struct)Tokens.TryGetTree(structParser);
+        }
+
+        public Enumeration TryParseEnum()
+        {
+            Func<ASTNode> enumParser = () =>
+            {
+                return null;
+            };
+            return (Enumeration)Tokens.TryGetTree(enumParser);
         }
 
         #endregion
         #region Expressions
         #endregion
         #region Misc
+
+        public VariableType TryParseType()
+        {
+            // TODO: word or basic datatype? (int float etc)
+            var type = Tokens.ConsumeToken(TokenType.Word);
+            if (type == null)
+                return null; // ERROR?
+            return new VariableType(type.Value);
+        }
 
         public Variable TryParseParent()
         {
@@ -201,6 +262,30 @@ namespace ME3Script.Parsing
             return (Specifier)Tokens.TryGetTree(specifierParser);
         }
 
+        public Variable TryParseVariable()
+        {
+            Func<ASTNode> variableParser = () =>
+            {
+                var name = Tokens.ConsumeToken(TokenType.Word);
+                if (name == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) != null)
+                {
+                    var size = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                    if (size == null)
+                        return null; // ERROR: expected integer size
+                    if (Tokens.ConsumeToken(TokenType.RightSqrBracket) != null)
+                        return null; // ERROR: expected closing bracket
+
+                    return new StaticArrayVariable(name.Value, Int32.Parse(size.Value));
+                }
+
+                return new Variable(name.Value);
+            };
+            return (Variable)Tokens.TryGetTree(variableParser);
+        }
+
         #endregion
         #endregion
         #region Helpers
@@ -219,28 +304,17 @@ namespace ME3Script.Parsing
             return vars;
         }
 
-        public Variable TryParseVariable()
+        public List<Specifier> ParseSpecifiers(List<TokenType> specifierCategory)
         {
-            Func<ASTNode> variableParser = () =>
-                {
-                    var name = Tokens.ConsumeToken(TokenType.Word);
-                    if (name == null)
-                        return null;
-
-                    if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) != null)
-                    {
-                        var size = Tokens.ConsumeToken(TokenType.IntegerNumber);
-                        if (size == null)
-                            return null; // ERROR: expected integer size
-                        if (Tokens.ConsumeToken(TokenType.RightSqrBracket) != null)
-                            return null; // ERROR: expected closing bracket
-
-                        return new StaticArrayVariable(name.Value, Int32.Parse(size.Value));
-                    }
-
-                    return new Variable(name.Value);
-                };
-            return (Variable)Tokens.TryGetTree(variableParser);
+            List<Specifier> specs = new List<Specifier>();
+            while (specifierCategory.Contains(CurrentTokenType))
+            {
+                Specifier spec = TryParseSpecifier(specifierCategory);
+                if (spec == null)
+                    return null; // ERROR: Expected valid specifier
+                specs.Add(spec);
+            }
+            return specs;
         }
 
         #endregion
