@@ -41,14 +41,6 @@
   <ItemGroup>
     <Compile Include="Analysis\Symbols\SymbolManager.cs" />
     <Compile Include="ByteCode.cs" />
-    <Compile Include="Language\AbstractSyntaxTree.cs" />
-    <Compile Include="Language\Nodes\ScopeNode.cs" />
-    <Compile Include="Language\Nodes\TypeDeclarationNode.cs" />
-    <Compile Include="Language\Nodes\ClassNode.cs" />
-    <Compile Include="Language\Nodes\EnumerationNode.cs" />
-    <Compile Include="Language\Nodes\InterfaceNode.cs" />
-    <Compile Include="Language\Nodes\StructNode.cs" />
-    <Compile Include="Language\Nodes\VariableNode.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
     <Compile Include="Language\Tree\BinaryOperation.cs" />
@@ -68,10 +60,6 @@
     <Compile Include="Language\Tree\VariableDeclaration.cs" />
     <Compile Include="Language\Tree\Specifier.cs" />
     <Compile Include="Language\Tree\VariableType.cs" />
-    <Compile Include="Language\Types\AbstractType.cs" />
-    <Compile Include="Language\Types\BasicDataType.cs" />
-    <Compile Include="Language\Types\TypeManager.cs" />
-    <Compile Include="Language\Types\UserDefinedType.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\KeywordMatcher.cs" />
