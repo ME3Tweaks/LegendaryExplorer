@@ -115,8 +115,33 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                         return null; // ERROR: did you miss a semi-colon?
 
+                    var variables = new List<VariableDeclaration>();
+                    var types = new List<VariableType>();
+                    while (CurrentTokenType == TokenType.InstanceVariable
+                        || CurrentTokenType == TokenType.Struct
+                        || CurrentTokenType == TokenType.Enumeration)
+                    {
+                        if (CurrentTokenType == TokenType.InstanceVariable)
+                        {
+                            var variable = TryParseVarDecl();
+                            if (variable == null)
+                                return null; // ERROR: malformed instance variable!
+                            variables.Add(variable);
+                        }
+                        else
+                        {
+                            var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID");
+                            if (type.Name == "INVALID")
+                                return null; // ERROR: malformed type declaration!
+                            types.Add(type);
+
+                            if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                                return null; // ERROR: did you miss a semi-colon?
+                        }
+                    }
+
                     // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                    return new Class(name.Value, specs, null, null, null, parentClass, outerClass);
+                    return new Class(name.Value, specs, variables, types, null, null, parentClass, outerClass);
                 };
             return (Class)Tokens.TryGetTree(classParser);
         }
@@ -188,13 +213,16 @@ namespace ME3Script.Parsing
                         return null; // ERROR: expected struct body!
 
                     var vars = new List<VariableDeclaration>();
-                    while (Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                    do
                     {
                         var variable = TryParseVarDecl();
                         if (variable == null)
                             return null; //ERROR: expected variable declaration in struct body.
                         vars.Add(variable);
-                    }
+                    } while (CurrentTokenType != TokenType.RightBracket);
+
+                    if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                        return null; //ERROR: expected end of struct body!
 
                     return new Struct(name.Value, specs, vars, parent);
                 };
@@ -205,7 +233,31 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> enumParser = () =>
             {
-                return null;
+                if (Tokens.ConsumeToken(TokenType.Enumeration) == null)
+                    return null;
+
+                var name = Tokens.ConsumeToken(TokenType.Word);
+                if (name == null)
+                    return null; // ERROR: expected enum name!
+
+                if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
+                    return null; // ERROR: expected struct body!
+
+                var identifiers = new List<Variable>();
+                do
+                {
+                    var ident = Tokens.ConsumeToken(TokenType.Word);
+                    if (ident == null)
+                        return null; //ERROR: expected variable declaration in struct body.
+                    identifiers.Add(new Variable(ident.Value));
+                    if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket)
+                        return null; // ERROR: unexpected enum content!
+                } while (CurrentTokenType != TokenType.RightBracket);
+
+                if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                    return null; //ERROR: expected end of struct body!
+
+                return new Enumeration(name.Value, identifiers);
             };
             return (Enumeration)Tokens.TryGetTree(enumParser);
         }

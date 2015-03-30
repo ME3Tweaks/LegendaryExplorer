@@ -12,12 +12,13 @@ namespace ME3Script.Language.Tree
         public Variable Parent;
         public Variable OuterClass;
         public List<Specifier> Specifiers;
-        public List<VariableDeclaration> Variables;
+        public List<VariableDeclaration> VariableDeclarations;
+        public List<VariableType> TypeDeclarations;
         public List<Function> Functions;
         public List<State> States;
 
         public Class(String name, List<Specifier> specs, 
-            List<VariableDeclaration> vars, List<Function> funcs,
+            List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
             List<State> states, Variable parent, Variable outer)
             : base(ASTNodeType.Class)
         {
@@ -25,7 +26,8 @@ namespace ME3Script.Language.Tree
             Parent = parent;
             OuterClass = outer;
             Specifiers = specs;
-            Variables = vars;
+            VariableDeclarations = vars;
+            TypeDeclarations = types;
             Functions = funcs;
             States = states;
         }

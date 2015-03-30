@@ -158,10 +158,10 @@ namespace ME3Script.Lexing.Tokenizing
         StrictConfigSpecifier,
 
         // Variable types:
-        Byte,
-        Int,
-        Bool,
-        Float,
+        //Byte,
+        //Int,
+        //Bool,
+        //Float,
         String,
         Enumeration,
         // Aggregates:
