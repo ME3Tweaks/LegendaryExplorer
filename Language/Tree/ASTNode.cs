@@ -23,7 +23,9 @@ namespace ME3Script.Language.Tree
         Class,
         Function,
         State,
-        StateLabel
+        StateLabel,
+        // Temporary types:
+        FunctionStub
     }
 
     public abstract class ASTNode

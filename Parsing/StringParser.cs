@@ -78,11 +78,36 @@ namespace ME3Script.Parsing
             TokenType.TransientSpecifier,
             TokenType.NativeSpecifier
         };
+
+        private List<TokenType> FunctionSpecifiers = new List<TokenType>
+        {
+            TokenType.PrivateSpecifier,
+            TokenType.ProtectedSpecifier,
+            TokenType.PublicSpecifier,
+            TokenType.StaticSpecifier,
+            TokenType.FinalSpecifier,
+            TokenType.ExecSpecifier,
+            TokenType.K2CallSpecifier,
+            TokenType.K2OverrideSpecifier,
+            TokenType.K2PureSpecifier,
+            TokenType.SimulatedSpecifier,
+            TokenType.SingularSpecifier,
+            TokenType.ClientSpecifier,
+            TokenType.DemoRecordingSpecifier,
+            TokenType.ReliableSpecifier,
+            TokenType.ServerSpecifier,
+            TokenType.UnreliableSpecifier,
+            TokenType.ConstSpecifier,
+            TokenType.IteratorSpecifier,
+            TokenType.LatentSpecifier,
+            TokenType.NativeSpecifier,
+            TokenType.NoExportSpecifier
+        };
         #endregion
 
-        public StringParser(StringLexer lexer)
+        public StringParser(TokenStream<String> tokens)
         {
-            Tokens = new TokenStream<String>(lexer);
+            Tokens = tokens;
         }
 
         public ASTNode ParseDocument()
@@ -262,6 +287,50 @@ namespace ME3Script.Parsing
             return (Enumeration)Tokens.TryGetTree(enumParser);
         }
 
+        public FunctionStub TryParseFunction()
+        {
+            Func<ASTNode> functionParser = () =>
+            {
+                return null;
+            };
+            return (FunctionStub)Tokens.TryGetTree(functionParser);
+        }
+
+        public FunctionStub TryParseFunctionStub()
+        {
+            Func<ASTNode> stubParser = () =>
+                {
+                    var specs = ParseSpecifiers(FunctionSpecifiers);
+
+                    if (Tokens.ConsumeToken(TokenType.Function) == null)
+                        return null;
+
+                    Token<String> returnType = null, name = null;
+
+                    var firstString = Tokens.ConsumeToken(TokenType.Word);
+                    if (firstString == null)
+                        return null; // ERROR: Expected function name! (And returntype)
+                    var secondString = Tokens.ConsumeToken(TokenType.Word);
+                    if (secondString == null)
+                        name = firstString;
+                    else
+                    {
+                        returnType = firstString;
+                        name = secondString;
+                    }
+
+                    if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                        return null; // ERROR: Expected (
+
+                    // TODO: parse function parameters.
+                    
+                    // TODO: parse function body start/end.
+
+                    return null;
+                };
+            return (FunctionStub)Tokens.TryGetTree(stubParser);
+        }
+
         #endregion
         #region Expressions
         #endregion
@@ -367,6 +436,30 @@ namespace ME3Script.Parsing
                 specs.Add(spec);
             }
             return specs;
+        }
+
+        private List<Token<String>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
+        {
+            var scopedTokens = new List<Token<String>>();
+            if (Tokens.ConsumeToken(scopeStart) == null)
+                return null; // ERROR: expected 'scopeStart' at start of a scope
+
+            int nestedLevel = 1;
+            while (nestedLevel > 0)
+            {
+                if (CurrentTokenType == TokenType.EOF)
+                    return null; // ERROR: Scope ended prematurely, are your scopes unbalanced?
+                if (CurrentTokenType == scopeStart)
+                    nestedLevel++;
+                else if (CurrentTokenType == scopeEnd)
+                    nestedLevel--;
+
+                scopedTokens.Add(Tokens.CurrentItem);
+                Tokens.Advance();
+            }
+            // Remove the ending scope token:
+            scopedTokens.RemoveAt(scopedTokens.Count - 1);
+            return scopedTokens;
         }
 
         #endregion

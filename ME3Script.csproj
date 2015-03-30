@@ -49,6 +49,7 @@
     <Compile Include="Language\Tree\Enumeration.cs" />
     <Compile Include="Language\Tree\Expression.cs" />
     <Compile Include="Language\Tree\Function.cs" />
+    <Compile Include="Language\Tree\FunctionStub.cs" />
     <Compile Include="Language\Tree\IfStatement.cs" />
     <Compile Include="Language\Tree\State.cs" />
     <Compile Include="Language\Tree\StateLabel.cs" />

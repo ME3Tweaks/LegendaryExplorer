@@ -168,6 +168,11 @@ namespace ME3Script.Lexing.Tokenizing
         Array,
         Struct,
         Class,
+        State,
+        Function,
+        Event,
+        Delegate,
+        Operator,
         // Unrealengine types:
         //Name,
         //Object,
@@ -198,6 +203,23 @@ namespace ME3Script.Lexing.Tokenizing
         StructMember,
         Extends,
         Within,
+        //Functions:
+        PublicSpecifier,
+        StaticSpecifier,
+        FinalSpecifier,
+        ExecSpecifier,
+        K2CallSpecifier,
+        K2OverrideSpecifier,
+        K2PureSpecifier,
+        SimulatedSpecifier,
+        SingularSpecifier,
+        ClientSpecifier,
+        DemoRecordingSpecifier,
+        ReliableSpecifier,
+        ServerSpecifier,
+        UnreliableSpecifier,
+        IteratorSpecifier,
+        LatentSpecifier,
 
         INVALID
     }

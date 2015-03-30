@@ -123,7 +123,27 @@ namespace ME3Script.Lexing
                 new KeywordMatcher("EnumCount", TokenType.EnumCount, delimiters, false),
                 new KeywordMatcher("ArrayCount", TokenType.ArrayCount, delimiters, false),
                 new KeywordMatcher("extends", TokenType.Extends, delimiters, false),
-                new KeywordMatcher("within", TokenType.Within, delimiters, false)
+                new KeywordMatcher("within", TokenType.Within, delimiters, false),
+                new KeywordMatcher("public", TokenType.PublicSpecifier, delimiters, false),
+                new KeywordMatcher("final", TokenType.FinalSpecifier, delimiters, false),
+                new KeywordMatcher("exec", TokenType.ExecSpecifier, delimiters, false),
+                new KeywordMatcher("K2Call", TokenType.K2CallSpecifier, delimiters, false),
+                new KeywordMatcher("K2Override", TokenType.K2OverrideSpecifier, delimiters, false),
+                new KeywordMatcher("K2Pure", TokenType.K2PureSpecifier, delimiters, false),
+                new KeywordMatcher("static", TokenType.StaticSpecifier, delimiters, false),
+                new KeywordMatcher("simulated", TokenType.SimulatedSpecifier, delimiters, false),
+                new KeywordMatcher("singular", TokenType.SingularSpecifier, delimiters, false),
+                new KeywordMatcher("client", TokenType.ClientSpecifier, delimiters, false),
+                new KeywordMatcher("DemoRecording", TokenType.DemoRecordingSpecifier, delimiters, false),
+                new KeywordMatcher("reliable", TokenType.ReliableSpecifier, delimiters, false),
+                new KeywordMatcher("server", TokenType.ServerSpecifier, delimiters, false),
+                new KeywordMatcher("unreliable", TokenType.UnreliableSpecifier, delimiters, false),
+                new KeywordMatcher("event", TokenType.Event, delimiters, false),
+                new KeywordMatcher("iterator", TokenType.IteratorSpecifier, delimiters, false),
+                new KeywordMatcher("latent", TokenType.LatentSpecifier, delimiters, false),
+                new KeywordMatcher("state", TokenType.State, delimiters, false),
+                new KeywordMatcher("function", TokenType.Function, delimiters, false),
+                new KeywordMatcher("operator", TokenType.Operator, delimiters, false)
             };
 
             TokenMatchers.Add(new StringLiteralMatcher());
