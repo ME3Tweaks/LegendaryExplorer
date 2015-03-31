@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,8 @@ namespace ME3Script.Language.Tree
     public class Specifier : ASTNode
     {
         public String Value;
-        public Specifier(String value) : base(ASTNodeType.Specifier) 
+        public Specifier(String value, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.Specifier, start, end) 
         {
             Value = value;
         }

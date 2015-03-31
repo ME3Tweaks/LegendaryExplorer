@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,8 @@ namespace ME3Script.Language.Tree
 
         public State(String name, CodeBody body, List<Specifier> specs,
             Variable parent, List<Function> funcs, List<Variable> ignores,
-            List<StateLabel> labels) : base(ASTNodeType.State)
+            List<StateLabel> labels, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.State, start, end)
         {
             Name = name;
             Body = body;

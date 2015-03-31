@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,9 @@ namespace ME3Script.Language.Tree
         public List<VariableDeclaration> Members;
 
         public Struct(String name, List<Specifier> specs,
-            List<VariableDeclaration> members, Variable parent = null)
-            : base(name)
+            List<VariableDeclaration> members,
+            SourcePosition start, SourcePosition end, Variable parent = null)
+            : base(name, start, end)
         {
             Type = ASTNodeType.Struct;
             Specifiers = specs;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,9 @@ namespace ME3Script.Language.Tree
         public List<FunctionParameter> Parameters;
 
         public Function(String name, VariableType returntype, CodeBody body,
-            List<Specifier> specs, List<FunctionParameter> parameters)
-            : base(ASTNodeType.Function)
+            List<Specifier> specs, List<FunctionParameter> parameters,
+            SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.Function, start, end)
         {
             Name = name;
             Body = body;

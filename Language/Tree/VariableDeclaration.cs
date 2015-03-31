@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,9 @@ namespace ME3Script.Language.Tree
         // Can reference an existing type, or declare a new struct/enum type
         public VariableType VarType;
 
-        public VariableDeclaration(VariableType type, List<Specifier> specs, 
-            List<Variable> names) : base(ASTNodeType.VariableDeclaration)
+        public VariableDeclaration(VariableType type, List<Specifier> specs,
+            List<Variable> names, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Specifiers = specs;
             VarType = type;

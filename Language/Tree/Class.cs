@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,9 @@ namespace ME3Script.Language.Tree
 
         public Class(String name, List<Specifier> specs, 
             List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
-            List<State> states, Variable parent, Variable outer)
-            : base(ASTNodeType.Class)
+            List<State> states, Variable parent, Variable outer,
+            SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.Class, start, end)
         {
             Name = name;
             Parent = parent;

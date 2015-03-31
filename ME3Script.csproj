@@ -43,7 +43,7 @@
     <Compile Include="ByteCode.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
-    <Compile Include="Language\Tree\BinaryOperation.cs" />
+    <Compile Include="Language\Tree\InFixOperator.cs" />
     <Compile Include="Language\Tree\Class.cs" />
     <Compile Include="Language\Tree\CodeBody.cs" />
     <Compile Include="Language\Tree\Enumeration.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Language\Tree\Statement.cs" />
     <Compile Include="Language\Tree\StaticArrayVariable.cs" />
     <Compile Include="Language\Tree\Struct.cs" />
-    <Compile Include="Language\Tree\UnaryOperation.cs" />
+    <Compile Include="Language\Tree\PreFixOperator.cs" />
     <Compile Include="Language\Tree\Variable.cs" />
     <Compile Include="Language\Tree\VariableDeclaration.cs" />
     <Compile Include="Language\Tree\Specifier.cs" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,8 @@ namespace ME3Script.Language.Tree
     public class Variable : ASTNode
     {
         public String Name;
-        public Variable(String name) : base(ASTNodeType.Variable) 
+        public Variable(String name, SourcePosition start, SourcePosition end) 
+            : base(ASTNodeType.Variable, start, end) 
         {
             Name = name;
         }

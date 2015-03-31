@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,9 @@ namespace ME3Script.Language.Tree
 {
     public enum ASTNodeType
     {
-        UnaryOperation,
-        BinaryOperation,
+        PreFixOperatior,
+        PostFixOperatior,
+        InFixOperatior,
         AssignStatement,
         IfStatement,
         CodeBody,
@@ -33,11 +35,15 @@ namespace ME3Script.Language.Tree
     {
         public ASTNodeType Type;
 
-        public ASTNode Parent;
+        public ASTNode ParentNode;
 
-        public ASTNode(ASTNodeType type)
+        public SourcePosition StartPos { get; private set; }
+        public SourcePosition EndPos { get; private set; }
+
+        public ASTNode(ASTNodeType type, SourcePosition start, SourcePosition end)
         {
             Type = type;
+            StartPos = start; EndPos = end;
         }
     }
 }

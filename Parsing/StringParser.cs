@@ -142,7 +142,7 @@ namespace ME3Script.Parsing
 
                     var parentClass = TryParseParent();
                     if (parentClass == null)
-                        parentClass = new Variable("Object"); // Notice: no parent specified, inheriting from object
+                        parentClass = new Variable("Object", null, null); // Notice: no parent specified, inheriting from object
 
                     var outerClass = TryParseOuter();
 
@@ -166,7 +166,7 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID");
+                            var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID", null, null);
                             if (type.Name == "INVALID")
                                 return null; // ERROR: malformed type declaration!
                             types.Add(type);
@@ -177,7 +177,7 @@ namespace ME3Script.Parsing
                     }
 
                     // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                    return new Class(name.Value, specs, variables, types, null, null, parentClass, outerClass);
+                    return new Class(name.Value, specs, variables, types, null, null, parentClass, outerClass, name.StartPosition, name.EndPosition);
                 };
             return (Class)Tokens.TryGetTree(classParser);
         }
@@ -195,14 +195,14 @@ namespace ME3Script.Parsing
                     if (type == null)
                         return null; // ERROR: expected variable type or struct/enum type declaration.
 
-                    var vars = ParseVariableNames();
-                    if (vars == null && type.Type != ASTNodeType.Struct && type.Type != ASTNodeType.Enumeration)
+                    var vars = ParseVariableNames(); // Struct/Enums also need variables if declared as inline types
+                    if (vars == null) // && type.Type != ASTNodeType.Struct && type.Type != ASTNodeType.Enumeration)
                         return null; // ERROR(?): malformed variable names?
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                         return null; // ERROR: did you miss a semi-colon?
 
-                    return new VariableDeclaration(type, specs, vars);
+                    return new VariableDeclaration(type, specs, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
@@ -225,7 +225,7 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                         return null; // ERROR: did you miss a semi-colon?
 
-                    return new VariableDeclaration(type, null, vars);
+                    return new VariableDeclaration(type, null, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
@@ -260,7 +260,7 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
                         return null; //ERROR: expected end of struct body!
 
-                    return new Struct(name.Value, specs, vars, parent);
+                    return new Struct(name.Value, specs, vars, name.StartPosition, name.EndPosition, parent);
                 };
             return (Struct)Tokens.TryGetTree(structParser);
         }
@@ -285,7 +285,7 @@ namespace ME3Script.Parsing
                     var ident = Tokens.ConsumeToken(TokenType.Word);
                     if (ident == null)
                         return null; //ERROR: expected variable declaration in struct body.
-                    identifiers.Add(new Variable(ident.Value));
+                    identifiers.Add(new Variable(ident.Value, ident.StartPosition, ident.EndPosition));
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket)
                         return null; // ERROR: unexpected enum content!
                 } while (CurrentTokenType != TokenType.RightBracket);
@@ -293,7 +293,7 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
                     return null; //ERROR: expected end of struct body!
 
-                return new Enumeration(name.Value, identifiers);
+                return new Enumeration(name.Value, identifiers, name.StartPosition, name.EndPosition);
             };
             return (Enumeration)Tokens.TryGetTree(enumParser);
         }
@@ -330,7 +330,8 @@ namespace ME3Script.Parsing
                         name = secondString;
                     }
 
-                    VariableType retVarType = returnType != null ? new VariableType(returnType.Value) : null;
+                    VariableType retVarType = returnType != null ? 
+                        new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
                         return null; // ERROR: Expected (
@@ -346,7 +347,9 @@ namespace ME3Script.Parsing
                         var variable = TryParseVariable();
                         if (variable == null)
                             return null; //ERROR: expected parameter name!
-                        parameters.Add(new FunctionParameter(new VariableType(type.Value), paramSpecs, variable));
+                        parameters.Add(new FunctionParameter(
+                            new VariableType(type.Value, type.StartPosition, type.EndPosition), 
+                            paramSpecs, variable, name.StartPosition, name.EndPosition));
                         if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
                             return null; // ERROR: unexpected enum content!
                     }
@@ -356,10 +359,10 @@ namespace ME3Script.Parsing
                     
                     // TODO: parse function body start/end.
                     if (Tokens.ConsumeToken(TokenType.SemiColon) != null)
-                        return new FunctionStub(name.Value, retVarType, null, specs, parameters);
+                        return new FunctionStub(name.Value, retVarType, null, specs, parameters, name.StartPosition, name.EndPosition);
 
                     var body = ParseScopedTokens(TokenType.LeftBracket, TokenType.RightBracket);
-                    return new FunctionStub(name.Value, retVarType, body, specs, parameters);
+                    return new FunctionStub(name.Value, retVarType, body, specs, parameters, name.StartPosition, name.EndPosition);
                 };
             return (FunctionStub)Tokens.TryGetTree(stubParser);
         }
@@ -375,7 +378,7 @@ namespace ME3Script.Parsing
             var type = Tokens.ConsumeToken(TokenType.Word);
             if (type == null)
                 return null; // ERROR?
-            return new VariableType(type.Value);
+            return new VariableType(type.Value, type.StartPosition, type.EndPosition);
         }
 
         public Variable TryParseParent()
@@ -387,7 +390,7 @@ namespace ME3Script.Parsing
                 var parentName = Tokens.ConsumeToken(TokenType.Word);
                 if (parentName == null)
                     return null;
-                return new Variable(parentName.Value);
+                return new Variable(parentName.Value, parentName.StartPosition, parentName.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(parentParser);
         }
@@ -401,7 +404,7 @@ namespace ME3Script.Parsing
                 var outerName = Tokens.ConsumeToken(TokenType.Word);
                 if (outerName == null)
                     return null;
-                return new Variable(outerName.Value);
+                return new Variable(outerName.Value, outerName.StartPosition, outerName.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(outerParser);
         }
@@ -410,8 +413,12 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> specifierParser = () =>
                 {
-                    return category.Contains(CurrentTokenType) ?
-                        new Specifier(Tokens.ConsumeToken(CurrentTokenType).Value) : null;
+                    if (category.Contains(CurrentTokenType))
+                    {
+                        var token = Tokens.ConsumeToken(CurrentTokenType);
+                        return new Specifier(token.Value, token.StartPosition, token.EndPosition);
+                    }
+                    return null;
                 };
             return (Specifier)Tokens.TryGetTree(specifierParser);
         }
@@ -432,10 +439,11 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.RightSqrBracket) != null)
                         return null; // ERROR: expected closing bracket
 
-                    return new StaticArrayVariable(name.Value, Int32.Parse(size.Value));
+                    return new StaticArrayVariable(name.Value, Int32.Parse(size.Value), 
+                        name.StartPosition, name.EndPosition);
                 }
 
-                return new Variable(name.Value);
+                return new Variable(name.Value, name.StartPosition, name.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(variableParser);
         }

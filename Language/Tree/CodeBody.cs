@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,8 @@ namespace ME3Script.Language.Tree
     {
         public List<Statement> Statements;
 
-        public CodeBody(List<Statement> contents) : base(ASTNodeType.CodeBody) 
+        public CodeBody(List<Statement> contents, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.CodeBody, start, end) 
         {
             Statements = contents;
         }

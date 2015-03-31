@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public abstract class Statement : ASTNode
+    public class PreFixOperator : Expression
     {
-        public Statement(ASTNodeType type,SourcePosition start, SourcePosition end) 
-            : base(type, start, end) { }
+        public PreFixOperator(SourcePosition start, SourcePosition end) 
+            : base(ASTNodeType.PreFixOperatior, start, end) { }
     }
 }
