@@ -1,4 +1,5 @@
 ﻿using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,9 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data)
+        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos)
         {
+            SourcePosition start = new SourcePosition(streamPos);
             String peek = data.CurrentItem;
             String word = null;
             while (!data.AtEnd() && !String.IsNullOrWhiteSpace(peek) 
@@ -29,7 +31,13 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 peek = data.CurrentItem;
             }
 
-            return word != null ? new Token<String>(TokenType.Word, word) : null;
+            if (word != null)
+            {
+                streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
+                SourcePosition end = new SourcePosition(streamPos);
+                return new Token<String>(TokenType.Word, word, start, end);
+            }
+            return null;
         }
     }
 }

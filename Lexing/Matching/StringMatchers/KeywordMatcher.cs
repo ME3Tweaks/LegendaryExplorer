@@ -1,4 +1,5 @@
 ﻿using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,8 +24,9 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             SubString = allowSubString;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data)
+        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos)
         {
+            SourcePosition start = new SourcePosition(streamPos);
             foreach (char c in Keyword)
             {
                 if (data.CurrentItem.ToLower() != c.ToString(CultureInfo.InvariantCulture).ToLower())
@@ -36,7 +38,9 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             bool hasDelimiter = String.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek);
             if (SubString || (!SubString && hasDelimiter))
             {
-                return new Token<String>(Type, Keyword);
+                streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
+                SourcePosition end = new SourcePosition(streamPos);
+                return new Token<String>(Type, Keyword, start, end);
             }
             return null;
         }

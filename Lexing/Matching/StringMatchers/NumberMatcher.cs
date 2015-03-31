@@ -1,4 +1,5 @@
 ﻿using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,11 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data)
+        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos)
         {
+            SourcePosition start = new SourcePosition(streamPos);
+            TokenType type;
+            String value;
             String first = SubNumber(data, new Regex("[0-9]"));
             if (first == null)
                 return null;
@@ -33,7 +37,8 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                     return null;
 
                 hex = Convert.ToInt32(hex, 16).ToString("D");
-                return new Token<String>(TokenType.IntegerNumber, hex);
+                type = TokenType.IntegerNumber;
+                value = hex;
             } 
             else if (data.CurrentItem == ".")
             {
@@ -42,10 +47,18 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
                     return null;
 
-                return new Token<String>(TokenType.FloatingNumber, first + "." + second);
+                type = TokenType.FloatingNumber;
+                value = first + "." + second;
+            }
+            else
+            {
+                type = TokenType.IntegerNumber;
+                value = first;
             }
 
-            return new Token<String>(TokenType.IntegerNumber, first);
+            streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
+            SourcePosition end = new SourcePosition(streamPos);
+            return new Token<String>(type, value, start, end);
         }
 
         private String SubNumber(TokenizableDataStream<String> data, Regex regex)

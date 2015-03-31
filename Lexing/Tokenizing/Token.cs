@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Script.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,9 @@ namespace ME3Script.Lexing.Tokenizing
         public virtual T Value { get; private set; }
 
         public TokenType Type { get; private set; }
+
+        public SourcePosition StartPosition { get; private set; }
+        public SourcePosition EndPosition { get; private set; }
         #endregion
 
         #region Methods
@@ -24,6 +28,14 @@ namespace ME3Script.Lexing.Tokenizing
         {
             Value = value;
             Type = type;
+        }
+
+        public Token(TokenType type, T value, SourcePosition start, SourcePosition end)
+        {
+            Value = value;
+            Type = type;
+            StartPosition = start;
+            EndPosition = end;
         }
 
         public override string ToString()
@@ -177,7 +189,6 @@ namespace ME3Script.Lexing.Tokenizing
         //Name,
         //Object,
         //Actor,
-        Delegate,
         //Vector,
         //Rotator,
         //Plane,

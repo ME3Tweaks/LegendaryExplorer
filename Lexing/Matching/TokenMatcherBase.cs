@@ -1,4 +1,5 @@
 ﻿using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace ME3Script.Lexing.Matching
 {
     public abstract class TokenMatcherBase<T> : ITokenMatcher<T> where T : class
     {
-        protected abstract Token<T> Match(TokenizableDataStream<T> data);
+        protected abstract Token<T> Match(TokenizableDataStream<T> data, ref SourcePosition streamPos);
 
-        public Token<T> MatchNext(TokenizableDataStream<T> data)
+        public Token<T> MatchNext(TokenizableDataStream<T> data, ref SourcePosition streamPos)
         {
             data.PushSnapshot();
 
-            Token<T> token = Match(data);
+            Token<T> token = Match(data, ref streamPos);
             if (token == null)
                 data.PopSnapshot();
             else 

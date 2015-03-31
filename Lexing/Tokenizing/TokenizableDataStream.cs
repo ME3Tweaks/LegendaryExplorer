@@ -11,7 +11,7 @@ namespace ME3Script.Lexing.Tokenizing
         #region Members
         private List<D> Data;
         private Stack<int> Snapshots;
-        protected int CurrentIndex;
+        public int CurrentIndex { get; protected set; }
 
         public virtual D CurrentItem
         {

@@ -181,7 +181,7 @@ namespace ME3Script.Lexing
         public override IEnumerable<Token<string>> LexData()
         {
             var token = GetNextToken();
-            while (token != null && token.Type != TokenType.EOF)
+            while (token.Type != TokenType.EOF)
             {
                 if (token.Type != TokenType.WhiteSpace)
                     yield return token;

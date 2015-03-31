@@ -80,6 +80,7 @@
     <Compile Include="Lexing\Tokenizing\Token.cs" />
     <Compile Include="Lexing\Tokenizing\TokenizableDataStream.cs" />
     <Compile Include="Lexing\Matching\TokenMatcherBase.cs" />
+    <Compile Include="Utilities\SourcePosition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compiling\" />

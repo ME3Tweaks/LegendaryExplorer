@@ -1,4 +1,5 @@
 ﻿using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,32 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 {
     public class WhiteSpaceMatcher : TokenMatcherBase<String>
     {
-        protected override Token<String> Match(TokenizableDataStream<String> data)
+        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos)
         {
+            SourcePosition start = new SourcePosition(streamPos);
             bool whiteSpace = false;
+            int newlines = 0;
+            int column = streamPos.Column;
             while (!data.AtEnd() && String.IsNullOrWhiteSpace(data.CurrentItem))
             {
                 whiteSpace = true;
+                if (data.CurrentItem == "\n")
+                {
+                    newlines++;
+                    column = 0;
+                }
+                else
+                    column++;
                 data.Advance();
             }
 
-            return whiteSpace ? new Token<String>(TokenType.WhiteSpace) : null;
+            if (whiteSpace)
+            {
+                streamPos = new SourcePosition(start.Line + newlines, column, data.CurrentIndex - start.CharIndex);
+                SourcePosition end = new SourcePosition(streamPos);
+                return new Token<String>(TokenType.WhiteSpace, null, start, end);
+            }
+            return null;
         }
     }
 }
