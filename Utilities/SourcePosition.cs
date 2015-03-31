@@ -30,5 +30,25 @@ namespace ME3Script.Utilities
         {
             return new SourcePosition(Line + ln, Column + col, CharIndex + index);
         }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            SourcePosition p = obj as SourcePosition;
+            if ((Object)p == null)
+                return false;
+
+            return (Line == p.Line) && (Column == p.Column) && (CharIndex == p.CharIndex);
+        }
+
+        public bool Equals(SourcePosition p)
+        {
+            if ((object)p == null)
+                return false;
+
+            return (Line == p.Line) && (Column == p.Column) && (CharIndex == p.CharIndex);
+        }
     }
 }

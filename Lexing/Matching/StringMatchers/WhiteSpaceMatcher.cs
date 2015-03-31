@@ -31,7 +31,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 
             if (whiteSpace)
             {
-                streamPos = new SourcePosition(start.Line + newlines, column, data.CurrentIndex - start.CharIndex);
+                streamPos = new SourcePosition(start.Line + newlines, column, data.CurrentIndex);
                 SourcePosition end = new SourcePosition(streamPos);
                 return new Token<String>(TokenType.WhiteSpace, null, start, end);
             }

@@ -1,6 +1,7 @@
 ﻿using ME3Script.Lexing.Matching;
 using ME3Script.Lexing.Matching.StringMatchers;
 using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace ME3Script.Lexing
 {
     public class StringLexer : LexerBase<String>
     {
+        private SourcePosition StreamPosition;
+
         public StringLexer(String code) : base(new StringTokenizer(code))
         {
             TokenMatchers = new List<ITokenMatcher<String>>();
@@ -154,7 +157,7 @@ namespace ME3Script.Lexing
             TokenMatchers.Add(new NumberMatcher(delimiters));
             TokenMatchers.Add(new WordMatcher(delimiters));
 
-            Console.WriteLine("End of Constructor");
+            StreamPosition = new SourcePosition(0, 0, 0);
         }
 
         public override Token<String> GetNextToken()
@@ -166,7 +169,7 @@ namespace ME3Script.Lexing
 
             Token<String> result =
                 (from matcher in TokenMatchers
-                 let token = matcher.MatchNext(Data)
+                 let token = matcher.MatchNext(Data, ref StreamPosition)
                  where token != null
                  select token).FirstOrDefault();
 
@@ -180,6 +183,7 @@ namespace ME3Script.Lexing
 
         public override IEnumerable<Token<string>> LexData()
         {
+            StreamPosition = new SourcePosition(0, 0, 0);
             var token = GetNextToken();
             while (token.Type != TokenType.EOF)
             {
