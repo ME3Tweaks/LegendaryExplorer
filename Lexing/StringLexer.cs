@@ -66,5 +66,20 @@ namespace ME3Script.Lexing
                 token = GetNextToken();
             }
         }
+
+        public IEnumerable<Token<string>> LexSubData(SourcePosition start, SourcePosition end)
+        {
+            StreamPosition = start;
+            Data.Advance(start.CharIndex);
+            var token = GetNextToken();
+            // TODO: this assumes well-formed subdata, fix?
+            while (!token.StartPosition.Equals(end))
+            {
+                if (token.Type != TokenType.WhiteSpace)
+                    yield return token;
+
+                token = GetNextToken();
+            }
+        }
     }
 }
