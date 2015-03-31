@@ -330,6 +330,8 @@ namespace ME3Script.Parsing
                         name = secondString;
                     }
 
+                    VariableType retVarType = returnType != null ? new VariableType(returnType.Value) : null;
+
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
                         return null; // ERROR: Expected (
 
@@ -353,8 +355,11 @@ namespace ME3Script.Parsing
                         return null; //ERROR: expected )
                     
                     // TODO: parse function body start/end.
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) != null)
+                        return new FunctionStub(name.Value, retVarType, null, specs, parameters);
 
-                    return null;
+                    var body = ParseScopedTokens(TokenType.LeftBracket, TokenType.RightBracket);
+                    return new FunctionStub(name.Value, retVarType, body, specs, parameters);
                 };
             return (FunctionStub)Tokens.TryGetTree(stubParser);
         }

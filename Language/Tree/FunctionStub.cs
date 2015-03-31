@@ -11,7 +11,7 @@ namespace ME3Script.Language.Tree
     {
         public List<Token<String>> BodyTokens;
         public FunctionStub(String name, VariableType returntype, List<Token<String>> tokens,
-            List<Specifier> specs, List<VariableDeclaration> parameters) 
+            List<Specifier> specs, List<FunctionParameter> parameters) 
             : base(name, returntype, null, specs, parameters)
         {
             BodyTokens = tokens;
