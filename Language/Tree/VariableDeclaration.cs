@@ -12,13 +12,13 @@ namespace ME3Script.Language.Tree
         // Can contain StaticArrayVariables as well
         public List<Variable> Variables;
         // Can reference an existing type, or declare a new struct/enum type
-        public VariableType Type;
+        public VariableType VarType;
 
         public VariableDeclaration(VariableType type, List<Specifier> specs, 
             List<Variable> names) : base(ASTNodeType.VariableDeclaration)
         {
             Specifiers = specs;
-            Type = type;
+            VarType = type;
             Variables = names;
         }
     }

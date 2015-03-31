@@ -12,10 +12,11 @@ namespace ME3Script.Language.Tree
         public CodeBody Body;
         public VariableType ReturnType;
         public List<Specifier> Specifiers;
-        public List<VariableDeclaration> Parameters;
+        public List<FunctionParameter> Parameters;
 
         public Function(String name, VariableType returntype, CodeBody body,
-            List<Specifier> specs, List<VariableDeclaration> parameters) : base(ASTNodeType.Function)
+            List<Specifier> specs, List<FunctionParameter> parameters)
+            : base(ASTNodeType.Function)
         {
             Name = name;
             Body = body;

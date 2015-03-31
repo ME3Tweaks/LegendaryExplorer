@@ -103,6 +103,17 @@ namespace ME3Script.Parsing
             TokenType.NativeSpecifier,
             TokenType.NoExportSpecifier
         };
+
+        private List<TokenType> ParameterSpecifiers = new List<TokenType>
+        {
+            TokenType.CoerceSpecifier,
+            TokenType.ConstSpecifier,
+            TokenType.InitSpecifier,
+            TokenType.OptionalSpecifier,
+            TokenType.OutSpecifier,
+            TokenType.SkipSpecifier
+        };
+
         #endregion
 
         public StringParser(TokenStream<String> tokens)
@@ -322,7 +333,24 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
                         return null; // ERROR: Expected (
 
-                    // TODO: parse function parameters.
+                    var parameters = new List<FunctionParameter>();
+                    while (CurrentTokenType != TokenType.RightParenth)
+                    {
+                        var paramSpecs = ParseSpecifiers(ParameterSpecifiers);
+
+                        var type = Tokens.ConsumeToken(TokenType.Word);
+                        if (type == null)
+                            return null; //ERROR: expected parameter type!
+                        var variable = TryParseVariable();
+                        if (variable == null)
+                            return null; //ERROR: expected parameter name!
+                        parameters.Add(new FunctionParameter(new VariableType(type.Value), paramSpecs, variable));
+                        if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
+                            return null; // ERROR: unexpected enum content!
+                    }
+
+                    if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                        return null; //ERROR: expected )
                     
                     // TODO: parse function body start/end.
 
