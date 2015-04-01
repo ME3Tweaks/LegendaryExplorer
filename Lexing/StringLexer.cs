@@ -1,4 +1,5 @@
-﻿using ME3Script.Lexing.Matching;
+﻿using ME3Script.Compiling.Errors;
+using ME3Script.Lexing.Matching;
 using ME3Script.Lexing.Matching.StringMatchers;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
@@ -13,12 +14,14 @@ namespace ME3Script.Lexing
     public class StringLexer : LexerBase<String>
     {
         private SourcePosition StreamPosition;
+        private MessageLog Log;
 
-        public StringLexer(String code, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
+        public StringLexer(String code, MessageLog log = null, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
             : base(new StringTokenizer(code))
         {
             delimiters = delimiters ?? GlobalLists.Delimiters;
             keywords = keywords ?? GlobalLists.Keywords;
+            Log = log ?? new MessageLog();
 
             TokenMatchers = new List<ITokenMatcher<String>>();
 
@@ -42,12 +45,14 @@ namespace ME3Script.Lexing
 
             Token<String> result =
                 (from matcher in TokenMatchers
-                 let token = matcher.MatchNext(Data, ref StreamPosition)
+                 let token = matcher.MatchNext(Data, ref StreamPosition, Log)
                  where token != null
                  select token).FirstOrDefault();
 
             if (result == null)
             {
+                Log.LogError("Could not lex '" + Data.CurrentItem + "'",
+                    StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
                 Data.Advance();
                 return new Token<String>(TokenType.INVALID);
             }

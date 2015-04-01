@@ -1,4 +1,5 @@
-﻿using ME3Script.Lexing.Tokenizing;
+﻿using ME3Script.Compiling.Errors;
+using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos)
+        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             String peek = data.CurrentItem;

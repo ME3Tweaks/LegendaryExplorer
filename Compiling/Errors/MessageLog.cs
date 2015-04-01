@@ -23,10 +23,6 @@ namespace ME3Script.Compiling.Errors
         {
             get { return content.Where(m => m is Error).ToList(); }
         }
-        public IList<LogMessage> Errors
-        { 
-            get { return content.Where(m => m is Error).ToList(); } 
-        }
         public IList<LogMessage> LineErrors
         {
             get { return content.Where(m => m is LineError).ToList(); }
