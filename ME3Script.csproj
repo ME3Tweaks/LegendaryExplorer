@@ -55,6 +55,7 @@
     <Compile Include="Language\Tree\State.cs" />
     <Compile Include="Language\Tree\StateLabel.cs" />
     <Compile Include="Language\Tree\Statement.cs" />
+    <Compile Include="Language\Tree\StateSkeleton.cs" />
     <Compile Include="Language\Tree\StaticArrayVariable.cs" />
     <Compile Include="Language\Tree\Struct.cs" />
     <Compile Include="Language\Tree\PreFixOperator.cs" />

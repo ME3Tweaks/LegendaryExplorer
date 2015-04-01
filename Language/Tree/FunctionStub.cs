@@ -10,13 +10,17 @@ namespace ME3Script.Language.Tree
 {
     public class FunctionStub : Function
     {
-        public List<Token<String>> BodyTokens;
-        public FunctionStub(String name, VariableType returntype, List<Token<String>> tokens,
+        public SourcePosition BodyStart;
+        public SourcePosition BodyEnd;
+
+        public FunctionStub(String name, VariableType returntype,
+            SourcePosition bodyStart, SourcePosition bodyEnd,
             List<Specifier> specs, List<FunctionParameter> parameters,
             SourcePosition start, SourcePosition end) 
             : base(name, returntype, null, specs, parameters, start, end)
         {
-            BodyTokens = tokens;
+            BodyStart = bodyStart;
+            BodyEnd = bodyEnd;
             Type = ASTNodeType.FunctionStub;
         }
     }

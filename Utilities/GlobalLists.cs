@@ -143,7 +143,9 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("latent", TokenType.LatentSpecifier, Delimiters, false),
                 new KeywordMatcher("state", TokenType.State, Delimiters, false),
                 new KeywordMatcher("function", TokenType.Function, Delimiters, false),
-                new KeywordMatcher("operator", TokenType.Operator, Delimiters, false)
+                new KeywordMatcher("operator", TokenType.Operator, Delimiters, false),
+                new KeywordMatcher("ignores", TokenType.Ignores, Delimiters, false),
+                new KeywordMatcher("auto", TokenType.AutoSpecifier, Delimiters, false)
             };
         }
 

@@ -2,6 +2,7 @@
 using ME3Script.Language.Tree;
 using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,6 +113,12 @@ namespace ME3Script.Parsing
             TokenType.OptionalSpecifier,
             TokenType.OutSpecifier,
             TokenType.SkipSpecifier
+        };
+
+        private List<TokenType> StateSpecifiers = new List<TokenType>
+        {
+            TokenType.AutoSpecifier,
+            TokenType.SimulatedSpecifier
         };
 
         #endregion
@@ -351,20 +358,78 @@ namespace ME3Script.Parsing
                             new VariableType(type.Value, type.StartPosition, type.EndPosition), 
                             paramSpecs, variable, name.StartPosition, name.EndPosition));
                         if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                            return null; // ERROR: unexpected enum content!
+                            return null; // ERROR: unexpected function parameters!
                     }
 
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                         return null; //ERROR: expected )
-                    
-                    // TODO: parse function body start/end.
-                    if (Tokens.ConsumeToken(TokenType.SemiColon) != null)
-                        return new FunctionStub(name.Value, retVarType, null, specs, parameters, name.StartPosition, name.EndPosition);
 
-                    var body = ParseScopedTokens(TokenType.LeftBracket, TokenType.RightBracket);
-                    return new FunctionStub(name.Value, retVarType, body, specs, parameters, name.StartPosition, name.EndPosition);
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) != null)
+                        return new FunctionStub(name.Value, retVarType, null, null, specs, parameters, name.StartPosition, name.EndPosition);
+
+                    SourcePosition bodyStart, bodyEnd;
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
+                        return null; //ERROR(?): malformed function body! 
+
+                    return new FunctionStub(name.Value, retVarType, bodyStart, bodyEnd, specs, parameters, name.StartPosition, name.EndPosition);
                 };
             return (FunctionStub)Tokens.TryGetTree(stubParser);
+        }
+
+        public StateSkeleton TryParseStateSkeleton()
+        {
+            Func<ASTNode> stateSkeletonParser = () =>
+            {
+                var specs = ParseSpecifiers(StateSpecifiers);
+
+                if (Tokens.ConsumeToken(TokenType.State) == null)
+                    return null;
+
+                var name = Tokens.ConsumeToken(TokenType.Word);
+                if (name == null)
+                    return null; // ERROR: Expected state name!
+
+                var parent = TryParseParent();
+
+                if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
+                    return null; // ERROR: expected state body!
+
+                List<Variable> ignores = new List<Variable>();
+                if (Tokens.ConsumeToken(TokenType.Ignores) != null)
+                {
+                    do
+                    {
+                        Variable variable = TryParseVariable();
+                        if (variable == null)
+                            return null; // ERROR: malformed ignore statement!
+                        ignores.Add(variable);
+                    } while (Tokens.ConsumeToken(TokenType.Comma) != null);
+
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                        return null; // ERROR: did you miss a semi-colon?
+                }
+
+                var funcs = new List<Function>();
+                FunctionStub func = TryParseFunctionStub();
+                while (func != null)
+                {
+                    funcs.Add(func);
+                    func = TryParseFunctionStub();
+                }
+
+                var bodyStart = Tokens.CurrentItem.StartPosition;
+                while (Tokens.CurrentItem.Type != TokenType.RightBracket)
+                {
+                    Tokens.Advance();
+                }
+                var bodyEnd = Tokens.CurrentItem.StartPosition;
+
+                if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                    return null; // ERROR: expected }
+                
+                return new StateSkeleton(name.Value, bodyStart, bodyEnd, specs, parent, funcs, ignores, name.StartPosition, name.EndPosition);
+            };
+            return (StateSkeleton)Tokens.TryGetTree(stateSkeletonParser);
         }
 
         #endregion
@@ -479,6 +544,7 @@ namespace ME3Script.Parsing
             return specs;
         }
 
+        //TODO: unused?
         private List<Token<String>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
         {
             var scopedTokens = new List<Token<String>>();
@@ -501,6 +567,34 @@ namespace ME3Script.Parsing
             // Remove the ending scope token:
             scopedTokens.RemoveAt(scopedTokens.Count - 1);
             return scopedTokens;
+        }
+
+        private bool ParseScopeSpan(TokenType scopeStart, TokenType scopeEnd, 
+            out SourcePosition startPos, out SourcePosition endPos)
+        {
+            startPos = null;
+            endPos = null;
+            if (Tokens.ConsumeToken(scopeStart) == null)
+                return false; // ERROR: expected 'scopeStart' at start of a scope
+            startPos = Tokens.CurrentItem.StartPosition;
+
+            int nestedLevel = 1;
+            while (nestedLevel > 0)
+            {
+                if (CurrentTokenType == TokenType.EOF)
+                    return false; // ERROR: Scope ended prematurely, are your scopes unbalanced?
+                if (CurrentTokenType == scopeStart)
+                    nestedLevel++;
+                else if (CurrentTokenType == scopeEnd)
+                    nestedLevel--;
+
+                // If we're at the end token, don't advance so we can check the position properly.
+                if (nestedLevel > 0)
+                    Tokens.Advance();
+            }
+            endPos = Tokens.CurrentItem.StartPosition;
+            Tokens.Advance();
+            return true;
         }
 
         #endregion

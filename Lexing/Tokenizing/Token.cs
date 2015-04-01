@@ -231,6 +231,9 @@ namespace ME3Script.Lexing.Tokenizing
         UnreliableSpecifier,
         IteratorSpecifier,
         LatentSpecifier,
+        //States
+        AutoSpecifier,
+        Ignores,
 
         INVALID
     }
