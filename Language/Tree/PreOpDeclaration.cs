@@ -13,9 +13,9 @@ namespace ME3Script.Language.Tree
 
         public PreOpDeclaration(String keyword,
             bool delim, CodeBody body, VariableType returnType,
-            FunctionParameter operand,
+            FunctionParameter operand, List<Specifier> specs,
             SourcePosition start, SourcePosition end) 
-            : base(ASTNodeType.PrefixOperator, keyword, delim, body, returnType, start, end) 
+            : base(ASTNodeType.PrefixOperator, keyword, delim, body, returnType, specs, start, end) 
         {
             Operand = operand;
         }

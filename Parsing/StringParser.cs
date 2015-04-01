@@ -183,8 +183,29 @@ namespace ME3Script.Parsing
                         }
                     }
 
+                    List<Function> funcs = new List<Function>();
+                    List<State> states = new List<State>();
+                    List<OperatorDeclaration> ops = new List<OperatorDeclaration>();
+                    ASTNode declaration;
+                    do
+                    {
+                        declaration = (ASTNode)TryParseFunction() ?? 
+                                        (ASTNode)TryParseOperatorDecl() ?? 
+                                        (ASTNode)TryParseState() ?? 
+                                        (ASTNode)null;
+                        if (declaration == null && !Tokens.AtEnd())
+                            return null; // ERROR: expected function/state/operator declaration!
+
+                        if (declaration.Type == ASTNodeType.Function)
+                            funcs.Add((Function)declaration);
+                        else if (declaration.Type == ASTNodeType.State)
+                            states.Add((State)declaration);
+                        else
+                            ops.Add((OperatorDeclaration)declaration);
+                    } while (!Tokens.AtEnd());
+
                     // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                    return new Class(name.Value, specs, variables, types, null, null, parentClass, outerClass, name.StartPosition, name.EndPosition);
+                    return new Class(name.Value, specs, variables, types, funcs, states, parentClass, outerClass, ops, name.StartPosition, name.EndPosition);
                 };
             return (Class)Tokens.TryGetTree(classParser);
         }
@@ -479,7 +500,7 @@ namespace ME3Script.Parsing
 
                 if (token.Type == TokenType.Operator && operands.Count != 2)
                     return null; // ERROR: infix operators requires exactly 2 parameters!
-                else if (operands.Count != 1)
+                else if (token.Type != TokenType.Operator && operands.Count != 1)
                     return null; // ERROR: post/pre-fix operators requires exactly 1 parameter!
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
@@ -496,12 +517,12 @@ namespace ME3Script.Parsing
 
                 // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
                 if (token.Type == TokenType.PreOperator)
-                    return new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                    return new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), specs, name.StartPosition, name.EndPosition);
                 else if (token.Type == TokenType.PostOperator)
-                    return new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                    return new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), specs, name.StartPosition, name.EndPosition);
                 else
-                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, body, 
-                        retVarType, operands.First(), operands.Last(), name.StartPosition, name.EndPosition);
+                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, body, retVarType, 
+                        operands.First(), operands.Last(), specs, name.StartPosition, name.EndPosition);
             };
             return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);
         }

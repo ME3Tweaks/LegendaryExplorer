@@ -26,7 +26,10 @@ namespace ME3Script.Language.Tree
         Function,
         State,
         StateLabel,
-        FunctionParameter
+        FunctionParameter,
+
+
+        INVALID
     }
 
     public abstract class ASTNode

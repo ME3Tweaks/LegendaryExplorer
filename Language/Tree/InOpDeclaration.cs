@@ -16,8 +16,8 @@ namespace ME3Script.Language.Tree
         public InOpDeclaration(String keyword, int precedence,
         bool delim, CodeBody body, VariableType returnType,
         FunctionParameter leftOp, FunctionParameter rightOp,
-        SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, start, end) 
+        List<Specifier> specs, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, specs, start, end) 
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;

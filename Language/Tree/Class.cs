@@ -17,10 +17,11 @@ namespace ME3Script.Language.Tree
         public List<VariableType> TypeDeclarations;
         public List<Function> Functions;
         public List<State> States;
+        public List<OperatorDeclaration> Operators;
 
         public Class(String name, List<Specifier> specs, 
             List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
-            List<State> states, Variable parent, Variable outer,
+            List<State> states, Variable parent, Variable outer, List<OperatorDeclaration> ops,
             SourcePosition start, SourcePosition end)
             : base(ASTNodeType.Class, start, end)
         {
@@ -32,6 +33,7 @@ namespace ME3Script.Language.Tree
             TypeDeclarations = types;
             Functions = funcs;
             States = states;
+            Operators = ops;
         }
     }
 }

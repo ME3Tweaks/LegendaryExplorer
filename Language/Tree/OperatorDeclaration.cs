@@ -7,22 +7,24 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public abstract class OperatorDeclaration : Expression
+    public abstract class OperatorDeclaration : ASTNode
     {
         public String OperatorKeyword;
         public bool isDelimiter;
         public CodeBody Body;
         public VariableType ReturnType;
+        public List<Specifier> Specifiers;
 
         public OperatorDeclaration(ASTNodeType type, String keyword, 
             bool delim, CodeBody body, VariableType returnType,
-            SourcePosition start, SourcePosition end) 
+            List<Specifier> specs, SourcePosition start, SourcePosition end) 
             : base(type, start, end)
         {
             OperatorKeyword = keyword;
             isDelimiter = delim;
             Body = body;
             ReturnType = returnType;
+            Specifiers = specs;
         }
     }
 }
