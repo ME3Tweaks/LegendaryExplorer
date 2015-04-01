@@ -305,16 +305,7 @@ namespace ME3Script.Parsing
             return (Enumeration)Tokens.TryGetTree(enumParser);
         }
 
-        public FunctionStub TryParseFunction()
-        {
-            Func<ASTNode> functionParser = () =>
-            {
-                return null;
-            };
-            return (FunctionStub)Tokens.TryGetTree(functionParser);
-        }
-
-        public FunctionStub TryParseFunctionStub()
+        public Function TryParseFunction()
         {
             Func<ASTNode> stubParser = () =>
                 {
@@ -357,19 +348,21 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                         return null; //ERROR: expected )
 
+                    CodeBody body = null;
                     SourcePosition bodyStart = null, bodyEnd = null;
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                     {
                         if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
                             return null; //ERROR(?): malformed function body! 
+                        body = new CodeBody(null, bodyStart, bodyEnd);
                     }
 
-                    return new FunctionStub(name.Value, retVarType, bodyStart, bodyEnd, specs, parameters, name.StartPosition, name.EndPosition);
+                    return new Function(name.Value, retVarType, body, specs, parameters, name.StartPosition, name.EndPosition);
                 };
-            return (FunctionStub)Tokens.TryGetTree(stubParser);
+            return (Function)Tokens.TryGetTree(stubParser);
         }
 
-        public StateSkeleton TryParseStateSkeleton()
+        public State TryParseState()
         {
             Func<ASTNode> stateSkeletonParser = () =>
             {
@@ -403,11 +396,11 @@ namespace ME3Script.Parsing
                 }
 
                 var funcs = new List<Function>();
-                FunctionStub func = TryParseFunctionStub();
+                Function func = TryParseFunction();
                 while (func != null)
                 {
                     funcs.Add(func);
-                    func = TryParseFunctionStub();
+                    func = TryParseFunction();
                 }
 
                 var bodyStart = Tokens.CurrentItem.StartPosition;
@@ -419,10 +412,11 @@ namespace ME3Script.Parsing
 
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
                     return null; // ERROR: expected }
-                
-                return new StateSkeleton(name.Value, bodyStart, bodyEnd, specs, parent, funcs, ignores, name.StartPosition, name.EndPosition);
+
+                var body = new CodeBody(null, bodyStart, bodyEnd);
+                return new State(name.Value, body, specs, parent, funcs, ignores, null, name.StartPosition, name.EndPosition);
             };
-            return (StateSkeleton)Tokens.TryGetTree(stateSkeletonParser);
+            return (State)Tokens.TryGetTree(stateSkeletonParser);
         }
 
         public OperatorDeclaration TryParseOperatorDecl()
@@ -491,20 +485,22 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                     return null; //ERROR: expected )
 
+                CodeBody body = null;
                 SourcePosition bodyStart = null, bodyEnd = null;
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
                         return null; //ERROR(?): malformed operator body! 
+                    body = new CodeBody(null, bodyStart, bodyEnd);
                 }
 
                 // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
                 if (token.Type == TokenType.PreOperator)
-                    return new PreOpDeclaration(name.Value, false, null, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                    return new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), name.StartPosition, name.EndPosition);
                 else if (token.Type == TokenType.PostOperator)
-                    return new PostOpDeclaration(name.Value, false, null, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                    return new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), name.StartPosition, name.EndPosition);
                 else
-                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, null, 
+                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, body, 
                         retVarType, operands.First(), operands.Last(), name.StartPosition, name.EndPosition);
             };
             return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);

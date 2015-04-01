@@ -50,14 +50,12 @@
     <Compile Include="Language\Tree\Expression.cs" />
     <Compile Include="Language\Tree\Function.cs" />
     <Compile Include="Language\Tree\FunctionParameter.cs" />
-    <Compile Include="Language\Tree\FunctionStub.cs" />
     <Compile Include="Language\Tree\IfStatement.cs" />
     <Compile Include="Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="Language\Tree\PostOpDeclaration.cs" />
     <Compile Include="Language\Tree\State.cs" />
     <Compile Include="Language\Tree\StateLabel.cs" />
     <Compile Include="Language\Tree\Statement.cs" />
-    <Compile Include="Language\Tree\StateSkeleton.cs" />
     <Compile Include="Language\Tree\StaticArrayVariable.cs" />
     <Compile Include="Language\Tree\Struct.cs" />
     <Compile Include="Language\Tree\PreOpDeclaration.cs" />
