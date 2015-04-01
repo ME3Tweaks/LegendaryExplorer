@@ -9,9 +9,9 @@ namespace ME3Script.Language.Tree
 {
     public enum ASTNodeType
     {
-        PreFixOperatior,
-        PostFixOperatior,
-        InFixOperatior,
+        PrefixOperator,
+        PostfixOperator,
+        InfixOperator,
         AssignStatement,
         IfStatement,
         CodeBody,
