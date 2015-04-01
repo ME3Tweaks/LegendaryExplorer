@@ -9,11 +9,11 @@ namespace ME3Script.Language.Tree
 {
     public class PreOpDeclaration : OperatorDeclaration
     {
-        public VariableDeclaration Operand;
+        public FunctionParameter Operand;
 
-        public PreOpDeclaration(ASTNodeType type, String keyword,
+        public PreOpDeclaration(String keyword,
             bool delim, CodeBody body, VariableType returnType,
-            VariableDeclaration operand,
+            FunctionParameter operand,
             SourcePosition start, SourcePosition end) 
             : base(ASTNodeType.PrefixOperator, keyword, delim, body, returnType, start, end) 
         {

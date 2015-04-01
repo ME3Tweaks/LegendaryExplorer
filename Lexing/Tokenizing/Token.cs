@@ -234,6 +234,9 @@ namespace ME3Script.Lexing.Tokenizing
         //States
         AutoSpecifier,
         Ignores,
+        //Operators
+        PreOperator,
+        PostOperator,
 
         INVALID
     }

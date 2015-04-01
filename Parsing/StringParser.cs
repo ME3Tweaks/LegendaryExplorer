@@ -346,30 +346,23 @@ namespace ME3Script.Parsing
                     var parameters = new List<FunctionParameter>();
                     while (CurrentTokenType != TokenType.RightParenth)
                     {
-                        var paramSpecs = ParseSpecifiers(ParameterSpecifiers);
-
-                        var type = Tokens.ConsumeToken(TokenType.Word);
-                        if (type == null)
-                            return null; //ERROR: expected parameter type!
-                        var variable = TryParseVariable();
-                        if (variable == null)
-                            return null; //ERROR: expected parameter name!
-                        parameters.Add(new FunctionParameter(
-                            new VariableType(type.Value, type.StartPosition, type.EndPosition), 
-                            paramSpecs, variable, name.StartPosition, name.EndPosition));
+                        var param = TryParseParameter();
+                        if (param == null)
+                            return null; // ERROR: malformed parameter!
+                        parameters.Add(param);
                         if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                            return null; // ERROR: unexpected function parameters!
+                            return null; // ERROR: unexpected function parameter content!
                     }
 
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                         return null; //ERROR: expected )
 
-                    if (Tokens.ConsumeToken(TokenType.SemiColon) != null)
-                        return new FunctionStub(name.Value, retVarType, null, null, specs, parameters, name.StartPosition, name.EndPosition);
-
-                    SourcePosition bodyStart, bodyEnd;
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
-                        return null; //ERROR(?): malformed function body! 
+                    SourcePosition bodyStart = null, bodyEnd = null;
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                    {
+                        if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
+                            return null; //ERROR(?): malformed function body! 
+                    }
 
                     return new FunctionStub(name.Value, retVarType, bodyStart, bodyEnd, specs, parameters, name.StartPosition, name.EndPosition);
                 };
@@ -432,18 +425,126 @@ namespace ME3Script.Parsing
             return (StateSkeleton)Tokens.TryGetTree(stateSkeletonParser);
         }
 
+        public OperatorDeclaration TryParseOperatorDecl()
+        {
+            Func<ASTNode> operatorParser = () =>
+            {
+                var specs = ParseSpecifiers(FunctionSpecifiers);
+
+                var token = Tokens.ConsumeToken(TokenType.Operator) ??
+                    Tokens.ConsumeToken(TokenType.PreOperator) ??
+                    Tokens.ConsumeToken(TokenType.PostOperator) ??
+                    new Token<String>(TokenType.INVALID);
+
+                if (token.Type == TokenType.INVALID)
+                    return null;
+
+                Token<String> precedence = null;
+                if (token.Type == TokenType.Operator)
+                {
+                    if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                        return null; //ERROR: operator precedence!
+                    precedence = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                    if (precedence == null)
+                        return null; //ERROR: operator precedence!
+                    if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                        return null; //ERROR: operator precedence!
+                }
+
+                Token<String> returnType = null, name = null;
+                var firstString = Tokens.ConsumeToken(TokenType.Word);
+                if (firstString == null)
+                    return null; // ERROR: Expected function name! (And returntype)
+                var secondString = Tokens.ConsumeToken(TokenType.Word);
+                if (secondString == null)
+                    name = firstString;
+                else
+                {
+                    returnType = firstString;
+                    name = secondString;
+                }
+
+                VariableType retVarType = returnType != null ?
+                    new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                    return null; //ERROR: expected (
+
+                var operands = new List<FunctionParameter>();
+                while (CurrentTokenType != TokenType.RightParenth)
+                {
+                    var operandSpecs = ParseSpecifiers(ParameterSpecifiers);
+
+                    var operand = TryParseParameter();
+                    if (operand == null)
+                        return null; //ERROR: malformed operand!
+                    operands.Add(operand);
+                    if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
+                        return null; // ERROR: unexpected function parameters!
+                }
+
+                if (token.Type == TokenType.Operator && operands.Count != 2)
+                    return null; // ERROR: infix operators requires exactly 2 parameters!
+                else if (operands.Count != 1)
+                    return null; // ERROR: post/pre-fix operators requires exactly 1 parameter!
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                    return null; //ERROR: expected )
+
+                SourcePosition bodyStart = null, bodyEnd = null;
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                {
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
+                        return null; //ERROR(?): malformed operator body! 
+                }
+
+                // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
+                if (token.Type == TokenType.PreOperator)
+                    return new PreOpDeclaration(name.Value, false, null, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                else if (token.Type == TokenType.PostOperator)
+                    return new PostOpDeclaration(name.Value, false, null, retVarType, operands.First(), name.StartPosition, name.EndPosition);
+                else
+                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, null, 
+                        retVarType, operands.First(), operands.Last(), name.StartPosition, name.EndPosition);
+            };
+            return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);
+        }
+
         #endregion
         #region Expressions
         #endregion
         #region Misc
 
+        public FunctionParameter TryParseParameter()
+        {
+            Func<ASTNode> paramParser = () =>
+            {
+                var paramSpecs = ParseSpecifiers(ParameterSpecifiers);
+
+                var type = Tokens.ConsumeToken(TokenType.Word);
+                if (type == null)
+                    return null; //ERROR: expected parameter type!
+                var variable = TryParseVariable();
+                if (variable == null)
+                    return null; //ERROR: expected parameter name!
+                return new FunctionParameter(
+                    new VariableType(type.Value, type.StartPosition, type.EndPosition),
+                    paramSpecs, variable, variable.StartPos, variable.EndPos);
+            };
+            return (FunctionParameter)Tokens.TryGetTree(paramParser);
+        }
+
         public VariableType TryParseType()
         {
-            // TODO: word or basic datatype? (int float etc)
-            var type = Tokens.ConsumeToken(TokenType.Word);
-            if (type == null)
-                return null; // ERROR?
-            return new VariableType(type.Value, type.StartPosition, type.EndPosition);
+            Func<ASTNode> typeParser = () =>
+                {
+                    // TODO: word or basic datatype? (int float etc)
+                    var type = Tokens.ConsumeToken(TokenType.Word);
+                    if (type == null)
+                        return null; // ERROR?
+                    return new VariableType(type.Value, type.StartPosition, type.EndPosition);
+                };
+            return (VariableType)Tokens.TryGetTree(typeParser);
         }
 
         public Variable TryParseParent()

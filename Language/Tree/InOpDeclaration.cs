@@ -9,13 +9,13 @@ namespace ME3Script.Language.Tree
 {
     public class InOpDeclaration : OperatorDeclaration
     {
-        public VariableDeclaration LeftOperand;
-        public VariableDeclaration RightOperand;
+        public FunctionParameter LeftOperand;
+        public FunctionParameter RightOperand;
         public int Precedence;
 
-        public InOpDeclaration(ASTNodeType type, String keyword, int precedence,
+        public InOpDeclaration(String keyword, int precedence,
         bool delim, CodeBody body, VariableType returnType,
-        VariableDeclaration leftOp, VariableDeclaration rightOp,
+        FunctionParameter leftOp, FunctionParameter rightOp,
         SourcePosition start, SourcePosition end)
             : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, start, end) 
         {
