@@ -64,22 +64,22 @@ namespace ME3Script.Lexing.Tokenizing
         Equals,         // ==
         NotEquals,      // !=
         ApproxEquals,   // ~=
-        LessThan,       // <
+        LeftArrow,      // <
         LessOrEquals,   // <=
-        GreaterThan,    // >
+        RightArrow,     // >
         GreaterOrEquals,// >=
-        Subract,        // -
-        Add,            // +
-        Multiply,       // *
-        Divide,         // /
+        MinusSign,      // -
+        PlusSign,       // +
+        StarSign,       // *
+        Slash,          // /
         Power,          // **
         Modulo,         // %
         And,            // &&
         Or,             // ||
         Xor,            // ^^
-        StrConcat,      // $
+        DollarSign,     // $
         StrConcatAssign,// $=
-        StrConcatSpace, // @
+        AtSign,         // @
         StrConcAssSpace,// @=
         BinaryNegate,   // ~
         BinaryAnd,      // &
@@ -93,6 +93,8 @@ namespace ME3Script.Lexing.Tokenizing
         SemiColon,      // ;
         Comma,          // ,
         Dot,            // .
+        ExclamationMark,// !
+        Hash,           // #
 
 
         #endregion

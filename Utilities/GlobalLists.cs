@@ -38,17 +38,17 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("&&", TokenType.And, null),   
                 new KeywordMatcher("||", TokenType.Or, null),         
                 new KeywordMatcher("^^", TokenType.Xor, null),
-                new KeywordMatcher("<", TokenType.LessThan, null),    
-                new KeywordMatcher(">", TokenType.GreaterThan, null),         
+                new KeywordMatcher("<", TokenType.LeftArrow, null),    
+                new KeywordMatcher(">", TokenType.RightArrow, null),         
                 new KeywordMatcher("%", TokenType.Modulo, null),
                 new KeywordMatcher("$=", TokenType.StrConcatAssign, null),
-                new KeywordMatcher("$", TokenType.StrConcat, null),
+                new KeywordMatcher("$", TokenType.DollarSign, null),
                 new KeywordMatcher("@=", TokenType.StrConcAssSpace, null),
-                new KeywordMatcher("@", TokenType.StrConcatSpace, null),
-                new KeywordMatcher("-", TokenType.Subract, null),      
-                new KeywordMatcher("+", TokenType.Add, null),        
-                new KeywordMatcher("*", TokenType.Multiply, null),   
-                new KeywordMatcher("/", TokenType.Divide, null),  
+                new KeywordMatcher("@", TokenType.AtSign, null),
+                new KeywordMatcher("-", TokenType.MinusSign, null),      
+                new KeywordMatcher("+", TokenType.PlusSign, null),        
+                new KeywordMatcher("*", TokenType.StarSign, null),   
+                new KeywordMatcher("/", TokenType.Slash, null),
                 new KeywordMatcher("=", TokenType.Assign, null),  
                 new KeywordMatcher("~", TokenType.BinaryNegate, null), 
                 new KeywordMatcher("&", TokenType.BinaryAnd, null),    
@@ -58,7 +58,9 @@ namespace ME3Script.Utilities
                 new KeywordMatcher(":", TokenType.Colon, null),
                 new KeywordMatcher(";", TokenType.SemiColon, null),
                 new KeywordMatcher(",", TokenType.Comma, null),
-                new KeywordMatcher(".", TokenType.Dot, null)
+                new KeywordMatcher(".", TokenType.Dot, null),
+                new KeywordMatcher("!", TokenType.ExclamationMark, null),
+                new KeywordMatcher("#", TokenType.Hash, null)
             };
 
             Keywords = new List<KeywordMatcher>

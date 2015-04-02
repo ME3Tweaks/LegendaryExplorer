@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ME3Script.Parsing
@@ -584,6 +585,14 @@ namespace ME3Script.Parsing
                     }
                 }
 
+                /* TODO: add a function for parsing the operator name
+                 * allowed tokens are:
+                 * ANY single symbol as recognized by the lexer
+                 * ANY symbol combination as recognized by the lexer
+                 * an ordinary word from the lexer
+                 * 
+                 * symbols: '^, !, $, %, &, /, ?, *, +, ~, @, -, >, <, |, :, #' (complete?)
+                 * */
                 Token<String> returnType = null, name = null;
                 var firstString = Tokens.ConsumeToken(TokenType.Word);
                 if (firstString == null)
