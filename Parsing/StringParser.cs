@@ -1,4 +1,5 @@
-﻿using ME3Script.Language;
+﻿using ME3Script.Compiling.Errors;
+using ME3Script.Language;
 using ME3Script.Language.Tree;
 using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
@@ -13,9 +14,12 @@ namespace ME3Script.Parsing
 {
     public class StringParser
     {
+        private MessageLog Log;
         private TokenStream<String> Tokens;
         private TokenType CurrentTokenType 
             { get { return Tokens.CurrentItem.Type; } }
+        private SourcePosition CurrentPosition
+            { get { return Tokens.CurrentItem.StartPosition; } }
 
         #region Specifier Categories
         private List<TokenType> VariableSpecifiers = new List<TokenType>
@@ -123,8 +127,9 @@ namespace ME3Script.Parsing
 
         #endregion
 
-        public StringParser(TokenStream<String> tokens)
+        public StringParser(TokenStream<String> tokens, MessageLog log = null)
         {
+            Log = log ?? new MessageLog();
             Tokens = tokens;
         }
 
@@ -141,22 +146,34 @@ namespace ME3Script.Parsing
             Func<ASTNode> classParser = () =>
                 {
                     if (Tokens.ConsumeToken(TokenType.Class) == null)
-                        return null; // ERROR: expected class declaration! (are you missing the class keyword?)
+                    {
+                        Log.LogError("Expected class declaration!");
+                        return null;
+                    }
 
                     var name = Tokens.ConsumeToken(TokenType.Word);
                     if (name == null)
-                        return null; // ERROR: expected class name!
+                    {
+                        Log.LogError("Expected class name!");
+                        return null;
+                    }
 
                     var parentClass = TryParseParent();
                     if (parentClass == null)
-                        parentClass = new Variable("Object", null, null); // Notice: no parent specified, inheriting from object
+                    {
+                        Log.LogMessage("No parent class specified for " + name.Value + ", interiting from Object");
+                        parentClass = new Variable("Object", null, null);
+                    }
 
                     var outerClass = TryParseOuter();
 
                     var specs = ParseSpecifiers(ClassSpecifiers);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                        return null; // ERROR: did you miss a semi-colon?
+                    {
+                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var variables = new List<VariableDeclaration>();
                     var types = new List<VariableType>();
@@ -168,18 +185,27 @@ namespace ME3Script.Parsing
                         {
                             var variable = TryParseVarDecl();
                             if (variable == null)
-                                return null; // ERROR: malformed instance variable!
+                            {
+                                Log.LogError("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                                return null;
+                            }
                             variables.Add(variable);
                         }
                         else
                         {
                             var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID", null, null);
                             if (type.Name == "INVALID")
-                                return null; // ERROR: malformed type declaration!
+                            {
+                                Log.LogError("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                                return null;
+                            }
                             types.Add(type);
 
                             if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                                return null; // ERROR: did you miss a semi-colon?
+                            {
+                                Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                                return null;
+                            }
                         }
                     }
 
@@ -194,7 +220,11 @@ namespace ME3Script.Parsing
                                         (ASTNode)TryParseState() ?? 
                                         (ASTNode)null;
                         if (declaration == null && !Tokens.AtEnd())
-                            return null; // ERROR: expected function/state/operator declaration!
+                        {
+                            Log.LogError("Expected function/state/operator declaration!", 
+                                CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
 
                         if (declaration.Type == ASTNodeType.Function)
                             funcs.Add((Function)declaration);
@@ -221,14 +251,24 @@ namespace ME3Script.Parsing
 
                     var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
                     if (type == null)
-                        return null; // ERROR: expected variable type or struct/enum type declaration.
+                    {
+                        Log.LogError("Expected variable type or struct/enum type declaration!", 
+                            CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var vars = ParseVariableNames(); // Struct/Enums also need variables if declared as inline types
                     if (vars == null) // && type.Type != ASTNodeType.Struct && type.Type != ASTNodeType.Enumeration)
-                        return null; // ERROR(?): malformed variable names?
+                    {
+                        Log.LogError("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                        return null; // ERROR: did you miss a semi-colon?
+                    {
+                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     return new VariableDeclaration(type, specs, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
@@ -244,14 +284,23 @@ namespace ME3Script.Parsing
 
                     var type = TryParseType();
                     if (type == null)
-                        return null; // ERROR: expected variable type
+                    {
+                        Log.LogError("Expected variable type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var vars = ParseVariableNames();
                     if (vars == null)
-                        return null; // ERROR(?): malformed variable names?
+                    {
+                        Log.LogError("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                        return null; // ERROR: did you miss a semi-colon?
+                    {
+                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     return new VariableDeclaration(type, null, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
@@ -269,24 +318,36 @@ namespace ME3Script.Parsing
 
                     var name = Tokens.ConsumeToken(TokenType.Word);
                     if (name == null)
-                        return null; // ERROR: expected struct name!
+                    {
+                        Log.LogError("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var parent = TryParseParent();
 
                     if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                        return null; // ERROR: expected struct body!
+                    {
+                        Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var vars = new List<VariableDeclaration>();
                     do
                     {
                         var variable = TryParseVarDecl();
                         if (variable == null)
-                            return null; //ERROR: expected variable declaration in struct body.
+                        {
+                            Log.LogError("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                         vars.Add(variable);
                     } while (CurrentTokenType != TokenType.RightBracket);
 
                     if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                        return null; //ERROR: expected end of struct body!
+                    {
+                        Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     return new Struct(name.Value, specs, vars, name.StartPosition, name.EndPosition, parent);
                 };
@@ -302,24 +363,39 @@ namespace ME3Script.Parsing
 
                 var name = Tokens.ConsumeToken(TokenType.Word);
                 if (name == null)
-                    return null; // ERROR: expected enum name!
+                {
+                    Log.LogError("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                    return null; // ERROR: expected struct body!
+                {
+                    Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 var identifiers = new List<Variable>();
                 do
                 {
                     var ident = Tokens.ConsumeToken(TokenType.Word);
                     if (ident == null)
-                        return null; //ERROR: expected variable declaration in struct body.
+                    {
+                        Log.LogError("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     identifiers.Add(new Variable(ident.Value, ident.StartPosition, ident.EndPosition));
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket)
-                        return null; // ERROR: unexpected enum content!
+                    {
+                        Log.LogError("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                 } while (CurrentTokenType != TokenType.RightBracket);
 
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                    return null; //ERROR: expected end of struct body!
+                {
+                    Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 return new Enumeration(name.Value, identifiers, name.StartPosition, name.EndPosition);
             };
@@ -339,7 +415,10 @@ namespace ME3Script.Parsing
 
                     var firstString = Tokens.ConsumeToken(TokenType.Word);
                     if (firstString == null)
-                        return null; // ERROR: Expected function name! (And returntype)
+                    {
+                        Log.LogError("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     var secondString = Tokens.ConsumeToken(TokenType.Word);
                     if (secondString == null)
                         name = firstString;
@@ -353,28 +432,43 @@ namespace ME3Script.Parsing
                         new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                        return null; // ERROR: Expected (
+                    {
+                        Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     var parameters = new List<FunctionParameter>();
                     while (CurrentTokenType != TokenType.RightParenth)
                     {
                         var param = TryParseParameter();
                         if (param == null)
-                            return null; // ERROR: malformed parameter!
+                        {
+                            Log.LogError("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                         parameters.Add(param);
                         if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                            return null; // ERROR: unexpected function parameter content!
+                        {
+                            Log.LogError("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                     }
 
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                        return null; //ERROR: expected )
+                    {
+                        Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     CodeBody body = null;
                     SourcePosition bodyStart = null, bodyEnd = null;
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                     {
                         if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
-                            return null; //ERROR(?): malformed function body! 
+                        {
+                            Log.LogError("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                         body = new CodeBody(null, bodyStart, bodyEnd);
                     }
 
@@ -394,12 +488,18 @@ namespace ME3Script.Parsing
 
                 var name = Tokens.ConsumeToken(TokenType.Word);
                 if (name == null)
-                    return null; // ERROR: Expected state name!
+                {
+                    Log.LogError("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 var parent = TryParseParent();
 
                 if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                    return null; // ERROR: expected state body!
+                {
+                    Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 List<Variable> ignores = new List<Variable>();
                 if (Tokens.ConsumeToken(TokenType.Ignores) != null)
@@ -408,12 +508,18 @@ namespace ME3Script.Parsing
                     {
                         Variable variable = TryParseVariable();
                         if (variable == null)
-                            return null; // ERROR: malformed ignore statement!
+                        {
+                            Log.LogError("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                         ignores.Add(variable);
                     } while (Tokens.ConsumeToken(TokenType.Comma) != null);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                        return null; // ERROR: did you miss a semi-colon?
+                    {
+                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                 }
 
                 var funcs = new List<Function>();
@@ -432,7 +538,10 @@ namespace ME3Script.Parsing
                 var bodyEnd = Tokens.CurrentItem.StartPosition;
 
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                    return null; // ERROR: expected }
+                {
+                    Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 var body = new CodeBody(null, bodyStart, bodyEnd);
                 return new State(name.Value, body, specs, parent, funcs, ignores, null, name.StartPosition, name.EndPosition);
@@ -458,18 +567,30 @@ namespace ME3Script.Parsing
                 if (token.Type == TokenType.Operator)
                 {
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                        return null; //ERROR: operator precedence!
+                    {
+                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     precedence = Tokens.ConsumeToken(TokenType.IntegerNumber);
                     if (precedence == null)
-                        return null; //ERROR: operator precedence!
+                    {
+                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                        return null; //ERROR: operator precedence!
+                    {
+                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                 }
 
                 Token<String> returnType = null, name = null;
                 var firstString = Tokens.ConsumeToken(TokenType.Word);
                 if (firstString == null)
-                    return null; // ERROR: Expected function name! (And returntype)
+                {
+                    Log.LogError("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
                 var secondString = Tokens.ConsumeToken(TokenType.Word);
                 if (secondString == null)
                     name = firstString;
@@ -483,7 +604,10 @@ namespace ME3Script.Parsing
                     new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    return null; //ERROR: expected (
+                {
+                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 var operands = new List<FunctionParameter>();
                 while (CurrentTokenType != TokenType.RightParenth)
@@ -492,26 +616,44 @@ namespace ME3Script.Parsing
 
                     var operand = TryParseParameter();
                     if (operand == null)
-                        return null; //ERROR: malformed operand!
+                    {
+                        Log.LogError("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     operands.Add(operand);
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                        return null; // ERROR: unexpected function parameters!
+                    {
+                        Log.LogError("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                 }
 
                 if (token.Type == TokenType.Operator && operands.Count != 2)
-                    return null; // ERROR: infix operators requires exactly 2 parameters!
+                {
+                    Log.LogError("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
                 else if (token.Type != TokenType.Operator && operands.Count != 1)
-                    return null; // ERROR: post/pre-fix operators requires exactly 1 parameter!
+                {
+                    Log.LogError("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    return null; //ERROR: expected )
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
 
                 CodeBody body = null;
                 SourcePosition bodyStart = null, bodyEnd = null;
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
-                        return null; //ERROR(?): malformed operator body! 
+                    {
+                        Log.LogError("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     body = new CodeBody(null, bodyStart, bodyEnd);
                 }
 
@@ -540,10 +682,16 @@ namespace ME3Script.Parsing
 
                 var type = Tokens.ConsumeToken(TokenType.Word);
                 if (type == null)
-                    return null; //ERROR: expected parameter type!
+                {
+                    Log.LogError("Expected parameter type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
                 var variable = TryParseVariable();
                 if (variable == null)
-                    return null; //ERROR: expected parameter name!
+                {
+                    Log.LogError("Expected parameter name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
                 return new FunctionParameter(
                     new VariableType(type.Value, type.StartPosition, type.EndPosition),
                     paramSpecs, variable, variable.StartPos, variable.EndPos);
@@ -558,7 +706,10 @@ namespace ME3Script.Parsing
                     // TODO: word or basic datatype? (int float etc)
                     var type = Tokens.ConsumeToken(TokenType.Word);
                     if (type == null)
-                        return null; // ERROR?
+                    {
+                        Log.LogError("Expected type name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     return new VariableType(type.Value, type.StartPosition, type.EndPosition);
                 };
             return (VariableType)Tokens.TryGetTree(typeParser);
@@ -572,7 +723,10 @@ namespace ME3Script.Parsing
                     return null;
                 var parentName = Tokens.ConsumeToken(TokenType.Word);
                 if (parentName == null)
+                {
+                    Log.LogError("Expected parent name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
+                }
                 return new Variable(parentName.Value, parentName.StartPosition, parentName.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(parentParser);
@@ -586,7 +740,10 @@ namespace ME3Script.Parsing
                     return null;
                 var outerName = Tokens.ConsumeToken(TokenType.Word);
                 if (outerName == null)
+                {
+                    Log.LogError("Expected outer class name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
+                }
                 return new Variable(outerName.Value, outerName.StartPosition, outerName.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(outerParser);
@@ -618,9 +775,15 @@ namespace ME3Script.Parsing
                 {
                     var size = Tokens.ConsumeToken(TokenType.IntegerNumber);
                     if (size == null)
-                        return null; // ERROR: expected integer size
+                    {
+                        Log.LogError("Expected an integer number for size!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                     if (Tokens.ConsumeToken(TokenType.RightSqrBracket) != null)
-                        return null; // ERROR: expected closing bracket
+                    {
+                        Log.LogError("Expected ']'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
                     return new StaticArrayVariable(name.Value, Int32.Parse(size.Value), 
                         name.StartPosition, name.EndPosition);
@@ -642,7 +805,10 @@ namespace ME3Script.Parsing
             {
                 Variable variable = TryParseVariable();
                 if (variable == null)
-                    return null; // ERROR: Expected a variable name
+                {
+                    Log.LogError("Expected at least one variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
                 vars.Add(variable);
             } while (Tokens.ConsumeToken(TokenType.Comma) != null);
             // TODO: This allows a trailing comma before semicolon, intended?
@@ -652,12 +818,11 @@ namespace ME3Script.Parsing
         public List<Specifier> ParseSpecifiers(List<TokenType> specifierCategory)
         {
             List<Specifier> specs = new List<Specifier>();
-            while (specifierCategory.Contains(CurrentTokenType))
+            Specifier spec = TryParseSpecifier(specifierCategory);
+            while (spec != null)
             {
-                Specifier spec = TryParseSpecifier(specifierCategory);
-                if (spec == null)
-                    return null; // ERROR: Expected valid specifier
                 specs.Add(spec);
+                spec = TryParseSpecifier(specifierCategory);
             }
             return specs;
         }
@@ -667,7 +832,10 @@ namespace ME3Script.Parsing
         {
             var scopedTokens = new List<Token<String>>();
             if (Tokens.ConsumeToken(scopeStart) == null)
-                return null; // ERROR: expected 'scopeStart' at start of a scope
+            {
+                Log.LogError("Expected '" + scopeStart.ToString() + "'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                return null;
+            }
 
             int nestedLevel = 1;
             while (nestedLevel > 0)
@@ -693,14 +861,20 @@ namespace ME3Script.Parsing
             startPos = null;
             endPos = null;
             if (Tokens.ConsumeToken(scopeStart) == null)
-                return false; // ERROR: expected 'scopeStart' at start of a scope
+            {
+                Log.LogError("Expected '" + scopeStart.ToString() + "'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                return false;
+            }
             startPos = Tokens.CurrentItem.StartPosition;
 
             int nestedLevel = 1;
             while (nestedLevel > 0)
             {
                 if (CurrentTokenType == TokenType.EOF)
-                    return false; // ERROR: Scope ended prematurely, are your scopes unbalanced?
+                {
+                    Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return false;
+                }
                 if (CurrentTokenType == scopeStart)
                     nestedLevel++;
                 else if (CurrentTokenType == scopeEnd)
