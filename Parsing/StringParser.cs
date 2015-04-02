@@ -585,22 +585,14 @@ namespace ME3Script.Parsing
                     }
                 }
 
-                /* TODO: add a function for parsing the operator name
-                 * allowed tokens are:
-                 * ANY single symbol as recognized by the lexer
-                 * ANY symbol combination as recognized by the lexer
-                 * an ordinary word from the lexer
-                 * 
-                 * symbols: '^, !, $, %, &, /, ?, *, +, ~, @, -, >, <, |, :, #' (complete?)
-                 * */
                 Token<String> returnType = null, name = null;
-                var firstString = Tokens.ConsumeToken(TokenType.Word);
+                var firstString = TryParseOperatorIdentifier();
                 if (firstString == null)
                 {
                     Log.LogError("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
-                var secondString = Tokens.ConsumeToken(TokenType.Word);
+                var secondString = TryParseOperatorIdentifier();
                 if (secondString == null)
                     name = firstString;
                 else
@@ -806,6 +798,15 @@ namespace ME3Script.Parsing
         #endregion
         #endregion
         #region Helpers
+
+        public Token<String> TryParseOperatorIdentifier()
+        {
+            if (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType)
+                || CurrentTokenType == TokenType.Word)
+                return Tokens.ConsumeToken(CurrentTokenType);
+
+            return null;
+        }
 
         public List<Variable> ParseVariableNames()
         {

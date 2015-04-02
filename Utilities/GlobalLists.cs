@@ -12,6 +12,7 @@ namespace ME3Script.Utilities
     {
         public static List<KeywordMatcher> Delimiters;
         public static List<KeywordMatcher> Keywords;
+        public static List<TokenType> ValidOperatorSymbols;
 
         static GlobalLists()
         {
@@ -30,6 +31,7 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("/=", TokenType.DivAssign, null),      
                 new KeywordMatcher("!=", TokenType.NotEquals, null),  
                 new KeywordMatcher("~=", TokenType.ApproxEquals, null), 
+                new KeywordMatcher(">>>", TokenType.VectorTransform, null),
                 new KeywordMatcher(">>", TokenType.RightShift, null),    
                 new KeywordMatcher("<<", TokenType.LeftShift, null),
                 new KeywordMatcher("<=", TokenType.LessOrEquals, null),
@@ -61,6 +63,48 @@ namespace ME3Script.Utilities
                 new KeywordMatcher(".", TokenType.Dot, null),
                 new KeywordMatcher("!", TokenType.ExclamationMark, null),
                 new KeywordMatcher("#", TokenType.Hash, null)
+            };
+
+            ValidOperatorSymbols = new List<TokenType>
+            {
+                TokenType.Equals,    
+                TokenType.AddAssign,   
+                TokenType.SubAssign,   
+                TokenType.MulAssign,   
+                TokenType.DivAssign,      
+                TokenType.NotEquals,  
+                TokenType.ApproxEquals, 
+                TokenType.RightShift,    
+                TokenType.LeftShift,
+                TokenType.LessOrEquals,
+                TokenType.GreaterOrEquals,
+                TokenType.Power, 
+                TokenType.And,   
+                TokenType.Or,         
+                TokenType.Xor,
+                TokenType.LeftArrow,    
+                TokenType.RightArrow,         
+                TokenType.Modulo,
+                TokenType.StrConcatAssign,
+                TokenType.DollarSign,
+                TokenType.StrConcAssSpace,
+                TokenType.AtSign,
+                TokenType.MinusSign,      
+                TokenType.PlusSign,        
+                TokenType.StarSign,   
+                TokenType.Slash,
+                TokenType.BinaryNegate, 
+                TokenType.BinaryAnd,    
+                TokenType.BinaryOr,     
+                TokenType.BinaryXor,     
+                TokenType.Conditional,   
+                TokenType.Colon,
+                TokenType.SemiColon,
+                TokenType.Comma,
+                TokenType.Dot,
+                TokenType.ExclamationMark,
+                TokenType.Hash,
+                TokenType.VectorTransform
             };
 
             Keywords = new List<KeywordMatcher>

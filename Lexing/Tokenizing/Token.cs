@@ -95,6 +95,7 @@ namespace ME3Script.Lexing.Tokenizing
         Dot,            // .
         ExclamationMark,// !
         Hash,           // #
+        VectorTransform,  // >>>
 
 
         #endregion
