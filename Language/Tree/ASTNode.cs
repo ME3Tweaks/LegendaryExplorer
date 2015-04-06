@@ -27,7 +27,9 @@ namespace ME3Script.Language.Tree
         State,
         StateLabel,
         FunctionParameter,
-
+        WhileLoop,
+        DoUntilLoop,
+        ForLoop,
 
         INVALID
     }

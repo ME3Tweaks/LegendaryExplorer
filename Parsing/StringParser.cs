@@ -22,6 +22,13 @@ namespace ME3Script.Parsing
         private SourcePosition CurrentPosition
             { get { return Tokens.CurrentItem.StartPosition; } }
 
+        private List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
+        {
+            ASTNodeType.WhileLoop,
+            ASTNodeType.ForLoop,
+            ASTNodeType.IfStatement
+        };
+
         #region Specifier Categories
         private List<TokenType> VariableSpecifiers = new List<TokenType>
         {
@@ -294,12 +301,6 @@ namespace ME3Script.Parsing
                     if (vars == null)
                     {
                         Log.LogError("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
-
-                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                         return null;
                     }
 
@@ -686,6 +687,12 @@ namespace ME3Script.Parsing
                     {
                         statements.Add(current);
                         current = TryParseInnerStatement();
+
+                        if (!SemiColonExceptions.Contains(current.Type) && Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                        {
+                            Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                            return null;
+                        }
                     }
 
                     if (requireBrackets && Tokens.ConsumeToken(TokenType.RightBracket) == null)
@@ -705,6 +712,10 @@ namespace ME3Script.Parsing
             {
                 var statement = TryParseLocalVar() ??
                                 TryParseAssignStatement() ??
+                                TryParseIf() ??
+                                TryParseWhile() ??
+                                TryParseFor() ??
+                                TryParseDoUntil() ??
                                 (Statement)null;
 
                 if (statement == null)
@@ -737,12 +748,6 @@ namespace ME3Script.Parsing
                 if (value == null)
                 {
                     Log.LogError("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
-
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                {
-                    Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
 
@@ -795,6 +800,149 @@ namespace ME3Script.Parsing
                 return new IfStatement(condition, thenBody, token.StartPosition, token.EndPosition, elseBody);
             };
             return (IfStatement)Tokens.TryGetTree(ifParser);
+        }
+
+        public WhileLoop TryParseWhile()
+        {
+            Func<ASTNode> whileParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.While);
+                if (token == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                {
+                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var condition = TryParseExpression();
+                if (condition == null)
+                {
+                    Log.LogError("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                CodeBody body = TryParseBodyOrStatement(allowEmpty:true);
+                if (body == null)
+                    return null;
+
+                return new WhileLoop(condition, body, token.StartPosition, token.EndPosition);
+            };
+            return (WhileLoop)Tokens.TryGetTree(whileParser);
+        }
+
+        public DoUntilLoop TryParseDoUntil()
+        {
+            Func<ASTNode> untilParser = () =>
+            {
+                var doToken = Tokens.ConsumeToken(TokenType.Do);
+                if (doToken == null)
+                    return null;
+
+                CodeBody body = TryParseBodyOrStatement();
+                if (body == null)
+                    return null;
+
+                var untilToken = Tokens.ConsumeToken(TokenType.Until);
+                if (untilToken == null)
+                {
+                    Log.LogError("Expected 'until'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                {
+                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var condition = TryParseExpression();
+                if (condition == null)
+                {
+                    Log.LogError("Expected an expression as the until condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return new DoUntilLoop(condition, body, untilToken.StartPosition, untilToken.EndPosition);
+            };
+            return (DoUntilLoop)Tokens.TryGetTree(untilParser);
+        }
+
+        public ForLoop TryParseFor()
+        {
+            Func<ASTNode> forParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.For);
+                if (token == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                {
+                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var initStatement = TryParseInnerStatement();
+                // TODO: can also be function call, modify comment.
+                if (initStatement.Type != ASTNodeType.AssignStatement) //&& initStatement.Type != ASTNodeType.Function)
+                {
+                    Log.LogError("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                {
+                    Log.LogError("Expected semi-colon after init statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var condition = TryParseExpression();
+                if (condition == null)
+                {
+                    Log.LogError("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                {
+                    Log.LogError("Expected semi-colon after condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var updateStatement = TryParseInnerStatement();
+                // TODO: can also be function call, modify comment.
+                if (updateStatement.Type != ASTNodeType.AssignStatement) //&& initStatement.Type != ASTNodeType.Function)
+                {
+                    Log.LogError("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                CodeBody body = TryParseBodyOrStatement(allowEmpty:true);
+                if (body == null)
+                    return null;
+
+                return new ForLoop(condition, body, initStatement, updateStatement, token.StartPosition, token.EndPosition);
+            };
+            return (ForLoop)Tokens.TryGetTree(forParser);
         }
 
         #endregion
@@ -933,7 +1081,7 @@ namespace ME3Script.Parsing
             return (Variable)Tokens.TryGetTree(variableParser);
         }
 
-        public CodeBody TryParseBodyOrStatement()
+        public CodeBody TryParseBodyOrStatement(bool allowEmpty = false)
         {
             Func<ASTNode> bodyParser = () =>
             {
@@ -951,8 +1099,15 @@ namespace ME3Script.Parsing
                 }
                 if (body == null)
                 {
-                    Log.LogError("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
+                    if (allowEmpty && Tokens.ConsumeToken(TokenType.SemiColon) != null)
+                    {
+                        body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
+                    }
+                    else
+                    {
+                        Log.LogError("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
                 }
 
                 return body;

@@ -50,6 +50,8 @@
     <Compile Include="Compiling\Errors\Warning.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
+    <Compile Include="Language\Tree\DoUntilLoop.cs" />
+    <Compile Include="Language\Tree\ForLoop.cs" />
     <Compile Include="Language\Tree\InOpDeclaration.cs" />
     <Compile Include="Language\Tree\Class.cs" />
     <Compile Include="Language\Tree\CodeBody.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Language\Tree\VariableDeclaration.cs" />
     <Compile Include="Language\Tree\Specifier.cs" />
     <Compile Include="Language\Tree\VariableType.cs" />
+    <Compile Include="Language\Tree\WhileLoop.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\KeywordMatcher.cs" />
