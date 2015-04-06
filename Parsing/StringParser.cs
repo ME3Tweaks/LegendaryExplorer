@@ -297,6 +297,12 @@ namespace ME3Script.Parsing
                         return null;
                     }
 
+                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                    {
+                        Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
+
                     return new VariableDeclaration(type, null, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
@@ -664,12 +670,31 @@ namespace ME3Script.Parsing
             return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);
         }
 
-        public CodeBody TryParseBody()
+        public CodeBody TryParseBody(bool requireBrackets = true)
         {
             Func<ASTNode> codeParser = () =>
                 {
+                    if (requireBrackets && Tokens.ConsumeToken(TokenType.LeftBracket) == null)
+                    {
+                        Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
 
-                    return null;
+                    var statements = new List<Statement>();
+                    var current = TryParseInnerStatement();
+                    while (current != null)
+                    {
+                        statements.Add(current);
+                        current = TryParseInnerStatement();
+                    }
+
+                    if (requireBrackets && Tokens.ConsumeToken(TokenType.RightBracket) == null)
+                    {
+                        Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        return null;
+                    }
+
+                    return new CodeBody(statements, statements.First().StartPos, statements.Last().EndPos);
                 };
             return (CodeBody)Tokens.TryGetTree(codeParser);
         }
@@ -685,12 +710,6 @@ namespace ME3Script.Parsing
                 if (statement == null)
                 {
                     Log.LogError("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
-
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                {
-                    Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
 
@@ -721,10 +740,61 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                {
+                    Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
                 var variable = new Variable(target.Value, target.StartPosition, target.EndPosition);
                 return new AssignStatement(variable, value, assign.StartPosition, assign.EndPosition);
             };
             return (AssignStatement)Tokens.TryGetTree(assignParser);
+        }
+
+        public IfStatement TryParseIf()
+        {
+            Func<ASTNode> ifParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.If);
+                if (token == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                {
+                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var condition = TryParseExpression();
+                if (condition == null)
+                {
+                    Log.LogError("Expected an expression as the if-condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                CodeBody thenBody = TryParseBodyOrStatement();
+                if (thenBody == null)
+                    return null;
+
+                CodeBody elseBody = null;
+                var elsetoken = Tokens.ConsumeToken(TokenType.Else);
+                if (elsetoken != null)
+                {
+                    elseBody = TryParseBodyOrStatement();
+                    if (elseBody == null)
+                        return null;
+                }
+
+                return new IfStatement(condition, thenBody, token.StartPosition, token.EndPosition, elseBody);
+            };
+            return (IfStatement)Tokens.TryGetTree(ifParser);
         }
 
         #endregion
@@ -861,6 +931,33 @@ namespace ME3Script.Parsing
                 return new Variable(name.Value, name.StartPosition, name.EndPosition);
             };
             return (Variable)Tokens.TryGetTree(variableParser);
+        }
+
+        public CodeBody TryParseBodyOrStatement()
+        {
+            Func<ASTNode> bodyParser = () =>
+            {
+                CodeBody body = null;
+                var single = TryParseInnerStatement();
+                if (single != null)
+                {
+                    var content = new List<Statement>();
+                    content.Add(single);
+                    body = new CodeBody(content, single.StartPos, single.EndPos);
+                }
+                else
+                {
+                    body = TryParseBody();
+                }
+                if (body == null)
+                {
+                    Log.LogError("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return body;
+            };
+            return (CodeBody)Tokens.TryGetTree(bodyParser);
         }
 
         #endregion

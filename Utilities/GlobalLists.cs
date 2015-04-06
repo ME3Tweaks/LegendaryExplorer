@@ -195,7 +195,19 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("ignores", TokenType.Ignores, Delimiters, false),
                 new KeywordMatcher("auto", TokenType.AutoSpecifier, Delimiters, false),
                 new KeywordMatcher("preoperator", TokenType.PreOperator, Delimiters, false),
-                new KeywordMatcher("postoperator", TokenType.PostOperator, Delimiters, false)
+                new KeywordMatcher("postoperator", TokenType.PostOperator, Delimiters, false),
+                new KeywordMatcher("if", TokenType.If, Delimiters, false),
+                new KeywordMatcher("else", TokenType.Else, Delimiters, false),
+                new KeywordMatcher("while", TokenType.While, Delimiters, false),
+                new KeywordMatcher("do", TokenType.Do, Delimiters, false),
+                new KeywordMatcher("until", TokenType.Until, Delimiters, false),
+                new KeywordMatcher("for", TokenType.For, Delimiters, false),
+                new KeywordMatcher("continue", TokenType.Continue, Delimiters, false),
+                new KeywordMatcher("break", TokenType.Break, Delimiters, false),
+                new KeywordMatcher("ForEach", TokenType.ForEach, Delimiters, false),
+                new KeywordMatcher("return", TokenType.Return, Delimiters, false),
+                new KeywordMatcher("switch", TokenType.Switch, Delimiters, false),
+                new KeywordMatcher("case", TokenType.Case, Delimiters, false)
             };
         }
 

@@ -241,6 +241,24 @@ namespace ME3Script.Lexing.Tokenizing
         PreOperator,
         PostOperator,
 
+        //Flow
+        If,
+        Else,
+        While,
+        Do,
+        Until,
+        For,
+        Continue,
+        Break,
+        ForEach,
+        Return,
+        Switch,
+        Case,
+        // State flow
+        GoTo,
+        GoToState,
+        Stop,
+
         INVALID
     }
 }

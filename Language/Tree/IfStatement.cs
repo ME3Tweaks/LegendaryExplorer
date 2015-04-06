@@ -10,11 +10,11 @@ namespace ME3Script.Language.Tree
     public class IfStatement : Statement
     {
         public Expression Condition;
-        public Statement Then;
-        public Statement Else;
+        public CodeBody Then;
+        public CodeBody Else;
 
-        public IfStatement(Expression cond, Statement then,
-            SourcePosition start, SourcePosition end, Statement optelse = null)
+        public IfStatement(Expression cond, CodeBody then,
+            SourcePosition start, SourcePosition end, CodeBody optelse = null)
             : base(ASTNodeType.IfStatement, start, end) 
         {
             Condition = cond;
