@@ -297,12 +297,6 @@ namespace ME3Script.Parsing
                         return null;
                     }
 
-                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
-
                     return new VariableDeclaration(type, null, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
@@ -670,8 +664,82 @@ namespace ME3Script.Parsing
             return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);
         }
 
+        public CodeBody TryParseBody()
+        {
+            Func<ASTNode> codeParser = () =>
+                {
+
+                    return null;
+                };
+            return (CodeBody)Tokens.TryGetTree(codeParser);
+        }
+
+        public Statement TryParseInnerStatement()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var statement = TryParseLocalVar() ??
+                                TryParseAssignStatement() ??
+                                (Statement)null;
+
+                if (statement == null)
+                {
+                    Log.LogError("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                {
+                    Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return null;
+            };
+            return (Statement)Tokens.TryGetTree(statementParser);
+        }
+
+        public AssignStatement TryParseAssignStatement()
+        {
+            Func<ASTNode> assignParser = () =>
+            {
+                // TODO: support dot '.' notation here for classes / structs!
+                var target = Tokens.ConsumeToken(TokenType.Word);
+                var assign = Tokens.ConsumeToken(TokenType.Assign);
+                if (assign == null)
+                    return null;
+                else if (target == null)
+                {
+                    Log.LogError("Assignments require a variable target (LValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var value = TryParseExpression();
+                if (value == null)
+                {
+                    Log.LogError("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                var variable = new Variable(target.Value, target.StartPosition, target.EndPosition);
+                return new AssignStatement(variable, value, assign.StartPosition, assign.EndPosition);
+            };
+            return (AssignStatement)Tokens.TryGetTree(assignParser);
+        }
+
         #endregion
         #region Expressions
+
+        public Expression TryParseExpression()
+        {
+            Func<ASTNode> exprParser = () =>
+            {
+
+                return null;
+            };
+            return (Expression)Tokens.TryGetTree(exprParser);
+        }
+
         #endregion
         #region Misc
 
