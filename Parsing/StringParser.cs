@@ -716,6 +716,10 @@ namespace ME3Script.Parsing
                                 TryParseWhile() ??
                                 TryParseFor() ??
                                 TryParseDoUntil() ??
+                                TryParseContinue() ??
+                                TryParseBreak() ??
+                                TryParseStop() ??
+                                TryParseReturn() ??
                                 (Statement)null;
 
                 if (statement == null)
@@ -727,6 +731,68 @@ namespace ME3Script.Parsing
                 return null;
             };
             return (Statement)Tokens.TryGetTree(statementParser);
+        }
+
+        public BreakStatement TryParseBreak()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Break);
+                if (token == null)
+                    return null;
+
+                return new BreakStatement(token.StartPosition, token.EndPosition);
+            };
+            return (BreakStatement)Tokens.TryGetTree(statementParser);
+        }
+
+        public ContinueStatement TryParseContinue()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Continue);
+                if (token == null)
+                    return null;
+
+                return new ContinueStatement(token.StartPosition, token.EndPosition);
+            };
+            return (ContinueStatement)Tokens.TryGetTree(statementParser);
+        }
+
+        public StopStatement TryParseStop()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Stop);
+                if (token == null)
+                    return null;
+
+                return new StopStatement(token.StartPosition, token.EndPosition);
+            };
+            return (StopStatement)Tokens.TryGetTree(statementParser);
+        }
+
+        public ReturnStatement TryParseReturn()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Return);
+                if (token == null)
+                    return null;
+
+                if (CurrentTokenType == TokenType.SemiColon)
+                    return new ReturnStatement(token.StartPosition, token.EndPosition);
+
+                var value = TryParseExpression();
+                if (value == null)
+                {
+                    Log.LogError("Expected a return value or a semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return new ReturnStatement(token.StartPosition, token.EndPosition, value);
+            };
+            return (ReturnStatement)Tokens.TryGetTree(statementParser);
         }
 
         public AssignStatement TryParseAssignStatement()

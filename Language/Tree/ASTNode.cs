@@ -30,6 +30,10 @@ namespace ME3Script.Language.Tree
         WhileLoop,
         DoUntilLoop,
         ForLoop,
+        BreakStatement,
+        ContinueStatement,
+        ReturnStatement,
+        StopStatement,
 
         INVALID
     }
