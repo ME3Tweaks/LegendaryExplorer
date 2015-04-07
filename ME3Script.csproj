@@ -51,10 +51,12 @@
     <Compile Include="Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
+    <Compile Include="Language\Tree\BooleanLiteral.cs" />
     <Compile Include="Language\Tree\BreakStatement.cs" />
     <Compile Include="Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="Language\Tree\ContinueStatement.cs" />
     <Compile Include="Language\Tree\DoUntilLoop.cs" />
+    <Compile Include="Language\Tree\FloatLiteral.cs" />
     <Compile Include="Language\Tree\ForLoop.cs" />
     <Compile Include="Language\Tree\FunctionCall.cs" />
     <Compile Include="Language\Tree\InOpDeclaration.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Language\Tree\FunctionParameter.cs" />
     <Compile Include="Language\Tree\IfStatement.cs" />
     <Compile Include="Language\Tree\IntegerLiteral.cs" />
+    <Compile Include="Language\Tree\NameLiteral.cs" />
     <Compile Include="Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="Language\Tree\PostOpDeclaration.cs" />
     <Compile Include="Language\Tree\ReturnStatement.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="Language\Tree\Statement.cs" />
     <Compile Include="Language\Tree\StaticArrayVariable.cs" />
     <Compile Include="Language\Tree\StopStatement.cs" />
+    <Compile Include="Language\Tree\StringLiteral.cs" />
     <Compile Include="Language\Tree\Struct.cs" />
     <Compile Include="Language\Tree\PreOpDeclaration.cs" />
     <Compile Include="Language\Tree\SymbolReference.cs" />

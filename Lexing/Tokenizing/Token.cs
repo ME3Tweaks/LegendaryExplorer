@@ -213,6 +213,8 @@ namespace ME3Script.Lexing.Tokenizing
         Word,
         IntegerNumber,
         FloatingNumber,
+        True,
+        False,
         Scope,
         StructMember,
         Extends,

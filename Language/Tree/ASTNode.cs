@@ -44,6 +44,7 @@ namespace ME3Script.Language.Tree
         FloatLiteral,
         StringLiteral,
         NameLiteral,
+        BooleanLiteral,
 
         INVALID
     }

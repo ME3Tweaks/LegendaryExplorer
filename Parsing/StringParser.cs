@@ -1029,9 +1029,28 @@ namespace ME3Script.Parsing
             Func<ASTNode> callParser = () =>
             {
                 // TODO: special parsing for call specifiers (Super/Global)
+                var funcRef = TryParseReference();
+                if (funcRef == null)
+                    return null;
 
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                    return null;
 
-                return null;
+                List<Expression> parameters = new List<Expression>();
+                var param = TryParseExpression();
+                while (param != null)
+                {
+                    parameters.Add(param);
+                    param = TryParseExpression();
+                }
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                {
+                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return new FunctionCall(funcRef, parameters, funcRef.StartPos, CurrentPosition);
             };
             return (FunctionCall)Tokens.TryGetTree(callParser);
         }
@@ -1124,6 +1143,19 @@ namespace ME3Script.Parsing
             return (IntegerLiteral)Tokens.TryGetTree(intParser);
         }
 
+        public BooleanLiteral TryParseBoolean()
+        {
+            Func<ASTNode> boolParser = () =>
+            {
+                if (CurrentTokenType != TokenType.True && CurrentTokenType != TokenType.False)
+                    return null;
+
+                var token = Tokens.ConsumeToken(CurrentTokenType);
+                return new BooleanLiteral(Boolean.Parse(token.Value), token.StartPosition, token.EndPosition);
+            };
+            return (BooleanLiteral)Tokens.TryGetTree(boolParser);
+        }
+
         public FloatLiteral TryParseFloat()
         {
             Func<ASTNode> floatParser = () =>
@@ -1150,7 +1182,7 @@ namespace ME3Script.Parsing
             return (NameLiteral)Tokens.TryGetTree(nameParser);
         }
 
-        public StringLiteral TryParseName()
+        public StringLiteral TryParseString()
         {
             Func<ASTNode> stringParser = () =>
             {

@@ -207,7 +207,9 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("ForEach", TokenType.ForEach, Delimiters, false),
                 new KeywordMatcher("return", TokenType.Return, Delimiters, false),
                 new KeywordMatcher("switch", TokenType.Switch, Delimiters, false),
-                new KeywordMatcher("case", TokenType.Case, Delimiters, false)
+                new KeywordMatcher("case", TokenType.Case, Delimiters, false),
+                new KeywordMatcher("true", TokenType.True, Delimiters, false),
+                new KeywordMatcher("false", TokenType.False, Delimiters, false)
             };
         }
 
