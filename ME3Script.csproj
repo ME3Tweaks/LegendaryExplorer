@@ -65,6 +65,7 @@
     <Compile Include="Language\Tree\Function.cs" />
     <Compile Include="Language\Tree\FunctionParameter.cs" />
     <Compile Include="Language\Tree\IfStatement.cs" />
+    <Compile Include="Language\Tree\IntegerLiteral.cs" />
     <Compile Include="Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="Language\Tree\PostOpDeclaration.cs" />
     <Compile Include="Language\Tree\ReturnStatement.cs" />

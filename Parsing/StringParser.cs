@@ -1068,10 +1068,14 @@ namespace ME3Script.Parsing
 
                 if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) == null)
                     return null;
-                // TODO: support non-literal indexes!
-                var index = Tokens.ConsumeToken(TokenType.IntegerNumber);
+
+                Expression index;
+                index = TryParseExpression();
                 if (index == null)
+                {
+                    Log.LogError("Expected a valid expression or number as array index!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
+                }
 
                 if (Tokens.ConsumeToken(TokenType.RightSqrBracket) == null)
                 {
@@ -1079,7 +1083,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                return new ArraySymbolRef(token.Value, Int32.Parse(index.Value), token.StartPosition, CurrentPosition);
+                return new ArraySymbolRef(token.Value, index, token.StartPosition, CurrentPosition);
             };
             return (ArraySymbolRef)Tokens.TryGetTree(refParser);
         }
@@ -1105,6 +1109,19 @@ namespace ME3Script.Parsing
                 return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
             };
             return (CompositeSymbolRef)Tokens.TryGetTree(refParser);
+        }
+
+        public IntegerLiteral TryParseInteger()
+        {
+            Func<ASTNode> intParset = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                if (token == null)
+                    return null;
+
+                return new IntegerLiteral(Int32.Parse(token.Value), token.StartPosition, token.EndPosition);
+            };
+            return (IntegerLiteral)Tokens.TryGetTree(intParset);
         }
 
         #endregion

@@ -40,6 +40,11 @@ namespace ME3Script.Language.Tree
         ArrayReference,
         CompositeReference,
 
+        IntegerLiteral,
+        FloatLiteral,
+        StringLiteral,
+        NameLiteral,
+
         INVALID
     }
 
