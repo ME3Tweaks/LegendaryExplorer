@@ -35,6 +35,11 @@ namespace ME3Script.Language.Tree
         ReturnStatement,
         StopStatement,
 
+        FunctionCall,
+        SymbolReference,
+        ArrayReference,
+        CompositeReference,
+
         INVALID
     }
 
