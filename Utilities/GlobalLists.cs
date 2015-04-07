@@ -159,7 +159,7 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("array", TokenType.Array, Delimiters, false),
                 new KeywordMatcher("struct", TokenType.Struct, Delimiters, false),
                 new KeywordMatcher("class", TokenType.Class, Delimiters, false),
-                //new KeywordMatcher("Name", TokenType.Name, Delimiters, false),
+                new KeywordMatcher("Name", TokenType.Name, Delimiters, false),
                 //new KeywordMatcher("Object", TokenType.Object, Delimiters, false),
                 //new KeywordMatcher("Actor", TokenType.Actor, Delimiters, false),
                 new KeywordMatcher("delegate", TokenType.Delegate, Delimiters, false),

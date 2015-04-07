@@ -44,7 +44,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<String>(TokenType.String, value, start, end);
+                return new Token<String>(TokenType.Name, value, start, end);
             }
             return null;
         }

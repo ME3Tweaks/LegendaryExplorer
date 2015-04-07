@@ -189,7 +189,7 @@ namespace ME3Script.Lexing.Tokenizing
         Delegate,
         Operator,
         // Unrealengine types:
-        //Name,
+        Name,
         //Object,
         //Actor,
         //Vector,

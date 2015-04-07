@@ -1113,7 +1113,7 @@ namespace ME3Script.Parsing
 
         public IntegerLiteral TryParseInteger()
         {
-            Func<ASTNode> intParset = () =>
+            Func<ASTNode> intParser = () =>
             {
                 var token = Tokens.ConsumeToken(TokenType.IntegerNumber);
                 if (token == null)
@@ -1121,7 +1121,46 @@ namespace ME3Script.Parsing
 
                 return new IntegerLiteral(Int32.Parse(token.Value), token.StartPosition, token.EndPosition);
             };
-            return (IntegerLiteral)Tokens.TryGetTree(intParset);
+            return (IntegerLiteral)Tokens.TryGetTree(intParser);
+        }
+
+        public FloatLiteral TryParseFloat()
+        {
+            Func<ASTNode> floatParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.FloatingNumber);
+                if (token == null)
+                    return null;
+
+                return new FloatLiteral(Single.Parse(token.Value), token.StartPosition, token.EndPosition);
+            };
+            return (FloatLiteral)Tokens.TryGetTree(floatParser);
+        }
+
+        public NameLiteral TryParseName()
+        {
+            Func<ASTNode> nameParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Name);
+                if (token == null)
+                    return null;
+
+                return new NameLiteral(token.Value, token.StartPosition, token.EndPosition);
+            };
+            return (NameLiteral)Tokens.TryGetTree(nameParser);
+        }
+
+        public StringLiteral TryParseName()
+        {
+            Func<ASTNode> stringParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.String);
+                if (token == null)
+                    return null;
+
+                return new StringLiteral(token.Value, token.StartPosition, token.EndPosition);
+            };
+            return (StringLiteral)Tokens.TryGetTree(stringParser);
         }
 
         #endregion
