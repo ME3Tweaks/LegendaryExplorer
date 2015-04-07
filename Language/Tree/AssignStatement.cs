@@ -9,9 +9,9 @@ namespace ME3Script.Language.Tree
 {
     public class AssignStatement : Statement
     {
-        public Variable Target;
+        public SymbolReference Target;
         public Expression Value;
-        public AssignStatement(Variable target, Expression value,
+        public AssignStatement(SymbolReference target, Expression value,
             SourcePosition start, SourcePosition end) 
             : base(ASTNodeType.AssignStatement, start, end) 
         {

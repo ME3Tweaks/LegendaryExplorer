@@ -800,7 +800,7 @@ namespace ME3Script.Parsing
             Func<ASTNode> assignParser = () =>
             {
                 // TODO: support dot '.' notation here for classes / structs!
-                var target = Tokens.ConsumeToken(TokenType.Word);
+                var target = TryParseReference();
                 var assign = Tokens.ConsumeToken(TokenType.Assign);
                 if (assign == null)
                     return null;
@@ -817,8 +817,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                var variable = new Variable(target.Value, target.StartPosition, target.EndPosition);
-                return new AssignStatement(variable, value, assign.StartPosition, assign.EndPosition);
+                return new AssignStatement(target, value, assign.StartPosition, assign.EndPosition);
             };
             return (AssignStatement)Tokens.TryGetTree(assignParser);
         }
