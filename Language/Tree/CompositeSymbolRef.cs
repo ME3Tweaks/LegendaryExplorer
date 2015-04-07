@@ -10,11 +10,13 @@ namespace ME3Script.Language.Tree
     public class CompositeSymbolRef : SymbolReference
     {
         public SymbolReference InnerSymbol;
+        public SymbolReference OuterSymbol;
 
-        public CompositeSymbolRef(String symbol, SymbolReference inner, SourcePosition start, SourcePosition end)
-            : base(symbol, start, end)
+        public CompositeSymbolRef(SymbolReference outer, SymbolReference inner, SourcePosition start, SourcePosition end)
+            : base(outer.Symbol, start, end)
         {
             InnerSymbol = inner;
+            OuterSymbol = outer;
             Type = ASTNodeType.CompositeReference;
         }
     }

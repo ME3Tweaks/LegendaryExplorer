@@ -1024,7 +1024,88 @@ namespace ME3Script.Parsing
             return (Expression)Tokens.TryGetTree(exprParser);
         }
 
+        public FunctionCall TryParseFunctionCall()
+        {
+            Func<ASTNode> callParser = () =>
+            {
+                // TODO: special parsing for call specifiers (Super/Global)
 
+
+                return null;
+            };
+            return (FunctionCall)Tokens.TryGetTree(callParser);
+        }
+
+        public SymbolReference TryParseReference()
+        {
+            Func<ASTNode> refParser = () =>
+            {
+                return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
+            };
+            return (SymbolReference)Tokens.TryGetTree(refParser);
+        }
+
+        public SymbolReference TryParseBasicRef()
+        {
+            Func<ASTNode> refParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Word);
+                if (token == null)
+                    return null;
+
+                return new SymbolReference(token.Value, token.StartPosition, token.EndPosition);
+            };
+            return (SymbolReference)Tokens.TryGetTree(refParser);
+        }
+
+        public ArraySymbolRef TryParseArrayRef()
+        {
+            Func<ASTNode> refParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Word);
+                if (token == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) == null)
+                    return null;
+                // TODO: support non-literal indexes!
+                var index = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                if (index == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.RightSqrBracket) == null)
+                {
+                    Log.LogError("Expected ']'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return new ArraySymbolRef(token.Value, Int32.Parse(index.Value), token.StartPosition, CurrentPosition);
+            };
+            return (ArraySymbolRef)Tokens.TryGetTree(refParser);
+        }
+
+        public CompositeSymbolRef TryParseCompositeRef()
+        {
+            Func<ASTNode> refParser = () =>
+            {
+                SymbolReference outer = TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
+                if (outer == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.Dot) == null)
+                    return null;
+
+                SymbolReference inner = TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
+                if (inner == null)
+                {
+                    Log.LogError("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    return null;
+                }
+
+                return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
+            };
+            return (CompositeSymbolRef)Tokens.TryGetTree(refParser);
+        }
 
         #endregion
         #region Misc
