@@ -25,7 +25,7 @@ namespace ME3Script.Language.Tree
             Precedence = precedence;
         }
 
-        public override void VisitNode(IASTVisitor visitor)
+        public override bool VisitNode(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }

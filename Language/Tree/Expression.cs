@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public Expression(ASTNodeType type, SourcePosition start, SourcePosition end) 
             : base(type, start, end) { }
 
-        public override void VisitNode(IASTVisitor visitor)
+        public override bool VisitNode(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }

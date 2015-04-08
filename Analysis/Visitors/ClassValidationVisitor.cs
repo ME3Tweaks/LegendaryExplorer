@@ -20,7 +20,7 @@ namespace ME3Script.Analysis.Visitors
         {
             Log = log;
             Symbols = symbols;
-            Success = false;
+            Success = true;
         }
 
         private bool Error(String msg, SourcePosition start = null, SourcePosition end = null)
@@ -66,6 +66,21 @@ namespace ME3Script.Analysis.Visitors
             }
 
             // TODO(?) validate class specifiers more than the initial parsing?
+
+            // Messy, should probably be refactored to happen in the parsing state later.
+            // Though this way we avoid a LOT of extra cruff there.
+            foreach (VariableType type in node.TypeDeclarations)
+                type.Outer = node;
+            foreach (VariableDeclaration decl in node.VariableDeclarations)
+                decl.Outer = node;
+            foreach (VariableDeclaration decl in node.VariableDeclarations)
+                decl.Outer = node;
+            foreach (OperatorDeclaration op in node.Operators)
+                op.Outer = node;
+            foreach (Function func in node.Functions)
+                func.Outer = node;
+            foreach (State state in node.States)
+                state.Outer = node;
 
             return Success;
         }

@@ -26,7 +26,7 @@ namespace ME3Script.Language.Tree
             Update = update;
         }
 
-        public override void VisitNode(IASTVisitor visitor)
+        public override bool VisitNode(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }

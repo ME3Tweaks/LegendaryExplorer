@@ -8,6 +8,6 @@ namespace ME3Script.Analysis.Visitors
 {
     interface IAcceptASTVisitor
     {
-        void VisitNode(IASTVisitor visitor);
+        bool VisitNode(IASTVisitor visitor);
     }
 }

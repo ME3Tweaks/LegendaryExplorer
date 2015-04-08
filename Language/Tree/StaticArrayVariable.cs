@@ -19,7 +19,7 @@ namespace ME3Script.Language.Tree
             Type = ASTNodeType.StaticArrayVariable;
         }
 
-        public override void VisitNode(IASTVisitor visitor)
+        public override bool VisitNode(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }

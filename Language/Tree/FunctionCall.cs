@@ -20,7 +20,7 @@ namespace ME3Script.Language.Tree
             Parameters = parameters;
         }
 
-        public override void VisitNode(IASTVisitor visitor)
+        public override bool VisitNode(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }
