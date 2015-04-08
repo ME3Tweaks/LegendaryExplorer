@@ -799,7 +799,6 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> assignParser = () =>
             {
-                // TODO: support dot '.' notation here for classes / structs!
                 var target = TryParseReference();
                 var assign = Tokens.ConsumeToken(TokenType.Assign);
                 if (assign == null)
@@ -1017,10 +1016,40 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> exprParser = () =>
             {
-
+                // expr' = TryParseExpressionLeaf() operator TryParseExpression | TryParseExpressionLeaf()
+                // ( TryParseExpression ) operator TryParseExpression | ( TryParseExpression ) | expr'
+                // 
                 return null;
             };
             return (Expression)Tokens.TryGetTree(exprParser);
+        }
+
+        public Expression TryParsePreOperator()
+        {
+            Func<ASTNode> preopParser = () =>
+            {
+                return null;
+            };
+            return (Expression)Tokens.TryGetTree(preopParser);
+        }
+
+        public Expression TryParseExpressionLeaf()
+        {
+            Func<ASTNode> exprParser = () =>
+            {
+                //TODO: add 'new' here
+                return TryParseFunctionCall() ?? TryParseReference() ?? TryParseLiteral() ?? (Expression)null;
+            };
+            return (Expression)Tokens.TryGetTree(exprParser);
+        }
+
+        public Expression TryParseLiteral()
+        {
+            Func<ASTNode> literalParser = () =>
+            {
+                return TryParseInteger() ?? TryParseFloat() ?? TryParseString() ?? TryParseName() ?? TryParseBoolean() ?? (Expression)null;
+            };
+            return (Expression)Tokens.TryGetTree(literalParser);
         }
 
         public FunctionCall TryParseFunctionCall()
