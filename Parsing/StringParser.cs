@@ -170,7 +170,7 @@ namespace ME3Script.Parsing
                     if (parentClass == null)
                     {
                         Log.LogMessage("No parent class specified for " + name.Value + ", interiting from Object");
-                        parentClass = new Variable("Object", null, null);
+                        parentClass = new VariableType("Object", null, null);
                     }
 
                     var outerClass = TryParseOuter();
@@ -1267,7 +1267,7 @@ namespace ME3Script.Parsing
             return (VariableType)Tokens.TryGetTree(typeParser);
         }
 
-        public Variable TryParseParent()
+        public VariableType TryParseParent()
         {
             Func<ASTNode> parentParser = () =>
             {
@@ -1279,12 +1279,12 @@ namespace ME3Script.Parsing
                     Log.LogError("Expected parent name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
-                return new Variable(parentName.Value, parentName.StartPosition, parentName.EndPosition);
+                return new VariableType(parentName.Value, parentName.StartPosition, parentName.EndPosition);
             };
-            return (Variable)Tokens.TryGetTree(parentParser);
+            return (VariableType)Tokens.TryGetTree(parentParser);
         }
 
-        public Variable TryParseOuter()
+        public VariableType TryParseOuter()
         {
             Func<ASTNode> outerParser = () =>
             {
@@ -1296,9 +1296,9 @@ namespace ME3Script.Parsing
                     Log.LogError("Expected outer class name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
-                return new Variable(outerName.Value, outerName.StartPosition, outerName.EndPosition);
+                return new VariableType(outerName.Value, outerName.StartPosition, outerName.EndPosition);
             };
-            return (Variable)Tokens.TryGetTree(outerParser);
+            return (VariableType)Tokens.TryGetTree(outerParser);
         }
 
         private Specifier TryParseSpecifier(List<TokenType> category)

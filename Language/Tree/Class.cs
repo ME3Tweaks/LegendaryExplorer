@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class Class : ASTNode
+    public class Class : VariableType
     {
-        public String Name;
-        public Variable Parent;
-        public Variable OuterClass;
+        public VariableType Parent;
+        public VariableType OuterClass;
         public List<Specifier> Specifiers;
         public List<VariableDeclaration> VariableDeclarations;
         public List<VariableType> TypeDeclarations;
@@ -21,11 +20,10 @@ namespace ME3Script.Language.Tree
 
         public Class(String name, List<Specifier> specs, 
             List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
-            List<State> states, Variable parent, Variable outer, List<OperatorDeclaration> ops,
+            List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
             SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.Class, start, end)
+            : base(name, start, end)
         {
-            Name = name;
             Parent = parent;
             OuterClass = outer;
             Specifiers = specs;
@@ -34,6 +32,23 @@ namespace ME3Script.Language.Tree
             Functions = funcs;
             States = states;
             Operators = ops;
+            Type = ASTNodeType.Class;
         }
+
+        #region Helpers
+
+        public bool Extends(String name)
+        {
+            Class current = this;
+            while (current.Parent.Name != "Object")
+            {
+                if (current.Parent.Name == name)
+                    return true;
+                current = (Class)current.Parent;
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

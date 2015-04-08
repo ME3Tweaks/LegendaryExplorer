@@ -40,10 +40,30 @@ namespace ME3Script.Analysis.Visitors
 
             ASTNode parent;
             if (!Symbols.TryGetSymbol(node.Parent.Name, out parent))
-                Error("No parent class named '" + node.Name + "' found!", node.StartPos, node.EndPos);
-            if (parent != null && parent.Type != ASTNodeType.Class)
-                Error("Parent named '" + node.Name + "' is not a class!", node.StartPos, node.EndPos);
+                Error("No parent class named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
+            if (parent != null)
+            {
+                if (parent.Type != ASTNodeType.Class)
+                    Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
+                else if ((parent as Class).Extends(node.Name))
+                    Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                else
+                    node.Parent = (Class)parent;
+            }
 
+            if (node.OuterClass != null)
+            {
+                ASTNode outer;
+                if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer))
+                    Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                if (outer != null)
+                {
+                    if (outer.Type != ASTNodeType.Class)
+                        Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                    else
+                        node.OuterClass = (Class)outer;
+                }
+            }
 
             return Success;
         }

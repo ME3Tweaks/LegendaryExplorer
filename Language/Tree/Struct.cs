@@ -10,12 +10,12 @@ namespace ME3Script.Language.Tree
     public class Struct : VariableType
     {
         public List<Specifier> Specifiers;
-        public Variable Parent;
+        public VariableType Parent;
         public List<VariableDeclaration> Members;
 
         public Struct(String name, List<Specifier> specs,
             List<VariableDeclaration> members,
-            SourcePosition start, SourcePosition end, Variable parent = null)
+            SourcePosition start, SourcePosition end, VariableType parent = null)
             : base(name, start, end)
         {
             Type = ASTNodeType.Struct;
