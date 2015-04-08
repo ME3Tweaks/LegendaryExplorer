@@ -7,7 +7,7 @@ using ME3Script.Language.Tree;
 
 namespace ME3Script.Analysis.Visitors
 {
-    interface IASTVisitor
+    public interface IASTVisitor
     {
         bool VisitNode(Class node);
         bool VisitNode(VariableDeclaration node);

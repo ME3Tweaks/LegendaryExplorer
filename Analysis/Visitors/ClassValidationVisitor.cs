@@ -65,6 +65,8 @@ namespace ME3Script.Analysis.Visitors
                 }
             }
 
+            // TODO(?) validate class specifiers more than the initial parsing?
+
             return Success;
         }
 

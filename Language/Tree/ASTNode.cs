@@ -1,4 +1,5 @@
-﻿using ME3Script.Utilities;
+﻿using ME3Script.Analysis.Visitors;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +50,11 @@ namespace ME3Script.Language.Tree
         INVALID
     }
 
-    public abstract class ASTNode
+    public abstract class ASTNode : IAcceptASTVisitor
     {
         public ASTNodeType Type;
 
-        public ASTNode ParentNode;
+        public ASTNode Outer;
 
         public SourcePosition StartPos { get; private set; }
         public SourcePosition EndPos { get; private set; }
@@ -63,5 +64,7 @@ namespace ME3Script.Language.Tree
             Type = type;
             StartPos = start; EndPos = end;
         }
+
+        public abstract void VisitNode(IASTVisitor visitor);
     }
 }
