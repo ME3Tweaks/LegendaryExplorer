@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Analysis.Symbols
 {
-
     public class SymbolTable
     {
         private Dictionary<String, Dictionary<String, ASTNode>> Cache;
@@ -53,6 +52,49 @@ namespace ME3Script.Analysis.Symbols
 
             Scopes.RemoveLast();
             ScopeNames.RemoveLast();
+        }
+
+        public bool TryGetSymbol(String symbol, out ASTNode node)
+        {
+            LinkedListNode<Dictionary<String, ASTNode>> it;
+            for (it = Scopes.First; it != null; it = it.Previous)
+            {
+                if (it.Value.TryGetValue(symbol, out node))
+                    return true;
+            }
+            node = null;
+            return false;
+        }
+
+        public bool SymbolExists(String symbol)
+        {
+            LinkedListNode<Dictionary<String, ASTNode>> it;
+            for (it = Scopes.First; it != null; it = it.Previous)
+            {
+                if (it.Value.ContainsKey(symbol))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool SymbolExistsInCurrentScope(String symbol)
+        {
+            return Scopes.Last().ContainsKey(symbol);
+        }
+
+        public void AddSymbol(String symbol, ASTNode node)
+        {
+            Scopes.Last().Add(symbol, node);
+        }
+
+        public bool TryAddSymbol(String symbol, ASTNode node)
+        {
+            if (!SymbolExistsInCurrentScope(symbol))
+            {
+                Scopes.Last().Add(symbol, node);
+                return true;
+            }
+            return false;
         }
     }
 }
