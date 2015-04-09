@@ -42,7 +42,6 @@ namespace ME3Script.Analysis.Visitors
                 return Error("A class named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
 
             Symbols.AddSymbol(node.Name, node);
-            Symbols.PushScope(node.Name);
 
             ASTNode parent;
             if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, ""))
@@ -51,7 +50,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 if (parent.Type != ASTNodeType.Class)
                     Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
-                else if ((parent as Class).IsClassOrSubClass(node.Name))
+                else if ((parent as Class).SameOrSubClass(node.Name)) // TODO: not needed due to no forward declarations?
                     Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                 else
                     node.Parent = parent as Class;
@@ -66,7 +65,7 @@ namespace ME3Script.Analysis.Visitors
                     Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                 else if (node.Parent.Name == "Actor")
                     Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                else if (!(outer as Class).IsClassOrSubClass((node.Parent as Class).OuterClass.Name))
+                else if (!(outer as Class).SameOrSubClass((node.Parent as Class).OuterClass.Name))
                     Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
             }
             else
@@ -76,6 +75,9 @@ namespace ME3Script.Analysis.Visitors
             node.OuterClass = outer as Class;
 
             // TODO(?) validate class specifiers more than the initial parsing?
+
+            Symbols.GoDirectlyToStack((node.Parent as Class).GetInheritanceString());
+            Symbols.PushScope(node.Name);
 
             foreach (VariableType type in node.TypeDeclarations)
             {
@@ -109,6 +111,7 @@ namespace ME3Script.Analysis.Visitors
             }
 
             Symbols.PopScope();
+            Symbols.RevertToObjectStack();
             return Success;
         }
 
@@ -129,9 +132,24 @@ namespace ME3Script.Analysis.Visitors
                 return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
 
             Symbols.AddSymbol(node.Name, node);
+
+            if (node.Parent != null)
+            {
+                ASTNode parent;
+                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, GetOuterScope(node)))
+                    Error("No parent struct named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
+                if (parent != null)
+                {
+                    if (parent.Type != ASTNodeType.Struct)
+                        Error("Parent named '" + node.Parent.Name + "' is not a struct!", node.Parent.StartPos, node.Parent.EndPos);
+                    else if ((parent as Struct).SameOrSubStruct(node.Name)) // TODO: not needed due to no forward declarations?
+                        Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                    else
+                        node.Parent = parent as Struct;
+                }
+            }
+
             Symbols.PushScope(node.Name);
-
-
 
             foreach (VariableDeclaration decl in node.Members)
             {

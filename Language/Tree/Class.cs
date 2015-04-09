@@ -43,7 +43,7 @@ namespace ME3Script.Language.Tree
 
         #region Helpers
 
-        public bool IsClassOrSubClass(String name)
+        public bool SameOrSubClass(String name)
         {
             if (this.Name == name)
                 return true;

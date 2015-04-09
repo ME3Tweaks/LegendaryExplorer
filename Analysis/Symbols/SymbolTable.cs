@@ -68,8 +68,11 @@ namespace ME3Script.Analysis.Symbols
 
         public bool TryGetSymbolInScopeStack(String symbol, out ASTNode node, String lowestScope)
         {
-            LinkedList<Dictionary<String, ASTNode>> stack;
             node = null;
+            if (lowestScope == "Object") //As all classes inherit from object this is already checked.
+                return false;
+
+            LinkedList<Dictionary<String, ASTNode>> stack;
             if (!TryBuildSpecificScope(lowestScope, out stack))
                 return false;
 
@@ -108,6 +111,19 @@ namespace ME3Script.Analysis.Symbols
             return Scopes.Last().ContainsKey(symbol);
         }
 
+        public bool TryGetSymbolFromCurrentScope(String symbol, out ASTNode node)
+        {
+            return Scopes.Last().TryGetValue(symbol, out node);
+        }
+
+        public bool TryGetSymbolFromSpecificScope(String symbol, out ASTNode node, String specificScope)
+        {
+            node = null;
+            Dictionary<String, ASTNode> scope;
+            return Cache.TryGetValue(specificScope, out scope) &&
+                scope.TryGetValue(symbol, out node);
+        }
+
         public void AddSymbol(String symbol, ASTNode node)
         {
             Scopes.Last().Add(symbol, node);
@@ -121,6 +137,31 @@ namespace ME3Script.Analysis.Symbols
                 return true;
             }
             return false;
+        }
+
+        public bool GoDirectlyToStack(String lowestScope)
+        {
+            // TODO: 5 AM coding.. REVISIT THIS!
+            if (CurrentScopeName != "Object")
+                throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
+            if (lowestScope == "Object")
+                return true;
+
+            var scopes = lowestScope.Split('.');
+            for (int n = 1; n < scopes.Length; n++) // Start after "Object."
+            {
+                if (!Cache.ContainsKey(CurrentScopeName + "." + scopes[n]))
+                    return false; // this should not happen? possibly load classes from ppc on demand?
+                PushScope(scopes[n]);
+            }
+
+            return true;
+        }
+
+        public void RevertToObjectStack()
+        {
+            while (CurrentScopeName != "Object")
+                PopScope();
         }
     }
 }

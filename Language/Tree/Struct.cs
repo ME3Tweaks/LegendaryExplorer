@@ -29,5 +29,19 @@ namespace ME3Script.Language.Tree
         {
             return this.AcceptVisitor(visitor);;
         }
+
+        public bool SameOrSubStruct(String name)
+        {
+            if (this.Name == name)
+                return true;
+            Struct current = this;
+            while (current.Parent != null)
+            {
+                if (current.Parent.Name == name)
+                    return true;
+                current = (Struct)current.Parent;
+            }
+            return false;
+        }
     }
 }
