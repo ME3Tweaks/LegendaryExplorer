@@ -51,18 +51,19 @@ namespace ME3Script.Analysis.Visitors
                     node.Parent = (Class)parent;
             }
 
+            ASTNode outer;
             if (node.OuterClass != null)
             {
-                ASTNode outer;
-                if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer))
-                    Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                if (outer != null)
-                {
-                    if (outer.Type != ASTNodeType.Class)
-                        Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                    else
-                        node.OuterClass = (Class)outer;
-                }
+
+            }
+            if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer))
+                Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+            if (outer != null)
+            {
+                if (outer.Type != ASTNodeType.Class)
+                    Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                else
+                    node.OuterClass = (Class)outer;
             }
 
             // TODO(?) validate class specifiers more than the initial parsing?
@@ -98,7 +99,11 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Struct node)
         {
-            throw new NotImplementedException();
+            if (Symbols.SymbolExists(node.Name))
+                return Error("A struct named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
+
+
+            return Success;
         }
 
         public bool VisitNode(Enumeration node)

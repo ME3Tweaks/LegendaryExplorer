@@ -27,7 +27,10 @@ namespace ME3Script.Language.Tree
 
         public override bool VisitNode(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            bool status = this.VisitNode(visitor);
+            foreach (VariableDeclaration decl in Members)
+                status = status && decl.VisitNode(visitor);
+            return status;
         }
     }
 }

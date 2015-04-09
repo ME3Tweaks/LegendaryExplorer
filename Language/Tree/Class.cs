@@ -41,17 +41,17 @@ namespace ME3Script.Language.Tree
             bool status = true;
             status = this.VisitNode(visitor);
             foreach (VariableType type in TypeDeclarations)
-                status = type.VisitNode(visitor);
+                status = status && type.VisitNode(visitor);
             foreach (VariableDeclaration decl in VariableDeclarations)
-                status = decl.VisitNode(visitor);
+                status = status && decl.VisitNode(visitor);
             foreach (VariableDeclaration decl in VariableDeclarations)
-                status = decl.VisitNode(visitor);
+                status = status && decl.VisitNode(visitor);
             foreach (OperatorDeclaration op in Operators)
-                status = op.VisitNode(visitor);
+                status = status && op.VisitNode(visitor);
             foreach (Function func in Functions)
-                status = func.VisitNode(visitor);
+                status = status && func.VisitNode(visitor);
             foreach (State state in States)
-                status = state.VisitNode(visitor);
+                status = status && state.VisitNode(visitor);
             return status;
         }
 

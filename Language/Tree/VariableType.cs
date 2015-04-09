@@ -19,7 +19,7 @@ namespace ME3Script.Language.Tree
 
         public override bool VisitNode(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            return this.VisitNode(visitor);
         }
     }
 }
