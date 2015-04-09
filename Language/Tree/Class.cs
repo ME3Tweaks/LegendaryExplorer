@@ -57,8 +57,10 @@ namespace ME3Script.Language.Tree
 
         #region Helpers
 
-        public bool Extends(String name)
+        public bool IsClassOrSubClass(String name)
         {
+            if (this.Name == name)
+                return true;
             Class current = this;
             while (current.Parent.Name != "Object")
             {
@@ -67,6 +69,18 @@ namespace ME3Script.Language.Tree
                 current = (Class)current.Parent;
             }
             return false;
+        }
+
+        public String GetInheritanceString()
+        {
+            String str = this.Name;
+            Class current = this;
+            while (current.Parent != null)
+            {
+                current = current.Parent as Class;
+                str = current.Name + "." + str; 
+            }
+            return str;
         }
 
         #endregion

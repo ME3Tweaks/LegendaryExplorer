@@ -32,39 +32,43 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Class node)
         {
-            if (Symbols.SymbolExists(node.Name))
+            // TODO: allow duplicate names as long as its in different packages!
+            if (Symbols.SymbolExists(node.Name, ""))
                 return Error("A class named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
 
             Symbols.AddSymbol(node.Name, node);
             Symbols.PushScope(node.Name);
 
             ASTNode parent;
-            if (!Symbols.TryGetSymbol(node.Parent.Name, out parent))
+            if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, ""))
                 Error("No parent class named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
             if (parent != null)
             {
                 if (parent.Type != ASTNodeType.Class)
                     Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
-                else if ((parent as Class).Extends(node.Name))
+                else if ((parent as Class).IsClassOrSubClass(node.Name))
                     Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                 else
-                    node.Parent = (Class)parent;
+                    node.Parent = parent as Class;
             }
 
             ASTNode outer;
             if (node.OuterClass != null)
             {
-
-            }
-            if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer))
-                Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-            if (outer != null)
-            {
-                if (outer.Type != ASTNodeType.Class)
+                if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer, ""))
+                    Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                else if (outer.Type != ASTNodeType.Class)
                     Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                else
-                    node.OuterClass = (Class)outer;
+                else if (node.Parent.Name == "Actor")
+                    Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                else if (!(outer as Class).IsClassOrSubClass((node.Parent as Class).OuterClass.Name))
+                    Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
             }
+            else
+            {
+                outer = (node.Parent as Class).OuterClass;
+            }
+            node.OuterClass = outer as Class;
 
             // TODO(?) validate class specifiers more than the initial parsing?
 
@@ -99,7 +103,9 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Struct node)
         {
-            if (Symbols.SymbolExists(node.Name))
+            String classOuterScope = ((node.Outer as Class).OuterClass as Class).GetInheritanceString();
+
+            if (Symbols.SymbolExists(node.Name, classOuterScope))
                 return Error("A struct named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
 
 
