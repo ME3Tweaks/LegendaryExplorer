@@ -30,6 +30,11 @@ namespace ME3Script.Analysis.Visitors
             return false;
         }
 
+        private String GetOuterScope(ASTNode node)
+        {
+            return ((node.Outer as Class).OuterClass as Class).GetInheritanceString();
+        }
+
         public bool VisitNode(Class node)
         {
             // TODO: allow duplicate names as long as its in different packages!
@@ -72,21 +77,38 @@ namespace ME3Script.Analysis.Visitors
 
             // TODO(?) validate class specifiers more than the initial parsing?
 
-            // Messy, should probably be refactored to happen in the parsing state later.
-            // Though this way we avoid a LOT of extra cruff there.
             foreach (VariableType type in node.TypeDeclarations)
+            {
                 type.Outer = node;
+                Success = Success && type.AcceptVisitor(this);
+            }
             foreach (VariableDeclaration decl in node.VariableDeclarations)
+            {
                 decl.Outer = node;
+                Success = Success && decl.AcceptVisitor(this);
+            }
             foreach (VariableDeclaration decl in node.VariableDeclarations)
+            {
                 decl.Outer = node;
+                Success = Success && decl.AcceptVisitor(this);
+            }
             foreach (OperatorDeclaration op in node.Operators)
+            {
                 op.Outer = node;
+                Success = Success && op.AcceptVisitor(this);
+            }
             foreach (Function func in node.Functions)
+            {
                 func.Outer = node;
+                Success = Success && func.AcceptVisitor(this);
+            }
             foreach (State state in node.States)
+            {
                 state.Outer = node;
+                Success = Success && state.AcceptVisitor(this);
+            }
 
+            Symbols.PopScope();
             return Success;
         }
 
@@ -103,12 +125,21 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Struct node)
         {
-            String classOuterScope = ((node.Outer as Class).OuterClass as Class).GetInheritanceString();
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
 
-            if (Symbols.SymbolExists(node.Name, classOuterScope))
-                return Error("A struct named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
+            Symbols.AddSymbol(node.Name, node);
+            Symbols.PushScope(node.Name);
 
 
+
+            foreach (VariableDeclaration decl in node.Members)
+            {
+                decl.Outer = node;
+                Success = Success && decl.AcceptVisitor(this);
+            }
+
+            Symbols.PopScope();
             return Success;
         }
 

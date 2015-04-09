@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public StopStatement(SourcePosition start, SourcePosition end)
             : base(ASTNodeType.StopStatement, start, end) { }
 
-        public override bool VisitNode(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
             throw new NotImplementedException();
         }

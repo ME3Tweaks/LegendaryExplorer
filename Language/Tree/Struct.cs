@@ -25,12 +25,9 @@ namespace ME3Script.Language.Tree
             Parent = parent;
         }
 
-        public override bool VisitNode(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            bool status = this.VisitNode(visitor);
-            foreach (VariableDeclaration decl in Members)
-                status = status && decl.VisitNode(visitor);
-            return status;
+            return this.AcceptVisitor(visitor);;
         }
     }
 }

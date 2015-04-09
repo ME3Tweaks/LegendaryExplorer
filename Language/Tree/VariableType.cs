@@ -17,9 +17,9 @@ namespace ME3Script.Language.Tree
             Name = name;
         }
 
-        public override bool VisitNode(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return this.VisitNode(visitor);
+            return this.AcceptVisitor(visitor);
         }
     }
 }

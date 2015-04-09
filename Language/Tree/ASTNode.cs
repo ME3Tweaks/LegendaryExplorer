@@ -65,6 +65,6 @@ namespace ME3Script.Language.Tree
             StartPos = start; EndPos = end;
         }
 
-        public abstract bool VisitNode(IASTVisitor visitor);
+        public abstract bool AcceptVisitor(IASTVisitor visitor);
     }
 }

@@ -36,23 +36,9 @@ namespace ME3Script.Language.Tree
             Type = ASTNodeType.Class;
         }
 
-        public override bool VisitNode(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            bool status = true;
-            status = this.VisitNode(visitor);
-            foreach (VariableType type in TypeDeclarations)
-                status = status && type.VisitNode(visitor);
-            foreach (VariableDeclaration decl in VariableDeclarations)
-                status = status && decl.VisitNode(visitor);
-            foreach (VariableDeclaration decl in VariableDeclarations)
-                status = status && decl.VisitNode(visitor);
-            foreach (OperatorDeclaration op in Operators)
-                status = status && op.VisitNode(visitor);
-            foreach (Function func in Functions)
-                status = status && func.VisitNode(visitor);
-            foreach (State state in States)
-                status = status && state.VisitNode(visitor);
-            return status;
+            return this.AcceptVisitor(visitor);
         }
 
         #region Helpers
