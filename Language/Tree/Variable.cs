@@ -1,5 +1,4 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
+﻿using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +7,21 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class Variable : ASTNode
+    public class Variable : VariableDeclaration
     {
-        public String Name;
-        public Variable(String name, SourcePosition start, SourcePosition end) 
-            : base(ASTNodeType.Variable, start, end) 
+        public VariableIdentifier Name
         {
-            Name = name;
+            get
+            {
+                return Variables.First();
+            }
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public Variable(List<Specifier> specs, VariableIdentifier name,
+            VariableType type, SourcePosition start, SourcePosition end)
+            : base(type, specs, new List<VariableIdentifier> { name }, start, end)
         {
-            throw new NotImplementedException();
+            Type = ASTNodeType.Variable;
         }
     }
 }

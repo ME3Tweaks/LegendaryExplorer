@@ -38,7 +38,7 @@ namespace ME3Script.Language.Tree
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return this.AcceptVisitor(visitor);
+            return visitor.VisitNode(this);
         }
 
         #region Helpers

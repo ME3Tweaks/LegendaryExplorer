@@ -85,6 +85,7 @@
     <Compile Include="Language\Tree\PreOpDeclaration.cs" />
     <Compile Include="Language\Tree\SymbolReference.cs" />
     <Compile Include="Language\Tree\Variable.cs" />
+    <Compile Include="Language\Tree\VariableIdentifier.cs" />
     <Compile Include="Language\Tree\VariableDeclaration.cs" />
     <Compile Include="Language\Tree\Specifier.cs" />
     <Compile Include="Language\Tree\VariableType.cs" />

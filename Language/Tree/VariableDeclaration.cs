@@ -12,12 +12,12 @@ namespace ME3Script.Language.Tree
     {
         public List<Specifier> Specifiers;
         // Can contain StaticArrayVariables as well
-        public List<Variable> Variables;
+        public List<VariableIdentifier> Variables;
         // Can reference an existing type, or declare a new struct/enum type
         public VariableType VarType;
 
         public VariableDeclaration(VariableType type, List<Specifier> specs,
-            List<Variable> names, SourcePosition start, SourcePosition end)
+            List<VariableIdentifier> names, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Specifiers = specs;

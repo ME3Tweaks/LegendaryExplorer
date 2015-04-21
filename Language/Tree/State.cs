@@ -15,11 +15,11 @@ namespace ME3Script.Language.Tree
         public List<Specifier> Specifiers;
         public VariableType Parent;
         public List<Function> Functions;
-        public List<Variable> Ignores;
+        public List<VariableIdentifier> Ignores;
         public List<StateLabel> Labels;
 
         public State(String name, CodeBody body, List<Specifier> specs,
-            VariableType parent, List<Function> funcs, List<Variable> ignores,
+            VariableType parent, List<Function> funcs, List<VariableIdentifier> ignores,
             List<StateLabel> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)
         {

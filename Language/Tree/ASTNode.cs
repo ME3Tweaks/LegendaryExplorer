@@ -19,6 +19,7 @@ namespace ME3Script.Language.Tree
         VariableType,
         Specifier,
         VariableDeclaration,
+        VariableIdentifier,
         Variable,
         StaticArrayVariable,
         Struct,

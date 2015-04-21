@@ -376,7 +376,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                var identifiers = new List<Variable>();
+                var identifiers = new List<VariableIdentifier>();
                 do
                 {
                     var ident = Tokens.ConsumeToken(TokenType.Word);
@@ -385,7 +385,7 @@ namespace ME3Script.Parsing
                         Log.LogError("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                         return null;
                     }
-                    identifiers.Add(new Variable(ident.Value, ident.StartPosition, ident.EndPosition));
+                    identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPosition, ident.EndPosition));
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket)
                     {
                         Log.LogError("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -503,12 +503,12 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                List<Variable> ignores = new List<Variable>();
+                List<VariableIdentifier> ignores = new List<VariableIdentifier>();
                 if (Tokens.ConsumeToken(TokenType.Ignores) != null)
                 {
                     do
                     {
-                        Variable variable = TryParseVariable();
+                        VariableIdentifier variable = TryParseVariable();
                         if (variable == null)
                         {
                             Log.LogError("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -1315,7 +1315,7 @@ namespace ME3Script.Parsing
             return (Specifier)Tokens.TryGetTree(specifierParser);
         }
 
-        public Variable TryParseVariable()
+        public VariableIdentifier TryParseVariable()
         {
             Func<ASTNode> variableParser = () =>
             {
@@ -1341,9 +1341,9 @@ namespace ME3Script.Parsing
                         name.StartPosition, name.EndPosition);
                 }
 
-                return new Variable(name.Value, name.StartPosition, name.EndPosition);
+                return new VariableIdentifier(name.Value, name.StartPosition, name.EndPosition);
             };
-            return (Variable)Tokens.TryGetTree(variableParser);
+            return (VariableIdentifier)Tokens.TryGetTree(variableParser);
         }
 
         public CodeBody TryParseBodyOrStatement(bool allowEmpty = false)
@@ -1393,12 +1393,12 @@ namespace ME3Script.Parsing
             return null;
         }
 
-        public List<Variable> ParseVariableNames()
+        public List<VariableIdentifier> ParseVariableNames()
         {
-            List<Variable> vars = new List<Variable>();
+            List<VariableIdentifier> vars = new List<VariableIdentifier>();
             do
             {
-                Variable variable = TryParseVariable();
+                VariableIdentifier variable = TryParseVariable();
                 if (variable == null)
                 {
                     Log.LogError("Expected at least one variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));

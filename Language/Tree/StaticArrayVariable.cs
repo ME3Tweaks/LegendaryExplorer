@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class StaticArrayVariable : Variable
+    public class StaticArrayVariable : VariableIdentifier
     {
         public int Size;
         public StaticArrayVariable(String name, int size,

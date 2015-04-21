@@ -10,8 +10,8 @@ namespace ME3Script.Language.Tree
 {
     public class Enumeration : VariableType
     {
-        public List<Variable> Values;
-        public Enumeration(String name, List<Variable> values,
+        public List<VariableIdentifier> Values;
+        public Enumeration(String name, List<VariableIdentifier> values,
             SourcePosition start, SourcePosition end)
             : base(name, start, end)
         {
@@ -21,7 +21,7 @@ namespace ME3Script.Language.Tree
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            return visitor.VisitNode(this);
         }
     }
 }

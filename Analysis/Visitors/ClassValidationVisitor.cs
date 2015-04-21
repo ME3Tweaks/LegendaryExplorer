@@ -132,6 +132,9 @@ namespace ME3Script.Analysis.Visitors
                 return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
 
             Symbols.AddSymbol(node.Name, node);
+            // TODO: add in package / global namespace.
+            // If a symbol with that name exists, overwrite it with this symbol from now on.
+            // damn this language...
 
             if (node.Parent != null)
             {
@@ -163,7 +166,30 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Enumeration node)
         {
-            throw new NotImplementedException();
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
+
+            Symbols.AddSymbol(node.Name, node);
+            // TODO: add in package / global namespace.
+            // If a symbol with that name exists, overwrite it with this symbol from now on.
+            // damn this language...
+            Symbols.PushScope(node.Name);
+
+            foreach (VariableIdentifier enumVal in node.Values)
+            {
+                enumVal.Outer = node;
+                if (enumVal.Type != ASTNodeType.VariableIdentifier)
+                    Error("An enumeration member must be a simple(name only) variable.", enumVal.StartPos, enumVal.EndPos);
+                Symbols.AddSymbol(enumVal.Name, enumVal);
+            }
+
+            Symbols.PopScope();
+
+            // Add enum values at the class scope so they can be used without being explicitly qualified.
+            foreach (VariableIdentifier enumVal in node.Values)
+                Symbols.AddSymbol(enumVal.Name, enumVal);
+
+            return Success;
         }
 
         public bool VisitNode(Function node)
