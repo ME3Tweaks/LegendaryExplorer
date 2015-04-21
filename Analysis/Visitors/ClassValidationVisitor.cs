@@ -141,7 +141,11 @@ namespace ME3Script.Analysis.Visitors
             {
                 if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                     return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
-                Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                Variable variable;
+                if (ident.Type == ASTNodeType.StaticArrayIdentifier)
+                    variable = new StaticArrayVariable(node.Specifiers, ident as StaticArrayIdentifier, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                else
+                    variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
                 Symbols.AddSymbol(variable.Name, variable);
                 (node.Outer as Class).VariableDeclarations.Insert(index, variable);
             }
