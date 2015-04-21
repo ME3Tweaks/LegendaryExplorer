@@ -11,9 +11,11 @@ namespace ME3Script.Language.Tree
     public class VariableIdentifier : ASTNode
     {
         public String Name;
-        public VariableIdentifier(String name, SourcePosition start, SourcePosition end) 
+        public int Size;
+        public VariableIdentifier(String name, SourcePosition start, SourcePosition end, int size = -1) 
             : base(ASTNodeType.VariableIdentifier, start, end) 
         {
+            Size = size;
             Name = name;
         }
 

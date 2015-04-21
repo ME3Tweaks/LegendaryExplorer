@@ -133,7 +133,7 @@ namespace ME3Script.Analysis.Visitors
             }
             else if (!nodeType.GetType().IsAssignableFrom(typeof(VariableType)))
             {
-                return Error("Invalid variable type, must be a class/struct/enum.", node.VarType.StartPos, node.VarType.EndPos);
+                return Error("Invalid variable type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
             }
 
             int index = (node.Outer as Class).VariableDeclarations.IndexOf(node);
@@ -141,11 +141,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                     return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
-                Variable variable;
-                if (ident.Type == ASTNodeType.StaticArrayIdentifier)
-                    variable = new StaticArrayVariable(node.Specifiers, ident as StaticArrayIdentifier, nodeType as VariableType, ident.StartPos, ident.EndPos);
-                else
-                    variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
                 Symbols.AddSymbol(variable.Name, variable);
                 (node.Outer as Class).VariableDeclarations.Insert(index, variable);
             }
@@ -188,6 +184,8 @@ namespace ME3Script.Analysis.Visitors
 
             Symbols.PushScope(node.Name);
 
+            // TODO: can all types of variable declarations be supported in a struct?
+            // what does the parser let through?
             foreach (VariableDeclaration decl in node.Members)
             {
                 decl.Outer = node;
@@ -228,7 +226,71 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Function node)
         {
-            throw new NotImplementedException();
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
+
+            Symbols.AddSymbol(node.Name, node);
+            ASTNode returnType = null;
+            if (node.ReturnType != null)
+            {
+                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, (node.Outer.Outer as Class).Name))
+                {
+                    return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                }
+                else if (!returnType.GetType().IsAssignableFrom(typeof(VariableType)))
+                {
+                    return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                }
+            }
+
+            Symbols.PushScope(node.Name);
+            foreach (FunctionParameter param in node.Parameters)
+            {
+                param.Outer = node;
+                Success = Success && param.AcceptVisitor(this);
+            }
+            Symbols.PopScope();
+
+            ASTNode func;
+            if (Symbols.TryGetSymbolInScopeStack(node.Name, out func, (node.Outer.Outer as Class).GetInheritanceString())
+                && func.Type == ASTNodeType.Function)
+            {   // If there is a function with this name that we should override, validate the new functions declaration
+                Function original = func as Function;
+                if (original.Specifiers.Contains(new Specifier("final", null, null)))
+                    return Error("Function name overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
+                if (node.ReturnType != original.ReturnType)
+                    return Error("Function name overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
+                if (node.Parameters.Count != original.Parameters.Count)
+                    return Error("Function name overrides a function in a parent class, but the functions do not have the same amount of parameters!", node.StartPos, node.EndPos);
+                for (int n = 0; n < node.Parameters.Count; n++)
+                {
+                    if (node.Parameters[n].Type != original.Parameters[n].Type)
+                        return Error("Function name overrides a function in a parent class, but the functions do not ahve the same parameter types!", node.StartPos, node.EndPos);
+                }
+            }
+
+            return Success;
+        }
+
+        public bool VisitNode(FunctionParameter node)
+        {
+            ASTNode paramType;
+            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, (node.Outer.Outer.Outer as Class).Name))
+            {
+                return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
+            }
+            else if (!paramType.GetType().IsAssignableFrom(typeof(VariableType)))
+            {
+                return Error("Invalid parameter type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
+            }
+            node.VarType = paramType as VariableType;
+
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("A parameter named '" + node.Name + "' already exists in this function!", 
+                    node.Variables.First().StartPos, node.Variables.First().EndPos);
+
+            Symbols.AddSymbol(node.Variables.First().Name, node);
+            return Success;
         }
 
         public bool VisitNode(State node)

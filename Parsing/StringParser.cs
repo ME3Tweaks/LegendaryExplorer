@@ -1337,8 +1337,8 @@ namespace ME3Script.Parsing
                         return null;
                     }
 
-                    return new StaticArrayIdentifier(name.Value, Int32.Parse(size.Value), 
-                        name.StartPosition, name.EndPosition);
+                    return new VariableIdentifier(name.Value, 
+                        name.StartPosition, name.EndPosition, Int32.Parse(size.Value));
                 }
 
                 return new VariableIdentifier(name.Value, name.StartPosition, name.EndPosition);

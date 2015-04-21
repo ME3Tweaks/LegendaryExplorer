@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class FunctionParameter : VariableDeclaration
+    public class FunctionParameter : Variable
     {
-        VariableIdentifier ParamVar;
         public FunctionParameter(VariableType type, List<Specifier> specs,
             VariableIdentifier variable, SourcePosition start, SourcePosition end)
-            : base(type, specs, null, start, end)
+            : base(specs, variable, type, start, end)
         {
             Type = ASTNodeType.FunctionParameter;
-            ParamVar = variable;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

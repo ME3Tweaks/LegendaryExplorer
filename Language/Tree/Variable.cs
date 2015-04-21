@@ -17,6 +17,22 @@ namespace ME3Script.Language.Tree
             }
         }
 
+        public int Size
+        {
+            get
+            {
+                return Variables.First().Size;
+            }
+        }
+
+        public bool IsStaticArray
+        {
+            get
+            {
+                return Variables.First().Size != -1;
+            }
+        }
+
         public Variable(List<Specifier> specs, VariableIdentifier name,
             VariableType type, SourcePosition start, SourcePosition end)
             : base(type, specs, new List<VariableIdentifier> { name }, start, end)

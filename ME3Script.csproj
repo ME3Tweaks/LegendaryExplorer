@@ -78,7 +78,6 @@
     <Compile Include="Language\Tree\State.cs" />
     <Compile Include="Language\Tree\StateLabel.cs" />
     <Compile Include="Language\Tree\Statement.cs" />
-    <Compile Include="Language\Tree\StaticArrayIdentifier.cs" />
     <Compile Include="Language\Tree\StopStatement.cs" />
     <Compile Include="Language\Tree\StringLiteral.cs" />
     <Compile Include="Language\Tree\Struct.cs" />

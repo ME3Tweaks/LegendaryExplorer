@@ -17,5 +17,6 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(Function node);
         bool VisitNode(State node);
         bool VisitNode(OperatorDeclaration node);
+        bool VisitNode(FunctionParameter node);
     }
 }
