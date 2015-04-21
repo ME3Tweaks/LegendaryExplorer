@@ -9,11 +9,11 @@ namespace ME3Script.Language.Tree
 {
     public class Variable : VariableDeclaration
     {
-        public VariableIdentifier Name
+        public String Name
         {
             get
             {
-                return Variables.First();
+                return Variables.First().Name;
             }
         }
 

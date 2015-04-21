@@ -118,11 +118,41 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            throw new NotImplementedException();
+            ASTNode nodeType;
+            if (node.Type == ASTNodeType.Struct || node.Type == ASTNodeType.Enumeration)
+            {
+                // Check type, if its a struct or enum, visit that first.
+                Success = Success && node.VarType.AcceptVisitor(this);
+                // Add the type to the list of types in the class.
+                (node.Outer as Class).TypeDeclarations.Add(node.VarType);
+                nodeType = node.VarType;
+            }
+            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, (node.Outer.Outer as Class).Name))
+            {
+                return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
+            }
+            else if (!nodeType.GetType().IsAssignableFrom(typeof(VariableType)))
+            {
+                return Error("Invalid variable type, must be a class/struct/enum.", node.VarType.StartPos, node.VarType.EndPos);
+            }
+
+            int index = (node.Outer as Class).VariableDeclarations.IndexOf(node);
+            foreach (VariableIdentifier ident in node.Variables)
+            {
+                if (Symbols.SymbolExistsInCurrentScope(ident.Name))
+                    return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
+                Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                Symbols.AddSymbol(variable.Name, variable);
+                (node.Outer as Class).VariableDeclarations.Insert(index, variable);
+            }
+            (node.Outer as Class).VariableDeclarations.Remove(node);
+
+            return Success;
         }
 
         public bool VisitNode(VariableType node)
         {
+            // This should never be called.
             throw new NotImplementedException();
         }
 
