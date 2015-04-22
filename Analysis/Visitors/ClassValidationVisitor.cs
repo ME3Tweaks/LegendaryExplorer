@@ -38,6 +38,14 @@ namespace ME3Script.Analysis.Visitors
             return ((outer as Class).OuterClass as Class).GetInheritanceString();
         }
 
+        private Class GetContainingClass(ASTNode node)
+        {
+            var outer = node.Outer;
+            while (outer.Type != ASTNodeType.Class)
+                outer = outer.Outer;
+            return outer as Class;
+        }
+
         public bool VisitNode(Class node)
         {
             // TODO: allow duplicate names as long as its in different packages!
@@ -123,7 +131,7 @@ namespace ME3Script.Analysis.Visitors
                 node.VarType.Outer = node.Outer;
                 Success = Success && node.VarType.AcceptVisitor(this);
                 // Add the type to the list of types in the class.
-                (node.Outer as Class).TypeDeclarations.Add(node.VarType);
+                GetContainingClass(node).TypeDeclarations.Add(node.VarType);
                 nodeType = node.VarType;
             }
             else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, GetOuterClassScope(node)))
@@ -137,16 +145,16 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Outer.Type == ASTNodeType.Class)
             {
-                int index = (node.Outer as Class).VariableDeclarations.IndexOf(node);
+                int index = GetContainingClass(node).VariableDeclarations.IndexOf(node);
                 foreach (VariableIdentifier ident in node.Variables)
                 {
                     if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                         return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
                     Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
                     Symbols.AddSymbol(variable.Name, variable);
-                    (node.Outer as Class).VariableDeclarations.Insert(index++, variable);
+                    GetContainingClass(node).VariableDeclarations.Insert(index++, variable);
                 }
-                (node.Outer as Class).VariableDeclarations.Remove(node);
+                GetContainingClass(node).VariableDeclarations.Remove(node);
             } 
             else if (node.Outer.Type == ASTNodeType.Struct)
             {
@@ -268,7 +276,7 @@ namespace ME3Script.Analysis.Visitors
             Symbols.PopScope();
 
             ASTNode func;
-            if (Symbols.TryGetSymbolInScopeStack(node.Name, out func, GetOuterClassScope(node))
+            if (Symbols.TryGetSymbol(node.Name, out func, "") // override functions in parent classes only (or current class if its a state)
                 && func.Type == ASTNodeType.Function)
             {   // If there is a function with this name that we should override, validate the new functions declaration
                 Function original = func as Function;
@@ -335,9 +343,30 @@ namespace ME3Script.Analysis.Visitors
                 }
             }
 
-            //TODO: Check ignores, make sure they are actual functions. (should ignore mean an empty function or not?)
-            //TODO: check functions, make sure they are overriding with proper parameters/returns.
+            int numFuncs = node.Functions.Count;
+            Symbols.PushScope(node.Name);
+            foreach (Function ignore in node.Ignores)
+            {
+                ASTNode original;
+                if (!Symbols.TryGetSymbol(ignore.Name, out original, "") || original.Type != ASTNodeType.Function)
+                    return Error("No function to ignore named '" + ignore.Name + "' found!", ignore.StartPos, ignore.EndPos);
+                Function header = original as Function;
+                Function emptyOverride = new Function(header.Name, header.ReturnType, null, header.Specifiers, header.Parameters, ignore.StartPos, ignore.EndPos);
+                node.Functions.Add(emptyOverride);
+                Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
+            }
 
+            foreach (Function func in node.Functions.GetRange(0, numFuncs))
+            {
+                func.Outer = node;
+                Success = Success && func.AcceptVisitor(this);
+            }
+            //TODO: check functions overrides:
+            //if the state overrides another state, we should be in that scope as well whenh we check overrides maybe?
+            //if the state has a parent state, we should be in that scope
+            //this is a royal mess, check that ignores also look-up from parent/overriding states as we are not sure if symbols are in the scope
+
+            Symbols.PopScope();
             return Success;
         }
 

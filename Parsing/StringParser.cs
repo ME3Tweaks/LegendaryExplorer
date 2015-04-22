@@ -503,7 +503,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                List<VariableIdentifier> ignores = new List<VariableIdentifier>();
+                List<Function> ignores = new List<Function>();
                 if (Tokens.ConsumeToken(TokenType.Ignores) != null)
                 {
                     do
@@ -514,7 +514,7 @@ namespace ME3Script.Parsing
                             Log.LogError("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                             return null;
                         }
-                        ignores.Add(variable);
+                        ignores.Add(new Function(variable.Name, null, null, null, null, variable.StartPos, variable.EndPos));
                     } while (Tokens.ConsumeToken(TokenType.Comma) != null);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
