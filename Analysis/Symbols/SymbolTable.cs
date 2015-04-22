@@ -32,7 +32,7 @@ namespace ME3Script.Analysis.Symbols
 
         public void PushScope(String name)
         {
-            String fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name;
+            String fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name.ToLower();
             Dictionary<String, ASTNode> scope;
             bool cached = Cache.TryGetValue(fullName, out scope);
             if (!cached)
@@ -69,11 +69,12 @@ namespace ME3Script.Analysis.Symbols
         public bool TryGetSymbolInScopeStack(String symbol, out ASTNode node, String lowestScope)
         {
             node = null;
-            if (lowestScope == "Object") //As all classes inherit from object this is already checked.
+            String scope = lowestScope.ToLower();
+            if (scope == "object") //As all classes inherit from object this is already checked.
                 return false;
 
             LinkedList<Dictionary<String, ASTNode>> stack;
-            if (!TryBuildSpecificScope(lowestScope, out stack))
+            if (!TryBuildSpecificScope(scope, out stack))
                 return false;
 
             return TryGetSymbolInternal(symbol, out node, stack);
@@ -96,10 +97,11 @@ namespace ME3Script.Analysis.Symbols
 
         private bool TryGetSymbolInternal(String symbol, out ASTNode node, LinkedList<Dictionary<String, ASTNode>> stack)
         {
+            String name = symbol.ToLower();
             LinkedListNode<Dictionary<String, ASTNode>> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
-                if (it.Value.TryGetValue(symbol, out node))
+                if (it.Value.TryGetValue(name, out node))
                     return true;
             }
             node = null;
@@ -108,32 +110,32 @@ namespace ME3Script.Analysis.Symbols
 
         public bool SymbolExistsInCurrentScope(String symbol)
         {
-            return Scopes.Last().ContainsKey(symbol);
+            return Scopes.Last().ContainsKey(symbol.ToLower());
         }
 
         public bool TryGetSymbolFromCurrentScope(String symbol, out ASTNode node)
         {
-            return Scopes.Last().TryGetValue(symbol, out node);
+            return Scopes.Last().TryGetValue(symbol.ToLower(), out node);
         }
 
         public bool TryGetSymbolFromSpecificScope(String symbol, out ASTNode node, String specificScope)
         {
             node = null;
             Dictionary<String, ASTNode> scope;
-            return Cache.TryGetValue(specificScope, out scope) &&
-                scope.TryGetValue(symbol, out node);
+            return Cache.TryGetValue(specificScope.ToLower(), out scope) &&
+                scope.TryGetValue(symbol.ToLower(), out node);
         }
 
         public void AddSymbol(String symbol, ASTNode node)
         {
-            Scopes.Last().Add(symbol, node);
+            Scopes.Last().Add(symbol.ToLower(), node);
         }
 
         public bool TryAddSymbol(String symbol, ASTNode node)
         {
-            if (!SymbolExistsInCurrentScope(symbol))
+            if (!SymbolExistsInCurrentScope(symbol.ToLower()))
             {
-                AddSymbol(symbol, node);
+                AddSymbol(symbol.ToLower(), node);
                 return true;
             }
             return false;
@@ -141,13 +143,14 @@ namespace ME3Script.Analysis.Symbols
 
         public bool GoDirectlyToStack(String lowestScope)
         {
+            String scope = lowestScope.ToLower();
             // TODO: 5 AM coding.. REVISIT THIS!
-            if (CurrentScopeName != "Object")
+            if (CurrentScopeName != "object")
                 throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
-            if (lowestScope == "Object")
+            if (scope == "object")
                 return true;
 
-            var scopes = lowestScope.Split('.');
+            var scopes = scope.Split('.');
             for (int n = 1; n < scopes.Length; n++) // Start after "Object."
             {
                 if (!Cache.ContainsKey(CurrentScopeName + "." + scopes[n]))
@@ -160,7 +163,7 @@ namespace ME3Script.Analysis.Symbols
 
         public void RevertToObjectStack()
         {
-            while (CurrentScopeName != "Object")
+            while (CurrentScopeName != "object")
                 PopScope();
         }
     }

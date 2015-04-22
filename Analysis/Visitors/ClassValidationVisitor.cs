@@ -30,9 +30,12 @@ namespace ME3Script.Analysis.Visitors
             return false;
         }
 
-        private String GetOuterScope(ASTNode node)
+        private String GetOuterClassScope(ASTNode node)
         {
-            return ((node.Outer as Class).OuterClass as Class).GetInheritanceString();
+            var outer = node.Outer;
+            while (outer.Type != ASTNodeType.Class)
+                outer = outer.Outer;
+            return ((outer as Class).OuterClass as Class).GetInheritanceString();
         }
 
         public bool VisitNode(Class node)
@@ -45,13 +48,13 @@ namespace ME3Script.Analysis.Visitors
 
             ASTNode parent;
             if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, ""))
-                Error("No parent class named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
+                return Error("No parent class named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
             if (parent != null)
             {
                 if (parent.Type != ASTNodeType.Class)
-                    Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
+                    return Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
                 else if ((parent as Class).SameOrSubClass(node.Name)) // TODO: not needed due to no forward declarations?
-                    Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                    return Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                 else
                     node.Parent = parent as Class;
             }
@@ -60,13 +63,13 @@ namespace ME3Script.Analysis.Visitors
             if (node.OuterClass != null)
             {
                 if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer, ""))
-                    Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                    return Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                 else if (outer.Type != ASTNodeType.Class)
-                    Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                    return Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                 else if (node.Parent.Name == "Actor")
-                    Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                    return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                 else if (!(outer as Class).SameOrSubClass((node.Parent as Class).OuterClass.Name))
-                    Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                    return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
             }
             else
             {
@@ -84,12 +87,7 @@ namespace ME3Script.Analysis.Visitors
                 type.Outer = node;
                 Success = Success && type.AcceptVisitor(this);
             }
-            foreach (VariableDeclaration decl in node.VariableDeclarations)
-            {
-                decl.Outer = node;
-                Success = Success && decl.AcceptVisitor(this);
-            }
-            foreach (VariableDeclaration decl in node.VariableDeclarations)
+            foreach (VariableDeclaration decl in node.VariableDeclarations.ToList())
             {
                 decl.Outer = node;
                 Success = Success && decl.AcceptVisitor(this);
@@ -119,33 +117,50 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(VariableDeclaration node)
         {
             ASTNode nodeType;
-            if (node.Type == ASTNodeType.Struct || node.Type == ASTNodeType.Enumeration)
+            if (node.VarType.Type == ASTNodeType.Struct || node.VarType.Type == ASTNodeType.Enumeration)
             {
                 // Check type, if its a struct or enum, visit that first.
+                node.VarType.Outer = node.Outer;
                 Success = Success && node.VarType.AcceptVisitor(this);
                 // Add the type to the list of types in the class.
                 (node.Outer as Class).TypeDeclarations.Add(node.VarType);
                 nodeType = node.VarType;
             }
-            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, (node.Outer.Outer as Class).Name))
+            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, GetOuterClassScope(node)))
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
-            else if (!nodeType.GetType().IsAssignableFrom(typeof(VariableType)))
+            else if (!typeof(VariableType).IsAssignableFrom(nodeType.GetType()))
             {
                 return Error("Invalid variable type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
             }
 
-            int index = (node.Outer as Class).VariableDeclarations.IndexOf(node);
-            foreach (VariableIdentifier ident in node.Variables)
+            if (node.Outer.Type == ASTNodeType.Class)
             {
-                if (Symbols.SymbolExistsInCurrentScope(ident.Name))
-                    return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
-                Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
-                Symbols.AddSymbol(variable.Name, variable);
-                (node.Outer as Class).VariableDeclarations.Insert(index, variable);
+                int index = (node.Outer as Class).VariableDeclarations.IndexOf(node);
+                foreach (VariableIdentifier ident in node.Variables)
+                {
+                    if (Symbols.SymbolExistsInCurrentScope(ident.Name))
+                        return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
+                    Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                    Symbols.AddSymbol(variable.Name, variable);
+                    (node.Outer as Class).VariableDeclarations.Insert(index++, variable);
+                }
+                (node.Outer as Class).VariableDeclarations.Remove(node);
+            } 
+            else if (node.Outer.Type == ASTNodeType.Struct)
+            {
+                int index = (node.Outer as Struct).Members.IndexOf(node);
+                foreach (VariableIdentifier ident in node.Variables)
+                {
+                    if (Symbols.SymbolExistsInCurrentScope(ident.Name))
+                        return Error("A member named '" + ident.Name + "' already exists in this struct!", ident.StartPos, ident.EndPos);
+                    Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                    Symbols.AddSymbol(variable.Name, variable);
+                    (node.Outer as Struct).Members.Insert(index++, variable);
+                }
+                (node.Outer as Struct).Members.Remove(node);
             }
-            (node.Outer as Class).VariableDeclarations.Remove(node);
 
             return Success;
         }
@@ -169,7 +184,7 @@ namespace ME3Script.Analysis.Visitors
             if (node.Parent != null)
             {
                 ASTNode parent;
-                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, GetOuterScope(node)))
+                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, GetOuterClassScope(node)))
                     Error("No parent struct named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
                 if (parent != null)
                 {
@@ -186,7 +201,8 @@ namespace ME3Script.Analysis.Visitors
 
             // TODO: can all types of variable declarations be supported in a struct?
             // what does the parser let through?
-            foreach (VariableDeclaration decl in node.Members)
+            var unprocessed = node.Members.ToList();
+            foreach (VariableDeclaration decl in node.Members.ToList())
             {
                 decl.Outer = node;
                 Success = Success && decl.AcceptVisitor(this);
@@ -233,11 +249,11 @@ namespace ME3Script.Analysis.Visitors
             ASTNode returnType = null;
             if (node.ReturnType != null)
             {
-                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, (node.Outer.Outer as Class).Name))
+                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, GetOuterClassScope(node)))
                 {
                     return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
-                else if (!returnType.GetType().IsAssignableFrom(typeof(VariableType)))
+                else if (!typeof(VariableType).IsAssignableFrom(returnType.GetType()))
                 {
                     return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
@@ -252,7 +268,7 @@ namespace ME3Script.Analysis.Visitors
             Symbols.PopScope();
 
             ASTNode func;
-            if (Symbols.TryGetSymbolInScopeStack(node.Name, out func, (node.Outer.Outer as Class).GetInheritanceString())
+            if (Symbols.TryGetSymbolInScopeStack(node.Name, out func, GetOuterClassScope(node))
                 && func.Type == ASTNodeType.Function)
             {   // If there is a function with this name that we should override, validate the new functions declaration
                 Function original = func as Function;
@@ -275,7 +291,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(FunctionParameter node)
         {
             ASTNode paramType;
-            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, (node.Outer.Outer.Outer as Class).Name))
+            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, GetOuterClassScope(node)))
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
@@ -295,12 +311,40 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(State node)
         {
-            throw new NotImplementedException();
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
+
+            ASTNode overrideState;
+            bool overrides = Symbols.TryGetSymbol(node.Name, out overrideState, GetOuterClassScope(node))
+                && overrideState.Type == ASTNodeType.State;
+
+            if (node.Parent != null)
+            {
+                if (overrides)
+                    return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
+
+                ASTNode parent;
+                if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out parent))
+                    Error("No parent state named '" + node.Parent.Name + "' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
+                if (parent != null)
+                {
+                    if (parent.Type != ASTNodeType.State)
+                        Error("Parent named '" + node.Parent.Name + "' is not a state!", node.Parent.StartPos, node.Parent.EndPos);
+                    else
+                        node.Parent = parent as State;
+                }
+            }
+
+            //TODO: Check ignores, make sure they are actual functions. (should ignore mean an empty function or not?)
+            //TODO: check functions, make sure they are overriding with proper parameters/returns.
+
+            return Success;
         }
 
         public bool VisitNode(OperatorDeclaration node)
         {
-            throw new NotImplementedException();
+            // TODO: implement.
+            return Success;
         }
     }
 }

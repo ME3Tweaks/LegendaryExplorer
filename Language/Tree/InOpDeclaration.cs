@@ -18,7 +18,7 @@ namespace ME3Script.Language.Tree
         bool delim, CodeBody body, VariableType returnType,
         FunctionParameter leftOp, FunctionParameter rightOp,
         List<Specifier> specs, SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, specs, start, end) 
+            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, specs, start, end)
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;
@@ -27,7 +27,7 @@ namespace ME3Script.Language.Tree
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            return visitor.VisitNode(this);
         }
     }
 }

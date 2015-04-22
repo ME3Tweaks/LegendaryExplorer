@@ -45,12 +45,14 @@ namespace ME3Script.Language.Tree
 
         public bool SameOrSubClass(String name)
         {
-            if (this.Name == name)
+            String nodeName = this.Name.ToLower();
+            String inputName = name.ToLower();
+            if (nodeName == inputName)
                 return true;
             Class current = this;
-            while (current.Parent.Name != "Object")
+            while (current.Parent != null && current.Parent.Name.ToLower() != "object")
             {
-                if (current.Parent.Name == name)
+                if (current.Parent.Name.ToLower() == inputName)
                     return true;
                 current = (Class)current.Parent;
             }

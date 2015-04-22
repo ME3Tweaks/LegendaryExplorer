@@ -13,13 +13,13 @@ namespace ME3Script.Language.Tree
         public String Name;
         public CodeBody Body;
         public List<Specifier> Specifiers;
-        public VariableType Parent;
+        public State Parent;
         public List<Function> Functions;
         public List<VariableIdentifier> Ignores;
         public List<StateLabel> Labels;
 
         public State(String name, CodeBody body, List<Specifier> specs,
-            VariableType parent, List<Function> funcs, List<VariableIdentifier> ignores,
+            State parent, List<Function> funcs, List<VariableIdentifier> ignores,
             List<StateLabel> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)
         {
@@ -34,7 +34,7 @@ namespace ME3Script.Language.Tree
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            return visitor.VisitNode(this);
         }
     }
 }

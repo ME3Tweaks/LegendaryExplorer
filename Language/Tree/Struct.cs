@@ -32,12 +32,14 @@ namespace ME3Script.Language.Tree
 
         public bool SameOrSubStruct(String name)
         {
-            if (this.Name == name)
+            String nodeName = this.Name.ToLower();
+            String inputName = name.ToLower();
+            if (nodeName == inputName)
                 return true;
             Struct current = this;
             while (current.Parent != null)
             {
-                if (current.Parent.Name == name)
+                if (current.Parent.Name.ToLower() == inputName)
                     return true;
                 current = (Struct)current.Parent;
             }

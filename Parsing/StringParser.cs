@@ -546,7 +546,8 @@ namespace ME3Script.Parsing
                 }
 
                 var body = new CodeBody(null, bodyStart, bodyEnd);
-                return new State(name.Value, body, specs, parent, funcs, ignores, null, name.StartPosition, name.EndPosition);
+                var parentState = parent != null ? new State(parent.Name, null, null, null, null, null, null, parent.StartPos, parent.EndPos) : null;
+                return new State(name.Value, body, specs, parentState, funcs, ignores, null, name.StartPosition, name.EndPosition);
             };
             return (State)Tokens.TryGetTree(stateSkeletonParser);
         }
