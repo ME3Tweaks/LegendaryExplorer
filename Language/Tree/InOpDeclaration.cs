@@ -18,7 +18,7 @@ namespace ME3Script.Language.Tree
         bool delim, CodeBody body, VariableType returnType,
         FunctionParameter leftOp, FunctionParameter rightOp,
         List<Specifier> specs, SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, specs, start, end)
+            : base(ASTNodeType.InfixOperator, keyword, delim, body, returnType, specs, start, end)
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;
@@ -28,6 +28,13 @@ namespace ME3Script.Language.Tree
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
             return visitor.VisitNode(this);
+        }
+
+        public bool IdenticalSignature(InOpDeclaration other)
+        {
+            return base.IdenticalSignature(other)
+                && this.LeftOperand.VarType.Name.ToLower() == other.LeftOperand.VarType.Name.ToLower()
+                && this.RightOperand.VarType.Name.ToLower() == other.RightOperand.VarType.Name.ToLower();
         }
     }
 }

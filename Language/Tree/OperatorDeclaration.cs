@@ -32,5 +32,16 @@ namespace ME3Script.Language.Tree
         {
             throw new NotImplementedException();
         }
+
+        public bool IdenticalSignature(OperatorDeclaration other)
+        {
+            if (this.ReturnType == null && other.ReturnType != null)
+                return false;
+            else if (other.ReturnType == null)
+                return false;
+                
+            return this.OperatorKeyword == other.OperatorKeyword
+                && this.ReturnType.Name.ToLower() == other.ReturnType.Name.ToLower();
+        }
     }
 }

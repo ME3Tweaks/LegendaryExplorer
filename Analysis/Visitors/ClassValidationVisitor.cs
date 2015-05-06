@@ -275,6 +275,9 @@ namespace ME3Script.Analysis.Visitors
             }
             Symbols.PopScope();
 
+            if (Success == false)
+                return Error("Error in function parameters.", node.StartPos, node.EndPos);
+
             ASTNode func;
             if (Symbols.TryGetSymbol(node.Name, out func, "") // override functions in parent classes only (or current class if its a state)
                 && func.Type == ASTNodeType.Function)
@@ -366,14 +369,61 @@ namespace ME3Script.Analysis.Visitors
             //if the state has a parent state, we should be in that scope
             //this is a royal mess, check that ignores also look-up from parent/overriding states as we are not sure if symbols are in the scope
 
+            // if the state extends a parent state, use that as outer in the symbol lookup
+            // if the state overrides another state, use that as outer
+            // both of the above should apply to functions as well as ignores.
+
             Symbols.PopScope();
             return Success;
         }
 
         public bool VisitNode(OperatorDeclaration node)
         {
-            // TODO: implement.
+            ASTNode returnType = null;
+            if (node.ReturnType != null)
+            {
+                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, GetOuterClassScope(node)))
+                {
+                    return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                }
+                else if (!typeof(VariableType).IsAssignableFrom(returnType.GetType()))
+                {
+                    return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                }
+            }
+
+            Symbols.PushScope(node.OperatorKeyword);
+            if (node.Type == ASTNodeType.InfixOperator)
+            {
+                var op = node as InOpDeclaration;
+                op.LeftOperand.Outer = node;
+                Success = Success && op.LeftOperand.AcceptVisitor(this);
+                op.RightOperand.Outer = node;
+                Success = Success && op.RightOperand.AcceptVisitor(this);
+            }
+            else if (node.Type == ASTNodeType.PrefixOperator)
+            {
+                var op = node as PreOpDeclaration;
+                op.Operand.Outer = node;
+                Success = Success && op.Operand.AcceptVisitor(this);
+            }
+            else if (node.Type == ASTNodeType.PostfixOperator)
+            {
+                var op = node as PostOpDeclaration;
+                op.Operand.Outer = node;
+                Success = Success && op.Operand.AcceptVisitor(this);
+            }
+            Symbols.PopScope();
+
+            if (Success == false)
+                return Error("Error in operator parameters.", node.StartPos, node.EndPos);
+
+            if (Symbols.OperatorSignatureExists(node))
+                return Error("An operator with identical signature to '" + node.OperatorKeyword + "' already exists!", node.StartPos, node.EndPos);
+
+            Symbols.AddOperator(node);
             return Success;
         }
+
     }
 }

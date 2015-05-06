@@ -25,5 +25,11 @@ namespace ME3Script.Language.Tree
         {
             throw new NotImplementedException();
         }
+
+        public bool IdenticalSignature(PostOpDeclaration other)
+        {
+            return base.IdenticalSignature(other)
+                && this.Operand.VarType.Name.ToLower() == other.Operand.VarType.Name.ToLower();
+        }
     }
 }

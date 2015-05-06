@@ -12,6 +12,7 @@ namespace ME3Script.Analysis.Symbols
         private Dictionary<String, Dictionary<String, ASTNode>> Cache;
         private LinkedList<Dictionary<String, ASTNode>> Scopes;
         private LinkedList<String> ScopeNames;
+        private Dictionary<String, OperatorDeclaration> Operators;
 
         public String CurrentScopeName
         {
@@ -28,6 +29,7 @@ namespace ME3Script.Analysis.Symbols
             ScopeNames = new LinkedList<String>();
             Scopes = new LinkedList<Dictionary<String, ASTNode>>();
             Cache = new Dictionary<String, Dictionary<String, ASTNode>>();
+            Operators = new Dictionary<String, OperatorDeclaration>();
         }
 
         public void PushScope(String name)
@@ -165,6 +167,22 @@ namespace ME3Script.Analysis.Symbols
         {
             while (CurrentScopeName != "object")
                 PopScope();
+        }
+
+        public bool OperatorSignatureExists(OperatorDeclaration op)
+        {
+            if (op.Type == ASTNodeType.InfixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && op.IdenticalSignature((opdecl.Value as InOpDeclaration)));
+            else if (op.Type == ASTNodeType.PrefixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && op.IdenticalSignature((opdecl.Value as PreOpDeclaration)));
+            else if (op.Type == ASTNodeType.PostfixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && op.IdenticalSignature((opdecl.Value as PostOpDeclaration)));
+            return false;
+        }
+
+        public void AddOperator(OperatorDeclaration op)
+        {
+            Operators.Add(op.OperatorKeyword.ToLower(), op);
         }
     }
 }

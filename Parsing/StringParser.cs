@@ -615,8 +615,6 @@ namespace ME3Script.Parsing
                 var operands = new List<FunctionParameter>();
                 while (CurrentTokenType != TokenType.RightParenth)
                 {
-                    var operandSpecs = ParseSpecifiers(ParameterSpecifiers);
-
                     var operand = TryParseParameter();
                     if (operand == null)
                     {
