@@ -30,12 +30,16 @@ namespace ME3Script.Parsing
                     || Node.Type == ASTNodeType.InfixOperator;
             }
         }
+        private bool InLoop;
+        private bool InSwitch;
 
         public CodeBodyParser(TokenStream<String> tokens, SymbolTable symbols, ASTNode node, MessageLog log = null)
         {
             Log = log ?? new MessageLog();
             Symbols = symbols;
             Tokens = tokens;
+            InLoop = false;
+            InSwitch = false;
             OuterClassScope = "TODO";
             Node = node;
             // TODO: refactor a better solution to this mess
@@ -407,6 +411,9 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
+                if (!InLoop || !InSwitch)
+                    return Error("The break keyword is only valid inside loops and switch statements!", token.StartPosition, token.EndPosition);
+
                 return new BreakStatement(token.StartPosition, token.EndPosition);
             };
             return (BreakStatement)Tokens.TryGetTree(statementParser);
@@ -420,6 +427,9 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
+                if (!InLoop)
+                    return Error("The continue keyword is only valid inside loops!", token.StartPosition, token.EndPosition);
+
                 return new ContinueStatement(token.StartPosition, token.EndPosition);
             };
             return (ContinueStatement)Tokens.TryGetTree(statementParser);
@@ -432,6 +442,9 @@ namespace ME3Script.Parsing
                 var token = Tokens.ConsumeToken(TokenType.Stop);
                 if (token == null)
                     return null;
+
+                if (!IsState)
+                    return Error("The stop keyword is only valid inside state code!", token.StartPosition, token.EndPosition);
 
                 return new StopStatement(token.StartPosition, token.EndPosition);
             };
