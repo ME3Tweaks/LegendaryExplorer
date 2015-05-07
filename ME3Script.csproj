@@ -89,6 +89,7 @@
     <Compile Include="Language\Tree\Specifier.cs" />
     <Compile Include="Language\Tree\VariableType.cs" />
     <Compile Include="Language\Tree\WhileLoop.cs" />
+    <Compile Include="Language\Util\IContainsLocals.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\KeywordMatcher.cs" />

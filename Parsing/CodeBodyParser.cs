@@ -30,16 +30,18 @@ namespace ME3Script.Parsing
                     || Node.Type == ASTNodeType.InfixOperator;
             }
         }
-        private bool InLoop;
-        private bool InSwitch;
+        private int _loopCount;
+        private bool InLoop { get { return _loopCount > 0; } }
+        private int _switchCount;
+        private bool InSwitch { get { return _switchCount > 0; } }
 
         public CodeBodyParser(TokenStream<String> tokens, SymbolTable symbols, ASTNode node, MessageLog log = null)
         {
             Log = log ?? new MessageLog();
             Symbols = symbols;
             Tokens = tokens;
-            InLoop = false;
-            InSwitch = false;
+            _loopCount = 0;
+            _switchCount = 0;
             OuterClassScope = "TODO";
             Node = node;
             // TODO: refactor a better solution to this mess
@@ -269,23 +271,16 @@ namespace ME3Script.Parsing
                     return null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                {
-                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
                 if (condition == null)
-                {
-                    Log.LogError("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition.ResolveType().Name != "bool") // TODO: check/fix!
+                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
                 if (body == null)
@@ -310,29 +305,19 @@ namespace ME3Script.Parsing
 
                 var untilToken = Tokens.ConsumeToken(TokenType.Until);
                 if (untilToken == null)
-                {
-                    Log.LogError("Expected 'until'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected 'until'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                {
-                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
                 if (condition == null)
-                {
-                    Log.LogError("Expected an expression as the until condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected an expression as the until condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition.ResolveType().Name != "bool") // TODO: check/fix!
+                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new DoUntilLoop(condition, body, untilToken.StartPosition, untilToken.EndPosition);
             };
@@ -348,51 +333,31 @@ namespace ME3Script.Parsing
                     return null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                {
-                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var initStatement = TryParseInnerStatement();
-                // TODO: can also be function call, modify comment.
-                if (initStatement.Type != ASTNodeType.AssignStatement) //&& initStatement.Type != ASTNodeType.Function)
-                {
-                    Log.LogError("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                if (initStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.FunctionCall)
+                    return Error("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                {
-                    Log.LogError("Expected semi-colon after init statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected semi-colon after init statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
                 if (condition == null)
-                {
-                    Log.LogError("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected an expression as the for condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition.ResolveType().Name != "bool") // TODO: check/fix!
+                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                {
-                    Log.LogError("Expected semi-colon after condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected semi-colon after condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var updateStatement = TryParseInnerStatement();
-                // TODO: can also be function call, modify comment.
-                if (updateStatement.Type != ASTNodeType.AssignStatement) //&& initStatement.Type != ASTNodeType.Function)
-                {
-                    Log.LogError("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                if (updateStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.Function
+                    && initStatement.Type != ASTNodeType.PrefixOperator && initStatement.Type != ASTNodeType.PostfixOperator) // TODO: what is actually supported?
+                    return Error("Init statement in a for-loop must be an assignment, in/decrement or function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
                 if (body == null)
@@ -411,7 +376,7 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                if (!InLoop || !InSwitch)
+                if (!InLoop && !InSwitch)
                     return Error("The break keyword is only valid inside loops and switch statements!", token.StartPosition, token.EndPosition);
 
                 return new BreakStatement(token.StartPosition, token.EndPosition);
