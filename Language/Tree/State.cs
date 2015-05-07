@@ -1,4 +1,5 @@
 ﻿using ME3Script.Analysis.Visitors;
+using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class State : ASTNode
+    public class State : ASTNode, IContainsLocals
     {
         public String Name;
         public CodeBody Body;
@@ -16,6 +17,7 @@ namespace ME3Script.Language.Tree
         public State Parent;
         public List<Function> Functions;
         public List<Function> Ignores;
+        public List<VariableDeclaration> Locals;
         public List<StateLabel> Labels;
 
         public State(String name, CodeBody body, List<Specifier> specs,
@@ -30,6 +32,7 @@ namespace ME3Script.Language.Tree
             Functions = funcs;
             Ignores = ignores;
             Labels = labels;
+            Locals = new List<VariableDeclaration>();
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

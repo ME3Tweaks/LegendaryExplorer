@@ -1,4 +1,5 @@
 ﻿using ME3Script.Analysis.Visitors;
+using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public abstract class OperatorDeclaration : ASTNode
+    public abstract class OperatorDeclaration : ASTNode, IContainsLocals
     {
         public String OperatorKeyword;
         public bool isDelimiter;
         public CodeBody Body;
+        public List<VariableDeclaration> Locals;
         public VariableType ReturnType;
         public List<Specifier> Specifiers;
 
@@ -26,6 +28,7 @@ namespace ME3Script.Language.Tree
             Body = body;
             ReturnType = returnType;
             Specifiers = specs;
+            Locals = new List<VariableDeclaration>();
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -1,5 +1,9 @@
-﻿using ME3Script.Language.Tree;
+﻿using ME3Script.Analysis.Symbols;
+using ME3Script.Compiling.Errors;
+using ME3Script.Language.Tree;
+using ME3Script.Language.Util;
 using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +14,33 @@ namespace ME3Script.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {
+        private SymbolTable Symbols;
+        private String OuterClassScope;
+        private IContainsLocals NodeVariables;
+
+        public CodeBodyParser(TokenStream<String> tokens, SymbolTable symbols, ASTNode node, MessageLog log = null)
+        {
+            Log = log ?? new MessageLog();
+            Symbols = symbols;
+            Tokens = tokens;
+            OuterClassScope = "TODO";
+            // TODO: refactor a better solution to this mess
+            if (node.Type == ASTNodeType.State)
+                NodeVariables = (node as State);
+            else if (node.Type == ASTNodeType.Function)
+                NodeVariables = (node as Function);
+            else if (node.Type == ASTNodeType.PrefixOperator 
+                    || node.Type == ASTNodeType.PostfixOperator 
+                    || node.Type == ASTNodeType.InfixOperator)
+                NodeVariables = (node as OperatorDeclaration);
+        }
+
+        private ASTNode Error(String msg, SourcePosition start = null, SourcePosition end = null)
+        {
+            Log.LogError(msg, start, end);
+            return null;
+        }
+
         public CodeBody TryParseBody(bool requireBrackets = true)
         {
             Func<ASTNode> codeParser = () =>
@@ -83,7 +114,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> statementParser = () =>
             {
-                var statement = TryParseLocalVar() ??
+                var statement = TryParseLocalVarDecl() ??
                                 TryParseAssignStatement() ??
                                 TryParseIf() ??
                                 TryParseWhile() ??
@@ -106,28 +137,33 @@ namespace ME3Script.Parsing
             return (Statement)Tokens.TryGetTree(statementParser);
         }
 
-        public VariableDeclaration TryParseLocalVar()
+        public VariableDeclaration TryParseLocalVarDecl()
         {
             Func<ASTNode> declarationParser = () =>
             {
                 if (Tokens.ConsumeToken(TokenType.LocalVariable) == null)
                     return null;
 
-                var type = TryParseType();
+                ASTNode type = TryParseType();
                 if (type == null)
-                {
-                    Log.LogError("Expected variable type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected variable type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!Symbols.TryGetSymbol((type as VariableType).Name, out type, OuterClassScope))
+                    return Error("The type '" + (type as VariableType).Name + "' does not exist in the current scope!", type.StartPos, type.EndPos);
 
                 var vars = ParseVariableNames();
                 if (vars == null)
+                    return Error("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                foreach (VariableIdentifier ident in vars)
                 {
-                    Log.LogError("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
+                    if (Symbols.SymbolExistsInCurrentScope(ident.Name))
+                        return Error("A variable named '" + ident.Name + "' already exists in this scope!", ident.StartPos, ident.EndPos);
+                    Variable variable = new Variable(null, ident, type as VariableType, ident.StartPos, ident.EndPos);
+                    Symbols.AddSymbol(variable.Name, variable);
+                    NodeVariables.Locals.Add(variable);
                 }
 
-                return new VariableDeclaration(type, null, vars, vars.First().StartPos, vars.Last().EndPos);
+                return new VariableDeclaration(type as VariableType, null, vars, vars.First().StartPos, vars.Last().EndPos);
             };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
