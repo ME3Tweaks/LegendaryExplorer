@@ -17,5 +17,11 @@ namespace ME3Script.Language.Tree
         {
             throw new NotImplementedException();
         }
+
+        public VariableType ResolveType()
+        {
+            //TODO
+            return null;
+        }
     }
 }

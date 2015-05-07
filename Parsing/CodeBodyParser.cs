@@ -17,6 +17,19 @@ namespace ME3Script.Parsing
         private SymbolTable Symbols;
         private String OuterClassScope;
         private IContainsLocals NodeVariables;
+        private ASTNode Node;
+
+        private bool IsFunction { get { return Node.Type == ASTNodeType.Function; } }
+        private bool IsState { get { return Node.Type == ASTNodeType.State; } }
+        private bool IsOperator
+        {
+            get
+            {
+                return Node.Type == ASTNodeType.PrefixOperator
+                    || Node.Type == ASTNodeType.PostfixOperator
+                    || Node.Type == ASTNodeType.InfixOperator;
+            }
+        }
 
         public CodeBodyParser(TokenStream<String> tokens, SymbolTable symbols, ASTNode node, MessageLog log = null)
         {
@@ -24,14 +37,13 @@ namespace ME3Script.Parsing
             Symbols = symbols;
             Tokens = tokens;
             OuterClassScope = "TODO";
+            Node = node;
             // TODO: refactor a better solution to this mess
-            if (node.Type == ASTNodeType.State)
+            if (IsState)
                 NodeVariables = (node as State);
-            else if (node.Type == ASTNodeType.Function)
+            else if (IsFunction)
                 NodeVariables = (node as Function);
-            else if (node.Type == ASTNodeType.PrefixOperator 
-                    || node.Type == ASTNodeType.PostfixOperator 
-                    || node.Type == ASTNodeType.InfixOperator)
+            else if (IsOperator)
                 NodeVariables = (node as OperatorDeclaration);
         }
 
@@ -39,6 +51,11 @@ namespace ME3Script.Parsing
         {
             Log.LogError(msg, start, end);
             return null;
+        }
+
+        private bool TypeEquals(VariableType a, VariableType b)
+        {
+            return a.Name.ToLower() == b.Name.ToLower();
         }
 
         public CodeBody TryParseBody(bool requireBrackets = true)
@@ -429,14 +446,36 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
+                if (!IsFunction && !IsOperator)
+                    return Error("Return statements can only exist in functions and operators!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 if (CurrentTokenType == TokenType.SemiColon)
                     return new ReturnStatement(token.StartPosition, token.EndPosition);
 
                 var value = TryParseExpression();
                 if (value == null)
+                    return Error("Expected a return value or a semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                var type = value.ResolveType();
+                if (IsFunction)
                 {
-                    Log.LogError("Expected a return value or a semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
+                    var func = Node as Function;
+                    if (func.ReturnType == null)
+                        return Error("Function should not return any value!", token.StartPosition, token.EndPosition);
+
+                    if (!TypeEquals(func.ReturnType, type))
+                        return Error("Cannot return a value of type '" + type.Name + "', function should return '" + func.ReturnType.Name + "'."
+                            , token.StartPosition, token.EndPosition);
+                }
+                else if (IsOperator)
+                {
+                    var op = Node as OperatorDeclaration;
+                    if (op.ReturnType == null)
+                        return Error("Operator should not return any value!", token.StartPosition, token.EndPosition);
+
+                    if (!TypeEquals(op.ReturnType, type))
+                        return Error("Cannot return a value of type '" + type.Name + "', operator should return '" + op.ReturnType.Name + "'."
+                            , token.StartPosition, token.EndPosition);
                 }
 
                 return new ReturnStatement(token.StartPosition, token.EndPosition, value);
