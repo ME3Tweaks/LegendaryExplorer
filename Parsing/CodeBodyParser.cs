@@ -69,10 +69,7 @@ namespace ME3Script.Parsing
             Func<ASTNode> codeParser = () =>
             {
                 if (requireBrackets && Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                {
-                    Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var statements = new List<Statement>();
                 var current = TryParseInnerStatement();
@@ -82,17 +79,11 @@ namespace ME3Script.Parsing
                     current = TryParseInnerStatement();
 
                     if (!SemiColonExceptions.Contains(current.Type) && Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 if (requireBrackets && Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                {
-                    Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new CodeBody(statements, statements.First().StartPos, statements.Last().EndPos);
             };
@@ -122,10 +113,7 @@ namespace ME3Script.Parsing
                         body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
                     }
                     else
-                    {
-                        Log.LogError("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return body;
@@ -150,10 +138,7 @@ namespace ME3Script.Parsing
                                 (Statement)null;
 
                 if (statement == null)
-                {
-                    Log.LogError("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return null;
             };
@@ -530,7 +515,9 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> refParser = () =>
             {
-                return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
+                return TryParseBasicRef();
+                // TODO: refactor and support all types
+                //return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
         }
@@ -543,7 +530,11 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                return new SymbolReference(token.Value, token.StartPosition, token.EndPosition);
+                ASTNode symbol = null;
+                if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
+                    return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+
+                return new SymbolReference(symbol, token.StartPosition, token.EndPosition);
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
         }
@@ -573,7 +564,8 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                return new ArraySymbolRef(token.Value, index, token.StartPosition, CurrentPosition);
+                //TODO: symbol lookup
+                return new ArraySymbolRef(null, index, token.StartPosition, CurrentPosition);
             };
             return (ArraySymbolRef)Tokens.TryGetTree(refParser);
         }

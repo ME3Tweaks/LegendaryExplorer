@@ -12,7 +12,7 @@ namespace ME3Script.Language.Tree
     {
         public Expression Index;
 
-        public ArraySymbolRef(String symbol, Expression index, SourcePosition start, SourcePosition end) 
+        public ArraySymbolRef(ASTNode symbol, Expression index, SourcePosition start, SourcePosition end) 
             : base(symbol, start, end)
         {
             Index = index;

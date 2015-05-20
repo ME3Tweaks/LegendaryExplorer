@@ -1,6 +1,7 @@
 ﻿using ME3Script.Analysis.Symbols;
 using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
+using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
@@ -28,22 +29,6 @@ namespace ME3Script.Analysis.Visitors
             Log.LogError(msg, start, end);
             Success = false;
             return false;
-        }
-
-        private String GetOuterClassScope(ASTNode node)
-        {
-            var outer = node.Outer;
-            while (outer.Type != ASTNodeType.Class)
-                outer = outer.Outer;
-            return ((outer as Class).OuterClass as Class).GetInheritanceString();
-        }
-
-        private Class GetContainingClass(ASTNode node)
-        {
-            var outer = node.Outer;
-            while (outer.Type != ASTNodeType.Class)
-                outer = outer.Outer;
-            return outer as Class;
         }
 
         public bool VisitNode(Class node)
@@ -131,10 +116,10 @@ namespace ME3Script.Analysis.Visitors
                 node.VarType.Outer = node.Outer;
                 Success = Success && node.VarType.AcceptVisitor(this);
                 // Add the type to the list of types in the class.
-                GetContainingClass(node).TypeDeclarations.Add(node.VarType);
+                NodeUtils.GetContainingClass(node).TypeDeclarations.Add(node.VarType);
                 nodeType = node.VarType;
             }
-            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, GetOuterClassScope(node)))
+            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, NodeUtils.GetOuterClassScope(node)))
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
@@ -145,16 +130,16 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Outer.Type == ASTNodeType.Class)
             {
-                int index = GetContainingClass(node).VariableDeclarations.IndexOf(node);
+                int index = NodeUtils.GetContainingClass(node).VariableDeclarations.IndexOf(node);
                 foreach (VariableIdentifier ident in node.Variables)
                 {
                     if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                         return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
                     Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
                     Symbols.AddSymbol(variable.Name, variable);
-                    GetContainingClass(node).VariableDeclarations.Insert(index++, variable);
+                    NodeUtils.GetContainingClass(node).VariableDeclarations.Insert(index++, variable);
                 }
-                GetContainingClass(node).VariableDeclarations.Remove(node);
+                NodeUtils.GetContainingClass(node).VariableDeclarations.Remove(node);
             } 
             else if (node.Outer.Type == ASTNodeType.Struct)
             {
@@ -192,7 +177,7 @@ namespace ME3Script.Analysis.Visitors
             if (node.Parent != null)
             {
                 ASTNode parent;
-                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, GetOuterClassScope(node)))
+                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, NodeUtils.GetOuterClassScope(node)))
                     Error("No parent struct named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
                 if (parent != null)
                 {
@@ -257,7 +242,7 @@ namespace ME3Script.Analysis.Visitors
             ASTNode returnType = null;
             if (node.ReturnType != null)
             {
-                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, GetOuterClassScope(node)))
+                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, NodeUtils.GetOuterClassScope(node)))
                 {
                     return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
@@ -302,7 +287,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(FunctionParameter node)
         {
             ASTNode paramType;
-            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, GetOuterClassScope(node)))
+            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, NodeUtils.GetOuterClassScope(node)))
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
@@ -326,7 +311,7 @@ namespace ME3Script.Analysis.Visitors
                 return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
 
             ASTNode overrideState;
-            bool overrides = Symbols.TryGetSymbol(node.Name, out overrideState, GetOuterClassScope(node))
+            bool overrides = Symbols.TryGetSymbol(node.Name, out overrideState, NodeUtils.GetOuterClassScope(node))
                 && overrideState.Type == ASTNodeType.State;
 
             if (node.Parent != null)
@@ -382,7 +367,7 @@ namespace ME3Script.Analysis.Visitors
             ASTNode returnType = null;
             if (node.ReturnType != null)
             {
-                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, GetOuterClassScope(node)))
+                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, NodeUtils.GetOuterClassScope(node)))
                 {
                     return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
