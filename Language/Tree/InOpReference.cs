@@ -26,5 +26,10 @@ namespace ME3Script.Language.Tree
         {
             throw new NotImplementedException();
         }
+
+        public override VariableType ResolveType()
+        {
+            return Operator.ReturnType;
+        }
     }
 }

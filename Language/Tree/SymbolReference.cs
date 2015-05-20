@@ -22,5 +22,16 @@ namespace ME3Script.Language.Tree
         {
             throw new NotImplementedException();
         }
+
+        public override VariableType ResolveType()
+        {
+            if (Symbol is Variable)
+                return (Symbol as Variable).VarType;
+            if (Symbol is FunctionParameter)
+                return (Symbol as FunctionParameter).VarType;
+            if (Symbol is Function)
+                return (Symbol as Function).ReturnType;
+            return null;
+        }
     }
 }

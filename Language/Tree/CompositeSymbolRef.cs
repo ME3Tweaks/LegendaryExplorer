@@ -14,7 +14,7 @@ namespace ME3Script.Language.Tree
         public SymbolReference OuterSymbol;
 
         public CompositeSymbolRef(SymbolReference outer, SymbolReference inner, SourcePosition start, SourcePosition end)
-            : base(outer.Symbol, start, end)
+            : base(inner.Symbol, start, end)
         {
             InnerSymbol = inner;
             OuterSymbol = outer;
@@ -24,6 +24,11 @@ namespace ME3Script.Language.Tree
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
             throw new NotImplementedException();
+        }
+
+        public override VariableType ResolveType()
+        {
+            return InnerSymbol.ResolveType();
         }
     }
 }
