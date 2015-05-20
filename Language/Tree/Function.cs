@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
     {
         public String Name;
         public CodeBody Body;
-        public List<VariableDeclaration> Locals;
+        public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
         public List<Specifier> Specifiers;
         public List<FunctionParameter> Parameters;

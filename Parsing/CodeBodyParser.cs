@@ -200,17 +200,16 @@ namespace ME3Script.Parsing
                 if (assign == null)
                     return null;
                 else if (target == null)
-                {
-                    Log.LogError("Assignments require a variable target (LValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Assignments require a variable target (LValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var value = TryParseExpression();
                 if (value == null)
-                {
-                    Log.LogError("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                // TODO: allow built-in type convertion here!
+                if (!TypeEquals(target.ResolveType(), value.ResolveType()))
+                    return Error("Cannot assign a value of type '" + value.ResolveType() + "' to a variable of type '" + null + "'."
+                        , assign.StartPosition, assign.EndPosition);
 
                 return new AssignStatement(target, value, assign.StartPosition, assign.EndPosition);
             };
@@ -226,27 +225,20 @@ namespace ME3Script.Parsing
                     return null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                {
-                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
                 if (condition == null)
-                {
-                    Log.LogError("Expected an expression as the if-condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected an expression as the if-condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition.ResolveType().Name != "bool") // TODO: check/fix!
+                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody thenBody = TryParseBodyOrStatement();
                 if (thenBody == null)
-                    return null;
+                    return Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody elseBody = null;
                 var elsetoken = Tokens.ConsumeToken(TokenType.Else);
@@ -254,7 +246,7 @@ namespace ME3Script.Parsing
                 {
                     elseBody = TryParseBodyOrStatement();
                     if (elseBody == null)
-                        return null;
+                        return Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return new IfStatement(condition, thenBody, token.StartPosition, token.EndPosition, elseBody);

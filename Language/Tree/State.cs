@@ -17,7 +17,7 @@ namespace ME3Script.Language.Tree
         public State Parent;
         public List<Function> Functions;
         public List<Function> Ignores;
-        public List<VariableDeclaration> Locals;
+        public List<VariableDeclaration> Locals { get; set; }
         public List<StateLabel> Labels;
 
         public State(String name, CodeBody body, List<Specifier> specs,
