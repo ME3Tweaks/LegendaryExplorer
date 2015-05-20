@@ -101,11 +101,10 @@ namespace ME3Script.Parsing
                 var current = TryParseInnerStatement();
                 while (current != null)
                 {
-                    statements.Add(current);
-                    current = TryParseInnerStatement();
-
                     if (!SemiColonExceptions.Contains(current.Type) && Tokens.ConsumeToken(TokenType.SemiColon) == null)
                         return Error("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    statements.Add(current);
+                    current = TryParseInnerStatement();
                 }
 
                 var endPos = CurrentPosition;
@@ -148,7 +147,7 @@ namespace ME3Script.Parsing
             return (CodeBody)Tokens.TryGetTree(bodyParser);
         }
 
-        public Statement TryParseInnerStatement()
+        public Statement TryParseInnerStatement(bool throwError = false)
         {
             Func<ASTNode> statementParser = () =>
             {
@@ -164,10 +163,10 @@ namespace ME3Script.Parsing
                                 TryParseReturn() ??
                                 (Statement)null;
 
-                if (statement == null)
+                if (statement == null && throwError)
                     return Error("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return null;
+                return statement;
             };
             return (Statement)Tokens.TryGetTree(statementParser);
         }
@@ -471,12 +470,101 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> exprParser = () =>
             {
-                // expr' = TryParseExpressionLeaf() operator TryParseExpression | TryParseExpressionLeaf()
-                // ( TryParseExpression ) operator TryParseExpression | ( TryParseExpression ) | expr'
-                // 
-                return null;
+                var expr = TryParseAtomicExpression();
+                if (expr == null)
+                    return null;
+
+                while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
+                {
+                    expr = TryParseIfExpression(expr) ?? TryParseInOperator(expr) ?? (Expression)null;
+                    if (expr == null)
+                        return Error("Could not parse expression/operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                }
+
+                return expr;
             };
             return (Expression)Tokens.TryGetTree(exprParser);
+        }
+
+        public Expression TryParseScopedExpression()
+        {
+            Func<ASTNode> exprParser = () =>
+            {
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                    return null;
+
+                var expr = TryParseExpression();
+                if (expr == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                return expr;
+            };
+            return (Expression)Tokens.TryGetTree(exprParser);
+        }
+
+        public Expression TryParseIfExpression(Expression expr)
+        {
+            Func<ASTNode> ifexprParser = () =>
+            {
+                return null;
+            };
+            return (Expression)Tokens.TryGetTree(ifexprParser);
+        }
+
+        public Expression TryParseAtomicExpression()
+        {
+            Func<ASTNode> atomParser = () =>
+            {
+                return TryParsePreOperator() ?? TryParsePostOperator() ?? TryParseScopedExpression() ?? TryParseExpressionLeaf() ?? (Expression)null;
+            };
+            return (Expression)Tokens.TryGetTree(atomParser);
+        }
+
+        public Expression TryParseInOperator(Expression expr)
+        {
+            Func<ASTNode> inopParser = () =>
+            {
+                Expression lhs, rhs, rhs2;
+                VariableType lhsType, rhsType, rhs2Type;
+                InOpDeclaration opA, opB;
+                lhs = expr;
+                lhsType = lhs.ResolveType();
+
+                var opA_tok = Tokens.ConsumeToken(CurrentTokenType);
+                rhs = TryParseAtomicExpression();
+                if (rhs == null)
+                    return null; // error?
+                rhsType = rhs.ResolveType();
+
+                if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType))
+                        return null; // Error, no op with signature..
+
+                while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
+                {
+                    Tokens.PushSnapshot();
+
+                    var opB_tok = Tokens.ConsumeToken(CurrentTokenType);
+                    rhs2 = TryParseAtomicExpression();
+                    if (rhs == null)
+                        return null; // error?
+                    rhs2Type = rhs2.ResolveType();
+
+                    Tokens.PopSnapshot();
+
+                    if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type))
+                        return null; // Error, no op with signature..
+
+                    if (opA.Precedence < opB.Precedence)
+                        break;
+
+                    rhs = TryParseInOperator(rhs);
+                }
+
+                return new InOpReference(opA, lhs, rhs, lhs.StartPos, rhs.EndPos);
+            };
+            return (Expression)Tokens.TryGetTree(inopParser);
         }
 
         public Expression TryParsePreOperator()
@@ -486,6 +574,15 @@ namespace ME3Script.Parsing
                 return null;
             };
             return (Expression)Tokens.TryGetTree(preopParser);
+        }
+
+        public Expression TryParsePostOperator()
+        {
+            Func<ASTNode> postopParser = () =>
+            {
+                return null;
+            };
+            return (Expression)Tokens.TryGetTree(postopParser);
         }
 
         public Expression TryParseExpressionLeaf()

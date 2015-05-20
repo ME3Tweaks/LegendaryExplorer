@@ -99,7 +99,7 @@ namespace ME3Script.Utilities
                 TokenType.BinaryXor,     
                 TokenType.Conditional,   
                 TokenType.Colon,
-                TokenType.SemiColon,
+                //TokenType.SemiColon,
                 TokenType.Comma,
                 TokenType.Dot,
                 TokenType.ExclamationMark,

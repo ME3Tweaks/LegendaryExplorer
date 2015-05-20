@@ -13,6 +13,10 @@ namespace ME3Script.Language.Tree
         PrefixOperator,
         PostfixOperator,
         InfixOperator,
+        PreOpRef,
+        PostOpRef,
+        InOpRef,
+
         AssignStatement,
         IfStatement,
         CodeBody,

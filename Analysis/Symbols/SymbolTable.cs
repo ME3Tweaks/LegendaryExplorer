@@ -169,20 +169,44 @@ namespace ME3Script.Analysis.Symbols
                 PopScope();
         }
 
-        public bool OperatorSignatureExists(OperatorDeclaration op)
+        public bool OperatorSignatureExists(OperatorDeclaration sig)
         {
-            if (op.Type == ASTNodeType.InfixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && op.IdenticalSignature((opdecl.Value as InOpDeclaration)));
-            else if (op.Type == ASTNodeType.PrefixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && op.IdenticalSignature((opdecl.Value as PreOpDeclaration)));
-            else if (op.Type == ASTNodeType.PostfixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && op.IdenticalSignature((opdecl.Value as PostOpDeclaration)));
+            if (sig.Type == ASTNodeType.InfixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature((opdecl.Value as InOpDeclaration)));
+            else if (sig.Type == ASTNodeType.PrefixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature((opdecl.Value as PreOpDeclaration)));
+            else if (sig.Type == ASTNodeType.PostfixOperator)
+                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature((opdecl.Value as PostOpDeclaration)));
             return false;
         }
 
         public void AddOperator(OperatorDeclaration op)
         {
             Operators.Add(op.OperatorKeyword.ToLower(), op);
+        }
+
+        public OperatorDeclaration GetOperator(OperatorDeclaration sig)
+        {
+            if (sig.Type == ASTNodeType.InfixOperator)
+                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature((opdecl.Value as InOpDeclaration))).Value;
+            else if (sig.Type == ASTNodeType.PrefixOperator)
+                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature((opdecl.Value as PreOpDeclaration))).Value;
+            else if (sig.Type == ASTNodeType.PostfixOperator)
+                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature((opdecl.Value as PostOpDeclaration))).Value;
+            return null;
+        }
+
+        public bool GetInOperator(out InOpDeclaration op, String name, VariableType lhs, VariableType rhs)
+        {
+            op = null;
+            var lookup = Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && opdecl.Value.OperatorKeyword == name
+                && (opdecl.Value as InOpDeclaration).LeftOperand.VarType.Name.ToLower() == lhs.Name.ToLower()
+                && (opdecl.Value as InOpDeclaration).RightOperand.VarType.Name.ToLower() == rhs.Name.ToLower());
+            if (lookup.Equals(new KeyValuePair<String, OperatorDeclaration>()))
+                return false;
+
+            op = lookup.Value as InOpDeclaration;
+            return true;
         }
     }
 }

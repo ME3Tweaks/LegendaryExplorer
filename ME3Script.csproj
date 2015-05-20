@@ -70,10 +70,13 @@
     <Compile Include="Language\Tree\Function.cs" />
     <Compile Include="Language\Tree\FunctionParameter.cs" />
     <Compile Include="Language\Tree\IfStatement.cs" />
+    <Compile Include="Language\Tree\InOpReference.cs" />
     <Compile Include="Language\Tree\IntegerLiteral.cs" />
     <Compile Include="Language\Tree\NameLiteral.cs" />
     <Compile Include="Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="Language\Tree\PostOpDeclaration.cs" />
+    <Compile Include="Language\Tree\PostOpReference.cs" />
+    <Compile Include="Language\Tree\PreOpReference.cs" />
     <Compile Include="Language\Tree\ReturnStatement.cs" />
     <Compile Include="Language\Tree\State.cs" />
     <Compile Include="Language\Tree\StateLabel.cs" />
