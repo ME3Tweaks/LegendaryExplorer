@@ -26,6 +26,13 @@ namespace ME3Script.Parsing
             ASTNodeType.IfStatement
         };
 
+        protected List<ASTNodeType> CompositeTypes = new List<ASTNodeType>
+        {
+            ASTNodeType.Class,
+            ASTNodeType.Struct,
+            ASTNodeType.Enumeration
+        };
+
         #region Specifier Categories
         protected List<TokenType> VariableSpecifiers = new List<TokenType>
         {

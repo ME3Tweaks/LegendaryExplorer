@@ -103,6 +103,9 @@ namespace ME3Script.Analysis.Visitors
 
             Symbols.PopScope();
             Symbols.RevertToObjectStack();
+
+            node.Declaration = node;
+
             return Success;
         }
 
@@ -202,6 +205,9 @@ namespace ME3Script.Analysis.Visitors
             }
 
             Symbols.PopScope();
+
+            node.Declaration = node;
+
             return Success;
         }
 
@@ -229,6 +235,8 @@ namespace ME3Script.Analysis.Visitors
             // Add enum values at the class scope so they can be used without being explicitly qualified.
             foreach (VariableIdentifier enumVal in node.Values)
                 Symbols.AddSymbol(enumVal.Name, enumVal);
+
+            node.Declaration = node;
 
             return Success;
         }

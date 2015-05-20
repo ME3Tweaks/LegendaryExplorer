@@ -6,6 +6,7 @@ using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -539,7 +540,8 @@ namespace ME3Script.Parsing
                 rhsType = rhs.ResolveType();
 
                 if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType))
-                        return null; // Error, no op with signature..
+                    return Error("No operator '" + opA_tok + "' with operands of types '" + lhsType.Name + "' and '" + rhsType.Name + "' was found!",
+                        opA_tok.StartPosition, opA_tok.EndPosition);
 
                 while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
                 {
@@ -548,13 +550,14 @@ namespace ME3Script.Parsing
                     var opB_tok = Tokens.ConsumeToken(CurrentTokenType);
                     rhs2 = TryParseAtomicExpression();
                     if (rhs == null)
-                        return null; // error?
+                        return Error("Expected a valid expression as the right hand side of the operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     rhs2Type = rhs2.ResolveType();
 
                     Tokens.PopSnapshot();
 
                     if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type))
-                        return null; // Error, no op with signature..
+                        return Error("No operator '" + opB_tok + "' with operands of types '" + rhsType.Name + "' and '" + rhs2Type.Name + "' was found!",
+                            opB_tok.StartPosition, opB_tok.EndPosition);
 
                     if (opA.Precedence < opB.Precedence)
                         break;
@@ -641,6 +644,7 @@ namespace ME3Script.Parsing
             {
                 return TryParseBasicRef();
                 // TODO: refactor and support all types
+                // TODO: handle function call returns?
                 //return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
@@ -671,6 +675,10 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
+                ASTNode symbol = null;
+                if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
+                    return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+
                 if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) == null)
                     return null;
 
@@ -688,8 +696,8 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                //TODO: symbol lookup
-                return new ArraySymbolRef(null, index, token.StartPosition, CurrentPosition);
+                //TODO: check that the type is actually an array type.
+                return new ArraySymbolRef(symbol, index, token.StartPosition, CurrentPosition);
             };
             return (ArraySymbolRef)Tokens.TryGetTree(refParser);
         }
@@ -705,12 +713,20 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.Dot) == null)
                     return null;
 
+                if (!CompositeTypes.Contains(outer.ResolveType().NodeType))
+                    return Error("Left side symbol is not a composite type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 SymbolReference inner = TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
                 if (inner == null)
                 {
                     Log.LogError("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
                 }
+
+                var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
+                ASTNode innerSymbol; // TODO: fix a reasonable way to get the name of a symbol.
+                if (!Symbols.TryGetSymbolFromSpecificScope("INNER", out innerSymbol, containingClass.GetInheritanceString() + ".OUTER"))
+                    return Error("OUTER has no member named INNER"); // outer.start, inner.end
 
                 return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
             };
@@ -725,7 +741,7 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                return new IntegerLiteral(Int32.Parse(token.Value), token.StartPosition, token.EndPosition);
+                return new IntegerLiteral(Int32.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
             };
             return (IntegerLiteral)Tokens.TryGetTree(intParser);
         }
@@ -751,7 +767,7 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                return new FloatLiteral(Single.Parse(token.Value), token.StartPosition, token.EndPosition);
+                return new FloatLiteral(Single.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
             };
             return (FloatLiteral)Tokens.TryGetTree(floatParser);
         }

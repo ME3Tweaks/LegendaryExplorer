@@ -199,7 +199,7 @@ namespace ME3Script.Analysis.Symbols
         public bool GetInOperator(out InOpDeclaration op, String name, VariableType lhs, VariableType rhs)
         {
             op = null;
-            var lookup = Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && opdecl.Value.OperatorKeyword == name
+            var lookup = Operators.FirstOrDefault(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && opdecl.Value.OperatorKeyword == name
                 && (opdecl.Value as InOpDeclaration).LeftOperand.VarType.Name.ToLower() == lhs.Name.ToLower()
                 && (opdecl.Value as InOpDeclaration).RightOperand.VarType.Name.ToLower() == rhs.Name.ToLower());
             if (lookup.Equals(new KeyValuePair<String, OperatorDeclaration>()))
