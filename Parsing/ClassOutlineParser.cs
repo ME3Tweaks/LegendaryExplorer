@@ -317,7 +317,7 @@ namespace ME3Script.Parsing
                         return null;
                     }
 
-                    CodeBody body = null;
+                    CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
                     SourcePosition bodyStart = null, bodyEnd = null;
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                     {
@@ -501,7 +501,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                CodeBody body = null;
+                CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
                 SourcePosition bodyStart = null, bodyEnd = null;
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                 {

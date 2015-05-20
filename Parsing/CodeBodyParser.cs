@@ -18,6 +18,7 @@ namespace ME3Script.Parsing
         private String OuterClassScope;
         private IContainsLocals NodeVariables;
         private ASTNode Node;
+        private CodeBody Body;
 
         private bool IsFunction { get { return Node.Type == ASTNodeType.Function; } }
         private bool IsState { get { return Node.Type == ASTNodeType.State; } }
@@ -35,22 +36,46 @@ namespace ME3Script.Parsing
         private int _switchCount;
         private bool InSwitch { get { return _switchCount > 0; } }
 
-        public CodeBodyParser(TokenStream<String> tokens, SymbolTable symbols, ASTNode node, MessageLog log = null)
+        public CodeBodyParser(TokenStream<String> tokens, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
         {
             Log = log ?? new MessageLog();
             Symbols = symbols;
             Tokens = tokens;
             _loopCount = 0;
             _switchCount = 0;
-            OuterClassScope = "TODO";
-            Node = node;
+            Node = containingNode;
+            Body = body;
+            OuterClassScope = NodeUtils.GetOuterClassScope(containingNode);
             // TODO: refactor a better solution to this mess
             if (IsState)
-                NodeVariables = (node as State);
+                NodeVariables = (containingNode as State);
             else if (IsFunction)
-                NodeVariables = (node as Function);
+                NodeVariables = (containingNode as Function);
             else if (IsOperator)
-                NodeVariables = (node as OperatorDeclaration);
+                NodeVariables = (containingNode as OperatorDeclaration);
+        }
+
+        public ASTNode ParseBody()
+        {
+            do
+            {
+                if (Tokens.CurrentItem.StartPosition.Equals(Body.StartPos))
+                    break;
+                Tokens.Advance();
+            } while (!Tokens.AtEnd());
+            if (Tokens.AtEnd())
+                return Error("Could not find the code body for the current node, please contact the maintainers of this compiler!");
+
+            var body = TryParseBody(false);
+            if (body == null)
+                return null;
+            Body.Statements = body.Statements;
+
+            if (!Tokens.CurrentItem.StartPosition.Equals(Body.EndPos))
+                return Error("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", 
+                    CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+            return Body;
         }
 
         private ASTNode Error(String msg, SourcePosition start = null, SourcePosition end = null)
@@ -72,6 +97,7 @@ namespace ME3Script.Parsing
                     return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var statements = new List<Statement>();
+                var startPos = CurrentPosition;
                 var current = TryParseInnerStatement();
                 while (current != null)
                 {
@@ -82,10 +108,11 @@ namespace ME3Script.Parsing
                         return Error("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
+                var endPos = CurrentPosition;
                 if (requireBrackets && Tokens.ConsumeToken(TokenType.RightBracket) == null)
                     return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new CodeBody(statements, statements.First().StartPos, statements.Last().EndPos);
+                return new CodeBody(statements, startPos, endPos);
             };
             return (CodeBody)Tokens.TryGetTree(codeParser);
         }
