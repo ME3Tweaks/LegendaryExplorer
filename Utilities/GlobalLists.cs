@@ -100,8 +100,8 @@ namespace ME3Script.Utilities
                 TokenType.Conditional,   
                 TokenType.Colon,
                 //TokenType.SemiColon,
-                TokenType.Comma,
-                TokenType.Dot,
+                //TokenType.Comma,
+                //TokenType.Dot,
                 TokenType.ExclamationMark,
                 TokenType.Hash,
                 TokenType.VectorTransform

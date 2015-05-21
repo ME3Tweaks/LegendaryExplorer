@@ -299,7 +299,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
-            else if (!paramType.GetType().IsAssignableFrom(typeof(VariableType)))
+            else if (!typeof(VariableType).IsAssignableFrom(paramType.GetType()))
             {
                 return Error("Invalid parameter type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
             }
