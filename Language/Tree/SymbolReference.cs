@@ -10,12 +10,14 @@ namespace ME3Script.Language.Tree
 {
     public class SymbolReference : Expression
     {
-        public ASTNode Symbol;
+        public ASTNode Node;
+        public String Name;
 
-        public SymbolReference(ASTNode symbol, SourcePosition start, SourcePosition end) 
+        public SymbolReference(ASTNode symbol, SourcePosition start, SourcePosition end, String name = "") 
             : base(ASTNodeType.SymbolReference, start, end)
         {
-            Symbol = symbol;
+            Node = symbol;
+            Name = name;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -25,12 +27,12 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            if (Symbol is Variable)
-                return (Symbol as Variable).VarType;
-            if (Symbol is FunctionParameter)
-                return (Symbol as FunctionParameter).VarType;
-            if (Symbol is Function)
-                return (Symbol as Function).ReturnType;
+            if (Node is Variable)
+                return (Node as Variable).VarType;
+            if (Node is FunctionParameter)
+                return (Node as FunctionParameter).VarType;
+            if (Node is Function)
+                return (Node as Function).ReturnType;
             return null;
         }
     }

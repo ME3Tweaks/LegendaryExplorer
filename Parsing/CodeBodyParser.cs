@@ -662,7 +662,7 @@ namespace ME3Script.Parsing
                 if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
                     return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
 
-                return new SymbolReference(symbol, token.StartPosition, token.EndPosition);
+                return new SymbolReference(symbol, token.StartPosition, token.EndPosition, token.Value);
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
         }
@@ -697,7 +697,7 @@ namespace ME3Script.Parsing
                 }
 
                 //TODO: check that the type is actually an array type.
-                return new ArraySymbolRef(symbol, index, token.StartPosition, CurrentPosition);
+                return new ArraySymbolRef(symbol, index, token.StartPosition, CurrentPosition, token.Value);
             };
             return (ArraySymbolRef)Tokens.TryGetTree(refParser);
         }
@@ -724,9 +724,9 @@ namespace ME3Script.Parsing
                 }
 
                 var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
-                ASTNode innerSymbol; // TODO: fix a reasonable way to get the name of a symbol.
-                if (!Symbols.TryGetSymbolFromSpecificScope("INNER", out innerSymbol, containingClass.GetInheritanceString() + ".OUTER"))
-                    return Error("OUTER has no member named INNER"); // outer.start, inner.end
+                ASTNode innerSymbol;
+                if (!Symbols.TryGetSymbolFromSpecificScope(inner.Name, out innerSymbol, containingClass.GetInheritanceString() + "." + outer.Name))
+                    return Error("'" +outer.Name +"' has no member named '" + inner.Name + "'!", outer.Node.StartPos, inner.Node.EndPos);
 
                 return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
             };
