@@ -345,18 +345,12 @@ namespace ME3Script.Parsing
 
                 var name = Tokens.ConsumeToken(TokenType.Word);
                 if (name == null)
-                {
-                    Log.LogError("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var parent = TryParseParent();
 
                 if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                {
-                    Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 List<Function> ignores = new List<Function>();
                 if (Tokens.ConsumeToken(TokenType.Ignores) != null)
@@ -365,18 +359,13 @@ namespace ME3Script.Parsing
                     {
                         VariableIdentifier variable = TryParseVariable();
                         if (variable == null)
-                        {
-                            Log.LogError("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
+                            return Error("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                         ignores.Add(new Function(variable.Name, null, null, null, null, variable.StartPos, variable.EndPos));
                     } while (Tokens.ConsumeToken(TokenType.Comma) != null);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 var funcs = new List<Function>();
@@ -388,17 +377,14 @@ namespace ME3Script.Parsing
                 }
 
                 var bodyStart = Tokens.CurrentItem.StartPosition;
-                while (Tokens.CurrentItem.Type != TokenType.RightBracket)
+                while (Tokens.CurrentItem.Type != TokenType.RightBracket && !Tokens.AtEnd())
                 {
                     Tokens.Advance();
                 }
                 var bodyEnd = Tokens.CurrentItem.StartPosition;
 
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                {
-                    Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var body = new CodeBody(null, bodyStart, bodyEnd);
                 var parentState = parent != null ? new State(parent.Name, null, null, null, null, null, null, parent.StartPos, parent.EndPos) : null;
