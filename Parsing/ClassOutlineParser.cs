@@ -272,10 +272,8 @@ namespace ME3Script.Parsing
 
                     var firstString = Tokens.ConsumeToken(TokenType.Word);
                     if (firstString == null)
-                    {
-                        Log.LogError("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     var secondString = Tokens.ConsumeToken(TokenType.Word);
                     if (secondString == null)
                         name = firstString;
@@ -289,43 +287,30 @@ namespace ME3Script.Parsing
                         new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    {
-                        Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     var parameters = new List<FunctionParameter>();
                     while (CurrentTokenType != TokenType.RightParenth)
                     {
                         var param = TryParseParameter();
                         if (param == null)
-                        {
-                            Log.LogError("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
+                            return Error("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                         parameters.Add(param);
                         if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                        {
-                            Log.LogError("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
+                            return Error("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     }
 
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    {
-                        Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
                     SourcePosition bodyStart = null, bodyEnd = null;
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                     {
                         if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
-                        {
-                            Log.LogError("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
+                            return Error("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                         body = new CodeBody(null, bodyStart, bodyEnd);
                     }
 
