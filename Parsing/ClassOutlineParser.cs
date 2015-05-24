@@ -56,7 +56,7 @@ namespace ME3Script.Parsing
 
                     var outerClass = TryParseOuter();
 
-                    var specs = ParseSpecifiers(ClassSpecifiers);
+                    var specs = ParseSpecifiers(GlobalLists.ClassSpecifiers);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                     {
@@ -136,7 +136,7 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.InstanceVariable) == null)
                         return null;
 
-                    var specs = ParseSpecifiers(VariableSpecifiers);
+                    var specs = ParseSpecifiers(GlobalLists.VariableSpecifiers);
 
                     var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
                     if (type == null)
@@ -171,7 +171,7 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.Struct) == null)
                         return null;
 
-                    var specs = ParseSpecifiers(StructSpecifiers);
+                    var specs = ParseSpecifiers(GlobalLists.StructSpecifiers);
 
                     var name = Tokens.ConsumeToken(TokenType.Word);
                     if (name == null)
@@ -263,7 +263,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> stubParser = () =>
                 {
-                    var specs = ParseSpecifiers(FunctionSpecifiers);
+                    var specs = ParseSpecifiers(GlobalLists.FunctionSpecifiers);
 
                     if (Tokens.ConsumeToken(TokenType.Function) == null)
                         return null;
@@ -338,7 +338,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> stateSkeletonParser = () =>
             {
-                var specs = ParseSpecifiers(StateSpecifiers);
+                var specs = ParseSpecifiers(GlobalLists.StateSpecifiers);
 
                 if (Tokens.ConsumeToken(TokenType.State) == null)
                     return null;
@@ -411,7 +411,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> operatorParser = () =>
             {
-                var specs = ParseSpecifiers(FunctionSpecifiers);
+                var specs = ParseSpecifiers(GlobalLists.FunctionSpecifiers);
 
                 var token = Tokens.ConsumeToken(TokenType.Operator) ??
                     Tokens.ConsumeToken(TokenType.PreOperator) ??
@@ -533,7 +533,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> paramParser = () =>
             {
-                var paramSpecs = ParseSpecifiers(ParameterSpecifiers);
+                var paramSpecs = ParseSpecifiers(GlobalLists.ParameterSpecifiers);
 
                 var type = Tokens.ConsumeToken(TokenType.Word);
                 if (type == null)
@@ -588,7 +588,7 @@ namespace ME3Script.Parsing
             return (VariableType)Tokens.TryGetTree(outerParser);
         }
 
-        private Specifier TryParseSpecifier(List<TokenType> category)
+        public Specifier TryParseSpecifier(List<TokenType> category)
         {
             Func<ASTNode> specifierParser = () =>
                 {

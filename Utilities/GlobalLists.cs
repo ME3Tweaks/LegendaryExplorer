@@ -213,5 +213,111 @@ namespace ME3Script.Utilities
             };
         }
 
+        #region Specifier Categories
+        public static List<TokenType> VariableSpecifiers = new List<TokenType>
+        {
+            TokenType.ConfigSpecifier,
+            TokenType.GlobalConfigSpecifier,
+            TokenType.LocalizedSpecifier,
+            TokenType.ConstSpecifier,
+            TokenType.PrivateSpecifier,
+            TokenType.ProtectedSpecifier,
+            TokenType.PrivateWriteSpecifier,
+            TokenType.ProtectedWriteSpecifier,
+            TokenType.RepNotifySpecifier,
+            TokenType.DeprecatedSpecifier,
+            TokenType.InstancedSpecifier,
+            TokenType.DatabindingSpecifier,
+            TokenType.EditorOnlySpecifier,
+            TokenType.NotForConsoleSpecifier,
+            TokenType.EditConstSpecifier,
+            TokenType.EditFixedSizeSpecifier,
+            TokenType.EditInlineSpecifier,
+            TokenType.EditInlineUseSpecifier,
+            TokenType.NoClearSpecifier,
+            TokenType.InterpSpecifier,
+            TokenType.InputSpecifier,
+            TokenType.TransientSpecifier,
+            TokenType.DuplicateTransientSpecifier,
+            TokenType.NoImportSpecifier,
+            TokenType.NativeSpecifier,
+            TokenType.ExportSpecifier,
+            TokenType.NoExportSpecifier,
+            TokenType.NonTransactionalSpecifier,
+            TokenType.PointerSpecifier,
+            TokenType.InitSpecifier,
+            TokenType.RepRetrySpecifier,
+            TokenType.AllowAbstractSpecifier
+        };
+
+        public static List<TokenType> ClassSpecifiers = new List<TokenType>
+        {
+            TokenType.AbstractSpecifier,
+            TokenType.ConfigSpecifier,
+            TokenType.DependsOnSpecifier,
+            TokenType.ImplementsSpecifier,
+            TokenType.InstancedSpecifier,
+            TokenType.ParseConfigSpecifier,
+            TokenType.PerObjectConfigSpecifier,
+            TokenType.PerObjectLocalizedSpecifier,
+            TokenType.TransientSpecifier,
+            TokenType.NonTransientSpecifier,
+            TokenType.DeprecatedSpecifier
+        };
+
+        public static List<TokenType> StructSpecifiers = new List<TokenType>
+        {
+            TokenType.ImmutableSpecifier,
+            TokenType.ImmutableWhenCookedSpecifier,
+            TokenType.AtomicSpecifier,
+            TokenType.AtomicWhenCookedSpecifier,
+            TokenType.StrictConfigSpecifier,
+            TokenType.TransientSpecifier,
+            TokenType.NativeSpecifier
+        };
+
+        public static List<TokenType> FunctionSpecifiers = new List<TokenType>
+        {
+            TokenType.PrivateSpecifier,
+            TokenType.ProtectedSpecifier,
+            TokenType.PublicSpecifier,
+            TokenType.StaticSpecifier,
+            TokenType.FinalSpecifier,
+            TokenType.ExecSpecifier,
+            TokenType.K2CallSpecifier,
+            TokenType.K2OverrideSpecifier,
+            TokenType.K2PureSpecifier,
+            TokenType.SimulatedSpecifier,
+            TokenType.SingularSpecifier,
+            TokenType.ClientSpecifier,
+            TokenType.DemoRecordingSpecifier,
+            TokenType.ReliableSpecifier,
+            TokenType.ServerSpecifier,
+            TokenType.UnreliableSpecifier,
+            TokenType.ConstSpecifier,
+            TokenType.IteratorSpecifier,
+            TokenType.LatentSpecifier,
+            TokenType.NativeSpecifier,
+            TokenType.NoExportSpecifier
+        };
+
+        public static List<TokenType> ParameterSpecifiers = new List<TokenType>
+        {
+            TokenType.CoerceSpecifier,
+            TokenType.ConstSpecifier,
+            TokenType.InitSpecifier,
+            TokenType.OptionalSpecifier,
+            TokenType.OutSpecifier,
+            TokenType.SkipSpecifier
+        };
+
+        public static List<TokenType> StateSpecifiers = new List<TokenType>
+        {
+            TokenType.AutoSpecifier,
+            TokenType.SimulatedSpecifier
+        };
+
+        #endregion
+
     }
 }
