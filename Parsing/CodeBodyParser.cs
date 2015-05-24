@@ -64,6 +64,7 @@ namespace ME3Script.Parsing
                     break;
                 Tokens.Advance();
             } while (!Tokens.AtEnd());
+
             if (Tokens.AtEnd())
                 return Error("Could not find the code body for the current node, please contact the maintainers of this compiler!");
 
@@ -619,19 +620,30 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
                     return null;
 
+                if (funcRef.Node.Type != ASTNodeType.Function)
+                    return Error("'" + funcRef.Name + "' is not a function!", funcRef.StartPos, funcRef.EndPos);
+
+                Function func = funcRef.Node as Function;
                 List<Expression> parameters = new List<Expression>();
-                var param = TryParseExpression();
-                while (param != null)
+                var currentParam = TryParseExpression();
+                foreach (FunctionParameter p in func.Parameters)
                 {
-                    parameters.Add(param);
-                    param = TryParseExpression();
+                    // TODO: allow automatic type conversion for compatible basic types
+                    // TODO: allow optional parameters to be left out.
+                    if (currentParam == null || !TypeEquals(currentParam.ResolveType(), p.VarType))
+                        return Error("Expected a parameter of type '" + p.VarType.Name + "'!", currentParam.StartPos, currentParam.EndPos);
+
+                    parameters.Add(currentParam);
+                    if (Tokens.ConsumeToken(TokenType.Comma) == null)
+                        break;
+                    currentParam = TryParseExpression();
                 }
 
+                if (parameters.Count != func.Parameters.Count)
+                    return Error("Expected " + func.Parameters.Count + " parameters to function '" + func.Name + "'!", funcRef.StartPos, funcRef.EndPos);
+
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new FunctionCall(funcRef, parameters, funcRef.StartPos, CurrentPosition);
             };
@@ -642,7 +654,6 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> refParser = () =>
             {
-                // TODO: refactor and support all types
                 // TODO: handle function call returns?
                 return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
             };
@@ -730,11 +741,6 @@ namespace ME3Script.Parsing
                 SymbolReference inner = TryParseCompositeRef(outer) ?? TryParseArrayRef(outer) ?? TryParseBasicRef(outer) ?? (SymbolReference)null;
                 if (inner == null)
                     return Error("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
-                ASTNode innerSymbol;
-                if (!Symbols.TryGetSymbolFromSpecificScope(inner.Name, out innerSymbol, containingClass.GetInheritanceString() + "." + outer.ResolveType().Name))
-                    return Error("'" +outer.Name +"' has no member named '" + inner.Name + "'!", outer.Node.StartPos, inner.Node.EndPos);
 
                 return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
             };
