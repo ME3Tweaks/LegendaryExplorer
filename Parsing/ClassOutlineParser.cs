@@ -175,36 +175,25 @@ namespace ME3Script.Parsing
 
                     var name = Tokens.ConsumeToken(TokenType.Word);
                     if (name == null)
-                    {
-                        Log.LogError("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     var parent = TryParseParent();
 
                     if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                    {
-                        Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     var vars = new List<VariableDeclaration>();
                     do
                     {
                         var variable = TryParseVarDecl();
                         if (variable == null)
-                        {
-                            Log.LogError("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
+                            return Error("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                         vars.Add(variable);
-                    } while (CurrentTokenType != TokenType.RightBracket);
+                    } while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd());
 
                     if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                    {
-                        Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     return new Struct(name.Value, specs, vars, name.StartPosition, name.EndPosition, parent);
                 };
@@ -220,39 +209,26 @@ namespace ME3Script.Parsing
 
                 var name = Tokens.ConsumeToken(TokenType.Word);
                 if (name == null)
-                {
-                    Log.LogError("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (Tokens.ConsumeToken(TokenType.LeftBracket) == null)
-                {
-                    Log.LogError("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var identifiers = new List<VariableIdentifier>();
                 do
                 {
                     var ident = Tokens.ConsumeToken(TokenType.Word);
                     if (ident == null)
-                    {
-                        Log.LogError("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPosition, ident.EndPosition));
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket)
-                    {
-                        Log.LogError("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 } while (CurrentTokenType != TokenType.RightBracket);
 
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
-                {
-                    Log.LogError("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new Enumeration(name.Value, identifiers, name.StartPosition, name.EndPosition);
             };
