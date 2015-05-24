@@ -140,24 +140,15 @@ namespace ME3Script.Parsing
 
                     var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
                     if (type == null)
-                    {
-                        Log.LogError("Expected variable type or struct/enum type declaration!", 
+                        return Error("Expected variable type or struct/enum type declaration!", 
                             CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
 
-                    var vars = ParseVariableNames(); // Struct/Enums also need variables if declared as inline types
-                    if (vars == null) // && type.Type != ASTNodeType.Struct && type.Type != ASTNodeType.Enumeration)
-                    {
-                        Log.LogError("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                    var vars = ParseVariableNames();
+                    if (vars == null)
+                        return Error("Malformed variable names!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     return new VariableDeclaration(type, specs, vars, vars.First().StartPos, vars.Last().EndPos);
                 };
