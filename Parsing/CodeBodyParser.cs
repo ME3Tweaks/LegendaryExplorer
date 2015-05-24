@@ -80,12 +80,6 @@ namespace ME3Script.Parsing
             return Body;
         }
 
-        private ASTNode Error(String msg, SourcePosition start = null, SourcePosition end = null)
-        {
-            Log.LogError(msg, start, end);
-            return null;
-        }
-
         private bool TypeEquals(VariableType a, VariableType b)
         {
             return a.Name.ToLower() == b.Name.ToLower();

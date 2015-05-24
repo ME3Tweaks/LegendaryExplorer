@@ -17,7 +17,7 @@ namespace ME3Script.Parsing
         protected TokenType CurrentTokenType
         { get { return Tokens.CurrentItem.Type; } }
         protected SourcePosition CurrentPosition
-        { get { return Tokens.CurrentItem.StartPosition; } }
+        { get { return Tokens.CurrentItem.StartPosition ?? new SourcePosition(-1, -1, -1); } }
 
         protected List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
         {
@@ -33,6 +33,11 @@ namespace ME3Script.Parsing
             ASTNodeType.Enumeration
         };
 
+        protected ASTNode Error(String msg, SourcePosition start = null, SourcePosition end = null)
+        {
+            Log.LogError(msg, start, end);
+            return null;
+        }
 
         public List<VariableIdentifier> ParseVariableNames()
         {

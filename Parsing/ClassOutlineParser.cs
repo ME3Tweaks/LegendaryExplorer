@@ -425,30 +425,22 @@ namespace ME3Script.Parsing
                 if (token.Type == TokenType.Operator)
                 {
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    {
-                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     precedence = Tokens.ConsumeToken(TokenType.IntegerNumber);
                     if (precedence == null)
-                    {
-                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected an integer number!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    {
-                        Log.LogError("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 }
 
                 Token<String> returnType = null, name = null;
                 var firstString = TryParseOperatorIdentifier();
                 if (firstString == null)
-                {
-                    Log.LogError("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 var secondString = TryParseOperatorIdentifier();
                 if (secondString == null)
                     name = firstString;
@@ -462,54 +454,37 @@ namespace ME3Script.Parsing
                     new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                {
-                    Log.LogError("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var operands = new List<FunctionParameter>();
                 while (CurrentTokenType != TokenType.RightParenth)
                 {
                     var operand = TryParseParameter();
                     if (operand == null)
-                    {
-                        Log.LogError("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     operands.Add(operand);
                     if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth)
-                    {
-                        Log.LogError("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 }
 
                 if (token.Type == TokenType.Operator && operands.Count != 2)
-                {
-                    Log.LogError("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 else if (token.Type != TokenType.Operator && operands.Count != 1)
-                {
-                    Log.LogError("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                {
-                    Log.LogError("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
                 SourcePosition bodyStart = null, bodyEnd = null;
                 if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, out bodyStart, out bodyEnd))
-                    {
-                        Log.LogError("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                     body = new CodeBody(null, bodyStart, bodyEnd);
                 }
 
@@ -537,16 +512,12 @@ namespace ME3Script.Parsing
 
                 var type = Tokens.ConsumeToken(TokenType.Word);
                 if (type == null)
-                {
-                    Log.LogError("Expected parameter type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected parameter type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 var variable = TryParseVariable();
                 if (variable == null)
-                {
-                    Log.LogError("Expected parameter name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
+                    return Error("Expected parameter name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 return new FunctionParameter(
                     new VariableType(type.Value, type.StartPosition, type.EndPosition),
                     paramSpecs, variable, variable.StartPos, variable.EndPos);
