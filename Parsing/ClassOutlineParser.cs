@@ -30,22 +30,16 @@ namespace ME3Script.Parsing
         #region Parsers
         #region Statements
 
-        private Class TryParseClass()
+        public Class TryParseClass()
         {
             Func<ASTNode> classParser = () =>
                 {
                     if (Tokens.ConsumeToken(TokenType.Class) == null)
-                    {
-                        Log.LogError("Expected class declaration!");
-                        return null;
-                    }
+                        return Error("Expected class declaration!");
 
                     var name = Tokens.ConsumeToken(TokenType.Word);
                     if (name == null)
-                    {
-                        Log.LogError("Expected class name!");
-                        return null;
-                    }
+                        return Error("Expected class name!");
 
                     var parentClass = TryParseParent();
                     if (parentClass == null)
@@ -59,10 +53,7 @@ namespace ME3Script.Parsing
                     var specs = ParseSpecifiers(GlobalLists.ClassSpecifiers);
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    {
-                        Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
+                        return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     var variables = new List<VariableDeclaration>();
                     var types = new List<VariableType>();
@@ -74,27 +65,20 @@ namespace ME3Script.Parsing
                         {
                             var variable = TryParseVarDecl();
                             if (variable == null)
-                            {
-                                Log.LogError("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                                return null;
-                            }
+                                return Error("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                             variables.Add(variable);
                         }
                         else
                         {
                             var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID", null, null);
                             if (type.Name == "INVALID")
-                            {
-                                Log.LogError("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                                return null;
-                            }
+                                return Error("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                             types.Add(type);
 
                             if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                            {
-                                Log.LogError("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                                return null;
-                            }
+                                return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                         }
                     }
 
@@ -109,11 +93,8 @@ namespace ME3Script.Parsing
                                         (ASTNode)TryParseState() ?? 
                                         (ASTNode)null;
                         if (declaration == null && !Tokens.AtEnd())
-                        {
-                            Log.LogError("Expected function/state/operator declaration!", 
+                            return Error("Expected function/state/operator declaration!", 
                                 CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                            return null;
-                        }
 
                         if (declaration.Type == ASTNodeType.Function)
                             funcs.Add((Function)declaration);
