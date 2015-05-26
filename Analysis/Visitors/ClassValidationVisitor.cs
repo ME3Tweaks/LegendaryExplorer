@@ -420,5 +420,64 @@ namespace ME3Script.Analysis.Visitors
             return Success;
         }
 
+        #region Unused
+        public bool VisitNode(CodeBody node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(StateLabel node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(Variable node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(VariableIdentifier node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(DoUntilLoop node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(ForLoop node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(WhileLoop node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(AssignStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(BreakStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(ContinueStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(IfStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(ReturnStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(StopStatement node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(InOpReference node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(PreOpReference node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(PostOpReference node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(FunctionCall node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(ArraySymbolRef node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(CompositeSymbolRef node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(SymbolReference node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(BooleanLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(FloatLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(IntegerLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(NameLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(StringLiteral node)
+        { throw new NotImplementedException(); }
+        #endregion
     }
 }
