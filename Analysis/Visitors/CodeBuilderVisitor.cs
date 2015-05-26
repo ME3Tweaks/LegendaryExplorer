@@ -249,9 +249,238 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
-        #region Unused
         public bool VisitNode(CodeBody node)
-        { throw new NotImplementedException(); }
+        {
+            foreach (Statement s in node.Statements)
+            {
+                s.AcceptVisitor(this);
+                if (!GlobalLists.SemicolonExceptions.Contains(s.Type))
+                    Append(";");
+            }
+
+            return true; 
+        }
+
+        public bool VisitNode(DoUntilLoop node)
+        { 
+            // do { /n contents /n } until(condition);
+            Write("do {0}", "{");
+            level++;
+
+            node.Body.AcceptVisitor(this);
+            level--;
+
+            Write("{0} until (", "}");
+            node.Condition.AcceptVisitor(this);
+            Append(");");
+
+            return true;
+        }
+
+        public bool VisitNode(ForLoop node)
+        {
+            // for (initstatement; loopcondition; updatestatement) { /n contents /n }
+            Write("for (");
+            node.Init.AcceptVisitor(this);
+            Append("; ");
+            node.Condition.AcceptVisitor(this);
+            Append("; ");
+            node.Update.AcceptVisitor(this);
+            Append(") {0}", "{");
+
+            level++;
+            node.Body.AcceptVisitor(this);
+            level--;
+            Write("{0}", "}");
+
+            return true;
+        }
+
+        public bool VisitNode(WhileLoop node)
+        {
+            // while (condition) { /n contents /n }
+            Write("while (");
+            node.Condition.AcceptVisitor(this);
+            Append(") {0}", "{");
+
+            level++;
+            node.Body.AcceptVisitor(this);
+            level--;
+            Write("{0}", "}");
+
+            return true;
+        }
+
+        public bool VisitNode(AssignStatement node)
+        {
+            // reference = expression;
+            Write("");
+            node.Target.AcceptVisitor(this);
+            Append(" = ");
+            node.Value.AcceptVisitor(this);
+
+            return true;
+        }
+
+        public bool VisitNode(BreakStatement node)
+        {
+            // break;
+            Write("break");
+            return true;
+        }
+
+        public bool VisitNode(ContinueStatement node)
+        {
+            // continue;
+            Write("continue");
+            return true;
+        }
+
+        public bool VisitNode(StopStatement node)
+        {
+            // stop;
+            Write("stop");
+            return true;
+        }
+        
+        public bool VisitNode(ReturnStatement node)
+        {
+            // return expression;
+            Write("return ");
+            node.Value.AcceptVisitor(this);
+
+            return true;
+        }
+
+        public bool VisitNode(IfStatement node)
+        {
+            // if (condition) { /n contents /n } [else...]
+            Write("if (");
+            node.Condition.AcceptVisitor(this);
+            Append(") {0}", "{");
+
+            level++;
+            node.Then.AcceptVisitor(this);
+            level--;
+            Write("{0}", "}");
+
+            if (node.Else != null)
+            {
+                Append(" else {0}", "{");
+                level++;
+                node.Else.AcceptVisitor(this);
+                level--;
+                Write("{0}", "}");
+            }
+
+            return true;
+        }
+
+        public bool VisitNode(InOpReference node)
+        {
+            // [(] expression operatorkeyword expression [)]
+            Append("(");
+            node.LeftOperand.AcceptVisitor(this);
+            Append(" {0} ", node.Operator.OperatorKeyword);
+            node.RightOperand.AcceptVisitor(this);
+            Append(")");
+
+            return true;
+        }
+
+        public bool VisitNode(PreOpReference node)
+        {
+            // operatorkeywordExpression
+            Append("{0}", node.Operator.OperatorKeyword);
+            node.Operand.AcceptVisitor(this);
+
+            return true;
+        }
+
+        public bool VisitNode(PostOpReference node)
+        {
+            // ExpressionOperatorkeyword
+            node.Operand.AcceptVisitor(this);
+            Append("{0}", node.Operator.OperatorKeyword);
+
+            return true;
+        }
+
+        public bool VisitNode(FunctionCall node)
+        {
+            // functionName( parameter1, parameter2.. )
+            Append("{0}(", node.Function.Name);
+            foreach(Expression expr in node.Parameters)
+            {
+                expr.AcceptVisitor(this);
+                if (node.Parameters.IndexOf(expr) != node.Parameters.Count - 1)
+                    Append(", ");
+            }
+            Append(")");
+
+            return true;
+        }
+
+        public bool VisitNode(ArraySymbolRef node)
+        {
+            // symbolname[expression]
+            Append("{0}[", node.Name);
+            node.Index.AcceptVisitor(this);
+            Append("]");
+            return true;
+        }
+
+        public bool VisitNode(CompositeSymbolRef node)
+        {
+            // outersymbol.innersymbol
+            Append("{0}.", node.OuterSymbol.Name);
+            node.InnerSymbol.AcceptVisitor(this);
+            return true;
+        }
+
+        public bool VisitNode(SymbolReference node)
+        {
+            // symbolname
+            Append("{0}", node.Name);
+            return true;
+        }
+
+        public bool VisitNode(BooleanLiteral node)
+        {
+            // true|false
+            Append("{0}", node.Value);
+            return true;
+        }
+
+        public bool VisitNode(FloatLiteral node)
+        {
+            // floatvalue
+            Append("{0}", node.Value);
+            return true;
+        }
+
+        public bool VisitNode(IntegerLiteral node)
+        {
+            // integervalue
+            Append("{0}", node.Value);
+            return true;
+        }
+
+        public bool VisitNode(NameLiteral node)
+        {
+            // 'name'
+            Append("'{0}'", node.Value);
+            return true;
+        }
+
+        public bool VisitNode(StringLiteral node)
+        {
+            // "string"
+            Append("\"{0}\"", node.Value);
+            return true;
+        }
+
+        #region Unused
         public bool VisitNode(StateLabel node)
         { throw new NotImplementedException(); }
 
@@ -260,53 +489,6 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
 
-        public bool VisitNode(DoUntilLoop node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(ForLoop node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(WhileLoop node)
-        { throw new NotImplementedException(); }
-
-        public bool VisitNode(AssignStatement node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(BreakStatement node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(ContinueStatement node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(IfStatement node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(ReturnStatement node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(StopStatement node)
-        { throw new NotImplementedException(); }
-
-        public bool VisitNode(InOpReference node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(PreOpReference node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(PostOpReference node)
-        { throw new NotImplementedException(); }
-
-        public bool VisitNode(FunctionCall node)
-        { throw new NotImplementedException(); }
-
-        public bool VisitNode(ArraySymbolRef node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(CompositeSymbolRef node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(SymbolReference node)
-        { throw new NotImplementedException(); }
-
-        public bool VisitNode(BooleanLiteral node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(FloatLiteral node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(IntegerLiteral node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(NameLiteral node)
-        { throw new NotImplementedException(); }
-        public bool VisitNode(StringLiteral node)
-        { throw new NotImplementedException(); }
         #endregion
     }
 }

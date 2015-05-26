@@ -10,8 +10,8 @@ namespace ME3Script.Language.Tree
 {
     public class PostOpReference : Expression
     {
-        PostOpDeclaration Operator;
-        Expression Operand;
+        public PostOpDeclaration Operator;
+        public Expression Operand;
 
         public PostOpReference(PostOpDeclaration op, Expression oper, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.InOpRef, start, end)

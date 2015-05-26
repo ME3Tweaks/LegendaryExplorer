@@ -10,8 +10,8 @@ namespace ME3Script.Language.Tree
 {
     public class PreOpReference : Expression
     {
-        PreOpDeclaration Operator;
-        Expression Operand;
+        public PreOpDeclaration Operator;
+        public Expression Operand;
 
         public PreOpReference(PreOpDeclaration op, Expression oper, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.InOpRef, start, end)

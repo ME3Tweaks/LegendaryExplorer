@@ -1,4 +1,5 @@
-﻿using ME3Script.Lexing.Matching.StringMatchers;
+﻿using ME3Script.Language.Tree;
+using ME3Script.Lexing.Matching.StringMatchers;
 using ME3Script.Lexing.Tokenizing;
 using System;
 using System.Collections.Generic;
@@ -212,6 +213,12 @@ namespace ME3Script.Utilities
                 new KeywordMatcher("false", TokenType.False, Delimiters, false)
             };
         }
+
+        public static List<ASTNodeType> SemicolonExceptions = new List<ASTNodeType>
+        {
+            ASTNodeType.ForLoop,
+            ASTNodeType.WhileLoop,
+        };
 
         #region Specifier Categories
         public static List<TokenType> VariableSpecifiers = new List<TokenType>

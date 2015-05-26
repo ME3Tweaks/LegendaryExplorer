@@ -10,9 +10,9 @@ namespace ME3Script.Language.Tree
 {
     public class InOpReference : Expression
     {
-        InOpDeclaration Operator;
-        Expression LeftOperand;
-        Expression RightOperand;
+        public InOpDeclaration Operator;
+        public Expression LeftOperand;
+        public Expression RightOperand;
 
         public InOpReference(InOpDeclaration op, Expression lhs, Expression rhs, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.InOpRef, start, end) 
