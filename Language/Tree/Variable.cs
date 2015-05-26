@@ -1,4 +1,5 @@
-﻿using ME3Script.Utilities;
+﻿using ME3Script.Analysis.Visitors;
+using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,11 @@ namespace ME3Script.Language.Tree
             : base(type, specs, new List<VariableIdentifier> { name }, start, end)
         {
             Type = ASTNodeType.Variable;
+        }
+
+        public override bool AcceptVisitor(IASTVisitor visitor)
+        {
+            return visitor.VisitNode(this);
         }
     }
 }

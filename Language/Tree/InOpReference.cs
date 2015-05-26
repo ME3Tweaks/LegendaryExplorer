@@ -24,7 +24,7 @@ namespace ME3Script.Language.Tree
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            throw new NotImplementedException();
+            return visitor.VisitNode(this);
         }
 
         public override VariableType ResolveType()

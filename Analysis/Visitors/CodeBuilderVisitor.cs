@@ -84,7 +84,7 @@ namespace ME3Script.Analysis.Visitors
         }
 
 
-        public bool VisitNode(VariableDeclaration node)
+        public bool VisitNode(Variable node)
         {
             String type = "ERROR";
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
@@ -96,8 +96,8 @@ namespace ME3Script.Analysis.Visitors
             Write("{0} ", type);
             if (node.Specifiers.Count > 0)
                 Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
-            String staticarray = node.Variables[0].Size != -1 ? "[" + node.Variables[0].Size + "]" : "";
-            Append("{0} {1};", node.VarType.Name, node.Variables[0].Name + staticarray);
+            String staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
+            Append("{0} {1};", node.VarType.Name, node.Name + staticarray);
             
             return true;
         }
@@ -255,7 +255,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StateLabel node)
         { throw new NotImplementedException(); }
 
-        public bool VisitNode(Variable node)
+        public bool VisitNode(VariableDeclaration node)
         { throw new NotImplementedException(); }
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
