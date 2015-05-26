@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Analysis\Symbols\SymbolTable.cs" />
     <Compile Include="Analysis\Visitors\ClassValidationVisitor.cs" />
+    <Compile Include="Analysis\Visitors\CodeBuilderVisitor.cs" />
     <Compile Include="Analysis\Visitors\IAcceptASTVisitor.cs" />
     <Compile Include="Analysis\Visitors\IASTVisitor.cs" />
     <Compile Include="ByteCode.cs" />

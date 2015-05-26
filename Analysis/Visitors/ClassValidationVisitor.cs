@@ -139,6 +139,7 @@ namespace ME3Script.Analysis.Visitors
                     if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                         return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
                     Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                    variable.Outer = node.Outer;
                     Symbols.AddSymbol(variable.Name, variable);
                     NodeUtils.GetContainingClass(node).VariableDeclarations.Insert(index++, variable);
                 }
@@ -152,6 +153,7 @@ namespace ME3Script.Analysis.Visitors
                     if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                         return Error("A member named '" + ident.Name + "' already exists in this struct!", ident.StartPos, ident.EndPos);
                     Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
+                    variable.Outer = node.Outer;
                     Symbols.AddSymbol(variable.Name, variable);
                     (node.Outer as Struct).Members.Insert(index++, variable);
                 }
@@ -347,7 +349,7 @@ namespace ME3Script.Analysis.Visitors
                 if (!Symbols.TryGetSymbol(ignore.Name, out original, "") || original.Type != ASTNodeType.Function)
                     return Error("No function to ignore named '" + ignore.Name + "' found!", ignore.StartPos, ignore.EndPos);
                 Function header = original as Function;
-                Function emptyOverride = new Function(header.Name, header.ReturnType, null, header.Specifiers, header.Parameters, ignore.StartPos, ignore.EndPos);
+                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Specifiers, header.Parameters, ignore.StartPos, ignore.EndPos);
                 node.Functions.Add(emptyOverride);
                 Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
             }
