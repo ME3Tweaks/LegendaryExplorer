@@ -218,6 +218,7 @@ namespace ME3Script.Utilities
         {
             ASTNodeType.ForLoop,
             ASTNodeType.WhileLoop,
+            ASTNodeType.VariableDeclaration
         };
 
         #region Specifier Categories

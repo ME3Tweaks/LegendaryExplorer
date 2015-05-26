@@ -188,9 +188,10 @@ namespace ME3Script.Parsing
                 {
                     if (Symbols.SymbolExistsInCurrentScope(ident.Name))
                         return Error("A variable named '" + ident.Name + "' already exists in this scope!", ident.StartPos, ident.EndPos);
-                    Variable variable = new Variable(null, ident, type as VariableType, ident.StartPos, ident.EndPos);
+                    Variable variable = new Variable(new List<Specifier>(), ident, type as VariableType, ident.StartPos, ident.EndPos);
                     Symbols.AddSymbol(variable.Name, variable);
                     NodeVariables.Locals.Add(variable);
+                    variable.Outer = Node;
                 }
 
                 return new VariableDeclaration(type as VariableType, null, vars, vars.First().StartPos, vars.Last().EndPos);
@@ -554,7 +555,7 @@ namespace ME3Script.Parsing
                         return Error("No operator '" + opB_tok + "' with operands of types '" + rhsType.Name + "' and '" + rhs2Type.Name + "' was found!",
                             opB_tok.StartPosition, opB_tok.EndPosition);
 
-                    if (opA.Precedence < opB.Precedence)
+                    if (opA.Precedence <= opB.Precedence)
                         break;
 
                     rhs = TryParseInOperator(rhs);

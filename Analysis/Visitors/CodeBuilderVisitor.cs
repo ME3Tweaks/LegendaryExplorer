@@ -14,12 +14,17 @@ namespace ME3Script.Analysis.Visitors
     public class CodeBuilderVisitor : IASTVisitor
     {
         private List<String> Lines;
-        private int level;
+        private int NestingLevel;
+        private Stack<int> ExpressionPrescedence;
+
+        private static int NOPRESCEDENCE = int.MaxValue;
 
         public CodeBuilderVisitor()
         {
             Lines = new List<String>();
-            level = 0;
+            NestingLevel = 0;
+            ExpressionPrescedence = new Stack<int>();
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
         }
 
         public IList<String> GetCodeLines()
@@ -34,7 +39,7 @@ namespace ME3Script.Analysis.Visitors
 
         private void Write(String text, params object[] args)
         {
-            Lines.Add(new String('\t', level) + (args.Length > 0 ? String.Format(text, args) : text));
+            Lines.Add(new String('\t', NestingLevel) + (args.Length > 0 ? String.Format(text, args) : text));
         }
 
         private void Append(String text, params object[] args)
@@ -84,6 +89,11 @@ namespace ME3Script.Analysis.Visitors
         }
 
 
+        public bool VisitNode(VariableDeclaration node)
+        {
+            return true;
+        }
+
         public bool VisitNode(Variable node)
         {
             String type = "ERROR";
@@ -118,12 +128,12 @@ namespace ME3Script.Analysis.Visitors
             if (node.Parent != null)
                 Append("extends {0} ", node.Parent.Name);
             Append("{0}", "{");
-            level++;
+            NestingLevel++;
 
             foreach (Variable member in node.Members)
                 member.AcceptVisitor(this);
 
-            level--;
+            NestingLevel--;
             Write("{0};", "}");
 
             return true;
@@ -133,12 +143,12 @@ namespace ME3Script.Analysis.Visitors
         {
             // enum enumname { \n contents \n };
             Write("enum {0} {1}", node.Name, "{");
-            level++;
+            NestingLevel++;
 
             foreach (VariableIdentifier value in node.Values)
                 Write("{0},", value.Name);
 
-            level--;
+            NestingLevel--;
             Write("{0};", "}");
 
             return true;
@@ -161,7 +171,13 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Body.Statements != null)
             {
-                // print body
+                Write("{0}", "{");
+                NestingLevel++;
+                foreach (Variable v in node.Locals)
+                    v.AcceptVisitor(this);
+                node.Body.AcceptVisitor(this);
+                NestingLevel--;
+                Write("{0}", "}");
             }
             else
                 Append(";");
@@ -190,7 +206,7 @@ namespace ME3Script.Analysis.Visitors
             if (node.Parent != null)
                 Append("extends {0} ", node.Parent.Name);
             Append("{0}", "{");
-            level++;
+            NestingLevel++;
 
             if (node.Ignores.Count > 0)
                 Write("ignores {0};", String.Join(", ", node.Ignores.Select(x => x.Name)));
@@ -200,7 +216,7 @@ namespace ME3Script.Analysis.Visitors
 
             // print body
 
-            level--;
+            NestingLevel--;
             Write("{0};", "}");
 
             return true;
@@ -241,7 +257,13 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Body.Statements != null)
             {
-                // print body
+                Write("{0}", "{");
+                NestingLevel++;
+                foreach (Variable v in node.Locals)
+                    v.AcceptVisitor(this);
+                node.Body.AcceptVisitor(this);
+                NestingLevel--;
+                Write("{0}", "}");
             }
             else
                 Append(";");
@@ -265,10 +287,10 @@ namespace ME3Script.Analysis.Visitors
         { 
             // do { /n contents /n } until(condition);
             Write("do {0}", "{");
-            level++;
+            NestingLevel++;
 
             node.Body.AcceptVisitor(this);
-            level--;
+            NestingLevel--;
 
             Write("{0} until (", "}");
             node.Condition.AcceptVisitor(this);
@@ -288,9 +310,9 @@ namespace ME3Script.Analysis.Visitors
             node.Update.AcceptVisitor(this);
             Append(") {0}", "{");
 
-            level++;
+            NestingLevel++;
             node.Body.AcceptVisitor(this);
-            level--;
+            NestingLevel--;
             Write("{0}", "}");
 
             return true;
@@ -303,9 +325,9 @@ namespace ME3Script.Analysis.Visitors
             node.Condition.AcceptVisitor(this);
             Append(") {0}", "{");
 
-            level++;
+            NestingLevel++;
             node.Body.AcceptVisitor(this);
-            level--;
+            NestingLevel--;
             Write("{0}", "}");
 
             return true;
@@ -359,17 +381,17 @@ namespace ME3Script.Analysis.Visitors
             node.Condition.AcceptVisitor(this);
             Append(") {0}", "{");
 
-            level++;
+            NestingLevel++;
             node.Then.AcceptVisitor(this);
-            level--;
+            NestingLevel--;
             Write("{0}", "}");
 
             if (node.Else != null)
             {
                 Append(" else {0}", "{");
-                level++;
+                NestingLevel++;
                 node.Else.AcceptVisitor(this);
-                level--;
+                NestingLevel--;
                 Write("{0}", "}");
             }
 
@@ -379,35 +401,46 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
-            Append("(");
+            bool scopeNeeded = node.Operator.Precedence > ExpressionPrescedence.Peek();
+            ExpressionPrescedence.Push(node.Operator.Precedence);
+
+            if (scopeNeeded)
+                Append("(");
             node.LeftOperand.AcceptVisitor(this);
             Append(" {0} ", node.Operator.OperatorKeyword);
             node.RightOperand.AcceptVisitor(this);
-            Append(")");
+            if (scopeNeeded)
+                Append(")");
 
+            ExpressionPrescedence.Pop();
             return true;
         }
 
         public bool VisitNode(PreOpReference node)
         {
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
             // operatorkeywordExpression
             Append("{0}", node.Operator.OperatorKeyword);
             node.Operand.AcceptVisitor(this);
 
+            ExpressionPrescedence.Pop();
             return true;
         }
 
         public bool VisitNode(PostOpReference node)
         {
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
             Append("{0}", node.Operator.OperatorKeyword);
 
+            ExpressionPrescedence.Pop();
             return true;
         }
 
         public bool VisitNode(FunctionCall node)
         {
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
             Append("{0}(", node.Function.Name);
             foreach(Expression expr in node.Parameters)
@@ -418,15 +451,19 @@ namespace ME3Script.Analysis.Visitors
             }
             Append(")");
 
+            ExpressionPrescedence.Pop();
             return true;
         }
 
         public bool VisitNode(ArraySymbolRef node)
         {
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
             // symbolname[expression]
             Append("{0}[", node.Name);
             node.Index.AcceptVisitor(this);
             Append("]");
+
+            ExpressionPrescedence.Pop();
             return true;
         }
 
@@ -448,7 +485,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(BooleanLiteral node)
         {
             // true|false
-            Append("{0}", node.Value);
+            Append("{0}", node.Value.ToString().ToLower());
             return true;
         }
 
@@ -484,8 +521,6 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StateLabel node)
         { throw new NotImplementedException(); }
 
-        public bool VisitNode(VariableDeclaration node)
-        { throw new NotImplementedException(); }
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
 
