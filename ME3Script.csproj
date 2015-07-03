@@ -52,6 +52,7 @@
     <Compile Include="Compiling\Errors\LogMessage.cs" />
     <Compile Include="Compiling\Errors\LineWarning.cs" />
     <Compile Include="Compiling\Errors\Warning.cs" />
+    <Compile Include="Decompiling\ME3ClassParser.cs" />
     <Compile Include="Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
@@ -118,8 +119,12 @@
     <Compile Include="Utilities\GlobalLists.cs" />
     <Compile Include="Utilities\SourcePosition.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Decompiling\" />
+    <ProjectReference Include="..\ME3Data\ME3Data.csproj">
+      <Project>{13113af5-8d67-4660-9c16-d2ad5a3db5c8}</Project>
+      <Name>ME3Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
