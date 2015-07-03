@@ -50,7 +50,7 @@ namespace ME3Script.Decompiling
                 Vars.Add(ConvertVariable(member));
 
             var Funcs = new List<Function>();
-            foreach (var member in Object.FunctionRefs)
+            foreach (var member in Object.DefinedFunctions)
                 Funcs.Add(ConvertFunction(member));
 
             AST = new Class(Object.Name, new List<Specifier>(), Vars, Types, Funcs, 
