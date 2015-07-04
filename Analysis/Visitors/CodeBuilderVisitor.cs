@@ -68,7 +68,7 @@ namespace ME3Script.Analysis.Visitors
                     type.AcceptVisitor(this);
             }
 
-            if (node.TypeDeclarations.Count > 0)
+            if (node.VariableDeclarations.Count > 0)
             {
                 Write("");
                 Write("// Variables");
@@ -76,7 +76,7 @@ namespace ME3Script.Analysis.Visitors
                     decl.AcceptVisitor(this);
             }
 
-            if (node.TypeDeclarations.Count > 0)
+            if (node.Operators.Count > 0)
             {
                 Write("");
                 Write("// Operators");
@@ -84,7 +84,7 @@ namespace ME3Script.Analysis.Visitors
                     op.AcceptVisitor(this);
             }
 
-            if (node.TypeDeclarations.Count > 0)
+            if (node.Functions.Count > 0)
             {
                 Write("");
                 Write("// Functions");
@@ -92,7 +92,7 @@ namespace ME3Script.Analysis.Visitors
                     func.AcceptVisitor(this);
             }
 
-            if (node.TypeDeclarations.Count > 0)
+            if (node.States.Count > 0)
             {
                 Write("");
                 Write("// States");

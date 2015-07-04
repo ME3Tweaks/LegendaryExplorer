@@ -125,10 +125,9 @@ namespace ME3Script.Decompiling
 
         public Function ConvertFunction(ME3Function obj)
         {
-            // TODO: resolve properties
             VariableType returnType = null;
             if (obj.ReturnValue != null)
-                returnType = new VariableType(obj.ReturnValue.ExportEntry.ClassName, null, null);
+                returnType = ConvertVariable(obj.ReturnValue).VarType;
             var parameters = new List<FunctionParameter>();
             foreach(var param in obj.Parameters)
             {
