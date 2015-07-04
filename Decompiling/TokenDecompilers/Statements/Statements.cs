@@ -13,6 +13,7 @@ namespace ME3Script.Decompiling
     {
         public Statement DecompileStatement()
         {
+            StartPositions.Push((UInt16)Position);
             var token = CurrentByte;
             
             if (token >= 0x80) // native table
@@ -32,15 +33,12 @@ namespace ME3Script.Decompiling
                         
                     // switch (expression)
                     case (byte)StandardByteCodes.Switch:
-                        return DecompileIf();
-
-                    // if (expression)
-                    case (byte)StandardByteCodes.JumpIfNot:
-                        PopByte();
-                        //var elseJmpOffset
-
 
                         break;
+
+                    // if (expression) // while / for / do until
+                    case (byte)StandardByteCodes.JumpIfNot:
+                        return DecompileConditionalJump();
 
                     // stop;
                     case (byte)StandardByteCodes.Stop:
@@ -181,24 +179,35 @@ namespace ME3Script.Decompiling
             if (expr == null && PeekByte != (byte)StandardByteCodes.Nothing)
                 return null; //ERROR ?
 
-            return new ReturnStatement(null, null, expr);
+            var statement = new ReturnStatement(null, null, expr);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
         }
 
-        public IfStatement DecompileIf()
+        public Statement DecompileConditionalJump() // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
-            var elseOffset = ReadUInt16();
+            Statement statement = null;
+            var afterScopeOffset = ReadUInt16();
+            UInt16 scopeEndJmpOffset;
+            var scopeStartOffset = StartPositions.Peek();
             bool hasElse = false;
             var conditional = DecompileExpression();
 
-            var ifStatemements = new List<Statement>();
-            List<Statement> elseStatements = null;
-            while (Position < elseOffset)
+            var scopeStatements = new List<Statement>();
+            while (Position < afterScopeOffset)
             {
                 if (CurrentIs(StandardByteCodes.Jump))
                 {
                     PopByte();
-                    hasElse = true;
+                    scopeEndJmpOffset = ReadUInt16();
+                    if (scopeEndJmpOffset == scopeStartOffset)
+                    {
+                        statement = new WhileLoop(conditional, new CodeBody(scopeStatements, null, null), null, null);
+                        StatementLocations.Add(StartPositions.Pop(), statement);
+                    } else
+                        hasElse = true;
+
                     break;
                 }
 
@@ -206,25 +215,27 @@ namespace ME3Script.Decompiling
                 if (current == null)
                     return null; // ERROR ?
 
-                ifStatemements.Add(current);
+                scopeStatements.Add(current);
             }
 
+            List<Statement> elseStatements = null;
             if (hasElse)
             {
                 var endElseOffset = ReadUInt16();
                 elseStatements = new List<Statement>();
-                while (Position < elseOffset)
+                while (Position < afterScopeOffset)
                 {
                     var current = DecompileStatement();
                     if (current == null)
                         return null; // ERROR ?
 
-                    ifStatemements.Add(current);
+                    scopeStatements.Add(current);
                 }
             }
 
-            return new IfStatement(conditional, new CodeBody(ifStatemements, null, null), 
-                null, null, new CodeBody(elseStatements, null, null));
+            return statement 
+                ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
+                        null, null, new CodeBody(elseStatements, null, null));
         }
     }
 }

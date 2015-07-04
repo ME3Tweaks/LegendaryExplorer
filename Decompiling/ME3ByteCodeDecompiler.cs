@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler : ObjectReader
+    //TODO: most likely cleaner to convert to stack-based solution like the tokenstream, investigate.
+    public partial class ME3ByteCodeDecompiler : ObjectReader 
     {
         private ME3Struct DataContainer;
 
@@ -18,6 +19,9 @@ namespace ME3Script.Decompiling
         private Byte PopByte() { return ReadByte(); }
         private Byte PeekByte { get { return Position < Size ? _data[Position + 1] : (byte)0; } }
         private Byte PrevByte { get { return Position > 0 ? _data[Position - 1] : (byte)0; } }
+
+        private Dictionary<UInt16, Statement> StatementLocations;
+        private Stack<UInt16> StartPositions;
 
         private bool CurrentIs(StandardByteCodes val)
         {
@@ -33,7 +37,9 @@ namespace ME3Script.Decompiling
         public CodeBody Decompile()
         {
             Position = DataContainer.ByteScriptSize - DataContainer.DataScriptSize;
-            var statememnts = new List<Statement>();
+            var statements = new List<Statement>();
+            StatementLocations = new Dictionary<UInt16, Statement>();
+            StartPositions = new Stack<UInt16>();
 
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
             {
@@ -41,7 +47,7 @@ namespace ME3Script.Decompiling
                 if (current == null)
                     return null; // ERROR!
 
-                statememnts.Add(current);
+                statements.Add(current);
             }
 
             return null;
