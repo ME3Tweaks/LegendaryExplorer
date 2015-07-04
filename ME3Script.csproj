@@ -53,6 +53,8 @@
     <Compile Include="Compiling\Errors\Warning.cs" />
     <Compile Include="Decompiling\ME3ByteCodeDecompiler.cs" />
     <Compile Include="Decompiling\ME3ObjectConverter.cs" />
+    <Compile Include="Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
+    <Compile Include="Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="Language\ByteCode\StandardTokens.cs" />
     <Compile Include="Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
@@ -120,9 +122,7 @@
     <Compile Include="Utilities\GlobalLists.cs" />
     <Compile Include="Utilities\SourcePosition.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Decompiling\TokenDecompilers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ME3Data\ME3Data.csproj">
       <Project>{13113af5-8d67-4660-9c16-d2ad5a3db5c8}</Project>
