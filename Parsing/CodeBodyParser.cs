@@ -145,7 +145,7 @@ namespace ME3Script.Parsing
 
         public Statement TryParseInnerStatement(bool throwError = false)
         {
-            Func<ASTNode> statementParser = () =>
+            Func<ASTNode> statementParser = () => // TODO: should probably support a statement with only expression, say functioncall?
             {
                 var statement = TryParseLocalVarDecl() ??
                                 TryParseAssignStatement() ??

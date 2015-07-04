@@ -451,6 +451,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StopStatement node)
         { throw new NotImplementedException(); }
 
+        public bool VisitNode(ExpressionOnlyStatement node)
+        { throw new NotImplementedException(); }
+
         public bool VisitNode(InOpReference node)
         { throw new NotImplementedException(); }
         public bool VisitNode(PreOpReference node)

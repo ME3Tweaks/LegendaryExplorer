@@ -389,6 +389,14 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(ExpressionOnlyStatement node)
+        {
+            // expression;
+            node.Value.AcceptVisitor(this);
+
+            return true;
+        }
+
         public bool VisitNode(IfStatement node)
         {
             // if (condition) { /n contents /n } [else...]
