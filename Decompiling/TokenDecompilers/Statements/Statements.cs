@@ -187,14 +187,26 @@ namespace ME3Script.Decompiling
         public Statement DecompileConditionalJump() // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
+            var scopeStartOffset = StartPositions.Peek();
             Statement statement = null;
             var afterScopeOffset = ReadUInt16();
             UInt16 scopeEndJmpOffset;
-            var scopeStartOffset = StartPositions.Peek();
             bool hasElse = false;
             var conditional = DecompileExpression();
-
             var scopeStatements = new List<Statement>();
+
+            if (afterScopeOffset < scopeStartOffset) // end of do_until detection
+            {
+                var outerScope = Scopes.Peek();
+                var startStatement = StatementLocations[afterScopeOffset];
+                var index = outerScope.IndexOf(startStatement);
+                scopeStatements = new List<Statement>(outerScope.Skip(index));
+                outerScope.RemoveRange(index, outerScope.Count - index);
+                statement = new DoUntilLoop(conditional, new CodeBody(scopeStatements, null, null), null, null);
+                StatementLocations.Add(StartPositions.Pop(), statement);
+            }
+
+            Scopes.Push(scopeStatements);
             while (Position < afterScopeOffset)
             {
                 if (CurrentIs(StandardByteCodes.Jump))
@@ -217,12 +229,14 @@ namespace ME3Script.Decompiling
 
                 scopeStatements.Add(current);
             }
+            Scopes.Pop();
 
             List<Statement> elseStatements = null;
             if (hasElse)
             {
                 var endElseOffset = ReadUInt16();
                 elseStatements = new List<Statement>();
+                Scopes.Push(elseStatements);
                 while (Position < afterScopeOffset)
                 {
                     var current = DecompileStatement();
@@ -231,6 +245,7 @@ namespace ME3Script.Decompiling
 
                     scopeStatements.Add(current);
                 }
+                Scopes.Pop();
             }
 
             return statement 

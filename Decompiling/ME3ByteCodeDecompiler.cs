@@ -22,6 +22,7 @@ namespace ME3Script.Decompiling
 
         private Dictionary<UInt16, Statement> StatementLocations;
         private Stack<UInt16> StartPositions;
+        private Stack<List<Statement>> Scopes;
 
         private bool CurrentIs(StandardByteCodes val)
         {
@@ -41,6 +42,7 @@ namespace ME3Script.Decompiling
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();
 
+            Scopes.Push(statements);
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
             {
                 var current = DecompileStatement();
@@ -49,6 +51,7 @@ namespace ME3Script.Decompiling
 
                 statements.Add(current);
             }
+            Scopes.Pop();
 
             return null;
         }
