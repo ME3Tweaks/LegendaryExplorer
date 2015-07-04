@@ -145,7 +145,7 @@ namespace ME3Script.Parsing
 
         public Statement TryParseInnerStatement(bool throwError = false)
         {
-            Func<ASTNode> statementParser = () => // TODO: should probably support a statement with only expression, say functioncall?
+            Func<ASTNode> statementParser = () =>
             {
                 var statement = TryParseLocalVarDecl() ??
                                 TryParseAssignStatement() ??
@@ -157,6 +157,7 @@ namespace ME3Script.Parsing
                                 TryParseBreak() ??
                                 TryParseStop() ??
                                 TryParseReturn() ??
+                                TryParseExpressionOnlyStatement() ??
                                 (Statement)null;
 
                 if (statement == null && throwError)
@@ -165,6 +166,19 @@ namespace ME3Script.Parsing
                 return statement;
             };
             return (Statement)Tokens.TryGetTree(statementParser);
+        }
+
+        public ExpressionOnlyStatement TryParseExpressionOnlyStatement()
+        {
+            Func<ASTNode> expressionParser = () =>
+            {
+                var expr = TryParseExpression();
+                if (expr == null)
+                    return null;
+
+                return new ExpressionOnlyStatement(expr.StartPos, expr.EndPos, expr);
+            };
+            return (ExpressionOnlyStatement)Tokens.TryGetTree(expressionParser);
         }
 
         public VariableDeclaration TryParseLocalVarDecl()
