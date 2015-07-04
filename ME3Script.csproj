@@ -44,7 +44,6 @@
     <Compile Include="Analysis\Visitors\CodeBuilderVisitor.cs" />
     <Compile Include="Analysis\Visitors\IAcceptASTVisitor.cs" />
     <Compile Include="Analysis\Visitors\IASTVisitor.cs" />
-    <Compile Include="ByteCode.cs" />
     <Compile Include="Compiling\Errors\Error.cs" />
     <Compile Include="Compiling\Errors\LineError.cs" />
     <Compile Include="Compiling\Errors\MessageLog.cs" />
@@ -102,7 +101,6 @@
     <Compile Include="Lexing\Matching\StringMatchers\NumberMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\WhiteSpaceMatcher.cs" />
     <Compile Include="Lexing\Matching\StringMatchers\WordMatcher.cs" />
-    <Compile Include="Lexing\Tokenizing\BytecodeTokenizer.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Lexing\Matching\ITokenMatcher.cs" />
     <Compile Include="Lexing\LexerBase.cs" />
