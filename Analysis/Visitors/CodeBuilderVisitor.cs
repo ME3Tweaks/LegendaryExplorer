@@ -60,30 +60,45 @@ namespace ME3Script.Analysis.Visitors
             Append(";");
 
             // print the rest of the class, according to the standard "anatomy of an unrealscript" article.
-            Write("");
-            Write("// Types");
-            foreach (VariableType type in node.TypeDeclarations)
-                type.AcceptVisitor(this);
+            if (node.TypeDeclarations.Count > 0)
+            {
+                Write("");
+                Write("// Types");
+                foreach (VariableType type in node.TypeDeclarations)
+                    type.AcceptVisitor(this);
+            }
 
-            Write("");
-            Write("// Variables");
-            foreach (VariableDeclaration decl in node.VariableDeclarations.ToList())
-                decl.AcceptVisitor(this);
+            if (node.TypeDeclarations.Count > 0)
+            {
+                Write("");
+                Write("// Variables");
+                foreach (VariableDeclaration decl in node.VariableDeclarations.ToList())
+                    decl.AcceptVisitor(this);
+            }
 
-            Write("");
-            Write("// Operators");
-            foreach (OperatorDeclaration op in node.Operators)
-                op.AcceptVisitor(this);
+            if (node.TypeDeclarations.Count > 0)
+            {
+                Write("");
+                Write("// Operators");
+                foreach (OperatorDeclaration op in node.Operators)
+                    op.AcceptVisitor(this);
+            }
 
-            Write("");
-            Write("// Functions");
-            foreach (Function func in node.Functions)
-                func.AcceptVisitor(this);
+            if (node.TypeDeclarations.Count > 0)
+            {
+                Write("");
+                Write("// Functions");
+                foreach (Function func in node.Functions)
+                    func.AcceptVisitor(this);
+            }
 
-            Write("");
-            Write("// States");
-            foreach (State state in node.States)
-                state.AcceptVisitor(this);
+            if (node.TypeDeclarations.Count > 0)
+            {
+                Write("");
+                Write("// States");
+                foreach (State state in node.States)
+                    state.AcceptVisitor(this);
+            }
 
             return true;
         }

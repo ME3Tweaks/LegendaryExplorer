@@ -1,4 +1,5 @@
 ﻿using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.DataTypes.ScriptTypes.Properties;
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
@@ -34,10 +35,10 @@ namespace ME3Script.Decompiling
                 outer = new VariableType(parent.Name, null, null);
             // TODO: specifiers
             // TODO: operators
-            // TODO: interfaces
             // TODO: components
             // TODO: constants
             // TODO: states
+            // TODO: interfaces
 
             var Types = new List<VariableType>();
             foreach (var member in Object.Structs)
@@ -79,17 +80,55 @@ namespace ME3Script.Decompiling
 
         public Variable ConvertVariable(ME3Property obj)
         {
-            // TODO: fix
-            var type = new VariableType(obj.ExportEntry.ClassName, null, null);
+            int size = -1;
+            if (obj is ME3FixedArrayProperty)
+                size = (obj as ME3FixedArrayProperty).ArraySize;
             return new Variable(new List<Specifier>(), 
-                new VariableIdentifier(obj.Name, null, null), type, null, null);
+                new VariableIdentifier(obj.Name, null, null, size), 
+                new VariableType(GetPropertyType(obj), null, null), null, null);
+        }
+
+        private String GetPropertyType(ME3Property obj)
+        {
+            String typeStr = "UNKNOWN";
+            if (obj is ME3ArrayProperty)
+                typeStr = "array< " + GetPropertyType((obj as ME3ArrayProperty).InnerProperty) + " >";
+            else if (obj is ME3BoolProperty)
+                typeStr = "bool";
+            else if (obj is ME3ByteProperty)
+                typeStr = (obj as ME3ByteProperty).IsEnum ? (obj as ME3ByteProperty).Enum.Name : "byte";
+            else if (obj is ME3ClassProperty)
+                typeStr = "class";
+            else if (obj is ME3ComponentProperty)
+                typeStr = "component"; // TODO: is this correct at all?
+            else if (obj is ME3DelegateProperty)
+                typeStr = "delegate< " + (obj as ME3DelegateProperty).Delegate.Name + " >";
+            else if (obj is ME3FixedArrayProperty)
+                typeStr = GetPropertyType((obj as ME3FixedArrayProperty).InnerProperty);
+            else if (obj is ME3FloatProperty)
+                typeStr = "float";
+            else if (obj is ME3InterfaceProperty)
+                typeStr = (obj as ME3InterfaceProperty).Interface.Name; // ?
+            else if (obj is ME3IntProperty)
+                typeStr = "int";
+            else if (obj is ME3NameProperty)
+                typeStr = "Name"; // ?
+            else if (obj is ME3Object)
+                typeStr = "object";
+            else if (obj is ME3StrProperty)
+                typeStr = "string";
+            else if (obj is ME3StructProperty)
+                typeStr = (obj as ME3StructProperty).Struct.Name;
+
+            return typeStr;
         }
 
         public Function ConvertFunction(ME3Function obj)
         {
+            // TODO: resolve properties
             VariableType returnType = null;
             if (obj.ReturnValue != null)
-                returnType = new VariableType(obj.ReturnValue.Name, null, null);
+                returnType = new VariableType(obj.ReturnValue.ExportEntry.ClassName, null, null);
             var parameters = new List<FunctionParameter>();
             foreach(var param in obj.Parameters)
             {
