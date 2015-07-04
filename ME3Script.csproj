@@ -53,7 +53,7 @@
     <Compile Include="Compiling\Errors\Warning.cs" />
     <Compile Include="Decompiling\ME3ByteCodeDecompiler.cs" />
     <Compile Include="Decompiling\ME3ObjectConverter.cs" />
-    <Compile Include="Language\ByteCode\Standard.cs" />
+    <Compile Include="Language\ByteCode\StandardTokens.cs" />
     <Compile Include="Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="Language\Tree\AssignStatement.cs" />
     <Compile Include="Language\Tree\ASTNode.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="Language\Tree\ContinueStatement.cs" />
     <Compile Include="Language\Tree\DoUntilLoop.cs" />
+    <Compile Include="Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="Language\Tree\FloatLiteral.cs" />
     <Compile Include="Language\Tree\ForLoop.cs" />
     <Compile Include="Language\Tree\FunctionCall.cs" />

@@ -11,6 +11,7 @@ namespace ME3Script.Language.ByteCode
         LocalVariable = 0x00,
         InstanceVariable = 0x01,
         DefaultVariable = 0x02,
+        StateVariable = 0x03, // TODO: possibly implemented after ME3's UE version?
         Return = 0x04,
         Switch = 0x05,
         Jump = 0x06,
@@ -21,7 +22,7 @@ namespace ME3Script.Language.ByteCode
         Nothing = 0x0B,
         LabelTable = 0x0C,
         GotoLabel = 0x0D,
-        EatReturnValue = 0x0E,
+        EatReturnValue = 0x0E, // TODO: wrong?? weird?? function / operator return value discarded?
         Let = 0x0F,
         DynArrayElement = 0x10,
         New = 0x11,
@@ -65,8 +66,8 @@ namespace ME3Script.Language.ByteCode
         PrimitiveCast = 0x38,
         DynArrayInsert = 0x39,
         ByteToInt = 0x3A,        // TODO: ReturnNothing = 0x3A old or new?
-        EqualEqual_DelDel = 0x3B,
-        NotEqual_DelDel = 0x3C,
+        EqualEqual_DelDel = 0x3B,      // 3B - 3E seem to be natives, UE3 standard is delegate comparison operations
+        NotEqual_DelDel = 0x3C,        // seemingly does not extract the second halfbyte of the instruction, weird.
         EqualEqual_DelFunc = 0x3D,
         NotEqual_DelFunc = 0x3E,
         EmptyDelegate = 0x3F,
@@ -93,7 +94,7 @@ namespace ME3Script.Language.ByteCode
         DynArrayRemoveItem = 0x56,
         DynArrayInsertItem = 0x57,
         DynArrayIterator = 0x58,
-        DynArrSort = 0x59,
+        DynArraySort = 0x59,
         Unkn_5A = 0x5A, // FilterEditorOnly?
         Unkn_5B = 0x5B, // 0-2 , 48, 5B-62, all share the same behavior
         Unkn_5C = 0x5C, // presumably variable related?
@@ -114,8 +115,5 @@ namespace ME3Script.Language.ByteCode
         // 0x00 - 0x6F seem to be standard
         // 0x70 - 0x7F seem to be extended natives
         // 0x80 - 0xFF likely to be natives
-
-        // 3B - 3F seem to be natives as well, UE3 standard is delegate comparison operations
-        // seemingly does not extract the second halfbyte of the instruction, weird.
     }
 }
