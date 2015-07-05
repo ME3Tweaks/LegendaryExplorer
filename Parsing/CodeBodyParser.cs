@@ -150,6 +150,7 @@ namespace ME3Script.Parsing
                 var statement = TryParseLocalVarDecl() ??
                                 TryParseAssignStatement() ??
                                 TryParseIf() ??
+                                TryParseSwitch() ??
                                 TryParseWhile() ??
                                 TryParseFor() ??
                                 TryParseDoUntil() ??
@@ -157,6 +158,8 @@ namespace ME3Script.Parsing
                                 TryParseBreak() ??
                                 TryParseStop() ??
                                 TryParseReturn() ??
+                                TryParseCase() ??
+                                TryParseDefault() ??
                                 TryParseExpressionOnlyStatement() ??
                                 (Statement)null;
 
@@ -276,6 +279,35 @@ namespace ME3Script.Parsing
             return (IfStatement)Tokens.TryGetTree(ifParser);
         }
 
+        public SwitchStatement TryParseSwitch()
+        {
+            Func<ASTNode> switchParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Switch);
+                if (token == null)
+                    return null;
+
+                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
+                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                var expression = TryParseExpression();
+                if (expression == null)
+                    return Error("Expected an expression as the switch value!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                _switchCount++;
+                CodeBody body = TryParseBodyOrStatement();
+                _switchCount--;
+                if (body == null)
+                    return Error("Expected switch code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                return new SwitchStatement(expression, body, token.StartPosition, token.EndPosition);
+            };
+            return (SwitchStatement)Tokens.TryGetTree(switchParser);
+        }
+
         public WhileLoop TryParseWhile()
         {
             Func<ASTNode> whileParser = () =>
@@ -296,7 +328,9 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                     return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
+                _loopCount++;
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+                _loopCount--;
                 if (body == null)
                     return null;
 
@@ -313,7 +347,9 @@ namespace ME3Script.Parsing
                 if (doToken == null)
                     return null;
 
+                _loopCount++;
                 CodeBody body = TryParseBodyOrStatement();
+                _loopCount--;
                 if (body == null)
                     return null;
 
@@ -373,7 +409,9 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                     return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
+                _loopCount++;
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+                _loopCount--;
                 if (body == null)
                     return null;
 
@@ -473,6 +511,56 @@ namespace ME3Script.Parsing
                 return new ReturnStatement(token.StartPosition, token.EndPosition, value);
             };
             return (ReturnStatement)Tokens.TryGetTree(statementParser);
+        }
+
+        public CaseStatement TryParseCase()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Case);
+                if (token == null)
+                    return null;
+
+                if (!InSwitch)
+                    return Error("Case statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                var value = TryParseExpression();
+                if (value == null)
+                    return Error("Expected an expression specifying the case value", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                if (Tokens.ConsumeToken(TokenType.Colon) == null)
+                    return Error("Expected colon after case expression!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                
+                /* TODO: advanced type checks here, intrinsic conversions should be allowed but other anomalies reported.
+                var type = value.ResolveType();
+                var parent = GetHashCode containing switch somehow;
+                if (!TypeEquals(parent.Expression.ResolveType(), type))
+                    return Error("Cannot use case: '" + type.Name + "', in switch of type '" + parent.Expression.ResolveType() + "'."
+                            , token.StartPosition, token.EndPosition);
+                 * */
+
+                return new CaseStatement(value, token.StartPosition, token.EndPosition);
+            };
+            return (CaseStatement)Tokens.TryGetTree(statementParser);
+        }
+
+        public DefaultStatement TryParseDefault()
+        {
+            Func<ASTNode> statementParser = () =>
+            {
+                var token = Tokens.ConsumeToken(TokenType.Default);
+                if (token == null)
+                    return null;
+
+                if (!InSwitch)
+                    return Error("Default statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                if (Tokens.ConsumeToken(TokenType.Colon) == null)
+                    return Error("Expected colon after default statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                return new DefaultStatement(token.StartPosition, token.EndPosition);
+            };
+            return (DefaultStatement)Tokens.TryGetTree(statementParser);
         }
 
         #region Expressions

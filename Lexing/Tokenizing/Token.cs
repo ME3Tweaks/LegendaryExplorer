@@ -256,6 +256,7 @@ namespace ME3Script.Lexing.Tokenizing
         Return,
         Switch,
         Case,
+        Default,
         // State flow
         GoTo,
         GoToState,

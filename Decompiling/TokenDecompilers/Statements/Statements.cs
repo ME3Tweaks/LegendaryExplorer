@@ -203,7 +203,6 @@ namespace ME3Script.Decompiling
                 scopeStatements = new List<Statement>(outerScope.Skip(index));
                 outerScope.RemoveRange(index, outerScope.Count - index);
                 statement = new DoUntilLoop(conditional, new CodeBody(scopeStatements, null, null), null, null);
-                StatementLocations.Add(StartPositions.Pop(), statement);
             }
 
             Scopes.Push(scopeStatements);
@@ -214,10 +213,8 @@ namespace ME3Script.Decompiling
                     PopByte();
                     scopeEndJmpOffset = ReadUInt16();
                     if (scopeEndJmpOffset == scopeStartOffset)
-                    {
                         statement = new WhileLoop(conditional, new CodeBody(scopeStatements, null, null), null, null);
-                        StatementLocations.Add(StartPositions.Pop(), statement);
-                    } else
+                    else
                         hasElse = true;
 
                     break;
@@ -248,6 +245,7 @@ namespace ME3Script.Decompiling
                 Scopes.Pop();
             }
 
+            StatementLocations.Add(StartPositions.Pop(), statement);
             return statement 
                 ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
                         null, null, new CodeBody(elseStatements, null, null));

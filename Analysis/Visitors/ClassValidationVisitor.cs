@@ -438,6 +438,13 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(WhileLoop node)
         { throw new NotImplementedException(); }
 
+        public bool VisitNode(SwitchStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(CaseStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(DefaultStatement node)
+        { throw new NotImplementedException(); }
+
         public bool VisitNode(AssignStatement node)
         { throw new NotImplementedException(); }
         public bool VisitNode(BreakStatement node)

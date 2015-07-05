@@ -61,8 +61,10 @@
     <Compile Include="Language\Tree\ASTNode.cs" />
     <Compile Include="Language\Tree\BooleanLiteral.cs" />
     <Compile Include="Language\Tree\BreakStatement.cs" />
+    <Compile Include="Language\Tree\CaseStatement.cs" />
     <Compile Include="Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="Language\Tree\ContinueStatement.cs" />
+    <Compile Include="Language\Tree\DefaultStatement.cs" />
     <Compile Include="Language\Tree\DoUntilLoop.cs" />
     <Compile Include="Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="Language\Tree\FloatLiteral.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Language\Tree\StringLiteral.cs" />
     <Compile Include="Language\Tree\Struct.cs" />
     <Compile Include="Language\Tree\PreOpDeclaration.cs" />
+    <Compile Include="Language\Tree\SwitchStatement.cs" />
     <Compile Include="Language\Tree\SymbolReference.cs" />
     <Compile Include="Language\Tree\Variable.cs" />
     <Compile Include="Language\Tree\VariableIdentifier.cs" />

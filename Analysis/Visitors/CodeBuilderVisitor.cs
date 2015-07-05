@@ -348,6 +348,21 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(SwitchStatement node)
+        {
+            return true;
+        }
+
+        public bool VisitNode(CaseStatement node)
+        {
+            return true;
+        }
+
+        public bool VisitNode(DefaultStatement node)
+        {
+            return true;
+        }
+
         public bool VisitNode(AssignStatement node)
         {
             // reference = expression;
