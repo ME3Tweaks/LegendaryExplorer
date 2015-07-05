@@ -41,13 +41,8 @@ namespace ME3Script.Decompiling
 
                     // stop;
                     case (byte)StandardByteCodes.Stop:
-
-                        break;
-
-                    // [nothing]
-                    case (byte)StandardByteCodes.Nothing:
-
-                        break;
+                        PopByte();
+                        return new StopStatement(null, null);
 
                     // Goto label
                     case (byte)StandardByteCodes.GotoLabel:
@@ -61,11 +56,6 @@ namespace ME3Script.Decompiling
 
                         break;
 
-                    // new class();
-                    case (byte)StandardByteCodes.New:
-
-                        break;
-
                     // bool = expression
                     case (byte)StandardByteCodes.LetBool:
 
@@ -73,98 +63,37 @@ namespace ME3Script.Decompiling
 
                     // [skip x bytes]
                     case (byte)StandardByteCodes.Skip:
-
-                        break;
-
-                    // object.function(args);
-                    case (byte)StandardByteCodes.VirtualFunction:
-
-                        break;
-
-                    // object.function(args);
-                    case (byte)StandardByteCodes.FinalFunction:
-
-                        break;
+                        PopByte();
+                        ReadRawData(ReadUInt16());
+                        return DecompileStatement();
 
                     // foreach IteratorFunction(...)
                     case (byte)StandardByteCodes.Iterator:
 
                         break;
 
-                    // global.function(args);
-                    case (byte)StandardByteCodes.GlobalFunction:
-
-                        break;
-
-                    // arrayName.Insert(Index, Count);
-                    case (byte)StandardByteCodes.DynArrayInsert:
-
-                        break;
-
                     // TODO: 0x3B - 0x3E native calls here?
-
-                    // arrayName.Remove(Index, Count);
-                    case (byte)StandardByteCodes.DynArrayRemove:
-
-                        break;
-
-                    // delegateName(args);
-                    case (byte)StandardByteCodes.DelegateFunction:
-
-                        break;
-
-                    // Sort(Delegate) ???
-                    case (byte)StandardByteCodes.DelegateProperty:
-
-                        break;
 
                     // Delegate = expression
                     case (byte)StandardByteCodes.LetDelegate:
 
                         break;
 
-                    // boolean expression ? expression : expression;
-                    case (byte)StandardByteCodes.Conditional:
-
-                        break;
-
                     //TODO: unkn4F and GoW_DefaultValue ???
-
-                    // arrayName.Add(Count);
-                    case (byte)StandardByteCodes.DynArrayAdd:
-
-                        break;
-
-                    // arrayName.AddItem(expression);
-                    case (byte)StandardByteCodes.DynArrayAddItem:
-
-                        break;
-
-                    // arrayName.RemoveItem(expression);
-                    case (byte)StandardByteCodes.DynArrayRemoveItem:
-
-                        break;
-
-                    // arrayName.InsertItem(Index, expression);
-                    case (byte)StandardByteCodes.DynArrayInsertItem:
-
-                        break;
 
                     // foreach arrayName(valuevariable[, indexvariable])
                     case (byte)StandardByteCodes.DynArrayIterator:
 
                         break;
 
-                    // arrayName.Sort(SortDelegate);
-                    case (byte)StandardByteCodes.DynArraySort:
-
-                        break;
-
                     // TODO: 0x5A -> 0x65 ???
 
                     default:
-                        // ERROR!
+                        var expr = DecompileExpression();
+                        if (expr != null)
+                            return new ExpressionOnlyStatement(null, null, expr);
 
+                        // ERROR!
                         break;
                 }
 
