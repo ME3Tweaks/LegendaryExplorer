@@ -351,7 +351,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(SwitchStatement node)
         {
             // switch (expression) { /n contents /n }
-            Write("while (");
+            Write("switch (");
             node.Expression.AcceptVisitor(this);
             Append(") {0}", "{");
 

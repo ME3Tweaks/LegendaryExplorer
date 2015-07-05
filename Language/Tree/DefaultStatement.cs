@@ -11,7 +11,7 @@ namespace ME3Script.Language.Tree
     public class DefaultStatement : Statement
     {
         public DefaultStatement(SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.BreakStatement, start, end) { }
+            : base(ASTNodeType.DefaultStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
         {

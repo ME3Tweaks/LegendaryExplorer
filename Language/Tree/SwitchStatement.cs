@@ -15,7 +15,7 @@ namespace ME3Script.Language.Tree
 
         public SwitchStatement(Expression expr, CodeBody body,
             SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.IfStatement, start, end)
+            : base(ASTNodeType.SwitchStatement, start, end)
         {
             Expression = expr;
             Body = body;

@@ -23,7 +23,10 @@ namespace ME3Script.Parsing
         {
             ASTNodeType.WhileLoop,
             ASTNodeType.ForLoop,
-            ASTNodeType.IfStatement
+            ASTNodeType.IfStatement,
+            ASTNodeType.SwitchStatement,
+            ASTNodeType.CaseStatement,
+            ASTNodeType.DefaultStatement
         };
 
         protected List<ASTNodeType> CompositeTypes = new List<ASTNodeType>

@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public Expression Value;
 
         public CaseStatement(Expression expr, SourcePosition start, SourcePosition end) 
-            : base(ASTNodeType.BreakStatement, start, end) 
+            : base(ASTNodeType.CaseStatement, start, end) 
         {
             Value = expr;
         }

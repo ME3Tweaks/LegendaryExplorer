@@ -99,7 +99,7 @@ namespace ME3Script.Utilities
                 TokenType.BinaryOr,     
                 TokenType.BinaryXor,     
                 TokenType.Conditional,   
-                TokenType.Colon,
+                //TokenType.Colon,
                 //TokenType.SemiColon,
                 //TokenType.Comma,
                 //TokenType.Dot,
@@ -216,10 +216,14 @@ namespace ME3Script.Utilities
         }
 
         public static List<ASTNodeType> SemicolonExceptions = new List<ASTNodeType>
-        {
+        {   // TODO: check this for other types
             ASTNodeType.ForLoop,
             ASTNodeType.WhileLoop,
-            ASTNodeType.VariableDeclaration
+            ASTNodeType.IfStatement,
+            ASTNodeType.VariableDeclaration,
+            ASTNodeType.SwitchStatement,
+            ASTNodeType.CaseStatement,
+            ASTNodeType.DefaultStatement
         };
 
         #region Specifier Categories

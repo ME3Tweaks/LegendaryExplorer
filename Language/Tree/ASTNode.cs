@@ -40,6 +40,10 @@ namespace ME3Script.Language.Tree
         ReturnStatement,
         StopStatement,
 
+        SwitchStatement,
+        CaseStatement,
+        DefaultStatement,
+
         FunctionCall,
         SymbolReference,
         ArrayReference,
