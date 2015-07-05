@@ -51,6 +51,7 @@ namespace ME3Script.Language.ByteCode
         False = 0x28,
         NativeParm = 0x29,
         NoObject = 0x2A,
+        Unknown_Deprecated = 0x2B, // seems unused, exe's assert fails.
         IntConstByte = 0x2C,
         BoolVariable = 0x2D,
         DynamicCast = 0x2E,
@@ -65,7 +66,7 @@ namespace ME3Script.Language.ByteCode
         GlobalFunction = 0x37,
         PrimitiveCast = 0x38,
         DynArrayInsert = 0x39,
-        ByteToInt = 0x3A,        // TODO: ReturnNothing = 0x3A old or new?
+        ReturnNullValue = 0x3A,        // Was: ByteToInt and ReturnNothing, seems to now be used as a way to se retunr value to the type's null value, eg: 04 3A RetValRef
         EqualEqual_DelDel = 0x3B,      // 3B - 3E seem to be natives, UE3 standard is delegate comparison operations
         NotEqual_DelDel = 0x3C,        // seemingly does not extract the second halfbyte of the instruction, weird.
         EqualEqual_DelFunc = 0x3D,

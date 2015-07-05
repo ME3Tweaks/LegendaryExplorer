@@ -42,50 +42,40 @@ namespace ME3Script.Decompiling
                     // stop;
                     case (byte)StandardByteCodes.Stop:
                         PopByte();
-                        return new StopStatement(null, null);
+                        var statement = new StopStatement(null, null);
+                        StatementLocations.Add(StartPositions.Pop(), statement);
+                        return statement;
 
                     // Goto label
                     case (byte)StandardByteCodes.GotoLabel:
-
+                        // TODO
                         break;
 
-                    // TODO: eatreturnvalue?
-
-                    // variable = expression;
+                    // assignable expression = expression;
                     case (byte)StandardByteCodes.Let:
-
-                        break;
-
-                    // bool = expression
                     case (byte)StandardByteCodes.LetBool:
-
-                        break;
+                    case (byte)StandardByteCodes.LetDelegate:
+                        return DecompileAssign();
 
                     // [skip x bytes]
                     case (byte)StandardByteCodes.Skip:
                         PopByte();
                         ReadRawData(ReadUInt16());
+                        StartPositions.Pop();
                         return DecompileStatement();
 
                     // foreach IteratorFunction(...)
                     case (byte)StandardByteCodes.Iterator:
-
+                        // TODO
                         break;
-
-                    // TODO: 0x3B - 0x3E native calls here?
-
-                    // Delegate = expression
-                    case (byte)StandardByteCodes.LetDelegate:
-
-                        break;
-
-                    //TODO: unkn4F and GoW_DefaultValue ???
 
                     // foreach arrayName(valuevariable[, indexvariable])
                     case (byte)StandardByteCodes.DynArrayIterator:
-
+                        // TODO
                         break;
 
+                    // TODO: 0x3B - 0x3E native calls
+                    //TODO: unkn4F and GoW_DefaultValue ???
                     // TODO: 0x5A -> 0x65 ???
 
                     default:
@@ -104,7 +94,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var expr = DecompileExpression();
-            if (expr == null && PeekByte != (byte)StandardByteCodes.Nothing)
+            if (expr == null && PopByte() != (byte)StandardByteCodes.Nothing)
                 return null; //ERROR ?
 
             var statement = new ReturnStatement(null, null, expr);
@@ -213,6 +203,24 @@ namespace ME3Script.Decompiling
             Scopes.Pop();
 
             var statement = new SwitchStatement(expr, new CodeBody(scopeStatements, null, null), null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
+        }
+
+        public AssignStatement DecompileAssign()
+        {
+            PopByte();
+
+            var left = DecompileExpression();
+            if (left == null)
+                return null; //ERROR ?
+
+            var right = DecompileExpression();
+            if (right == null)
+                return null; //ERROR ?
+
+            // TODO: somehow recreate a symbol reference for this..
+            var statement = new AssignStatement(null, right, null, null);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
