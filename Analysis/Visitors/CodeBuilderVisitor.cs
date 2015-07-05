@@ -350,16 +350,35 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(SwitchStatement node)
         {
+            // switch (expression) { /n contents /n }
+            Write("while (");
+            node.Expression.AcceptVisitor(this);
+            Append(") {0}", "{");
+
+            NestingLevel += 2;  // double-indent, only case/default are single-indented
+            node.Body.AcceptVisitor(this);
+            NestingLevel -= 2;
+            Write("{0}", "}");
             return true;
         }
 
         public bool VisitNode(CaseStatement node)
         {
+            // case expression:
+            NestingLevel--; // de-indent this line only
+            Write("case ");
+            node.Value.AcceptVisitor(this);
+            Append(":");
+            NestingLevel++;
             return true;
         }
 
         public bool VisitNode(DefaultStatement node)
         {
+            // default:
+            NestingLevel--; // de-indent this line only
+            Write("default:");
+            NestingLevel++;
             return true;
         }
 
