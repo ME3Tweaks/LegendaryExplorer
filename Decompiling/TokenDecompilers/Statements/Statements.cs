@@ -33,8 +33,7 @@ namespace ME3Script.Decompiling
                         
                     // switch (expression)
                     case (byte)StandardByteCodes.Switch:
-
-                        break;
+                        return DecompileSwitch();
 
                     // if (expression) // while / for / do until
                     case (byte)StandardByteCodes.JumpIfNot:
@@ -249,6 +248,44 @@ namespace ME3Script.Decompiling
             return statement 
                 ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
                         null, null, new CodeBody(elseStatements, null, null));
+        }
+
+        public SwitchStatement DecompileSwitch()
+        {
+            PopByte();
+            var objIndex = ReadIndex();
+            var unknByte = ReadByte();
+            var expr = DecompileExpression();
+            var scopeStatements = new List<Statement>();
+            UInt16 endOffset = 0xFFFF; // set it at max to begin with, so we can begin looping
+
+            Scopes.Push(scopeStatements);
+            while (Position < endOffset && Position < Size)
+            {
+                if (CurrentIs(StandardByteCodes.Jump)) // break detected, save the endOffset
+                {                                    // executes for all occurences, to handle them all.
+                    StartPositions.Push((UInt16)Position);
+                    PopByte();
+                    endOffset = ReadUInt16();
+                    var breakStatement = new BreakStatement(null, null);
+                    StatementLocations.Add(StartPositions.Pop(), breakStatement);
+                    scopeStatements.Add(breakStatement);
+                    continue;
+                }
+
+                var current = DecompileStatement();
+                if (current == null)
+                    return null; // ERROR ?
+                
+                scopeStatements.Add(current);
+                if (current is DefaultStatement && endOffset == 0xFFFF)
+                    break; // If no break was detected, we end the switch rather than include the rest of ALL code in the default.
+            }
+            Scopes.Pop();
+
+            var statement = new SwitchStatement(expr, new CodeBody(scopeStatements, null, null), null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
         }
     }
 }
