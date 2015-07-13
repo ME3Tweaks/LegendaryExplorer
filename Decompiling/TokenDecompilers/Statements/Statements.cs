@@ -212,15 +212,14 @@ namespace ME3Script.Decompiling
             PopByte();
 
             var left = DecompileExpression();
-            if (left == null)
+            if (left == null || !typeof(SymbolReference).IsAssignableFrom(left.GetType()))
                 return null; //ERROR ?
 
             var right = DecompileExpression();
             if (right == null)
                 return null; //ERROR ?
 
-            // TODO: somehow recreate a symbol reference for this..
-            var statement = new AssignStatement(null, right, null, null);
+            var statement = new AssignStatement(left as SymbolReference, right, null, null);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }

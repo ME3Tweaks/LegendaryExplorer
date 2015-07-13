@@ -1,4 +1,5 @@
 ﻿using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.FileFormats.PCC;
 using ME3Data.Utility;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
@@ -14,6 +15,7 @@ namespace ME3Script.Decompiling
     public partial class ME3ByteCodeDecompiler : ObjectReader 
     {
         private ME3Struct DataContainer;
+        private PCCFile PCC { get { return DataContainer.ExportEntry.CurrentPCC; } }
 
         private Byte CurrentByte { get { return _data[Position]; } } // TODO: meaningful error handling here..
         private Byte PopByte() { return ReadByte(); }
