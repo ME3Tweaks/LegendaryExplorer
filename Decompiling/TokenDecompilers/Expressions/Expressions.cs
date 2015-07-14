@@ -80,6 +80,14 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.StringConst:
                     return DecompileStringConst();
 
+                // Object
+                case (byte)StandardByteCodes.ObjectConst:
+                    return null; // DecompileObjectConst(); TODO
+
+                // 'name'
+                case (byte)StandardByteCodes.NameConst:
+                    return DecompileNameConst();
+
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
                 //TODO: unkn4F and GoW_DefaultValue ???
@@ -149,36 +157,6 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             return new ArraySymbolRef(arrayExpr, index, null, null);
-        }
-
-        public IntegerLiteral DecompileIntConst()
-        {
-            PopByte();
-
-            var value = ReadInt32();
-
-            StartPositions.Pop();
-            return new IntegerLiteral(value, null, null);
-        }
-
-        public FloatLiteral DecompileFloatConst()
-        {
-            PopByte();
-
-            var value = ReadFloat();
-
-            StartPositions.Pop();
-            return new FloatLiteral(value, null, null);
-        }
-
-        public StringLiteral DecompileStringConst()
-        {
-            PopByte();
-
-            var value = ReadString();
-
-            StartPositions.Pop();
-            return new StringLiteral(value, null, null);
         }
     }
 }
