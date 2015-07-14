@@ -169,6 +169,9 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.EndOfScript:
                     return null; // ERROR: unexpected end of script
 
+                // arrayName.Length
+                case (byte)StandardByteCodes.DynArrayLength:
+                    return DecompileDynArrLength();
                 
                 // TODO: 51, 52 : InterfaceContext, InterfaceCast
                 // TODO: 50, GoW_DefaultValue
@@ -179,7 +182,6 @@ namespace ME3Script.Decompiling
                 // TODO: 42, 43 : DelegateFunction, DelegateProperty
                 // TODO: 41, debugInfo
                 // TODO: 3F, NoDelegate
-                // TODO: 0x3A, unknown what it actually is here.
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
                 //TODO: 0x29, nativeParm, should not be present?
@@ -308,5 +310,6 @@ namespace ME3Script.Decompiling
             StartPositions.Pop();
             return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
         }
+
     }
 }

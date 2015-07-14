@@ -54,6 +54,7 @@
     <Compile Include="Decompiling\ME3ByteCodeDecompiler.cs" />
     <Compile Include="Decompiling\ME3ObjectConverter.cs" />
     <Compile Include="Decompiling\TokenDecompilers\Expressions\ConstValues.cs" />
+    <Compile Include="Decompiling\TokenDecompilers\Expressions\DynamicArrays.cs" />
     <Compile Include="Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
     <Compile Include="Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="Language\ByteCode\StandardTokens.cs" />

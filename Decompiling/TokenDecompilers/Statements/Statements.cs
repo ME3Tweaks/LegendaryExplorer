@@ -84,9 +84,22 @@ namespace ME3Script.Decompiling
         public ReturnStatement DecompileReturn()
         {
             PopByte();
-            var expr = DecompileExpression();
-            if (expr == null && PopByte() != (byte)StandardByteCodes.Nothing)
-                return null; //ERROR ?
+
+            Expression expr;
+            if (CurrentByte == (byte)StandardByteCodes.ReturnNullValue)
+            {
+                // TODO: research this a bit, seems to be the zero-equivalent value for the return type.
+                PopByte();
+                var retVal = ReadIndex();
+                expr = new SymbolReference(null, null, null, "null"); // TODO: faulty obv, kind of illustrates the thing though.
+            }
+            else
+            {
+
+                expr = DecompileExpression();
+                if (expr == null && PopByte() != (byte)StandardByteCodes.Nothing)
+                    return null; //ERROR ?
+            }
 
             var statement = new ReturnStatement(null, null, expr);
             StatementLocations.Add(StartPositions.Pop(), statement);
