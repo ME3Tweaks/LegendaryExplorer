@@ -18,11 +18,12 @@ namespace ME3Script.Decompiling
 
             if (token >= 0x80) // native table
             {
-                // TODO: native lookup
+                return DecompileNativeFunction(PopByte());
             }
             else if (token >= 0x71) // extended native table, 0x70 is unused
             {
-                // TODO: build extended value, then native lookup
+                UInt16 index = (UInt16)(ReadUInt16() & 0x0FFF);
+                return DecompileNativeFunction(index);
             }
             else switch (token)
             {
@@ -225,11 +226,11 @@ namespace ME3Script.Decompiling
             if (right == null)
                 return null; // ERROR
 
-            if (!typeof(SymbolReference).IsAssignableFrom(left.GetType())
+            /*if (!typeof(SymbolReference).IsAssignableFrom(left.GetType())
                 || !typeof(SymbolReference).IsAssignableFrom(right.GetType()))
             {
                 return null; // ERROR
-            }
+            }*/
 
             StartPositions.Pop();
             return new CompositeSymbolRef(left, right, null, null);
@@ -247,11 +248,11 @@ namespace ME3Script.Decompiling
             if (arrayExpr == null)
                 return null; // ERROR
 
-            if (!typeof(SymbolReference).IsAssignableFrom(index.GetType())
+            /*if (!typeof(SymbolReference).IsAssignableFrom(index.GetType())
                 || !typeof(SymbolReference).IsAssignableFrom(arrayExpr.GetType()))
             {
                 return null; // ERROR
-            }
+            }*/
 
             StartPositions.Pop();
             return new ArraySymbolRef(arrayExpr, index, null, null);
@@ -311,5 +312,24 @@ namespace ME3Script.Decompiling
             return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
         }
 
+        public Expression DecompileNativeFunction(UInt16 index)
+        {
+            var parameters = new List<Expression>();
+            while (CurrentByte != (byte)StandardByteCodes.EndFunctionParms)
+            {
+                var param = DecompileExpression();
+                if (param == null)
+                    return null; // ERROR
+
+                parameters.Add(param);
+            }
+            PopByte();
+
+            // TODO: lookup native table etc..
+
+            StartPositions.Pop();
+            var func = new SymbolReference(null, null, null, index.ToString());
+            return new FunctionCall(func, parameters, null, null);
+        }
     }
 }

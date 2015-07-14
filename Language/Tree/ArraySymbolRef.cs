@@ -18,6 +18,7 @@ namespace ME3Script.Language.Tree
         {
             Index = index;
             Type = ASTNodeType.ArrayReference;
+            Array = array;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

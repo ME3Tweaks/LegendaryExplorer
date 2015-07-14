@@ -173,7 +173,7 @@ namespace ME3Script.Decompiling
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement
                 ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
-                        null, null, new CodeBody(elseStatements, null, null));
+                        null, null, elseStatements != null ? new CodeBody(elseStatements, null, null) : null);
         }
 
         public SwitchStatement DecompileSwitch()
