@@ -35,8 +35,7 @@ namespace ME3Script.Decompiling
                 // array[index]
                 case (byte)StandardByteCodes.DynArrayElement: //TODO: possibly separate this
                 case (byte)StandardByteCodes.ArrayElement:
-                    //TODO
-                    return null;
+                    return DecompileArrayRef();
 
                 // new class(...)
                 case (byte)StandardByteCodes.New:
@@ -47,6 +46,12 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.ClassContext:
                 case (byte)StandardByteCodes.Context:
                     return DecompileContext();
+
+                // class<Name>(Obj)
+                case(byte)StandardByteCodes.Metacast:
+                    return null; //TODO
+
+
 
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
@@ -94,7 +99,29 @@ namespace ME3Script.Decompiling
             }
 
             StartPositions.Pop();
-            return new CompositeSymbolRef(left as SymbolReference, right as SymbolReference, null, null);
+            return new CompositeSymbolRef(left, right, null, null);
+        }
+
+        public ArraySymbolRef DecompileArrayRef()
+        {
+            PopByte();
+
+            var index = DecompileExpression();
+            if (index == null)
+                return null; // ERROR
+
+            var arrayExpr = DecompileExpression();
+            if (arrayExpr == null)
+                return null; // ERROR
+
+            if (!typeof(SymbolReference).IsAssignableFrom(index.GetType())
+                || !typeof(SymbolReference).IsAssignableFrom(arrayExpr.GetType()))
+            {
+                return null; // ERROR
+            }
+
+            StartPositions.Pop();
+            return new ArraySymbolRef(arrayExpr, index, null, null);
         }
     }
 }
