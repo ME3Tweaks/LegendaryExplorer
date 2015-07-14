@@ -98,6 +98,7 @@ namespace ME3Script.Decompiling
 
                 // byte, eg. 0B
                 case (byte)StandardByteCodes.ByteConst:
+                case (byte)StandardByteCodes.IntConstByte:
                     return DecompileByteConst();
 
                 // 0
@@ -116,6 +117,30 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.False:
                     return DecompileBoolConstVal(false);
 
+                // None    (object literal)
+                case (byte)StandardByteCodes.NoObject:
+                    PopByte();
+                    StartPositions.Pop();
+                    return new StringLiteral("None", null, null); // TODO: solve better
+
+                // (bool expression)
+                case (byte)StandardByteCodes.BoolVariable:
+                    return DecompileBoolExprValue();
+
+                // ClassName(Obj)
+                case (byte)StandardByteCodes.DynamicCast:
+                    return null; //TODO
+
+                // struct == struct 
+                case (byte)StandardByteCodes.StructCmpEq:
+                    return DecompileInOpNaive("==");
+
+                // struct != struct 
+                case (byte)StandardByteCodes.StructCmpNe:
+                    return DecompileInOpNaive("!=");
+
+                //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
+                //TODO: 0x29, nativeParm, should not be present?
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
                 //TODO: unkn4F and GoW_DefaultValue ???
@@ -185,6 +210,36 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             return new ArraySymbolRef(arrayExpr, index, null, null);
+        }
+
+        public Expression DecompileBoolExprValue()
+        {
+            PopByte(); 
+
+            var value = DecompileExpression();
+            if (value == null)
+                return null; // ERROR
+
+            StartPositions.Pop();
+            return value; // TODO: is this correct? should we contain it?
+        }
+
+        public Expression DecompileInOpNaive(String opName)
+        {
+            // TODO: ugly, wrong.
+            PopByte();
+
+            var left = DecompileExpression();
+            if (left == null)
+                return null; // ERROR
+
+            var right = DecompileExpression();
+            if (right == null)
+                return null; // ERROR
+
+            StartPositions.Pop();
+            var op = new InOpDeclaration(opName, 0, true, null, null, null, null, null, null, null);
+            return new InOpReference(op, left, right, null, null); 
         }
     }
 }

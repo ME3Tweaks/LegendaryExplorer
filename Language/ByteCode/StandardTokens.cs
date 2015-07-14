@@ -60,7 +60,7 @@ namespace ME3Script.Language.ByteCode
         IteratorNext = 0x31, //undefined in GNatives?
         StructCmpEq = 0x32,
         StructCmpNe = 0x33,
-        UnicodeStringConst = 0x34,
+        UnicodeStringConst = 0x34, // unused?
         StructMember = 0x35,
         DynArrayLength = 0x36,
         GlobalFunction = 0x37,
