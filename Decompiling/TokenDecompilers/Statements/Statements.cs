@@ -15,77 +15,68 @@ namespace ME3Script.Decompiling
         {
             StartPositions.Push((UInt16)Position);
             var token = CurrentByte;
-            
-            if (token >= 0x80) // native table
+
+            switch (token)
             {
-                // TODO: native lookup
+                // return [expression];
+                case (byte)StandardByteCodes.Return:
+                    return DecompileReturn();
+
+                // switch (expression)
+                case (byte)StandardByteCodes.Switch:
+                    return DecompileSwitch();
+
+                // if (expression) // while / for / do until
+                case (byte)StandardByteCodes.JumpIfNot:
+                    return DecompileConditionalJump();
+
+                // stop;
+                case (byte)StandardByteCodes.Stop:
+                    PopByte();
+                    var statement = new StopStatement(null, null);
+                    StatementLocations.Add(StartPositions.Pop(), statement);
+                    return statement;
+
+                // Goto label
+                case (byte)StandardByteCodes.GotoLabel:
+                    // TODO
+                    break;
+
+                // assignable expression = expression;
+                case (byte)StandardByteCodes.Let:
+                case (byte)StandardByteCodes.LetBool:
+                case (byte)StandardByteCodes.LetDelegate:
+                    return DecompileAssign();
+
+                // [skip x bytes]
+                case (byte)StandardByteCodes.Skip:
+                    PopByte();
+                    ReadRawData(ReadUInt16());
+                    StartPositions.Pop();
+                    return DecompileStatement();
+
+                // foreach IteratorFunction(...)
+                case (byte)StandardByteCodes.Iterator:
+                    // TODO
+                    break;
+
+                // foreach arrayName(valuevariable[, indexvariable])
+                case (byte)StandardByteCodes.DynArrayIterator:
+                    // TODO
+                    break;
+
+                // TODO: 0x3B - 0x3E native calls
+                //TODO: unkn4F and GoW_DefaultValue ???
+                // TODO: 0x5A -> 0x65 ???
+
+                default:
+                    var expr = DecompileExpression();
+                    if (expr != null)
+                        return new ExpressionOnlyStatement(null, null, expr);
+
+                    // ERROR!
+                    break;
             }
-            else if (token >= 0x71) // extended native table, 0x70 is unused
-            {
-                // TODO: build extended value, then native lookup
-            }
-            else 
-                switch (token)
-                {
-                    // return [expression];
-                    case (byte)StandardByteCodes.Return:
-                        return DecompileReturn();
-                        
-                    // switch (expression)
-                    case (byte)StandardByteCodes.Switch:
-                        return DecompileSwitch();
-
-                    // if (expression) // while / for / do until
-                    case (byte)StandardByteCodes.JumpIfNot:
-                        return DecompileConditionalJump();
-
-                    // stop;
-                    case (byte)StandardByteCodes.Stop:
-                        PopByte();
-                        var statement = new StopStatement(null, null);
-                        StatementLocations.Add(StartPositions.Pop(), statement);
-                        return statement;
-
-                    // Goto label
-                    case (byte)StandardByteCodes.GotoLabel:
-                        // TODO
-                        break;
-
-                    // assignable expression = expression;
-                    case (byte)StandardByteCodes.Let:
-                    case (byte)StandardByteCodes.LetBool:
-                    case (byte)StandardByteCodes.LetDelegate:
-                        return DecompileAssign();
-
-                    // [skip x bytes]
-                    case (byte)StandardByteCodes.Skip:
-                        PopByte();
-                        ReadRawData(ReadUInt16());
-                        StartPositions.Pop();
-                        return DecompileStatement();
-
-                    // foreach IteratorFunction(...)
-                    case (byte)StandardByteCodes.Iterator:
-                        // TODO
-                        break;
-
-                    // foreach arrayName(valuevariable[, indexvariable])
-                    case (byte)StandardByteCodes.DynArrayIterator:
-                        // TODO
-                        break;
-
-                    // TODO: 0x3B - 0x3E native calls
-                    //TODO: unkn4F and GoW_DefaultValue ???
-                    // TODO: 0x5A -> 0x65 ???
-
-                    default:
-                        var expr = DecompileExpression();
-                        if (expr != null)
-                            return new ExpressionOnlyStatement(null, null, expr);
-
-                        // ERROR!
-                        break;
-                }
 
             return null;
         }
@@ -164,7 +155,7 @@ namespace ME3Script.Decompiling
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement 
+            return statement
                 ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
                         null, null, new CodeBody(elseStatements, null, null));
         }
@@ -195,7 +186,7 @@ namespace ME3Script.Decompiling
                 var current = DecompileStatement();
                 if (current == null)
                     return null; // ERROR ?
-                
+
                 scopeStatements.Add(current);
                 if (current is DefaultStatement && endOffset == 0xFFFF)
                     break; // If no break was detected, we end the switch rather than include the rest of ALL code in the default.

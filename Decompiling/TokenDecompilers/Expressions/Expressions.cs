@@ -16,7 +16,15 @@ namespace ME3Script.Decompiling
             StartPositions.Push((UInt16)Position);
             var token = CurrentByte;
 
-            switch (token)
+            if (token >= 0x80) // native table
+            {
+                // TODO: native lookup
+            }
+            else if (token >= 0x71) // extended native table, 0x70 is unused
+            {
+                // TODO: build extended value, then native lookup
+            }
+            else switch (token)
             {
                 // variable lookups
                 case (byte)StandardByteCodes.LocalVariable:
