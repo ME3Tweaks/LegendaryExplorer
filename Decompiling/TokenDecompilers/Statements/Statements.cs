@@ -101,8 +101,11 @@ namespace ME3Script.Decompiling
             var afterScopeOffset = ReadUInt16();
             UInt16 scopeEndJmpOffset;
             bool hasElse = false;
-            var conditional = DecompileExpression();
             var scopeStatements = new List<Statement>();
+            var conditional = DecompileExpression();
+
+            if (conditional == null)
+                return null;
 
             if (afterScopeOffset < scopeStartOffset) // end of do_until detection
             {

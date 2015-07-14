@@ -31,7 +31,16 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.InstanceVariable:
                 case (byte)StandardByteCodes.DefaultVariable:
                 case (byte)StandardByteCodes.LocalOutVariable:
-                    //TODO: 0x5B -> 0x62 all seem to be the same in the exe
+
+                case (byte)StandardByteCodes.Unkn_5B: // TODO: fix these, 
+                case (byte)StandardByteCodes.Unkn_5C: // map them out with names / purposes, 
+                case (byte)StandardByteCodes.Unkn_5D: // here for test purposes for now!
+                case (byte)StandardByteCodes.Unkn_5E: 
+                case (byte)StandardByteCodes.Unkn_5F:
+                case (byte)StandardByteCodes.Unkn_60:
+                case (byte)StandardByteCodes.Unkn_61:
+                case (byte)StandardByteCodes.Unkn_62: 
+                    
                     PopByte();
                     return DecompileObjectLookup();
 
@@ -200,6 +209,8 @@ namespace ME3Script.Decompiling
 
         public CompositeSymbolRef DecompileContext()
         {
+            PopByte();
+
             var left = DecompileExpression();
             if (left == null)
                 return null; // ERROR

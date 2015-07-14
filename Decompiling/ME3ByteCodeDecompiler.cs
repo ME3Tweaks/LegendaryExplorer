@@ -43,19 +43,20 @@ namespace ME3Script.Decompiling
             var statements = new List<Statement>();
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();
+            Scopes = new Stack<List<Statement>>();
 
             Scopes.Push(statements);
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
             {
                 var current = DecompileStatement();
                 if (current == null)
-                    return null; // ERROR!
+                    break; // TODO: ERROR!
 
                 statements.Add(current);
             }
             Scopes.Pop();
 
-            return null;
+            return new CodeBody(statements, null, null);
         }
     }
 }
