@@ -57,7 +57,7 @@ namespace ME3Script.Language.ByteCode
         DynamicCast = 0x2E,
         Iterator = 0x2F,
         IteratorPop = 0x30,
-        IteratorNext = 0x31,
+        IteratorNext = 0x31, //undefined in GNatives?
         StructCmpEq = 0x32,
         StructCmpNe = 0x33,
         UnicodeStringConst = 0x34,
@@ -69,7 +69,7 @@ namespace ME3Script.Language.ByteCode
         ReturnNullValue = 0x3A,        // Was: ByteToInt and ReturnNothing, seems to now be used as a way to se retunr value to the type's null value, eg: 04 3A RetValRef
         EqualEqual_DelDel = 0x3B,      // 3B - 3E seem to be natives, UE3 standard is delegate comparison operations
         NotEqual_DelDel = 0x3C,        // seemingly does not extract the second halfbyte of the instruction, weird.
-        EqualEqual_DelFunc = 0x3D,
+        EqualEqual_DelFunc = 0x3D,     // They are bound in GNatives though.
         NotEqual_DelFunc = 0x3E,
         EmptyDelegate = 0x3F,
         DynArrayRemove = 0x40,
@@ -84,7 +84,7 @@ namespace ME3Script.Language.ByteCode
         DefaultParmValue = 0x49,
         EmptyParmValue = 0x4A,
         InstanceDelegate = 0x4B,
-        // 0x4C - 0x4E are unknown, probably invalid, throws assert failure by the looks of it
+        // 0x4C - 0x4E are unknown, probably invalid, throws assert failure by the looks of it, not defined in GNatives
         Unkn_4F = 0x4F,
         GoW_DefaultValue = 0x50,
         InterfaceContext = 0x51,
@@ -109,6 +109,7 @@ namespace ME3Script.Language.ByteCode
         Unkn_64 = 0x64,
         Unkn_65 = 0x65,
         // 66-6F are unknown, probably invalid, throws assert failure by the looks of it
+        // none of them are defined in GNatives
 
 
         // 63 and 64 also share
