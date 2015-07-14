@@ -112,6 +112,8 @@ namespace ME3Script.Parsing
             return (CodeBody)Tokens.TryGetTree(codeParser);
         }
 
+        #region Statements
+
         public CodeBody TryParseBodyOrStatement(bool allowEmpty = false)
         {
             Func<ASTNode> bodyParser = () =>
@@ -563,6 +565,8 @@ namespace ME3Script.Parsing
             return (DefaultStatement)Tokens.TryGetTree(statementParser);
         }
 
+        #endregion
+
         #region Expressions
 
         public Expression TryParseExpression()
@@ -607,7 +611,7 @@ namespace ME3Script.Parsing
         {
             Func<ASTNode> ifexprParser = () =>
             {
-                return null;
+                return null; // TODO
             };
             return (Expression)Tokens.TryGetTree(ifexprParser);
         }
@@ -699,18 +703,18 @@ namespace ME3Script.Parsing
         public Expression TryParseLiteral()
         {
             Func<ASTNode> literalParser = () =>
-            {
+            { //TODO: object/class literals?
                 return TryParseInteger() ?? TryParseFloat() ?? TryParseString() ?? TryParseName() ?? TryParseBoolean() ?? (Expression)null;
             };
             return (Expression)Tokens.TryGetTree(literalParser);
         }
 
-        public FunctionCall TryParseFunctionCall()
+        public Expression TryParseFunctionCall()
         {
             Func<ASTNode> callParser = () =>
             {
                 // TODO: special parsing for call specifiers (Super/Global)
-                var funcRef = TryParseReference();
+                var funcRef = TryParseBasicRef();
                 if (funcRef == null)
                     return null;
 
@@ -742,22 +746,27 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
                     return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
+                if (CurrentTokenType == TokenType.Dot)
+                {
+                    return TryParseCompositeRecursive(new FunctionCall(funcRef, parameters, funcRef.StartPos, CurrentPosition));
+                }
+
                 return new FunctionCall(funcRef, parameters, funcRef.StartPos, CurrentPosition);
             };
-            return (FunctionCall)Tokens.TryGetTree(callParser);
+            return (Expression)Tokens.TryGetTree(callParser);
         }
 
         public SymbolReference TryParseReference()
         {
             Func<ASTNode> refParser = () =>
             {
-                // TODO: handle function call returns?
-                return TryParseCompositeRef() ?? TryParseArrayRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
+                // TODO: handle expression results?
+                return TryParseArrayRef() ?? TryParseCompositeRef() ?? TryParseBasicRef() ?? (SymbolReference)null;
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
         }
 
-        public SymbolReference TryParseBasicRef(SymbolReference compositeOuter = null)
+        public SymbolReference TryParseBasicRef(Expression compositeOuter = null)
         {
             Func<ASTNode> refParser = () =>
             {
@@ -766,41 +775,44 @@ namespace ME3Script.Parsing
                     return null;
 
                 ASTNode symbol = null;
-                if (compositeOuter != null)
+                FunctionCall func = compositeOuter as FunctionCall;
+                SymbolReference outer = compositeOuter as SymbolReference;
+
+                if (func != null)
                 {
-                    var containingClass = NodeUtils.GetContainingClass(compositeOuter.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + compositeOuter.ResolveType().Name))
-                        return Error("'" + compositeOuter.Name + "' has no member named '" + token.Value + "'!", compositeOuter.Node.StartPos, token.EndPosition);
+                    var containingClass = NodeUtils.GetContainingClass(func.ResolveType().Declaration);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + func.Function.Name))
+                        return Error("Left side has no member named '" + func.Function.Name + "'!", token.StartPosition, token.EndPosition);
                 }
-                else if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
-                    return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+                else if (outer != null)
+                {
+                    var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + outer.ResolveType().Name))
+                        return Error("Left side has no member named '" + outer.Name + "'!", token.StartPosition, token.EndPosition);
+                }
+                else
+                {
+                    if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
+                        return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+                }
 
                 return new SymbolReference(symbol, token.StartPosition, token.EndPosition, token.Value);
             };
             return (SymbolReference)Tokens.TryGetTree(refParser);
         }
 
-        public ArraySymbolRef TryParseArrayRef(SymbolReference compositeOuter = null)
+        public Expression TryParseArrayRef()
         {
             Func<ASTNode> refParser = () =>
             {
-                var token = Tokens.ConsumeToken(TokenType.Word);
-                if (token == null)
+                Expression arrayExpr = TryParseCompositeRef() ?? TryParseFunctionCall() ?? TryParseBasicRef() ?? (Expression)null;
+                if (arrayExpr == null)
                     return null;
-
-                ASTNode symbol = null;
-                if (compositeOuter != null)
-                {
-                    var containingClass = NodeUtils.GetContainingClass(compositeOuter.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + compositeOuter.ResolveType().Name))
-                        return Error("'" + compositeOuter.Name + "' has no member named '" + token.Value + "'!", compositeOuter.Node.StartPos, token.EndPosition);
-                }
-                else if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node)))
-                    return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
 
                 if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) == null)
                     return null;
 
+                // TODO: possibly check for number type?
                 Expression index;
                 index = TryParseExpression();
                 if (index == null)
@@ -816,32 +828,63 @@ namespace ME3Script.Parsing
                 }
 
                 //TODO: check that the type is actually an array type.
-                return new ArraySymbolRef(symbol, index, token.StartPosition, CurrentPosition, token.Value);
+
+                if (CurrentTokenType == TokenType.Dot)
+                {
+                    return TryParseCompositeRecursive(new ArraySymbolRef(arrayExpr, index, arrayExpr.StartPos, CurrentPosition));
+                }
+
+                return new ArraySymbolRef(arrayExpr, index, arrayExpr.StartPos, CurrentPosition);
             };
-            return (ArraySymbolRef)Tokens.TryGetTree(refParser);
+            return (Expression)Tokens.TryGetTree(refParser);
         }
 
-        public CompositeSymbolRef TryParseCompositeRef(SymbolReference compositeOuter = null)
+        public CompositeSymbolRef TryParseCompositeRef()
         {
             Func<ASTNode> refParser = () =>
             {
-                SymbolReference outer = TryParseArrayRef(compositeOuter) ?? TryParseBasicRef(compositeOuter) ?? (SymbolReference)null;
-                if (outer == null)
+                // TODO: possibly atomic / leaf?
+                Expression left = TryParseBasicRef() ?? TryParseFunctionCall() ?? (Expression)null;
+                if (left == null)
                     return null;
 
-                if (Tokens.ConsumeToken(TokenType.Dot) == null)
-                    return null;
+                Expression right = TryParseCompositeRecursive(left);
+                if (right == null)
+                    return null; //Error?
 
-                if (!CompositeTypes.Contains(outer.ResolveType().NodeType))
-                    return Error("Left side symbol is not a composite type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                SymbolReference inner = TryParseCompositeRef(outer) ?? TryParseArrayRef(outer) ?? TryParseBasicRef(outer) ?? (SymbolReference)null;
-                if (inner == null)
-                    return Error("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                return new CompositeSymbolRef(outer, inner, outer.StartPos, CurrentPosition);
+                return right as CompositeSymbolRef;
             };
             return (CompositeSymbolRef)Tokens.TryGetTree(refParser);
+        }
+
+        private CompositeSymbolRef TryParseCompositeRecursive(Expression expr)
+        {
+            Func<ASTNode> compositeParser = () =>
+            {
+                Expression lhs, rhs;
+                VariableType lhsType;
+                lhs = expr;
+                lhsType = lhs.ResolveType();
+
+                var token = Tokens.ConsumeToken(TokenType.Dot);
+                if (token == null)
+                    return null;
+
+                rhs = TryParseBasicRef(lhs) ?? TryParseFunctionCall() ?? (Expression)null;
+                if (rhs == null)
+                    return Error("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                if (!CompositeTypes.Contains(lhsType.NodeType))
+                    return Error("Left side symbol is not of a composite type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
+                while (CurrentTokenType == TokenType.Dot)
+                {
+                    return TryParseCompositeRecursive(new CompositeSymbolRef(lhs, rhs, lhs.StartPos, rhs.EndPos));
+                }
+
+                return new CompositeSymbolRef(lhs, rhs, lhs.StartPos, rhs.EndPos);
+            };
+            return (CompositeSymbolRef)Tokens.TryGetTree(compositeParser);
         }
 
         public IntegerLiteral TryParseInteger()

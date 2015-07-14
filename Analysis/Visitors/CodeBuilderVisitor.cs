@@ -516,7 +516,8 @@ namespace ME3Script.Analysis.Visitors
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // symbolname[expression]
-            Append("{0}[", node.Name);
+            node.Array.AcceptVisitor(this);
+            Append("[");
             node.Index.AcceptVisitor(this);
             Append("]");
 
@@ -527,7 +528,8 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(CompositeSymbolRef node)
         {
             // outersymbol.innersymbol
-            Append("{0}.", node.OuterSymbol.Name);
+            node.OuterSymbol.AcceptVisitor(this);
+            Append(".");
             node.InnerSymbol.AcceptVisitor(this);
             return true;
         }

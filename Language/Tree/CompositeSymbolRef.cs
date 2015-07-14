@@ -10,11 +10,11 @@ namespace ME3Script.Language.Tree
 {
     public class CompositeSymbolRef : SymbolReference
     {
-        public SymbolReference InnerSymbol;
-        public SymbolReference OuterSymbol;
+        public Expression InnerSymbol;
+        public Expression OuterSymbol;
 
-        public CompositeSymbolRef(SymbolReference outer, SymbolReference inner, SourcePosition start, SourcePosition end)
-            : base(inner.Node, start, end)
+        public CompositeSymbolRef(Expression outer, Expression inner, SourcePosition start, SourcePosition end)
+            : base(inner, start, end)
         {
             InnerSymbol = inner;
             OuterSymbol = outer;

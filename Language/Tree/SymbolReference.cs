@@ -33,7 +33,7 @@ namespace ME3Script.Language.Tree
                 return (Node as FunctionParameter).VarType;
             if (Node is Function)
                 return (Node as Function).ReturnType;
-            return null;
+            return (Node as Expression).ResolveType();
         }
     }
 }

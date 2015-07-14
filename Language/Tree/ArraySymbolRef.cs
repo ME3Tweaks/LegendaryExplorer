@@ -11,13 +11,13 @@ namespace ME3Script.Language.Tree
     public class ArraySymbolRef : SymbolReference
     {
         public Expression Index;
+        public Expression Array;
 
-        public ArraySymbolRef(ASTNode symbol, Expression index, SourcePosition start, SourcePosition end, String name = "") 
-            : base(symbol, start, end)
+        public ArraySymbolRef(Expression array, Expression index, SourcePosition start, SourcePosition end) 
+            : base(array, start, end)
         {
             Index = index;
             Type = ASTNodeType.ArrayReference;
-            Name = name;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
