@@ -42,9 +42,10 @@ namespace ME3Script.Decompiling
                     //TODO
                     return null;
 
-                // class.context
+                // (class|object|struct).member
                 case (byte)StandardByteCodes.ClassContext:
                 case (byte)StandardByteCodes.Context:
+                case (byte)StandardByteCodes.StructMember:
                     return DecompileContext();
 
                 // class<Name>(Obj)
@@ -60,7 +61,7 @@ namespace ME3Script.Decompiling
                     PopByte();
                     ReadInt16(); // MemSize
                     StartPositions.Pop();
-                    return DecompileExpression(); //TODO: how does this work for real?
+                    return DecompileExpression(); //TODO: should this be in both expr and statement?
 
                 // Function calls
                 case (byte)StandardByteCodes.VirtualFunction:
@@ -139,11 +140,34 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.StructCmpNe:
                     return DecompileInOpNaive("!=");
 
+                // primitiveType(expr)
+                case (byte)StandardByteCodes.PrimitiveCast:
+                    return null; //TODO
+
+                // (bool expr) ? expr : expr
+                case (byte)StandardByteCodes.Conditional:
+                    return DecompileConditionalExpression();
+
+                // end of script
+                case (byte)StandardByteCodes.EndOfScript:
+                    return null; // ERROR: unexpected end of script
+
+                
+                // TODO: 51, 52 : InterfaceContext, InterfaceCast
+                // TODO: 50, GoW_DefaultValue
+                // TODO: 4F, Unkn
+                // TODO: 4B, instandeDelegate
+                // TODO: 49, 4A : defaultParmValue, NoParm
+                // TODO: 48, outVariable
+                // TODO: 42, 43 : DelegateFunction, DelegateProperty
+                // TODO: 41, debugInfo
+                // TODO: 3F, NoDelegate
+                // TODO: 0x3A, unknown what it actually is here.
+                //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
                 //TODO: 0x29, nativeParm, should not be present?
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
-                //TODO: unkn4F and GoW_DefaultValue ???
                 // TODO: 0x5A -> 0x65 ???
 
                 default:
@@ -240,6 +264,30 @@ namespace ME3Script.Decompiling
             StartPositions.Pop();
             var op = new InOpDeclaration(opName, 0, true, null, null, null, null, null, null, null);
             return new InOpReference(op, left, right, null, null); 
+        }
+
+        public Expression DecompileConditionalExpression()
+        {
+            PopByte();
+
+            var cond = DecompileExpression();
+            if (cond == null)
+                return null; // ERROR
+
+            ReadInt16(); // MemSizeA
+
+            var trueExpr = DecompileExpression();
+            if (trueExpr == null)
+                return null; // ERROR
+
+            ReadInt16(); // MemSizeB
+
+            var falseExpr = DecompileExpression();
+            if (falseExpr == null)
+                return null; // ERROR
+
+            StartPositions.Pop();
+            return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
         }
     }
 }
