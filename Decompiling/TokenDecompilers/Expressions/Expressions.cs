@@ -30,7 +30,7 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.Nothing:
                     PopByte();
                     StartPositions.Pop();
-                    return DecompileExpression(); // TODO, solve this better?
+                    return DecompileExpression(); // TODO, solve this better? What about variable assignments etc?
 
                 // array[index]
                 case (byte)StandardByteCodes.DynArrayElement: //TODO: possibly separate this
@@ -51,7 +51,34 @@ namespace ME3Script.Decompiling
                 case(byte)StandardByteCodes.Metacast:
                     return null; //TODO
 
+                // Self
+                case (byte)StandardByteCodes.Self:
+                    return null; //TODO
 
+                // Skip(numBytes)
+                case (byte)StandardByteCodes.Skip:
+                    PopByte();
+                    ReadInt16(); // MemSize
+                    StartPositions.Pop();
+                    return DecompileExpression(); //TODO: how does this work for real?
+
+                // Function calls
+                case (byte)StandardByteCodes.VirtualFunction:
+                case (byte)StandardByteCodes.FinalFunction:
+                case (byte)StandardByteCodes.GlobalFunction:
+                    return null; //TODO
+
+                // int, eg. 5
+                case (byte)StandardByteCodes.IntConst:
+                    return DecompileIntConst();
+
+                // float, eg. 5.5
+                case (byte)StandardByteCodes.FloatConst:
+                    return DecompileFloatConst();
+
+                // "string"
+                case (byte)StandardByteCodes.StringConst:
+                    return DecompileStringConst();
 
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
@@ -122,6 +149,36 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             return new ArraySymbolRef(arrayExpr, index, null, null);
+        }
+
+        public IntegerLiteral DecompileIntConst()
+        {
+            PopByte();
+
+            var value = ReadInt32();
+
+            StartPositions.Pop();
+            return new IntegerLiteral(value, null, null);
+        }
+
+        public FloatLiteral DecompileFloatConst()
+        {
+            PopByte();
+
+            var value = ReadFloat();
+
+            StartPositions.Pop();
+            return new FloatLiteral(value, null, null);
+        }
+
+        public StringLiteral DecompileStringConst()
+        {
+            PopByte();
+
+            var value = ReadString();
+
+            StartPositions.Pop();
+            return new StringLiteral(value, null, null);
         }
     }
 }
