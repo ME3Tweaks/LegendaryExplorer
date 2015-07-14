@@ -455,6 +455,20 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(ConditionalExpression node)
+        {
+            // condition ? then : else
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
+            node.Condition.AcceptVisitor(this);
+            Append(" ? ");
+            node.TrueExpression.AcceptVisitor(this);
+            Append(" : ");
+            node.FalseExpression.AcceptVisitor(this);
+            ExpressionPrescedence.Pop();
+
+            return true;
+        }
+
         public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
