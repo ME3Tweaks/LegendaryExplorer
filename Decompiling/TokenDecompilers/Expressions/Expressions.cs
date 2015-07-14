@@ -88,6 +88,34 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.NameConst:
                     return DecompileNameConst();
 
+                // rot(1, 2, 3)
+                case (byte)StandardByteCodes.RotationConst:
+                    return null; // DecompileRotationConst(); TODO
+
+                // vect(1.0, 2.0, 3.0)
+                case (byte)StandardByteCodes.VectorConst:
+                    return null; // DecompileVectorConst(); TODO
+
+                // byte, eg. 0B
+                case (byte)StandardByteCodes.ByteConst:
+                    return DecompileByteConst();
+
+                // 0
+                case (byte)StandardByteCodes.IntZero:
+                    return DecompileIntConstVal(0);
+
+                // 1
+                case (byte)StandardByteCodes.IntOne:
+                    return DecompileIntConstVal(1);
+
+                // true
+                case (byte)StandardByteCodes.True:
+                    return DecompileBoolConstVal(true);
+
+                // false
+                case (byte)StandardByteCodes.False:
+                    return DecompileBoolConstVal(false);
+
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
                 //TODO: unkn4F and GoW_DefaultValue ???

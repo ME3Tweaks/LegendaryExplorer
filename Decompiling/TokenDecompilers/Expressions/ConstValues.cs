@@ -59,5 +59,29 @@ namespace ME3Script.Decompiling
             StartPositions.Pop();
             return new NameLiteral(value, null, null);
         }
+
+        public IntegerLiteral DecompileByteConst()
+        {
+            PopByte();
+
+            var value = ReadByte();
+
+            StartPositions.Pop();
+            return new IntegerLiteral(value, null, null);
+        }
+
+        public IntegerLiteral DecompileIntConstVal(int val)
+        {
+            PopByte();
+            StartPositions.Pop();
+            return new IntegerLiteral(val, null, null);
+        }
+
+        public BooleanLiteral DecompileBoolConstVal(bool val)
+        {
+            PopByte();
+            StartPositions.Pop();
+            return new BooleanLiteral(val, null, null);
+        }
     }
 }
