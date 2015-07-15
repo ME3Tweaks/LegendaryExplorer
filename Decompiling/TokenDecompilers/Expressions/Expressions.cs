@@ -357,7 +357,7 @@ namespace ME3Script.Decompiling
                     break;
 
                 case NativeType.Operator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
-                    var op = new InOpDeclaration(entry.Name, 0, false, null, null, null, null, null, null, null);
+                    var op = new InOpDeclaration(entry.Name, entry.Precedence, false, null, null, null, null, null, null, null);
                     call = new InOpReference(op, parameters[0], parameters[1], null, null);
                     break;
 
