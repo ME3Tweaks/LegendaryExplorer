@@ -31,6 +31,20 @@ namespace ME3Script.Decompiling
             return CurrentByte == (byte)val;
         }
 
+        private int _totalPadding;
+        private ObjectTableEntry ReadObject()
+        {
+            var index = ReadIndex();
+            var remaining = DataContainer.DataScriptSize - (Position - _totalPadding);
+            Buffer.BlockCopy(_data, Position, _data, Position + 4, remaining); // copy the data forward
+            Buffer.BlockCopy(new byte[]{0,0,0,0}, 0, _data, Position, 4); // write 0 padding
+
+            _totalPadding += 4;
+            Position += 4;
+
+            return PCC.GetObjectEntry(index);
+        }
+
         public ME3ByteCodeDecompiler(ME3Struct dataContainer)
             :base(dataContainer.ByteScript)
         {
@@ -39,7 +53,8 @@ namespace ME3Script.Decompiling
 
         public CodeBody Decompile()
         {
-            Position = DataContainer.ByteScriptSize - DataContainer.DataScriptSize;
+            Position = 0;
+            _totalPadding = 0;
             var statements = new List<Statement>();
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();

@@ -30,6 +30,13 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.JumpIfNot:
                     return DecompileConditionalJump();
 
+                // continue
+                case (byte)StandardByteCodes.Jump: // TODO: is this the only use case?
+                    PopByte();
+                    var cont = new ContinueStatement(null, null);
+                    StatementLocations.Add(StartPositions.Pop(), cont);
+                    return cont;
+
                 // stop;
                 case (byte)StandardByteCodes.Stop:
                     PopByte();
@@ -49,9 +56,9 @@ namespace ME3Script.Decompiling
                     return DecompileAssign();
 
                 // [skip x bytes]
-                case (byte)StandardByteCodes.Skip:
+                case (byte)StandardByteCodes.Skip: // TODO: this should never occur as statement, possibly remove?
                     PopByte();
-                    ReadRawData(ReadUInt16());
+                    ReadUInt16();
                     StartPositions.Pop();
                     return DecompileStatement();
 
@@ -90,7 +97,7 @@ namespace ME3Script.Decompiling
             {
                 // TODO: research this a bit, seems to be the zero-equivalent value for the return type.
                 PopByte();
-                var retVal = ReadIndex();
+                var retVal = ReadObject();
                 expr = new SymbolReference(null, null, null, "null"); // TODO: faulty obv, kind of illustrates the thing though.
             }
             else
@@ -135,14 +142,26 @@ namespace ME3Script.Decompiling
             {
                 if (CurrentIs(StandardByteCodes.Jump))
                 {
+                    var contPos = (UInt16)Position;
                     PopByte();
                     scopeEndJmpOffset = ReadUInt16();
                     if (scopeEndJmpOffset == scopeStartOffset)
+                    {
                         statement = new WhileLoop(conditional, new CodeBody(scopeStatements, null, null), null, null);
+                        break;
+                    }
+                    else if (Position < afterScopeOffset) // if we are not at the end of the scope, this is a continue statement in a loop rather than an else statement
+                    {
+                        var cont = new ContinueStatement(null, null); 
+                        StatementLocations.Add(contPos, cont);
+                        scopeStatements.Add(cont);
+                    }
                     else
+                    {
                         hasElse = true;
+                    }
 
-                    break;
+                    continue;
                 }
 
                 var current = DecompileStatement();
@@ -152,6 +171,7 @@ namespace ME3Script.Decompiling
                 scopeStatements.Add(current);
             }
             Scopes.Pop();
+
 
             List<Statement> elseStatements = null;
             if (hasElse)
@@ -179,7 +199,7 @@ namespace ME3Script.Decompiling
         public SwitchStatement DecompileSwitch()
         {
             PopByte();
-            var objIndex = ReadIndex();
+            var objIndex = ReadObject();
             var unknByte = ReadByte();
             var expr = DecompileExpression();
             var scopeStatements = new List<Statement>();

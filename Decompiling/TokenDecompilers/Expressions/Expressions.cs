@@ -214,8 +214,7 @@ namespace ME3Script.Decompiling
 
         public Expression DecompileObjectLookup()
         {
-            var index = ReadIndex();
-            var obj = PCC.GetObjectEntry(index);
+            var obj = ReadObject();
             if (obj == null)
                 return null; // ERROR
 
@@ -232,7 +231,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             ReadInt16(); // discard MemSize value. (size of expr-right in half-bytes)
-            ReadIndex(); // discard RetValRef.
+            ReadObject(); // discard RetValRef.
             ReadByte(); // discard unknown byte.
 
             var right = DecompileExpression();
@@ -247,8 +246,8 @@ namespace ME3Script.Decompiling
         {
             PopByte();
 
-            var MemberRef = ReadIndex();
-            var StructRef = ReadIndex();
+            var MemberRef = ReadObject();
+            var StructRef = ReadObject();
 
             ReadByte(); // discard unknown bytes
             ReadByte();
@@ -258,7 +257,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            var member = new SymbolReference(null, null, null, PCC.GetObjectEntry(MemberRef).ObjectName);
+            var member = new SymbolReference(null, null, null, MemberRef.ObjectName);
             return new CompositeSymbolRef(expr, member, null, null);
         }
 
@@ -355,12 +354,12 @@ namespace ME3Script.Decompiling
         public Expression DecompileCast(bool meta = false)
         {
             PopByte();
-            var objRef = ReadIndex();
+            var objRef = ReadObject();
             var expr = DecompileExpression();
             if (expr == null)
                 return null; // ERROR
 
-            String type = PCC.GetObjectEntry(objRef).ObjectName;
+            String type = objRef.ObjectName;
             if (meta)
                 type = "class<" + type + ">";
 
@@ -375,7 +374,7 @@ namespace ME3Script.Decompiling
             if (byName)
                 funcName = PCC.GetName(ReadNameRef());
             else
-                funcName = PCC.GetObjectEntry(ReadIndex()).ObjectName;
+                funcName = ReadObject().ObjectName;
 
             if (withUnknShort)
                 ReadInt16(); // TODO: related to unkn65, split out?
