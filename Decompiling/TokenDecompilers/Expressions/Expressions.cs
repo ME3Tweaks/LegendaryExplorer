@@ -22,8 +22,10 @@ namespace ME3Script.Decompiling
             }
             else if (token >= 0x71) // extended native table, 0x70 is unused
             {
-                UInt16 index = (UInt16)(ReadUInt16() & 0x0FFF);
-                return DecompileNativeFunction(index);
+                var higher = ReadByte() & 0x0F;
+                var lower = ReadByte();
+                int index = (higher << 8) + lower;
+                return DecompileNativeFunction((UInt16)index);
             }
             else switch (token)
             {
@@ -344,11 +346,34 @@ namespace ME3Script.Decompiling
             }
             PopByte();
 
-            // TODO: lookup native table etc..
+            var entry = NativeTable[index];
+            Expression call = null;
+
+            switch (entry.Type)
+            {
+                case NativeType.Function:
+                    var func = new SymbolReference(null, null, null, entry.Name);
+                    call = new FunctionCall(func, parameters, null, null);
+                    break;
+
+                case NativeType.Operator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
+                    var op = new InOpDeclaration(entry.Name, 0, false, null, null, null, null, null, null, null);
+                    call = new InOpReference(op, parameters[0], parameters[1], null, null);
+                    break;
+
+                case NativeType.PreOperator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
+                    var preOp = new PreOpDeclaration(entry.Name, false, null, null, null, null, null, null);
+                    call = new PreOpReference(preOp, parameters[0], null, null);
+                    break;
+
+                case NativeType.PostOperator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
+                    var postOp = new PostOpDeclaration(entry.Name, false, null, null, null, null, null, null);
+                    call = new PostOpReference(postOp, parameters[0], null, null);
+                    break;
+            }
 
             StartPositions.Pop();
-            var func = new SymbolReference(null, null, null, index.ToString());
-            return new FunctionCall(func, parameters, null, null);
+            return call;
         }
 
         public Expression DecompileCast(bool meta = false)
