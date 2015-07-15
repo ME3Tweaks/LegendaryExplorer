@@ -61,10 +61,12 @@ namespace ME3Script.Decompiling
                     return null;
 
                 // (class|object|struct).member
-                case (byte)StandardByteCodes.ClassContext:
+                case (byte)StandardByteCodes.ClassContext: // TODO: make decompile be "class'Name'.static.Inner
                 case (byte)StandardByteCodes.Context:
-                case (byte)StandardByteCodes.StructMember:
                     return DecompileContext();
+
+                case (byte)StandardByteCodes.StructMember:
+                    return DecompileStructMember();
 
                 // class<Name>(Obj)
                 case(byte)StandardByteCodes.Metacast:
@@ -210,7 +212,7 @@ namespace ME3Script.Decompiling
             return null;
         }
 
-        public SymbolReference DecompileObjectLookup()
+        public Expression DecompileObjectLookup()
         {
             var index = ReadIndex();
             var obj = PCC.GetObjectEntry(index);
@@ -221,7 +223,7 @@ namespace ME3Script.Decompiling
             return new SymbolReference(null, null, null, obj.ObjectName);
         }
 
-        public CompositeSymbolRef DecompileContext()
+        public Expression DecompileContext()
         {
             PopByte();
 
@@ -229,7 +231,7 @@ namespace ME3Script.Decompiling
             if (left == null)
                 return null; // ERROR
 
-            ReadInt16(); // discard MemSize value.
+            ReadInt16(); // discard MemSize value. (size of expr-right in half-bytes)
             ReadIndex(); // discard RetValRef.
             ReadByte(); // discard unknown byte.
 
@@ -237,17 +239,30 @@ namespace ME3Script.Decompiling
             if (right == null)
                 return null; // ERROR
 
-            /*if (!typeof(SymbolReference).IsAssignableFrom(left.GetType())
-                || !typeof(SymbolReference).IsAssignableFrom(right.GetType()))
-            {
-                return null; // ERROR
-            }*/
-
             StartPositions.Pop();
             return new CompositeSymbolRef(left, right, null, null);
         }
 
-        public ArraySymbolRef DecompileArrayRef()
+        public Expression DecompileStructMember()
+        {
+            PopByte();
+
+            var MemberRef = ReadIndex();
+            var StructRef = ReadIndex();
+
+            ReadByte(); // discard unknown bytes
+            ReadByte();
+
+            var expr = DecompileExpression(); // get the expression for struct instance
+            if (expr == null)
+                return null; // ERROR
+
+            StartPositions.Pop();
+            var member = new SymbolReference(null, null, null, PCC.GetObjectEntry(MemberRef).ObjectName);
+            return new CompositeSymbolRef(expr, member, null, null);
+        }
+
+        public Expression DecompileArrayRef()
         {
             PopByte();
 
@@ -258,12 +273,6 @@ namespace ME3Script.Decompiling
             var arrayExpr = DecompileExpression();
             if (arrayExpr == null)
                 return null; // ERROR
-
-            /*if (!typeof(SymbolReference).IsAssignableFrom(index.GetType())
-                || !typeof(SymbolReference).IsAssignableFrom(arrayExpr.GetType()))
-            {
-                return null; // ERROR
-            }*/
 
             StartPositions.Pop();
             return new ArraySymbolRef(arrayExpr, index, null, null);
