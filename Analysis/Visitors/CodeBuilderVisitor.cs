@@ -129,8 +129,8 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(VariableType node)
         {
-            // This should never be called.
-            throw new NotImplementedException();
+            Append(node.Name);
+            return true;
         }
 
         public bool VisitNode(Struct node)

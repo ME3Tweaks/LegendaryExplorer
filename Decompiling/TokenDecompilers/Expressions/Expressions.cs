@@ -68,7 +68,7 @@ namespace ME3Script.Decompiling
 
                 // class<Name>(Obj)
                 case(byte)StandardByteCodes.Metacast:
-                    return null; //TODO
+                    return DecompileCast(meta:true); // TODO: ugly hack to make this qork quickly
 
                 // Self
                 case (byte)StandardByteCodes.Self:
@@ -82,10 +82,15 @@ namespace ME3Script.Decompiling
                     return DecompileExpression(); //TODO: should this be in both expr and statement?
 
                 // Function calls
-                case (byte)StandardByteCodes.VirtualFunction:
                 case (byte)StandardByteCodes.FinalFunction:
                 case (byte)StandardByteCodes.GlobalFunction:
-                    return null; //TODO
+                    return DecompileFunctionCall();
+
+                case (byte)StandardByteCodes.VirtualFunction:
+                    return DecompileFunctionCall(byName: true);
+
+                case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
+                    return DecompileFunctionCall(byName: true, withUnknShort: true);
 
                 // int, eg. 5
                 case (byte)StandardByteCodes.IntConst:
@@ -140,7 +145,7 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.NoObject:
                     PopByte();
                     StartPositions.Pop();
-                    return new StringLiteral("None", null, null); // TODO: solve better
+                    return new SymbolReference(null, null, null, "None"); // TODO: solve better
 
                 // (bool expression)
                 case (byte)StandardByteCodes.BoolVariable:
@@ -148,7 +153,7 @@ namespace ME3Script.Decompiling
 
                 // ClassName(Obj)
                 case (byte)StandardByteCodes.DynamicCast:
-                    return null; //TODO
+                    return DecompileCast();
 
                 // struct == struct 
                 case (byte)StandardByteCodes.StructCmpEq:
@@ -170,6 +175,12 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.EndOfScript:
                     return null; // ERROR: unexpected end of script
 
+                // (empty function param)
+                case (byte)StandardByteCodes.EmptyParmValue:
+                    PopByte();
+                    StartPositions.Pop();
+                    return new SymbolReference(null, null, null, ""); // TODO: solve better
+
                 // arrayName.Length
                 case (byte)StandardByteCodes.DynArrayLength:
                     return DecompileDynArrLength();
@@ -178,7 +189,7 @@ namespace ME3Script.Decompiling
                 // TODO: 50, GoW_DefaultValue
                 // TODO: 4F, Unkn
                 // TODO: 4B, instandeDelegate
-                // TODO: 49, 4A : defaultParmValue, NoParm
+                // TODO: 49 : defaultParmValue
                 // TODO: 48, outVariable
                 // TODO: 42, 43 : DelegateFunction, DelegateProperty
                 // TODO: 41, debugInfo
@@ -188,7 +199,7 @@ namespace ME3Script.Decompiling
                 //TODO: 0x29, nativeParm, should not be present?
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
-                // TODO: 0x5A -> 0x65 ???
+                // TODO: 0x63 -> 0x65 ???
 
                 default:
 
@@ -329,6 +340,50 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             var func = new SymbolReference(null, null, null, index.ToString());
+            return new FunctionCall(func, parameters, null, null);
+        }
+
+        public Expression DecompileCast(bool meta = false)
+        {
+            PopByte();
+            var objRef = ReadIndex();
+            var expr = DecompileExpression();
+            if (expr == null)
+                return null; // ERROR
+
+            String type = PCC.GetObjectEntry(objRef).ObjectName;
+            if (meta)
+                type = "class<" + type + ">";
+
+            StartPositions.Pop();
+            return new CastExpression(new VariableType(type, null, null), expr, null, null);
+        }
+
+        public Expression DecompileFunctionCall(bool byName = false, bool withUnknShort = false)
+        {
+            PopByte();
+            String funcName;
+            if (byName)
+                funcName = PCC.GetName(ReadNameRef());
+            else
+                funcName = PCC.GetObjectEntry(ReadIndex()).ObjectName;
+
+            if (withUnknShort)
+                ReadInt16(); // TODO: related to unkn65, split out?
+
+            var parameters = new List<Expression>();
+            while (CurrentByte != (byte)StandardByteCodes.EndFunctionParms)
+            {
+                var param = DecompileExpression();
+                if (param == null)
+                    return null; // ERROR
+
+                parameters.Add(param);
+            }
+            PopByte();
+
+            StartPositions.Pop();
+            var func = new SymbolReference(null, null, null, funcName);
             return new FunctionCall(func, parameters, null, null);
         }
     }
