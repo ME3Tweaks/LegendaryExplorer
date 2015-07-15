@@ -39,16 +39,41 @@ namespace ME3Script.Decompiling
             return new StringLiteral(value, null, null);
         }
 
-        /*
-        public ObjectLiteral DecompileObjectConst()
+        
+        public Expression/*ObjectLiteral*/ DecompileObjectConst() // TODO: properly
         {
             PopByte();
 
-            var value = ReadIndex();
+            var value = ReadObject();
 
             StartPositions.Pop();
-            return new ObjectLiteral(value, null, null);
-        } */
+            //return new ObjectLiteral(value, null, null);
+            return new SymbolReference(null, null, null, value.ClassName + "'" + value.ObjectName + "'");
+        }
+
+        public Expression/*VectorLiteral*/ DecompileVectorConst() // TODO: properly
+        {
+            PopByte();
+            var X = ReadFloat();
+            var Y = ReadFloat();
+            var Z = ReadFloat();
+
+            StartPositions.Pop();
+            var str = "vect(" + X + ", " + Y + ", " + Z + ")";
+            return new SymbolReference(null, null, null, str);
+        }
+
+        public Expression/*RotationLiteral*/ DecompileRotationConst() // TODO: properly
+        {
+            PopByte();
+            var Pitch = ReadInt32();
+            var Yaw = ReadInt32();
+            var Roll = ReadInt32();
+
+            StartPositions.Pop();
+            var str = "rot(0x" + Pitch.ToString("X8") + ", 0x" + Yaw.ToString("X8") + ", 0x" + Roll.ToString("X8") + ")";
+            return new SymbolReference(null, null, null, str);
+        } 
 
         public NameLiteral DecompileNameConst()
         {

@@ -63,7 +63,9 @@ namespace ME3Script.Decompiling
                     return null;
 
                 // (class|object|struct).member
-                case (byte)StandardByteCodes.ClassContext: // TODO: make decompile be "class'Name'.static.Inner
+                case (byte)StandardByteCodes.ClassContext: // TODO: support in AST
+                    return DecompileContext(isClass:true);
+
                 case (byte)StandardByteCodes.Context:
                     return DecompileContext();
 
@@ -79,11 +81,11 @@ namespace ME3Script.Decompiling
                     return null; //TODO
 
                 // Skip(numBytes)
-                case (byte)StandardByteCodes.Skip:
+                case (byte)StandardByteCodes.Skip: // handles skips in operator arguments
                     PopByte();
                     ReadInt16(); // MemSize
                     StartPositions.Pop();
-                    return DecompileExpression(); //TODO: should this be in both expr and statement?
+                    return DecompileExpression();
 
                 // Function calls
                 case (byte)StandardByteCodes.FinalFunction:
@@ -110,7 +112,7 @@ namespace ME3Script.Decompiling
 
                 // Object
                 case (byte)StandardByteCodes.ObjectConst:
-                    return null; // DecompileObjectConst(); TODO
+                    return DecompileObjectConst(); //TODO: implement properly
 
                 // 'name'
                 case (byte)StandardByteCodes.NameConst:
@@ -118,11 +120,11 @@ namespace ME3Script.Decompiling
 
                 // rot(1, 2, 3)
                 case (byte)StandardByteCodes.RotationConst:
-                    return null; // DecompileRotationConst(); TODO
+                    return DecompileRotationConst();  //TODO: properly
 
                 // vect(1.0, 2.0, 3.0)
                 case (byte)StandardByteCodes.VectorConst:
-                    return null; // DecompileVectorConst(); TODO
+                    return DecompileVectorConst();  //TODO: properly
 
                 // byte, eg. 0B
                 case (byte)StandardByteCodes.ByteConst:
@@ -224,7 +226,7 @@ namespace ME3Script.Decompiling
             return new SymbolReference(null, null, null, obj.ObjectName);
         }
 
-        public Expression DecompileContext()
+        public Expression DecompileContext(bool isClass = false)
         {
             PopByte();
 
@@ -239,6 +241,13 @@ namespace ME3Script.Decompiling
             var right = DecompileExpression();
             if (right == null)
                 return null; // ERROR
+
+            if (isClass)
+            {
+                var type = left as SymbolReference;
+                var str = "class'" + type.Name + "'.static";
+                left = new SymbolReference(null, null, null, str);
+            }
 
             StartPositions.Pop();
             return new CompositeSymbolRef(left, right, null, null);
