@@ -526,6 +526,16 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(CastExpression node)
+        {
+            // type(expr)
+            node.CastType.AcceptVisitor(this);
+            Append("(");
+            node.CastTarget.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
         public bool VisitNode(ArraySymbolRef node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);

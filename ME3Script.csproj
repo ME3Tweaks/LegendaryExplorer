@@ -64,6 +64,7 @@
     <Compile Include="Language\Tree\BooleanLiteral.cs" />
     <Compile Include="Language\Tree\BreakStatement.cs" />
     <Compile Include="Language\Tree\CaseStatement.cs" />
+    <Compile Include="Language\Tree\CastExpression.cs" />
     <Compile Include="Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="Language\Tree\ConditionalExpression.cs" />
     <Compile Include="Language\Tree\ContinueStatement.cs" />

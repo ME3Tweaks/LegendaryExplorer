@@ -56,6 +56,7 @@ namespace ME3Script.Language.Tree
         BooleanLiteral,
 
         ConditionalExpression,
+        CastExpression,
 
         INVALID
     }

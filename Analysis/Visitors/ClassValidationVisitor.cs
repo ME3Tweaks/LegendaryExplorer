@@ -491,6 +491,8 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(ConditionalExpression node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(CastExpression node)
+        { throw new NotImplementedException(); }
         #endregion
     }
 }
