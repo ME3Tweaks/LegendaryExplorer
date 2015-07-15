@@ -171,7 +171,7 @@ namespace ME3Script.Decompiling
 
                 // primitiveType(expr)
                 case (byte)StandardByteCodes.PrimitiveCast:
-                    return null; //TODO
+                    return DecompilePrimitiveCast();
 
                 // (bool expr) ? expr : expr
                 case (byte)StandardByteCodes.Conditional:
@@ -396,6 +396,21 @@ namespace ME3Script.Decompiling
             String type = objRef.ObjectName;
             if (meta)
                 type = "class<" + type + ">";
+
+            StartPositions.Pop();
+            return new CastExpression(new VariableType(type, null, null), expr, null, null);
+        }
+
+        public Expression DecompilePrimitiveCast()
+        {
+            PopByte();
+            var typeToken = ReadByte();
+
+            var expr = DecompileExpression();
+            if (expr == null)
+                return null; // ERROR
+
+            String type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
             return new CastExpression(new VariableType(type, null, null), expr, null, null);

@@ -230,5 +230,48 @@ namespace ME3Script.Decompiling
             { 0xF82, new NativeTableEntry() { Name="SetPhysics", Type=NativeType.Function} },
             { 0xF83, new NativeTableEntry() { Name="AutonomousPhysics", Type=NativeType.Function} },
         };
+
+
+        public Dictionary<int, String> PrimitiveCastTable = new Dictionary<int, String>()
+        {
+            { 0x36, "bool" }, // InterfaceToBool
+            { 0x37, "string" }, // InterfaceToString
+            { 0x38, "object" }, // InterfaceToObject
+            { 0x39, "vect" }, // RotatorToVector
+            { 0x3A, "int" }, // ByteToInt
+            { 0x3B, "bool" }, // ByteToBool
+            { 0x3C, "float" }, // ByteToFloat
+            { 0x3D, "byte" }, // IntToByte
+            { 0x3E, "bool" }, // IntToBool
+            { 0x3F, "float" }, // IntToFloat
+            { 0x40, "byte" }, // BoolToByte
+            { 0x41, "int" }, // BoolToInt
+            { 0x42, "float" }, // BoolToFloat
+            { 0x43, "byte" }, // FloatToByte
+            { 0x44, "int" }, // FloatToInt
+            { 0x45, "bool" }, // FloatToBool
+            { 0x46, "interface" }, // ObjectToInterface
+            { 0x47, "bool" }, // ObjectToBool
+            { 0x48, "bool" }, // NameToBool
+            { 0x49, "byte" }, // StringToByte
+            { 0x4A, "int" }, // StringToInt
+            { 0x4B, "bool" }, // StringToBool
+            { 0x4C, "float" }, // StringToFloat
+            { 0x4D, "vect" }, // StringToVector
+            { 0x4E, "rot" }, // StringToRotator
+            { 0x4F, "bool" }, // VectorToBool
+            { 0x50, "rot" }, // VectorToRotator
+            { 0x51, "bool" }, // RotatorToBool
+            { 0x52, "string" }, // ByteToString
+            { 0x53, "string" }, // IntToString
+            { 0x54, "string" }, // BoolToString
+            { 0x55, "string" }, // FloatToString
+            { 0x56, "string" }, // ObjectToString
+            { 0x57, "string" }, // NameToString
+            { 0x58, "string" }, // VectorToString
+            { 0x59, "string" }, // RotatorToString
+            { 0x5A, "string" }, // DelegateToString
+            { 0x60, "name" }, // StringToName
+        };
     }
 }
