@@ -51,6 +51,7 @@
     <Compile Include="Compiling\Errors\LogMessage.cs" />
     <Compile Include="Compiling\Errors\LineWarning.cs" />
     <Compile Include="Compiling\Errors\Warning.cs" />
+    <Compile Include="Decompiling\ExtendedNativeTable.cs" />
     <Compile Include="Decompiling\ME3ByteCodeDecompiler.cs" />
     <Compile Include="Decompiling\ME3ObjectConverter.cs" />
     <Compile Include="Decompiling\TokenDecompilers\Expressions\ConstValues.cs" />
