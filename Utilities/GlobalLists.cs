@@ -223,7 +223,8 @@ namespace ME3Script.Utilities
             ASTNodeType.VariableDeclaration,
             ASTNodeType.SwitchStatement,
             ASTNodeType.CaseStatement,
-            ASTNodeType.DefaultStatement
+            ASTNodeType.DefaultStatement,
+            ASTNodeType.StateLabel
         };
 
         #region Specifier Categories

@@ -229,7 +229,13 @@ namespace ME3Script.Analysis.Visitors
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
 
-            // print body
+
+            if (node.Body.Statements.Count != 0)
+            {
+                Write("");
+                Write("// State code");
+                node.Body.AcceptVisitor(this);
+            }
 
             NestingLevel--;
             Write("{0};", "}");
@@ -439,7 +445,17 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(IfStatement node)
         {
             // if (condition) { /n contents /n } [else...]
-            Write("if (");
+            VisitIf(node);
+
+            return true;
+        }
+
+        private void VisitIf(IfStatement node, bool ifElse = false)
+        {
+            if (!ifElse)
+                Write(""); // New line only if we're not chaining
+            ifElse = false;
+            Append("if (");
             node.Condition.AcceptVisitor(this);
             Append(") {0}", "{");
 
@@ -450,14 +466,21 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Else != null)
             {
-                Append(" else {0}", "{");
-                NestingLevel++;
-                node.Else.AcceptVisitor(this);
-                NestingLevel--;
-                Write("{0}", "}");
+                if (node.Else.Statements.Count == 1
+                    && node.Else.Statements[0] is IfStatement)
+                {
+                    Append(" else ");
+                    VisitIf(node.Else.Statements[0] as IfStatement, true);
+                }
+                else
+                {
+                    Append(" else {0}", "{");
+                    NestingLevel++;
+                    node.Else.AcceptVisitor(this);
+                    NestingLevel--;
+                    Write("{0}", "}");
+                }
             }
-
-            return true;
         }
 
         public bool VisitNode(ConditionalExpression node)
@@ -605,9 +628,18 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
-        #region Unused
         public bool VisitNode(StateLabel node)
-        { throw new NotImplementedException(); }
+        {
+            // Label
+            var temp = NestingLevel;
+            NestingLevel = 0;
+            Write(node.Name + ":");
+            NestingLevel = temp;
+
+            return true;
+        }
+
+        #region Unused
 
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }

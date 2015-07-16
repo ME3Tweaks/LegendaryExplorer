@@ -368,6 +368,8 @@ namespace ME3Script.Analysis.Visitors
             // if the state overrides another state, use that as outer
             // both of the above should apply to functions as well as ignores.
 
+            //TODO: state code/labels
+
             Symbols.PopScope();
             return Success;
         }

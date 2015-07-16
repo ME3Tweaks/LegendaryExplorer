@@ -26,10 +26,13 @@ namespace ME3Script.Decompiling
 
         private Dictionary<UInt16, Statement> StatementLocations;
         private Stack<UInt16> StartPositions;
-        private Stack<List<Statement>> Scopes;
+        private List<List<Statement>> Scopes;
+        private int CurrentScope;
 
         private Stack<FunctionParameter> OptionalParams;
         private List<FunctionParameter> Parameters;
+
+        private List<LabelTableEntry> LabelTable;
 
         private bool CurrentIs(StandardByteCodes val)
         {
@@ -61,25 +64,46 @@ namespace ME3Script.Decompiling
         {
             Position = 0;
             _totalPadding = 0;
+            CurrentScope = 0;
             var statements = new List<Statement>();
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();
-            Scopes = new Stack<List<Statement>>();
+            Scopes = new List<List<Statement>>();
+            LabelTable = new List<LabelTableEntry>();
 
             DecompileDefaultParameterValues();
 
-            Scopes.Push(statements);
+            Scopes.Add(statements);
+            CurrentScope++;
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
             {
                 var current = DecompileStatement();
+                if (current == null && CurrentByte == (byte)StandardByteCodes.EndOfScript)
+                    break; // Natural end after label table, no error
                 if (current == null)
                     break; // TODO: ERROR!
 
                 statements.Add(current);
             }
-            Scopes.Pop();
+            CurrentScope--;
+            AddStateLabels();
 
             return new CodeBody(statements, null, null);
+        }
+
+        private void AddStateLabels()
+        {
+            foreach (var label in LabelTable)
+            {
+                var node = new StateLabel(label.Name, (int)label.Offset, null, null);
+                var statement = StatementLocations[(UInt16)label.Offset];
+                for (int n = 0; n < Scopes.Count; n++)
+                {
+                    var index = Scopes[n].IndexOf(statement);
+                    if (index != -1)
+                        Scopes[n].Insert(index, node);
+                }
+            }
         }
 
         private void DecompileDefaultParameterValues()

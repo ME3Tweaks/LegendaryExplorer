@@ -1,4 +1,5 @@
-﻿using ME3Data.DataTypes.ScriptTypes;
+﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
 using ME3Data.DataTypes.ScriptTypes.Properties;
 using ME3Script.Language.Tree;
 using System;
@@ -37,7 +38,6 @@ namespace ME3Script.Decompiling
             // TODO: operators
             // TODO: components
             // TODO: constants
-            // TODO: states
             // TODO: interfaces
 
             var Types = new List<VariableType>();
@@ -54,8 +54,12 @@ namespace ME3Script.Decompiling
             foreach (var member in Object.DefinedFunctions)
                 Funcs.Add(ConvertFunction(member));
 
+            var States = new List<State>();
+            foreach (var member in Object.States)
+                States.Add(ConvertState(member));
+
             AST = new Class(Object.Name, new List<Specifier>(), Vars, Types, Funcs, 
-                new List<State>(), parent, outer, new List<OperatorDeclaration>(), null, null);
+                States, parent, outer, new List<OperatorDeclaration>(), null, null);
 
             // Ugly quick fix:
             foreach (var member in Types)
@@ -64,8 +68,38 @@ namespace ME3Script.Decompiling
                 member.Outer = AST;
             foreach (var member in Funcs)
                 member.Outer = AST;
+            foreach (var member in States)
+                member.Outer = AST;
 
             return AST;
+        }
+
+        public State ConvertState(ME3State obj)
+        {
+            // TODO: ignores and body/labels
+
+            State parent = null;
+            if (obj.SuperField != null)
+                parent = new State(obj.SuperField.Name, null, null, null, null, null, null, null, null);
+
+            var Funcs = new List<Function>();
+            var Ignores = new List<Function>();
+            foreach (var member in obj.DefinedFunctions)
+            {
+                if (member.FunctionFlags.HasFlag(FunctionFlags.Defined))
+                    Funcs.Add(ConvertFunction(member));
+                else
+                    Ignores.Add(new Function(member.Name, null, null,
+                         null, null, null, null));
+                /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
+                 * They are defined though, each being its own proper object with simply a return nothing for bytecode.
+                 * */
+            }
+
+            var ByteCode = new ME3ByteCodeDecompiler(obj, new List<FunctionParameter>());
+            var body = ByteCode.Decompile();
+
+            return new State(obj.Name, body, new List<Specifier>(), (State)parent, Funcs, new List<Function>(), new List<StateLabel>(), null, null);
         }
 
         public Struct ConvertStruct(ME3Struct obj)

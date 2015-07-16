@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class StateLabel : VariableIdentifier
+    public class StateLabel : Statement
     {
         public int StartOffset;
+        public String Name;
 
         public StateLabel(String name, int offset, SourcePosition start, SourcePosition end)
-            : base(name, start, end)
+            : base(ASTNodeType.StateLabel, start, end)
         {
             StartOffset = offset;
-            Type = ASTNodeType.StateLabel;
+            Name = name;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

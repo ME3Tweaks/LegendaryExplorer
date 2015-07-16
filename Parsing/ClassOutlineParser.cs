@@ -319,7 +319,7 @@ namespace ME3Script.Parsing
                 if (Tokens.ConsumeToken(TokenType.RightBracket) == null)
                     return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                var body = new CodeBody(null, bodyStart, bodyEnd);
+                var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd);
                 var parentState = parent != null ? new State(parent.Name, null, null, null, null, null, null, parent.StartPos, parent.EndPos) : null;
                 return new State(name.Value, body, specs, parentState, funcs, ignores, null, name.StartPosition, name.EndPosition);
             };

@@ -1,4 +1,5 @@
-﻿using ME3Script.Language.ByteCode;
+﻿using ME3Data.DataTypes;
+using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
@@ -185,7 +186,7 @@ namespace ME3Script.Decompiling
 
                 // end of script
                 case (byte)StandardByteCodes.EndOfScript:
-                    return null; // ERROR: unexpected end of script
+                    return null; // ERROR?
 
                 // (empty function param)
                 case (byte)StandardByteCodes.EmptyParmValue:
@@ -231,6 +232,7 @@ namespace ME3Script.Decompiling
                 #endregion
 
                 // TODO: 41, debugInfo
+                // TODO: 0x5A, FilterEditorOnly?
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
 
@@ -276,7 +278,7 @@ namespace ME3Script.Decompiling
             if (isClass)
             {
                 var type = left as SymbolReference;
-                var str = "class'" + type.Name + "'.static";
+                var str = type.Name + ".static";
                 left = new SymbolReference(null, null, null, str);
             }
 
@@ -604,5 +606,6 @@ namespace ME3Script.Decompiling
         }
 
         #endregion
+
     }
 }
