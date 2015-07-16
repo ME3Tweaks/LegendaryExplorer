@@ -72,8 +72,6 @@ namespace ME3Script.Decompiling
                     // TODO
                     break;
 
-                // TODO: 0x3B - 0x3E native calls
-
                 default:
                     var expr = DecompileExpression();
                     if (expr != null)
@@ -86,6 +84,7 @@ namespace ME3Script.Decompiling
             return null;
         }
 
+        #region Decompilers
         public ReturnStatement DecompileReturn()
         {
             PopByte();
@@ -248,5 +247,6 @@ namespace ME3Script.Decompiling
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
+        #endregion
     }
 }

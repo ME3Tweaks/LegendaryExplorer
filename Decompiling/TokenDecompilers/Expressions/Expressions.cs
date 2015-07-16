@@ -102,9 +102,6 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.VirtualFunction:
                     return DecompileFunctionCall(byName: true);
 
-                case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
-                    return DecompileFunctionCall(byName: true, withUnknShort: true);
-
                 // int, eg. 5
                 case (byte)StandardByteCodes.IntConst:
                     return DecompileIntConst();
@@ -228,15 +225,22 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
+                case (byte)StandardByteCodes.Unkn_63: // TODO: figure out, weird if?
+                    return DecompileUnkn_63();
+
+                case (byte)StandardByteCodes.Unkn_64: // TODO: figure out, weird if-else?
+                    return DecompileUnkn_64();
+
+                case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
+                    return DecompileFunctionCall(byName: true, withUnknShort: true);
+
                 #endregion
 
-                // TODO: 48, outVariable
                 // TODO: 41, debugInfo
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
 
                 // TODO: 0x3B - 0x3E native calls
-                // TODO: 0x63 -> 0x64 ???
 
                 default:
 
@@ -459,7 +463,7 @@ namespace ME3Script.Decompiling
                 funcName = ReadObject().ObjectName;
 
             if (withUnknShort)
-                ReadInt16(); // TODO: related to unkn65, split out?
+                ReadInt16(); // TODO: related to unkn65, split out? Possibly jump?
 
             var parameters = new List<Expression>();
             while (CurrentByte != (byte)StandardByteCodes.EndFunctionParms)
@@ -586,7 +590,7 @@ namespace ME3Script.Decompiling
             var expr = DecompileExpression();
 
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (add?): " + obj.ObjectName + "|" + obj.ClassName + " -");
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + obj.ObjectName + "|" + obj.ClassName + " -");
             return new InOpReference(op, objRef, expr, null, null);
         }
 
@@ -596,6 +600,37 @@ namespace ME3Script.Decompiling
             var name = PCC.GetName(ReadNameRef());
  
             return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);
+        }
+
+        public Expression DecompileUnkn_63()
+        {
+            PopByte();
+            var obj = ReadObject();
+            var unkn = ReadRawData(3); // TODO: figure this thing out
+            var expr = DecompileExpression();
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 63 (ME3Ex:if?): " + obj.ObjectName + "|" + obj.ClassName + " -");
+            return new InOpReference(op, objRef, expr, null, null);
+        }
+
+        public Expression DecompileUnkn_64()
+        {
+            PopByte();
+            var obj = ReadObject();
+            var unkn = ReadRawData(3); 
+            var expr = DecompileExpression();
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 63 (ME3Ex:if?): " + obj.ObjectName + "|" + obj.ClassName + " -");
+            var inOp = new InOpReference(op, objRef, expr, null, null);
+            if (CurrentByte == (byte)StandardByteCodes.Jump)
+            {
+                var elseExpr = DecompileExpression();
+                return new InOpReference(op, inOp, elseExpr, null, null);
+            }
+
+            return inOp;
         }
 
         #endregion
