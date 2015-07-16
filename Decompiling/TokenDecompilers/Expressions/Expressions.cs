@@ -528,6 +528,7 @@ namespace ME3Script.Decompiling
             PopByte(); // unknown
             ReadObject(); // unknown objRef?
 
+            StartPositions.Pop();
             return DecompileFunctionCall(byName: true);
         }
 
@@ -537,6 +538,7 @@ namespace ME3Script.Decompiling
             var name = PCC.GetName(ReadNameRef());
             var obj = ReadObject(); // probably the delegate
 
+            StartPositions.Pop();
             return new SymbolReference(null, null, null, name + "(" + obj.ObjectName + ")");
         }
 
@@ -553,6 +555,7 @@ namespace ME3Script.Decompiling
             var obj = ReadObject();
             var expr = DecompileExpression();
 
+            StartPositions.Pop();
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
             var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: EatReturnValue: " + obj.ObjectName + "|" + obj.ClassName + " -");
             return new InOpReference(op, objRef, expr, null, null);
@@ -564,6 +567,7 @@ namespace ME3Script.Decompiling
             var unkn = ReadByte();
             var expr = DecompileExpression();
 
+            StartPositions.Pop();
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
             var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: GoW_DefaultValue: Byte:" + unkn + " - ");
             return new InOpReference(op, objRef, expr, null, null);
@@ -573,7 +577,8 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var obj = ReadObject();
- 
+
+            StartPositions.Pop();
             return new SymbolReference(null, null, null, "UNSUPPORTED: NativeParm: " + obj.ObjectName + " : " + obj.ClassName);
         }
 
@@ -583,6 +588,7 @@ namespace ME3Script.Decompiling
             var obj = ReadObject();
             var expr = DecompileExpression();
 
+            StartPositions.Pop();
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
             var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + obj.ObjectName + "|" + obj.ClassName + " -");
             return new InOpReference(op, objRef, expr, null, null);
@@ -592,7 +598,8 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var name = PCC.GetName(ReadNameRef());
- 
+
+            StartPositions.Pop();
             return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);
         }
 

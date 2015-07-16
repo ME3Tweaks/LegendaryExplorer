@@ -129,7 +129,7 @@ namespace ME3Script.Decompiling
             var scopeStartOffset = StartPositions.Peek();
             Statement statement = null;
             var afterScopeOffset = ReadUInt16();
-            UInt16 scopeEndJmpOffset;
+            UInt16 scopeEndJmpOffset = 0;
             bool hasElse = false;
             var scopeStatements = new List<Statement>();
             var conditional = DecompileExpression();
@@ -186,24 +186,24 @@ namespace ME3Script.Decompiling
             List<Statement> elseStatements = null;
             if (hasElse)
             {
-                var endElseOffset = ReadUInt16();
+                var endElseOffset = scopeEndJmpOffset;
                 elseStatements = new List<Statement>();
                 Scopes.Push(elseStatements);
-                while (Position < afterScopeOffset)
+                while (Position < endElseOffset)
                 {
                     var current = DecompileStatement();
                     if (current == null)
                         return null; // ERROR ?
 
-                    scopeStatements.Add(current);
+                    elseStatements.Add(current);
                 }
                 Scopes.Pop();
             }
 
-            StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement
-                ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
+            statement = statement ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
                         null, null, elseStatements != null ? new CodeBody(elseStatements, null, null) : null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
         }
 
         public SwitchStatement DecompileSwitch()
@@ -268,7 +268,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var obj = ReadObject();
-            var unkn = ReadByte(); // unkn, 0 or 1
+            var unkn = ReadByte(); // unkn, 0 or 1 (might signify null / non-null?)
             var skipOffs = ReadUInt16();
 
             var scopeStatements = new List<Statement>();
@@ -292,8 +292,10 @@ namespace ME3Script.Decompiling
 
             String str = "(UNSUPPORTED: 63 ME3Ex:if?) " + obj.ObjectName;
             var info = new SymbolReference(null, null, null, str);
-            return new IfStatement(info, new CodeBody(scopeStatements, null, null),
-                        null, null, null);
+            var statement =  new IfStatement(info, new CodeBody(scopeStatements, null, null),
+                                null, null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
         }
 
         public Statement DecompileUnkn_64()
@@ -324,8 +326,10 @@ namespace ME3Script.Decompiling
 
             String str = "(UNSUPPORTED: 64 ME3Ex:if?) " + obj.ObjectName;
             var info = new SymbolReference(null, null, null, str);
-            return new IfStatement(info, new CodeBody(scopeStatements, null, null),
-                        null, null, null);
+            var statement = new IfStatement(info, new CodeBody(scopeStatements, null, null),
+                                null, null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
         }
 
         #endregion
