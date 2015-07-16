@@ -105,8 +105,8 @@ namespace ME3Script.Language.ByteCode
         Unkn_60 = 0x60,
         Unkn_61 = 0x61,
         Unkn_62 = 0x62,
-        Unkn_63 = 0x63,
-        Unkn_64 = 0x64,
+        OptIfLocal = 0x63,
+        OptIfInstance = 0x64,
         Unkn_65 = 0x65,
         // 66-6F are unknown, probably invalid, throws assert failure by the looks of it
         // none of them are defined in GNatives

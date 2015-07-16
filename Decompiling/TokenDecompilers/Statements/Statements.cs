@@ -74,11 +74,11 @@ namespace ME3Script.Decompiling
 
                 #region unsupported
 
-                case (byte)StandardByteCodes.Unkn_63: // TODO: figure out, weird if?
-                    return DecompileUnkn_63();
+                case (byte)StandardByteCodes.OptIfLocal: // TODO: verify, handle syntax
+                    return DecompileConditionalJump(isOpt: true);
 
-                case (byte)StandardByteCodes.Unkn_64: // TODO: figure out, weird if-else?
-                    return DecompileUnkn_64();
+                case (byte)StandardByteCodes.OptIfInstance: // TODO: verify, handle syntax
+                    return DecompileConditionalJump(isOpt: true);
 
                 #endregion
 
@@ -123,16 +123,32 @@ namespace ME3Script.Decompiling
             return statement;
         }
 
-        public Statement DecompileConditionalJump() // TODO: guess for loop, probably requires a large restructure
+        public Statement DecompileConditionalJump(bool isOpt = false) // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
             var scopeStartOffset = StartPositions.Peek();
             Statement statement = null;
-            var afterScopeOffset = ReadUInt16();
-            UInt16 scopeEndJmpOffset = 0;
             bool hasElse = false;
             var scopeStatements = new List<Statement>();
-            var conditional = DecompileExpression();
+
+            UInt16 scopeEndJmpOffset = 0;
+            UInt16 afterScopeOffset = 0;
+            Expression conditional = null;
+
+            if (isOpt)
+            {
+                var obj = ReadObject();
+                var optCheck = Convert.ToBoolean(ReadByte());
+                afterScopeOffset = ReadUInt16();
+
+                String special = (optCheck ? "" : "!") + obj.ObjectName;
+                conditional = new SymbolReference(null, null, null, special);
+            }
+            else
+            {
+                afterScopeOffset = ReadUInt16();
+                conditional = DecompileExpression();
+            }
 
             if (conditional == null)
                 return null;
@@ -183,11 +199,10 @@ namespace ME3Script.Decompiling
             Scopes.Pop();
 
 
-            List<Statement> elseStatements = null;
+            List<Statement> elseStatements = new List<Statement>();
             if (hasElse)
             {
                 var endElseOffset = scopeEndJmpOffset;
-                elseStatements = new List<Statement>();
                 Scopes.Push(elseStatements);
                 while (Position < endElseOffset)
                 {
@@ -201,7 +216,7 @@ namespace ME3Script.Decompiling
             }
 
             statement = statement ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
-                        null, null, elseStatements != null ? new CodeBody(elseStatements, null, null) : null);
+                        null, null, elseStatements.Count != 0 ? new CodeBody(elseStatements, null, null) : null);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
@@ -263,74 +278,6 @@ namespace ME3Script.Decompiling
         #endregion
 
         #region Unsupported Decompilers
-
-        public Statement DecompileUnkn_63() // TODO: same as 64??
-        {
-            PopByte();
-            var obj = ReadObject();
-            var unkn = ReadByte(); // unkn, 0 or 1 (might signify null / non-null?)
-            var skipOffs = ReadUInt16();
-
-            var scopeStatements = new List<Statement>();
-            Scopes.Push(scopeStatements);
-            while (Position < skipOffs)
-            {
-                if (CurrentIs(StandardByteCodes.Jump))
-                {
-                    PopByte();
-                    var unkn2 = ReadUInt16(); // Seems to be the same as skipoffs???
-                    break;
-                }
-
-                var current = DecompileStatement();
-                if (current == null)
-                    return null; // ERROR ?
-
-                scopeStatements.Add(current);
-            }
-            Scopes.Pop();
-
-            String str = "(UNSUPPORTED: 63 ME3Ex:if?) " + obj.ObjectName;
-            var info = new SymbolReference(null, null, null, str);
-            var statement =  new IfStatement(info, new CodeBody(scopeStatements, null, null),
-                                null, null, null);
-            StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement;
-        }
-
-        public Statement DecompileUnkn_64()
-        {
-            PopByte();
-            var obj = ReadObject();
-            var unkn = ReadByte(); // unkn, 0 or 1
-            var skipOffs = ReadUInt16();
-
-            var scopeStatements = new List<Statement>();
-            Scopes.Push(scopeStatements);
-            while (Position < skipOffs)
-            {
-                if (CurrentIs(StandardByteCodes.Jump))
-                {
-                    PopByte();
-                    var unkn2 = ReadUInt16(); // Seems to be the same as skipoffs???
-                    break;
-                }
-
-                var current = DecompileStatement();
-                if (current == null)
-                    return null; // ERROR ?
-
-                scopeStatements.Add(current);
-            }
-            Scopes.Pop();
-
-            String str = "(UNSUPPORTED: 64 ME3Ex:if?) " + obj.ObjectName;
-            var info = new SymbolReference(null, null, null, str);
-            var statement = new IfStatement(info, new CodeBody(scopeStatements, null, null),
-                                null, null, null);
-            StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement;
-        }
 
         #endregion
     }
