@@ -149,8 +149,18 @@ namespace ME3Script.Decompiling
             var ByteCode = new ME3ByteCodeDecompiler(obj, parameters);
             var body = ByteCode.Decompile();
 
-            return new Function(obj.Name, returnType, body,
+            var func = new Function(obj.Name, returnType, body,
                 new List<Specifier>(), parameters, null, null);
+
+            var locals = new List<VariableDeclaration>();
+            foreach (var local in obj.LocalVariables)
+            {
+                var convert = ConvertVariable(local);
+                convert.Outer = func;
+                locals.Add(convert);
+            }
+            func.Locals = locals;
+            return func;
         }
     }
 }
