@@ -57,10 +57,9 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.ArrayElement:
                     return DecompileArrayRef();
 
-                // new class(...)
-                case (byte)StandardByteCodes.New:
-                    //TODO
-                    return null;
+                // new (...) class (.)
+                case (byte)StandardByteCodes.New: // TODO: support in AST
+                    return DecompileNew();
 
                 // (class|object|struct).member
                 case (byte)StandardByteCodes.ClassContext: // TODO: support in AST
@@ -72,13 +71,21 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.StructMember:
                     return DecompileStructMember();
 
+                // unknown, interface
+                case (byte)StandardByteCodes.InterfaceContext:
+                    PopByte();
+                    StartPositions.Pop();
+                    return DecompileExpression(); // TODO: research this
+
                 // class<Name>(Obj)
                 case(byte)StandardByteCodes.Metacast:
                     return DecompileCast(meta:true); // TODO: ugly hack to make this qork quickly
 
                 // Self
                 case (byte)StandardByteCodes.Self:
-                    return null; //TODO
+                    PopByte();
+                    StartPositions.Pop();
+                    return new SymbolReference(null, null, null, "self"); // TODO: solve better
 
                 // Skip(numBytes)
                 case (byte)StandardByteCodes.Skip: // handles skips in operator arguments
@@ -158,6 +165,7 @@ namespace ME3Script.Decompiling
                     return DecompileBoolExprValue();
 
                 // ClassName(Obj)
+                case (byte)StandardByteCodes.InterfaceCast:
                 case (byte)StandardByteCodes.DynamicCast:
                     return DecompileCast();
 
@@ -191,7 +199,6 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.DynArrayLength:
                     return DecompileDynArrLength();
                 
-                // TODO: 51, 52 : InterfaceContext, InterfaceCast
                 // TODO: 50, GoW_DefaultValue
                 // TODO: 4F, Unkn
                 // TODO: 4B, instandeDelegate
@@ -205,7 +212,7 @@ namespace ME3Script.Decompiling
                 //TODO: 0x29, nativeParm, should not be present?
                 //TODO: 0xE, eatRetVal?
                 // TODO: 0x3B - 0x3E native calls
-                // TODO: 0x63 -> 0x65 ???
+                // TODO: 0x63 -> 0x64 ???
 
                 default:
 
@@ -442,6 +449,53 @@ namespace ME3Script.Decompiling
             StartPositions.Pop();
             var func = new SymbolReference(null, null, null, funcName);
             return new FunctionCall(func, parameters, null, null);
+        }
+
+        public Expression DecompileNew() // TODO: replace this ugly-ass hack with proper AST support.
+        {
+            PopByte();
+            var parameters = new List<Expression>();
+            for (int n = 0; n < 5; n++)
+            {
+                if (CurrentByte == (byte)StandardByteCodes.Nothing)
+                {
+                    parameters.Add(null);
+                    continue;
+                }
+
+                var param = DecompileExpression();
+                if (param == null)
+                    return null; // ERROR
+
+                parameters.Add(param);
+            }
+
+            Expression first = null;
+            if ((parameters[0] ?? parameters[1] ?? parameters[2]) != null)
+            {
+                var innerParms = new List<Expression>();
+                if (parameters[0] != null)
+                    innerParms.Add(parameters[0]);
+                if (parameters[1] != null)
+                    innerParms.Add(parameters[1]);
+                if (parameters[2] != null)
+                    innerParms.Add(parameters[2]);
+                first = new FunctionCall(new SymbolReference(null, null, null, "new"), innerParms, null, null);
+            }
+            else {
+                first = new SymbolReference(null, null, null, "new");
+            }
+
+            var second = parameters[3];
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var firstHalf = new InOpReference(op, first, second, null, null);
+            StartPositions.Pop();
+
+            if (parameters[4] != null)
+                return new InOpReference(op, firstHalf, parameters[4], null, null);
+            else
+                return firstHalf;
         }
     }
 }
