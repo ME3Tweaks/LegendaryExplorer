@@ -156,6 +156,7 @@ namespace ME3Script.Decompiling
 
                 // None    (object literal)
                 case (byte)StandardByteCodes.NoObject:
+                case (byte)StandardByteCodes.EmptyDelegate: // TODO: is this correct?
                     PopByte();
                     StartPositions.Pop();
                     return new SymbolReference(null, null, null, "None"); // TODO: solve better
@@ -198,6 +199,13 @@ namespace ME3Script.Decompiling
                 // arrayName.Length
                 case (byte)StandardByteCodes.DynArrayLength:
                     return DecompileDynArrLength();
+
+                // TODO: temporary delegate handling, probably wrong:
+                case (byte)StandardByteCodes.DelegateFunction:
+                    return DecompileDelegateFunction();
+
+                case (byte)StandardByteCodes.DelegateProperty:
+                    return DecompileDelegateProperty();
                 
                 // TODO: 50, GoW_DefaultValue
                 // TODO: 4F, Unkn
@@ -206,7 +214,6 @@ namespace ME3Script.Decompiling
                 // TODO: 48, outVariable
                 // TODO: 42, 43 : DelegateFunction, DelegateProperty
                 // TODO: 41, debugInfo
-                // TODO: 3F, NoDelegate
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
                 //TODO: 0x29, nativeParm, should not be present?
@@ -496,6 +503,24 @@ namespace ME3Script.Decompiling
                 return new InOpReference(op, firstHalf, parameters[4], null, null);
             else
                 return firstHalf;
+        }
+
+        public Expression DecompileDelegateFunction() // TODO: is this proper? Is it even used in ME3?
+        {
+            PopByte();
+            PopByte(); // unknown
+            ReadObject(); // unknown objRef?
+
+            return DecompileFunctionCall(byName: true);
+        }
+
+        public Expression DecompileDelegateProperty() // TODO: is this proper? Is it even used in ME3?
+        {
+            PopByte();
+            var name = PCC.GetName(ReadNameRef());
+            var obj = ReadObject(); // probably the delegate
+
+            return new SymbolReference(null, null, null, name + "(" + obj.ObjectName + ")");
         }
     }
 }
