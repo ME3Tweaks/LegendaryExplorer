@@ -56,6 +56,15 @@ namespace ME3Script.Decompiling
 
             AST = new Class(Object.Name, new List<Specifier>(), Vars, Types, Funcs, 
                 new List<State>(), parent, outer, new List<OperatorDeclaration>(), null, null);
+
+            // Ugly quick fix:
+            foreach (var member in Types)
+                member.Outer = AST;
+            foreach (var member in Vars)
+                member.Outer = AST;
+            foreach (var member in Funcs)
+                member.Outer = AST;
+
             return AST;
         }
 

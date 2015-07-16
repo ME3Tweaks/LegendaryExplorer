@@ -417,8 +417,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ReturnStatement node)
         {
             // return expression;
-            Write("return ");
-            node.Value.AcceptVisitor(this);
+            Write("return");
+            if (node.Value != null)
+            {
+                Append(" ");
+                node.Value.AcceptVisitor(this);
+            }
 
             return true;
         }
@@ -426,6 +430,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ExpressionOnlyStatement node)
         {
             // expression;
+            Write("");
             node.Value.AcceptVisitor(this);
 
             return true;

@@ -225,12 +225,6 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
-                case (byte)StandardByteCodes.Unkn_63: // TODO: figure out, weird if?
-                    return DecompileUnkn_63();
-
-                case (byte)StandardByteCodes.Unkn_64: // TODO: figure out, weird if-else?
-                    return DecompileUnkn_64();
-
                 case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
                     return DecompileFunctionCall(byName: true, withUnknShort: true);
 
@@ -600,37 +594,6 @@ namespace ME3Script.Decompiling
             var name = PCC.GetName(ReadNameRef());
  
             return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);
-        }
-
-        public Expression DecompileUnkn_63()
-        {
-            PopByte();
-            var obj = ReadObject();
-            var unkn = ReadRawData(3); // TODO: figure this thing out
-            var expr = DecompileExpression();
-
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 63 (ME3Ex:if?): " + obj.ObjectName + "|" + obj.ClassName + " -");
-            return new InOpReference(op, objRef, expr, null, null);
-        }
-
-        public Expression DecompileUnkn_64()
-        {
-            PopByte();
-            var obj = ReadObject();
-            var unkn = ReadRawData(3); 
-            var expr = DecompileExpression();
-
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 63 (ME3Ex:if?): " + obj.ObjectName + "|" + obj.ClassName + " -");
-            var inOp = new InOpReference(op, objRef, expr, null, null);
-            if (CurrentByte == (byte)StandardByteCodes.Jump)
-            {
-                var elseExpr = DecompileExpression();
-                return new InOpReference(op, inOp, elseExpr, null, null);
-            }
-
-            return inOp;
         }
 
         #endregion

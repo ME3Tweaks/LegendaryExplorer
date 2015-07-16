@@ -72,6 +72,16 @@ namespace ME3Script.Decompiling
                     // TODO
                     break;
 
+                #region unsupported
+
+                case (byte)StandardByteCodes.Unkn_63: // TODO: figure out, weird if?
+                    return DecompileUnkn_63();
+
+                case (byte)StandardByteCodes.Unkn_64: // TODO: figure out, weird if-else?
+                    return DecompileUnkn_64();
+
+                #endregion
+
                 default:
                     var expr = DecompileExpression();
                     if (expr != null)
@@ -89,7 +99,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
 
-            Expression expr;
+            Expression expr = null;
             if (CurrentByte == (byte)StandardByteCodes.ReturnNullValue)
             {
                 // TODO: research this a bit, seems to be the zero-equivalent value for the return type.
@@ -97,9 +107,12 @@ namespace ME3Script.Decompiling
                 var retVal = ReadObject();
                 expr = new SymbolReference(null, null, null, "null"); // TODO: faulty obv, kind of illustrates the thing though.
             }
+            else if(CurrentByte == (byte)StandardByteCodes.Nothing)
+            {
+                PopByte();
+            }
             else
             {
-
                 expr = DecompileExpression();
                 if (expr == null && PopByte() != (byte)StandardByteCodes.Nothing)
                     return null; //ERROR ?
@@ -247,6 +260,74 @@ namespace ME3Script.Decompiling
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
+        #endregion
+
+        #region Unsupported Decompilers
+
+        public Statement DecompileUnkn_63() // TODO: same as 64??
+        {
+            PopByte();
+            var obj = ReadObject();
+            var unkn = ReadByte(); // unkn, 0 or 1
+            var skipOffs = ReadUInt16();
+
+            var scopeStatements = new List<Statement>();
+            Scopes.Push(scopeStatements);
+            while (Position < skipOffs)
+            {
+                if (CurrentIs(StandardByteCodes.Jump))
+                {
+                    PopByte();
+                    var unkn2 = ReadUInt16(); // Seems to be the same as skipoffs???
+                    break;
+                }
+
+                var current = DecompileStatement();
+                if (current == null)
+                    return null; // ERROR ?
+
+                scopeStatements.Add(current);
+            }
+            Scopes.Pop();
+
+            String str = "(UNSUPPORTED: 63 ME3Ex:if?) " + obj.ObjectName;
+            var info = new SymbolReference(null, null, null, str);
+            return new IfStatement(info, new CodeBody(scopeStatements, null, null),
+                        null, null, null);
+        }
+
+        public Statement DecompileUnkn_64()
+        {
+            PopByte();
+            var obj = ReadObject();
+            var unkn = ReadByte(); // unkn, 0 or 1
+            var skipOffs = ReadUInt16();
+
+            var scopeStatements = new List<Statement>();
+            Scopes.Push(scopeStatements);
+            while (Position < skipOffs)
+            {
+                if (CurrentIs(StandardByteCodes.Jump))
+                {
+                    PopByte();
+                    var unkn2 = ReadUInt16(); // Seems to be the same as skipoffs???
+                    break;
+                }
+
+                var current = DecompileStatement();
+                if (current == null)
+                    return null; // ERROR ?
+
+                scopeStatements.Add(current);
+            }
+            Scopes.Pop();
+
+            String str = "(UNSUPPORTED: 64 ME3Ex:if?) " + obj.ObjectName;
+            var info = new SymbolReference(null, null, null, str);
+            return new IfStatement(info, new CodeBody(scopeStatements, null, null),
+                        null, null, null);
+        }
+
         #endregion
     }
 }
