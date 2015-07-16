@@ -1,6 +1,8 @@
-﻿using ME3Data.DataTypes.ScriptTypes;
+﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
 using ME3Data.FileFormats.PCC;
 using ME3Data.Utility;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -26,6 +28,9 @@ namespace ME3Script.Decompiling
         private Stack<UInt16> StartPositions;
         private Stack<List<Statement>> Scopes;
 
+        private Stack<FunctionParameter> OptionalParams;
+        private List<FunctionParameter> Parameters;
+
         private bool CurrentIs(StandardByteCodes val)
         {
             return CurrentByte == (byte)val;
@@ -45,10 +50,11 @@ namespace ME3Script.Decompiling
             return PCC.GetObjectEntry(index);
         }
 
-        public ME3ByteCodeDecompiler(ME3Struct dataContainer)
+        public ME3ByteCodeDecompiler(ME3Struct dataContainer, List<FunctionParameter> parameters = null)
             :base(dataContainer.ByteScript)
         {
             DataContainer = dataContainer;
+            Parameters = parameters;
         }
 
         public CodeBody Decompile()
@@ -59,6 +65,8 @@ namespace ME3Script.Decompiling
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();
             Scopes = new Stack<List<Statement>>();
+
+            DecompileDefaultParameterValues();
 
             Scopes.Push(statements);
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
@@ -72,6 +80,37 @@ namespace ME3Script.Decompiling
             Scopes.Pop();
 
             return new CodeBody(statements, null, null);
+        }
+
+        private void DecompileDefaultParameterValues()
+        {
+            OptionalParams = new Stack<FunctionParameter>();
+            var func = DataContainer as ME3Function;
+            if (func != null) // Gets all optional params for default value parsing
+            {
+                for (int n = 0; n < Parameters.Count; n++)
+                {
+                    if (func.Parameters[n].PropertyFlags.HasFlag(PropertyFlags.OptionalParm))
+                        OptionalParams.Push(Parameters[n]);
+                }
+            }
+
+            while (CurrentByte == (byte)StandardByteCodes.DefaultParmValue 
+                || CurrentByte == (byte)StandardByteCodes.Nothing)
+            {
+                var token = PopByte();
+                var parm = OptionalParams.Pop();
+                if (token == (byte)StandardByteCodes.DefaultParmValue) // default value assigned
+                {
+                    ReadInt16(); //MemSize of value
+                    var value = DecompileExpression();
+                    PopByte(); // end of value
+
+                    var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
+                    value.AcceptVisitor(builder);
+                    parm.Variables.First().Name += " = " + builder.GetCodeString();
+                }
+            }
         }
     }
 }

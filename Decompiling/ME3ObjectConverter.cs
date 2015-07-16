@@ -137,7 +137,7 @@ namespace ME3Script.Decompiling
                     null, null));
             }
 
-            var ByteCode = new ME3ByteCodeDecompiler(obj);
+            var ByteCode = new ME3ByteCodeDecompiler(obj, parameters);
             var body = ByteCode.Decompile();
 
             return new Function(obj.Name, returnType, body,

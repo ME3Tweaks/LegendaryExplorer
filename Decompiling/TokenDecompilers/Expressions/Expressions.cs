@@ -230,7 +230,6 @@ namespace ME3Script.Decompiling
 
                 #endregion
 
-                // TODO: 49 : defaultParmValue
                 // TODO: 48, outVariable
                 // TODO: 41, debugInfo
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
