@@ -206,18 +206,36 @@ namespace ME3Script.Decompiling
 
                 case (byte)StandardByteCodes.DelegateProperty:
                     return DecompileDelegateProperty();
-                
-                // TODO: 50, GoW_DefaultValue
-                // TODO: 4F, Unkn
-                // TODO: 4B, instandeDelegate
+
+
+                /*****
+                 * TODO: all of these needs changes, see functions below.
+                 * */
+                #region Unsupported
+
+                case (byte)StandardByteCodes.EatReturnValue:
+                    return DecompileEatReturn();
+
+                case (byte)StandardByteCodes.NativeParm: // is this even present anywhere?
+                    return DecompileNativeParm();
+
+                case (byte)StandardByteCodes.GoW_DefaultValue:
+                    return DecompileGoW_DefaultValue();
+
+                case (byte)StandardByteCodes.Unkn_4F:
+                    return Decompile4F();
+
+                case (byte)StandardByteCodes.InstanceDelegate:
+                    return DecompileInstanceDelegate();
+
+                #endregion
+
                 // TODO: 49 : defaultParmValue
                 // TODO: 48, outVariable
-                // TODO: 42, 43 : DelegateFunction, DelegateProperty
                 // TODO: 41, debugInfo
                 //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
-                //TODO: 0x29, nativeParm, should not be present?
-                //TODO: 0xE, eatRetVal?
+
                 // TODO: 0x3B - 0x3E native calls
                 // TODO: 0x63 -> 0x64 ???
 
@@ -229,6 +247,8 @@ namespace ME3Script.Decompiling
 
             return null;
         }
+
+        #region Decompilers
 
         public Expression DecompileObjectLookup()
         {
@@ -522,5 +542,63 @@ namespace ME3Script.Decompiling
 
             return new SymbolReference(null, null, null, name + "(" + obj.ObjectName + ")");
         }
+
+#endregion
+
+        /*
+         * TODO: All of these need verification and changes
+         * */
+        #region UnsuportedDecompilers 
+
+        public Expression DecompileEatReturn() 
+        {
+            PopByte();
+            var obj = ReadObject();
+            var expr = DecompileExpression();
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: EatReturnValue: " + obj.ObjectName + "|" + obj.ClassName + " -");
+            return new InOpReference(op, objRef, expr, null, null);
+        }
+
+        public Expression DecompileGoW_DefaultValue()
+        {
+            PopByte();
+            var unkn = ReadByte();
+            var expr = DecompileExpression();
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: GoW_DefaultValue: Byte:" + unkn + " - ");
+            return new InOpReference(op, objRef, expr, null, null);
+        }
+
+        public Expression DecompileNativeParm() 
+        {
+            PopByte();
+            var obj = ReadObject();
+ 
+            return new SymbolReference(null, null, null, "UNSUPPORTED: NativeParm: " + obj.ObjectName + " : " + obj.ClassName);
+        }
+
+        public Expression Decompile4F()
+        {
+            PopByte();
+            var obj = ReadObject();
+            var expr = DecompileExpression();
+
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (add?): " + obj.ObjectName + "|" + obj.ClassName + " -");
+            return new InOpReference(op, objRef, expr, null, null);
+        }
+
+        public Expression DecompileInstanceDelegate()
+        {
+            PopByte();
+            var name = PCC.GetName(ReadNameRef());
+ 
+            return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);
+        }
+
+        #endregion
     }
 }

@@ -73,8 +73,6 @@ namespace ME3Script.Decompiling
                     break;
 
                 // TODO: 0x3B - 0x3E native calls
-                //TODO: unkn4F and GoW_DefaultValue ???
-                // TODO: 0x5A -> 0x65 ???
 
                 default:
                     var expr = DecompileExpression();
