@@ -36,6 +36,8 @@ namespace ME3Script.Decompiling
 
         private Stack<UInt16> ForEachScopes; // For tracking ForEach etc endpoints
 
+        private bool isInClassContext = false; // For super lookups
+
         private bool CurrentIs(StandardByteCodes val)
         {
             return CurrentByte == (byte)val;

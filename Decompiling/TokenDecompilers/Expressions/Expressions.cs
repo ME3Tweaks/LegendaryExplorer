@@ -1,4 +1,5 @@
 ﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -273,8 +274,6 @@ namespace ME3Script.Decompiling
 
                 // TODO: 41, debugInfo
                 // TODO: 0x5A, FilterEditorOnly?
-                //TODO:  0x58 : Dynamic Array Iterator
-                //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
 
                 // TODO: 0x3B - 0x3E native calls
 
@@ -311,9 +310,11 @@ namespace ME3Script.Decompiling
             ReadObject(); // discard RetValRef.
             ReadByte(); // discard unknown byte.
 
+            isInClassContext = isClass;
             var right = DecompileExpression();
             if (right == null)
                 return null; // ERROR
+            isInClassContext = false;
 
             if (isClass)
             {
@@ -494,9 +495,26 @@ namespace ME3Script.Decompiling
             PopByte();
             String funcName;
             if (byName)
+            {
                 funcName = PCC.GetName(ReadNameRef());
+            }
             else
-                funcName = ReadObject().ObjectName;
+            {
+                var funcObj = ReadObject();
+                funcName = funcObj.ObjectName;
+                
+                if (funcName == DataContainer.Name && !isInClassContext) // If we're calling ourself, it's a super call
+                {
+                    var str = "super";
+
+                    var currentClass = DataContainer.ExportEntry.GetOuterOfType("Class").Object as ME3Class;
+                    var funcOuterClass = funcObj.GetOuterOfType("Class").ObjectName;
+                    if (currentClass != null && currentClass.SuperField != null && currentClass.SuperField.Name == funcOuterClass)
+                        funcName = str + "." + funcName;
+                    else
+                        funcName = str + "(" + funcOuterClass + ")." + funcName;
+                }
+            }
 
             if (global)
                 funcName = "global." + funcName;

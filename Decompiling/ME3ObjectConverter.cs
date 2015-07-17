@@ -20,9 +20,8 @@ namespace ME3Script.Decompiling
             Object = classObject;
         }
 
-        public Class ConvertClass()
+        public Class ConvertClass() // TODO: this is only for text decompiling, should extend to a full ast for modification.
         {
-            // TODO: this is only for text decompiling, should extend to a full ast for modification.
             VariableType parent;
             if (Object.SuperField != null)
                 parent = new VariableType(Object.SuperField.Name, null, null);
