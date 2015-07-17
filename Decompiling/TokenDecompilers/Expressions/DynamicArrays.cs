@@ -22,17 +22,18 @@ namespace ME3Script.Decompiling
             return new CompositeSymbolRef(arr, new SymbolReference(null, null, null, "Length"), null, null);
         }
 
-        public Expression DecompileDynArrFind(bool byProp = false)
+        public Expression DecompileDynArrFunction(String name, bool secondArg = false, bool withoutMemOffs = false, bool withoutTrailingByte = false)
         {
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
 
-            ReadInt16(); // MemSize
+            if (!withoutMemOffs)
+                ReadInt16(); // MemSize
 
             var args = new List<Expression>();
-            if (byProp)
+            if (secondArg)
             {
                 var prop = DecompileExpression();
                 if (prop == null)
@@ -45,14 +46,15 @@ namespace ME3Script.Decompiling
                 return null;
             args.Add(value);
 
-            PopByte(); // EndFuncParms
+            if (!withoutTrailingByte)
+                PopByte(); // EndFuncParms
 
             var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
             arr.AcceptVisitor(builder);
 
             StartPositions.Pop();
             // TODO: ugly solution, should be reworked once dynarrays are in the AST.
-            return new FunctionCall(new SymbolReference(null, null, null, builder.GetCodeString() + ".Find"), args, null, null);
+            return new FunctionCall(new SymbolReference(null, null, null, builder.GetCodeString() + "." + name), args, null, null);
         }
     }
 }

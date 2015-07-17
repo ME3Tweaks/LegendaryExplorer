@@ -200,11 +200,39 @@ namespace ME3Script.Decompiling
 
                 // arrayName.Find(value)
                 case (byte)StandardByteCodes.DynArrayFind:
-                    return DecompileDynArrFind();
+                    return DecompileDynArrFunction(name: "Find");
 
-                // arrayName.Find(value)
+                // arrayName.Find(StructProperty, value)
                 case (byte)StandardByteCodes.DynArrayFindStruct:
-                    return DecompileDynArrFind(byProp: true);
+                    return DecompileDynArrFunction(name: "Find", secondArg: true);
+
+                // arrayName.Insert(Index, Count)
+                case (byte)StandardByteCodes.DynArrayInsert:
+                    return DecompileDynArrFunction(name: "Insert", secondArg: true, withoutMemOffs: true);
+
+                // arrayName.Remove(Index, Count)
+                case (byte)StandardByteCodes.DynArrayRemove:
+                    return DecompileDynArrFunction(name: "Remove", secondArg: true, withoutMemOffs: true);
+
+                // arrayName.Add(value)
+                case (byte)StandardByteCodes.DynArrayAdd:
+                    return DecompileDynArrFunction(name: "Add", withoutMemOffs: true, withoutTrailingByte: true);
+
+                // arrayName.AddItem(value)
+                case (byte)StandardByteCodes.DynArrayAddItem:
+                    return DecompileDynArrFunction(name: "AddItem");
+
+                // arrayName.RemoveItem(value)
+                case (byte)StandardByteCodes.DynArrayRemoveItem:
+                    return DecompileDynArrFunction(name: "RemoveItem");
+
+                // arrayName.InsertItem(StructProperty, value)
+                case (byte)StandardByteCodes.DynArrayInsertItem:
+                    return DecompileDynArrFunction(name: "InsertItem", secondArg: true);
+
+                // arrayName.Sort(value)
+                case (byte)StandardByteCodes.DynArraySort:
+                    return DecompileDynArrFunction(name: "Sort");
 
                 // TODO: temporary delegate handling, probably wrong:
                 case (byte)StandardByteCodes.DelegateFunction:
@@ -243,7 +271,7 @@ namespace ME3Script.Decompiling
 
                 // TODO: 41, debugInfo
                 // TODO: 0x5A, FilterEditorOnly?
-                //TODO: 0x36, 0x39, 0x40, 0x46, 0x47, 0x54 -> 0x59 : Dynamic Array stuff
+                //TODO:  0x58 : Dynamic Iterator
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
 
                 // TODO: 0x3B - 0x3E native calls
