@@ -36,11 +36,17 @@ namespace ME3Script.Decompiling
                     return DecompileConditionalJump();
 
                 // continue
-                case (byte)StandardByteCodes.Jump: // TODO: is this the only use case?
-                    PopByte();
-                    var cont = new ContinueStatement(null, null);
-                    StatementLocations.Add(StartPositions.Pop(), cont);
-                    return cont;
+                case (byte)StandardByteCodes.Jump: // TODO: UDK seems to compile this from break when inside ForEach, handle?
+                    return DecompileJump();
+
+                // continue (iterator)
+                case (byte)StandardByteCodes.IteratorNext:
+                    PopByte(); // pop iteratornext token
+                    return DecompileJump();
+
+                // break;
+                case (byte)StandardByteCodes.IteratorPop:
+                    return DecompileIteratorPop();
 
                 // stop;
                 case (byte)StandardByteCodes.Stop:
@@ -79,8 +85,7 @@ namespace ME3Script.Decompiling
 
                 // foreach IteratorFunction(...)
                 case (byte)StandardByteCodes.Iterator:
-                    // TODO
-                    break;
+                    return DecompileForEach();
 
                 // foreach arrayName(valuevariable[, indexvariable])
                 case (byte)StandardByteCodes.DynArrayIterator:
@@ -142,14 +147,14 @@ namespace ME3Script.Decompiling
             PopByte();
 
             Expression expr = null;
-            if (CurrentByte == (byte)StandardByteCodes.ReturnNullValue)
+            if (CurrentIs(StandardByteCodes.ReturnNullValue))
             {
                 // TODO: research this a bit, seems to be the zero-equivalent value for the return type.
                 PopByte();
                 var retVal = ReadObject();
                 expr = new SymbolReference(null, null, null, "null"); // TODO: faulty obv, kind of illustrates the thing though.
             }
-            else if(CurrentByte == (byte)StandardByteCodes.Nothing)
+            else if(CurrentIs(StandardByteCodes.Nothing))
             {
                 PopByte();
             }
@@ -265,6 +270,43 @@ namespace ME3Script.Decompiling
             return statement;
         }
 
+        public Statement DecompileForEach(bool isOpt = false) // TODO: guess for loop, probably requires a large restructure
+        {
+            PopByte();
+            var scopeStatements = new List<Statement>();
+
+            var iteratorFunc = DecompileExpression();
+            if (iteratorFunc == null)
+                return null;
+
+            var scopeEnd = ReadUInt16(); // MemOff
+            ForEachScopes.Push(scopeEnd);
+
+            Scopes.Add(scopeStatements);
+            CurrentScope++;
+            while (Position < Size)
+            {
+                if (CurrentIs(StandardByteCodes.IteratorNext) && PeekByte == (byte)StandardByteCodes.IteratorPop)
+                {
+                    PopByte(); // IteratorNext
+                    PopByte(); // IteratorPop
+                    break;
+                }
+
+                var current = DecompileStatement();
+                if (current == null)
+                    return null; // ERROR ?
+
+                scopeStatements.Add(current);
+            }
+            CurrentScope--;
+            ForEachScopes.Pop();
+
+            var statement = new ForEachLoop(iteratorFunc, new CodeBody(scopeStatements, null, null), null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
+        }
+
         public SwitchStatement DecompileSwitch()
         {
             PopByte();
@@ -343,6 +385,37 @@ namespace ME3Script.Decompiling
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
+
+        public Statement DecompileJump()
+        {
+            PopByte();
+            var jumpOffs = ReadUInt16(); // discard jump destination
+            Statement statement = null;
+
+            if (jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
+                statement = new BreakStatement(null, null);
+            else
+                statement = new ContinueStatement(null, null);
+
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
+        }
+
+        public Statement DecompileIteratorPop()
+        {
+            PopByte();
+            if (CurrentIs(StandardByteCodes.Return)) // Any return inside a ForEach seems to call IteratorPop before the return, maybe breaks the loop?
+            {
+                return DecompileReturn();
+            }
+            else
+            {
+                var statement = new BreakStatement(null, null);
+                StatementLocations.Add(StartPositions.Pop(), statement);
+                return statement;
+            }
+        }
+
         #endregion
 
         #region Unsupported Decompilers

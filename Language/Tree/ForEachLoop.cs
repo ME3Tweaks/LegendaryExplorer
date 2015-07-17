@@ -10,15 +10,13 @@ namespace ME3Script.Language.Tree
 {
     public class ForEachLoop : Statement
     {
-        public Expression IteratorFunction;
-        public List<Expression> Parameters;
+        public Expression IteratorCall;
         public CodeBody Body;
 
-        public ForEachLoop(Expression iterator, List<Expression> parameters, CodeBody body, SourcePosition start, SourcePosition end)
+        public ForEachLoop(Expression iterator, CodeBody body, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.ForEachLoop, start, end)
         {
-            IteratorFunction = iterator;
-            Parameters = parameters;
+            IteratorCall = iterator;
             Body = body;
         }
 

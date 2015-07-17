@@ -418,7 +418,7 @@ namespace ME3Script.Decompiling
         public Expression DecompileNativeFunction(UInt16 index)
         {
             var parameters = new List<Expression>();
-            while (CurrentByte != (byte)StandardByteCodes.EndFunctionParms)
+            while (!CurrentIs(StandardByteCodes.EndFunctionParms))
             {
                 var param = DecompileExpression();
                 if (param == null)
@@ -505,7 +505,7 @@ namespace ME3Script.Decompiling
                 ReadInt16(); // TODO: related to unkn65, split out? Possibly jump?
 
             var parameters = new List<Expression>();
-            while (CurrentByte != (byte)StandardByteCodes.EndFunctionParms)
+            while (!CurrentIs(StandardByteCodes.EndFunctionParms))
             {
                 var param = DecompileExpression();
                 if (param == null)
@@ -526,7 +526,7 @@ namespace ME3Script.Decompiling
             var parameters = new List<Expression>();
             for (int n = 0; n < 5; n++)
             {
-                if (CurrentByte == (byte)StandardByteCodes.Nothing)
+                if (CurrentIs(StandardByteCodes.Nothing))
                 {
                     parameters.Add(null);
                     continue;

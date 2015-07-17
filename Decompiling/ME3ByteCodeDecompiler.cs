@@ -34,6 +34,8 @@ namespace ME3Script.Decompiling
 
         private List<LabelTableEntry> LabelTable;
 
+        private Stack<UInt16> ForEachScopes; // For tracking ForEach etc endpoints
+
         private bool CurrentIs(StandardByteCodes val)
         {
             return CurrentByte == (byte)val;
@@ -70,6 +72,7 @@ namespace ME3Script.Decompiling
             StartPositions = new Stack<UInt16>();
             Scopes = new List<List<Statement>>();
             LabelTable = new List<LabelTableEntry>();
+            ForEachScopes = new Stack<UInt16>();
 
             DecompileDefaultParameterValues();
 

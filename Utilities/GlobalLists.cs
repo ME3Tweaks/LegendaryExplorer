@@ -224,7 +224,8 @@ namespace ME3Script.Utilities
             ASTNodeType.SwitchStatement,
             ASTNodeType.CaseStatement,
             ASTNodeType.DefaultStatement,
-            ASTNodeType.StateLabel
+            ASTNodeType.StateLabel,
+            ASTNodeType.ForEachLoop
         };
 
         #region Specifier Categories
