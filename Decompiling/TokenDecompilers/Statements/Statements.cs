@@ -27,6 +27,10 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.Switch:
                     return DecompileSwitch();
 
+                // case expression :
+                case (byte)StandardByteCodes.Case:
+                    return DecompileCase();
+
                 // if (expression) // while / for / do until
                 case (byte)StandardByteCodes.JumpIfNot:
                     return DecompileConditionalJump();
@@ -296,6 +300,29 @@ namespace ME3Script.Decompiling
             CurrentScope--;
 
             var statement = new SwitchStatement(expr, new CodeBody(scopeStatements, null, null), null, null);
+            StatementLocations.Add(StartPositions.Pop(), statement);
+            return statement;
+        }
+
+        public Statement DecompileCase()
+        {
+            PopByte();
+            var offs = ReadUInt16(); // MemOff
+            Statement statement = null;
+
+            if (offs == (UInt16)0xFFFF)
+            {
+                statement = new DefaultStatement(null, null);
+            }
+            else 
+            {
+                var expr = DecompileExpression();
+                if (expr == null)
+                    return null; //ERROR ?
+
+                statement = new CaseStatement(expr, null, null);
+            }
+
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }

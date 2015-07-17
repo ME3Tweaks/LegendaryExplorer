@@ -579,7 +579,8 @@ namespace ME3Script.Decompiling
             var obj = ReadObject(); // probably the delegate
 
             StartPositions.Pop();
-            return new SymbolReference(null, null, null, name + "(" + obj.ObjectName + ")");
+            var objName = obj != null ? obj.ObjectName : "None";
+            return new SymbolReference(null, null, null, name + "(" + objName + ")");
         }
 
 #endregion
