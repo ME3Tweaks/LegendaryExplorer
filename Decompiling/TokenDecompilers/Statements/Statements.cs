@@ -173,7 +173,7 @@ namespace ME3Script.Decompiling
         public Statement DecompileConditionalJump(bool isOpt = false) // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
-            var scopeStartOffset = StartPositions.Peek();
+            var scopeStartOffset = StartPositions.Pop();
             Statement statement = null;
             bool hasElse = false;
             var scopeStatements = new List<Statement>();
@@ -202,8 +202,10 @@ namespace ME3Script.Decompiling
 
             if (afterScopeOffset < scopeStartOffset) // end of do_until detection
             {
-                var outerScope = Scopes[CurrentScope];
+                scopeStartOffset = afterScopeOffset;
+                var outerScope = Scopes[CurrentScope.Peek()];
                 var startStatement = StatementLocations[afterScopeOffset];
+                StatementLocations.Remove(afterScopeOffset);
                 var index = outerScope.IndexOf(startStatement);
                 scopeStatements = new List<Statement>(outerScope.Skip(index));
                 outerScope.RemoveRange(index, outerScope.Count - index);
@@ -211,7 +213,7 @@ namespace ME3Script.Decompiling
             }
 
             Scopes.Add(scopeStatements);
-            CurrentScope++;
+            CurrentScope.Push(Scopes.Count - 1);
             while (Position < afterScopeOffset)
             {
                 if (CurrentIs(StandardByteCodes.Jump))
@@ -250,7 +252,7 @@ namespace ME3Script.Decompiling
 
                 scopeStatements.Add(current);
             }
-            CurrentScope--;
+            CurrentScope.Pop();
 
 
             List<Statement> elseStatements = new List<Statement>();
@@ -258,7 +260,7 @@ namespace ME3Script.Decompiling
             {
                 var endElseOffset = scopeEndJmpOffset;
                 Scopes.Add(elseStatements);
-                CurrentScope++;
+                CurrentScope.Push(Scopes.Count - 1);
                 while (Position < endElseOffset)
                 {
                     var current = DecompileStatement();
@@ -267,12 +269,12 @@ namespace ME3Script.Decompiling
 
                     elseStatements.Add(current);
                 }
-                CurrentScope--;
+                CurrentScope.Pop();
             }
 
             statement = statement ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
                         null, null, elseStatements.Count != 0 ? new CodeBody(elseStatements, null, null) : null);
-            StatementLocations.Add(StartPositions.Pop(), statement);
+            StatementLocations.Add(scopeStartOffset, statement);
             return statement;
         }
 
@@ -299,7 +301,7 @@ namespace ME3Script.Decompiling
             ForEachScopes.Push(scopeEnd);
 
             Scopes.Add(scopeStatements);
-            CurrentScope++;
+            CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size)
             {
                 if (CurrentIs(StandardByteCodes.IteratorNext) && PeekByte == (byte)StandardByteCodes.IteratorPop)
@@ -315,7 +317,7 @@ namespace ME3Script.Decompiling
 
                 scopeStatements.Add(current);
             }
-            CurrentScope--;
+            CurrentScope.Pop();
             ForEachScopes.Pop();
 
             if (isDynArray)
@@ -342,7 +344,7 @@ namespace ME3Script.Decompiling
             UInt16 endOffset = 0xFFFF; // set it at max to begin with, so we can begin looping
 
             Scopes.Add(scopeStatements);
-            CurrentScope++;
+            CurrentScope.Push(Scopes.Count - 1);
             while (Position < endOffset && Position < Size)
             {
                 if (CurrentIs(StandardByteCodes.Jump)) // break detected, save the endOffset
@@ -364,7 +366,7 @@ namespace ME3Script.Decompiling
                 if (current is DefaultStatement && endOffset == 0xFFFF)
                     break; // If no break was detected, we end the switch rather than include the rest of ALL code in the default.
             }
-            CurrentScope--;
+            CurrentScope.Pop();
 
             var statement = new SwitchStatement(expr, new CodeBody(scopeStatements, null, null), null, null);
             StatementLocations.Add(StartPositions.Pop(), statement);
@@ -417,7 +419,7 @@ namespace ME3Script.Decompiling
             var jumpOffs = ReadUInt16(); // discard jump destination
             Statement statement = null;
 
-            if (jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
+            if (ForEachScopes.Count != 0 && jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
                 statement = new BreakStatement(null, null);
             else
                 statement = new ContinueStatement(null, null);

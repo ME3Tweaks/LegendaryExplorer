@@ -27,7 +27,7 @@ namespace ME3Script.Decompiling
         private Dictionary<UInt16, Statement> StatementLocations;
         private Stack<UInt16> StartPositions;
         private List<List<Statement>> Scopes;
-        private int CurrentScope;
+        private Stack<int> CurrentScope;
 
         private Stack<FunctionParameter> OptionalParams;
         private List<FunctionParameter> Parameters;
@@ -66,9 +66,17 @@ namespace ME3Script.Decompiling
 
         public CodeBody Decompile()
         {
+            // Skip native funcs
+            var Func = DataContainer as ME3Function;
+            if (Func != null && Func.FunctionFlags.HasFlag(FunctionFlags.Native))
+            {
+                var comment = new ExpressionOnlyStatement(null, null, new SymbolReference(null, null, null, "// Native function"));
+                return new CodeBody(new List<Statement>() { comment }, null, null);
+            }
+
             Position = 0;
             _totalPadding = 0;
-            CurrentScope = 0;
+            CurrentScope = new Stack<int>();
             var statements = new List<Statement>();
             StatementLocations = new Dictionary<UInt16, Statement>();
             StartPositions = new Stack<UInt16>();
@@ -76,10 +84,10 @@ namespace ME3Script.Decompiling
             LabelTable = new List<LabelTableEntry>();
             ForEachScopes = new Stack<UInt16>();
 
-            DecompileDefaultParameterValues();
+            DecompileDefaultParameterValues(statements);
 
             Scopes.Add(statements);
-            CurrentScope++;
+            CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size && !CurrentIs(StandardByteCodes.EndOfScript))
             {
                 var current = DecompileStatement();
@@ -90,7 +98,7 @@ namespace ME3Script.Decompiling
 
                 statements.Add(current);
             }
-            CurrentScope--;
+            CurrentScope.Pop(); ;
             AddStateLabels();
 
             return new CodeBody(statements, null, null);
@@ -111,7 +119,7 @@ namespace ME3Script.Decompiling
             }
         }
 
-        private void DecompileDefaultParameterValues()
+        private void DecompileDefaultParameterValues(List<Statement> statements)
         {
             OptionalParams = new Stack<FunctionParameter>();
             var func = DataContainer as ME3Function;
@@ -127,17 +135,31 @@ namespace ME3Script.Decompiling
             while (CurrentByte == (byte)StandardByteCodes.DefaultParmValue 
                 || CurrentByte == (byte)StandardByteCodes.Nothing)
             {
+                StartPositions.Push((UInt16)Position);
                 var token = PopByte();
-                var parm = OptionalParams.Pop();
                 if (token == (byte)StandardByteCodes.DefaultParmValue) // default value assigned
                 {
+                    
                     ReadInt16(); //MemSize of value
                     var value = DecompileExpression();
                     PopByte(); // end of value
 
                     var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
                     value.AcceptVisitor(builder);
-                    parm.Variables.First().Name += " = " + builder.GetCodeString();
+
+                    if (OptionalParams.Count != 0)
+                    {
+                        var parm = OptionalParams.Pop();
+                        parm.Variables.First().Name += " = " + builder.GetCodeString();
+                        StartPositions.Pop();
+                    }
+                    else
+                    {       // TODO: weird, research how to deal with this
+                        var comment = new SymbolReference(null, null, null, "// Orphaned Default Parm: " + builder.GetCodeString());
+                        var statement = new ExpressionOnlyStatement(null, null, comment);
+                        StatementLocations.Add(StartPositions.Pop(), statement);
+                        statements.Add(statement);
+                    }
                 }
             }
         }

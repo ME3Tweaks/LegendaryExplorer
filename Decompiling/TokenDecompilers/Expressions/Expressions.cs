@@ -1,5 +1,6 @@
 ﻿using ME3Data.DataTypes;
 using ME3Data.DataTypes.ScriptTypes;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -173,11 +174,27 @@ namespace ME3Script.Decompiling
 
                 // struct == struct 
                 case (byte)StandardByteCodes.StructCmpEq:
-                    return DecompileInOpNaive("==");
+                    return DecompileInOpNaive("==", isStruct: true);
 
                 // struct != struct 
                 case (byte)StandardByteCodes.StructCmpNe:
-                    return DecompileInOpNaive("!=");
+                    return DecompileInOpNaive("!=", isStruct: true);
+
+                // delegate == delegate 
+                case (byte)StandardByteCodes.EqualEqual_DelDel:
+                    return DecompileInOpNaive("==", useEndOfParms: true);
+
+                // delegate != delegate 
+                case (byte)StandardByteCodes.NotEqual_DelDel:
+                    return DecompileInOpNaive("!=", useEndOfParms: true);
+
+                // delegate == Function
+                case (byte)StandardByteCodes.EqualEqual_DelFunc:
+                    return DecompileInOpNaive("==", useEndOfParms: true);
+
+                // delegate != Function 
+                case (byte)StandardByteCodes.NotEqual_DelFunc:
+                    return DecompileInOpNaive("!=", useEndOfParms: true);
 
                 // primitiveType(expr)
                 case (byte)StandardByteCodes.PrimitiveCast:
@@ -219,7 +236,7 @@ namespace ME3Script.Decompiling
 
                 // arrayName.Add(value)
                 case (byte)StandardByteCodes.DynArrayAdd:
-                    return DecompileDynArrFunction(name: "Add", withoutMemOffs: true, withoutTrailingByte: true);
+                    return DecompileDynArrFunction(name: "Add", withoutMemOffs: true);
 
                 // arrayName.AddItem(value)
                 case (byte)StandardByteCodes.DynArrayAddItem:
@@ -270,6 +287,9 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
                     return DecompileFunctionCall(byName: true, withUnknShort: true);
 
+                case (byte)StandardByteCodes.Assert:
+                    return DecompileAssert();
+
                 #endregion
 
                 // TODO: 41, debugInfo
@@ -318,8 +338,9 @@ namespace ME3Script.Decompiling
 
             if (isClass)
             {
-                var type = left as SymbolReference;
-                var str = type.Name + ".static";
+                var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
+                left.AcceptVisitor(builder);
+                var str = builder.GetCodeString() + ".static";
                 left = new SymbolReference(null, null, null, str);
             }
 
@@ -374,10 +395,13 @@ namespace ME3Script.Decompiling
             return value; // TODO: is this correct? should we contain it?
         }
 
-        public Expression DecompileInOpNaive(String opName)
+        public Expression DecompileInOpNaive(String opName, bool useEndOfParms = false, bool isStruct = false)
         {
             // TODO: ugly, wrong.
             PopByte();
+
+            if (isStruct)
+                ReadObject(); // struct type?
 
             var left = DecompileExpression();
             if (left == null)
@@ -386,6 +410,9 @@ namespace ME3Script.Decompiling
             var right = DecompileExpression();
             if (right == null)
                 return null; // ERROR
+
+            if (useEndOfParms)
+                PopByte();
 
             StartPositions.Pop();
             var op = new InOpDeclaration(opName, 0, true, null, null, null, null, null, null, null);
@@ -484,6 +511,7 @@ namespace ME3Script.Decompiling
             if (expr == null)
                 return null; // ERROR
 
+            // TODO: map this out, possibly most are implicit?
             String type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
@@ -525,6 +553,13 @@ namespace ME3Script.Decompiling
             var parameters = new List<Expression>();
             while (!CurrentIs(StandardByteCodes.EndFunctionParms))
             {
+                if (CurrentIs(StandardByteCodes.Nothing))
+                {
+                    PopByte(); // TODO: is this reasonable? what does it mean?
+                    parameters.Add(new SymbolReference(null, null, null, "None"));
+                    continue;
+                }
+
                 var param = DecompileExpression();
                 if (param == null)
                     return null; // ERROR
@@ -573,7 +608,7 @@ namespace ME3Script.Decompiling
                 first = new SymbolReference(null, null, null, "new");
             }
 
-            var second = parameters[3];
+            var second = parameters[3] ?? new SymbolReference(null, null, null, "NoClass??");
 
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
             var firstHalf = new InOpReference(op, first, second, null, null);
@@ -589,9 +624,9 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             PopByte(); // unknown
-            ReadObject(); // unknown objRef?
+            var obj = ReadObject(); // unknown objRef?
 
-            StartPositions.Pop();
+            Position--; //HACK!!!!! TODO
             return DecompileFunctionCall(byName: true);
         }
 
@@ -649,13 +684,16 @@ namespace ME3Script.Decompiling
         public Expression Decompile4F()
         {
             PopByte();
-            var obj = ReadObject();
-            var expr = DecompileExpression();
+            var index = ReadIndex(); // Unknown
+            /*var expr = DecompileExpression();
 
             StartPositions.Pop();
             var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + obj.ObjectName + "|" + obj.ClassName + " -");
-            return new InOpReference(op, objRef, expr, null, null);
+            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + index.ToString("X8") + "| ");
+            return new InOpReference(op, objRef, expr, null, null); */
+
+            StartPositions.Pop();
+            return new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + index.ToString("X8"));
         }
 
         public Expression DecompileInstanceDelegate()
@@ -665,6 +703,20 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);
+        }
+
+        public Expression DecompileAssert()
+        {
+            PopByte();
+            var unkn1 = ReadUInt16(); // memoff?
+            var unkn2 = ReadByte(); // true/false?
+            var expr = DecompileExpression();
+
+            var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
+            expr.AcceptVisitor(builder);
+
+            StartPositions.Pop();
+            return new SymbolReference(null, null, null, "ASSERT[" + unkn1.ToString("X4") + "|" + unkn2.ToString("X2") + "](" + builder.ToString() + ")");
         }
 
         #endregion

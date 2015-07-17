@@ -106,9 +106,16 @@ namespace ME3Script.Decompiling
             var Vars = new List<VariableDeclaration>();
             foreach (var member in obj.Variables)
                 Vars.Add(ConvertVariable(member));
+
             VariableType parent = obj.SuperField != null 
                 ? new VariableType(obj.SuperField.Name, null, null) : null;
-            return new Struct(obj.Name, null, Vars, null, null, parent);
+
+            var node = new Struct(obj.Name, new List<Specifier>(), Vars, null, null, parent);
+
+            foreach (var member in Vars)
+                member.Outer = node;
+
+            return node;
         }
 
         public Enumeration ConvertEnum(ME3Enum obj)
@@ -117,7 +124,12 @@ namespace ME3Script.Decompiling
             foreach (var val in obj.Names)
                 vals.Add(new VariableIdentifier(val, null, null));
 
-            return new Enumeration(obj.Name, vals, null, null);
+            var node = new Enumeration(obj.Name, vals, null, null);
+
+            foreach (var member in vals)
+                member.Outer = node;
+
+            return node;
         }
 
         public Variable ConvertVariable(ME3Property obj)
@@ -142,15 +154,15 @@ namespace ME3Script.Decompiling
             else if (obj is ME3ClassProperty)
                 typeStr = "class";
             else if (obj is ME3ComponentProperty)
-                typeStr = "component"; // TODO: is this correct at all?
+                typeStr = "ActorComponent"; // TODO: is this correct at all?
             else if (obj is ME3DelegateProperty)
-                typeStr = "delegate< " + (obj as ME3DelegateProperty).Delegate.Name + " >";
+                typeStr = "delegate< " + (obj as ME3DelegateProperty).FunctionName + " >";
             else if (obj is ME3FixedArrayProperty)
                 typeStr = GetPropertyType((obj as ME3FixedArrayProperty).InnerProperty);
             else if (obj is ME3FloatProperty)
                 typeStr = "float";
             else if (obj is ME3InterfaceProperty)
-                typeStr = (obj as ME3InterfaceProperty).Interface.Name; // ?
+                typeStr = (obj as ME3InterfaceProperty).InterfaceName; // ?
             else if (obj is ME3IntProperty)
                 typeStr = "int";
             else if (obj is ME3NameProperty)
