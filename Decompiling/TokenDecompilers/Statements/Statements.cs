@@ -1,5 +1,6 @@
 ﻿using ME3Data.DataTypes;
 using ME3Data.Utility;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -89,8 +90,7 @@ namespace ME3Script.Decompiling
 
                 // foreach arrayName(valuevariable[, indexvariable])
                 case (byte)StandardByteCodes.DynArrayIterator:
-                    // TODO
-                    break;
+                    return DecompileForEach(isDynArray: true);
 
                 case (byte)StandardByteCodes.LabelTable:
                     DecompileLabelTable();
@@ -230,6 +230,12 @@ namespace ME3Script.Decompiling
                         StatementLocations.Add(contPos, cont);
                         scopeStatements.Add(cont);
                     }
+                    else if (ForEachScopes.Count != 0 && scopeEndJmpOffset == ForEachScopes.Peek())
+                    {
+                        var breakStatement = new BreakStatement(null, null);
+                        StatementLocations.Add(contPos, breakStatement);
+                        scopeStatements.Add(breakStatement);
+                    }
                     else
                     {
                         hasElse = true;
@@ -270,7 +276,7 @@ namespace ME3Script.Decompiling
             return statement;
         }
 
-        public Statement DecompileForEach(bool isOpt = false) // TODO: guess for loop, probably requires a large restructure
+        public Statement DecompileForEach(bool isDynArray = false) // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
             var scopeStatements = new List<Statement>();
@@ -278,6 +284,16 @@ namespace ME3Script.Decompiling
             var iteratorFunc = DecompileExpression();
             if (iteratorFunc == null)
                 return null;
+
+            Expression dynArrVar = null;
+            Expression dynArrIndex = null;
+            bool unknByte = false;
+            if (isDynArray)
+            {
+                dynArrVar = DecompileExpression();
+                unknByte = Convert.ToBoolean(ReadByte());
+                dynArrIndex = DecompileExpression();
+            }
 
             var scopeEnd = ReadUInt16(); // MemOff
             ForEachScopes.Push(scopeEnd);
@@ -301,6 +317,15 @@ namespace ME3Script.Decompiling
             }
             CurrentScope--;
             ForEachScopes.Pop();
+
+            if (isDynArray)
+            {
+                var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
+                iteratorFunc.AcceptVisitor(builder);
+                var arrayName = new SymbolReference(null, null, null, builder.GetCodeString());
+                var parameters = new List<Expression>() { dynArrVar, dynArrIndex };
+                iteratorFunc = new FunctionCall(arrayName, parameters, null, null);
+            }
 
             var statement = new ForEachLoop(iteratorFunc, new CodeBody(scopeStatements, null, null), null, null);
             StatementLocations.Add(StartPositions.Pop(), statement);
