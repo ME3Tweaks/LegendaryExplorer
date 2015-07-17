@@ -198,12 +198,22 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.DynArrayLength:
                     return DecompileDynArrLength();
 
+                // arrayName.Find(value)
+                case (byte)StandardByteCodes.DynArrayFind:
+                    return DecompileDynArrFind();
+
+                // arrayName.Find(value)
+                case (byte)StandardByteCodes.DynArrayFindStruct:
+                    return DecompileDynArrFind(byProp: true);
+
                 // TODO: temporary delegate handling, probably wrong:
                 case (byte)StandardByteCodes.DelegateFunction:
                     return DecompileDelegateFunction();
 
                 case (byte)StandardByteCodes.DelegateProperty:
                     return DecompileDelegateProperty();
+
+
 
 
                 /*****
