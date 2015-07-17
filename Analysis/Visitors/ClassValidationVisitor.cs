@@ -437,6 +437,8 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(ForLoop node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(ForEachLoop node)
+        { throw new NotImplementedException(); }
         public bool VisitNode(WhileLoop node)
         { throw new NotImplementedException(); }
 

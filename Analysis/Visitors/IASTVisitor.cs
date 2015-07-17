@@ -27,6 +27,7 @@ namespace ME3Script.Analysis.Visitors
 
         bool VisitNode(DoUntilLoop node);
         bool VisitNode(ForLoop node);
+        bool VisitNode(ForEachLoop node);
         bool VisitNode(WhileLoop node);
 
         bool VisitNode(SwitchStatement node);

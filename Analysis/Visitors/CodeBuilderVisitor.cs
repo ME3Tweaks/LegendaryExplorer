@@ -339,6 +339,28 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(ForEachLoop node)
+        {
+            // foreach IteratorFunction(parameters) { /n contents /n }
+            Write("foreach ");
+            node.IteratorFunction.AcceptVisitor(this);
+            Append("(");
+            foreach (Expression expr in node.Parameters)
+            {
+                expr.AcceptVisitor(this);
+                if (node.Parameters.IndexOf(expr) != node.Parameters.Count - 1)
+                    Append(", ");
+            }
+            Append(") {0}", "{");
+
+            NestingLevel++;
+            node.Body.AcceptVisitor(this);
+            NestingLevel--;
+            Write("{0}", "}");
+
+            return true;
+        }
+
         public bool VisitNode(WhileLoop node)
         {
             // while (condition) { /n contents /n }

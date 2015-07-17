@@ -73,6 +73,7 @@
     <Compile Include="Language\Tree\DoUntilLoop.cs" />
     <Compile Include="Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="Language\Tree\FloatLiteral.cs" />
+    <Compile Include="Language\Tree\ForEachLoop.cs" />
     <Compile Include="Language\Tree\ForLoop.cs" />
     <Compile Include="Language\Tree\FunctionCall.cs" />
     <Compile Include="Language\Tree\InOpDeclaration.cs" />

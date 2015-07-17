@@ -35,6 +35,7 @@ namespace ME3Script.Language.Tree
         WhileLoop,
         DoUntilLoop,
         ForLoop,
+        ForEachLoop,
         BreakStatement,
         ContinueStatement,
         ReturnStatement,

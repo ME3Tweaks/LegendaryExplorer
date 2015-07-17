@@ -97,8 +97,10 @@ namespace ME3Script.Decompiling
 
                 // Function calls
                 case (byte)StandardByteCodes.FinalFunction:
-                case (byte)StandardByteCodes.GlobalFunction:
                     return DecompileFunctionCall();
+
+                case (byte)StandardByteCodes.GlobalFunction:
+                    return DecompileFunctionCall(byName: true, global: true); // TODO: is this correct?
 
                 case (byte)StandardByteCodes.VirtualFunction:
                     return DecompileFunctionCall(byName: true);
@@ -271,7 +273,7 @@ namespace ME3Script.Decompiling
 
                 // TODO: 41, debugInfo
                 // TODO: 0x5A, FilterEditorOnly?
-                //TODO:  0x58 : Dynamic Iterator
+                //TODO:  0x58 : Dynamic Array Iterator
                 //TODO: 0x2F  0x31 : Iterator, IteratorPop, IteratorNext
 
                 // TODO: 0x3B - 0x3E native calls
@@ -487,7 +489,7 @@ namespace ME3Script.Decompiling
             return new CastExpression(new VariableType(type, null, null), expr, null, null);
         }
 
-        public Expression DecompileFunctionCall(bool byName = false, bool withUnknShort = false)
+        public Expression DecompileFunctionCall(bool byName = false, bool withUnknShort = false, bool global = false)
         {
             PopByte();
             String funcName;
@@ -495,6 +497,9 @@ namespace ME3Script.Decompiling
                 funcName = PCC.GetName(ReadNameRef());
             else
                 funcName = ReadObject().ObjectName;
+
+            if (global)
+                funcName = "global." + funcName;
 
             if (withUnknShort)
                 ReadInt16(); // TODO: related to unkn65, split out? Possibly jump?
