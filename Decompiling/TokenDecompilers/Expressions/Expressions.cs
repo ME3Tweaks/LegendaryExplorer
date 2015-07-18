@@ -648,7 +648,7 @@ namespace ME3Script.Decompiling
          * */
         #region UnsuportedDecompilers 
 
-        public Expression DecompileEatReturn() 
+        public Expression DecompileEatReturn()  // TODO: only skips one object? see code.
         {
             PopByte();
             var obj = ReadObject();
@@ -672,7 +672,7 @@ namespace ME3Script.Decompiling
             return new InOpReference(op, objRef, expr, null, null);
         }
 
-        public Expression DecompileNativeParm() 
+        public Expression DecompileNativeParm() // TODO: see code
         {
             PopByte();
             var obj = ReadObject();
@@ -696,7 +696,7 @@ namespace ME3Script.Decompiling
             return new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + index.ToString("X8"));
         }
 
-        public Expression DecompileInstanceDelegate()
+        public Expression DecompileInstanceDelegate() // TODO: check code, seems ok?
         {
             PopByte();
             var name = PCC.GetName(ReadNameRef());
