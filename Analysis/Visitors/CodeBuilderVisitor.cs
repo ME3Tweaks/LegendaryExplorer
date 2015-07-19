@@ -100,6 +100,10 @@ namespace ME3Script.Analysis.Visitors
                     state.AcceptVisitor(this);
             }
 
+            Write("");
+            if (node.DefaultProperties != null)
+                node.DefaultProperties.AcceptVisitor(this);
+
             return true;
         }
 
@@ -306,12 +310,12 @@ namespace ME3Script.Analysis.Visitors
         {
             Write("defaultproperties");
             Write("{0}", "{");
+            NestingLevel++;
             foreach (Statement s in node.Statements)
             {
                 s.AcceptVisitor(this);
-                if (!GlobalLists.SemicolonExceptions.Contains(s.Type))
-                    Append(";");
             }
+            NestingLevel--;
             Write("{0}", "}");
 
             return true;

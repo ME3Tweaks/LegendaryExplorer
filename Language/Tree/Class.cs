@@ -18,6 +18,7 @@ namespace ME3Script.Language.Tree
         public List<Function> Functions;
         public List<State> States;
         public List<OperatorDeclaration> Operators;
+        public DefaultPropertiesBlock DefaultProperties;
 
         public Class(String name, List<Specifier> specs, 
             List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,

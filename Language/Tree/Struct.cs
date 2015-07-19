@@ -13,6 +13,7 @@ namespace ME3Script.Language.Tree
         public List<Specifier> Specifiers;
         public VariableType Parent;
         public List<VariableDeclaration> Members;
+        public DefaultPropertiesBlock DefaultProperties;
 
         public Struct(String name, List<Specifier> specs,
             List<VariableDeclaration> members,

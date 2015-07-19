@@ -1,6 +1,8 @@
 ﻿using ME3Data.DataTypes;
 using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.DataTypes.ScriptTypes.DefaultProperties;
 using ME3Data.DataTypes.ScriptTypes.Properties;
+using ME3Data.FileFormats.PCC;
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace ME3Script.Decompiling
     public class ME3ObjectConverter
     {
         private ME3Class Object;
+        private PCCFile PCC { get { return Object.ExportEntry.CurrentPCC; } }
         private Class AST;
 
         public ME3ObjectConverter(ME3Class classObject)
@@ -69,6 +72,10 @@ namespace ME3Script.Decompiling
                 member.Outer = AST;
             foreach (var member in States)
                 member.Outer = AST;
+
+            var propObject = PCC.GetExportObject(Object.DefaultPropertyIndex);
+            if (propObject != null && propObject.DefaultProperties != null && propObject.DefaultProperties.Count != 0)
+                AST.DefaultProperties = ConvertDefaultProperties(propObject.DefaultProperties);
 
             return AST;
         }
@@ -206,6 +213,67 @@ namespace ME3Script.Decompiling
             }
             func.Locals = locals;
             return func;
+        }
+
+        public DefaultPropertiesBlock ConvertDefaultProperties(List<ME3DefaultProperty> properties)
+        {
+            var defaults = new List<Statement>();
+            foreach (var prop in properties)
+            {
+                        var name = new SymbolReference(null, null, null, prop.Name);
+                        var value = ConvertPropertyValue(prop);
+                        defaults.Add(new AssignStatement(name, value, null, null));
+            }
+
+            return new DefaultPropertiesBlock(defaults, null, null);
+        }
+
+        public Expression ConvertPropertyValue(ME3DefaultProperty prop)
+        {
+            switch (prop.Type)
+            {
+                case PropertyType.BoolProperty:
+                    return new BooleanLiteral((prop.Value as BoolPropertyValue).Value, null, null);
+                case PropertyType.ByteProperty:
+                    if (prop.Value is EnumPropertyValue) // TODO:
+                    {
+                        var enumRef = prop.Value as EnumPropertyValue;
+                        var enumStr = enumRef.EnumName + "." + enumRef.EnumValue;
+                        return new SymbolReference(null, null, null, enumStr);
+                    }
+                    else
+                        return new IntegerLiteral((prop.Value as BytePropertyValue).Value, null, null);
+                case PropertyType.IntProperty:
+                    return new IntegerLiteral((prop.Value as IntPropertyValue).Value, null, null);
+                case PropertyType.FloatProperty:
+                    return new FloatLiteral((prop.Value as FloatPropertyValue).Value, null, null);
+                case PropertyType.StrProperty:
+                    return new StringLiteral((prop.Value as StrPropertyValue).Value, null, null);
+                case PropertyType.StringRefProperty:
+                    return new IntegerLiteral((prop.Value as StringRefPropertyValue).Value, null, null); // TODO
+                case PropertyType.NameProperty:
+                    return new NameLiteral((prop.Value as NamePropertyValue).Name, null, null);
+                case PropertyType.ObjectProperty:
+                    var objRef = prop.Value as ObjectPropertyValue;
+                    if (objRef.Index == 0)
+                        return new SymbolReference(null, null, null, "None");
+                    var objEntry = objRef.PCC.GetObjectEntry(objRef.Index); // TODO: maybe qualifying like this is unnecessary?
+                    var outer = objEntry.GetOuterTreeString();
+                    var objStr = objEntry.ClassName + "'" + (outer != "" ? (outer + ".") : outer) + objEntry.ObjectName + "'";
+                    return new SymbolReference(null, null, null, objStr);
+                case PropertyType.DelegateProperty:
+                    return new SymbolReference(null, null, null, (prop.Value as DelegatePropertyValue).DelegateValue); // TODO: verify
+                case PropertyType.StructProperty:
+                    return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.Type);
+                case PropertyType.ArrayProperty:
+                    return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.Type);
+                case PropertyType.InterfaceProperty:
+                    return new SymbolReference(null, null, null, PCC.GetObjectEntry((prop.Value as InterfacePropertyValue).Index).ObjectName); // TODO: verify
+
+                default:
+                    return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.Type);
+
+            }
         }
     }
 }
