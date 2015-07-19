@@ -69,6 +69,7 @@
     <Compile Include="Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="Language\Tree\ConditionalExpression.cs" />
     <Compile Include="Language\Tree\ContinueStatement.cs" />
+    <Compile Include="Language\Tree\DefaultPropertiesBlock.cs" />
     <Compile Include="Language\Tree\DefaultStatement.cs" />
     <Compile Include="Language\Tree\DoUntilLoop.cs" />
     <Compile Include="Language\Tree\ExpressionOnlyStatement.cs" />

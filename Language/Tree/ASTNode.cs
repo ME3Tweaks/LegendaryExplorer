@@ -59,6 +59,8 @@ namespace ME3Script.Language.Tree
         ConditionalExpression,
         CastExpression,
 
+        DefaultPropertiesBlock,
+
         INVALID
     }
 

@@ -61,5 +61,7 @@ namespace ME3Script.Analysis.Visitors
 
         bool VisitNode(ConditionalExpression node);
         bool VisitNode(CastExpression node);
+
+        bool VisitNode(DefaultPropertiesBlock node);
     }
 }

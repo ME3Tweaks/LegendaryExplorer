@@ -294,14 +294,27 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(CodeBody node)
         {
+            foreach (Statement s in node.Statements) //TODO: make this proper
+            {
+                s.AcceptVisitor(this);
+            }
+
+            return true; 
+        }
+
+        public bool VisitNode(DefaultPropertiesBlock node)
+        {
+            Write("defaultproperties");
+            Write("{0}", "{");
             foreach (Statement s in node.Statements)
             {
                 s.AcceptVisitor(this);
                 if (!GlobalLists.SemicolonExceptions.Contains(s.Type))
                     Append(";");
             }
+            Write("{0}", "}");
 
-            return true; 
+            return true;
         }
 
         public bool VisitNode(DoUntilLoop node)

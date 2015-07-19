@@ -497,6 +497,9 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(CastExpression node)
         { throw new NotImplementedException(); }
+
+        public bool VisitNode(DefaultPropertiesBlock node)
+        { throw new NotImplementedException(); }
         #endregion
     }
 }
