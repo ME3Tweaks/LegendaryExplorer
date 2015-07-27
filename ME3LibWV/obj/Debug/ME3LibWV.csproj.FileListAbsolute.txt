@@ -1,0 +1,48 @@
+D:\CODE\SVN\ME3Ex\ME3LibWV\bin\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Ex\ME3LibWV\bin\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Ex\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+D:\CODE\SVN\ME3Ex\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+D:\CODE\SVN\ME3Ex\ME3LibWV\obj\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Ex\ME3LibWV\obj\Debug\ME3LibWV.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\bin\Debug\ME3LibWV.dll
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\bin\Debug\ME3LibWV.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\obj\Debug\ME3LibWV.dll
+G:\MEEM\dev\Me3Explorer_SVN\ME3LibWV\obj\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Ex\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\bin\Debug\ME3LibWV.dll
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\bin\Debug\ME3LibWV.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\obj\Debug\ME3LibWV.dll
+C:\Users\Image 17\Documents\ me3explorer-code\ME3LibWV\obj\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit\ME3LibWV\bin\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit\ME3LibWV\bin\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+D:\My Documents\ME3 Commit\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit\ME3LibWV\obj\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit\ME3LibWV\obj\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\bin\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\bin\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\obj\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit - Copy\ME3LibWV\obj\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Explorer\ME3LibWV\bin\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Explorer\ME3LibWV\bin\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Explorer\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+D:\CODE\SVN\ME3Explorer\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+D:\CODE\SVN\ME3Explorer\ME3LibWV\obj\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Explorer\ME3LibWV\obj\Debug\ME3LibWV.pdb
+G:\Code\ME3\me3ex latest\ME3LibWV\bin\Debug\ME3LibWV.dll
+G:\Code\ME3\me3ex latest\ME3LibWV\bin\Debug\ME3LibWV.pdb
+G:\Code\ME3\me3ex latest\ME3LibWV\obj\Debug\ME3LibWV.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\ME3LibWV\obj\Debug\ME3LibWV.Properties.Resources.resources
+G:\Code\ME3\me3ex latest\ME3LibWV\obj\Debug\ME3LibWV.csproj.GenerateResource.Cache
+G:\Code\ME3\me3ex latest\ME3LibWV\obj\Debug\ME3LibWV.dll
+G:\Code\ME3\me3ex latest\ME3LibWV\obj\Debug\ME3LibWV.pdb

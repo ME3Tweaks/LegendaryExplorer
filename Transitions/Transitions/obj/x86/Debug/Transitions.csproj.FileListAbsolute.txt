@@ -1,0 +1,34 @@
+D:\CODE\SVN\ME3Ex\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+D:\CODE\SVN\ME3Ex\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Ex\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+D:\CODE\SVN\ME3Ex\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+G:\MEEM\dev\Me3Explorer_SVN\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+G:\MEEM\dev\Me3Explorer_SVN\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+G:\MEEM\dev\Me3Explorer_SVN\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+G:\MEEM\dev\Me3Explorer_SVN\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+G:\MEEM\dev\Me3Explorer_SVN\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+C:\Users\Image 17\Documents\ me3explorer-code\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+C:\Users\Image 17\Documents\ me3explorer-code\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+C:\Users\Image 17\Documents\ me3explorer-code\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+D:\My Documents\ME3 Commit\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+D:\My Documents\ME3 Commit\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit - Copy\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+D:\My Documents\ME3 Commit - Copy\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit - Copy\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit - Copy\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+D:\My Documents\ME3 Commit - Copy\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Explorer\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+D:\CODE\SVN\ME3Explorer\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Explorer\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+D:\CODE\SVN\ME3Explorer\Transitions\Transitions\obj\x86\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Explorer\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\Transitions\Transitions\bin\x86\Debug\Transitions.dll
+G:\Code\ME3\me3ex latest\Transitions\Transitions\bin\x86\Debug\Transitions.pdb
+G:\Code\ME3\me3ex latest\Transitions\Transitions\obj\x86\Debug\Transitions.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\Transitions\Transitions\obj\x86\Debug\Transitions.dll
+G:\Code\ME3\me3ex latest\Transitions\Transitions\obj\x86\Debug\Transitions.pdb

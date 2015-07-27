@@ -1,0 +1,12 @@
+del config.ini
+del DebugOutput.txt
+del DebugLog.txt
+del exec\ModData.cache
+del exec\history.log
+del exec\data.pcc
+del exec\data.bin
+del exec\me3tree.bin
+del exec\me2tree.bin
+del exec\me1tree.bin
+del *.pdb
+del *.pcc

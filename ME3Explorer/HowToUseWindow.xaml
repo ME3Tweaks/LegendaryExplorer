@@ -1,0 +1,87 @@
+﻿<Window x:Class="ME3Explorer.HowToUseWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:p="clr-namespace:ME3Explorer.Properties" 
+    Height="476" Width="655" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" 
+    Title="{x:Static p:Resources.HowToTitle}" >
+    <StackPanel Name="stackPanel1">
+        <Label Height="40" Name="labelHeader"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+               FontSize="16" FontWeight="Bold"
+               Content="{x:Static p:Resources.HowToHeader}" FontFamily="Verdana" />
+        <Label Height="28" Name="label1"
+               Content="{x:Static p:Resources.HowToSubheader1}" FontFamily="Verdana" FontSize="12" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="488" />
+        <Grid Margin="40, 0, 20, 0" >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Content="1."/>
+            <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo11}" />
+            <Label Grid.Row="1" Content="2."/>
+            <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo12}"/>
+            <Label Grid.Row="2" Content="3."/>
+            <TextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo13}"/>
+            <Label Grid.Row="3" Content="4."/>
+            <TextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo14}"/>
+            <Label Grid.Row="4" Content="5."/>
+            <TextBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo15}"/>
+        </Grid>
+
+        <Label Height="28" Name="label2" Margin="0, 10, 0, 0"
+               Content="{x:Static p:Resources.HowToSubheader2}" FontFamily="Verdana" FontSize="12" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="488" />
+        <Grid Margin="40, 0, 20, 0" >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Content="1."/>
+            <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo21}" />
+            <Label Grid.Row="1" Content="2."/>
+            <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo22}"/>
+            <Label Grid.Row="2" Content="3."/>
+            <TextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo23}"/>
+            <Label Grid.Row="3" Content="4."/>
+            <TextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo24}"/>
+            <Label Grid.Row="4" Content="5."/>
+            <TextBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
+                     TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
+                     Text="{x:Static p:Resources.HowTo25}"/>
+        </Grid>
+        
+    </StackPanel>
+</Window>

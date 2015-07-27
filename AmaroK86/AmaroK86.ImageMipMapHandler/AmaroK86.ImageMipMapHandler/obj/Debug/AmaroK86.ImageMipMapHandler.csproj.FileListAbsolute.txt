@@ -1,0 +1,9 @@
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\AmaroK86.ImageFormat.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\Gibbed.IO.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\AmaroK86.ImageFormat.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\bin\Debug\Gibbed.IO.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\obj\Debug\AmaroK86.ImageMipMapHandler.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\obj\Debug\AmaroK86.ImageMipMapHandler.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\obj\Debug\AmaroK86.ImageMipMapHandler.pdb

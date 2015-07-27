@@ -1,0 +1,818 @@
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 07090020
+compformat 2    format 1798
+dxtc data 0C6A7FF0
+compformat 2    format 1798
+dxtc data 098A1FB8
+compformat 2    format 1798
+dxtc data 098329B0
+compformat 2    format 1798
+dxtc data 097E1BA0
+compformat 2    format 1798
+dxtc data 09825FE8
+compformat 2    format 1798
+dxtc data 098459F8
+compformat 2    format 1798
+dxtc data 098F2A98
+compformat 2    format 1798
+dxtc data 098209F8
+compformat 2    format 1798
+dxtc data 09820A28
+compformat 2    format 1798
+dxtc data 09820A48
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 05AF0020
+compformat 2    format 1798
+dxtc data 0BB94FF0
+compformat 2    format 1798
+dxtc data 0BB7CFF0
+compformat 2    format 1798
+dxtc data 0965C2E8
+compformat 2    format 1798
+dxtc data 06B6A560
+compformat 2    format 1798
+dxtc data 09814620
+compformat 2    format 1798
+dxtc data 09661158
+compformat 2    format 1798
+dxtc data 09795E38
+compformat 2    format 1798
+dxtc data 09714040
+compformat 2    format 1798
+dxtc data 0BB287C0
+compformat 2    format 1798
+dxtc data 0BB28800
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 0B0C0020
+compformat 2    format 1798
+dxtc data 0B551F00
+compformat 2    format 1798
+dxtc data 0B539F00
+compformat 2    format 1798
+dxtc data 09396548
+compformat 2    format 1798
+dxtc data 04E99F78
+compformat 2    format 1798
+dxtc data 093F0980
+compformat 2    format 1798
+dxtc data 094AFB68
+compformat 2    format 1798
+dxtc data 0B4BE608
+compformat 2    format 1798
+dxtc data 093F0BB0
+compformat 2    format 1798
+dxtc data 093F0BE0
+compformat 2    format 1798
+dxtc data 093F0C00
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 0B530020
+compformat 2    format 1798
+dxtc data 0B1FDEA8
+compformat 2    format 1798
+dxtc data 0B1DDEA0
+compformat 2    format 1798
+dxtc data 093BCEC0
+compformat 2    format 1798
+dxtc data 093BEEC8
+compformat 2    format 1798
+dxtc data 092C9778
+compformat 2    format 1798
+dxtc data 09407B18
+compformat 2    format 1798
+dxtc data 0940E590
+compformat 2    format 1798
+dxtc data 04F0D288
+compformat 2    format 1798
+dxtc data 04F0D2B8
+compformat 2    format 1798
+dxtc data 04F0D2D8
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 0A640020
+compformat 2    format 1798
+dxtc data 0A2FB608
+compformat 2    format 1798
+dxtc data 0A2DB600
+compformat 2    format 1798
+dxtc data 095E68D8
+compformat 2    format 1798
+dxtc data 095E88E0
+compformat 2    format 1798
+dxtc data 0972F6B0
+compformat 2    format 1798
+dxtc data 096A23E8
+compformat 2    format 1798
+dxtc data 02850460
+compformat 2    format 1798
+dxtc data 028A31F0
+compformat 2    format 1798
+dxtc data 028A3220
+compformat 2    format 1798
+dxtc data 028A3240
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 0B5D0020
+compformat 2    format 1798
+dxtc data 0A8BEFB8
+compformat 2    format 1798
+dxtc data 0A926FD0
+compformat 2    format 1798
+dxtc data 073D9288
+compformat 2    format 1798
+dxtc data 0752B7E8
+compformat 2    format 1798
+dxtc data 07597948
+compformat 2    format 1798
+dxtc data 0754DE70
+compformat 2    format 1798
+dxtc data 0A891308
+compformat 2    format 1798
+dxtc data 0744FF88
+compformat 2    format 1798
+dxtc data 04DFFEA0
+compformat 2    format 1798
+dxtc data 04DFFEF0
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 07190020
+compformat 2    format 1798
+dxtc data 0C4DFFB8
+compformat 2    format 1798
+dxtc data 0C4C7FB8
+compformat 2    format 1798
+dxtc data 0951BB58
+compformat 2    format 1798
+dxtc data 0965B790
+compformat 2    format 1798
+dxtc data 09485C28
+compformat 2    format 1798
+dxtc data 0952EDD0
+compformat 2    format 1798
+dxtc data 0C47DE38
+compformat 2    format 1798
+dxtc data 095A9670
+compformat 2    format 1798
+dxtc data 095A9680
+compformat 2    format 1798
+dxtc data 095A96A0
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 05EC0020
+compformat 2    format 1798
+dxtc data 0A9A1F30
+compformat 2    format 1798
+dxtc data 0A989F30
+compformat 2    format 1798
+dxtc data 04EF6678
+compformat 2    format 1798
+dxtc data 0AA16758
+compformat 2    format 1798
+dxtc data 09466828
+compformat 2    format 1798
+dxtc data 0A8F97F0
+compformat 2    format 1798
+dxtc data 0A8E9CD8
+compformat 2    format 1798
+dxtc data 09516280
+compformat 2    format 1798
+dxtc data 095162B0
+compformat 2    format 1798
+dxtc data 095162D0
+compformat 2    format 1798
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+
+
+
+
+starting readmimaps
+dxtc data 058C0020
+compformat 2    format 1798
+dxtc data 0AA12EE8
+compformat 2    format 1798
+dxtc data 0A878FA8
+compformat 2    format 1798
+dxtc data 00A39DD0
+compformat 2    format 1798
+dxtc data 0942F7F0
+compformat 2    format 1798
+dxtc data 094FAF98
+compformat 2    format 1798
+dxtc data 0B9FE9D0
+compformat 2    format 1798
+dxtc data 094FE830
+compformat 2    format 1798
+dxtc data 0A999820
+compformat 2    format 1798
+dxtc data 0A999850
+compformat 2    format 1798
+dxtc data 0A999870
+compformat 2    format 1798
+
+
+
+

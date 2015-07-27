@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F42E08B-02A9-4469-97F2-2D60F27DEA5B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ME1Explorer</RootNamespace>
+    <AssemblyName>ME1Explorer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>.\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Interpreter2\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interpreter2\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\Ini.cs" />
+    <Compile Include="Helper\LZOHelper.cs" />
+    <Compile Include="Helper\MiniLZO.cs" />
+    <Compile Include="Helper\Targa.cs" />
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor\PCCEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor\PCCEditor.Designer.cs">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveGameEditor\SaveEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveGameEditor\SaveEditor.Designer.cs">
+      <DependentUpon>SaveEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SaveGameOperator\SaveGame.cs" />
+    <Compile Include="SaveGameOperator\SaveGameOperator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveGameOperator\SaveGameOperator.Designer.cs">
+      <DependentUpon>SaveGameOperator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selector.Designer.cs">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Classes\Texture2D.cs" />
+    <Compile Include="Unreal\PCCObject.cs" />
+    <Compile Include="Unreal\PropertyReader.cs" />
+    <Compile Include="Unreal\PropGrid.cs" />
+    <Compile Include="Unreal\UnrealFlags.cs" />
+    <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor\PCCEditor.resx">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="SaveGameEditor\SaveEditor.resx">
+      <DependentUpon>SaveEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SaveGameOperator\SaveGameOperator.resx">
+      <DependentUpon>SaveGameOperator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selector.resx">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
+      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
+      <Name>AmaroK86.ImageFormat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
+      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
+      <Name>AmaroK86.ImageMipMapHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+      <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
+      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
+      <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
+      <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
+      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
+      <Name>SaltTPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd /d $(DevEnvDir)
+cd ..
+cd tools
+call vsvars32.bat
+editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

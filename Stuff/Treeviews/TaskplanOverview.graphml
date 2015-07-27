@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xmlns:yed="http://www.yworks.com/xml/yed/3" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
+  <!--Created by yFiles for Java 2.9-->
+  <key for="graphml" id="d0" yfiles.type="resources"/>
+  <key for="port" id="d1" yfiles.type="portgraphics"/>
+  <key for="port" id="d2" yfiles.type="portgeometry"/>
+  <key for="port" id="d3" yfiles.type="portuserdata"/>
+  <key attr.name="url" attr.type="string" for="node" id="d4"/>
+  <key attr.name="description" attr.type="string" for="node" id="d5"/>
+  <key for="node" id="d6" yfiles.type="nodegraphics"/>
+  <key attr.name="Beschreibung" attr.type="string" for="graph" id="d7"/>
+  <key attr.name="url" attr.type="string" for="edge" id="d8"/>
+  <key attr.name="description" attr.type="string" for="edge" id="d9"/>
+  <key for="edge" id="d10" yfiles.type="edgegraphics"/>
+  <graph edgedefault="directed" id="G">
+    <data key="d7"/>
+    <node id="n0" yfiles.foldertype="group">
+      <data key="d4"/>
+      <data key="d5"/>
+      <data key="d6">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="1939.7096571642421" width="1515.188177493086" x="-1560.0786735516156" y="-322.85087181649715"/>
+              <y:Fill color="#F5F5F5" transparent="false"/>
+              <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#EBEBEB" borderDistance="0.0" fontFamily="Dialog" fontSize="20" fontStyle="plain" hasLineColor="false" height="28.501953125" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="1515.188177493086" x="0.0" y="0.0">Unreal Classes</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+              <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+              <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="5" leftF="4.513427734375" right="0" rightF="0.0" top="0" topF="0.0"/>
+            </y:GroupNode>
+            <y:GroupNode>
+              <y:Geometry height="50.0" width="50.0" x="0.0" y="60.0"/>
+              <y:Fill color="#F5F5F5" transparent="false"/>
+              <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#EBEBEB" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="59.02685546875" x="-4.513427734375" y="0.0">Folder 2</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+              <y:State closed="true" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+              <y:Insets bottom="5" bottomF="5.0" left="5" leftF="5.0" right="5" rightF="5.0" top="5" topF="5.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="n0:">
+        <node id="n0::n0" yfiles.foldertype="group">
+          <data key="d4"/>
+          <data key="d5"/>
+          <data key="d6">
+            <y:ProxyAutoBoundsNode>
+              <y:Realizers active="0">
+                <y:GroupNode>
+                  <y:Geometry height="1211.4299700109232" width="1480.674749758711" x="-1540.5652458172406" y="390.4288153368218"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7C9E3" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" height="22.37646484375" lineColor="#000000" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="1480.674749758711" x="0.0" y="0.0">Texture2D</y:NodeLabel>
+                  <y:Shape type="roundrectangle"/>
+                  <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+                  <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
+                  <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+                </y:GroupNode>
+                <y:GroupNode>
+                  <y:Geometry height="50.0" width="50.0" x="-1561.8556002803634" y="390.4288153368218"/>
+                  <y:Fill color="#F5F5F5" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
+                  <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#EBEBEB" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="59.02685546875" x="-4.513427734375" y="0.0">Folder 1</y:NodeLabel>
+                  <y:Shape type="roundrectangle"/>
+                  <y:State closed="true" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+                  <y:Insets bottom="5" bottomF="5.0" left="5" leftF="5.0" right="5" rightF="5.0" top="5" topF="5.0"/>
+                  <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+                </y:GroupNode>
+              </y:Realizers>
+            </y:ProxyAutoBoundsNode>
+          </data>
+          <graph edgedefault="directed" id="n0::n0:">
+            <node id="n0::n0::n0">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="539.2791821700582" width="534.9653579676674" x="-609.855854026197" y="855.9411731896903"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="93.361328125" x="220.8020149213337" y="4.0">Texture2D Class</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="503.83984375" modelName="custom" textColor="#000000" visible="true" width="508.87890625" x="2.0" y="30.701171875">Description:
+handles all import/export access for textures and usage as DirectX Texture interface
+
+public class Texture2D
+    {
+        public enum storage
+        public struct ImageInfo
+
+        public static readonly string className = "Texture2D";
+        public bool bFileHasChanged { get; private set; }
+        public string texName { get; private set; }
+        public string arcName { get; private set; }
+        private string texFormat;
+        private byte[ ] headerData;
+        private byte[ ] imageData;
+        private int pccExpIdx;
+        public uint pccOffset;
+        private uint dataOffset;
+        private uint numMipMaps;
+        public Dictionary&lt;string,PropertyReader.Property&gt; properties;
+        public List&lt;ImageInfo&gt; imgList { get; private set; }
+
+        public Texture2D(PCCObject pccObj, int texIdx)
+        public byte[ ] ToArray(int pccExportDataOffset)
+        public void extractImage(string strImgSize, string archiveDir = null, string fileName = null)
+        public void extractImage(ImageInfo imgInfo, string archiveDir = null, string fileName = null)
+        public void replaceImage(string strImgSize, string fileToReplace, string archiveDir)
+        public void addBiggerImage(string imagePathToAdd, string archiveDir)
+        public void OneImageToRuleThemAll(string imageFileName, string archiveDir)
+        public string getFileFormat()
+    }
+
+Developers:
+Amarok86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+            <node id="n0::n0::n1">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="392.99150234875793" width="357.34281337386017" x="-1482.8809014380713" y="855.9411731896903"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="60.6953125" x="148.32375043693014" y="4.0">ImageSize</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="356.828125" modelName="custom" textColor="#000000" visible="true" width="332.833984375" x="2.0" y="30.701171875">Description: handles the ME3 image size checking its 
+proportions and handling most of the arithmetic operations
+
+public class ImageSize: IComparable
+    {
+        public readonly uint width;
+        public readonly uint height;
+
+        public ImageSize(uint width, uint height)
+        private bool checkIsPower2(uint val)
+        public int CompareTo(object obj)
+        public override string ToString()
+        public override bool Equals(System.Object obj)
+        public bool Equals(ImageSize p)
+        public override int GetHashCode()
+        public static bool operator ==(ImageSize a, ImageSize b)
+        public static bool operator !=(ImageSize a, ImageSize b)
+        public static ImageSize operator /(ImageSize a, int b)
+        public static ImageSize operator *(ImageSize a, int b)
+        public static ImageSize stringToSize(string input)
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+            <node id="n0::n0::n2">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="392.9915023487579" width="421.2610777656197" x="-1081.3229433626643" y="855.9411731896903"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="56.6875" x="182.2867888828098" y="4.0">ImageFile</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="356.828125" modelName="custom" textColor="#000000" visible="true" width="407.4765625" x="2.0" y="30.701171875">Description: contains the main data about ME3 images
+
+public class ImageFile
+    {
+        public string fileName;
+        public ImageSize imgSize;
+        public int headSize;
+        public int dataSize;
+        public byte[ ] headData;
+        public byte[ ] imgData;
+        public string format;
+        public float BPP;
+
+        protected ImageFile(string fileName, ImageSize imgSize, string format)
+        protected ImageFile(string fileName)
+
+        virtual public byte[ ] ToArray()
+        virtual public string subtype()
+        virtual public byte[ ] resize()
+        virtual protected void flipVertically()
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+            <node id="n0::n0::n3">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="352.89608753799394" width="642.5411509300914" x="-850.6924044798545" y="427.8052801805718"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="29.3359375" x="306.6026067150457" y="4.0">DDS</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="283.322265625" modelName="custom" textColor="#000000" visible="true" width="626.869140625" x="2.0" y="30.701171875">Description: Derived class of ImageFile used for dds images
+
+public class DDS : ImageFile
+    {
+        public enum FourCC : uint
+
+        private unsafe struct _DDSHeader
+        private _DDSHeader DDSHeader;
+
+        public DDS(string fileName, ImageSize imgSize, string format, byte[ ] rawData) : base(fileName,imgSize, format)
+        public DDS(string fileName) : base(fileName)
+
+        public override string subtype()
+        public override byte[ ] resize()
+        public override byte[ ] ToArray()
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+            <node id="n0::n0::n4">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="352.89608753799394" width="641.9021251306992" x="-1525.5652458172406" y="427.8052801805718"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="28.66796875" x="306.61707819034973" y="4.0">TGA</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="312.724609375" modelName="custom" textColor="#000000" visible="true" width="629.53515625" x="2.0" y="30.701171875">Description: Derived class of ImageFile used for tga images
+
+public class TGA : ImageFile
+    {
+        public unsafe struct _TGAHeader
+        public _TGAHeader TGAHeader;
+        public bool RLECompressed;
+        public bool verticalFlipped;
+
+        public TGA(string fileName, ImageSize imgSize, string format, byte[ ] rawData) : base(fileName, imgSize, format)
+        public TGA(string fileName) : base(fileName) // used when importing file
+
+        public override string subtype()
+        public override byte[ ] resize()
+        public override byte[ ] ToArray()
+        private void RLEDecompress()
+        protected override void flipVertically()
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+            <node id="n0::n0::n5">
+              <data key="d6">
+                <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+                  <y:Geometry height="277.963448024316" width="525.8827477203649" x="-1194.0483689411321" y="1308.895337323429"/>
+                  <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="122.0546875" x="201.91403011018247" y="4.0">ImageMipMapHandler</y:NodeLabel>
+                  <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="239.21875" modelName="custom" textColor="#000000" visible="true" width="510.197265625" x="2.0" y="30.701171875">Description: This class took a single image and extract (from dds) or create (from tga) all 
+the mip maps used inside a texture.
+
+public class ImageMipMapHandler
+    {
+        public List&lt;ImageFile&gt; imageList { get; private set; }
+
+        public ImageMipMapHandler(string imageWithMipMaps)
+        public void SaveAll()
+        private long ImageDataSize(ImageSize imgsize, string format, float BytesPerPixel)
+        private long ImageMipMapDataSize(ImageSize imgsize, string format, float BytesPerPixel)
+        private byte[ ] ShrinkImage(byte[ ] imageData, ImageSize imgsize, float BytesPerPixel)
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+                      <y:ErdAttributesNodeLabelModel/>
+                    </y:LabelModel>
+                    <y:ModelParameter>
+                      <y:ErdAttributesNodeLabelModelParameter/>
+                    </y:ModelParameter>
+                  </y:NodeLabel>
+                  <y:StyleProperties>
+                    <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+                  </y:StyleProperties>
+                </y:GenericNode>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="n0::n1">
+          <data key="d6">
+            <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+              <y:Geometry height="590.5856649528118" width="497.4659746251441" x="-557.3564706836737" y="-279.34891869149715"/>
+              <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+              <y:BorderStyle color="#000000" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="111.349609375" x="193.05818262507205" y="4.0">WwiseStream Class</y:NodeLabel>
+              <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="445.03515625" modelName="custom" textColor="#000000" visible="true" width="436.84375" x="2.0" y="30.701171875">Description:
+Handles audio related stuff
+
+Done yet:
+public class WwiseStream
+    {
+        public byte[] memory;
+        public int memsize;
+        public PCCObject pcc;
+        public List&lt;PropertyReader.Property&gt; props;
+        public SoundPlayer sp;
+        public int DataSize;
+        public int DataOffset;
+        public int ValueOffset;
+        public string FileName;
+
+        public WwiseStream()
+        public WwiseStream(PCCObject Pcc, byte[] Raw)
+        public void Deserialize()
+        public void ExtractToFile(string pathtoafc = "",string name = "")
+        public void ImportFromFile(string path, string pathBIO, string pathtoafc = "")
+        public void Play(string pathtoafc = "")
+        private void PlayWave(string path, int off, int size)
+        private void ExtractWav(string path, int off, int size, string name = "")
+        private void ImportWav(string pathafc, string pathwav, int off, string pathBIO)
+        private byte[] ModifyHeader(byte[] nw, byte[] old)
+    }
+
+Developers:
+Warranty Voider<y:LabelModel>
+                  <y:ErdAttributesNodeLabelModel/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:ErdAttributesNodeLabelModelParameter/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+              <y:StyleProperties>
+                <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+              </y:StyleProperties>
+            </y:GenericNode>
+          </data>
+        </node>
+      </graph>
+    </node>
+    <node id="n1">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+          <y:Geometry height="1704.9946783568635" width="497.4659746251441" x="-14.890496058529664" y="-103.13589300911849"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="82.01171875" x="207.72712793757205" y="4.0">PCCFile Class</y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="1621.12890625" modelName="custom" textColor="#000000" visible="true" width="443.48828125" x="2.0" y="30.701171875">Description:
+handles raw acces to pcc files
+
+public class PCCObject
+    {
+        public PCCObject(string pccFilePath)
+        protected void getData(int offset)
+        public void saveToFile(bool saveCompress, string newFileName)
+        public string getNameEntry(int index)
+        public string getClassName(int index)
+        public bool isName(int index)
+        public bool isImport(int index)
+        public bool isExport(int index)
+
+        public string pccFileName;
+
+        static int headerSize;
+        byte[]     header;
+        byte[]     extraNamesList;
+
+        public uint      magic;
+        public ushort lowVers;
+        public ushort highVers;
+        public int        nameSize;
+        public uint      flags;
+
+        public bool bExtraNamesList;
+        public bool bCompressed;
+
+        private int idxOffsets;
+        public int NameCount;
+        public int NameOffset;
+        public int ExportCount;
+        public int ExportOffset;
+        public int ImportCount;
+        public int ImportOffset;
+
+        public int expInfoEndOffset;
+        public int expDataBegOffset;
+
+        int headerEnd;
+
+        public List&lt;string&gt; Names;
+        public List&lt;ImportEntry&gt; Imports;
+        public List&lt;ExportEntry&gt; Exports;
+
+        List&lt;Block&gt; blockList;
+        protected class Block
+        {
+            public int uncOffset;
+            public int uncSize;
+            public int cprOffset;
+            public int cprSize;
+            public bool bRead;
+        }
+
+        public class ImportEntry
+        {
+            public static int byteSize = 28;
+            internal byte[] data;
+            PCCObject pccRef;
+            public int Link;
+
+            public int idxPackageFile;
+            public int idxClassName;
+            public int idxPackageName;
+            public int idxObjectName;
+            public int ObjectFlags;
+
+            public string ClassName;
+            public string PackageFile;
+            public string ObjectName;
+            public string PackageName;
+            public string PackageFullName;
+
+            public ImportEntry(PCCObject pccFile, byte[] importData)
+            public ImportEntry(PCCObject pccFile, Stream importData)
+        }
+
+        public class ExportEntry
+        {
+            internal byte[] info;
+            PCCObject pccRef;
+            public uint offset;
+            public int Link;
+
+            public int idxClassName;
+            public int idxClassParent;
+            public int idxPackageName;
+            public int idxObjectName;
+            public long objectFlags;
+
+            public string ObjectName;
+            public string ClassName;
+            public string ClassParent;
+            public string PackageName;
+            public string PackageFullName;
+
+            public int DataSize;
+            public int DataOffset;
+            byte[] _data;
+            public byte[] Data;
+            public bool hasChanged = false;
+
+            public ExportEntry(PCCObject pccFile, byte[] importData, uint exportOffset)
+        }
+    }
+
+Developers:
+AmaroK86
+<y:LabelModel>
+              <y:ErdAttributesNodeLabelModel/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:ErdAttributesNodeLabelModelParameter/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n2">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+          <y:Geometry height="365.8893213038511" width="497.4659746251441" x="567.4621276595744" y="-103.13589300911849"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="92.04296875" x="202.71150293757205" y="4.0">Property Reader</y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="327.42578125" modelName="custom" textColor="#000000" visible="true" width="480.197265625" x="2.0" y="30.701171875">Descriptiion:
+handles property reading for objects in pcc file
+
+Done yet:
+public static class PropertyReader
+    {
+        public enum Type
+        public struct Property
+        public struct PropertyValue
+
+        public static List&lt;Property&gt; getPropList(PCCObject pcc, byte[] raw)
+        public static string TypeToString(int type)
+        public static string PropertyToText(Property p,PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
+        private static List&lt;Property&gt; ReadProp(PCCObject pcc, byte[] raw, int start)
+        private static Type getType(PCCObject pcc, int type)
+        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
+        private static int detectStart(PCCObject pcc, byte[] raw)
+    }
+
+Developers:
+Miro, Warranty Voider<y:LabelModel>
+              <y:ErdAttributesNodeLabelModel/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:ErdAttributesNodeLabelModelParameter/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n3">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+          <y:Geometry height="261.5267346987702" width="497.4659746251441" x="-14.890496058529664" y="-425.13068885125995"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="104.69921875" x="196.38337793757205" y="4.0">PCCHandler Class</y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="224.517578125" modelName="custom" textColor="#000000" visible="true" width="474.185546875" x="2.0" y="30.701171875">Description:
+Handles Compression and Decompression of pcc files
+
+Done yet:
+public static class PCCHandler
+    {
+        public static byte[] Decompress(byte[] rawData)
+        public static byte[] Decompress(string pccFileName)
+        public static byte[] Decompress(Stream input)
+        public static byte[] Compress(byte[] uncompressedPcc)
+        public static void CompressAndSave(byte[] uncompressedPcc, string pccFileName)
+    }
+
+Developers:
+AmaroK86<y:LabelModel>
+              <y:ErdAttributesNodeLabelModel/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:ErdAttributesNodeLabelModelParameter/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n4">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.entityRelationship.big_entity">
+          <y:Geometry height="939.1724403387225" width="650.4682840939662" x="567.4621276595744" y="324.65933271092285"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="85.357421875" x="282.55543110948315" y="4.0">PropGrid Class</y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="900.771484375" modelName="custom" textColor="#000000" visible="true" width="642.185546875" x="2.0" y="30.701171875">Description:
+Helper class for converting properties to a PropGrid
+
+Done yet:
+Description:
+Helper class for converting properties to a PropGrid
+
+Done yet:
+public class PropGrid : CollectionBase, ICustomTypeDescriptor
+     {
+     public void Add(CustomProperty Value)
+     public void Remove(string Name)
+     public CustomProperty this[int index] 
+     public String GetClassName()
+     public AttributeCollection GetAttributes()
+     public String GetComponentName()
+     public TypeConverter GetConverter()
+     public EventDescriptor GetDefaultEvent() 
+     public PropertyDescriptor GetDefaultProperty() 
+     public object GetEditor(Type editorBaseType) 
+     public EventDescriptorCollection GetEvents(Attribute[] attributes) 
+     public EventDescriptorCollection GetEvents()
+     public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+     public PropertyDescriptorCollection GetProperties()
+     public object GetPropertyOwner(PropertyDescriptor pd) 
+     public class CustomProperty
+          {
+          private string sName = string.Empty;
+          private string sCat = string.Empty;
+          private bool bReadOnly = false;
+          private bool bVisible = true;
+          private object objValue = null;
+          private Type type;
+          public Type Type
+          public bool ReadOnly
+          public string Name
+          public string Category
+          public bool Visible
+          public object Value
+          public CustomProperty(string sName, string Category, object value, Type type, bool bReadOnly, bool bVisible)
+          }
+     public class CustomPropertyDescriptor : PropertyDescriptor
+          {
+          CustomProperty m_Property;
+          public override bool CanResetValue(object component)
+          public override Type ComponentType
+          public override object GetValue(object component)
+          public override string Description
+          public override string Category
+          public override string DisplayName
+          public override bool IsReadOnly
+          public override void ResetValue(object component)
+          public override bool ShouldSerializeValue(object component)
+          public override void SetValue(object component, object value)
+          public override Type PropertyType
+          public CustomPropertyDescriptor(ref CustomProperty myProperty, Attribute[] attrs): base(myProperty.Name, attrs)
+          }
+     }
+
+Developers:
+Warranty Voider<y:LabelModel>
+              <y:ErdAttributesNodeLabelModel/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:ErdAttributesNodeLabelModelParameter/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Boolean" name="y.view.ShadowNodePainter.SHADOW_PAINTING" value="true"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <edge id="e0" source="n1" target="n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="248.73444519746644" sy="-669.5526785265062" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e1" source="n1" target="n3">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="-852.5215551345893" tx="0.0" ty="130.76284491318611"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e2" source="n2" target="n4">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="-76.5011547344111" ty="-469.6190103270926"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e3" source="n1" target="n0::n1">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-248.74588267376973" sy="-733.4175323844045" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e4" source="n1" target="n0::n0::n0">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-248.71393806255313" sy="376.2193181054063" tx="267.49032176945" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e0" source="n0::n0::n1" target="n0::n0::n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e1" source="n0::n0::n2" target="n0::n0::n5">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="196.48857182669485" tx="60.41459060109514" ty="-138.96993069908797"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e2" source="n0::n0::n2" target="n0::n0::n0">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="-267.449540403328" ty="-73.14383991065017"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e3" source="n0::n0::n3" target="n0::n0::n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="14.256021509304048" sy="176.44417251920555" tx="0.0" ty="0.0">
+            <y:Point x="-515.1658075055047" y="817.1359354997209"/>
+            <y:Point x="-870.6924044798545" y="815.9383517533048"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="white_delta"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e4" source="n0::n0::n4" target="n0::n0::n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="176.44697984610093" tx="0.0" ty="0.0">
+            <y:Point x="-1204.6141832518908" y="816.1374576881707"/>
+            <y:Point x="-870.6924044798545" y="816.1374576881707"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="white_delta"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::n0::e5" source="n0::n0::n5" target="n0::n0::n0">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="262.91264418099377" sy="0.0" tx="0.0" ty="269.63783324959036">
+            <y:Point x="-342.3731750423633" y="1447.8770613355869"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+  </graph>
+  <data key="d0">
+    <y:Resources/>
+  </data>
+</graphml>

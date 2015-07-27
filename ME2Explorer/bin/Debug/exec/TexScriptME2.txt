@@ -1,0 +1,29 @@
+using ME2Explorer;
+using ME2Explorer.Modding;
+using ME2Explorer.Unreal;
+using ME2Explorer.Texplorer;
+using System;
+using System.Collections.Generic;
+
+namespace SimpleScripts
+{
+	public class MyScript : IScript2.IScript2
+	{
+		public string RunScript()
+		{
+			Texplorer tex = new Texplorer();
+			List<string> pccs = new List<string>();
+			//Create list of pcc files
+			**m1**
+			
+			List<int> IDs = new List<int>();
+			//Create list of ExpIDs
+			**m2**
+			
+			//Call the correct method
+			**m3**
+			
+			return "Code Finished";
+		}
+	}
+}

@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="HowTo24" xml:space="preserve">
+    <value>Hit 'Start!' and wait.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="AlertWritingTlkFinished" xml:space="preserve">
+    <value>Finished creating TLK file.</value>
+  </data>
+  <data name="CurrentOutputTextFile" xml:space="preserve">
+    <value>Current path to output text file:</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Patcher" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\Patcher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlertExceptionTlkNotFound" xml:space="preserve">
+    <value>Selected TLK file was not found or is corrupted.</value>
+  </data>
+  <data name="HowTo12" xml:space="preserve">
+    <value>Make sure 'Current path to TLK file' points to a TLK file you wish to read from. If it doesn't - use the 'Change' button below it to select your file.</value>
+  </data>
+  <data name="materialviewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\materialviewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Back" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Back.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlertExceptionXmlNotFound" xml:space="preserve">
+    <value>Selected XML file was not found or is corrupted.</value>
+  </data>
+  <data name="coaledit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\coaledit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="propertydumper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\propertydumper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlertExceptionGeneric" xml:space="preserve">
+    <value>Error encountered. Please report it to the author (Gocek on social.bioware.com)!
+</value>
+  </data>
+  <data name="HowTo15" xml:space="preserve">
+    <value>You will see a message saying the work is done and all the data from the TLK file is now in a text file selected before.</value>
+  </data>
+  <data name="CheckboxDebugTlk" xml:space="preserve">
+    <value>Test version (displays String ID before every line in-game)</value>
+  </data>
+  <data name="PSAViewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\PSAViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WriteTlkTab" xml:space="preserve">
+    <value>Create TLK file</value>
+  </data>
+  <data name="texplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\texplorer.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lang" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\lang.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HowToHeader" xml:space="preserve">
+    <value>Typical usage scenario</value>
+  </data>
+  <data name="AlertPre103XML" xml:space="preserve">
+    <value>You are trying to read an XML file, which was created in an earlier version of this program! To make it fully compatible with current version, follow instructions in this thread: http://social.bioware.com/project/3492/discussion/2571/ !</value>
+  </data>
+  <data name="HowTo23" xml:space="preserve">
+    <value>'Current path to output TLK file' should point to a new TLK file which will be generated from selected XML file.</value>
+  </data>
+  <data name="document-save" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\document-save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LoadTlkTab" xml:space="preserve">
+    <value>Load TLK file</value>
+  </data>
+  <data name="ChangeButton" xml:space="preserve">
+    <value>Change...</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning!</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About Mass Effect 2 TLK Tool</value>
+  </data>
+  <data name="help-browser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\help-browser.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PSKViewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\PSKViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Done!</value>
+  </data>
+  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextFilesFilter" xml:space="preserve">
+    <value>XML Files (*.xml)|*.xml</value>
+  </data>
+  <data name="CurrentInputXmlFilePath" xml:space="preserve">
+    <value>Current path to XML file:</value>
+  </data>
+  <data name="MenuAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="AboutDecodingTlk" xml:space="preserve">
+    <value>Decoding TLK format:</value>
+  </data>
+  <data name="HowToSubheader1" xml:space="preserve">
+    <value>Getting text from TLK file</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Mass Effect 2 TLK Tool</value>
+  </data>
+  <data name="XmlFilesFilter" xml:space="preserve">
+    <value>XML Files (*.xml)|*.xml</value>
+  </data>
+  <data name="HowTo14" xml:space="preserve">
+    <value>Hit 'Start!' and wait.</value>
+  </data>
+  <data name="HowTo13" xml:space="preserve">
+    <value>Repeat step two for 'Current path to output text file'. It should point to an XML file you would like to store your text in.</value>
+  </data>
+  <data name="AlertTlkLoadingFinished" xml:space="preserve">
+    <value>Finished reading TLK file.</value>
+  </data>
+  <data name="HowTo25" xml:space="preserve">
+    <value>You will see a message saying the work is done. Your custom TLK file is ready to be put in an appropriate Mass Effect 2 folder.</value>
+  </data>
+  <data name="HowToTitle" xml:space="preserve">
+    <value>How to use?</value>
+  </data>
+  <data name="AboutRest" xml:space="preserve">
+    <value>Writing to TLK, user interface:</value>
+  </data>
+  <data name="CurrentOutputTlkFilePath" xml:space="preserve">
+    <value>Current path to output TLK file:</value>
+  </data>
+  <data name="HowTo11" xml:space="preserve">
+    <value>Select 'Load TLK' tab.</value>
+  </data>
+  <data name="meshexplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\meshexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HowToSubheader2" xml:space="preserve">
+    <value>Creating a new TLK file</value>
+  </data>
+  <data name="CurrentInputTlkFilePath" xml:space="preserve">
+    <value>Current path to TLK file:</value>
+  </data>
+  <data name="tocbin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlertExceptionGenericDescription" xml:space="preserve">
+    <value>Error description: </value>
+  </data>
+  <data name="MenuExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="tocbin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HowTo21" xml:space="preserve">
+    <value>Select 'Create TLK' tab.</value>
+  </data>
+  <data name="TlkFilesFilter" xml:space="preserve">
+    <value>TLK Files (*.tlk)|*.tlk</value>
+  </data>
+  <data name="HowTo22" xml:space="preserve">
+    <value>'Current path to XML file' should point to the previously created XML file (modified or not). If it doesn't - use the 'Change' button below it to select your file.</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="soundexplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\soundexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlertExceptionTlkFormat" xml:space="preserve">
+    <value>Error reading TLK file!
+Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.</value>
+  </data>
+  <data name="shader" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shader.fx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="back2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\back2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

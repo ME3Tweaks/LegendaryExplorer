@@ -1,0 +1,263 @@
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\KFreonLib.dll.config
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\KFreonLib.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\KFreonLib.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Gibbed.IO.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\mscorlib.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\ResILWrapper.exe
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\SaltTPF.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Transitions.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\SaltTPF.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Gibbed.IO.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\ResILWrapper.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\de\mscorlib.resources.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\normidna.nlp
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\normnfc.nlp
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\normnfd.nlp
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\normnfkc.nlp
+D:\CODE\SVN\ME3Ex\KFreonLib\bin\Debug\normnfkd.nlp
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.dll
+D:\CODE\SVN\ME3Ex\KFreonLib\obj\Debug\KFreonLib.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\KFreonLib.dll.config
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\KFreonLib.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\KFreonLib.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Gibbed.IO.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\ResILWrapper.exe
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\SaltTPF.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Transitions.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\SaltTPF.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Gibbed.IO.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\ResILWrapper.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\Transitions.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.dll
+G:\MEEM\dev\Me3Explorer_SVN\KFreonLib\obj\Debug\KFreonLib.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\KFreonLib.dll.config
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\KFreonLib.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\KFreonLib.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Gibbed.IO.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\ResILWrapper.exe
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\SaltTPF.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Transitions.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\SaltTPF.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Gibbed.IO.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\ResILWrapper.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\Transitions.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.dll
+C:\Users\Image 17\Documents\ me3explorer-code\KFreonLib\obj\Debug\KFreonLib.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\KFreonLib.dll.config
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\KFreonLib.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\KFreonLib.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Gibbed.IO.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\SaltTPF.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Transitions.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\SaltTPF.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Gibbed.IO.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\ResILWrapper.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.dll
+D:\My Documents\ME3 Commit\KFreonLib\obj\Debug\KFreonLib.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\ResILWrapper.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\UsefulThings.dll
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\UsefulThings.pdb
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\UsefulThings.xml
+D:\My Documents\ME3 Commit\KFreonLib\bin\Debug\ResILWrapper.xml
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\KFreonLib.dll.config
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\KFreonLib.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\KFreonLib.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Gibbed.IO.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\ResILWrapper.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\SaltTPF.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Transitions.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\UsefulThings.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\SaltTPF.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Gibbed.IO.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\Transitions.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\ResILWrapper.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\ResILWrapper.xml
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\UsefulThings.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\UsefulThings.xml
+D:\My Documents\ME3 Commit - Copy\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.dll
+D:\My Documents\ME3 Commit - Copy\KFreonLib\obj\Debug\KFreonLib.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\KFreonLib.dll.config
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\KFreonLib.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\KFreonLib.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Gibbed.IO.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\mscorlib.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\SaltTPF.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Transitions.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\SaltTPF.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Gibbed.IO.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\Transitions.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\de\mscorlib.resources.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\normidna.nlp
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\normnfc.nlp
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\normnfd.nlp
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\normnfkc.nlp
+D:\CODE\SVN\ME3Explorer\KFreonLib\bin\Debug\normnfkd.nlp
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.dll
+D:\CODE\SVN\ME3Explorer\KFreonLib\obj\Debug\KFreonLib.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\KFreonLib.dll.config
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\KFreonLib.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\KFreonLib.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.ImageFormat.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Gibbed.IO.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\SaltTPF.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Transitions.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\ICSharpCode.SharpZipLib.dll
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.ImageFormat.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.ImageMipMapHandler.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.TOCHandler.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Be.Windows.Forms.HexBox.xml
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\SaltTPF.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Gibbed.IO.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\Transitions.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.Debugging.DebugWindow.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.Helpers.KFreonMessageBox.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.Helpers.PathChanger.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.Misc.Interpreter2.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.Scripting.ScriptCompiler.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.TOCComparison.resources
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.csproj.GenerateResource.Cache
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.dll
+G:\Code\ME3\me3ex latest\KFreonLib\obj\Debug\KFreonLib.pdb

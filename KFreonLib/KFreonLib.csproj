@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B07ED45-42F4-4B0E-A581-2C257F77241E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KFreonLib</RootNamespace>
+    <AssemblyName>KFreonLib</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="ResILWrapper, Version=1.0.5608.23680, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Code Repository\C#\ResILWrapper\ResILWrapper\bin\Debug\ResILWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UsefulThings">
+      <HintPath>..\..\Code Repository\C#\UsefulThings\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BackBone.cs" />
+    <Compile Include="GUI\Gooey.cs" />
+    <Compile Include="GUI\GUIMisc.cs" />
+    <Compile Include="Helpers\KFreonMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Helpers\KFreonMessageBox.Designer.cs">
+      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MEDirectories\MEExDirectories.cs" />
+    <Compile Include="Misc\BitConverter.cs" />
+    <Compile Include="Debugging\DebugOutput.cs" />
+    <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Misc\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Misc\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TalkFile.cs" />
+    <Compile Include="Debugging\DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Debugging\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\PathChanger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Helpers\PathChanger.Designer.cs">
+      <DependentUpon>PathChanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scripting\ScriptCompiler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Scripting\ScriptCompiler.Designer.cs">
+      <DependentUpon>ScriptCompiler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\SelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Helpers\SelectionForm.Designer.cs">
+      <DependentUpon>SelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Misc\TOCEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Misc\TOCEditor.Designer.cs">
+      <DependentUpon>TOCEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\MemoryTributary.cs" />
+    <Compile Include="Helpers\MiniLZO.cs" />
+    <Compile Include="Helpers\SaltLZOHelper.cs" />
+    <Compile Include="Textures\Targa.cs" />
+    <Compile Include="Helpers\UnrealFlags.cs" />
+    <Compile Include="Misc\Ini.cs" />
+    <Compile Include="Scripting\IScript.cs" />
+    <Compile Include="MEDirectories\ME1Directory.cs" />
+    <Compile Include="MEDirectories\ME2Directory.cs" />
+    <Compile Include="MEDirectories\ME3Directory.cs" />
+    <Compile Include="PCCObjects\MEPropertyReader.cs" />
+    <Compile Include="Misc\Misc.cs" />
+    <Compile Include="Scripting\ModMakerHelper.cs" />
+    <Compile Include="PCCObjects\ExportEntrys.cs" />
+    <Compile Include="PCCObjects\IExportEntry.cs" />
+    <Compile Include="PCCObjects\IImportEntry.cs" />
+    <Compile Include="PCCObjects\ImportEntrys.cs" />
+    <Compile Include="PCCObjects\IPCCObject.cs" />
+    <Compile Include="PCCObjects\ME1PCCObject.cs" />
+    <Compile Include="PCCObjects\ME2PCCObject.cs" />
+    <Compile Include="PCCObjects\ME3PCCObjectSALTPCC.cs" />
+    <Compile Include="PCCObjects\PCCHandler.cs" />
+    <Compile Include="PCCObjects\PCCMisc.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\BasicFunction.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Misc\PropGrid.cs" />
+    <Compile Include="GUI\taskbar.cs" />
+    <Compile Include="Textures\IImageInfo.cs" />
+    <Compile Include="Textures\ITexture2D.cs" />
+    <Compile Include="Textures\ME1Texture2D.cs" />
+    <Compile Include="Textures\ME2Texture2D.cs" />
+    <Compile Include="Textures\ME3SaltTexture2D.cs" />
+    <Compile Include="Textures\ME3Texture2D.cs" />
+    <Compile Include="Textures\SaltDDSPreview.cs" />
+    <Compile Include="Textures\TexInfo.cs" />
+    <Compile Include="Textures\Misc.cs" />
+    <Compile Include="TOCComparison.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TOCComparison.Designer.cs">
+      <DependentUpon>TOCComparison.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeDB.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
+      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
+      <Name>AmaroK86.ImageFormat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
+      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
+      <Name>AmaroK86.ImageMipMapHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler.csproj">
+      <Project>{fd18702e-c7a4-42a1-ac91-c1671fdf7522}</Project>
+      <Name>AmaroK86.MassEffect3.TOCHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+      <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
+      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
+      <Project>{26c5f25f-b450-4caf-ad8b-b8d11ae73457}</Project>
+      <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
+      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
+      <Name>SaltTPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Transitions\Transitions\Transitions.csproj">
+      <Project>{95cde461-0720-4c3b-b5e1-d188391fb7c0}</Project>
+      <Name>Transitions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Debugging\DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Helpers\KFreonMessageBox.resx">
+      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Helpers\PathChanger.resx">
+      <DependentUpon>PathChanger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Misc\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripting\ScriptCompiler.resx">
+      <DependentUpon>ScriptCompiler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TOCComparison.resx">
+      <DependentUpon>TOCComparison.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

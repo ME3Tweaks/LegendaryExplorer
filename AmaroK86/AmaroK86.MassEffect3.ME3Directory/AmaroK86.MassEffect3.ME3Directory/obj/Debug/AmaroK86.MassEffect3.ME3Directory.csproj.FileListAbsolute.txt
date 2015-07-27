@@ -1,0 +1,7 @@
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\bin\Debug\AmaroK86.MassEffect3.ME3Directory.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\bin\Debug\AmaroK86.MassEffect3.ME3Directory.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\bin\Debug\INIHandler.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\bin\Debug\INIHandler.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\obj\Debug\AmaroK86.MassEffect3.ME3Directory.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\obj\Debug\AmaroK86.MassEffect3.ME3Directory.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\obj\Debug\AmaroK86.MassEffect3.ME3Directory.pdb

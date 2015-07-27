@@ -1,0 +1,7 @@
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\bin\Debug\AmaroK86.ImageFormat.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\bin\Debug\AmaroK86.ImageFormat.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\bin\Debug\Gibbed.IO.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\bin\Debug\Gibbed.IO.pdb
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\obj\Debug\AmaroK86.ImageFormat.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\obj\Debug\AmaroK86.ImageFormat.dll
+G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\obj\Debug\AmaroK86.ImageFormat.pdb

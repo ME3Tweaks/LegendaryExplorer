@@ -1,0 +1,49 @@
+using ME3Explorer;
+using ME3Explorer.UnrealHelper;
+using System;
+using System.Collections.Generic;
+using KFreonLib.Scripting;
+
+namespace SimpleScripts
+{
+	public class MyScript : IScript
+	{
+		public string RunScript()
+		{
+			//Add Images
+			**m1**
+			
+			//Remove Images
+			**m2**
+			
+			return "Code Finished";
+		}
+		
+		public void AddImage()
+		{
+			Texplorer2 tex = new Texplorer2(true, **which**);
+			List<string> pccs = new List<string>();
+			//Create list of pcc files
+			**m3**
+			
+			List<int> IDs = new List<int>();
+			//Create list of expIDs
+			**m4**
+			
+			tex.InstallTexture("**m5**", pccs, IDs, KFreonLib.Scripting.ModMaker.ModData);
+		}
+		
+		public void RemoveTex()
+		{
+			Texplorer2 tex = new Texplorer2(true, **which**);
+			List<string> pccs = new List<string>();
+			//Create list of pcc files
+			**m3**
+			
+			List<int> IDs = new List<int>();
+			//Create list of expIDs
+			**m4**
+			tex.removeTopTexture("**m5**", pccs, IDs);
+		}
+	}
+}

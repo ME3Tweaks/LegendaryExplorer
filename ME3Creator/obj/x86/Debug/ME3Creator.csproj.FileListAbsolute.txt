@@ -1,0 +1,140 @@
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\ME3Creator.exe.config
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\ME3Creator.exe
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\ME3Creator.pdb
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\UDKLibWV.dll
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Ex\ME3Creator\bin\Debug\UDKLibWV.pdb
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.exe
+D:\CODE\SVN\ME3Ex\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\ME3Creator.exe.config
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\ME3Creator.exe
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\ME3Creator.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\ME3LibWV.dll
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\UDKLibWV.dll
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\ME3LibWV.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\bin\Debug\UDKLibWV.pdb
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.exe
+G:\MEEM\dev\Me3Explorer_SVN\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\ME3Creator.exe.config
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\ME3Creator.exe
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\ME3Creator.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\ME3LibWV.dll
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\UDKLibWV.dll
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\ME3LibWV.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\bin\Debug\UDKLibWV.pdb
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.exe
+C:\Users\Image 17\Documents\ me3explorer-code\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\ME3Creator.exe.config
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\ME3Creator.exe
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\ME3Creator.pdb
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\UDKLibWV.dll
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit\ME3Creator\bin\Debug\UDKLibWV.pdb
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.exe
+D:\My Documents\ME3 Commit\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\ME3Creator.exe.config
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\ME3Creator.exe
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\ME3Creator.pdb
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\ME3LibWV.dll
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\UDKLibWV.dll
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\ME3LibWV.pdb
+D:\My Documents\ME3 Commit - Copy\ME3Creator\bin\Debug\UDKLibWV.pdb
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.exe
+D:\My Documents\ME3 Commit - Copy\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\ME3Creator.exe.config
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.exe
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\ME3Creator.exe
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\ME3Creator.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\ME3LibWV.dll
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\UDKLibWV.dll
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\ME3LibWV.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\bin\Debug\UDKLibWV.pdb
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+D:\CODE\SVN\ME3Explorer\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\ME3Creator.exe.config
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\ME3Creator.exe
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\ME3Creator.pdb
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.dll
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\ME3LibWV.dll
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\UDKLibWV.dll
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.pdb
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\Be.Windows.Forms.HexBox.xml
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\ME3LibWV.pdb
+G:\Code\ME3\me3ex latest\ME3Creator\bin\Debug\UDKLibWV.pdb
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.csprojResolveAssemblyReference.cache
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.Form1.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.Hexconverter.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.MoveStuff.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.Nameselect.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.Objectselect.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.Properties.Resources.resources
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.csproj.GenerateResource.Cache
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.exe
+G:\Code\ME3\me3ex latest\ME3Creator\obj\x86\Debug\ME3Creator.pdb

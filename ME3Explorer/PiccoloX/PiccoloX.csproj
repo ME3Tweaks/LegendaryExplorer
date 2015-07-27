@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>7.10.3077</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E4079B36-6A5D-42C2-8F20-6C0DD8780192}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon />
+    <AssemblyKeyContainerName />
+    <AssemblyName>UMD.HCIL.PiccoloX</AssemblyName>
+    <AssemblyOriginatorKeyFile />
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UMD.HCIL.PiccoloX</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject />
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>0.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile />
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>UMD.HCIL.PiccoloX.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn />
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile />
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>piccolox.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn />
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>3</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Name>Piccolo</Name>
+      <Project>{A1E844B2-72BC-469D-B68F-7DE6AF0BBCD9}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activities\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Activities\PPathActivity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Activities\PPositionPathActivity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\PCacheCanvas.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\PDefaultScrollDirector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\PScrollableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\PScrollDirector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PControlEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PNavigationEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PNotification.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PNotificationCenter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PSelectionEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Events\PZoomToEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handles\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handles\PBoundsHandle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handles\PHandle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handles\PStickyHandleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\P3DRectangle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PCacheCamera.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PClip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PComposite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PLens.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodes\PNodeCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Util\NamespaceDoc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\PBoundsLocator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\PLocator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\PNodeLocator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\POcclusionDetection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\PXUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Components\PScrollableControl.resx">
+      <DependentUpon>PScrollableControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent />
+    <PostBuildEvent />
+  </PropertyGroup>
+</Project>

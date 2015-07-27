@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AFA017ED-5E32-459C-A204-8D9C6C1657FC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ME2Explorer</RootNamespace>
+    <AssemblyName>ME2Explorer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ME2Explorer.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DLCCrack\DataProtection.cs" />
+    <Compile Include="DLCCrack\GiveEntitlements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLCCrack\GiveEntitlements.Designer.cs">
+      <DependentUpon>GiveEntitlements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLCCrack\IpHelp.cs" />
+    <Compile Include="Helper\Ini.cs" />
+    <Compile Include="Helper\SaltLZOHelper.cs" />
+    <Compile Include="Interpreter2\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interpreter2\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PiccoloX\Activities\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Activities\PPathActivity.cs" />
+    <Compile Include="PiccoloX\Activities\PPositionPathActivity.cs" />
+    <Compile Include="PiccoloX\Components\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Components\PCacheCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PDefaultScrollDirector.cs" />
+    <Compile Include="PiccoloX\Components\PScrollableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PScrollDirector.cs" />
+    <Compile Include="PiccoloX\Events\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Events\PControlEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNavigationEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNotification.cs" />
+    <Compile Include="PiccoloX\Events\PNotificationCenter.cs" />
+    <Compile Include="PiccoloX\Events\PSelectionEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PZoomToEventHandler.cs" />
+    <Compile Include="PiccoloX\Handles\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Handles\PBoundsHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PStickyHandleManager.cs" />
+    <Compile Include="PiccoloX\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\P3DRectangle.cs" />
+    <Compile Include="PiccoloX\Nodes\PCacheCamera.cs" />
+    <Compile Include="PiccoloX\Nodes\PClip.cs" />
+    <Compile Include="PiccoloX\Nodes\PComposite.cs" />
+    <Compile Include="PiccoloX\Nodes\PControl.cs" />
+    <Compile Include="PiccoloX\Nodes\PLens.cs" />
+    <Compile Include="PiccoloX\Nodes\PNodeCache.cs" />
+    <Compile Include="PiccoloX\PForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Util\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Util\PBoundsLocator.cs" />
+    <Compile Include="PiccoloX\Util\PLocator.cs" />
+    <Compile Include="PiccoloX\Util\PNodeLocator.cs" />
+    <Compile Include="PiccoloX\Util\POcclusionDetection.cs" />
+    <Compile Include="PiccoloX\Util\PXUtil.cs" />
+    <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Activities\PActivity.cs" />
+    <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
+    <Compile Include="Piccolo\Activities\PColorActivity.cs" />
+    <Compile Include="Piccolo\Activities\PInterpolatingActivity.cs" />
+    <Compile Include="Piccolo\Activities\PTransformActivity.cs" />
+    <Compile Include="Piccolo\Event\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Event\PBasicInputEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragSequenceEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PInputEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PInputEventListener.cs" />
+    <Compile Include="Piccolo\Event\PPanEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PPropertyEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PZoomEventHandler.cs" />
+    <Compile Include="Piccolo\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\PImage.cs" />
+    <Compile Include="Piccolo\Nodes\PPath.cs" />
+    <Compile Include="Piccolo\Nodes\PText.cs" />
+    <Compile Include="Piccolo\PCamera.cs" />
+    <Compile Include="Piccolo\PCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Piccolo\PInputManager.cs" />
+    <Compile Include="Piccolo\PLayer.cs" />
+    <Compile Include="Piccolo\PNode.cs" />
+    <Compile Include="Piccolo\PRoot.cs" />
+    <Compile Include="Piccolo\Util\GraphicsPathSurrogate.cs" />
+    <Compile Include="Piccolo\Util\MatrixSurrogate.cs" />
+    <Compile Include="Piccolo\Util\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Util\PActivityList.cs" />
+    <Compile Include="Piccolo\Util\PCameraList.cs" />
+    <Compile Include="Piccolo\Util\PDebug.cs" />
+    <Compile Include="Piccolo\Util\PLayerList.cs" />
+    <Compile Include="Piccolo\Util\PMatrix.cs" />
+    <Compile Include="Piccolo\Util\PNodeFilter.cs" />
+    <Compile Include="Piccolo\Util\PNodeList.cs" />
+    <Compile Include="Piccolo\Util\PPaintContext.cs" />
+    <Compile Include="Piccolo\Util\PPickPath.cs" />
+    <Compile Include="Piccolo\Util\PStream.cs" />
+    <Compile Include="Piccolo\Util\PUtil.cs" />
+    <Compile Include="Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selector.Designer.cs">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\MiniLZO.cs" />
+    <Compile Include="Helper\Targa.cs" />
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor\PCCEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor\PCCEditor.Designer.cs">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sequence Editor\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceObjects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Classes\Sequence.cs" />
+    <Compile Include="Unreal\Classes\Texture2D.cs" />
+    <Compile Include="Unreal\PCCObject.cs" />
+    <Compile Include="Unreal\PropertyReader.cs" />
+    <Compile Include="Unreal\PropGrid.cs" />
+    <Compile Include="Unreal\UnrealFlags.cs" />
+    <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiccoloX\Components\PScrollableControl.resx">
+      <DependentUpon>PScrollableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiccoloX\PForm.resx">
+      <DependentUpon>PForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Piccolo\PCanvas.resx">
+      <DependentUpon>PCanvas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selector.resx">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor\PCCEditor.resx">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <Content Include="KismetFont.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
+      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
+      <Name>AmaroK86.ImageFormat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
+      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
+      <Name>AmaroK86.ImageMipMapHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj">
+      <Project>{3e5a67f3-cf3a-4cb2-a291-7882bef2fe02}</Project>
+      <Name>AmaroK86.MassEffect3.DLCBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
+      <Project>{5fd88b3c-b192-42be-8b05-9cac3f7405fb}</Project>
+      <Name>AmaroK86.MassEffect3.DLCEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+      <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
+      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
+      <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
+      <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
+      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
+      <Name>SaltTPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PiccoloX\PiccoloX.csproj" />
+    <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
+    <Content Include="Piccolo\Piccolo.csproj" />
+    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd /d $(DevEnvDir)
+cd ..
+cd tools
+call vsvars32.bat
+editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

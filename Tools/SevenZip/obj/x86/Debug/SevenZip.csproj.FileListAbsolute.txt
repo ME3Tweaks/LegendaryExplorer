@@ -1,0 +1,5 @@
+G:\Code\ME3\me3ex latest\Tools\SevenZip\bin\Debug\SevenZip.dll
+G:\Code\ME3\me3ex latest\Tools\SevenZip\bin\Debug\SevenZip.pdb
+G:\Code\ME3\me3ex latest\Tools\SevenZip\obj\x86\Debug\SevenZip.dll
+G:\Code\ME3\me3ex latest\Tools\SevenZip\obj\x86\Debug\SevenZip.pdb
+G:\Code\ME3\me3ex latest\Tools\SevenZip\obj\x86\Debug\SevenZip.csprojResolveAssemblyReference.cache

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmaroK86.MassEffect3.DLCBase", "AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj", "{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.IO", "..\..\Tools\Gibbed.IO\Gibbed.IO.csproj", "{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip", "..\..\Tools\SevenZip\SevenZip.csproj", "{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Debug|x86.Build.0 = Debug|Any CPU
+		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Release|x86.Build.0 = Release|Any CPU
+		{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}.Debug|x86.ActiveCfg = Debug|x86
+		{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}.Debug|x86.Build.0 = Debug|x86
+		{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}.Release|x86.ActiveCfg = Release|x86
+		{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}.Release|x86.Build.0 = Release|x86
+		{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}.Debug|x86.ActiveCfg = Debug|x86
+		{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}.Debug|x86.Build.0 = Debug|x86
+		{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}.Release|x86.ActiveCfg = Release|x86
+		{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj
+	EndGlobalSection
+EndGlobal

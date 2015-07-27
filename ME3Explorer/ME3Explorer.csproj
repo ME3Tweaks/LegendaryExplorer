@@ -1,0 +1,1283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3F331CEF-807F-4D38-9123-1B65E6871701}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ME3Explorer</RootNamespace>
+    <AssemblyName>ME3Explorer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon_cidatel.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ME3Explorer.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="lib3ds.Net, Version=2.0.0.15746, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\lib3ds.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX">
+      <HintPath>.\Microsoft.DirectX.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.Direct3D">
+      <HintPath>.\Microsoft.DirectX.Direct3D.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.Direct3DX">
+      <HintPath>.\Microsoft.DirectX.Direct3DX.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Tools\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="ResILWrapper, Version=1.0.5608.23680, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Code Repository\C#\ResILWrapper\ResILWrapper\bin\Debug\ResILWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UsefulThings">
+      <HintPath>..\..\Code Repository\C#\UsefulThings\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AFCExtract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AFCExtract.Designer.cs">
+      <DependentUpon>AFCExtract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnimationExplorer\AnimationExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnimationExplorer\AnimationExplorer.Designer.cs">
+      <DependentUpon>AnimationExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AssetExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssetExplorer.Designer.cs">
+      <DependentUpon>AssetExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoTOC\AutoTOC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoTOC\AutoTOC.Designer.cs">
+      <DependentUpon>AutoTOC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="batchrenamer\BatchRenamer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="batchrenamer\BatchRenamer.Designer.cs">
+      <DependentUpon>BatchRenamer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BIKExtract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BIKExtract.Designer.cs">
+      <DependentUpon>BIKExtract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraTool\CameraTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraTool\CameraTool.Designer.cs">
+      <DependentUpon>CameraTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClassViewer\ClassViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClassViewer\ClassViewer.Designer.cs">
+      <DependentUpon>ClassViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
+      <DependentUpon>CoalEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Editor\FileWrapper.cs" />
+    <Compile Include="Coalesced Editor\Setup.cs" />
+    <Compile Include="Coalesced Operator\advancedGraphics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\advancedGraphics.designer.cs">
+      <DependentUpon>advancedGraphics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Operator\Keybinder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\Keybinder.Designer.cs">
+      <DependentUpon>Keybinder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Operator\opClass.cs" />
+    <Compile Include="Coalesced Operator\Operator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\Operator.Designer.cs">
+      <DependentUpon>Operator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Codex Editor\CodexEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Codex Editor\CodexEditor.Designer.cs">
+      <DependentUpon>CodexEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\AddReply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\AddReply.Designer.cs">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.Designer.cs">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLCEditor2\DLCEditor2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLCEditor2\DLCEditor2.Designer.cs">
+      <DependentUpon>DLCEditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLCTOCbinUpdater\DLCTOCbinUpdater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLCTOCbinUpdater\DLCTOCbinUpdater.Designer.cs">
+      <DependentUpon>DLCTOCbinUpdater.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
+      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeaderEditor\HeaderEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HeaderEditor\HeaderEditor.Designer.cs">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpEditor\InterpEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InterpEditor\InterpEditor.Designer.cs">
+      <DependentUpon>InterpEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpEditor\InterpTracks.cs" />
+    <Compile Include="InterpEditor\Timeline.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="KFreonListErrorBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KFreonListErrorBox.Designer.cs">
+      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KFreonSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KFreonSearchForm.Designer.cs">
+      <DependentUpon>KFreonSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KFreonTPFTools3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KFreonTPFTools3.Designer.cs">
+      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModMaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModMaker.Designer.cs">
+      <DependentUpon>ModMaker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PAREditor\PAREditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PAREditor\PAREditor.Designer.cs">
+      <DependentUpon>PAREditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor2\CloneDialog2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor2\CloneDialog2.Designer.cs">
+      <DependentUpon>CloneDialog2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor2\DLCDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor2\DLCDialog.Designer.cs">
+      <DependentUpon>DLCDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PiccoloX\Activities\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Activities\PPathActivity.cs" />
+    <Compile Include="PiccoloX\Activities\PPositionPathActivity.cs" />
+    <Compile Include="PiccoloX\Components\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Components\PCacheCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PDefaultScrollDirector.cs" />
+    <Compile Include="PiccoloX\Components\PScrollableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PScrollDirector.cs" />
+    <Compile Include="PiccoloX\Events\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Events\PControlEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNavigationEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNotification.cs" />
+    <Compile Include="PiccoloX\Events\PNotificationCenter.cs" />
+    <Compile Include="PiccoloX\Events\PSelectionEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PZoomToEventHandler.cs" />
+    <Compile Include="PiccoloX\Handles\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Handles\PBoundsHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PStickyHandleManager.cs" />
+    <Compile Include="PiccoloX\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\P3DRectangle.cs" />
+    <Compile Include="PiccoloX\Nodes\PCacheCamera.cs" />
+    <Compile Include="PiccoloX\Nodes\PClip.cs" />
+    <Compile Include="PiccoloX\Nodes\PComposite.cs" />
+    <Compile Include="PiccoloX\Nodes\PControl.cs" />
+    <Compile Include="PiccoloX\Nodes\PLens.cs" />
+    <Compile Include="PiccoloX\Nodes\PNodeCache.cs" />
+    <Compile Include="PiccoloX\PForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Util\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Util\PBoundsLocator.cs" />
+    <Compile Include="PiccoloX\Util\PLocator.cs" />
+    <Compile Include="PiccoloX\Util\PNodeLocator.cs" />
+    <Compile Include="PiccoloX\Util\POcclusionDetection.cs" />
+    <Compile Include="PiccoloX\Util\PXUtil.cs" />
+    <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Activities\PActivity.cs" />
+    <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
+    <Compile Include="Piccolo\Activities\PColorActivity.cs" />
+    <Compile Include="Piccolo\Activities\PInterpolatingActivity.cs" />
+    <Compile Include="Piccolo\Activities\PTransformActivity.cs" />
+    <Compile Include="Piccolo\Event\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Event\PBasicInputEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragSequenceEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PInputEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PInputEventListener.cs" />
+    <Compile Include="Piccolo\Event\PPanEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PPropertyEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PZoomEventHandler.cs" />
+    <Compile Include="Piccolo\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\PImage.cs" />
+    <Compile Include="Piccolo\Nodes\PPath.cs" />
+    <Compile Include="Piccolo\Nodes\PText.cs" />
+    <Compile Include="Piccolo\PCamera.cs" />
+    <Compile Include="Piccolo\PCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Piccolo\PInputManager.cs" />
+    <Compile Include="Piccolo\PLayer.cs" />
+    <Compile Include="Piccolo\PNode.cs" />
+    <Compile Include="Piccolo\PRoot.cs" />
+    <Compile Include="Piccolo\Util\GraphicsPathSurrogate.cs" />
+    <Compile Include="Piccolo\Util\MatrixSurrogate.cs" />
+    <Compile Include="Piccolo\Util\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Util\PActivityList.cs" />
+    <Compile Include="Piccolo\Util\PCameraList.cs" />
+    <Compile Include="Piccolo\Util\PDebug.cs" />
+    <Compile Include="Piccolo\Util\PLayerList.cs" />
+    <Compile Include="Piccolo\Util\PMatrix.cs" />
+    <Compile Include="Piccolo\Util\PNodeFilter.cs" />
+    <Compile Include="Piccolo\Util\PNodeList.cs" />
+    <Compile Include="Piccolo\Util\PPaintContext.cs" />
+    <Compile Include="Piccolo\Util\PPickPath.cs" />
+    <Compile Include="Piccolo\Util\PStream.cs" />
+    <Compile Include="Piccolo\Util\PUtil.cs" />
+    <Compile Include="Sequence Editor\SequenceObjects.cs" />
+    <Compile Include="SubtitleScanner\FileHelpers.cs" />
+    <Compile Include="SubtitleScanner\SubtitleScanner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
+      <DependentUpon>SubtitleScanner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texplorer2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texplorer2.Designer.cs">
+      <DependentUpon>Texplorer2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TexplorerFirstTimeSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TexplorerFirstTimeSetup.Designer.cs">
+      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Unreal\Classes\BioConversation.cs" />
+    <Compile Include="Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="Unreal\DLCPackage.cs" />
+    <Compile Include="DLLInjector\DLLInjector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLLInjector\DLLInjector.Designer.cs">
+      <DependentUpon>DLLInjector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interpreter2\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interpreter2\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\Levelbase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\Levelbase.Designer.cs">
+      <DependentUpon>Levelbase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DirectXGlobal.cs" />
+    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.Designer.cs">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
+    <Compile Include="LevelExplorer\ME3LevelExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\ME3LevelExplorer.Designer.cs">
+      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Material Viewer\MaterialPreview.cs" />
+    <Compile Include="Material Viewer\MaterialViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Material Viewer\MaterialViewer.Designer.cs">
+      <DependentUpon>MaterialViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Material Viewer\Shader Code.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Material Viewer\Shader Code.Designer.cs">
+      <DependentUpon>Shader Code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer2\Meshplorer2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer2\Meshplorer2.Designer.cs">
+      <DependentUpon>Meshplorer2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer2\Renderer.cs" />
+    <Compile Include="Meshplorer\ImportOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\ImportOptions.Designer.cs">
+      <DependentUpon>ImportOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\MeshDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\MeshDatabase.Designer.cs">
+      <DependentUpon>MeshDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\Meshplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\Meshplorer.Designer.cs">
+      <DependentUpon>Meshplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\MeshPlorerOptions.cs" />
+    <Compile Include="Meshplorer\Preview3D.cs" />
+    <Compile Include="Meshplorer\UDKCopy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\UDKCopy.Designer.cs">
+      <DependentUpon>UDKCopy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Patcher\Patcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Patcher\Patcher.Designer.cs">
+      <DependentUpon>Patcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor2\CloneDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor2\CloneDialog.Designer.cs">
+      <DependentUpon>CloneDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlotVarDB\PlotVarDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlotVarDB\PlotVarDB.Designer.cs">
+      <DependentUpon>PlotVarDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlotVarDB\PlotVarEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlotVarDB\PlotVarEditor.Designer.cs">
+      <DependentUpon>PlotVarEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Property Dumper\PropDumper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Property Dumper\PropDumper.Designer.cs">
+      <DependentUpon>PropDumper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Propertydb\PropertyDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Propertydb\PropertyDB.Designer.cs">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PSAViewer\PSAViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PSAViewer\PSAViewer.Designer.cs">
+      <DependentUpon>PSAViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PSKViewer\PSKViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PSKViewer\PSKViewer.Designer.cs">
+      <DependentUpon>PSKViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QuestMapEditor\QMapEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuestMapEditor\QMapEditor.Designer.cs">
+      <DependentUpon>QMapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptDB\ScriptDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScriptDB\ScriptDB.Designer.cs">
+      <DependentUpon>ScriptDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Select Material.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Select Material.Designer.cs">
+      <DependentUpon>Select Material.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Soundplorer\DirectReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Soundplorer\DirectReplace.Designer.cs">
+      <DependentUpon>DirectReplace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Soundplorer\Soundplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Soundplorer\Soundplorer.Designer.cs">
+      <DependentUpon>Soundplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="taskbar.cs" />
+    <Compile Include="CondEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Conditionals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Conditionals.Designer.cs">
+      <DependentUpon>Conditionals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DebugTools.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HowToUseWindow.xaml.cs">
+      <DependentUpon>HowToUseWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HuffmanCompression.cs" />
+    <Compile Include="Language Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Language Editor.Designer.cs">
+      <DependentUpon>Language Editor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Language Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Language Selector.Designer.cs">
+      <DependentUpon>Language Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLCExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLCExplorer.Designer.cs">
+      <DependentUpon>DLCExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Leveleditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Leveleditor.Designer.cs">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Lvl_Transform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lvl_Transform.Designer.cs">
+      <DependentUpon>Lvl_Transform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEditor2\PCCEditor2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEditor2\PCCEditor2.Designer.cs">
+      <DependentUpon>PCCEditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCEntryEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCEntryEdit.Designer.cs">
+      <DependentUpon>PCCEntryEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCCRepack.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PCCRepack.Designer.cs">
+      <DependentUpon>PCCRepack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyManager.Designer.cs">
+      <DependentUpon>PropertyManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="TalkFile.cs" />
+    <Compile Include="TargaImage.cs" />
+    <Compile Include="TexSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TexSelection.Designer.cs">
+      <DependentUpon>TexSelection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextInput.Designer.cs">
+      <DependentUpon>TextInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texture Tool\TextureTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texture Tool\TextureTool.Designer.cs">
+      <DependentUpon>TextureTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextureExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextureExplorer.Designer.cs">
+      <DependentUpon>TextureExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TOCeditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TOCeditor.Designer.cs">
+      <DependentUpon>TOCeditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TOCEditorAK\TOCEditorAK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TOCEditorAK\TOCEditorAK.Designer.cs">
+      <DependentUpon>TOCEditorAK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TOCUpdater\TOCUpdater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TOCUpdater\TOCUpdater.Designer.cs">
+      <DependentUpon>TOCUpdater.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\DLCHelper.cs" />
+    <Compile Include="Tools\INIManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tools\MD5Hash.cs" />
+    <Compile Include="Tools\PatcherTool.cs" />
+    <Compile Include="Tools\TOCbinUpdater.cs" />
+    <Compile Include="TreeViewSerializer.cs" />
+    <Compile Include="UDKConverter\UDKConverter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UDKConverter\UDKConverter.Designer.cs">
+      <DependentUpon>UDKConverter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UECodeEditor\OPCodes.cs" />
+    <Compile Include="UECodeEditor\OPCodeTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UECodeEditor\OPCodeTable.Designer.cs">
+      <DependentUpon>OPCodeTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UECodeEditor\UECodeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UECodeEditor\UECodeEditor.Designer.cs">
+      <DependentUpon>UECodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnrealHelper\AFCFile.cs" />
+    <Compile Include="UnrealHelper\ImageFile.cs" />
+    <Compile Include="UnrealHelper\Languages.cs" />
+    <Compile Include="UnrealHelper\UMaterial.cs" />
+    <Compile Include="UnrealHelper\UMath.cs" />
+    <Compile Include="UnrealHelper\PCCFile.cs" />
+    <Compile Include="UnrealHelper\Preview3D.cs" />
+    <Compile Include="UnrealHelper\PSKFile.cs" />
+    <Compile Include="UnrealHelper\TFCFile.cs" />
+    <Compile Include="UnrealHelper\UDecalActor.cs" />
+    <Compile Include="UnrealHelper\UDecalComponent.cs" />
+    <Compile Include="UnrealHelper\UInterpActor.cs" />
+    <Compile Include="UnrealHelper\ULevel.cs" />
+    <Compile Include="UnrealHelper\UnknownObject.cs" />
+    <Compile Include="UnrealHelper\UnrealObject.cs" />
+    <Compile Include="UnrealHelper\UPropertyReader.cs" />
+    <Compile Include="UnrealHelper\USkelMesh.cs" />
+    <Compile Include="UnrealHelper\UStaticMesh.cs" />
+    <Compile Include="UnrealHelper\UStaticMeshActor.cs" />
+    <Compile Include="UnrealHelper\UStaticMeshCollectionActor.cs" />
+    <Compile Include="UnrealHelper\UStaticMeshComponent.cs" />
+    <Compile Include="UnrealHelper\UTexture2D.cs" />
+    <Compile Include="UnrealHelper\UWwiseStream.cs" />
+    <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Bytecode.cs" />
+    <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
+    <Compile Include="Unreal\Classes\AnimSequence.cs" />
+    <Compile Include="Unreal\Classes\AnimSet.cs" />
+    <Compile Include="Unreal\Classes\AnimTree.cs" />
+    <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
+    <Compile Include="Unreal\Classes\BioPathPoint.cs" />
+    <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
+    <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
+    <Compile Include="Unreal\Classes\BlockingVolume.cs" />
+    <Compile Include="Unreal\Classes\BrushComponent.cs" />
+    <Compile Include="Unreal\Classes\CoverLink.cs" />
+    <Compile Include="Unreal\Classes\CoverSlotMarker.cs" />
+    <Compile Include="Unreal\Classes\DecalActor.cs" />
+    <Compile Include="Unreal\Classes\DecalComponent.cs" />
+    <Compile Include="Unreal\Classes\Emitter.cs" />
+    <Compile Include="Unreal\Classes\Function.cs" />
+    <Compile Include="Unreal\Classes\InterpActor.cs" />
+    <Compile Include="Unreal\Classes\Level.cs" />
+    <Compile Include="Unreal\Classes\LightVolume.cs" />
+    <Compile Include="Unreal\Classes\MantleMarker.cs" />
+    <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
+    <Compile Include="Unreal\Classes\PathNode.cs" />
+    <Compile Include="Unreal\Classes\Sequence.cs" />
+    <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
+    <Compile Include="Unreal\Classes\SkeletalMeshOld.cs" />
+    <Compile Include="Unreal\Classes\SplineActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMesh.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshCollectionActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshComponent.cs" />
+    <Compile Include="Unreal\Classes\TargetPoint.cs" />
+    <Compile Include="Unreal\Classes\Texture2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Unreal\Classes\TextureGroup.cs" />
+    <Compile Include="Unreal\Classes\WwiseAmbientSound.cs" />
+    <Compile Include="Unreal\Classes\WwiseAudioVolume.cs" />
+    <Compile Include="Unreal\Classes\WwiseBank.cs" />
+    <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
+    <Compile Include="Unreal\Classes\WwiseStream.cs" />
+    <Compile Include="Unreal\Helper3DS.cs" />
+    <Compile Include="Unreal\PCCHandler.cs" />
+    <Compile Include="Unreal\PCCObject.cs" />
+    <Compile Include="Unreal\PropertyReader.cs" />
+    <Compile Include="Unreal\PropGrid.cs" />
+    <Compile Include="Unreal\PSAFile.cs" />
+    <Compile Include="Unreal\PSKFile.cs" />
+    <Compile Include="Unreal\SerializingContainer.cs" />
+    <Compile Include="Unreal\TOCBinFile.cs" />
+    <Compile Include="Unreal\UnrealFlags.cs" />
+    <Compile Include="VersionChecker\VersionChecker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VersionChecker\VersionChecker.Designer.cs">
+      <DependentUpon>VersionChecker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WwiseBankViewer\WwiseViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
+      <DependentUpon>WwiseViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XBoxConverter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XBoxConverter.Designer.cs">
+      <DependentUpon>XBoxConverter.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AFCExtract.resx">
+      <DependentUpon>AFCExtract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
+      <DependentUpon>AnimationExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AssetExplorer.resx">
+      <DependentUpon>AssetExplorer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoTOC\AutoTOC.resx">
+      <DependentUpon>AutoTOC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="batchrenamer\BatchRenamer.resx">
+      <DependentUpon>BatchRenamer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BIKExtract.resx">
+      <DependentUpon>BIKExtract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraTool\CameraTool.resx">
+      <DependentUpon>CameraTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
+      <DependentUpon>ClassViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Coalesced Editor\CoalEditor.resx">
+      <DependentUpon>CoalEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Coalesced Operator\advancedGraphics.resx">
+      <DependentUpon>advancedGraphics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Coalesced Operator\Keybinder.resx">
+      <DependentUpon>Keybinder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Coalesced Operator\Operator.resx">
+      <DependentUpon>Operator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Codex Editor\CodexEditor.resx">
+      <DependentUpon>CodexEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CondEditor.resx">
+      <DependentUpon>CondEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Conditionals.resx">
+      <DependentUpon>Conditionals.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\AddReply.resx">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLCEditor2\DLCEditor2.resx">
+      <DependentUpon>DLCEditor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLCTOCbinUpdater\DLCTOCbinUpdater.resx">
+      <DependentUpon>DLCTOCbinUpdater.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
+      <DependentUpon>DLLInjector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
+      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HeaderEditor\HeaderEditor.resx">
+      <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
+      <DependentUpon>InterpEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpEditor\Timeline.resx">
+      <DependentUpon>Timeline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KFreonListErrorBox.resx">
+      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KFreonTPFTools3.resx">
+      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Language Editor.resx">
+      <DependentUpon>Language Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Language Selector.resx">
+      <DependentUpon>Language Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLCExplorer.resx">
+      <DependentUpon>DLCExplorer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Leveleditor.resx">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
+      <DependentUpon>Levelbase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
+      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Lvl_Transform.resx">
+      <DependentUpon>Lvl_Transform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Material Viewer\MaterialViewer.resx">
+      <DependentUpon>MaterialViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Material Viewer\Shader Code.resx">
+      <DependentUpon>Shader Code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
+      <DependentUpon>Meshplorer2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\ImportOptions.resx">
+      <DependentUpon>ImportOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\MeshDatabase.resx">
+      <DependentUpon>MeshDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
+      <DependentUpon>Meshplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
+      <DependentUpon>UDKCopy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModMaker.resx">
+      <DependentUpon>ModMaker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PAREditor\PAREditor.resx">
+      <DependentUpon>PAREditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Patcher\Patcher.resx">
+      <DependentUpon>Patcher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor2\CloneDialog.resx">
+      <DependentUpon>CloneDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor2\CloneDialog2.resx">
+      <DependentUpon>CloneDialog2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor2\DLCDialog.resx">
+      <DependentUpon>DLCDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEditor2\PCCEditor2.resx">
+      <DependentUpon>PCCEditor2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCEntryEdit.resx">
+      <DependentUpon>PCCEntryEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PCCRepack.resx">
+      <DependentUpon>PCCRepack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
+      <DependentUpon>PlotVarDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlotVarDB\PlotVarEditor.resx">
+      <DependentUpon>PlotVarEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Property Dumper\PropDumper.resx">
+      <DependentUpon>PropDumper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyManager.resx">
+      <DependentUpon>PropertyManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
+      <DependentUpon>PSAViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PSKViewer\PSKViewer.resx">
+      <DependentUpon>PSKViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QuestMapEditor\QMapEditor.resx">
+      <DependentUpon>QMapEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
+      <DependentUpon>ScriptDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Select Material.resx">
+      <DependentUpon>Select Material.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiccoloX\Components\PScrollableControl.resx">
+      <DependentUpon>PScrollableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiccoloX\PForm.resx">
+      <DependentUpon>PForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Piccolo\PCanvas.resx">
+      <DependentUpon>PCanvas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
+      <DependentUpon>DirectReplace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Soundplorer\Soundplorer.resx">
+      <DependentUpon>Soundplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
+      <DependentUpon>SubtitleScanner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Texplorer2.resx">
+      <DependentUpon>Texplorer2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TexplorerFirstTimeSetup.resx">
+      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TexSelection.resx">
+      <DependentUpon>TexSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextInput.resx">
+      <DependentUpon>TextInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Texture Tool\TextureTool.resx">
+      <DependentUpon>TextureTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextureExplorer.resx">
+      <DependentUpon>TextureExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TOCeditor.resx">
+      <DependentUpon>TOCeditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TOCEditorAK\TOCEditorAK.resx">
+      <DependentUpon>TOCEditorAK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TOCUpdater\TOCUpdater.resx">
+      <DependentUpon>TOCUpdater.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UDKConverter\UDKConverter.resx">
+      <DependentUpon>UDKConverter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UECodeEditor\OPCodeTable.resx">
+      <DependentUpon>OPCodeTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UECodeEditor\UECodeEditor.resx">
+      <DependentUpon>UECodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VersionChecker\VersionChecker.resx">
+      <DependentUpon>VersionChecker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
+      <DependentUpon>WwiseViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XBoxConverter.resx">
+      <DependentUpon>XBoxConverter.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\shader.fx" />
+    <Content Include="KismetFont.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
+      <Project>{F1C6A2A0-5F1A-414A-BE17-A2FDA2A79E7F}</Project>
+      <Name>AmaroK86.ImageFormat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
+      <Project>{4740CDBD-DC9C-4964-BAE0-8C401340ED95}</Project>
+      <Name>AmaroK86.ImageMipMapHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj">
+      <Project>{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}</Project>
+      <Name>AmaroK86.MassEffect3.DLCBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
+      <Project>{5FD88B3C-B192-42BE-8B05-9CAC3F7405FB}</Project>
+      <Name>AmaroK86.MassEffect3.DLCEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory.csproj">
+      <Project>{4C897537-C3FB-46FE-AD6A-E6D17BD51520}</Project>
+      <Name>AmaroK86.MassEffect3.ME3Directory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler.csproj">
+      <Project>{FD18702E-C7A4-42A1-AC91-C1671FDF7522}</Project>
+      <Name>AmaroK86.MassEffect3.TOCHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress.csproj">
+      <Project>{2DAF61F8-EDA9-4AEA-8CC5-FA3F19CF9D66}</Project>
+      <Name>AmaroK86.MassEffect3.WindowProgress</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+      <Project>{9010228E-4393-47E2-9DEE-FB5090A1D1AB}</Project>
+      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
+      <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
+      <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME1Explorer\ME1Explorer.csproj">
+      <Project>{7F42E08B-02A9-4469-97F2-2D60F27DEA5B}</Project>
+      <Name>ME1Explorer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME2Explorer\ME2Explorer.csproj">
+      <Project>{AFA017ED-5E32-459C-A204-8D9C6C1657FC}</Project>
+      <Name>ME2Explorer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME3Creator\ME3Creator.csproj">
+      <Project>{5aba4120-7379-479e-be61-c452c10a1810}</Project>
+      <Name>ME3Creator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
+      <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
+      <Name>ME3LibWV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME3VanillaMaker\ME3VanillaMaker.csproj">
+      <Project>{2D2226F5-75D2-4AEE-9799-EAAB9FC931AF}</Project>
+      <Name>ME3VanillaMaker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
+      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
+      <Name>SaltTPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SVNChecker\SVNChecker.csproj">
+      <Project>{0410c4f7-e4ba-4814-a926-757d7cf1a1c4}</Project>
+      <Name>SVNChecker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
+      <Project>{681DB2CE-E3EB-4110-AC50-F53EACA66E99}</Project>
+      <Name>Gibbed.MassEffect3.FileFormats</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\NDesk.Options\NDesk.Options.csproj">
+      <Project>{C98A6CD6-9422-4B35-8B7A-F520D75534D1}</Project>
+      <Name>NDesk.Options</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
+      <Project>{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}</Project>
+      <Name>SevenZip</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Transitions\Transitions\Transitions.csproj">
+      <Project>{95cde461-0720-4c3b-b5e1-d188391fb7c0}</Project>
+      <Name>Transitions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
+      <Project>{F660E850-DA7A-41A6-AE77-4AB4F21D8F33}</Project>
+      <Name>UDKExplorer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Back.jpg" />
+    <None Include="back2.jpg" />
+    <Content Include="Gibbed.IO.csproj" />
+    <Content Include="Gibbed.MassEffect3.FileFormats.csproj" />
+    <Content Include="icon.ico" />
+    <Content Include="icon.png" />
+    <None Include="Resources\folder.png" />
+    <None Include="Resources\document-save.png" />
+    <None Include="Resources\info.ico" />
+    <None Include="Resources\help-browser.png" />
+    <None Include="Icons\coaledit.png" />
+    <None Include="Icons\lang.png" />
+    <None Include="Icons\Patcher.png" />
+    <None Include="Icons\tocbin.png" />
+    <None Include="Icons\propertydumper.png" />
+    <None Include="Icons\meshexplorer.png" />
+    <None Include="Icons\materialviewver.png" />
+    <None Include="Icons\PSAViewver.png" />
+    <None Include="Icons\PSKViewver.png" />
+    <None Include="Icons\soundexplorer.png" />
+    <None Include="Icons\texplorer.ico" />
+    <Content Include="icon_cidatel.ico" />
+    <None Include="Resources\Image1.bmp" />
+    <Content Include="PiccoloX\PiccoloX.csproj" />
+    <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
+    <Content Include="Piccolo\Piccolo.csproj" />
+    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
+    <Content Include="SevenZip.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HowToUseWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.WinFx.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
