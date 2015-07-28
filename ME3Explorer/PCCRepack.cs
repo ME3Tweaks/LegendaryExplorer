@@ -15,6 +15,19 @@ namespace ME3Explorer
     {
         public PCCRepack()
         {
+            //Automation Code
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length == 4)
+            {
+                if (args[1].Equals("-decompresspcc"))
+                {
+                    autoDecompressPcc(args[2], args[3]);
+                    Application.Exit();
+                    Environment.Exit(0);
+                    return;
+                }
+            }
+            //Start UI
             InitializeComponent();
         }
 
@@ -100,7 +113,7 @@ namespace ME3Explorer
                         PCCObject pccObj = new PCCObject(fileName);
                         pccObj.saveToFile(false);
 
-                        MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Succeed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception exc)
                     {
@@ -114,6 +127,21 @@ namespace ME3Explorer
                     }
                 }
             }
+        }
+
+        /*
+         * This method is called when using the -decompresspcc command line argument
+         */
+        private int autoDecompressPcc(string sourceFile, string outputFile)
+        {
+            if (!File.Exists(sourceFile)){
+                MessageBox.Show("PCC to decompress does not exist:\n" + sourceFile, "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
+            }
+            System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
+            PCCObject pccObj = new PCCObject(sourceFile);
+            pccObj.saveToFile(outputFile,false);
+            return 0;
         }
 
         private void PCCRepack_FormClosing(object sender, FormClosingEventArgs e)
