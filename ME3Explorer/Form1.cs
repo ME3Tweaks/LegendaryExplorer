@@ -89,9 +89,9 @@ namespace ME3Explorer
             if (args.Length > 1)
             {
                 //automation
-                if (args[1].Equals("-dlcinject"))
+                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract"))
                 {
-                    //autostart the DLC editor (used by FemShep's Mod Manager 3)
+                    //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.2)
                     //saves a little duplicate code
                     dLCEditor2ToolStripMenuItem.PerformClick();
                     return;
@@ -103,6 +103,28 @@ namespace ME3Explorer
                     tOCbinEditorToolStripMenuItem.PerformClick();
                     return;
                 }
+                if (args[1].Equals("-decompresspcc"))
+                {
+                    //autostart the TOCEditor (used by FemShep's Mod Manager 3.2)
+                    //saves a little duplicate code
+                    pCCRepackerToolStripMenuItem.PerformClick();
+                    return;
+                }
+                if (args[1].Equals("--help") || args[1].Equals("-h")){
+                    String commandLineHelp = "ME3Explorer Command Line Options\n";
+                    commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
+                    commandLineHelp += "     Automates injecting pairs of files into a .sfar file using DLCEditor2. SearchTerm is a value you would type into the searchbox with the first result being the file that will be replaced.\n\n";
+                    commandLineHelp += " -dlcextract DLC.sfar SearchTerm ExtractionPath\n";
+                    commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
+                    commandLineHelp += " -toceditorupdate PCConsoleTOCFile.bin SearchTerm size\n";
+                    commandLineHelp += "     Automates updating a single entry in a TOC file.  SearchTerm is a value you would type into the Searchbox with the first result being the file that will be updated. Size is the new size of the file, in bytes. Interface shows up if the file is not in the TOC.\n\n";
+                    commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
+                    commandLineHelp += "     Automates PCCRepacker to decompress a file to the new location.\n\n";
+                    System.Console.WriteLine(commandLineHelp);
+                    Application.Exit();
+                    return;
+                }
+               
                 string ending = Path.GetExtension(args[1]).ToLower();
                 switch (ending)
                 {
@@ -130,7 +152,6 @@ namespace ME3Explorer
                         m.WindowState = FormWindowState.Maximized;
                         break;
                 }
-
             }
         }
 
