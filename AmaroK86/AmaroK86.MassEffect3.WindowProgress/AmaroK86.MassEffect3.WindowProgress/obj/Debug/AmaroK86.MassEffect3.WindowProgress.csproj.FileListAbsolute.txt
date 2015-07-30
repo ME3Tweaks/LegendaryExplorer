@@ -1,7 +1,0 @@
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\bin\Debug\AmaroK86.MassEffect3.WindowProgress.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\bin\Debug\AmaroK86.MassEffect3.WindowProgress.pdb
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\obj\Debug\AmaroK86.MassEffect3.WindowProgress.csprojResolveAssemblyReference.cache
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\obj\Debug\AmaroK86.MassEffect3.WindowProgressForm.resources
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\obj\Debug\AmaroK86.MassEffect3.WindowProgress.csproj.GenerateResource.Cache
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\obj\Debug\AmaroK86.MassEffect3.WindowProgress.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\obj\Debug\AmaroK86.MassEffect3.WindowProgress.pdb

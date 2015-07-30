@@ -1,6 +1,0 @@
-G:\Code\ME3\me3ex latest\Tools\bin\Gibbed.MassEffect3.Coalesce.exe.config
-G:\Code\ME3\me3ex latest\Tools\bin\Gibbed.MassEffect3.Coalesce.exe
-G:\Code\ME3\me3ex latest\Tools\bin\Gibbed.MassEffect3.Coalesce.pdb
-G:\Code\ME3\me3ex latest\Tools\Gibbed.MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.csprojResolveAssemblyReference.cache
-G:\Code\ME3\me3ex latest\Tools\Gibbed.MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.exe
-G:\Code\ME3\me3ex latest\Tools\Gibbed.MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.pdb

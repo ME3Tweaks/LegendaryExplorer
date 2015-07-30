@@ -1,8 +1,0 @@
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\bin\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\bin\Debug\Gibbed.IO.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\bin\Debug\ICSharpCode.SharpZipLib.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\bin\Debug\Gibbed.IO.pdb
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\obj\Debug\AmaroK86.MassEffect3.ZlibBlock.csprojResolveAssemblyReference.cache
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\obj\Debug\AmaroK86.MassEffect3.ZlibBlock.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\obj\Debug\AmaroK86.MassEffect3.ZlibBlock.pdb
