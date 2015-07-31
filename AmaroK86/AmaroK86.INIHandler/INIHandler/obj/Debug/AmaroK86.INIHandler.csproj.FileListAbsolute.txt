@@ -1,4 +1,0 @@
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.INIHandler\INIHandler\bin\Debug\INIHandler.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.INIHandler\INIHandler\bin\Debug\INIHandler.pdb
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.INIHandler\INIHandler\obj\Debug\INIHandler.dll
-G:\Code\ME3\me3ex latest\AmaroK86\AmaroK86.INIHandler\INIHandler\obj\Debug\INIHandler.pdb
