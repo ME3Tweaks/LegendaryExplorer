@@ -609,11 +609,6 @@ namespace ME3Explorer
             Application.Exit();
         }
 
-        private void sVNCheckerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new SVNChecker.Form1());
-        }
-
         private void mE3CREATORToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string loc = Path.GetDirectoryName(Application.ExecutablePath);

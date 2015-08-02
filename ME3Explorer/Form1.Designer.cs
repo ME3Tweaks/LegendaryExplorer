@@ -45,7 +45,7 @@
             this.batchRenamerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lanugageSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moviestfcToBIKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sVNUpdaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.versionSwitcherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vanillaMakerBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditor20ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -153,7 +153,7 @@
             // 
             this.assetExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("assetExplorerToolStripMenuItem.Image")));
             this.assetExplorerToolStripMenuItem.Name = "assetExplorerToolStripMenuItem";
-            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assetExplorerToolStripMenuItem.Text = "Asset Explorer";
             this.assetExplorerToolStripMenuItem.Click += new System.EventHandler(this.assetExplorerToolStripMenuItem_Click);
             // 
@@ -161,14 +161,14 @@
             // 
             this.modMakerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("modMakerToolStripMenuItem.Image")));
             this.modMakerToolStripMenuItem.Name = "modMakerToolStripMenuItem";
-            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.modMakerToolStripMenuItem.Text = "ModMaker";
             this.modMakerToolStripMenuItem.Click += new System.EventHandler(this.modMakerToolStripMenuItem_Click);
             // 
             // plotVarDatabaseToolStripMenuItem
             // 
             this.plotVarDatabaseToolStripMenuItem.Name = "plotVarDatabaseToolStripMenuItem";
-            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.plotVarDatabaseToolStripMenuItem.Text = "Plot Database";
             this.plotVarDatabaseToolStripMenuItem.Click += new System.EventHandler(this.plotVarDatabaseToolStripMenuItem_Click);
             // 
@@ -180,7 +180,7 @@
             this.textureToolToolStripMenuItem,
             this.tPFDDSToolsToolStripMenuItem});
             this.textureToolsToolStripMenuItem.Name = "textureToolsToolStripMenuItem";
-            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.textureToolsToolStripMenuItem.Text = "Textures";
             // 
             // dDSConverterToolStripMenuItem
@@ -220,7 +220,7 @@
             this.tOCBinUpdaterToolStripMenuItem,
             this.dLCTOCBinUpdaterToolStripMenuItem});
             this.tOCToolsToolStripMenuItem.Name = "tOCToolsToolStripMenuItem";
-            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tOCToolsToolStripMenuItem.Text = "TOC Tools";
             // 
             // autoTOCToolStripMenuItem
@@ -252,31 +252,31 @@
             this.batchRenamerToolStripMenuItem,
             this.lanugageSelectorToolStripMenuItem,
             this.moviestfcToBIKToolStripMenuItem,
-            this.sVNUpdaterToolStripMenuItem,
+            this.versionSwitcherToolStripMenuItem,
             this.vanillaMakerBackupToolStripMenuItem});
             this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
-            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.utilitiesToolStripMenuItem.Text = "Utilities";
             // 
             // aFCToWAVToolStripMenuItem
             // 
             this.aFCToWAVToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aFCToWAVToolStripMenuItem.Image")));
             this.aFCToWAVToolStripMenuItem.Name = "aFCToWAVToolStripMenuItem";
-            this.aFCToWAVToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.aFCToWAVToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.aFCToWAVToolStripMenuItem.Text = "Audio Extractor";
             this.aFCToWAVToolStripMenuItem.Click += new System.EventHandler(this.aFCToolStripMenuItem_Click);
             // 
             // batchRenamerToolStripMenuItem
             // 
             this.batchRenamerToolStripMenuItem.Name = "batchRenamerToolStripMenuItem";
-            this.batchRenamerToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.batchRenamerToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.batchRenamerToolStripMenuItem.Text = "Batch Renamer";
             this.batchRenamerToolStripMenuItem.Click += new System.EventHandler(this.batchrenamerToolStripMenuItem_Click);
             // 
             // lanugageSelectorToolStripMenuItem
             // 
             this.lanugageSelectorToolStripMenuItem.Name = "lanugageSelectorToolStripMenuItem";
-            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.lanugageSelectorToolStripMenuItem.Text = "Lanugage Selector";
             this.lanugageSelectorToolStripMenuItem.Click += new System.EventHandler(this.languageSelectToolStripMenuItem_Click);
             // 
@@ -284,21 +284,20 @@
             // 
             this.moviestfcToBIKToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("moviestfcToBIKToolStripMenuItem.Image")));
             this.moviestfcToBIKToolStripMenuItem.Name = "moviestfcToBIKToolStripMenuItem";
-            this.moviestfcToBIKToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.moviestfcToBIKToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.moviestfcToBIKToolStripMenuItem.Text = "Movie Extractor";
             this.moviestfcToBIKToolStripMenuItem.Click += new System.EventHandler(this.moviestfcBikToolStripMenuItem_Click);
             // 
-            // sVNUpdaterToolStripMenuItem
+            // versionSwitcherToolStripMenuItem
             // 
-            this.sVNUpdaterToolStripMenuItem.Name = "sVNUpdaterToolStripMenuItem";
-            this.sVNUpdaterToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.sVNUpdaterToolStripMenuItem.Text = "SVN Updater";
-            this.sVNUpdaterToolStripMenuItem.Click += new System.EventHandler(this.sVNCheckerToolStripMenuItem_Click);
+            this.versionSwitcherToolStripMenuItem.Name = "versionSwitcherToolStripMenuItem";
+            this.versionSwitcherToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.versionSwitcherToolStripMenuItem.Text = "ME3Explorer Version Switcher";
             // 
             // vanillaMakerBackupToolStripMenuItem
             // 
             this.vanillaMakerBackupToolStripMenuItem.Name = "vanillaMakerBackupToolStripMenuItem";
-            this.vanillaMakerBackupToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.vanillaMakerBackupToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.vanillaMakerBackupToolStripMenuItem.Text = "Vanilla Maker (Backup)";
             this.vanillaMakerBackupToolStripMenuItem.Click += new System.EventHandler(this.vanillaMakerBackupToolStripMenuItem_Click);
             // 
@@ -1007,7 +1006,7 @@
         private System.Windows.Forms.ToolStripMenuItem batchRenamerToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lanugageSelectorToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem moviestfcToBIKToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sVNUpdaterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem versionSwitcherToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vanillaMakerBackupToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem userToolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mE3WikiToolStripMenuItem;
