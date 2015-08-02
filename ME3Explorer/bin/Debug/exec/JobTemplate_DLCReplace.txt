@@ -1,0 +1,43 @@
+using System;
+using System.IO;
+using ME3Explorer;
+using ME3Explorer.Unreal;
+using KFreonLib.Scripting;
+using KFreonLib.MEDirectories;
+
+namespace SimpleScripts
+{
+    public class MyScript : IScript.IScript
+    {
+        public string RunScript()
+        {
+            BasicFunction bf = new BasicFunction();
+            int objidx = **m1**;
+            string filename = "**m2**";
+            string pathexec = bf.getExecPath();
+            string pathtarget = ME3Directory.DLCPath;
+            bf.DebugPrintln("DLC File Replacement in " + filename);
+            if (!File.Exists(pathtarget + filename))
+            {
+                bf.DebugPrintln("Cant find target sfar!");
+                return "";
+            }
+            if (!File.Exists(pathexec + "data.bin"))
+            {
+                bf.DebugPrintln("Cant find input data!");
+                return "";
+            }
+            try
+            {
+                DLCPackage dlc = new DLCPackage(pathtarget + filename);
+                dlc.ReplaceEntry(File.ReadAllBytes(pathexec + "data.bin"), objidx);
+                bf.DebugPrintln("Entry Replaced!");
+            }
+            catch (Exception exc)
+            {
+                bf.DebugPrintln("Error : " + exc.Message);
+            }
+            return "";
+        }
+    }
+}

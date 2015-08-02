@@ -5,7 +5,7 @@ using System.Text;
 using ManagedLZO;
 using System.IO;
 using Gibbed.IO;
-using KFreonLib.Helpers.LiquidEngine;
+using UsefulThings;
 
 namespace ME1Explorer.Helper
 {

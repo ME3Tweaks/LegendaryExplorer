@@ -19,6 +19,7 @@ using KFreonLib.Helpers;
 using System.Diagnostics;
 using KFreonLib.MEDirectories;
 using System.Reflection;
+using UsefulThings;
 
 namespace ME3Explorer
 {

@@ -9,8 +9,8 @@ using ME1Explorer;
 using ME1Explorer.Helper;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
-using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.Debugging;
+using UsefulThings;
 
 namespace ME1Explorer
 {

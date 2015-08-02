@@ -11,7 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
-using KFreonLib.Helpers.LiquidEngine;
+using UsefulThings;
 
 namespace ME3Explorer.SubtitleScanner
 {

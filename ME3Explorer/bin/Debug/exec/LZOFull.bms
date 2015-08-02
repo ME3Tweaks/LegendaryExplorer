@@ -1,0 +1,69 @@
+ComType lzo1x
+Endian little
+Goto 12
+get TEMPNAME long
+Math TEMPNAME += 64
+Goto TEMPNAME
+get GENERATOR long
+Math GENERATOR *= 12
+Math GENERATOR += 36
+SavePos CURRENT
+Math GENERATOR += CURRENT
+GoTo GENERATOR
+get NUMCHUNKS long
+SavePos CHUNKINFO
+for i = 0 < NUMCHUNKS
+set CHUNKTEMP LONG i
+Math CHUNKTEMP *= 16
+GoTo CHUNKINFO
+SavePos CURRENT
+Math CHUNKTEMP += CURRENT
+GoTo CHUNKTEMP
+get CHUNKUNCOFFSET long
+get CHUNKUNCSIZE long
+get CHUNKCPROFFSET long
+get CHUNKCPRSIZE long
+GoTo CHUNKCPROFFSET
+get MAGIC long
+get BLOCK long
+get COMP long
+get UNCOMP long
+
+set TEMP LONG UNCOMP
+Math TEMP %= BLOCK
+set COUNT LONG 0
+If UNCOMP < BLOCK
+	Math COUNT = 1
+Else
+	If TEMP == 0
+		Math COUNT = UNCOMP
+		Math COUNT /= BLOCK
+	Else
+		Math COUNT = UNCOMP
+		Math COUNT /= BLOCK
+		Math COUNT += 1
+	Endif
+Endif
+
+Print "Chunk: %i%"
+Print "CSize: %COMP%"
+Print "DCSize: %UNCOMP%"
+Print "BlockSize: %BLOCK%"
+Print "Blockcount: %COUNT%"
+SavePos CURRENT
+Set OFFSET LONG COUNT
+Math OFFSET *= 8
+Math OFFSET += CURRENT
+For j = 0 < COUNT
+get BCOMP long
+get BUNCOMP long
+Print "#%j% BlockOffset: %OFFSET%"
+Print "#%j% BlockCompressed: %BCOMP%"
+Print "#%j% BlockUnCompressed: %BUNCOMP%"
+append
+Clog "out.bin" OFFSET BCOMP BUNCOMP
+append
+Math OFFSET += BCOMP
+Next j
+Next i
+Print "Conversion done."

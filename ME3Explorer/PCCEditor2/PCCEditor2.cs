@@ -12,9 +12,9 @@ using Be.Windows.Forms;
 using ME3Explorer.Unreal.Classes;
 using AmaroK86.ImageFormat;
 using KFreonLib.MEDirectories;
-using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.PCCObjects;
 using KFreonLib.Textures;
+using UsefulThings;
 
 namespace ME3Explorer
 {

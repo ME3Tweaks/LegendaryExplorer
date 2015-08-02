@@ -12,7 +12,7 @@ using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
-using KFreonLib.Helpers.LiquidEngine;
+using UsefulThings;
 
 namespace ME3Explorer.DLCEditor2
 {
