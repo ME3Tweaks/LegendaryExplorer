@@ -54,6 +54,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UsefulThings">
+      <HintPath>..\..\..\Stuff\Other\Useful things\Code Repository\C#\UsefulThings\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DLCCrack\DataProtection.cs" />
@@ -290,11 +293,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd /d $(DevEnvDir)
-cd ..
-cd tools
-call vsvars32.bat
-editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

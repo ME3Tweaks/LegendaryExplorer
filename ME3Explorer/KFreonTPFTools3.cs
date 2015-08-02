@@ -19,6 +19,7 @@ using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using System.Reflection;
 using ResILWrapper;
+using UsefulThings;
 
 namespace ME3Explorer
 {
@@ -934,8 +935,9 @@ namespace ME3Explorer
             {
                 //KFreonLib.Textures.Methods.GetImage(tex.Format, data);
                 Bitmap img = null;
-                using (ResILImage kfimg = new ResILImage(data))
-                    img = new Bitmap(new MemoryStream(kfimg.ToArray(ResIL.Unmanaged.ImageType.Jpg)));
+                using (ResILImageBase kfimg = ResILImageBase.Create(data))
+                    img = kfimg.ToWinFormsBitmap();
+
                 if (img == null)
                     return;
 
@@ -2201,7 +2203,7 @@ namespace ME3Explorer
 
         private void RebuildTOP_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "Either works", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
                 RepackWithTexplorer();
             else
                 RepackWithTexmod();
@@ -2469,22 +2471,22 @@ namespace ME3Explorer
         }
 
 
-        private bool FixMips(TPFTexInfo info, ResILImage img)
+        private bool FixMips(TPFTexInfo info, ResILImageBase img)
         {
             // KFreon: Build or remove mips depending on requirements. Note case where expected == existing not present as that's what MipsCorrect is.
             if (info.ExpectedMips > info.NumMips)
             {
-                if (!img.BuildMipmaps(info.NumMips == 1))
+                if (!img.BuildMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
-            else
+            else if (info.ExpectedMips == 1)  // KFreon: Don't want to remove mips when expected = 11 and num = 13
             {
-                if (!img.RemoveMipmaps(info.NumMips == 1))
+                if (!img.RemoveMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
@@ -2503,12 +2505,25 @@ namespace ME3Explorer
 
             foreach (TPFTexInfo tex in texes)
             {
+                // KFreon: Skip tex if one of its duplicates have already been fixed
+                for (int i = 0; i < tex.TreeDuplicates.Count; i++)
+                {
+                    var dup = texes[tex.TreeDuplicates[i]];
+                    if (dup.AutofixSuccess)
+                    {
+                        tex.NumMips = tex.ExpectedMips;
+                        tex.Format = tex.ExpectedFormat;
+                        tex.FilePath = dup.FilePath;
+                        tex.AutofixSuccess = true;
+                    }
+                }
+
                 Overall.UpdateText("Fixing: " + tex.TexName);
                 DebugOutput.PrintLn("Fixing: " + tex.TexName + Environment.NewLine + "     FORMAT -> Current: " + tex.Format + "  Expected: " + tex.ExpectedFormat + Environment.NewLine + "     MIPS -> Current: " + tex.NumMips + "  Expected: " + tex.ExpectedMips);
                 byte[] arr = tex.Extract(null, true);
 
 
-                using (ResILImage img = new ResILImage(arr))
+                using (ResILImageBase img = ResILImageBase.Create(arr))
                 {
                     string path = tex.Autofixedpath(TemporaryPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -2524,7 +2539,7 @@ namespace ME3Explorer
 
                     if (!success)
                     {
-                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName + ". Reason: " + ResILImage.GetResILError());
+                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
                         tex.AutofixSuccess = false;
                     }
 
@@ -2577,7 +2592,7 @@ namespace ME3Explorer
                 tex.FileName = Path.GetFileName(replacingPath);
                 tex.FilePath = Path.GetDirectoryName(replacingPath);
                 DebugOutput.PrintLn("Getting new details...");
-                tex.Thumbnail = new KFreonLib.Helpers.LiquidEngine.MemoryTributary();
+                tex.Thumbnail = new MemoryTributary();
                 tex.EnumerateDetails();
 
                 /*try
@@ -3073,5 +3088,3 @@ namespace ME3Explorer
         }
     }
 }
-
-

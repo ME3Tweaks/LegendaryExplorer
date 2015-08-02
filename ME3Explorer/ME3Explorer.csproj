@@ -78,6 +78,7 @@
       <HintPath>.\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualC" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Tools\bin\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -811,6 +812,7 @@
     </Compile>
     <EmbeddedResource Include="AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>

@@ -10,8 +10,8 @@ using ME2Explorer.Helper;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
 using System.Diagnostics;
-using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.Debugging;
+using UsefulThings;
 
 namespace ME2Explorer
 {

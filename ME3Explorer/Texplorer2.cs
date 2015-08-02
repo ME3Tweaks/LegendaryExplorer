@@ -219,6 +219,10 @@ namespace ME3Explorer
             PCCObjects.IPCCObject PCC = null;
             string currentPCC = Filenames[j];
 
+            // KFreon: Skip non existent pccs
+            if (!File.Exists(currentPCC))
+                return true;
+
             // KFreon: Fix pathing
             string temppath = WhichGame == 1 ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
             if (!currentPCC.Contains(temppath))
@@ -1227,6 +1231,11 @@ namespace ME3Explorer
             string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
             if (!fulpath.Contains(temppath))
                 fulpath = Path.Combine(temppath, fulpath);
+
+
+            // KFreon: Skip files that don't exist
+            if (!File.Exists(fulpath))
+                return;
 
             PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
 

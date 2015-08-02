@@ -1,0 +1,74 @@
+using System;
+using System.IO;
+using ME3Explorer;
+using ME3Explorer.Unreal;
+using KFreonLib.MEDirectories;
+using KFreonLib.Misc.LiquidEngine;
+using KFreonLib.PCCObjects;
+using KFreonLib.Debugging;
+
+namespace SimpleScripts
+{
+    public class MyScript : IScript
+    {
+        public string RunScript()
+        {
+            BasicFunction bf = new BasicFunction();
+            int objidx = **m1**;
+            string inDLCPath = "**m2**";
+            string filename = "**m3**";			
+            string path = ME3Directory.DLCPath + filename;
+			string pathexec = bf.getExecPath();
+            string pathtarget = ME3Directory.DLCPath;
+            bf.DebugPrintln("DLC File Replacement in " + path);
+            string file = Path.Combine(pathtarget, filename);
+			DebugOutput.PrintLn("Targeting: " + file);
+            if (!File.Exists(file))
+            {
+                bf.DebugPrintln("Cant find target sfar!");
+                return "";
+            }
+            DLCPackage dlc = new DLCPackage(path);
+            if (!File.Exists(pathexec + "data.bin"))
+            {
+                bf.DebugPrintln("Cant find input data!");
+                return "";
+            }
+			int f = -1;
+			int count = 0;
+			bf.DebugPrintln("searching for... " + inDLCPath);
+			foreach (DLCPackage.FileEntryStruct file in dlc.Files)
+            {
+				if(file.FileName == inDLCPath)
+				{
+					bf.DebugPrintln("found.");
+					f = count;
+					break;
+				}
+				count++;
+			}
+			if (f == -1)
+            {
+                bf.DebugPrintln("Cant find pcc in DLC!");
+                return "";
+            }
+            try
+            {
+				FileStream fs = new FileStream(pathexec + "data.pcc",FileMode.Create,FileAccess.Write);
+                MemoryTributary mem = dlc.DecompressEntry(f);
+                fs.Write(mem.ToArray(), 0, (int)mem.Length);
+                fs.Close(); 
+				IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(pathexec + "data.pcc", 3);
+				pcc.Exports[objidx].Data = File.ReadAllBytes(pathexec + "data.bin");
+				((ME3PCCObject)pcc).altSaveToFile(pathexec + "data.pcc",true);
+                dlc.ReplaceEntry(File.ReadAllBytes(pathexec + "data.pcc"), f);
+                bf.DebugPrintln("Entry Replaced!");
+            }
+            catch (Exception exc)
+            {
+                bf.DebugPrintln("Error : " + exc.Message);
+            } 
+			return "";
+		}
+    }
+}
