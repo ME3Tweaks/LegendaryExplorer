@@ -184,9 +184,6 @@ namespace ME3Explorer.DLCEditor2
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string h = "";
-            foreach (byte b in DLCPackage.TOCHash)
-                h += b.ToString("X2");
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter string to search", "ME3 Explorer", previousTerm, 0, 0);
             previousTerm = result;
             selectSearchedElement(result);
@@ -247,7 +244,8 @@ namespace ME3Explorer.DLCEditor2
                 DLC = new DLCPackage(DLC.MyFileName);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
-                MessageBox.Show("Done.");
+                SearchNode(result,treeView1.Nodes[0]);
+                MessageBox.Show("File replaced.");
             }
         }
 
@@ -260,7 +258,7 @@ namespace ME3Explorer.DLCEditor2
             DLC = new DLCPackage(DLC.MyFileName);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(DLC.ToTree());
-            MessageBox.Show("Done.");
+            MessageBox.Show("SFAR Rebuilt.");
         }
 
         private void extractSelectedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -285,12 +283,12 @@ namespace ME3Explorer.DLCEditor2
             FileStream fs = new FileStream(exportLocation, FileMode.Create, FileAccess.Write);
             fs.Write(m.ToArray(), 0, (int)m.Length);
             fs.Close();
-            DLC = new DLCPackage(DLC.MyFileName);
-            treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(DLC.ToTree());
+            //DLC = new DLCPackage(DLC.MyFileName);
+            //treeView1.Nodes.Clear();
+            //treeView1.Nodes.Add(DLC.ToTree());
             if (!automated)
             {
-                MessageBox.Show("Done.");
+                MessageBox.Show("File extracted.");
             }
         }
 
@@ -300,6 +298,7 @@ namespace ME3Explorer.DLCEditor2
             if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
                 return;
             int n = t.Index;
+            
             OpenFileDialog d = new OpenFileDialog();
             string filename = DLC.Files[n].FileName;
             d.Filter = Path.GetFileName(filename) + " | " + Path.GetFileName(filename);
@@ -313,12 +312,14 @@ namespace ME3Explorer.DLCEditor2
         private void replaceFile(String filename, int n)
         {
             DLC.ReplaceEntry(filename, n);
+
             DLC = new DLCPackage(DLC.MyFileName);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(DLC.ToTree());
+            SearchNode(filename, treeView1.Nodes[0]);
             if (!automated)
             {
-                MessageBox.Show("Done.");
+                MessageBox.Show("File Replaced.");
             }
             else
             {
@@ -370,7 +371,7 @@ namespace ME3Explorer.DLCEditor2
                 DLC = new DLCPackage(DLC.MyFileName);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
-                MessageBox.Show("Done.");
+                MessageBox.Show("File Deleted.");
             }
         }
 
@@ -432,7 +433,7 @@ namespace ME3Explorer.DLCEditor2
             string basepath = String.Join("\\", tet.ToArray()) + '\\';
             string tocfile = t2 + "\\PCConsoleTOC.bin";
             toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
-            MessageBox.Show("Done.");
+            MessageBox.Show("SFAR Unpacked.");
         }
 
         private void unpackSFAR(DLCPackage DLC)
