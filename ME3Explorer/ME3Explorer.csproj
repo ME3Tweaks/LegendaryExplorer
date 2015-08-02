@@ -86,7 +86,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ResILWrapper, Version=1.0.5608.23680, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Code Repository\C#\ResILWrapper\ResILWrapper\bin\Debug\ResILWrapper.dll</HintPath>
+      <HintPath>..\Libraries\ResILWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -102,7 +102,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UsefulThings">
-      <HintPath>..\..\Code Repository\C#\UsefulThings\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+      <HintPath>..\Libraries\UsefulThings.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

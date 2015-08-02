@@ -58,7 +58,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UsefulThings">
-      <HintPath>..\..\..\Stuff\Other\Useful things\Code Repository\C#\UsefulThings\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+      <HintPath>..\Libraries\UsefulThings.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

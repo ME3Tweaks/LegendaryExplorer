@@ -36,15 +36,15 @@
   <ItemGroup>
     <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\C#\3D Editor\3D Editor\dlls\Microsoft.DirectX.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\C#\3D Editor\3D Editor\dlls\Microsoft.DirectX.Direct3D.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.Direct3D.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2910.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\C#\3D Editor\3D Editor\dlls\Microsoft.DirectX.Direct3DX.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
