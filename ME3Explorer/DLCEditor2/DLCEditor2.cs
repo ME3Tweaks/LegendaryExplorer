@@ -18,6 +18,7 @@ namespace ME3Explorer.DLCEditor2
 {
     public partial class DLCEditor2 : Form
     {
+        string previousTerm = "";
         DLCPackage DLC;
         bool automated = false; //Mod Manager 3 automator
 
@@ -186,7 +187,8 @@ namespace ME3Explorer.DLCEditor2
             string h = "";
             foreach (byte b in DLCPackage.TOCHash)
                 h += b.ToString("X2");
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter string to search", "ME3 Explorer", h, 0, 0);
+            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter string to search", "ME3 Explorer", previousTerm, 0, 0);
+            previousTerm = result;
             selectSearchedElement(result);
         }
 
