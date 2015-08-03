@@ -1,5 +1,4 @@
 # ME3Explorer
-Modding Toolset for Mass Effect 1 - 3
 
 ME3Explorer is a fan-made modding toolkit primarily for Mass Effect 3 on the PC. It has limited support for both Mass Effect and Mass Effect 2.
 
