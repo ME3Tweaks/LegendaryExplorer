@@ -194,3 +194,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# Generated xml for HexBox:
+Be.Windows.Forms.HexBox/Be.Windows.Forms.HexBox.xml
