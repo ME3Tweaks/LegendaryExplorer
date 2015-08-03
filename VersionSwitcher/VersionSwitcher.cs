@@ -160,7 +160,7 @@ namespace VersionSwitcher
                 //put directory in executing folder
                 batchString += executingPath;
                 batchString += "\r\n";
-                batchString += "start \"\" " + executingPath + "\\ME3Explorer\\ME3Explorer.exe\r\n"; //run me3exp
+                batchString += "start \"\" " + executingPath + "\\ME3Explorer.exe\r\n"; //run me3exp
             }
             batchString += "Remove extracted copy\r\n";
             batchString += "rmdir /S /Q " + unzipPath + "ME3Explorer\r\n";
