@@ -12,6 +12,7 @@ using KFreonLib.MEDirectories;
 using KFreonLib.Scripting;
 using KFreonLib.Debugging;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace ME3Explorer
 {
@@ -88,6 +89,18 @@ namespace ME3Explorer
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
+                if (args[1].Equals("-version-switch-from") && args.Length == 3)
+                {
+
+                    string version = Assembly.GetExecutingAssembly().GetName().Version.Build.ToString();
+                    if (version.Equals(args[2]))
+                    {
+                        MessageBox.Show("Version switched to is the same as the one you had before the switch.");
+                    } else
+                    {
+                        MessageBox.Show("Version switched: "+args[2]+" => "+version);
+                    }
+                } else
                 //automation
                 if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract"))
                 {
@@ -95,21 +108,21 @@ namespace ME3Explorer
                     //saves a little duplicate code
                     dLCEditor2ToolStripMenuItem.PerformClick();
                     return;
-                }
+                } else
                 if (args[1].Equals("-toceditorupdate"))
                 {
                     //autostart the TOCEditor (used by FemShep's Mod Manager 3)
                     //saves a little duplicate code
                     tOCbinEditorToolStripMenuItem.PerformClick();
                     return;
-                }
+                } else
                 if (args[1].Equals("-decompresspcc"))
                 {
                     //autostart the TOCEditor (used by FemShep's Mod Manager 3.2)
                     //saves a little duplicate code
                     pCCRepackerToolStripMenuItem.PerformClick();
                     return;
-                }
+                } else
                 if (args[1].Equals("--help") || args[1].Equals("-h")){
                     String commandLineHelp = "ME3Explorer Command Line Options\n";
                     commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
