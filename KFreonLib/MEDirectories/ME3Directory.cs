@@ -17,7 +17,11 @@ namespace KFreonLib.MEDirectories
             {
                 /*if (_gamePath == null)
                     _gamePath = KFreonLib.Misc.Methods.SelectGameLoc(3);
-                else */if (!_gamePath.EndsWith("\\"))
+                else */
+                if (_gamePath == null)
+                    return null;
+
+                if (!_gamePath.EndsWith("\\"))
                     _gamePath += '\\';
                 return _gamePath;
             }
