@@ -1272,7 +1272,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y $(SolutionDir)VersionSwitcher\$(OutDir)VersionSwitcher.exe $(TargetDir)*
 xcopy /f /y $(SolutionDir)Resources $(ProjectDir)$(OutDir)
-xcopy /f /y $(SolutionDir)Resources\exec $(ProjectDir)$(OutDir)exec\</PostBuildEvent>
+xcopy /f /y $(SolutionDir)Resources\exec $(ProjectDir)$(OutDir)exec\
+xcopy /f /y $(SolutionDir)Libraries $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
