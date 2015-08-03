@@ -67,9 +67,8 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="lib3ds.Net, Version=2.0.0.15746, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\lib3ds.Net.dll</HintPath>
+    <Reference Include="lib3ds.Net">
+      <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX">
       <HintPath>.\Microsoft.DirectX.dll</HintPath>
@@ -1271,7 +1270,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.WinFx.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y $(SolutionDir)VersionSwitcher\$(OutDir)VersionSwitcher.exe $(TargetDir)*</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y $(SolutionDir)VersionSwitcher\$(OutDir)VersionSwitcher.exe $(TargetDir)*
+xcopy /f /y $(SolutionDir)Resources\exec $(ProjectDir)$(OutDir)exec</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
