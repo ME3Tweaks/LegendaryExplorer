@@ -293,6 +293,7 @@
             this.versionSwitcherToolStripMenuItem.Name = "versionSwitcherToolStripMenuItem";
             this.versionSwitcherToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.versionSwitcherToolStripMenuItem.Text = "ME3Explorer Version Switcher";
+            this.versionSwitcherToolStripMenuItem.Click += new System.EventHandler(this.versionSwitcherToolStripMenuItem_Click);
             // 
             // vanillaMakerBackupToolStripMenuItem
             // 

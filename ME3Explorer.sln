@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\ME3Explorer.csproj", "{3F331CEF-807F-4D38-9123-1B65E6871701}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3CEEE0C-42DB-406D-B165-D952D3CF0EF7} = {F3CEEE0C-42DB-406D-B165-D952D3CF0EF7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmaroK86.MassEffect3.DLCBase", "AmaroK86\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj", "{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}"
 	ProjectSection(ProjectDependencies) = postProject

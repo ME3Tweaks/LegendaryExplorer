@@ -673,11 +673,6 @@ namespace ME3Explorer
             MessageBox.Show("Disabled for now :(");
         }
 
-        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void mE3WikiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://me3explorer.wikia.com/wiki/ME3Explorer_Wiki");
@@ -686,6 +681,19 @@ namespace ME3Explorer
         private void forumsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://me3explorer.freeforums.org/");
+        }
+
+        private void versionSwitcherToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + "\\VersionSwitcher.exe"))
+            {
+                RunShell(loc + "\\VersionSwitcher.exe", "");
+            }
+            else
+            {
+                MessageBox.Show("Couldn't find VersionSwitcher.exe.");
+            }
         }
     }
 }
