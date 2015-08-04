@@ -258,7 +258,16 @@ namespace ME3Explorer
 
         private void coalescedEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Coalesced_Editor.CoalEditor());
+            var result = MessageBox.Show(
+                "This tool is outdated and does not work properly for editing DLC's. " +
+                "\nTankmaster has developed a new tool which handles this correctly, do you wish to visit his thread instead?",
+                "Outdated/Buggy tool!",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+
+            if (result == DialogResult.Yes)
+                System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/additional-tools-t1524.html");
+            else
+                OpenMaximized(new Coalesced_Editor.CoalEditor());
         }
 
         private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
