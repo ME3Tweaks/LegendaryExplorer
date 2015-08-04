@@ -239,7 +239,8 @@ namespace ME3Explorer
 
         private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new TextureExplorer());
+            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
+            //OpenMaximized(new TextureExplorer());
         }
 
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -670,7 +671,7 @@ namespace ME3Explorer
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Disabled for now :(");
+            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
         }
 
         private void mE3WikiToolStripMenuItem_Click(object sender, EventArgs e)
