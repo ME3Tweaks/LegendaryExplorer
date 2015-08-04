@@ -149,7 +149,7 @@ namespace VersionSwitcher
             if (isInPlaceUpgrade)
             {
                 batchString += "echo Deleting existing ME3Explorer directory\r\n" +
-                "rmdir /S /Q " + executingPath;
+                "rmdir /S /Q " + executingPath +"\r\n";
             }
 
             batchString += "echo Moving new version to old directory\r\n" +
