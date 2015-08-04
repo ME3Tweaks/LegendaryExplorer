@@ -695,5 +695,10 @@ namespace ME3Explorer
                 MessageBox.Show("Couldn't find VersionSwitcher.exe.");
             }
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutME3Explorer().Show(this);
+        }
     }
 }

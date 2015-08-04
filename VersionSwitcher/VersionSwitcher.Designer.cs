@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VersionSwitcher));
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.instructionLabel = new System.Windows.Forms.Label();
             this.downloadButton = new System.Windows.Forms.Button();
             this.progressLabel = new System.Windows.Forms.Label();
             this.releasesComboBox = new System.Windows.Forms.ComboBox();
+            this.versionSwitcherToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // progressBar1
@@ -103,7 +105,9 @@
             this.Controls.Add(this.progressBar1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VersionSwitcher";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ME3Explorer Version Switcher";
+            this.Load += new System.EventHandler(this.VersionSwitcher_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -116,6 +120,7 @@
         private System.Windows.Forms.Button downloadButton;
         private System.Windows.Forms.Label progressLabel;
         private System.Windows.Forms.ComboBox releasesComboBox;
+        private System.Windows.Forms.ToolTip versionSwitcherToolTip;
     }
 }
 

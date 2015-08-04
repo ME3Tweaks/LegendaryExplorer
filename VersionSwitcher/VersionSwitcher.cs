@@ -41,6 +41,11 @@ namespace VersionSwitcher
                 releaseData = new List<ReleaseRenderer>();
                 foreach (Release r in releases)
                 {
+                    System.Console.WriteLine(r.name);
+                    if (r.name.Equals("Stable: r653"))
+                    {
+                        continue;
+                    }
                     if (r.assets.Count > 0) {
                         releaseData.Add(new ReleaseRenderer() { Name = r.name, Value = r.assets[0].browser_download_url });
                     }
@@ -127,27 +132,32 @@ namespace VersionSwitcher
             }
 
             //Build update.bat
+            bool isInPlaceUpgrade = false;
             //use method that handles UNC \\
             string executingPath = System.IO.Path.GetDirectoryName(new System.Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
+            if (File.Exists(executingPath+"\\ME3Explorer.exe"))
+            {
+                isInPlaceUpgrade = true;
+            }
             string batchString = "::ME3Explorer Version Switching Script\r\n" +
                 "@echo off\r\n" +
                 "echo Ending ME3Explorer and VersionSwitcher\r\n" +
                 "taskkill /f /im ME3Explorer.exe /T\r\n" +
                 "taskkill /f /im VersionSwitcher.exe /T\r\n";
 
-            if (Application.ExecutablePath.EndsWith("ME3Explorer"))
+            if (isInPlaceUpgrade)
             {
                 batchString += "echo Deleting existing ME3Explorer directory\r\n" +
-                "rmdir /S /Q " + Application.ExecutablePath;
+                "rmdir /S /Q " + executingPath;
             }
 
             batchString += "echo Moving new version to old directory\r\n" +
-                "xcopy /Y /S " + unzipPath + "ME3Explorer ";
-            if (executingPath.EndsWith("ME3Explorer") && File.Exists(executingPath+"\\ME3Explorer.exe"))
+                "xcopy /I /Y /S " + unzipPath + "ME3Explorer ";
+            if (isInPlaceUpgrade)
             {
-                //put in folder above ME3Explorer
-                batchString += Directory.GetParent(Application.ExecutablePath);
+                //put in folder above ME3Explorer (in-place upgrade)
+                batchString += executingPath;
                 batchString += "\r\n";
                 batchString += "start \"\" "+executingPath + "\\ME3Explorer.exe -version-switch-from ";
                 //get me3explorer.exe version
@@ -157,17 +167,17 @@ namespace VersionSwitcher
             }
             else
             {
-                //put directory in executing folder
-                batchString += executingPath;
+                //put ME3Explorer directory in executing folder (standalone)
+                batchString += executingPath + "\\ME3Explorer";
                 batchString += "\r\n";
-                batchString += "start \"\" " + executingPath + "\\ME3Explorer.exe\r\n"; //run me3exp
+                batchString += "start \"\" " + executingPath + "\\ME3Explorer\\ME3Explorer.exe\r\n"; //run me3exp
             }
-            batchString += "Remove extracted copy\r\n";
+            batchString += "::Remove extracted copy\r\n";
             batchString += "rmdir /S /Q " + unzipPath + "ME3Explorer\r\n";
             batchString += "call :deleteSelf&exit /b\r\n";
             batchString += ":deleteSelf\r\n";
-            batchString += "start /b \"\" cmd /c del \"%~f0\"&exit /b\r\n";
-            //batchString += "pause";
+            //batchString += "start /b \"\" cmd /c del \"%~f0\"&exit /b\r\n";
+            batchString += "pause";
             File.WriteAllText(Path.GetTempPath() + "me3explorer_version_switch.cmd", batchString);
             System.Diagnostics.Process.Start(Path.GetTempPath() + "me3explorer_version_switch.cmd");
             Environment.Exit(0);
@@ -182,6 +192,22 @@ namespace VersionSwitcher
 
             progressBar1.Value = int.Parse(Math.Truncate(percentage).ToString());
             progressLabel.Text = Math.Truncate(bytesIn / 1024) + "KB/" + Math.Truncate(totalBytes / 1024) + "KB downloaded";
+        }
+
+        private void VersionSwitcher_Load(object sender, EventArgs e)
+        {
+
+            Debug.WriteLine("VersionSwitcher Interface has loaded");
+            // Set up the ToolTip text for the Butotn and Checkbox.
+            string executingPath = System.IO.Path.GetDirectoryName(new System.Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            if (File.Exists(executingPath + "\\ME3Explorer.exe"))
+            {
+                versionSwitcherToolTip.SetToolTip(this.downloadButton, "In-Place Switch");
+            }
+            else
+            {
+                versionSwitcherToolTip.SetToolTip(this.downloadButton, "New Download to ME3Explorer/");
+            }
         }
     }
 }
