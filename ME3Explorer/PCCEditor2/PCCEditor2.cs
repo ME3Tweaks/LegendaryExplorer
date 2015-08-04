@@ -341,7 +341,6 @@ namespace ME3Explorer
 
         public void Preview()
         {
-
             PreviewInfo();
             PreviewRaw();
             PreviewProps();
@@ -661,6 +660,7 @@ namespace ME3Explorer
             }
             pcc.Exports[n] = ent;
             propGrid.ExpandAllGridItems();
+            Preview();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
