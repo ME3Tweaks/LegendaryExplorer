@@ -105,6 +105,7 @@
             this.Controls.Add(this.progressBar1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VersionSwitcher";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ME3Explorer Version Switcher";
             this.Load += new System.EventHandler(this.VersionSwitcher_Load);
             this.ResumeLayout(false);

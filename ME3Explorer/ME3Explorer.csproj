@@ -109,6 +109,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutME3Explorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutME3Explorer.Designer.cs">
+      <DependentUpon>AboutME3Explorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -812,6 +818,9 @@
     <Compile Include="XBoxConverter.Designer.cs">
       <DependentUpon>XBoxConverter.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutME3Explorer.resx">
+      <DependentUpon>AboutME3Explorer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>
       <SubType>Designer</SubType>
