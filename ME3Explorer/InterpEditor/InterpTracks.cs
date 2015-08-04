@@ -445,13 +445,13 @@ namespace ME3Explorer.InterpEditor
     {
         public struct TrackKey
         {
-            public int KeyName;
+            public NameReference KeyName;
             public float fTime;
 
             public TreeNode ToTree(int index, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + " : " + fTime);
-                root.Nodes.Add("KeyName : " + pcc.getNameEntry(KeyName));
+                root.Nodes.Add("KeyName : " + KeyName.Name);
                 root.Nodes.Add("fTime : " + fTime);
                 return root;
             }
@@ -485,7 +485,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "KeyName")
-                                key.KeyName = p2[i].Value.IntValue;
+                                key.KeyName = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "fTime")
                                 key.fTime = BitConverter.ToSingle(p2[i].raw, 24);
                             pos += p2[i].raw.Length;
@@ -516,7 +516,7 @@ namespace ME3Explorer.InterpEditor
 
     public abstract class SFXGameActorInterpTrack : BioInterpTrack
     {
-        public int m_nmFindActor;
+        public NameReference m_nmFindActor;
 
         public SFXGameActorInterpTrack(int idx, PCCObject pccobj)
             : base(idx, pccobj)
@@ -526,22 +526,23 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {   //default values
-            m_nmFindActor = -1;
+            m_nmFindActor = new NameReference();
+            m_nmFindActor.index = -1;
 
             BitConverter.IsLittleEndian = true;
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_nmFindActor")
-                    m_nmFindActor = p.Value.IntValue;
+                    m_nmFindActor = p.Value.NameValue;
             }
         }
 
         public override void ToTree()
         {
             base.ToTree();
-            if (m_nmFindActor != -1)
-                AddToTree("m_nmFindActor : " + pcc.getNameEntry(m_nmFindActor));
+            if (m_nmFindActor.index != -1)
+                AddToTree("m_nmFindActor : " + m_nmFindActor.Name);
             AddToTree("m_eFindActorMode : " + m_eFindActorMode.ToString(pcc));
         }
     }
@@ -776,7 +777,7 @@ namespace ME3Explorer.InterpEditor
 
     public class BioInterpTrackMove : InterpTrackMove
     {
-        public int FacingController;
+        public NameReference FacingController;
 
         public BioInterpTrackMove(int idx, PCCObject pccobj)
             : base(idx, pccobj)
@@ -788,22 +789,23 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {   //default values
-            FacingController = -1;
-
+            FacingController = new NameReference();
+            FacingController.index = -1;
             
             BitConverter.IsLittleEndian = true;
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "FacingController")
-                    FacingController = p.Value.IntValue;
+                    FacingController = p.Value.NameValue;
             }
         }
 
         public override void ToTree()
         {
             base.ToTree();
-            AddToTree("FacingController : " + pcc.getNameEntry(FacingController));
+            if (FacingController.index != -1)
+                AddToTree("FacingController : " + FacingController.Name);
         }
     }
 
@@ -993,14 +995,14 @@ namespace ME3Explorer.InterpEditor
     {
         public struct CameraSwitchKey
         {
-            public int nmStageSpecificCam;
+            public NameReference nmStageSpecificCam;
             public bool bForceCrossingLineOfAction;
             public bool bUseForNextCamera;
 
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + pcc.getNameEntry(nmStageSpecificCam)));
+                root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + nmStageSpecificCam.Name));
                 root.Nodes.Add(new TreeNode("bForceCrossingLineOfAction : " + bForceCrossingLineOfAction));
                 root.Nodes.Add(new TreeNode("bUseForNextCamera : " + bUseForNextCamera));
                 return root;
@@ -1037,7 +1039,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "nmStageSpecificCam")
-                                key.nmStageSpecificCam = p2[i].Value.IntValue;
+                                key.nmStageSpecificCam = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "bForceCrossingLineOfAction")
                                 key.bForceCrossingLineOfAction = p2[i].Value.IntValue != 0;
                             else if (pcc.getNameEntry(p2[i].Name) == "bUseForNextCamera")
@@ -1102,13 +1104,13 @@ namespace ME3Explorer.InterpEditor
     {
         public struct RotationModeKey
         {
-            public int FindActorTag; //name
+            public NameReference FindActorTag; //name
             public float InterpTime;
 
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + pcc.getNameEntry(FindActorTag)));
+                root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + FindActorTag.Name));
                 root.Nodes.Add(new TreeNode("bForceCrossingLineOfAction : " + InterpTime));
                 return root;
             }
@@ -1144,7 +1146,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "FindActorTag")
-                                key.FindActorTag = p2[i].Value.IntValue;
+                                key.FindActorTag = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "InterpTime")
                                 key.InterpTime = BitConverter.ToSingle(p2[i].raw, 24);
                             pos += p2[i].raw.Length;
@@ -1170,12 +1172,12 @@ namespace ME3Explorer.InterpEditor
         public struct Gesture
         {
             public List<int> aChainedGestures;
-            public int nmPoseSet;
-            public int nmPoseAnim;
-            public int nmGestureSet;
-            public int nmGestureAnim;
-            public int nmTransitionSet;
-            public int nmTransitionAnim;
+            public NameReference nmPoseSet;
+            public NameReference nmPoseAnim;
+            public NameReference nmGestureSet;
+            public NameReference nmGestureAnim;
+            public NameReference nmTransitionSet;
+            public NameReference nmTransitionAnim;
             public float fPlayRate;
             public float fStartOffset;
             public float fEndOffset;
@@ -1204,12 +1206,12 @@ namespace ME3Explorer.InterpEditor
                         t.Nodes.Add(aChainedGestures[i].ToString()); 
                 }
                 root.Nodes.Add(t);
-                root.Nodes.Add("nmPoseSet : " + pcc.getNameEntry(nmPoseSet));
-                root.Nodes.Add("nmPoseAnim : " + pcc.getNameEntry(nmPoseAnim));
-                root.Nodes.Add("nmGestureSet : " + pcc.getNameEntry(nmGestureSet));
-                root.Nodes.Add("nmGestureAnim : " + pcc.getNameEntry(nmGestureAnim));
-                root.Nodes.Add("nmTransitionSet : " + pcc.getNameEntry(nmTransitionSet));
-                root.Nodes.Add("nmTransitionAnim : " + pcc.getNameEntry(nmTransitionAnim));
+                root.Nodes.Add("nmPoseSet : " + nmPoseSet.Name);
+                root.Nodes.Add("nmPoseAnim : " + nmPoseAnim.Name);
+                root.Nodes.Add("nmGestureSet : " + nmGestureSet.Name);
+                root.Nodes.Add("nmGestureAnim : " + nmGestureAnim.Name);
+                root.Nodes.Add("nmTransitionSet : " + nmTransitionSet.Name);
+                root.Nodes.Add("nmTransitionAnim : " + nmTransitionAnim.Name);
                 root.Nodes.Add("fPlayRate : " + fPlayRate);
                 root.Nodes.Add("fStartOffset : " + fStartOffset);
                 root.Nodes.Add("fEndOffset : " + fEndOffset);
@@ -1297,17 +1299,17 @@ namespace ME3Explorer.InterpEditor
                                 }
                             }
                             else if (name == "nmPoseSet")
-                                key.nmPoseSet = p2[i].Value.IntValue;
+                                key.nmPoseSet = p2[i].Value.NameValue;
                             else if (name == "nmPoseAnim")
-                                key.nmPoseAnim = p2[i].Value.IntValue;
+                                key.nmPoseAnim = p2[i].Value.NameValue;
                             else if (name == "nmGestureSet")
-                                key.nmGestureSet = p2[i].Value.IntValue;
+                                key.nmGestureSet = p2[i].Value.NameValue;
                             else if (name == "nmGestureAnim")
-                                key.nmGestureAnim = p2[i].Value.IntValue;
+                                key.nmGestureAnim = p2[i].Value.NameValue;
                             else if (name == "nmTransitionSet")
-                                key.nmTransitionSet = p2[i].Value.IntValue;
+                                key.nmTransitionSet = p2[i].Value.NameValue;
                             else if (name == "nmTransitionAnim")
-                                key.nmTransitionAnim = p2[i].Value.IntValue;
+                                key.nmTransitionAnim = p2[i].Value.NameValue;
                             else if (name == "fPlayRate")
                                 key.fPlayRate = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (name == "fStartOffset")
@@ -1375,7 +1377,7 @@ namespace ME3Explorer.InterpEditor
     {
         public struct LightingKey
         {
-            public int TargetBoneName;  //name
+            public NameReference TargetBoneName;  //name
             public float KeyLight_Scale_Red;
             public float KeyLight_Scale_Green;
             public float KeyLight_Scale_Blue;
@@ -1399,7 +1401,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("TargetBoneName : " + pcc.getNameEntry(TargetBoneName));
+                root.Nodes.Add("TargetBoneName : " + TargetBoneName.Name);
                 root.Nodes.Add("KeyLight_Scale_Red : " + KeyLight_Scale_Red);
                 root.Nodes.Add("KeyLight_Scale_Green : " + KeyLight_Scale_Green);
                 root.Nodes.Add("KeyLight_Scale_Blue : " + KeyLight_Scale_Blue);
@@ -1459,7 +1461,7 @@ namespace ME3Explorer.InterpEditor
                         {
                             name = pcc.getNameEntry(p2[i].Name);
                             if (name == "TargetBoneName")
-                                key.TargetBoneName = p2[i].Value.IntValue;
+                                key.TargetBoneName = p2[i].Value.NameValue;
                             else if (name == "KeyLight_Scale_Red")
                                 key.KeyLight_Scale_Red = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (name == "KeyLight_Scale_Green")
@@ -1520,7 +1522,7 @@ namespace ME3Explorer.InterpEditor
     {
         public struct LookAtKey
         {
-            public int nmFindActor;
+            public NameReference nmFindActor;
             public bool bEnabled;
             public bool bInstantTransition;
             public bool bLockedToTarget;
@@ -1529,7 +1531,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("nmFindActor : " + pcc.getNameEntry(nmFindActor));
+                root.Nodes.Add("nmFindActor : " + nmFindActor.Name);
                 root.Nodes.Add("bEnabled : " + bEnabled);
                 root.Nodes.Add("bInstantTransition : " + bInstantTransition);
                 root.Nodes.Add("bLockedToTarget : " + bLockedToTarget);
@@ -1570,7 +1572,7 @@ namespace ME3Explorer.InterpEditor
                         {
                             name = pcc.getNameEntry(p2[i].Name);
                             if (name == "nmFindActor")
-                                key.nmFindActor = p2[i].Value.IntValue;
+                                key.nmFindActor = p2[i].Value.NameValue;
                             else if (name == "bEnabled")
                                 key.bEnabled = p2[i].Value.IntValue != 0;
                             else if (name == "bInstantTransition")
@@ -1602,8 +1604,8 @@ namespace ME3Explorer.InterpEditor
         public struct PropKey
         {
             public int pWeaponClass; //object
-            public int nmProp; //name
-            public int nmAction; //name
+            public NameReference nmProp; //name
+            public NameReference nmAction; //name
             public int pPropMesh; //object
             public int pActionPartSys; //object
             public int pActionClientEffect; //object
@@ -1614,8 +1616,8 @@ namespace ME3Explorer.InterpEditor
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pWeaponClass : " + pWeaponClass);
-                root.Nodes.Add("nmProp : " + pcc.getNameEntry(nmProp));
-                root.Nodes.Add("nmAction : " + pcc.getNameEntry(nmAction));
+                root.Nodes.Add("nmProp : " + nmProp.Name);
+                root.Nodes.Add("nmAction : " + nmAction.Name);
                 root.Nodes.Add("pPropMesh : " + pPropMesh);
                 root.Nodes.Add("pActionPartSys : " + pActionPartSys);
                 root.Nodes.Add("pActionClientEffect : " + pActionClientEffect);
@@ -1659,9 +1661,9 @@ namespace ME3Explorer.InterpEditor
                             if (name == "pWeaponClass")
                                 key.pWeaponClass = p2[i].Value.IntValue;
                             else if (name == "nmProp")
-                                key.nmProp = p2[i].Value.IntValue;
+                                key.nmProp = p2[i].Value.NameValue;
                             else if (name == "nmAction")
-                                key.nmAction = p2[i].Value.IntValue;
+                                key.nmAction = p2[i].Value.NameValue;
                             else if (name == "pPropMesh")
                                 key.pPropMesh = p2[i].Value.IntValue;
                             else if (name == "pActionPartSys")
@@ -1694,7 +1696,7 @@ namespace ME3Explorer.InterpEditor
     {
         public struct FacingKey
         {
-            public int nmStageNode;
+            public NameReference nmStageNode;
             public float fOrientation;
             public bool bApplyOrientation;
             public byteprop eCurrentStageNode;
@@ -1702,7 +1704,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("nmStageNode : " + pcc.getNameEntry(nmStageNode));
+                root.Nodes.Add("nmStageNode : " + nmStageNode.Name);
                 root.Nodes.Add("fOrientation : " + fOrientation);
                 root.Nodes.Add("bApplyOrientation : " + bApplyOrientation);
                 root.Nodes.Add("eCurrentStageNode : " + eCurrentStageNode.ToString(pcc));
@@ -1740,7 +1742,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "nmStageNode")
-                                key.nmStageNode = p2[i].Value.IntValue;
+                                key.nmStageNode = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "fOrientation")
                                 key.fOrientation = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (pcc.getNameEntry(p2[i].Name) == "bApplyOrientation")
@@ -2670,14 +2672,14 @@ namespace ME3Explorer.InterpEditor
     {
         public struct MicLockKey
         {
-            public int m_nmFindActor;
+            public NameReference m_nmFindActor;
             public bool m_bLock;
             public byteprop m_eFindActorMode;
 
             public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("m_nmFindActor : " + pcc.getNameEntry(m_nmFindActor));
+                root.Nodes.Add("m_nmFindActor : " + m_nmFindActor.Name);
                 root.Nodes.Add("m_bLock : " + m_bLock);
                 root.Nodes.Add("m_eFindActorMode : " + m_eFindActorMode.ToString(pcc));
                 return root;
@@ -2715,7 +2717,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "m_nmFindActor")
-                                key.m_nmFindActor = p2[i].Value.IntValue;
+                                key.m_nmFindActor = p2[i].Value.NameValue;
                             if (pcc.getNameEntry(p2[i].Name) == "m_bLock")
                                 key.m_bLock = p2[i].Value.IntValue != 0;
                             if (pcc.getNameEntry(p2[i].Name) == "m_eFindActorMode")
@@ -2743,13 +2745,13 @@ namespace ME3Explorer.InterpEditor
     {
         public struct EventTrackKey
         {
-            public int EventName; //name
+            public NameReference EventName; //name
             public float Time;
 
             public TreeNode ToTree(int index, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
-                root.Nodes.Add("EventName : " + pcc.getNameEntry(EventName));
+                root.Nodes.Add("EventName : " + EventName.Name);
                 root.Nodes.Add("Time : " + Time);
                 return root;
             }
@@ -2794,7 +2796,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "EventName")
-                                key.EventName = p2[i].Value.IntValue;
+                                key.EventName = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "Time")
                                 key.Time = BitConverter.ToSingle(p2[i].raw, 24);
                             pos += p2[i].raw.Length;
@@ -2905,7 +2907,7 @@ namespace ME3Explorer.InterpEditor
         public List<FaceFXSoundCueKey> FaceFXSoundCueKeys;
         public Override_Asset OverrideAsset;
         public Override_AnimSet OverrideAnimSet;
-        public int m_nmSFXFindActor;
+        public NameReference m_nmSFXFindActor;
         public byteprop m_eSFXFindActorMode;
         public bool m_bSFXEnableClipToClipBlending;
 
@@ -2935,7 +2937,7 @@ namespace ME3Explorer.InterpEditor
                 name = pcc.getNameEntry(p.Name);
                 if (name == "m_nmSFXFindActor")
                 {
-                    m_nmSFXFindActor = p.Value.IntValue;
+                    m_nmSFXFindActor = p.Value.NameValue;
                 }
                 else if (name == "m_bSFXEnableClipToClipBlending")
                 {
@@ -3072,7 +3074,7 @@ namespace ME3Explorer.InterpEditor
                 t.Nodes.Add(FaceFXSoundCueKeys[i].ToTree(i, FaceFXSeqs[i].StartTime, pcc));
             AddToTree(t);
             AddToTree(OverrideAsset.ToTree());
-            AddToTree("m_nmSFXFindActor: " + pcc.getNameEntry(m_nmSFXFindActor));
+            AddToTree("m_nmSFXFindActor: " + m_nmSFXFindActor.Name);
             AddToTree("m_eSFXFindActorMode: " + m_eSFXFindActorMode.ToString(pcc));
             AddToTree("m_bSFXEnableClipToClipBlending: " + m_bSFXEnableClipToClipBlending);
         }
@@ -3082,7 +3084,7 @@ namespace ME3Explorer.InterpEditor
     {
         public struct AnimControlTrackKey
         {
-            public int AnimSeqName; //name
+            public NameReference AnimSeqName; //name
             public float StartTime;
             public float AnimStartOffset;
             public float AnimEndOffset;
@@ -3093,7 +3095,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + StartTime + " : AnimControlTrackKey");
-                root.Nodes.Add("AnimSeqName : " + pcc.getNameEntry(AnimSeqName));
+                root.Nodes.Add("AnimSeqName : " + AnimSeqName.Name);
                 root.Nodes.Add("StartTime : " + StartTime);
                 root.Nodes.Add("AnimStartOffset : " + AnimStartOffset);
                 root.Nodes.Add("AnimEndOffset : " + AnimEndOffset);
@@ -3134,7 +3136,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "AnimSeqName")
-                                key.AnimSeqName = p2[i].Value.IntValue;
+                                key.AnimSeqName = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "StartTime")
                                 key.StartTime = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (pcc.getNameEntry(p2[i].Name) == "AnimStartOffset")
@@ -3179,13 +3181,13 @@ namespace ME3Explorer.InterpEditor
         {
             public struct Point
             {
-                public int GroupName; //name
+                public NameReference GroupName; //name
                 public float Time;
 
                 public TreeNode ToTree(int index, PCCObject pcc)
                 {
                     TreeNode root = new TreeNode(index + ": " + Time);
-                    root.Nodes.Add("GroupName : " + pcc.getNameEntry(GroupName));
+                    root.Nodes.Add("GroupName : " + GroupName.Name);
                     root.Nodes.Add("Time : " + Time);
                     return root;
                 }
@@ -3263,7 +3265,7 @@ namespace ME3Explorer.InterpEditor
                             if (pcc.getNameEntry(p2[i].Name) == "Time")
                                 point.Time = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (pcc.getNameEntry(p2[i].Name) == "GroupName")
-                                point.GroupName = p2[i].Value.IntValue;
+                                point.GroupName = p2[i].Value.NameValue;
                             pos += p2[i].raw.Length;
                         }
                         LookupTrack.Points.Add(point);
@@ -3990,7 +3992,7 @@ namespace ME3Explorer.InterpEditor
     {
         public struct DirectorTrackCut
         {
-            public int TargetCamGroup; //name
+            public NameReference TargetCamGroup; //name
             public float Time;
             public float TransitionTime;
             public bool bSkipCameraReset;
@@ -3998,7 +4000,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
-                root.Nodes.Add("TargetCamGroup : " + pcc.getNameEntry(TargetCamGroup));
+                root.Nodes.Add("TargetCamGroup : " + TargetCamGroup.Name);
                 root.Nodes.Add("Time : " + Time);
                 root.Nodes.Add("TransitionTime : " + TransitionTime);
                 root.Nodes.Add("bSkipCameraReset : " + bSkipCameraReset);
@@ -4036,7 +4038,7 @@ namespace ME3Explorer.InterpEditor
                         for (int i = 0; i < p2.Count(); i++)
                         {
                             if (pcc.getNameEntry(p2[i].Name) == "TargetCamGroup")
-                                key.TargetCamGroup = p2[i].Value.IntValue;
+                                key.TargetCamGroup = p2[i].Value.NameValue;
                             else if (pcc.getNameEntry(p2[i].Name) == "Time")
                                 key.Time = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (pcc.getNameEntry(p2[i].Name) == "TransitionTime")
