@@ -50,6 +50,9 @@ namespace ME3Explorer
             scriptTab = tabControl1.TabPages["Script"];
             tabControl1.TabPages.Remove(scriptTab);
 
+            saveHexChangesToolStripMenuItem.Enabled = false;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
+
             // Load the default TLK file into memory.
             var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
             talkFile = new TalkFile();
@@ -327,8 +330,18 @@ namespace ME3Explorer
             RefreshView();
         }
 
+        private void tabControl1_SelectedIndexChanged(Object sender, EventArgs e)
+        {
+            // keep disabled unless we're on the hex tab:
+            if (tabControl1.SelectedIndex == 0 && listBox1.SelectedItem != null)
+                saveHexChangesToolStripMenuItem.Enabled = true;
+            else
+                saveHexChangesToolStripMenuItem.Enabled = false;
+        }
+
         public void Preview()
         {
+
             PreviewInfo();
             PreviewRaw();
             PreviewProps();
@@ -520,6 +533,7 @@ namespace ME3Explorer
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
+            tabControl1_SelectedIndexChanged(null,null);
             Preview();
         }
 
