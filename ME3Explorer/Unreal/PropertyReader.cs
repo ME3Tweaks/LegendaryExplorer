@@ -72,6 +72,13 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    public struct NameReference
+    {
+        public int index;
+        public int count;
+        public String Name;
+    }
+
     public static class PropertyReader
     {
         public enum Type
@@ -114,12 +121,13 @@ namespace ME3Explorer.Unreal
             //9 = StrProperty
             //10= StringRefProperty
         }        
-        
+
         public struct PropertyValue
         {
             public int len;
             public string StringValue;
             public int IntValue;
+            public NameReference NameValue;
             public List<PropertyValue> Array;
         }
 
@@ -372,7 +380,7 @@ namespace ME3Explorer.Unreal
                     v.IntValue = (int)BitConverter.ToInt64(raw, pos);
                     pos += size;
                     p.Value = v;
-                    break;                
+                    break;                     
                 default:
                     p = new Property();
                     p.Name = name;
@@ -428,6 +436,13 @@ namespace ME3Explorer.Unreal
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
+                    var nameRef = new NameReference();
+                    nameRef.index = v.IntValue;
+                    nameRef.count = BitConverter.ToInt32(raw, start + 4);
+                    nameRef.Name = pcc.getNameEntry(nameRef.index);
+                    if (nameRef.count > 0)
+                        nameRef.Name += "_" + nameRef.count;
+                    v.NameValue = nameRef;
                     v.len = 8;
                     break;
                 case "BoolProperty":

@@ -65,18 +65,28 @@ namespace ME3Explorer
                 developers.Add("WarrantyVoider");
                 developers.Add("Amarok86");
                 developers.Add("Ashley66444");
+                developers.Add("azulath");
+                developers.Add("aquadran");
                 developers.Add("BCSWowbagger");
                 developers.Add("Erik JS");
+                developers.Add("Eliot");
                 developers.Add("Eudaimonium");
                 developers.Add("FemShep");
+                developers.Add("Feckless");
                 developers.Add("Fog.Gene");
+                developers.Add("Gibbed");
+                developers.Add("Gildor");
+                developers.Add("giftfish");
                 developers.Add("Heff");
                 developers.Add("JohnP");
                 developers.Add("Kfreon");
                 developers.Add("MrFob");
+                developers.Add("morfeus839");
+                developers.Add("ottemis");
+                developers.Add("renmiri");
                 developers.Add("Saltisgood");
                 developers.Add("SirCxyrtyx");
-                developers.Add("Gibbed");
+                developers.Add("tankmaster");
 
                 StringBuilder sb = new StringBuilder();
                 foreach (String developer in developers)

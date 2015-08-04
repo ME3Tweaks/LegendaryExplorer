@@ -30,16 +30,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Tools\bin\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ResILWrapper, Version=1.0.5608.23680, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ResILWrapper">
       <HintPath>..\Libraries\ResILWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -54,7 +48,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="UsefulThings">
       <HintPath>..\Libraries\UsefulThings.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +63,7 @@
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
+    <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\Interpreter2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +101,7 @@
     <Compile Include="Misc\TOCEditor.Designer.cs">
       <DependentUpon>TOCEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MemoryTributary.cs" />
     <Compile Include="Helpers\MiniLZO.cs" />
     <Compile Include="Helpers\SaltLZOHelper.cs" />
     <Compile Include="Textures\Targa.cs" />

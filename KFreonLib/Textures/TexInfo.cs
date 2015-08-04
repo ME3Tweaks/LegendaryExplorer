@@ -1,5 +1,6 @@
 ﻿using KFreonLib.Debugging;
 using KFreonLib.GUI;
+using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.PCCObjects;
 using KFreonLib.Scripting;
 using KFreonLib.Textures;
@@ -10,7 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using UsefulThings;
+using KFreonLib.Misc.Extensions;
 
 
 namespace KFreonLib.Textures
@@ -575,18 +576,10 @@ namespace KFreonLib.Textures
             }
             else    // KFreon: Extract image to disk
             {
-                try
-                {
-                    if (isExternal)
-                        File.Copy(Path.Combine(FilePath, FileName), ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
-                    else
-                        zippy.Entries[TPFInd].Extract(false, ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
-                }
-                catch (Exception e)
-                {
-                    DebugOutput.PrintLn("File already exists.   " + e.ToString());
-                }
-                
+                if (isExternal)
+                    File.Copy(Path.Combine(FilePath, FileName), ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                else
+                    zippy.Entries[TPFInd].Extract(false, ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
             }
             return retval;
         }

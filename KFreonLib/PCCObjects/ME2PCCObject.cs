@@ -7,10 +7,10 @@ using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
 using System.Diagnostics;
 using KFreonLib.Textures;
+using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.Helpers;
 using BitConverter = KFreonLib.Misc.BitConverter;
 using KFreonLib.Debugging;
-using UsefulThings;
 
 namespace KFreonLib.PCCObjects
 {

@@ -533,6 +533,14 @@ namespace ME3Explorer
             return n;
         }
 
+        private void SetSelected(int n)
+        {
+            if (CurrentView == 2)
+                listBox1.SelectedIndex = n;
+            else if (CurrentView == 3)
+                treeView1.SelectedNode = treeView1.Nodes[n];
+        }
+
         private void propGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             int n = GetSelected();
@@ -667,6 +675,8 @@ namespace ME3Explorer
             PCCObject.ExportEntry ent = pcc.Exports[n];
             ent.Data = m.ToArray();
             pcc.Exports[n] = ent;
+
+            Preview();
         }
 
         private void extractToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1206,6 +1216,7 @@ namespace ME3Explorer
             pcc.Exports[n].idxClassName = ClassIdx;
             pcc.Exports[n].idxLink = LinkIdx;
             RefreshView();
+            SetSelected(n);
         }
 
         private void headerEditorToolStripMenuItem_Click(object sender, EventArgs e)
