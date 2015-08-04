@@ -6,9 +6,9 @@ using System.Text;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
 using KFreonLib.Textures;
+using KFreonLib.Helpers.LiquidEngine;
 using BitConverter = KFreonLib.Misc.BitConverter;
 using KFreonLib.Debugging;
-using UsefulThings;
 
 namespace KFreonLib.PCCObjects
 {

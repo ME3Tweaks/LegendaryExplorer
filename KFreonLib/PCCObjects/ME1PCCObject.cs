@@ -6,10 +6,10 @@ using System.Text;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
 using KFreonLib.Textures;
+using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.Helpers;
 using KFreonLib.Debugging;
 using BitConverter = KFreonLib.Misc.BitConverter;
-using UsefulThings;
 
 namespace KFreonLib.PCCObjects
 {
