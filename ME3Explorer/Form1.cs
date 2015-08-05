@@ -168,12 +168,6 @@ namespace ME3Explorer
             }
         }
 
-        private void tLKEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MainWindow mw = new MainWindow();
-            mw.Show();
-        }
-
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             XBoxConverter x = new XBoxConverter();
@@ -650,11 +644,6 @@ namespace ME3Explorer
 
         }
 
-        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new InterpEditor.InterpEditor());
-        }
-
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
@@ -709,6 +698,17 @@ namespace ME3Explorer
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutME3Explorer().Show(this);
+        }
+
+        private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            MainWindow mw = new MainWindow();
+            mw.Show();
+        }
+
+        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMaximized(new InterpEditor.InterpEditor());
         }
     }
 }
