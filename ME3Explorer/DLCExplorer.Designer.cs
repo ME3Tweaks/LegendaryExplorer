@@ -94,9 +94,9 @@
             // 
             // treeViewSfar
             // 
-            this.treeViewSfar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewSfar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treeViewSfar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeViewSfar.ImageIndex = 0;
             this.treeViewSfar.ImageList = this.imageListIcons;
@@ -192,8 +192,8 @@
             // 
             // groupBoxFile
             // 
-            this.groupBoxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxFile.Controls.Add(this.labelDataOffset);
             this.groupBoxFile.Controls.Add(this.textBoxDataOffset);
             this.groupBoxFile.Controls.Add(this.labelFullName);
@@ -673,7 +673,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 542);
             this.Name = "DLCExplorer";
-            this.Text = "Mass Effect 3 DLC Explorer";
+            this.Text = "DLC Basic Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.contextMenuStripEditor.ResumeLayout(false);
             this.groupBoxFile.ResumeLayout(false);
