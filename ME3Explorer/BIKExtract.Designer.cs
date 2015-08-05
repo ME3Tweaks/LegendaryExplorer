@@ -144,7 +144,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BIKExtract";
-            this.Text = "BIKExtract";
+            this.Text = "BIK Movie Extractor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BIKExtract_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
