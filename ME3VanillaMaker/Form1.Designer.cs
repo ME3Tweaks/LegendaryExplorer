@@ -125,12 +125,12 @@
             this.context.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createFullBackupToolStripMenuItem});
             this.context.Name = "context";
-            this.context.Size = new System.Drawing.Size(164, 26);
+            this.context.Size = new System.Drawing.Size(173, 26);
             // 
             // createFullBackupToolStripMenuItem
             // 
             this.createFullBackupToolStripMenuItem.Name = "createFullBackupToolStripMenuItem";
-            this.createFullBackupToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.createFullBackupToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.createFullBackupToolStripMenuItem.Text = "Create Full Backup";
             this.createFullBackupToolStripMenuItem.Click += new System.EventHandler(this.createFullBackupToolStripMenuItem_Click_1);
             // 
@@ -159,12 +159,12 @@
             this.context2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.restoreAllToolStripMenuItem});
             this.context2.Name = "context2";
-            this.context2.Size = new System.Drawing.Size(127, 26);
+            this.context2.Size = new System.Drawing.Size(131, 26);
             // 
             // restoreAllToolStripMenuItem
             // 
             this.restoreAllToolStripMenuItem.Name = "restoreAllToolStripMenuItem";
-            this.restoreAllToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.restoreAllToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.restoreAllToolStripMenuItem.Text = "Restore All";
             this.restoreAllToolStripMenuItem.Click += new System.EventHandler(this.restoreAllToolStripMenuItem_Click);
             // 
@@ -189,7 +189,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Name = "Form1";
-            this.Text = "ME3 Vanilla Maker by Warranty Voider";
+            this.Text = "ME3 Backup Tool";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();

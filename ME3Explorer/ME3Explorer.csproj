@@ -71,13 +71,13 @@
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX">
-      <HintPath>.\Microsoft.DirectX.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX.Direct3D">
-      <HintPath>.\Microsoft.DirectX.Direct3D.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.Direct3D.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DirectX.Direct3DX">
-      <HintPath>.\Microsoft.DirectX.Direct3DX.dll</HintPath>
+      <HintPath>..\Libraries\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />
