@@ -335,7 +335,13 @@ namespace ME3Explorer
                 DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
                 DebugOutput.PrintLn("Getting further job info...");
 
-                job.GetJobDetails(autoupdate == true);
+                if (job.GetJobDetails(autoupdate == true) == false)
+                { 
+                    // Heff: If this happens then the user has already been informed via a popup.
+                    // Heff: Hopefully this is a value that can be handled by all callers.
+                    return new List<string>();
+                }
+
                 DebugOutput.PrintLn("Got job details");
                 if (!ExternalCall)
                 {

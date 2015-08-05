@@ -166,12 +166,9 @@ namespace ME3Explorer
                         break;
                 }
             }
-        }
 
-        private void tLKEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MainWindow mw = new MainWindow();
-            mw.Show();
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
+                ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -239,7 +236,8 @@ namespace ME3Explorer
 
         private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new TextureExplorer());
+            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
+            //OpenMaximized(new TextureExplorer());
         }
 
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -257,7 +255,16 @@ namespace ME3Explorer
 
         private void coalescedEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Coalesced_Editor.CoalEditor());
+            var result = MessageBox.Show(
+                "This tool is outdated and does not work properly for editing DLC's. " +
+                "\nTankmaster has developed a new tool which handles this correctly, do you wish to visit his thread instead?",
+                "Outdated/Buggy tool!",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+
+            if (result == DialogResult.Yes)
+                System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/additional-tools-t1524.html");
+            else
+                OpenMaximized(new Coalesced_Editor.CoalEditor());
         }
 
         private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -460,6 +467,7 @@ namespace ME3Explorer
                 return;
             }
             Properties.Settings.Default.TexplorerME3Path = cookPath;
+            Properties.Settings.Default.ME3InstallDir = installPath;
             Properties.Settings.Default.Save();
             MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
@@ -640,11 +648,6 @@ namespace ME3Explorer
 
         }
 
-        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new InterpEditor.InterpEditor());
-        }
-
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
@@ -670,7 +673,7 @@ namespace ME3Explorer
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Disabled for now :(");
+            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
         }
 
         private void mE3WikiToolStripMenuItem_Click(object sender, EventArgs e)
@@ -699,6 +702,17 @@ namespace ME3Explorer
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutME3Explorer().Show(this);
+        }
+
+        private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            MainWindow mw = new MainWindow();
+            mw.Show();
+        }
+
+        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMaximized(new InterpEditor.InterpEditor());
         }
     }
 }

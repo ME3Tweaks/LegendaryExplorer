@@ -251,7 +251,7 @@ namespace KFreonLib.Scripting
             /// Properties:
             ///     ExpID's, PCC's, Texname, WhichGame, JobType.
             /// </summary>
-            public void GetJobDetails(bool update)
+            public bool GetJobDetails(bool update)
             {
                 JobType = DetectJobType();
 
@@ -277,7 +277,19 @@ namespace KFreonLib.Scripting
                     DebugOutput.PrintLn("Found num PCCS: " + PCCs.Count);
                     WhichGame = GuessGame(PCCs);
 
-                    DebugOutput.PrintLn("Guessed gameversion: " + WhichGame);
+                    if (WhichGame == -1)
+                    {
+                        DebugOutput.PrintLn("ERROR: No game found matching the mod files!\n" +
+                            "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
+                            "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.");
+
+                        MessageBox.Show("No game found matching the mod files!\n" +
+                            "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
+                            "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.", "Error!");
+                        return false;
+                    }
+                    else
+                        DebugOutput.PrintLn("Guessed gameversion: " + WhichGame);
                 }
 
                 // KFreon: Get ExpID's if required
@@ -311,6 +323,8 @@ namespace KFreonLib.Scripting
                 OrigExpIDs = new List<int>(ExpIDs);
                 OrigPCCs = new List<string>(PCCs);
                 OriginalScript = Script;
+
+                return true;
             }
 
             private int GuessGame(List<string> pccs)
@@ -320,12 +334,24 @@ namespace KFreonLib.Scripting
                 DebugOutput.PrintLn("Starting to guess game...");
 
                 IEnumerable<string>[] GameFiles = new IEnumerable<string>[3];
+
                 GameFiles[0] = ME1Directory.Files;
-                DebugOutput.PrintLn("Got ME1 files...");
+                if (GameFiles[0] == null)
+                    DebugOutput.PrintLn("Could not find ME1 files!");
+                else
+                    DebugOutput.PrintLn("Got ME1 files...");
+
                 GameFiles[1] = ME2Directory.Files;
-                DebugOutput.PrintLn("Got ME2 files...");
+                if (GameFiles[1] == null)
+                    DebugOutput.PrintLn("Could not find ME2 files!");
+                else
+                    DebugOutput.PrintLn("Got ME2 files...");
+
                 GameFiles[2] = ME3Directory.Files;
-                DebugOutput.PrintLn("Got ME3 Gamefiles...");
+                if (GameFiles[2] == null)
+                    DebugOutput.PrintLn("Could not find ME3 files!");
+                else
+                    DebugOutput.PrintLn("Got ME3 files...");
                 //DebugOutput.PrintLn("List of gamefiles acquired with counts " + ME1Directory.Files.Count + "  " + ME2Directory.Files.Count + "  " + ME3Directory.Files.Count + ". Beginning search...");
 
                 try
@@ -347,7 +373,8 @@ namespace KFreonLib.Scripting
                                 return;
                             }
                             //DebugOutput.PrintLn("Searching for game in pcc: " + pcc);
-                            if (gamefiles.FirstOrDefault(t => t.Contains(pcc)) != null)
+                            string temp = pcc.Replace("\\\\", "\\");
+                            if (gamefiles.FirstOrDefault(t => t.Contains(temp)) != null)
                                 found++;
                         });
 
@@ -361,8 +388,10 @@ namespace KFreonLib.Scripting
 
 
                 DebugOutput.PrintLn("Finished guessing game.");
-
-                return NumFounds.ToList().IndexOf(NumFounds.Max()) + 1;
+                if (NumFounds.Sum() == 0)
+                    return -1;
+                else
+                    return NumFounds.ToList().IndexOf(NumFounds.Max()) + 1;
             }
 
             /// <summary>
@@ -683,7 +712,7 @@ namespace KFreonLib.Scripting
 
                 
                 // KFreon: Ask what to do about version
-                if (ExecutingVersion != null)
+                if (ExecutingVersion != null && !ExternalCall) // Heff: Changed the logic to not ask if it's an external call.
                 {
                     DialogResult dr = MessageBox.Show("This .mod is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                     if (dr == System.Windows.Forms.DialogResult.Cancel)

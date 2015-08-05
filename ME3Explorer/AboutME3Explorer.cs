@@ -46,47 +46,28 @@ namespace ME3Explorer
             get
             {
                 List<String> developers = new List<String>();
-                /*From Wiki
-                Amarok86
-                Aquadran
-                Ashley66444
-                BCSWowbagger
-                Erik JS
-                Eudaimonium
-                FemShep
-                Fog.Gene
-                Heff
-                JohnP
-                Kfreon
-                MrFob
-                Saltisgood
-                SirCxyrtyx
-                Warrantyvoider*/
+                developers.Add("Toolset by:");
                 developers.Add("WarrantyVoider");
-                developers.Add("Amarok86");
+                developers.Add("AmaroK86");
                 developers.Add("Ashley66444");
-                developers.Add("azulath");
-                developers.Add("aquadran");
+                developers.Add("Aquadran");
                 developers.Add("BCSWowbagger");
                 developers.Add("Erik JS");
-                developers.Add("Eliot");
                 developers.Add("Eudaimonium");
                 developers.Add("FemShep");
-                developers.Add("Feckless");
                 developers.Add("Fog.Gene");
-                developers.Add("Gibbed");
-                developers.Add("Gildor");
-                developers.Add("giftfish");
                 developers.Add("Heff");
                 developers.Add("JohnP");
                 developers.Add("Kfreon");
                 developers.Add("MrFob");
-                developers.Add("morfeus839");
-                developers.Add("ottemis");
-                developers.Add("renmiri");
                 developers.Add("Saltisgood");
                 developers.Add("SirCxyrtyx");
-                developers.Add("tankmaster");
+
+                developers.Add("");
+                developers.Add("Additional Thanks:");
+                developers.Add("Feckless");
+                developers.Add("gibbed");
+                developers.Add("gildor");
 
                 StringBuilder sb = new StringBuilder();
                 foreach (String developer in developers)

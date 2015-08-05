@@ -84,27 +84,27 @@
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -115,27 +115,27 @@
             this.removeNotExistingFilesToolStripMenuItem,
             this.recoverFromBackupToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // fixSizesAndHashesToolStripMenuItem
             // 
             this.fixSizesAndHashesToolStripMenuItem.Name = "fixSizesAndHashesToolStripMenuItem";
-            this.fixSizesAndHashesToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.fixSizesAndHashesToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.fixSizesAndHashesToolStripMenuItem.Text = "Fix sizes and hashes";
             this.fixSizesAndHashesToolStripMenuItem.Click += new System.EventHandler(this.fixSizesAndHashesToolStripMenuItem_Click);
             // 
             // removeNotExistingFilesToolStripMenuItem
             // 
             this.removeNotExistingFilesToolStripMenuItem.Name = "removeNotExistingFilesToolStripMenuItem";
-            this.removeNotExistingFilesToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.removeNotExistingFilesToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.removeNotExistingFilesToolStripMenuItem.Text = "Remove not existing files";
             this.removeNotExistingFilesToolStripMenuItem.Click += new System.EventHandler(this.removeNotExistingFilesToolStripMenuItem_Click);
             // 
             // recoverFromBackupToolStripMenuItem
             // 
             this.recoverFromBackupToolStripMenuItem.Name = "recoverFromBackupToolStripMenuItem";
-            this.recoverFromBackupToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.recoverFromBackupToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.recoverFromBackupToolStripMenuItem.Text = "Recover original toc.bin";
             this.recoverFromBackupToolStripMenuItem.Visible = false;
             this.recoverFromBackupToolStripMenuItem.Click += new System.EventHandler(this.recoverFromBackupToolStripMenuItem_Click);
@@ -149,12 +149,12 @@
             this.contextMenuStripFiles.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.removeFileToolStripMenuItem});
             this.contextMenuStripFiles.Name = "contextMenuStripFiles";
-            this.contextMenuStripFiles.Size = new System.Drawing.Size(131, 26);
+            this.contextMenuStripFiles.Size = new System.Drawing.Size(137, 26);
             // 
             // removeFileToolStripMenuItem
             // 
             this.removeFileToolStripMenuItem.Name = "removeFileToolStripMenuItem";
-            this.removeFileToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.removeFileToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.removeFileToolStripMenuItem.Text = "Remove file";
             this.removeFileToolStripMenuItem.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
@@ -165,26 +165,26 @@
             this.emptyBlockToolStripMenuItem,
             this.removeBlockToolStripMenuItem});
             this.contextMenuStripBlock.Name = "contextMenuStripBlock";
-            this.contextMenuStripBlock.Size = new System.Drawing.Size(185, 70);
+            this.contextMenuStripBlock.Size = new System.Drawing.Size(198, 70);
             // 
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.addFileToolStripMenuItem.Text = "Add file";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.addFileToolStripMenuItem_Click);
             // 
             // emptyBlockToolStripMenuItem
             // 
             this.emptyBlockToolStripMenuItem.Name = "emptyBlockToolStripMenuItem";
-            this.emptyBlockToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.emptyBlockToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.emptyBlockToolStripMenuItem.Text = "Empty block";
             this.emptyBlockToolStripMenuItem.Click += new System.EventHandler(this.emptyBlockToolStripMenuItem_Click);
             // 
             // removeBlockToolStripMenuItem
             // 
             this.removeBlockToolStripMenuItem.Name = "removeBlockToolStripMenuItem";
-            this.removeBlockToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.removeBlockToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.removeBlockToolStripMenuItem.Text = "Remove block (broken)";
             this.removeBlockToolStripMenuItem.Visible = false;
             this.removeBlockToolStripMenuItem.Click += new System.EventHandler(this.removeBlockToolStripMenuItem_Click);
@@ -198,7 +198,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "TOCEditorAK";
-            this.Text = "PCConsoleTOC.bin editor by AmaroK86";
+            this.Text = "TOC Editor (AmaroK86)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
