@@ -2350,8 +2350,14 @@ namespace ME3Explorer
             int nummods;
             modmaker.LoadMods(new string[] { filename }, out nummods, true);
             Overall.UpdateText("Formatting/Updating .mods...");
-            modmaker.FormatJobs(true, true);
+            var result = modmaker.FormatJobs(true, true);
 
+            if (result.Count == 0)
+            {
+                Overall.UpdateText("ERROR! See debug output.");
+                OverallProg.ChangeProgressBar(0, 1);
+                return;
+            }
 
             List<TreeTexInfo> TreeTexes = Tree.GetTreeAsList();
             int count = 1;
