@@ -276,21 +276,21 @@ namespace KFreonLib.Scripting
 
                     DebugOutput.PrintLn("Found num PCCS: " + PCCs.Count);
                     WhichGame = GuessGame(PCCs);
-
-                    if (WhichGame == -1)
-                    {
-                        DebugOutput.PrintLn("ERROR: No game found matching the mod files!\n" +
-                            "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
-                            "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.");
-
-                        MessageBox.Show("No game found matching the mod files!\n" +
-                            "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
-                            "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.", "Error!");
-                        return false;
-                    }
-                    else
-                        DebugOutput.PrintLn("Guessed gameversion: " + WhichGame);
                 }
+
+                if (WhichGame == -1)
+                {
+                    DebugOutput.PrintLn("ERROR: No game found matching the mod files!\n" +
+                        "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
+                        "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.");
+
+                    MessageBox.Show("No game found matching the mod files!\n" +
+                        "Make sure that you have the proper game installed, and that the toolset has the correct path!\n" +
+                        "If the mod targets DLC files, make sure that you have extracted all relevant DLC's.", "Error!");
+                    return false;
+                }
+                else
+                    DebugOutput.PrintLn("Guessed gameversion: " + WhichGame);
 
                 // KFreon: Get ExpID's if required
                 if (ExpIDs.Count == 0 && update)

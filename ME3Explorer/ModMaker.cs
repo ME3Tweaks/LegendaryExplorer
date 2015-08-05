@@ -339,6 +339,7 @@ namespace ME3Explorer
                 { 
                     // Heff: If this happens then the user has already been informed via a popup.
                     // Heff: Hopefully this is a value that can be handled by all callers.
+                    cts.Cancel();
                     return new List<string>();
                 }
 
