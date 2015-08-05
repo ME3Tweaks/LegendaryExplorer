@@ -166,6 +166,9 @@ namespace ME3Explorer
                         break;
                 }
             }
+
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
+                ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -464,6 +467,7 @@ namespace ME3Explorer
                 return;
             }
             Properties.Settings.Default.TexplorerME3Path = cookPath;
+            Properties.Settings.Default.ME3InstallDir = installPath;
             Properties.Settings.Default.Save();
             MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
