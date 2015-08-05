@@ -347,7 +347,8 @@ namespace KFreonLib.Scripting
                                 return;
                             }
                             //DebugOutput.PrintLn("Searching for game in pcc: " + pcc);
-                            if (gamefiles.FirstOrDefault(t => t.Contains(pcc)) != null)
+                            string temp = pcc.Replace("\\\\", "\\");
+                            if (gamefiles.FirstOrDefault(t => t.Contains(temp)) != null)
                                 found++;
                         });
 
@@ -683,7 +684,7 @@ namespace KFreonLib.Scripting
 
                 
                 // KFreon: Ask what to do about version
-                if (ExecutingVersion != null)
+                if (ExecutingVersion != null && !ExternalCall) // Heff: Changed the logic to not ask if it's an external call.
                 {
                     DialogResult dr = MessageBox.Show("This .mod is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                     if (dr == System.Windows.Forms.DialogResult.Cancel)
