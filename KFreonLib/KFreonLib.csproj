@@ -204,6 +204,9 @@
     <EmbeddedResource Include="Misc\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Misc\TOCEditor.resx">
+      <DependentUpon>TOCEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripting\ScriptCompiler.resx">
       <DependentUpon>ScriptCompiler.cs</DependentUpon>
     </EmbeddedResource>

@@ -61,13 +61,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -83,14 +83,14 @@
             // selectedToolStripMenuItem
             // 
             this.selectedToolStripMenuItem.Name = "selectedToolStripMenuItem";
-            this.selectedToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.selectedToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.selectedToolStripMenuItem.Text = "Selected";
             this.selectedToolStripMenuItem.Click += new System.EventHandler(this.selectedToolStripMenuItem_Click);
             // 
             // allToolStripMenuItem
             // 
             this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.allToolStripMenuItem.Text = "All";
             this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
@@ -145,7 +145,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AFCExtract";
-            this.Text = "AFCExtract";
+            this.Text = "Audio Extractor";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
