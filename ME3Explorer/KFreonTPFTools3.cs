@@ -145,6 +145,7 @@ namespace ME3Explorer
             tex1.Compare(tex2);*/
 
             InitializeComponent();
+            cts = new CancellationTokenSource();
             UpgradeSettings();
 
             // KFreon: Set number of threads if necessary
@@ -560,9 +561,6 @@ namespace ME3Explorer
 
             foreach (string file in Files)
             {
-                if (cts.IsCancellationRequested)
-                    return false;
-
                 switch (Path.GetExtension(file).ToLowerInvariant())
                 {
                     case ".tpf":
@@ -586,6 +584,9 @@ namespace ME3Explorer
                         break;
                 }
 
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
                 OverallProg.IncrementBar();
             }
 
@@ -602,6 +603,10 @@ namespace ME3Explorer
 
         public void RedrawTreeView()
         {
+            //Heff: if cancellation was requested, this was most likely called by a background thread, so don't try to interact with the form.
+            if (cts.IsCancellationRequested)
+                return;
+
             if (MainTreeView.InvokeRequired)
                 this.Invoke(new Action(() =>
                 {
@@ -843,11 +848,15 @@ namespace ME3Explorer
             // KFreon: Add node and its index to current node
             myTreeNode temp = new myTreeNode(Path.GetFileName(file));
             temp.TexInd = LoadedTexes.Count;
-            this.Invoke(new Action(() =>
+            // Heff: cancellation check
+            if (!cts.IsCancellationRequested)
             {
-                MainTreeView.Nodes.Add(temp);
-                OverallProg.IncrementBar();
-            }));
+                this.Invoke(new Action(() =>
+                {
+                    MainTreeView.Nodes.Add(temp);
+                    OverallProg.IncrementBar();
+                }));
+            }
 
             LoadedTexes.Add(tmpTex);
 
@@ -1187,6 +1196,10 @@ namespace ME3Explorer
         private int GetSelectedTex(out TPFTexInfo tex)
         {
             tex = null;
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return -1;
+
             myTreeNode node = MainTreeView.SelectedNode as myTreeNode;
             if (node == null)
                 return -1;
@@ -1203,6 +1216,11 @@ namespace ME3Explorer
 
         private int GetParentTex(out TPFTexInfo tex)
         {
+            tex = null;
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return -1;
+
             myTreeNode node = MainTreeView.SelectedNode as myTreeNode;
             myTreeNode parent = (node.Parent as myTreeNode);
             tex = LoadedTexes[parent.TexInd];
@@ -1587,6 +1605,10 @@ namespace ME3Explorer
 
         private void Extractor(string ExtractPath, TPFTexInfo tex, Predicate<TPFTexInfo> predicate)
         {
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return;
+
             // KFreon: Move to backbone if necessary
             if (!MainTreeView.InvokeRequired)
             {
@@ -1668,6 +1690,10 @@ namespace ME3Explorer
 
         private bool DeleteEntry(int ind = -1)
         {
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
+
             if (LoadedTexes.Count == 1)
             {
                 CloseFilesButton_Click(null, null);
@@ -1903,6 +1929,9 @@ namespace ME3Explorer
             // KFreon: Setup modified DLC list
             List<string> modifiedDLC = new List<string>();
 
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
             OverallProg.ChangeProgressBar(0, validtexes.Count + 1);
             int count = 1;
             DebugOutput.PrintLn("Textures loaded = " + validtexes.Count);
@@ -1912,6 +1941,10 @@ namespace ME3Explorer
             Texplorer2 texplorer = new Texplorer2(true, WhichGame);
             foreach (TPFTexInfo tex in validtexes)
             {
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
+
                 Overall.UpdateText("Installing mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
                 DebugOutput.PrintLn("Installing mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
                 OverallProg.IncrementBar();
@@ -1928,11 +1961,11 @@ namespace ME3Explorer
                             modifiedDLC.Add(dlcname);
                     }
                 }
-
-                // KFreon: Check cancellation
-                if (cts.IsCancellationRequested)
-                    return false;
             }
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
 
             // KFreon: Update TOC's
             this.Invoke(new Action(() =>
@@ -1942,6 +1975,10 @@ namespace ME3Explorer
             }));
             DebugOutput.PrintLn("Updating Basegame...");
             Texplorer2.UpdateTOCs(pathBIOGame, WhichGame, DLCPath, modifiedDLC);
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
             this.Invoke(new Action(() =>
             {
                 OverallStatusLabel.Text = "All mods installed!";
@@ -2176,12 +2213,11 @@ namespace ME3Explorer
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
         {
-            if (CancelButton.Visible && MessageBox.Show("Background Tasks are running. Are you sure you want to close?", "Reeeally sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+            if (CancelButton.Visible && MessageBox.Show("Background Tasks are running. Are you sure you want to close?", "Reeeally sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
             {
-                cts.Cancel();
                 e.Cancel = true;
 
-                Task.Run(() =>
+                /*Task.Run(() =>
                 {
                     while (!OverallStatusLabel.Text.ToLowerInvariant().Contains("failed"))
                         System.Threading.Thread.Sleep(100);
@@ -2190,19 +2226,23 @@ namespace ME3Explorer
                     CurrentInstance = null;
                     SaveProperties();
                     this.Close();
-                });
+                });*/
             }
-
-            DebugOutput.PrintLn("-----Execution of TPF/DDS Tools closing...-----");
-            CurrentInstance = null;
-            SaveProperties();
+            else
+            {
+                cts.Cancel();
+                DebugOutput.PrintLn("-----Execution of TPF/DDS Tools closing...-----");
+                CurrentInstance = null;
+                SaveProperties();
+            }
         }
 
         private void RebuildTOP_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            var result =  MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            if (result == System.Windows.Forms.DialogResult.No)
                 RepackWithTexplorer();
-            else
+            else if (result == System.Windows.Forms.DialogResult.Yes)
                 RepackWithTexmod();
         }
 
@@ -2549,6 +2589,10 @@ namespace ME3Explorer
                 if (retval == true && !fixedTexes.ContainsKey(tex.Hash))
                     fixedTexes.Add(tex.Hash, tex);
 
+
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
                 RedrawTreeView();
             }
             Overall.UpdateText("Autofix complete." + (!retval ? "Some errors occured." : ""));
@@ -2615,6 +2659,9 @@ namespace ME3Explorer
                 retval = true;
             }
 
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
             tex.EnumerateDetails();
             return retval;
         }
@@ -3201,6 +3248,13 @@ namespace ME3Explorer
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
             backbone.AddToBackBone((t) => Autofix(tex));
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            cts.Cancel();
+            OverallProgressBar.Value = 0;
+            OverallStatusLabel.Text = "Cancelled.";
         }
     }
 }
