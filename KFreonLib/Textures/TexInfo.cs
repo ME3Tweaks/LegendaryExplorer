@@ -350,6 +350,7 @@ namespace KFreonLib.Textures
         public int Height = -1;
         public int Width = -1;
         public SaltTPF.ZipReader zippy = null;
+        public bool wasAnalysed = false;
         
 
         #region Properties
@@ -483,6 +484,7 @@ namespace KFreonLib.Textures
 
         public void UndoAnalysis(int newGameVersion)
         {
+            wasAnalysed = false;
             Files.Clear();
             OriginalFiles.Clear();
             ExpIDs.Clear();
@@ -542,8 +544,11 @@ namespace KFreonLib.Textures
                     text = "----> " + text + ending;
                 }
             }
-            else if (Analysed && !isDef)
+            else if (Analysed && wasAnalysed && !isDef)
                 text = "----> " + text + "  <----   NOT FOUND IN TREE";
+            else if (Analysed && !isDef)
+                text += " <--- Not Analyzed!";
+
             return text;
         }
 

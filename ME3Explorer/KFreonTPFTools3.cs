@@ -522,6 +522,7 @@ namespace ME3Explorer
                     gooey.ModifyControl("Rebuild", true);
                     gooey.ModifyControl("ChangePaths", false);
                     gooey.ModifyControl("ClearAll", true);
+                    gooey.ModifyControl("Analyse", true);
                 }
                 return retval;
             });
@@ -1303,6 +1304,10 @@ namespace ME3Explorer
             gooey.ModifyControl("extractInvalid", true);
             gooey.ModifyControl("RunAutofix", true);
 
+            // Heff: mark as analysed
+            foreach (var tex in LoadedTexes)
+                tex.wasAnalysed = true;
+
             RedrawTreeView();
 
             OverallProg.ChangeProgressBar(1, 1);
@@ -1385,7 +1390,7 @@ namespace ME3Explorer
             // KFreon: For each loaded texture, find its duplicates in the tree and add them as seperate textures
             for (int i = 0; i < temptexes.Count; i++)
             {
-                if (temptexes[i].isDef)
+                if (temptexes[i].isDef || temptexes[i].wasAnalysed)
                     continue;
 
                 TPFTexInfo curr = temptexes[i];//.Clone();
@@ -1485,7 +1490,8 @@ namespace ME3Explorer
                     else
                     {
                         // KFreon: Add duplicates to current tex
-                        curr.FileDuplicates.AddRange(duplicates);
+                        curr.FileDuplicates.AddRange(duplicates.Where(
+                            t => !curr.FileDuplicates.Any(c => c.TreeInd == t.TreeInd)));
                         LoadedTexes[currentPos] = curr;
                         duplicates.Clear();
                         currentPos++;
