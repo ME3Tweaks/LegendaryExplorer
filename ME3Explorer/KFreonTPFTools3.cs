@@ -19,6 +19,8 @@ using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using System.Reflection;
 using ResILWrapper;
+using ResIL.Unmanaged;
+using UsefulThings;
 
 namespace ME3Explorer
 {
@@ -759,7 +761,6 @@ namespace ME3Explorer
             {
                 temptexes.Add(new TPFTexInfo());
             }
-
             Parallel.For(0, numEntries, po, i =>
             {
                 // KFreon: Add TPF entries to TotalTexes list
@@ -796,9 +797,7 @@ namespace ME3Explorer
         public int LoadExternal(string file, bool isDef)
         {
             EnableSecondProgressBar(false);
-
             TPFTexInfo tmpTex = new TPFTexInfo(Path.GetFileName(file), -1, Path.GetDirectoryName(file), null, WhichGame);
-
             // KFreon: Get hash
             if (!isDef)
             {
@@ -934,8 +933,8 @@ namespace ME3Explorer
             {
                 //KFreonLib.Textures.Methods.GetImage(tex.Format, data);
                 Bitmap img = null;
-                using (ResILImage kfimg = new ResILImage(data))
-                    img = new Bitmap(new MemoryStream(kfimg.ToArray(ResIL.Unmanaged.ImageType.Jpg)));
+                using (ResILImageBase kfimg = ResILImageBase.Create(data))
+                    img = kfimg.ToWinFormsBitmap();
                 if (img == null)
                     return;
 
@@ -2201,7 +2200,7 @@ namespace ME3Explorer
 
         private void RebuildTOP_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "Either works", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
                 RepackWithTexplorer();
             else
                 RepackWithTexmod();
@@ -2475,22 +2474,22 @@ namespace ME3Explorer
         }
 
 
-        private bool FixMips(TPFTexInfo info, ResILImage img)
+        private bool FixMips(TPFTexInfo info, ResILImageBase img)
         {
             // KFreon: Build or remove mips depending on requirements. Note case where expected == existing not present as that's what MipsCorrect is.
             if (info.ExpectedMips > info.NumMips)
             {
-                if (!img.BuildMipmaps(info.NumMips == 1))
+                if (!img.BuildMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
-            else
-            {
-                if (!img.RemoveMipmaps(info.NumMips == 1))
+            else if (info.ExpectedMips == 1)  // KFreon: Don't want to remove mips when expected = 11 and num = 13
+            {                                   // Heff: Checking for 1 seems weird to me, does this need to be fixed?
+                if (!img.RemoveMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
@@ -2509,46 +2508,154 @@ namespace ME3Explorer
 
             foreach (TPFTexInfo tex in texes)
             {
+                tex.AutofixSuccess = false;
+                // KFreon: Skip tex if one of its duplicates have already been fixed
+                /*for (int i = 0; i < tex.TreeDuplicates.Count; i++)
+                {
+                    var dup = texes[tex.TreeDuplicates[i]];
+                    if (dup.AutofixSuccess)
+                    {
+                        tex.NumMips = tex.ExpectedMips;
+                        tex.Format = tex.ExpectedFormat;
+                        tex.FilePath = dup.FilePath;
+                        tex.AutofixSuccess = true;
+                        retval = true;
+                        break;
+                    }
+                }*/
+
                 Overall.UpdateText("Fixing: " + tex.TexName);
                 DebugOutput.PrintLn("Fixing: " + tex.TexName + Environment.NewLine + "     FORMAT -> Current: " + tex.Format + "  Expected: " + tex.ExpectedFormat + Environment.NewLine + "     MIPS -> Current: " + tex.NumMips + "  Expected: " + tex.ExpectedMips);
-                byte[] arr = tex.Extract(null, true);
 
-
-                using (ResILImage img = new ResILImage(arr))
-                {
-                    string path = tex.Autofixedpath(TemporaryPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    ResIL.Unmanaged.CompressedDataFormat surface = ParseSurfaceFormat(tex.ExpectedFormat);
-                    bool success = false;
-
-                    FixMips(tex, img);
-
-                    if (surface == ResIL.Unmanaged.CompressedDataFormat.None)
-                        MessageBox.Show("Tell KFreon about this: format = " + tex.ExpectedFormat);
-                    else
-                        success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Dds, path, surface: surface);
-
-                    if (!success)
-                    {
-                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName + ". Reason: " + ResILImage.GetResILError());
-                        tex.AutofixSuccess = false;
-                    }
-
-                    if (!retval && success)
-                        retval = true;
-                    else if (retval && !success)
-                        retval = false;
-
-                    tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
-                    tex.EnumerateDetails();
-                }
-
+                // Heff: should we check like this for autofixsuccess here before trying to fix? See above "skip"
+                if (!tex.AutofixSuccess)
+                    retval = AutofixInternal(tex);
 
                 RedrawTreeView();
             }
             Overall.UpdateText("Autofix complete." + (!retval ? "Some errors occured." : ""));
             OverallProg.ChangeProgressBar(1, 1);
             return retval;
+        }
+
+        private bool AutofixInternal(TPFTexInfo tex)
+        {
+            bool retval = false;
+
+            string path = tex.Autofixedpath(TemporaryPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            CompressedDataFormat surface = ParseSurfaceFormat(tex.ExpectedFormat);
+
+            tex.Extract(Path.GetDirectoryName(path));
+            tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
+
+            // Heff: make sure that nvdxt does the compression from dxt5 to 1, as it looks lousy otherwise.
+            if (tex.Format.ToLower().Contains("dxt5") && (surface == CompressedDataFormat.DXT1A || surface == CompressedDataFormat.DXT1))
+            {
+                string type = surface == CompressedDataFormat.DXT1A ? "dxt1a" : "dxt1c";
+                string toolPath = @".\exec\nvdxt.exe";
+                string args = "-file \"" + Path.Combine(tex.FilePath, tex.FileName) + "\" -output \"" + path + "\" -quality_production -" + type;
+
+                args += " -nomipmap";
+
+                string output = ExecuteExternalTool(toolPath, args);
+            }
+
+            if (surface == CompressedDataFormat.ThreeDC || surface == CompressedDataFormat.ATI1N) // nv/dx tools dont handle this
+            {
+                //amd compress / compressonator?  otherwise old ResIL
+            }
+            else
+            { // should this also handle DXT2/4 ?
+                string[] sourceFormats = { ".tga", ".bmp", ".pfm", ".jpg", ".hdr", ".dds", ".png" };
+                if (!MoveToTempAndConvert(tex, path, sourceFormats))
+                    return false;
+
+                string targetPath = Path.ChangeExtension(path, ".dds");
+
+                string toolPath = @".\exec\texconv.exe";
+
+                string type = tex.ExpectedFormat;
+                if (type == "ARGB")
+                    type = "A8R8G8B8";
+
+                string args = " -ft DDS -f " + type;
+                int newMips = ResILImageBase.EstimateNumMips(tex.Width, tex.Height);
+                if (tex.ExpectedMips != 1)
+                    args += " -m " + newMips + " -mf D3DX_FILTER_BOX";
+                else
+                    args += " -m 1"; // Heff: seems like this is detected as 0 mips, fix.
+                args += " -o \"" + Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath)) + "\"";
+                args += " \"" + Path.Combine(tex.FilePath, tex.FileName) + "\"";
+
+                string output = ExecuteExternalTool(toolPath, args);
+
+                if (path != targetPath)
+                    File.Delete(path); //Delete the temporary file if it had a different extension
+
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
+                retval = true;
+            }
+
+            tex.EnumerateDetails();
+            return retval;
+        }
+
+        private string ExecuteExternalTool(string filepath, string arguments)
+        {
+            Process proc = new Process();
+
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.FileName = filepath;
+            proc.StartInfo.Arguments = arguments;
+            proc.Start();
+
+            string cmdoutput = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return cmdoutput;
+        }
+
+        private bool MoveToTempAndConvert(TPFTexInfo tex, string path, string[] sourceFormats)
+        {
+            if (!sourceFormats.Any(f => tex.FileName.EndsWith(f)))
+            {
+                //Heff: If the source format is some type that's not supported by the nvidia dds tool, try to convert via ResIL:
+                byte[] arr = tex.Extract(null, true);
+                path = Path.ChangeExtension(path, ".tga");
+                tex.FilePath = Path.GetDirectoryName(path);
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".tga");
+                using (ResILImageBase img = ResILImageBase.Create(arr))
+                {
+                    // Heff: Convert all formats to TGA for smallest possible quality loss:
+                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Tga, path, MipsMode: ResILImageBase.MipMapMode.RemoveAllButOne);
+                    if (!success)
+                    {
+                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
+                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                        tex.AutofixSuccess = false;
+                        return false;
+                    }
+                }
+            }
+            /*else
+            {
+                try
+                {
+                    // Heff: can we always assume that overwriting is okay? Or will we have problems with files of the same name?
+                    File.Copy(tex.FilePath + "\\" + tex.FileName, path, true);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Could not copy temporary file to: " + path + " | Make sure that you have sufficient hard drive space and that ME3Explorer is run as admin. ("
+                        + e.Message + ")");
+                    DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+            }*/
+            return true;
         }
 
         private void AutofixInstallButton_Click(object sender, EventArgs e)
@@ -2583,7 +2690,7 @@ namespace ME3Explorer
                 tex.FileName = Path.GetFileName(replacingPath);
                 tex.FilePath = Path.GetDirectoryName(replacingPath);
                 DebugOutput.PrintLn("Getting new details...");
-                tex.Thumbnail = new KFreonLib.Helpers.LiquidEngine.MemoryTributary();
+                tex.Thumbnail = new MemoryTributary();
                 tex.EnumerateDetails();
 
                 /*try

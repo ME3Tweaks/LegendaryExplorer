@@ -63,7 +63,6 @@
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
-    <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\Interpreter2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,7 +100,6 @@
     <Compile Include="Misc\TOCEditor.Designer.cs">
       <DependentUpon>TOCEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\MemoryTributary.cs" />
     <Compile Include="Helpers\MiniLZO.cs" />
     <Compile Include="Helpers\SaltLZOHelper.cs" />
     <Compile Include="Textures\Targa.cs" />
