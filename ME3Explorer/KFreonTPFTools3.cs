@@ -2234,23 +2234,33 @@ namespace ME3Explorer
 
         private void ExtractAndBuildLog(string extractPath)
         {
-            // KFreon: Create path if necessary
-            if (!Directory.Exists(extractPath))
-                Directory.CreateDirectory(extractPath);
+            // Heff: delete earlier temp contents, create temp folder:
+            if (Directory.Exists(extractPath))
+                Directory.Delete(extractPath, true);
+
+            Directory.CreateDirectory(extractPath);
 
             using (FileStream fs = new FileStream(extractPath + "\\MEResults.log", FileMode.Create))
             {
+                var hashes = new List<uint>();
+                var texes = new List<TPFTexInfo>();
                 foreach (TPFTexInfo tex in LoadedTexes)
                 {
                     // KFreon: Ignore textures with no hash
                     if (tex.Hash == 0)
                         continue;
 
+                    // Heff: ignore duplicates so that texmod's generator doesn't include them several times.
+                    if (hashes.Contains(tex.Hash))
+                        continue;
+
+                    hashes.Add(tex.Hash);
+                    texes.Add(tex);
                     // KFreon: Write hashes to log
                     string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
                     fs.WriteString(hash + "|" + tex.FileName + "\n");
                 }
-                Extractor(extractPath, null, t => t.Hash != 0 && !t.isDef);
+                Extractor(extractPath, null, t => texes.Contains(t));
             }
         }
 
@@ -2502,27 +2512,32 @@ namespace ME3Explorer
 
         private bool Autofix(params TPFTexInfo[] texes)
         {
+            if (texes.Length == 0)
+            {
+                Overall.UpdateText("All textures are valid, skipping autofix.");
+                OverallProg.ChangeProgressBar(1, 1);
+                return true;
+            }
+
             bool retval = false;
 
             OverallProg.ChangeProgressBar(0, texes.Length);
 
+            var fixedTexes = new Dictionary<uint, TPFTexInfo>();
             foreach (TPFTexInfo tex in texes)
             {
                 tex.AutofixSuccess = false;
-                // KFreon: Skip tex if one of its duplicates have already been fixed
-                /*for (int i = 0; i < tex.TreeDuplicates.Count; i++)
+
+                // Heff: fix for skipping already fixed values, only skips when autofixing in bulk.
+                if (fixedTexes.ContainsKey(tex.Hash))
                 {
-                    var dup = texes[tex.TreeDuplicates[i]];
-                    if (dup.AutofixSuccess)
-                    {
-                        tex.NumMips = tex.ExpectedMips;
-                        tex.Format = tex.ExpectedFormat;
-                        tex.FilePath = dup.FilePath;
-                        tex.AutofixSuccess = true;
-                        retval = true;
-                        break;
-                    }
-                }*/
+                    var dup = fixedTexes[tex.Hash];
+                    tex.NumMips = dup.NumMips;
+                    tex.Format = dup.Format;
+                    tex.FilePath = dup.FilePath;
+                    tex.AutofixSuccess = true;
+                    retval = true;
+                }
 
                 Overall.UpdateText("Fixing: " + tex.TexName);
                 DebugOutput.PrintLn("Fixing: " + tex.TexName + Environment.NewLine + "     FORMAT -> Current: " + tex.Format + "  Expected: " + tex.ExpectedFormat + Environment.NewLine + "     MIPS -> Current: " + tex.NumMips + "  Expected: " + tex.ExpectedMips);
@@ -2530,6 +2545,9 @@ namespace ME3Explorer
                 // Heff: should we check like this for autofixsuccess here before trying to fix? See above "skip"
                 if (!tex.AutofixSuccess)
                     retval = AutofixInternal(tex);
+
+                if (retval == true && !fixedTexes.ContainsKey(tex.Hash))
+                    fixedTexes.Add(tex.Hash, tex);
 
                 RedrawTreeView();
             }
