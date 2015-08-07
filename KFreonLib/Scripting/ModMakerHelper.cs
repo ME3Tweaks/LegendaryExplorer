@@ -403,8 +403,8 @@ namespace KFreonLib.Scripting
                 DebugOutput.PrintLn("Generating thumbnail for: " + this.Name);
                 //Bitmap bmp = Textures.Methods.GetImage("doesnt matter", data);  // KFreon: Doesn't matter cos I gave it data instead of a file.
                 //bmp = Textures.Creation.GenerateThumbImage(bmp, 64);
-                ResILImage img = new ResILImage(data);
-                return new Bitmap(new MemoryStream(img.ToArray(ResIL.Unmanaged.ImageType.Jpg))).GetThumbnailImage(64, 64, null, IntPtr.Zero);
+                using (ResILImageBase img = ResILImageBase.Create(data))
+                    return img.ToWinFormsBitmap(64, 64);
             }
 
 

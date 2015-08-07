@@ -48,23 +48,24 @@ namespace ME3Explorer
                 List<String> developers = new List<String>();
                 developers.Add("Toolset by:");
                 developers.Add("WarrantyVoider");
+                developers.Add("Kfreon");
                 developers.Add("AmaroK86");
+                developers.Add("Eudaimonium");
+                developers.Add("Saltisgood");
                 developers.Add("Ashley66444");
                 developers.Add("Aquadran");
                 developers.Add("BCSWowbagger");
                 developers.Add("Erik JS");
-                developers.Add("Eudaimonium");
                 developers.Add("FemShep");
                 developers.Add("Fog.Gene");
                 developers.Add("Heff");
                 developers.Add("JohnP");
-                developers.Add("Kfreon");
                 developers.Add("MrFob");
-                developers.Add("Saltisgood");
                 developers.Add("SirCxyrtyx");
 
                 developers.Add("");
                 developers.Add("Additional Thanks:");
+                developers.Add("Eliot");
                 developers.Add("Feckless");
                 developers.Add("gibbed");
                 developers.Add("gildor");
