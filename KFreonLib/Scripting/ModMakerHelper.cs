@@ -246,6 +246,52 @@ namespace KFreonLib.Scripting
                 return retval;
             }
 
+            /// <summary>
+            /// Corrects incorrect DLC PCC paths from before ME3 DLC's were extracted.
+            /// </summary>
+            public void FixLegacyDLCPaths()
+            {
+                var folders = new List<String> ()
+                {
+                    "DLC_CON_APP01",
+                    "DLC_CON_END",
+                    "DLC_CON_GUN01",
+                    "DLC_CON_GUN02",
+                    "DLC_CON_MP1",
+                    "DLC_CON_MP2",
+                    "DLC_CON_MP3",
+                    "DLC_CON_MP4",
+                    "DLC_CON_MP5",
+                    "DLC_EXP_Pack001",
+                    "DLC_EXP_Pack002",
+                    "DLC_EXP_Pack003",
+                    "DLC_EXP_Pack003_Base",
+                    "DLC_HEN_PR",
+                    "DLC_OnlinePassHidCE"
+                };
+
+                List<string> lines = new List<string>(Script.Split('\n'));
+                string processed = "";
+                foreach (string line in lines) // Heff: This could probably be done with some nixe regex, but I'm tired and just want things to work.
+                {
+                    if (line.Contains("pccs.Add"))
+                    {
+                        var lineParts = line.Split('"');
+                        var pathParts = lineParts[1].Replace("\\\\", "\\").Split(Path.DirectorySeparatorChar);
+                        if (pathParts.Length > 1 && folders.Contains(pathParts[pathParts.Length - 2]))
+                        {
+                            //Heff: if the folder is one of the ME3 DLC's, fix it up:
+                            var path = Path.GetDirectoryName(lineParts[1]);
+                            var file = Path.GetFileName(lineParts[1]);
+                            lineParts[1] = Path.Combine(path, "CookedPCConsole", file).Replace("\\", "\\\\");
+                        }
+                        processed += String.Join("\"", lineParts) + "\n";
+                    }
+                    else
+                        processed += line + "\n";
+                }
+                Script = processed;
+            }
 
             /// <summary>
             /// Gets details, like pcc's and expID's, from current script and sets local properties.
@@ -261,6 +307,10 @@ namespace KFreonLib.Scripting
 
                 bool isTexture = JobType == "TEXTURE" ? true : false;
                 ExpIDs = ModMaker.GetExpIDsFromScript(Script, isTexture);
+
+                //Heff: adjust script paths for legacy ME3 DLC mods that references un-extracted DLC's
+                FixLegacyDLCPaths();
+
                 PCCs = ModMaker.GetPCCsFromScript(Script, isTexture);
                 Texname = ModMaker.GetObjectNameFromScript(Script, isTexture);
                 WhichGame = version == -1 ? ModMaker.GetGameVersionFromScript(Script, isTexture) : version;
