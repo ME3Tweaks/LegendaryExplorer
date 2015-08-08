@@ -42,7 +42,9 @@ namespace KFreonLib.Scripting
         public static string GenerateTextureScript(string ExecPath, List<string> pccs, List<int> ExpIDs, string texName, int WhichGame, string pathBIOGame)
         {
             // KFreon: Get game independent path to remove from all pcc names, in order to make script computer independent.  (i.e. relative instead of absolute paths)
-            string MainPath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            //string MainPath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            // Heff: why were we removing the last directory for ME1 all over the place?
+            string MainPath = pathBIOGame;
 
             // KFreon: Read template in from file
             string script;
@@ -514,12 +516,14 @@ namespace KFreonLib.Scripting
 
                 // KFreon: If texture job, fix pcc pathing.
                 
-                string pathBIOGame = WhichGame == 1 ? Path.GetDirectoryName(BIOGames[WhichGame - 1]) : BIOGames[WhichGame - 1];
+                //string pathBIOGame = WhichGame == 1 ? Path.GetDirectoryName(BIOGames[WhichGame - 1]) : BIOGames[WhichGame - 1];
+                // Heff: Seems like we change the paths in so many places that it's bound to fuck up somewhere. Also VERY unfriendly to DLC mods, so chanigs this.
+                string pathBIOGame = BIOGames[WhichGame - 1];
 
-                if (WhichGame == 3)
+                /*if (WhichGame == 3)
                     pathBIOGame = Path.Combine(pathBIOGame, "CookedPCConsole");
                 else
-                    pathBIOGame = Path.Combine(pathBIOGame, "CookedPC");
+                    pathBIOGame = Path.Combine(pathBIOGame, "CookedPC");*/
 
                 // KFreon: Deal with multiple files found during search
                 List<string> multiples;
@@ -532,7 +536,7 @@ namespace KFreonLib.Scripting
                 {
                     string script = "";
                     DebugOutput.PrintLn("Validating pccs");
-                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, ObjectName, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
+                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, ObjectName, WhichGame, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
 
                     // KFreon: Texture job
                     if (JobType == "TEXTURE")
@@ -556,10 +560,24 @@ namespace KFreonLib.Scripting
             }
         }
 
-        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, string ObjectName, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
+        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, string ObjectName, int WhichGame, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
         {
             multiples = new List<string>();
             MultiInds = new List<int>();
+
+            var gameFiles = new List<String>();
+            switch (WhichGame)
+            {
+                case 1:
+                    gameFiles = ME1Directory.Files;
+                    break;
+                case 2:
+                    gameFiles = ME2Directory.Files;
+                    break;
+                case 3:
+                    gameFiles = ME3Directory.Files;
+                    break;
+            }
 
             // KFreon: Fix pccs
             List<string> pccs = new List<string>();
@@ -567,18 +585,16 @@ namespace KFreonLib.Scripting
             {
                 // KFreon: Test if pcc naming is correct. If not, fix.
                 string pcc = PCCs[i];
-                string test = pcc;
-                if (!pcc.Contains(pathBIOGame))
-                    test = Path.Combine(pathBIOGame, pcc);
+                string test = pcc.Replace("\\\\", "\\");
 
                 DebugOutput.PrintLn("About to begin validating");
-                if (!File.Exists(test))
-                {
-                    DebugOutput.PrintLn("File doesnt exist:" + test + ". Continuing...");
-                    //test = PCCObjects.Misc.SearchForPCC(pcc, pathBIOGame, ExpIDs[i], ObjectName, isTexture);
 
-                }
 
+                var result = gameFiles.Where(p => p.Contains(test)).DefaultIfEmpty("none").FirstOrDefault();
+                if (result != "none")
+                    test = result; // Heff: this can potentially be a problem for bad .mods that are for DLC's but only specify pcc name.
+                else
+                    DebugOutput.PrintLn("File not found in game files:" + test + ". Continuing...");
 
                 if (test.Contains("#"))
                 {
@@ -589,12 +605,13 @@ namespace KFreonLib.Scripting
                 }
                 else if (test != "")
                 {
-                    string temp = test.Remove(0, pathBIOGame.Length + 1);
+                    string temp = test;
+                    if (test.Contains(pathBIOGame))
+                        temp = test.Remove(0, pathBIOGame.Length + 1);
                     if (!temp.Contains("\\\\"))
                         temp = temp.Replace("\\", "\\\\");
                     pccs.Add(temp);
                 }
-                    
                 else
                 {
                     DebugOutput.PrintLn("Unable to find path for: " + pcc + ". This WILL cause errors later.");

@@ -1228,7 +1228,9 @@ namespace ME3Explorer
         public void InstallTexture(string texname, List<string> pccs, List<int> IDs, byte[] imgdata)
         {
             string fulpath = pccs[0];
-            string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            //string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            // Heff: Again, is the removal of the last dir for ME1 intended, and if so for what purpose?
+            string temppath = pathBIOGame;
             if (!fulpath.Contains(temppath))
                 fulpath = Path.Combine(temppath, fulpath);
 
