@@ -538,7 +538,7 @@ namespace ME3Explorer
                 using (OpenFileDialog ofd = new OpenFileDialog())
                 {
                     ofd.Title = "Select file/s to load";
-                    ofd.Filter = "All Supported|*.dds;*.tpf;*.MEtpf;*.jpg;*.jpeg;*.png;*.bmp|DDS Images|*.dds|Texmod TPF's|*.tpf|Texplorer TPF's|*.MEtpf|Images|*.jpg;*.jpeg;*.png;*.bmp;*.dds|Standard Images|*.jpg;*.jpeg;*.png;*.bmp";
+                    ofd.Filter = "All Supported|*.dds;*.tpf;*.MEtpf;*.mod;*.jpg;*.jpeg;*.png;*.bmp|DDS Images|*.dds|Texmod TPF's|*.tpf|Texplorer TPF's|*.MEtpf|Images|*.jpg;*.jpeg;*.png;*.bmp;*.dds|Standard Images|*.jpg;*.jpeg;*.png;*.bmp";
                     ofd.Multiselect = true;
 
                     System.Windows.Forms.DialogResult res = System.Windows.Forms.DialogResult.Abort;
@@ -579,6 +579,9 @@ namespace ME3Explorer
                     case ".txt":
                     case ".def":
                         LoadExternal(file, true);
+                        break;
+                    case ".mod":
+                        LoadMOD(file);
                         break;
                     default:
                         DebugOutput.PrintLn("File: " + file + " is unsupported.");
@@ -812,7 +815,7 @@ namespace ME3Explorer
 
                 // KFreon: Check if hash in filename
                 // Heff: fix weird uppercase X
-                file = file.Replace("_0X", "_0x");
+                file = Path.GetFileName(file).Replace("_0X", "_0x");
                 if (file.Contains("_0x"))
                     hash = file.Substring(file.IndexOf("0x"), 10);
                 else  // KFreon: If not in filename, look in all non TPF .defs
@@ -1513,7 +1516,8 @@ namespace ME3Explorer
 
         private void MainTreeView_DragEnter(object sender, DragEventArgs e)
         {
-            if (CancelButton.Visible || !AnalyseButton.Enabled)
+            // Heff: Is this reasonable? drag should be available whenever load is.
+            if (CancelButton.Visible )//|| !AnalyseButton.Enabled)
                 return;
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -1538,6 +1542,7 @@ namespace ME3Explorer
                     case ".def":
                     case ".txt":
                     case ".log":
+                    case ".mod":
                         ValidDrops.Add(file);
                         break;
                     default:
@@ -2359,6 +2364,7 @@ namespace ME3Explorer
             Overall.UpdateText(success ? "Build complete." : "Build failed.");
         }
 
+        // Heff: this is obsolete, the "Load" button can handle .mod as well.
         private void MODtoTPFButton_Click(object sender, EventArgs e)
         {
             string filename = "";
