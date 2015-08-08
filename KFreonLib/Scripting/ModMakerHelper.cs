@@ -13,6 +13,7 @@ using KFreonLib.Textures;
 using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
 using ResILWrapper;
+using KFreonLib.GUI;
 
 namespace KFreonLib.Scripting
 {
@@ -251,9 +252,10 @@ namespace KFreonLib.Scripting
             /// Properties:
             ///     ExpID's, PCC's, Texname, WhichGame, JobType.
             /// </summary>
-            public bool GetJobDetails(bool update)
+            public bool GetJobDetails(bool update, out bool versionConflict, int version)
             {
                 JobType = DetectJobType();
+                versionConflict = false;
 
                 DebugOutput.PrintLn(String.Format("Job: {0}  type: {1}", Name, JobType));
 
@@ -261,7 +263,7 @@ namespace KFreonLib.Scripting
                 ExpIDs = ModMaker.GetExpIDsFromScript(Script, isTexture);
                 PCCs = ModMaker.GetPCCsFromScript(Script, isTexture);
                 Texname = ModMaker.GetObjectNameFromScript(Script, isTexture);
-                WhichGame = ModMaker.GetGameVersionFromScript(Script, isTexture);
+                WhichGame = version == -1 ? ModMaker.GetGameVersionFromScript(Script, isTexture) : version;
 
                 DebugOutput.PrintLn(String.Format("Job: {0} Detected game version: {1}  Detected texname: {2}", Name, WhichGame, Texname));
 
@@ -276,6 +278,12 @@ namespace KFreonLib.Scripting
 
                     DebugOutput.PrintLn("Found num PCCS: " + PCCs.Count);
                     WhichGame = GuessGame(PCCs);
+
+                    if (WhichGame == -2)
+                    {
+                        versionConflict = true;
+                        return false;
+                    }
                 }
 
                 if (WhichGame == -1)
@@ -391,7 +399,20 @@ namespace KFreonLib.Scripting
                 if (NumFounds.Sum() == 0)
                     return -1;
                 else
-                    return NumFounds.ToList().IndexOf(NumFounds.Max()) + 1;
+                {
+                    int maxVal = NumFounds.Max();
+                    var indices = Enumerable.Range(0, NumFounds.Count())
+                        .Where(i => NumFounds[i] == maxVal)
+                        .ToList();
+
+                    if (indices.Count > 1)
+                    {
+                        DebugOutput.PrintLn("Could not guess game, files were present in more than one!");
+                        return -2;
+                    }
+                    else
+                        return indices[0] + 1;
+                }
             }
 
             /// <summary>
@@ -712,22 +733,23 @@ namespace KFreonLib.Scripting
 
                 
                 // KFreon: Ask what to do about version
-                if (ExecutingVersion != null && !ExternalCall) // Heff: Changed the logic to not ask if it's an external call.
-                {
-                    DialogResult dr = MessageBox.Show("This .mod is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (ExecutingVersion != null) //&& !ExternalCall) // Heff: do we want to suppress this for external calls? should they always autoupdate?
+                {                                                 // Seems better to keep it the current way, so that users get prompted if they load old .mods.
+                    DialogResult dr = MessageBox.Show(Path.GetFileName(file) + " is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                     if (dr == System.Windows.Forms.DialogResult.Cancel)
                         return null;
                     else if (dr == System.Windows.Forms.DialogResult.Yes)
                         AutoUpdate = true;
-
-                    // KFreon: Reset stream position if necessary
-                    if (!validVersion)
-                    {
-                        count = versionLength;
-                        fs.Seek(countOffset, SeekOrigin.Begin);
-                    }
                 }
-                
+                /*else if (ExecutingVersion != null) // Heff: could use this for always updating if its an external call:
+                    AutoUpdate = true;*/
+
+                // KFreon: Reset stream position if necessary
+                if (!validVersion)
+                {
+                    count = versionLength;
+                    fs.Seek(countOffset, SeekOrigin.Begin);
+                }
 
                 // KFreon: Increment progress bar
                 if (progbar != null)

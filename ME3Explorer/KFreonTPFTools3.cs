@@ -2405,7 +2405,18 @@ namespace ME3Explorer
             int nummods;
             modmaker.LoadMods(new string[] { filename }, out nummods, true);
             Overall.UpdateText("Formatting/Updating .mods...");
-            var result = modmaker.FormatJobs(true, true);
+            bool conflict;
+            var result = modmaker.FormatJobs(true, true, out conflict);
+            // Heff: prompt user to chose version and re-run with version chosen
+            if (conflict)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    var gameVers = VersionPickDialog.AskForGameVersion(this, message: "Could not detect game version, the files in this .mod were present in more than one game. \n"
+                        + "Please choose the correct version:");
+                    result = modmaker.FormatJobs(true, true, out conflict, gameVers);
+                }));
+            }
 
             if (result.Count == 0)
             {

@@ -243,7 +243,18 @@ namespace ME3Explorer
             }
 
             StatusUpdater.UpdateText((bool)autoupdate ? "Updating, Formatting names, and generating thumbnails..." : "Formatting names and generating thumbnails...");
-            List<string> names = FormatJobs(autoupdate, false);
+            bool conflict;
+            List<string> names = FormatJobs(autoupdate, false, out conflict);
+            // Heff: prompt user to chose version and re-run with version chosen
+            if (conflict)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    var gameVers = VersionPickDialog.AskForGameVersion(this, message: "Could not detect game version, the files in this .mod were present in more than one game. \n"
+                        + "Please choose the correct version:");
+                    names = FormatJobs(autoupdate, false, out conflict, gameVers);
+                }));
+            }
 
             this.Invoke(new Action(() =>
             {
@@ -275,7 +286,8 @@ namespace ME3Explorer
         {
             backbone.AddToBackBone(b =>
             {
-                List<string> names = FormatJobs(false, false);
+                bool conflictIgnore;
+                List<string> names = FormatJobs(false, false, out conflictIgnore);
                 this.Invoke(new Action(() =>
                 {
                     MainListView.Items.Clear();
@@ -291,9 +303,10 @@ namespace ME3Explorer
             });
         }
 
-        public List<string> FormatJobs(bool? autoupdate, bool ExternalCall)
+        public List<string> FormatJobs(bool? autoupdate, bool ExternalCall, out bool versionConflict, int version = -1)
         {
             DebugOutput.PrintLn("Formatting jobs...");
+            versionConflict = false;
 
             // KFreon: Create list of display names and populate it for multi-threading
             List<string> names = new List<string>();
@@ -335,7 +348,12 @@ namespace ME3Explorer
                 DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
                 DebugOutput.PrintLn("Getting further job info...");
 
-                if (job.GetJobDetails(autoupdate == true) == false)
+                var result = job.GetJobDetails(autoupdate == true, out versionConflict, version);
+                // Heff: quit early if game version conflict is found, prompt user, then go again.
+                if (versionConflict)
+                    return null;
+
+                if (result == false)
                 { 
                     // Heff: If this happens then the user has already been informed via a popup.
                     // Heff: Hopefully this is a value that can be handled by all callers.
