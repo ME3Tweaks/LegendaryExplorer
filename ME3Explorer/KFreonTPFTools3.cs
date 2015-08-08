@@ -749,7 +749,8 @@ namespace ME3Explorer
             }
 
             // KFreon: Get individual hashes without duplicate lines
-            List<string> parts = alltext.Replace("\r", "").Split('\n').ToList();
+            // Heff: Fix weird uppercase X
+            List<string> parts = alltext.Replace("\r", "").Replace("_0X", "_0x").Split('\n').ToList();
             parts.RemoveAll(s => s == "\0");
             List<string> tempparts = new List<string>();
             foreach (string part in parts)
@@ -810,7 +811,9 @@ namespace ME3Explorer
                 string hash = "";
 
                 // KFreon: Check if hash in filename
-                if (file.Contains("0x"))
+                // Heff: fix weird uppercase X
+                file = file.Replace("_0X", "_0x");
+                if (file.Contains("_0x"))
                     hash = file.Substring(file.IndexOf("0x"), 10);
                 else  // KFreon: If not in filename, look in all non TPF .defs
                     foreach (TPFTexInfo tex in LoadedTexes)
@@ -1490,6 +1493,7 @@ namespace ME3Explorer
                     else
                     {
                         // KFreon: Add duplicates to current tex
+                        // Heff: Don't add currently existing ones, so that we can do analyse -> load -> analyse
                         curr.FileDuplicates.AddRange(duplicates.Where(
                             t => !curr.FileDuplicates.Any(c => c.TreeInd == t.TreeInd)));
                         LoadedTexes[currentPos] = curr;
