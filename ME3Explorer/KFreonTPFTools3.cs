@@ -223,7 +223,7 @@ namespace ME3Explorer
             gooey.AddControl(ClearAllFilesButton, "ClearAll", true);
             gooey.AddControl(RebuildTOP, "Rebuild", true);
             gooey.AddControl(RunAutofixButton, "RunAutofix", true);
-            gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
+            //gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
             gooey.AddControl(AnalyseButton, "Analyse", true);
             gooey.AddControl(SaveModButton, "SaveMod", true);
             gooey.AddControl(InstallButton, "InstallB", true);
@@ -1306,7 +1306,7 @@ namespace ME3Explorer
 
             // KFreon: Change GUI
             gooey.ModifyControl("Load", true);
-            gooey.ModifyControl("MODtoTPF", true);
+            //gooey.ModifyControl("MODtoTPF", true);
             gooey.ModifyControl("extractInvalid", true);
             gooey.ModifyControl("RunAutofix", true);
 
