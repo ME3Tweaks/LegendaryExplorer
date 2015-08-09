@@ -70,7 +70,9 @@ namespace KFreonLib.Misc
 
         public static List<string> GetInstalledDLC(string DLCBasePath)
         {
-            return Directory.EnumerateDirectories(DLCBasePath).ToList();
+            if (Directory.Exists(DLCBasePath))
+                return Directory.EnumerateDirectories(DLCBasePath).ToList();
+            return new List<string>();
         }
 
         /// <summary>
