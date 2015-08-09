@@ -42,7 +42,11 @@ namespace KFreonLib.MEDirectories
         public static string GamePath(string path = null)
         {
             if (path != null)
+            {
+                if (path.Contains("BioGame"))
+                    path = path.Substring(0, path.LastIndexOf("BioGame"));
                 _gamePath = path;
+            }
 
             return _gamePath;
         }
