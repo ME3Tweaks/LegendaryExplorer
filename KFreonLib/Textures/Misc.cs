@@ -363,6 +363,8 @@ namespace KFreonLib.Textures
         /// <returns>True if saved successfully. False if failed or already exists.</returns>
         public static bool SaveImage(Image image, string savepath)
         {
+            // Heff: fix to ensure that the temp directories are created.
+            Directory.CreateDirectory(Path.GetDirectoryName(savepath));
             if (!File.Exists(savepath))
                 try
                 {
