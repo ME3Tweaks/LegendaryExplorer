@@ -174,7 +174,7 @@
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(37, 22);
             this.LoadButton.Text = "Load";
-            this.LoadButton.ToolTipText = "Load a .tpf, .mod or a single image.";
+            this.LoadButton.ToolTipText = "Load .tpf\'s, .mod\'s and image files.";
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
             // ExtractTOP

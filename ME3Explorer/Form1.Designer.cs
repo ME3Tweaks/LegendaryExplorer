@@ -103,6 +103,9 @@
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.threadOptionsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.setCustomPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showKnownPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.taskbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,7 +157,7 @@
             // 
             this.assetExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("assetExplorerToolStripMenuItem.Image")));
             this.assetExplorerToolStripMenuItem.Name = "assetExplorerToolStripMenuItem";
-            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.assetExplorerToolStripMenuItem.Text = "Asset Explorer";
             this.assetExplorerToolStripMenuItem.Click += new System.EventHandler(this.assetExplorerToolStripMenuItem_Click);
             // 
@@ -162,14 +165,14 @@
             // 
             this.modMakerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("modMakerToolStripMenuItem.Image")));
             this.modMakerToolStripMenuItem.Name = "modMakerToolStripMenuItem";
-            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.modMakerToolStripMenuItem.Text = "ModMaker";
             this.modMakerToolStripMenuItem.Click += new System.EventHandler(this.modMakerToolStripMenuItem_Click);
             // 
             // plotVarDatabaseToolStripMenuItem
             // 
             this.plotVarDatabaseToolStripMenuItem.Name = "plotVarDatabaseToolStripMenuItem";
-            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.plotVarDatabaseToolStripMenuItem.Text = "Plot Database";
             this.plotVarDatabaseToolStripMenuItem.Click += new System.EventHandler(this.plotVarDatabaseToolStripMenuItem_Click);
             // 
@@ -181,7 +184,7 @@
             this.textureToolToolStripMenuItem,
             this.tPFDDSToolsToolStripMenuItem});
             this.textureToolsToolStripMenuItem.Name = "textureToolsToolStripMenuItem";
-            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.textureToolsToolStripMenuItem.Text = "Textures";
             // 
             // dDSConverterToolStripMenuItem
@@ -221,7 +224,7 @@
             this.tOCBinUpdaterToolStripMenuItem,
             this.dLCTOCBinUpdaterToolStripMenuItem});
             this.tOCToolsToolStripMenuItem.Name = "tOCToolsToolStripMenuItem";
-            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.tOCToolsToolStripMenuItem.Text = "TOC Tools";
             // 
             // autoTOCToolStripMenuItem
@@ -256,7 +259,7 @@
             this.vanillaMakerBackupToolStripMenuItem,
             this.versionSwitcherToolStripMenuItem});
             this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
-            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.utilitiesToolStripMenuItem.Text = "Utilities";
             // 
             // aFCToWAVToolStripMenuItem
@@ -761,16 +764,40 @@
             // 
             // setCustomPathToolStripMenuItem
             // 
+            this.setCustomPathToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.massEffect1ToolStripMenuItem,
+            this.massEffect2ToolStripMenuItem,
+            this.massEffect3ToolStripMenuItem});
             this.setCustomPathToolStripMenuItem.Name = "setCustomPathToolStripMenuItem";
             this.setCustomPathToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.setCustomPathToolStripMenuItem.Text = "Set Custom Path";
-            this.setCustomPathToolStripMenuItem.Click += new System.EventHandler(this.setCustomPathToolStripMenuItem_Click);
+            // 
+            // massEffect1ToolStripMenuItem
+            // 
+            this.massEffect1ToolStripMenuItem.Name = "massEffect1ToolStripMenuItem";
+            this.massEffect1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.massEffect1ToolStripMenuItem.Text = "Mass Effect 1";
+            this.massEffect1ToolStripMenuItem.Click += new System.EventHandler(this.massEffect1ToolStripMenuItem_Click);
+            // 
+            // massEffect2ToolStripMenuItem
+            // 
+            this.massEffect2ToolStripMenuItem.Name = "massEffect2ToolStripMenuItem";
+            this.massEffect2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.massEffect2ToolStripMenuItem.Text = "Mass Effect 2";
+            this.massEffect2ToolStripMenuItem.Click += new System.EventHandler(this.massEffect2ToolStripMenuItem_Click);
+            // 
+            // massEffect3ToolStripMenuItem
+            // 
+            this.massEffect3ToolStripMenuItem.Name = "massEffect3ToolStripMenuItem";
+            this.massEffect3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.massEffect3ToolStripMenuItem.Text = "Mass Effect 3";
+            this.massEffect3ToolStripMenuItem.Click += new System.EventHandler(this.massEffect3ToolStripMenuItem_Click);
             // 
             // showKnownPathToolStripMenuItem
             // 
             this.showKnownPathToolStripMenuItem.Name = "showKnownPathToolStripMenuItem";
             this.showKnownPathToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.showKnownPathToolStripMenuItem.Text = "Show Known Path";
+            this.showKnownPathToolStripMenuItem.Text = "Show Known Paths";
             this.showKnownPathToolStripMenuItem.Click += new System.EventHandler(this.showKnownPathToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
@@ -1022,6 +1049,9 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem interpEditorToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem tLKEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect3ToolStripMenuItem;
     }
 }
 

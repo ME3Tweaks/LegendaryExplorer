@@ -123,6 +123,27 @@
   <metadata name="BottomStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>115, 17</value>
   </metadata>
+  <metadata name="ContextPanel.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>232, 17</value>
+  </metadata>
+  <metadata name="PrimaryToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>537, 17</value>
+  </metadata>
+  <data name="GeneralInfoRTB.Text" xml:space="preserve">
+    <value>WELCOME to TPF/DDS tools!
+This tool is designed to do anything and everything with DDS and TPF files (except edit DDS) in ALL three games.
+----------------Overview-------------------
+You can load TPF's and most images incl DDS from the load menu, or drop and drag.
+You can then see details about the images including a preview. 
+Analysing compares the images against the Texplorer tree to find a match.  
+If found, details about the tree texture will also be displayed.
+You can save all loaded images into a .mod, install them to the game, and convert textures between formats.
+---------------------------------------------
+Click Help for more information.</value>
+  </data>
+  <metadata name="PrimaryToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>537, 17</value>
+  </metadata>
   <metadata name="MainTreeViewImageList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>356, 17</value>
   </metadata>
@@ -917,9 +938,6 @@
         AQABAQYAAQgWAAP//wD/AP8A/wD/AP8A/wD/AAkACw==
 </value>
   </data>
-  <metadata name="ContextPanel.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>232, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="InstallSingleButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -950,20 +968,5 @@
         kx0g8BTA3aZlButjSTyjODq/WcQcW/B/Je4OQhLvKQDnzN1mp0nnkvAhR8VuMzNrpm1mpjgkoVwB/v8D
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
-  </data>
-  <metadata name="PrimaryToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>537, 17</value>
-  </metadata>
-  <data name="GeneralInfoRTB.Text" xml:space="preserve">
-    <value>WELCOME to TPF/DDS tools!
-This tool is designed to do anything and everything with DDS and TPF files (except edit DDS) in ALL three games.
-----------------Overview-------------------
-You can load TPF's and most images incl DDS from the load menu, or drop and drag.
-You can then see details about the images including a preview. 
-Analysing compares the images against the Texplorer tree to find a match.  
-If found, details about the tree texture will also be displayed.
-You can save all loaded images into a .mod, install them to the game, and convert textures between formats.
----------------------------------------------
-Click Help for more information.</value>
   </data>
 </root>

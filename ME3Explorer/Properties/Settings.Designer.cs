@@ -154,5 +154,29 @@ namespace ME3Explorer.Properties {
                 this["ME3InstallDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ME2InstallDir {
+            get {
+                return ((string)(this["ME2InstallDir"]));
+            }
+            set {
+                this["ME2InstallDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ME1InstallDir {
+            get {
+                return ((string)(this["ME1InstallDir"]));
+            }
+            set {
+                this["ME1InstallDir"] = value;
+            }
+        }
     }
 }
