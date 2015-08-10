@@ -427,8 +427,12 @@ namespace KFreonLib.Textures
         }
 
 
-
         public void replaceImage(string strImgSize, ImageFile im, string archiveDir = null)
+        {
+            replaceImage(strImgSize, im, true, archiveDir);
+        }
+
+        public void replaceImage(string strImgSize, ImageFile im, bool enforceSize, string archiveDir = null)
         {
             ImageSize imgSize = ImageSize.stringToSize(strImgSize);
             if (!privateimgList.Exists(img => img.imgSize == imgSize))
@@ -440,8 +444,8 @@ namespace KFreonLib.Textures
             // check if replacing image is supported
             ImageFile imgFile = im;
 
-
-            if (imgFile.imgSize.height != imgInfo.imgSize.height || imgFile.imgSize.width != imgInfo.imgSize.width)
+            // Heff: Made this check optional to allow for replacing with larger images.
+            if (enforceSize && (imgFile.imgSize.height != imgInfo.imgSize.height || imgFile.imgSize.width != imgInfo.imgSize.width))
                 throw new FormatException("Incorrect input texture dimensions. Expected: " + imgInfo.imgSize.ToString());
 
             // check if images have same format type
@@ -1606,7 +1610,29 @@ namespace KFreonLib.Textures
 
         public void singleImageUpscale(ImageFile im, string archiveDir)
         {
-            throw new NotImplementedException();
+            ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
+            // check if replacing image is supported
+            ImageFile imgFile = im;
+
+            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+                throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
+
+            // !!! warning, this method breaks consistency between imgList and imageData[] !!!
+            ImageInfo newImgInfo = new ImageInfo();
+            newImgInfo.storageType = privateimgList.Find(img => img.storageType != storage.empty).storageType;
+            newImgInfo.imgSize = imgFile.imgSize;
+            newImgInfo.uncSize = imgFile.resize().Length;
+            newImgInfo.cprSize = 0x00; // not yet filled
+            newImgInfo.offset = 0x00; // not yet filled
+            privateimgList.RemoveAt(0);  // Remove old single image and add new one
+            privateimgList.Add(newImgInfo);
+
+            //now I let believe the program that I'm doing an image replace, saving lot of code ;)
+            replaceImage(newImgInfo.imgSize.ToString(), im, false, archiveDir);
+
+            // update Sizes
+            properties["SizeX"].Value.IntValue = (int)newImgInfo.imgSize.width;
+            properties["SizeY"].Value.IntValue = (int)newImgInfo.imgSize.height;
         }
 
         public void OneImageToRuleThemAll(ImageFile im, string archiveDir, byte[] imgData)
