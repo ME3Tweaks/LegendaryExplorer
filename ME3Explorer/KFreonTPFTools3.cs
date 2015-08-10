@@ -2656,7 +2656,21 @@ namespace ME3Explorer
 
             if (surface == CompressedDataFormat.ThreeDC || surface == CompressedDataFormat.ATI1N) // nv/dx tools dont handle this
             {
-                //amd compress / compressonator?  otherwise old ResIL
+                byte[] arr = tex.Extract(null, true);
+                path = Path.ChangeExtension(path, ".dds");
+                tex.FilePath = Path.GetDirectoryName(path);
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
+                using (ResILImageBase img = ResILImageBase.Create(arr))
+                {
+                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Dds, path, surface: surface);
+                    if (!success)
+                    {
+                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
+                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                        tex.AutofixSuccess = false;
+                        return false;
+                    }
+                }
             }
             else
             { // should this also handle DXT2/4 ?
