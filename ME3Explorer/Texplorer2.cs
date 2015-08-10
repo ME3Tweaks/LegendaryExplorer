@@ -1294,7 +1294,12 @@ namespace ME3Explorer
                 bool hasMips = true;
                 ImageFile imgFile = im;
                 try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
-                catch { hasMips = false; }
+                catch (Exception e)
+                { 
+                    hasMips = false; 
+                }
+
+
                 if (!hasMips)
                 {
                     //string fileformat = Path.GetExtension(texFile);
@@ -1305,7 +1310,10 @@ namespace ME3Explorer
                         //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
                         tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
                     }
-                    catch { tex2D.addBiggerImage(imgFile, pathBIOGame); }
+                    catch (Exception e)
+                    { 
+                        tex2D.addBiggerImage(imgFile, pathBIOGame); 
+                    }
                 }
                 else
                 {

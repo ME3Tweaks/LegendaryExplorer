@@ -375,7 +375,7 @@ namespace KFreonLib.Textures
         {
             get
             {
-                return (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
+                return (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
             }
         }
 

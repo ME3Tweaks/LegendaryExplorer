@@ -2670,6 +2670,7 @@ namespace ME3Explorer
                         tex.AutofixSuccess = false;
                         return false;
                     }
+                    retval = true;
                 }
             }
             else
@@ -2688,6 +2689,9 @@ namespace ME3Explorer
 
                 string args = " -ft DDS -f " + type;
                 int newMips = ResILImageBase.EstimateNumMips(tex.Width, tex.Height);
+                if (newMips < tex.ExpectedMips)
+                    newMips = tex.ExpectedMips;
+
                 if (tex.ExpectedMips != 1)
                     args += " -m " + newMips + " -mf D3DX_FILTER_BOX";
                 else
