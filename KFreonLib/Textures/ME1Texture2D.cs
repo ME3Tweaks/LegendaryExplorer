@@ -1619,7 +1619,7 @@ namespace KFreonLib.Textures
         {
             get
             {
-                throw new NotImplementedException();
+                return ""; // Heff: No .tfc's present in ME1, returning this to hopefully not have to deal with the ME1 exception in all places.
             }
             set
             {

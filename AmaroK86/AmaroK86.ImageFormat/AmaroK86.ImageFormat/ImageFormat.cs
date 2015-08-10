@@ -389,6 +389,14 @@ namespace AmaroK86.ImageFormat
                     else if ((DDSHeader.pfFlags & 0x1) == 0x0 && DDSHeader.RGBBitCount == 0x18)
                         return "R8G8B8";
                 }
+                // Heff: Support for the weirder ABGR version:
+                else if (DDSHeader.RBitMask == 0x0000FF && DDSHeader.GBitMask == 0x00FF00 && DDSHeader.BBitMask == 0xFF0000)
+                {
+                    if ((DDSHeader.pfFlags & 0x1) == 0x1 && DDSHeader.ABitMask == -16777216 && DDSHeader.RGBBitCount == 0x20)
+                        return "A8B8G8R8";
+                    else if ((DDSHeader.pfFlags & 0x1) == 0x0 && DDSHeader.RGBBitCount == 0x18) // Heff: unsure if this is used anywhere.
+                        return "B8G8R8";
+                }
             }
             else if ((DDSHeader.pfFlags & 0x80000) == 0x80000 && DDSHeader.RGBBitCount == 0x10 && DDSHeader.RBitMask == 0xFF && DDSHeader.GBitMask == 0xFF00) // V8U8
             {

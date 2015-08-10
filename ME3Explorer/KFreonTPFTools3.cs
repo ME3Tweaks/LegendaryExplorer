@@ -796,6 +796,10 @@ namespace ME3Explorer
 
                 temptexes[i] = tmpTex;
 
+                // Heff: cancel background loaders
+                if (cts.IsCancellationRequested)
+                    return;
+
                 CurrentProg.IncrementBar();
             });
 
@@ -815,8 +819,8 @@ namespace ME3Explorer
 
                 // KFreon: Check if hash in filename
                 // Heff: fix weird uppercase X
-                file = Path.GetFileName(file).Replace("_0X", "_0x");
-                if (file.Contains("_0x"))
+                file = Path.GetFileName(file).Replace("0X", "0x");
+                if (file.Contains("0x"))
                     hash = file.Substring(file.IndexOf("0x"), 10);
                 else  // KFreon: If not in filename, look in all non TPF .defs
                     foreach (TPFTexInfo tex in LoadedTexes)

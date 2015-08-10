@@ -1262,7 +1262,8 @@ namespace ME3Explorer
             }
             catch
             {
-                Console.WriteLine("");
+                Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
+                return;
             }
 
 
