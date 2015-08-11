@@ -376,7 +376,7 @@ namespace KFreonLib.Textures
             get
             {
                 bool standard = (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
-                bool calc = NumMips < CalculateMipCount(this.Width, this.Height);
+                bool calc = ExpectedMips > 1 && NumMips < CalculateMipCount(this.Width, this.Height);
                 return standard && !calc;
             }
         }
