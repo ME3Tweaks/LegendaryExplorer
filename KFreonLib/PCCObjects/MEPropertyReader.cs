@@ -124,6 +124,13 @@ namespace KFreonLib.PCCObjects
 
         }
 
+        public struct NameReference
+        {
+            public int index;
+            public int count;
+            public String Name;
+        }
+
         public struct PropertyValue
         {
             public int len;
@@ -132,6 +139,7 @@ namespace KFreonLib.PCCObjects
             public int IntValue;
             public bool Boolereno;
             public float FloatValue;
+            public NameReference NameValue;
             public List<PropertyValue> Array;
         }
 
@@ -330,8 +338,16 @@ namespace KFreonLib.PCCObjects
                     if (MEtype == 3)
                     {
                         pos += 24;
-                        v.IntValue = (int)BitConverter.ToInt64(raw, pos);
+                        v.IntValue = BitConverter.ToInt32(raw, pos);
                         v.StringValue = pcc.Names[v.IntValue];
+                        // Heff: Temporary modification to handle name refs properly, until we can rewrite the whole property system accross all tools
+                        var nameRef = new NameReference();
+                        nameRef.index = v.IntValue;
+                        nameRef.count = BitConverter.ToInt32(raw, pos + 4);
+                        nameRef.Name = pcc.getNameEntry(nameRef.index);
+                        if (nameRef.count > 0)
+                            nameRef.Name += "_" + nameRef.count;
+                        v.NameValue = nameRef;
                         pos += size;
                     }
                     else
@@ -339,7 +355,16 @@ namespace KFreonLib.PCCObjects
                         //pos += 32;
                         //int tempInt = BitConverter.ToInt32(raw, pos + 24);
                         p.i = 0;
-                        v.StringValue = pcc.GetName(BitConverter.ToInt32(raw, pos + 24));
+                        v.IntValue = BitConverter.ToInt32(raw, pos + 24);
+                        v.StringValue = pcc.GetName(v.IntValue);
+                        // Heff: Temporary modification to handle name refs properly, until we can rewrite the whole property system accross all tools
+                        var nameRef = new NameReference();
+                        nameRef.index = v.IntValue;
+                        nameRef.count = BitConverter.ToInt32(raw, pos + 4);
+                        nameRef.Name = pcc.getNameEntry(nameRef.index);
+                        if (nameRef.count > 0)
+                            nameRef.Name += "_" + nameRef.count;
+                        v.NameValue = nameRef;
                         pos += 32;
                     }
                     p.Value = v;
@@ -495,6 +520,15 @@ namespace KFreonLib.PCCObjects
                         pos += 32;
                         v.IntValue = BitConverter.ToInt32(raw, pos);
                         v.String2 = pcc.Names[v.IntValue];
+                        // Heff: Temporary modification to handle name refs properly, until we can rewrite the whole property system accross all tools
+                        // This is stupid for enum properties, but as the enum itself will probably never be a name with index it works..
+                        var nameRef = new NameReference();
+                        nameRef.index = v.IntValue;
+                        nameRef.count = BitConverter.ToInt32(raw, pos + 4);
+                        nameRef.Name = pcc.getNameEntry(nameRef.index);
+                        if (nameRef.count > 0)
+                            nameRef.Name += "_" + nameRef.count;
+                        v.NameValue = nameRef;
                         pos += size;
                     }
                     else
@@ -583,6 +617,13 @@ namespace KFreonLib.PCCObjects
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
+                    var nameRef = new NameReference();
+                    nameRef.index = v.IntValue;
+                    nameRef.count = BitConverter.ToInt32(raw, start + 4);
+                    nameRef.Name = pcc.getNameEntry(nameRef.index);
+                    if (nameRef.count > 0)
+                        nameRef.Name += "_" + nameRef.count;
+                    v.NameValue = nameRef;
                     v.len = 8;
                     break;
                 case "BoolProperty":

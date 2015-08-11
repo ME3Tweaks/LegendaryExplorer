@@ -356,7 +356,11 @@ namespace KFreonLib.Textures
                             buffer.Seek(4, SeekOrigin.Current);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            //buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            // Heff: Modified to handle name references.
+                            pcc.AddName(prop.Value.StringValue);
+                            buffer.WriteValueS32(prop.Value.NameValue.index);
+                            buffer.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.StrProperty:
                             buffer.WriteValueS32(prop.Value.StringValue.Length + 1);
@@ -1064,7 +1068,11 @@ namespace KFreonLib.Textures
                                 tempMem.Seek(4, SeekOrigin.Current);
                                 break;
                             case SaltPropertyReader.Type.NameProperty:
-                                tempMem.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                                //tempMem.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                                // Heff: Modified to handle name references.
+                                pcc.AddName(prop.Value.StringValue);
+                                tempMem.WriteValueS32(prop.Value.NameValue.index);
+                                tempMem.WriteValueS32(prop.Value.NameValue.count);
                                 break;
                             case SaltPropertyReader.Type.StrProperty:
                                 tempMem.WriteValueS32(prop.Value.StringValue.Length + 1);

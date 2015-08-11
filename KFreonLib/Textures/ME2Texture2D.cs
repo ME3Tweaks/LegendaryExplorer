@@ -350,7 +350,11 @@ namespace KFreonLib.Textures
                             buffer.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            //buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            // Heff: Modified to handle name references.
+                            pcc.AddName(prop.Value.StringValue);
+                            buffer.WriteValueS32(prop.Value.NameValue.index);
+                            buffer.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.StrProperty:
                             buffer.WriteValueS32(prop.Value.StringValue.Length + 1);
