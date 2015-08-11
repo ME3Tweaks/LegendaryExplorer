@@ -375,7 +375,9 @@ namespace KFreonLib.Textures
         {
             get
             {
-                return (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool standard = (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool calc = NumMips < CalculateMipCount(this.Width, this.Height);
+                return standard && !calc;
             }
         }
 
@@ -395,6 +397,11 @@ namespace KFreonLib.Textures
             {
                 return isDef ? false : (CorrectMips && ValidFormat && ValidDimensions);
             }
+        }
+
+        public static int CalculateMipCount(int Width, int Height)
+        {
+            return (int)Math.Log(Math.Max(Width, Height), 2) + 1;
         }
 
         public bool ValidDimensions { get; set; }

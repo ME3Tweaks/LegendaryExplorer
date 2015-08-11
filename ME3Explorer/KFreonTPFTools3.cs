@@ -2652,6 +2652,13 @@ namespace ME3Explorer
                 args += " -nomipmap";
 
                 string output = ExecuteExternalTool(toolPath, args);
+
+                if (!output.Contains("Writing"))
+                {
+                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
             }
 
             if (surface == CompressedDataFormat.ThreeDC || surface == CompressedDataFormat.ATI1N) // nv/dx tools dont handle this
@@ -2688,7 +2695,7 @@ namespace ME3Explorer
                     type = "A8R8G8B8";
 
                 string args = " -ft DDS -f " + type;
-                int newMips = ResILImageBase.EstimateNumMips(tex.Width, tex.Height);
+                int newMips = TPFTexInfo.CalculateMipCount(tex.Width, tex.Height);
                 if (newMips < tex.ExpectedMips)
                     newMips = tex.ExpectedMips;
 
@@ -2701,6 +2708,13 @@ namespace ME3Explorer
 
                 string output = ExecuteExternalTool(toolPath, args);
 
+                if (!output.Contains("writing"))
+                {
+                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+
                 if (path != targetPath)
                     File.Delete(path); //Delete the temporary file if it had a different extension
 
@@ -2712,6 +2726,49 @@ namespace ME3Explorer
             if (cts.IsCancellationRequested)
                 return false;
             tex.EnumerateDetails();
+
+            // Heff: if fix was successfull, but the number of mips are still wrong,
+            // try to run it through nvdxt and let it generate the last mip, slow but works?
+            if (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height))
+            {
+                string type = surface == CompressedDataFormat.DXT1A ? "dxt1a" : "dxt1c";
+                if (tex.ExpectedFormat.Contains("ARGB"))
+                    type = "u8888";
+                else switch (surface)
+                {
+                    case CompressedDataFormat.DXT1A:
+                        type = "dxt1a";
+                        break;
+                    case CompressedDataFormat.DXT1:
+                        type = "dxt1c";
+                        break;
+                    case CompressedDataFormat.DXT3:
+                        type = "dxt3";
+                        break;
+                    case CompressedDataFormat.V8U8:
+                        type = "v8u8";
+                        break;
+                    default:
+                        DebugOutput.PrintLn("Failed to autofix image, could not generate the correct amount of mipmaps.\n");
+                        tex.AutofixSuccess = false;
+                        return false;
+                }
+
+                string toolPath = @".\exec\nvdxt.exe";
+                string args = "-file \"" + Path.Combine(tex.FilePath, tex.FileName) + "\" -output \""
+                    + Path.Combine(tex.FilePath, tex.FileName) + "\" -quality_production -" + type
+                    + " -nmips " + Math.Max(tex.ExpectedMips, ResILImageBase.EstimateNumMips(tex.Width, tex.Height));
+
+                string output = ExecuteExternalTool(toolPath, args);
+
+                if (!output.Contains("Writing"))
+                {
+                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+            }
+
             return retval;
         }
 

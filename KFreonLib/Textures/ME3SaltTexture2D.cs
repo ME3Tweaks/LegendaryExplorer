@@ -227,7 +227,10 @@ namespace KFreonLib.Textures
                 tempStream.WriteBytes(headerData);
 
                 // Whilst testing get rid of this
-                if (properties.ContainsKey("LODGroup"))
+                // Heff: Was this ever used for anything outside of testing?
+                // As it is it seems to have caused a lot of problems and made some textures unusable,
+                // so I'm commenting it out for now.
+                /*if (properties.ContainsKey("LODGroup"))
                     properties["LODGroup"].Value.String2 = "TEXTUREGROUP_Shadowmap";
                 else
                 {
@@ -236,7 +239,7 @@ namespace KFreonLib.Textures
                     tempStream.WriteValueS64(8);
                     tempStream.WriteValueS64(pcc.addName2("TextureGroup"));
                     tempStream.WriteValueS64(pcc.addName2("TEXTUREGROUP_Shadowmap"));
-                }
+                }*/
 
                 foreach (KeyValuePair<string, SaltPropertyReader.Property> kvp in properties)
                 {
@@ -1028,38 +1031,41 @@ namespace KFreonLib.Textures
 
             // update Sizes
             //PropertyReader.Property Size = properties["SizeX"];
-            propVal = (int)newImgInfo.imgSize.width;
-            properties["SizeX"].Value.IntValue = propVal;
+
+            // Heff: Fixed(?) to account for non-square images
+            int propX = (int)newImgInfo.imgSize.width;
+            int propY = (int)newImgInfo.imgSize.height;
+            properties["SizeX"].Value.IntValue = propX;
             using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                rawStream.WriteValueS32(propVal);
+                rawStream.WriteValueS32(propX);
                 properties["SizeX"].raw = rawStream.ToArray();
             }
             //properties["SizeX"] = Size;
             //Size = properties["SizeY"];
-            properties["SizeY"].Value.IntValue = (int)newImgInfo.imgSize.height;
+            properties["SizeY"].Value.IntValue = propY;
             using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                rawStream.WriteValueS32(propVal);
+                rawStream.WriteValueS32(propY);
                 properties["SizeY"].raw = rawStream.ToArray();
             }
             //properties["SizeY"] = Size;
             try
             {
-                properties["OriginalSizeX"].Value.IntValue = propVal;
+                properties["OriginalSizeX"].Value.IntValue = propX;
                 using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                    rawStream.WriteValueS32(propVal);
+                    rawStream.WriteValueS32(propX);
                     properties["OriginalSizeX"].raw = rawStream.ToArray();
                 }
-                properties["OriginalSizeY"].Value.IntValue = propVal;
+                properties["OriginalSizeY"].Value.IntValue = propY;
                 using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                    rawStream.WriteValueS32(propVal);
+                    rawStream.WriteValueS32(propY);
                     properties["OriginalSizeY"].raw = rawStream.ToArray();
                 }
             }

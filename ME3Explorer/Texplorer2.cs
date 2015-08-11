@@ -1693,7 +1693,9 @@ namespace ME3Explorer
             message.Add("Texture Name:  " + tex2D.texName);
             message.Add("Format:  " + (tex2D.texFormat.ToLower().Contains("g8") ? tex2D.texFormat + @"/L8" : (tex2D.texFormat.ToLower().Contains("normalmap") ? "ThreeDc" : tex2D.texFormat)));
             message.Add("Width:  " + info.imgSize.width + ",  Height:  " + info.imgSize.height);
-            message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
+            //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
+            // Heff: Were ALL modified textures assigned the shadowmap texture group?
+            message.Add("LODGroup:  " + (String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
             message.Add("Texmod Hash:  " + Textures.Methods.FormatTexmodHashAsString(tex2D.Hash));
 
             if (WhichGame != 1)
