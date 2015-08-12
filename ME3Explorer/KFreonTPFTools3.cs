@@ -2781,46 +2781,9 @@ namespace ME3Explorer
             tex.EnumerateDetails();
 
             // Heff: if fix was successfull, but the number of mips are still wrong,
-            // try to run it through nvdxt and let it generate the last mip, slow but works?
+            // force it and let texplorer skip the lowest resolutions
             if (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height))
-            {
-                string type = surface == CompressedDataFormat.DXT1A ? "dxt1a" : "dxt1c";
-                if (tex.ExpectedFormat.Contains("ARGB"))
-                    type = "u8888";
-                else switch (surface)
-                {
-                    case CompressedDataFormat.DXT1A:
-                        type = "dxt1a";
-                        break;
-                    case CompressedDataFormat.DXT1:
-                        type = "dxt1c";
-                        break;
-                    case CompressedDataFormat.DXT3:
-                        type = "dxt3";
-                        break;
-                    case CompressedDataFormat.V8U8:
-                        type = "v8u8";
-                        break;
-                    default:
-                        DebugOutput.PrintLn("Failed to autofix image, could not generate the correct amount of mipmaps.\n");
-                        tex.AutofixSuccess = false;
-                        return false;
-                }
-
-                string toolPath = @".\exec\nvdxt.exe";
-                string args = "-file \"" + Path.Combine(tex.FilePath, tex.FileName) + "\" -output \""
-                    + Path.Combine(tex.FilePath, tex.FileName) + "\" -quality_production -" + type
-                    + " -nmips " + Math.Max(tex.ExpectedMips, ResILImageBase.EstimateNumMips(tex.Width, tex.Height));
-
-                string output = ExecuteExternalTool(toolPath, args);
-
-                if (!output.Contains("Writing"))
-                {
-                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
-                    tex.AutofixSuccess = false;
-                    return false;
-                }
-            }
+                tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
 
             return retval;
         }
