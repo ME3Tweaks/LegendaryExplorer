@@ -339,14 +339,14 @@ namespace KFreonLib.PCCObjects
                     {
                         pos += 24;
                         v.IntValue = BitConverter.ToInt32(raw, pos);
-                        v.StringValue = pcc.Names[v.IntValue];
+                        v.StringValue = pcc.GetName(v.IntValue);
                         // Heff: Temporary modification to handle name refs properly, until we can rewrite the whole property system accross all tools
                         var nameRef = new NameReference();
                         nameRef.index = v.IntValue;
                         nameRef.count = BitConverter.ToInt32(raw, pos + 4);
                         nameRef.Name = pcc.getNameEntry(nameRef.index);
                         if (nameRef.count > 0)
-                            nameRef.Name += "_" + nameRef.count;
+                            nameRef.Name += "_" + (nameRef.count - 1);
                         v.NameValue = nameRef;
                         pos += size;
                     }
@@ -363,7 +363,7 @@ namespace KFreonLib.PCCObjects
                         nameRef.count = BitConverter.ToInt32(raw, pos + 4);
                         nameRef.Name = pcc.getNameEntry(nameRef.index);
                         if (nameRef.count > 0)
-                            nameRef.Name += "_" + nameRef.count;
+                            nameRef.Name += "_" + (nameRef.count - 1);
                         v.NameValue = nameRef;
                         pos += 32;
                     }
@@ -527,7 +527,7 @@ namespace KFreonLib.PCCObjects
                         nameRef.count = BitConverter.ToInt32(raw, pos + 4);
                         nameRef.Name = pcc.getNameEntry(nameRef.index);
                         if (nameRef.count > 0)
-                            nameRef.Name += "_" + nameRef.count;
+                            nameRef.Name += "_" + (nameRef.count - 1);
                         v.NameValue = nameRef;
                         pos += size;
                     }
@@ -622,7 +622,7 @@ namespace KFreonLib.PCCObjects
                     nameRef.count = BitConverter.ToInt32(raw, start + 4);
                     nameRef.Name = pcc.getNameEntry(nameRef.index);
                     if (nameRef.count > 0)
-                        nameRef.Name += "_" + nameRef.count;
+                        nameRef.Name += "_" + (nameRef.count - 1);
                     v.NameValue = nameRef;
                     v.len = 8;
                     break;

@@ -160,8 +160,8 @@ namespace KFreonLib.Textures
                         case "Format":
                             texFormat = pccObj.Names[property.Value.IntValue].Substring(3);
                             break;
-                        case "TextureFileCacheName": arcName = pccObj.Names[property.Value.IntValue]; break;
-                        case "LODGroup": LODGroup = pccObj.Names[property.Value.IntValue]; break; //
+                        case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
+                        case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
                         case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
                     }
                 }
@@ -277,17 +277,19 @@ namespace KFreonLib.Textures
                         case SaltPropertyReader.Type.NameProperty:
                             //tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
                             // Heff: Modified to handle name references.
-                            pcc.addName2(prop.Value.StringValue);
-                            tempStream.WriteValueS32(prop.Value.NameValue.index);
+                            var nameIndex = pcc.addName2(prop.Value.StringValue);
+                            tempStream.WriteValueS32(nameIndex);
                             tempStream.WriteValueS32(prop.Value.NameValue.count);
+                            Console.WriteLine(prop.Name + ":" + prop.Value.StringValue); // HEFFTEST
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
                             tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
                             //tempStream.WriteValueS64(pcc.addName2(prop.Value.String2));
                             // Heff: Modified to handle name references.
-                            pcc.addName2(prop.Value.StringValue);
-                            tempStream.WriteValueS32(prop.Value.NameValue.index);
+                            var valueIndex = pcc.addName2(prop.Value.String2);
+                            tempStream.WriteValueS32(valueIndex);
                             tempStream.WriteValueS32(prop.Value.NameValue.count);
+                            Console.WriteLine(prop.Name + ":" + prop.Value.String2); // HEFFTEST
 
                             //tempStream.WriteValueS32(pcc.addName2(prop.Value.String2));
                             //byte[] footer = new byte[4];
@@ -1203,8 +1205,8 @@ namespace KFreonLib.Textures
                         case SaltPropertyReader.Type.NameProperty:
                             //tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
                             // Heff: Modified to handle name references.
-                            pcc.addName2(prop.Value.StringValue);
-                            tempMem.WriteValueS32(prop.Value.NameValue.index);
+                            var index = pcc.addName2(prop.Value.StringValue);
+                            tempMem.WriteValueS32(index);
                             tempMem.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
@@ -1246,8 +1248,8 @@ namespace KFreonLib.Textures
                     case "Format":
                         texFormat = pcc.Names[property.Value.IntValue].Substring(3);
                         break;
-                    case "TextureFileCacheName": arcName = pcc.Names[property.Value.IntValue]; break;
-                    case "LODGroup": LODGroup = pcc.Names[property.Value.IntValue]; break; //
+                    case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
+                    case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
                     case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
                 }
             }
