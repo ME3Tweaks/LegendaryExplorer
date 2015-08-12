@@ -37,6 +37,7 @@ namespace ME3Explorer
             tool_button.Image = symbol;
             tool_button.Tag = tools.Count().ToString();
             tool_button.Click += new EventHandler(tipek_onclick); //I can haz event handler? No? ORLY?!
+            strip.ImageScalingSize = new Size(64, 64);
             //adding to toolstrip
             strip.Items.Add(tool_button);
             //creating new structure entry

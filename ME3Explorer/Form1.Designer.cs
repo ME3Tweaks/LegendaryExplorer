@@ -913,6 +913,7 @@
             this.imageList1.Images.SetKeyName(17, "coalico.png");
             this.imageList1.Images.SetKeyName(18, "texplorer.ico");
             this.imageList1.Images.SetKeyName(19, "empty.ico");
+            this.imageList1.Images.SetKeyName(20, "texplorer.png");
             // 
             // toolStrip1
             // 
