@@ -227,10 +227,10 @@ namespace KFreonLib.Textures
                 tempStream.WriteBytes(headerData);
 
                 // Whilst testing get rid of this
-                // Heff: Was this ever used for anything outside of testing?
-                // As it is it seems to have caused a lot of problems and made some textures unusable,
-                // so I'm commenting it out for now.
-                /*if (properties.ContainsKey("LODGroup"))
+                // Heff: Seems like the shadowmap was the best solution in most cases,
+                // adding an exception for known problematic animated textures for now.
+                // (See popup in tpftools)
+                if (properties.ContainsKey("LODGroup"))
                     properties["LODGroup"].Value.String2 = "TEXTUREGROUP_Shadowmap";
                 else
                 {
@@ -239,7 +239,7 @@ namespace KFreonLib.Textures
                     tempStream.WriteValueS64(8);
                     tempStream.WriteValueS64(pcc.addName2("TextureGroup"));
                     tempStream.WriteValueS64(pcc.addName2("TEXTUREGROUP_Shadowmap"));
-                }*/
+                }
 
                 foreach (KeyValuePair<string, SaltPropertyReader.Property> kvp in properties)
                 {

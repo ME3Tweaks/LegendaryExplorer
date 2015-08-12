@@ -110,6 +110,33 @@ namespace ME3Explorer
         bool AttemptedAnalyse = false;
         bool PreventPCC = false;
 
+        // Heff: List for prompting the user that these most likely will not install correctly,
+        // due to the shadowmap texturegroup being too large for distorted textures to handle.
+        // Needs more research, thanks to creeperlarva for the list.
+        private List<uint> DistortionHashList = new List<uint>() {
+            // Aquarium plants
+            0x51AEDCC7,
+            0x13790734,
+            0xD83C233B,
+            // Fish 
+            0x9665E158,
+            0x9D05DD80,
+            0xF255F044,
+            0x44332271,
+            0x8E893D1F,
+            0x3C2AD501,
+            0xDFCE4655,
+            0xD9BC5722,
+            0xF0174EE2,
+            // Animated Visors
+            0x49DDF790,
+            0xAE7A040D,
+            0xCF0810CD,
+            0x904BD94E,
+            0x0B6D3FCE,
+            0x00B10251,
+        };
+
         bool isAnalysed
         {
             get
@@ -1963,10 +1990,36 @@ namespace ME3Explorer
                 // Heff: Cancellation check
                 if (cts.IsCancellationRequested)
                     return false;
+                
+                // Heff: match against known problematic hashes, prompt the user.
+                // (particularly textures animateed by distortion)
+                if (DistortionHashList.Contains(tex.Hash))
+                {
+                    bool install = false;
+                    this.Invoke(new Action(() =>
+                    {
+                        var dialogResult = MessageBox.Show("This texture is known to cause problems when resolution is higher than normal. \nDo you still want to try to install it? (Not recommended for normal users)", "Warning!", 
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        install = dialogResult == System.Windows.Forms.DialogResult.Yes ? true : false;
+                    }));
+                    if (!install)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            Overall.UpdateText("Skipping mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
+                            DebugOutput.PrintLn("Skipping mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
+                            OverallProg.IncrementBar();
+                        }));
+                        continue;
+                    }
+                }
 
-                Overall.UpdateText("Installing mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
-                DebugOutput.PrintLn("Installing mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
-                OverallProg.IncrementBar();
+                this.Invoke(new Action(() =>
+                {
+                    Overall.UpdateText("Installing mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
+                    DebugOutput.PrintLn("Installing mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
+                    OverallProg.IncrementBar();
+                }));
 
                 texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true));
 
