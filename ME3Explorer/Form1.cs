@@ -166,12 +166,13 @@ namespace ME3Explorer
                         break;
                 }
             }
-        }
 
-        private void tLKEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MainWindow mw = new MainWindow();
-            mw.Show();
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
+                ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME2InstallDir))
+                ME2Directory.GamePath(Properties.Settings.Default.ME2InstallDir);
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
+                ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -456,24 +457,6 @@ namespace ME3Explorer
             OpenMaximized(new UDKConverter.UDKConverter());
         }
 
-        private void setCustomPathToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(3);
-            if (String.IsNullOrEmpty(installPath))
-                return;
-
-            ME3Directory.GamePath(installPath);
-            String cookPath = Path.Combine(installPath, "BIOGame", "CookedPCConsole");
-            if (!Directory.Exists(cookPath))
-            {
-                MessageBox.Show("Required CookedPCConsole folder not found at:\n" + cookPath, "Directory not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            Properties.Settings.Default.TexplorerME3Path = cookPath;
-            Properties.Settings.Default.Save();
-            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-        }
-
         private void uECodeEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMaximized(new UECodeEditor.UECodeEditor());
@@ -613,10 +596,21 @@ namespace ME3Explorer
 
         private void showKnownPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string s = "GamePath :\n" + ME3Directory.gamePath + "\n";
-            s += "DLCPath :\n" + ME3Directory.DLCPath + "\n";
-            s += "CookedPath :\n" + ME3Directory.cookedPath + "\n";
-            s += "BioWareDocPath :\n" + ME3Directory.BioWareDocPath;
+            string s = "ME3:\n";
+            s += "  GamePath :\n\t" + ME3Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME3Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME3Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME3Directory.BioWareDocPath + "\n";
+            s += "\nME2:\n";
+            s += "  GamePath :\n\t" + ME2Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME2Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME2Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME2Directory.BioWareDocPath + "\n";
+            s += "\nME1:\n";
+            s += "  GamePath :\n\t" + ME1Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME1Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME1Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME1Directory.BioWareDocPath + "\n";
             MessageBox.Show(s);
         }
 
@@ -629,6 +623,10 @@ namespace ME3Explorer
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Properties.Settings.Default.ME3InstallDir = ME3Directory.gamePath;
+            Properties.Settings.Default.ME2InstallDir = ME2Directory.gamePath;
+            Properties.Settings.Default.ME1InstallDir = ME1Directory.gamePath;
+            Properties.Settings.Default.Save();
             Application.Exit();
         }
 
@@ -648,11 +646,6 @@ namespace ME3Explorer
         private void extraToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new InterpEditor.InterpEditor());
         }
 
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -709,6 +702,62 @@ namespace ME3Explorer
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutME3Explorer().Show(this);
+        }
+
+        private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            MainWindow mw = new MainWindow();
+            mw.Show();
+        }
+
+        private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMaximized(new InterpEditor.InterpEditor());
+        }
+
+        private void massEffect3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(3);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME3Directory.GamePath(installPath);
+            // Heff: TexplorerME3Path is only used in CloneDialog, and there it assumnes BIOGame rather than CookedPCConsole, so not using this for now.
+            /*String cookPath = Path.Combine(installPath, "BIOGame", "CookedPCConsole");
+            if (!Directory.Exists(cookPath))
+            {
+                MessageBox.Show("Required CookedPCConsole folder not found at:\n" + cookPath, "Directory not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Properties.Settings.Default.TexplorerME3Path = cookPath; */
+
+            Properties.Settings.Default.ME3InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void massEffect2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(2);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME2Directory.GamePath(installPath);
+            Properties.Settings.Default.ME2InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void massEffect1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(1);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME1Directory.GamePath(installPath);
+            Properties.Settings.Default.ME1InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
     }
 }

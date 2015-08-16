@@ -1,9 +1,9 @@
 ﻿using KFreonLib.Debugging;
 using KFreonLib.GUI;
-using KFreonLib.Helpers.LiquidEngine;
 using KFreonLib.PCCObjects;
 using KFreonLib.Scripting;
 using KFreonLib.Textures;
+using ResILWrapper;
 using SaltTPF;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using KFreonLib.Misc.Extensions;
-
+using UsefulThings;
 
 namespace KFreonLib.Textures
 {
@@ -351,6 +350,7 @@ namespace KFreonLib.Textures
         public int Height = -1;
         public int Width = -1;
         public SaltTPF.ZipReader zippy = null;
+        public bool wasAnalysed = false;
         
 
         #region Properties
@@ -375,7 +375,9 @@ namespace KFreonLib.Textures
         {
             get
             {
-                return (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool standard = (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool calc = ExpectedMips > 1 && NumMips < CalculateMipCount(this.Width, this.Height);
+                return standard && !calc;
             }
         }
 
@@ -395,6 +397,11 @@ namespace KFreonLib.Textures
             {
                 return isDef ? false : (CorrectMips && ValidFormat && ValidDimensions);
             }
+        }
+
+        public static int CalculateMipCount(int Width, int Height)
+        {
+            return (int)Math.Log(Math.Max(Width, Height), 2) + 1;
         }
 
         public bool ValidDimensions { get; set; }
@@ -484,6 +491,7 @@ namespace KFreonLib.Textures
 
         public void UndoAnalysis(int newGameVersion)
         {
+            wasAnalysed = false;
             Files.Clear();
             OriginalFiles.Clear();
             ExpIDs.Clear();
@@ -543,8 +551,11 @@ namespace KFreonLib.Textures
                     text = "----> " + text + ending;
                 }
             }
-            else if (Analysed && !isDef)
+            else if (Analysed && wasAnalysed && !isDef)
                 text = "----> " + text + "  <----   NOT FOUND IN TREE";
+            else if (Analysed && !isDef)
+                text += " <--- Not Analyzed!";
+
             return text;
         }
 
@@ -576,10 +587,17 @@ namespace KFreonLib.Textures
             }
             else    // KFreon: Extract image to disk
             {
-                if (isExternal)
-                    File.Copy(Path.Combine(FilePath, FileName), ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
-                else
-                    zippy.Entries[TPFInd].Extract(false, ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                try
+                {
+                    if (isExternal)
+                        File.Copy(Path.Combine(FilePath, FileName), ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                    else
+                        zippy.Entries[TPFInd].Extract(false, ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                }
+                catch (Exception e)
+                {
+                    DebugOutput.PrintLn("File already exists.   " + e.ToString());
+                }
             }
             return retval;
         }

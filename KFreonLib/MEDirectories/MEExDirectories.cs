@@ -168,15 +168,18 @@ namespace KFreonLib.MEDirectories
                     break;
             }
 
-            if (!String.IsNullOrEmpty(PropertiesPathString))
+            // Heff: prioritized the global setting for now, was there a purpose to having texplorer/tpftools/modmaker paths separate?
+            if (tempgamepath != null)
+            {
+                status = 1;
+                if (!tempgamepath.ToLower().Contains("biogame"))
+                    tempgamepath = Path.Combine(tempgamepath, (whichgame == 3 ? "BIOGame" : "BioGame"));
+                BIOGames[whichgame - 1] = tempgamepath;
+            }
+            else if (!String.IsNullOrEmpty(PropertiesPathString))
             {
                 BIOGames[whichgame - 1] = PropertiesPathString;
                 status = 0;
-            }
-            else if (tempgamepath != null)
-            {
-                status = 1;
-                BIOGames[whichgame - 1] = Path.Combine(tempgamepath, "BIOGame");
             }
             else
                 DebugOutput.PrintLn("ME" + whichgame + " game files not found.");
@@ -190,13 +193,22 @@ namespace KFreonLib.MEDirectories
             try
             {
                 if (!String.IsNullOrEmpty(BIOGames[0]))
+                {
                     Properties.Settings.Default.ME1Directory = BIOGames[0];
+                    ME1Directory.GamePath(BIOGames[0]);
+                }
 
                 if (!String.IsNullOrEmpty(BIOGames[1]))
+                {
                     Properties.Settings.Default.ME2Directory = BIOGames[1];
+                    ME2Directory.GamePath(BIOGames[1]);
+                }
 
                 if (!String.IsNullOrEmpty(BIOGames[2]))
+                {
                     Properties.Settings.Default.ME3Directory = BIOGames[2];
+                    ME3Directory.GamePath(BIOGames[2]);
+                }
 
                 Properties.Settings.Default.Save();
             }

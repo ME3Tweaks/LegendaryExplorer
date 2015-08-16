@@ -441,7 +441,7 @@ namespace ME3Explorer.Unreal
                     nameRef.count = BitConverter.ToInt32(raw, start + 4);
                     nameRef.Name = pcc.getNameEntry(nameRef.index);
                     if (nameRef.count > 0)
-                        nameRef.Name += "_" + nameRef.count;
+                        nameRef.Name += "_" + (nameRef.count - 1);
                     v.NameValue = nameRef;
                     v.len = 8;
                     break;

@@ -43,8 +43,8 @@
             this.utilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aFCToWAVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.batchRenamerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lanugageSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moviestfcToBIKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lanugageSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vanillaMakerBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versionSwitcherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +62,7 @@
             this.faceFXAnimSetEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.interpEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.subtitleScannerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tLKEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wwiseBankViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dLCExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dLCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,9 +74,9 @@
             this.pSKViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pSAViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertyManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertyDumperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertyDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertyDumperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertyManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptCompilerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +103,9 @@
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.threadOptionsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.setCustomPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.massEffect3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showKnownPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.taskbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,7 +122,6 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tLKEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -227,7 +230,7 @@
             // autoTOCToolStripMenuItem
             // 
             this.autoTOCToolStripMenuItem.Name = "autoTOCToolStripMenuItem";
-            this.autoTOCToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.autoTOCToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.autoTOCToolStripMenuItem.Text = "Auto TOC";
             this.autoTOCToolStripMenuItem.Click += new System.EventHandler(this.autoTOCToolStripMenuItem_Click);
             // 
@@ -235,15 +238,15 @@
             // 
             this.tOCBinUpdaterToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.tocbin;
             this.tOCBinUpdaterToolStripMenuItem.Name = "tOCBinUpdaterToolStripMenuItem";
-            this.tOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.tOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.tOCBinUpdaterToolStripMenuItem.Text = "TOCBinUpdater";
             this.tOCBinUpdaterToolStripMenuItem.Click += new System.EventHandler(this.tOCbinUpdaterToolStripMenuItem_Click);
             // 
             // dLCTOCBinUpdaterToolStripMenuItem
             // 
             this.dLCTOCBinUpdaterToolStripMenuItem.Name = "dLCTOCBinUpdaterToolStripMenuItem";
-            this.dLCTOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.dLCTOCBinUpdaterToolStripMenuItem.Text = "DLC TOCBin Updater";
+            this.dLCTOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.dLCTOCBinUpdaterToolStripMenuItem.Text = "SFAR TOC Updater";
             this.dLCTOCBinUpdaterToolStripMenuItem.Click += new System.EventHandler(this.dLCTOCbinUpdaterToolStripMenuItem_Click_1);
             // 
             // utilitiesToolStripMenuItem
@@ -274,13 +277,6 @@
             this.batchRenamerToolStripMenuItem.Text = "Batch Renamer";
             this.batchRenamerToolStripMenuItem.Click += new System.EventHandler(this.batchrenamerToolStripMenuItem_Click);
             // 
-            // lanugageSelectorToolStripMenuItem
-            // 
-            this.lanugageSelectorToolStripMenuItem.Name = "lanugageSelectorToolStripMenuItem";
-            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.lanugageSelectorToolStripMenuItem.Text = "Lanugage Selector";
-            this.lanugageSelectorToolStripMenuItem.Click += new System.EventHandler(this.languageSelectToolStripMenuItem_Click);
-            // 
             // moviestfcToBIKToolStripMenuItem
             // 
             this.moviestfcToBIKToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("moviestfcToBIKToolStripMenuItem.Image")));
@@ -288,6 +284,13 @@
             this.moviestfcToBIKToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.moviestfcToBIKToolStripMenuItem.Text = "BIK Movie Extractor";
             this.moviestfcToBIKToolStripMenuItem.Click += new System.EventHandler(this.moviestfcBikToolStripMenuItem_Click);
+            // 
+            // lanugageSelectorToolStripMenuItem
+            // 
+            this.lanugageSelectorToolStripMenuItem.Name = "lanugageSelectorToolStripMenuItem";
+            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.lanugageSelectorToolStripMenuItem.Text = "Lanugage Selector";
+            this.lanugageSelectorToolStripMenuItem.Click += new System.EventHandler(this.languageSelectToolStripMenuItem_Click);
             // 
             // vanillaMakerBackupToolStripMenuItem
             // 
@@ -434,6 +437,7 @@
             this.interpEditorToolStripMenuItem.Name = "interpEditorToolStripMenuItem";
             this.interpEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.interpEditorToolStripMenuItem.Text = "Interp Editor";
+            this.interpEditorToolStripMenuItem.Click += new System.EventHandler(this.interpEditorToolStripMenuItem_Click);
             // 
             // subtitleScannerToolStripMenuItem
             // 
@@ -441,6 +445,14 @@
             this.subtitleScannerToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.subtitleScannerToolStripMenuItem.Text = "Subtitle Scanner";
             this.subtitleScannerToolStripMenuItem.Click += new System.EventHandler(this.subtitleScannerToolStripMenuItem_Click_1);
+            // 
+            // tLKEditorToolStripMenuItem
+            // 
+            this.tLKEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("tLKEditorToolStripMenuItem.Image")));
+            this.tLKEditorToolStripMenuItem.Name = "tLKEditorToolStripMenuItem";
+            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.tLKEditorToolStripMenuItem.Text = "TLK Editor";
+            this.tLKEditorToolStripMenuItem.Click += new System.EventHandler(this.tLKEditorToolStripMenuItem_Click_1);
             // 
             // wwiseBankViewerToolStripMenuItem
             // 
@@ -534,13 +546,12 @@
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             // 
-            // propertyManagerToolStripMenuItem
+            // propertyDBToolStripMenuItem
             // 
-            this.propertyManagerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("propertyManagerToolStripMenuItem.Image")));
-            this.propertyManagerToolStripMenuItem.Name = "propertyManagerToolStripMenuItem";
-            this.propertyManagerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.propertyManagerToolStripMenuItem.Text = "Property Manager";
-            this.propertyManagerToolStripMenuItem.Click += new System.EventHandler(this.propertyManagerToolStripMenuItem_Click_1);
+            this.propertyDBToolStripMenuItem.Name = "propertyDBToolStripMenuItem";
+            this.propertyDBToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.propertyDBToolStripMenuItem.Text = "Property Database";
+            this.propertyDBToolStripMenuItem.Click += new System.EventHandler(this.propertyDBToolStripMenuItem_Click);
             // 
             // propertyDumperToolStripMenuItem
             // 
@@ -550,12 +561,13 @@
             this.propertyDumperToolStripMenuItem.Text = "Property Dumper";
             this.propertyDumperToolStripMenuItem.Click += new System.EventHandler(this.propertyDumperToolStripMenuItem_Click_1);
             // 
-            // propertyDBToolStripMenuItem
+            // propertyManagerToolStripMenuItem
             // 
-            this.propertyDBToolStripMenuItem.Name = "propertyDBToolStripMenuItem";
-            this.propertyDBToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.propertyDBToolStripMenuItem.Text = "Property Database";
-            this.propertyDBToolStripMenuItem.Click += new System.EventHandler(this.propertyDBToolStripMenuItem_Click);
+            this.propertyManagerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("propertyManagerToolStripMenuItem.Image")));
+            this.propertyManagerToolStripMenuItem.Name = "propertyManagerToolStripMenuItem";
+            this.propertyManagerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.propertyManagerToolStripMenuItem.Text = "Property Manager";
+            this.propertyManagerToolStripMenuItem.Click += new System.EventHandler(this.propertyManagerToolStripMenuItem_Click_1);
             // 
             // scriptsToolStripMenuItem
             // 
@@ -752,16 +764,40 @@
             // 
             // setCustomPathToolStripMenuItem
             // 
+            this.setCustomPathToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.massEffect1ToolStripMenuItem,
+            this.massEffect2ToolStripMenuItem,
+            this.massEffect3ToolStripMenuItem});
             this.setCustomPathToolStripMenuItem.Name = "setCustomPathToolStripMenuItem";
             this.setCustomPathToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.setCustomPathToolStripMenuItem.Text = "Set Custom Path";
-            this.setCustomPathToolStripMenuItem.Click += new System.EventHandler(this.setCustomPathToolStripMenuItem_Click);
+            // 
+            // massEffect1ToolStripMenuItem
+            // 
+            this.massEffect1ToolStripMenuItem.Name = "massEffect1ToolStripMenuItem";
+            this.massEffect1ToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.massEffect1ToolStripMenuItem.Text = "Mass Effect 1";
+            this.massEffect1ToolStripMenuItem.Click += new System.EventHandler(this.massEffect1ToolStripMenuItem_Click);
+            // 
+            // massEffect2ToolStripMenuItem
+            // 
+            this.massEffect2ToolStripMenuItem.Name = "massEffect2ToolStripMenuItem";
+            this.massEffect2ToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.massEffect2ToolStripMenuItem.Text = "Mass Effect 2";
+            this.massEffect2ToolStripMenuItem.Click += new System.EventHandler(this.massEffect2ToolStripMenuItem_Click);
+            // 
+            // massEffect3ToolStripMenuItem
+            // 
+            this.massEffect3ToolStripMenuItem.Name = "massEffect3ToolStripMenuItem";
+            this.massEffect3ToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.massEffect3ToolStripMenuItem.Text = "Mass Effect 3";
+            this.massEffect3ToolStripMenuItem.Click += new System.EventHandler(this.massEffect3ToolStripMenuItem_Click);
             // 
             // showKnownPathToolStripMenuItem
             // 
             this.showKnownPathToolStripMenuItem.Name = "showKnownPathToolStripMenuItem";
             this.showKnownPathToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.showKnownPathToolStripMenuItem.Text = "Show Known Path";
+            this.showKnownPathToolStripMenuItem.Text = "Show Known Paths";
             this.showKnownPathToolStripMenuItem.Click += new System.EventHandler(this.showKnownPathToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
@@ -894,13 +930,6 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // tLKEditorToolStripMenuItem
-            // 
-            this.tLKEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("tLKEditorToolStripMenuItem.Image")));
-            this.tLKEditorToolStripMenuItem.Name = "tLKEditorToolStripMenuItem";
-            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.tLKEditorToolStripMenuItem.Text = "TLK Editor";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1020,6 +1049,9 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem interpEditorToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem tLKEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem massEffect3ToolStripMenuItem;
     }
 }
 

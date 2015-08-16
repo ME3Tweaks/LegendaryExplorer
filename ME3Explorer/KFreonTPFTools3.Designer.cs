@@ -80,6 +80,7 @@
             this.GotoInvalidButton = new System.Windows.Forms.ToolStripButton();
             this.PromoteButton = new System.Windows.Forms.ToolStripButton();
             this.GotoDupButton = new System.Windows.Forms.ToolStripButton();
+            this.AutofixSingleButton = new System.Windows.Forms.ToolStripButton();
             this.LowerRightSplitter = new System.Windows.Forms.SplitContainer();
             this.DetailsSplitter = new System.Windows.Forms.SplitContainer();
             this.GeneralInfoRTB = new System.Windows.Forms.RichTextBox();
@@ -113,7 +114,6 @@
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.AutofixSingleButton = new System.Windows.Forms.ToolStripButton();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -174,6 +174,7 @@
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(37, 22);
             this.LoadButton.Text = "Load";
+            this.LoadButton.ToolTipText = "Load .tpf\'s, .mod\'s and image files.";
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
             // ExtractTOP
@@ -250,6 +251,7 @@
             this.MODtoTPFButton.Size = new System.Drawing.Size(68, 22);
             this.MODtoTPFButton.Text = "Load .mod";
             this.MODtoTPFButton.ToolTipText = "Attempts to convert a .mod to a .tpf";
+            this.MODtoTPFButton.Visible = false;
             this.MODtoTPFButton.Click += new System.EventHandler(this.MODtoTPFButton_Click);
             // 
             // ChangeButton
@@ -398,6 +400,7 @@
             this.CancelButton.Size = new System.Drawing.Size(47, 22);
             this.CancelButton.Text = "Cancel";
             this.CancelButton.Visible = false;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -643,6 +646,16 @@
             this.GotoDupButton.Text = "Goto Next Duplicate";
             this.GotoDupButton.Click += new System.EventHandler(this.GotoDupButton_Click);
             // 
+            // AutofixSingleButton
+            // 
+            this.AutofixSingleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.AutofixSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("AutofixSingleButton.Image")));
+            this.AutofixSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.AutofixSingleButton.Name = "AutofixSingleButton";
+            this.AutofixSingleButton.Size = new System.Drawing.Size(49, 19);
+            this.AutofixSingleButton.Text = "Autofix";
+            this.AutofixSingleButton.Click += new System.EventHandler(this.AutofixSingleButton_Click);
+            // 
             // LowerRightSplitter
             // 
             this.LowerRightSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -860,7 +873,7 @@
             this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(537, 510);
+            this.PreviewTabPages.Size = new System.Drawing.Size(537, 516);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -873,7 +886,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 22);
             this.PreviewPage.Name = "PreviewPage";
             this.PreviewPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PreviewPage.Size = new System.Drawing.Size(529, 484);
+            this.PreviewPage.Size = new System.Drawing.Size(529, 490);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -884,7 +897,7 @@
             this.texmodPreviewBox.Dock = System.Windows.Forms.DockStyle.Left;
             this.texmodPreviewBox.Location = new System.Drawing.Point(3, 3);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(100, 478);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(100, 484);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             // 
@@ -902,7 +915,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 22);
             this.PCCsPage.Name = "PCCsPage";
             this.PCCsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PCCsPage.Size = new System.Drawing.Size(529, 484);
+            this.PCCsPage.Size = new System.Drawing.Size(529, 490);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -917,7 +930,7 @@
             this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.PCCsCheckListBox.Location = new System.Drawing.Point(3, 3);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(523, 478);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(523, 484);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
@@ -1020,16 +1033,6 @@
             // PrimaryToolTip
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
-            // 
-            // AutofixSingleButton
-            // 
-            this.AutofixSingleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.AutofixSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("AutofixSingleButton.Image")));
-            this.AutofixSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AutofixSingleButton.Name = "AutofixSingleButton";
-            this.AutofixSingleButton.Size = new System.Drawing.Size(49, 19);
-            this.AutofixSingleButton.Text = "Autofix";
-            this.AutofixSingleButton.Click += new System.EventHandler(this.AutofixSingleButton_Click);
             // 
             // KFreonTPFTools3
             // 

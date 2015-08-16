@@ -160,8 +160,8 @@ namespace KFreonLib.Textures
                         case "Format":
                             texFormat = pccObj.Names[property.Value.IntValue].Substring(3);
                             break;
-                        case "TextureFileCacheName": arcName = pccObj.Names[property.Value.IntValue]; break;
-                        case "LODGroup": LODGroup = pccObj.Names[property.Value.IntValue]; break; //
+                        case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
+                        case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
                         case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
                     }
                 }
@@ -227,6 +227,9 @@ namespace KFreonLib.Textures
                 tempStream.WriteBytes(headerData);
 
                 // Whilst testing get rid of this
+                // Heff: Seems like the shadowmap was the best solution in most cases,
+                // adding an exception for known problematic animated textures for now.
+                // (See popup in tpftools)
                 if (properties.ContainsKey("LODGroup"))
                     properties["LODGroup"].Value.String2 = "TEXTUREGROUP_Shadowmap";
                 else
@@ -272,11 +275,22 @@ namespace KFreonLib.Textures
                             tempStream.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            //tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            // Heff: Modified to handle name references.
+                            var nameIndex = pcc.addName2(prop.Value.StringValue);
+                            tempStream.WriteValueS32(nameIndex);
+                            tempStream.WriteValueS32(prop.Value.NameValue.count);
+                            Console.WriteLine(prop.Name + ":" + prop.Value.StringValue); // HEFFTEST
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
                             tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
-                            tempStream.WriteValueS64(pcc.addName2(prop.Value.String2));
+                            //tempStream.WriteValueS64(pcc.addName2(prop.Value.String2));
+                            // Heff: Modified to handle name references.
+                            var valueIndex = pcc.addName2(prop.Value.String2);
+                            tempStream.WriteValueS32(valueIndex);
+                            tempStream.WriteValueS32(prop.Value.NameValue.count);
+                            Console.WriteLine(prop.Name + ":" + prop.Value.String2); // HEFFTEST
+
                             //tempStream.WriteValueS32(pcc.addName2(prop.Value.String2));
                             //byte[] footer = new byte[4];
                             //Buffer.BlockCopy(prop.raw, prop.raw.Length - 4, footer, 0, 4);
@@ -1028,38 +1042,41 @@ namespace KFreonLib.Textures
 
             // update Sizes
             //PropertyReader.Property Size = properties["SizeX"];
-            propVal = (int)newImgInfo.imgSize.width;
-            properties["SizeX"].Value.IntValue = propVal;
+
+            // Heff: Fixed(?) to account for non-square images
+            int propX = (int)newImgInfo.imgSize.width;
+            int propY = (int)newImgInfo.imgSize.height;
+            properties["SizeX"].Value.IntValue = propX;
             using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                rawStream.WriteValueS32(propVal);
+                rawStream.WriteValueS32(propX);
                 properties["SizeX"].raw = rawStream.ToArray();
             }
             //properties["SizeX"] = Size;
             //Size = properties["SizeY"];
-            properties["SizeY"].Value.IntValue = (int)newImgInfo.imgSize.height;
+            properties["SizeY"].Value.IntValue = propY;
             using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                rawStream.WriteValueS32(propVal);
+                rawStream.WriteValueS32(propY);
                 properties["SizeY"].raw = rawStream.ToArray();
             }
             //properties["SizeY"] = Size;
             try
             {
-                properties["OriginalSizeX"].Value.IntValue = propVal;
+                properties["OriginalSizeX"].Value.IntValue = propX;
                 using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                    rawStream.WriteValueS32(propVal);
+                    rawStream.WriteValueS32(propX);
                     properties["OriginalSizeX"].raw = rawStream.ToArray();
                 }
-                properties["OriginalSizeY"].Value.IntValue = propVal;
+                properties["OriginalSizeY"].Value.IntValue = propY;
                 using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
-                    rawStream.WriteValueS32(propVal);
+                    rawStream.WriteValueS32(propY);
                     properties["OriginalSizeY"].raw = rawStream.ToArray();
                 }
             }
@@ -1186,7 +1203,11 @@ namespace KFreonLib.Textures
                             tempMem.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            //tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            // Heff: Modified to handle name references.
+                            var index = pcc.addName2(prop.Value.StringValue);
+                            tempMem.WriteValueS32(index);
+                            tempMem.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
                             tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
@@ -1227,8 +1248,8 @@ namespace KFreonLib.Textures
                     case "Format":
                         texFormat = pcc.Names[property.Value.IntValue].Substring(3);
                         break;
-                    case "TextureFileCacheName": arcName = pcc.Names[property.Value.IntValue]; break;
-                    case "LODGroup": LODGroup = pcc.Names[property.Value.IntValue]; break; //
+                    case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
+                    case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
                     case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
                 }
             }

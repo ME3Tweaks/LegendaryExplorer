@@ -30,7 +30,11 @@ namespace KFreonLib.MEDirectories
         public static string GamePath(string path = null)
         {
             if (path != null)
+            {
+                if (path.Contains("BIOGame"))
+                    path = path.Substring(0, path.LastIndexOf("BIOGame"));
                 _gamePath = path;
+            }
 
             return _gamePath;
         }
@@ -87,7 +91,7 @@ namespace KFreonLib.MEDirectories
                     _files = MEDirectories.EnumerateGameFiles(3, ME3Directory.cookedPath);
 
                     Debugging.DebugOutput.PrintLn("ME3 DLC: " + ME3Directory.DLCPath);
-                    if (String.IsNullOrEmpty(ME3Directory.DLCPath))
+                    if (!String.IsNullOrEmpty(ME3Directory.DLCPath))
                     {
                         _files.AddRange(MEDirectories.EnumerateGameFiles(3, ME3Directory.DLCPath));
                     }

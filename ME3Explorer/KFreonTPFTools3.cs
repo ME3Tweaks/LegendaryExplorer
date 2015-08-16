@@ -19,6 +19,8 @@ using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using System.Reflection;
 using ResILWrapper;
+using ResIL.Unmanaged;
+using UsefulThings;
 
 namespace ME3Explorer
 {
@@ -108,6 +110,33 @@ namespace ME3Explorer
         bool AttemptedAnalyse = false;
         bool PreventPCC = false;
 
+        // Heff: List for prompting the user that these most likely will not install correctly,
+        // due to the shadowmap texturegroup being too large for distorted textures to handle.
+        // Needs more research, thanks to creeperlarva for the list.
+        private List<uint> DistortionHashList = new List<uint>() {
+            // Aquarium plants
+            0x51AEDCC7,
+            0x13790734,
+            0xD83C233B,
+            // Fish 
+            0x9665E158,
+            0x9D05DD80,
+            0xF255F044,
+            0x44332271,
+            0x8E893D1F,
+            0x3C2AD501,
+            0xDFCE4655,
+            0xD9BC5722,
+            0xF0174EE2,
+            // Animated Visors
+            0x49DDF790,
+            0xAE7A040D,
+            0xCF0810CD,
+            0x904BD94E,
+            0x0B6D3FCE,
+            0x00B10251,
+        };
+
         bool isAnalysed
         {
             get
@@ -143,6 +172,7 @@ namespace ME3Explorer
             tex1.Compare(tex2);*/
 
             InitializeComponent();
+            cts = new CancellationTokenSource();
             UpgradeSettings();
 
             // KFreon: Set number of threads if necessary
@@ -220,7 +250,7 @@ namespace ME3Explorer
             gooey.AddControl(ClearAllFilesButton, "ClearAll", true);
             gooey.AddControl(RebuildTOP, "Rebuild", true);
             gooey.AddControl(RunAutofixButton, "RunAutofix", true);
-            gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
+            //gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
             gooey.AddControl(AnalyseButton, "Analyse", true);
             gooey.AddControl(SaveModButton, "SaveMod", true);
             gooey.AddControl(InstallButton, "InstallB", true);
@@ -519,6 +549,7 @@ namespace ME3Explorer
                     gooey.ModifyControl("Rebuild", true);
                     gooey.ModifyControl("ChangePaths", false);
                     gooey.ModifyControl("ClearAll", true);
+                    gooey.ModifyControl("Analyse", true);
                 }
                 return retval;
             });
@@ -534,7 +565,7 @@ namespace ME3Explorer
                 using (OpenFileDialog ofd = new OpenFileDialog())
                 {
                     ofd.Title = "Select file/s to load";
-                    ofd.Filter = "All Supported|*.dds;*.tpf;*.MEtpf;*.jpg;*.jpeg;*.png;*.bmp|DDS Images|*.dds|Texmod TPF's|*.tpf|Texplorer TPF's|*.MEtpf|Images|*.jpg;*.jpeg;*.png;*.bmp;*.dds|Standard Images|*.jpg;*.jpeg;*.png;*.bmp";
+                    ofd.Filter = "All Supported|*.dds;*.tpf;*.MEtpf;*.mod;*.jpg;*.jpeg;*.png;*.bmp|DDS Images|*.dds|Texmod TPF's|*.tpf|Texplorer TPF's|*.MEtpf|Images|*.jpg;*.jpeg;*.png;*.bmp;*.dds|Standard Images|*.jpg;*.jpeg;*.png;*.bmp";
                     ofd.Multiselect = true;
 
                     System.Windows.Forms.DialogResult res = System.Windows.Forms.DialogResult.Abort;
@@ -558,9 +589,6 @@ namespace ME3Explorer
 
             foreach (string file in Files)
             {
-                if (cts.IsCancellationRequested)
-                    return false;
-
                 switch (Path.GetExtension(file).ToLowerInvariant())
                 {
                     case ".tpf":
@@ -579,11 +607,17 @@ namespace ME3Explorer
                     case ".def":
                         LoadExternal(file, true);
                         break;
+                    case ".mod":
+                        LoadMOD(file);
+                        break;
                     default:
                         DebugOutput.PrintLn("File: " + file + " is unsupported.");
                         break;
                 }
 
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
                 OverallProg.IncrementBar();
             }
 
@@ -600,6 +634,10 @@ namespace ME3Explorer
 
         public void RedrawTreeView()
         {
+            //Heff: if cancellation was requested, this was most likely called by a background thread, so don't try to interact with the form.
+            if (cts.IsCancellationRequested)
+                return;
+
             if (MainTreeView.InvokeRequired)
                 this.Invoke(new Action(() =>
                 {
@@ -741,7 +779,8 @@ namespace ME3Explorer
             }
 
             // KFreon: Get individual hashes without duplicate lines
-            List<string> parts = alltext.Replace("\r", "").Split('\n').ToList();
+            // Heff: Fix weird uppercase X
+            List<string> parts = alltext.Replace("\r", "").Replace("_0X", "_0x").Split('\n').ToList();
             parts.RemoveAll(s => s == "\0");
             List<string> tempparts = new List<string>();
             foreach (string part in parts)
@@ -759,7 +798,6 @@ namespace ME3Explorer
             {
                 temptexes.Add(new TPFTexInfo());
             }
-
             Parallel.For(0, numEntries, po, i =>
             {
                 // KFreon: Add TPF entries to TotalTexes list
@@ -785,6 +823,10 @@ namespace ME3Explorer
 
                 temptexes[i] = tmpTex;
 
+                // Heff: cancel background loaders
+                if (cts.IsCancellationRequested)
+                    return;
+
                 CurrentProg.IncrementBar();
             });
 
@@ -796,15 +838,15 @@ namespace ME3Explorer
         public int LoadExternal(string file, bool isDef)
         {
             EnableSecondProgressBar(false);
-
             TPFTexInfo tmpTex = new TPFTexInfo(Path.GetFileName(file), -1, Path.GetDirectoryName(file), null, WhichGame);
-
             // KFreon: Get hash
             if (!isDef)
             {
                 string hash = "";
 
                 // KFreon: Check if hash in filename
+                // Heff: fix weird uppercase X
+                file = Path.GetFileName(file).Replace("0X", "0x");
                 if (file.Contains("0x"))
                     hash = file.Substring(file.IndexOf("0x"), 10);
                 else  // KFreon: If not in filename, look in all non TPF .defs
@@ -844,11 +886,15 @@ namespace ME3Explorer
             // KFreon: Add node and its index to current node
             myTreeNode temp = new myTreeNode(Path.GetFileName(file));
             temp.TexInd = LoadedTexes.Count;
-            this.Invoke(new Action(() =>
+            // Heff: cancellation check
+            if (!cts.IsCancellationRequested)
             {
-                MainTreeView.Nodes.Add(temp);
-                OverallProg.IncrementBar();
-            }));
+                this.Invoke(new Action(() =>
+                {
+                    MainTreeView.Nodes.Add(temp);
+                    OverallProg.IncrementBar();
+                }));
+            }
 
             LoadedTexes.Add(tmpTex);
 
@@ -934,8 +980,8 @@ namespace ME3Explorer
             {
                 //KFreonLib.Textures.Methods.GetImage(tex.Format, data);
                 Bitmap img = null;
-                using (ResILImage kfimg = new ResILImage(data))
-                    img = new Bitmap(new MemoryStream(kfimg.ToArray(ResIL.Unmanaged.ImageType.Jpg)));
+                using (ResILImageBase kfimg = ResILImageBase.Create(data))
+                    img = kfimg.ToWinFormsBitmap();
                 if (img == null)
                     return;
 
@@ -1188,6 +1234,10 @@ namespace ME3Explorer
         private int GetSelectedTex(out TPFTexInfo tex)
         {
             tex = null;
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return -1;
+
             myTreeNode node = MainTreeView.SelectedNode as myTreeNode;
             if (node == null)
                 return -1;
@@ -1204,6 +1254,11 @@ namespace ME3Explorer
 
         private int GetParentTex(out TPFTexInfo tex)
         {
+            tex = null;
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return -1;
+
             myTreeNode node = MainTreeView.SelectedNode as myTreeNode;
             myTreeNode parent = (node.Parent as myTreeNode);
             tex = LoadedTexes[parent.TexInd];
@@ -1282,9 +1337,13 @@ namespace ME3Explorer
 
             // KFreon: Change GUI
             gooey.ModifyControl("Load", true);
-            gooey.ModifyControl("MODtoTPF", true);
+            //gooey.ModifyControl("MODtoTPF", true);
             gooey.ModifyControl("extractInvalid", true);
             gooey.ModifyControl("RunAutofix", true);
+
+            // Heff: mark as analysed
+            foreach (var tex in LoadedTexes)
+                tex.wasAnalysed = true;
 
             RedrawTreeView();
 
@@ -1368,7 +1427,7 @@ namespace ME3Explorer
             // KFreon: For each loaded texture, find its duplicates in the tree and add them as seperate textures
             for (int i = 0; i < temptexes.Count; i++)
             {
-                if (temptexes[i].isDef)
+                if (temptexes[i].isDef || temptexes[i].wasAnalysed)
                     continue;
 
                 TPFTexInfo curr = temptexes[i];//.Clone();
@@ -1468,7 +1527,9 @@ namespace ME3Explorer
                     else
                     {
                         // KFreon: Add duplicates to current tex
-                        curr.FileDuplicates.AddRange(duplicates);
+                        // Heff: Don't add currently existing ones, so that we can do analyse -> load -> analyse
+                        curr.FileDuplicates.AddRange(duplicates.Where(
+                            t => !curr.FileDuplicates.Any(c => c.TreeInd == t.TreeInd)));
                         LoadedTexes[currentPos] = curr;
                         duplicates.Clear();
                         currentPos++;
@@ -1486,7 +1547,8 @@ namespace ME3Explorer
 
         private void MainTreeView_DragEnter(object sender, DragEventArgs e)
         {
-            if (CancelButton.Visible || !AnalyseButton.Enabled)
+            // Heff: Is this reasonable? drag should be available whenever load is.
+            if (CancelButton.Visible )//|| !AnalyseButton.Enabled)
                 return;
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -1511,6 +1573,7 @@ namespace ME3Explorer
                     case ".def":
                     case ".txt":
                     case ".log":
+                    case ".mod":
                         ValidDrops.Add(file);
                         break;
                     default:
@@ -1588,6 +1651,10 @@ namespace ME3Explorer
 
         private void Extractor(string ExtractPath, TPFTexInfo tex, Predicate<TPFTexInfo> predicate)
         {
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return;
+
             // KFreon: Move to backbone if necessary
             if (!MainTreeView.InvokeRequired)
             {
@@ -1669,6 +1736,10 @@ namespace ME3Explorer
 
         private bool DeleteEntry(int ind = -1)
         {
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
+
             if (LoadedTexes.Count == 1)
             {
                 CloseFilesButton_Click(null, null);
@@ -1904,6 +1975,9 @@ namespace ME3Explorer
             // KFreon: Setup modified DLC list
             List<string> modifiedDLC = new List<string>();
 
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
             OverallProg.ChangeProgressBar(0, validtexes.Count + 1);
             int count = 1;
             DebugOutput.PrintLn("Textures loaded = " + validtexes.Count);
@@ -1913,9 +1987,39 @@ namespace ME3Explorer
             Texplorer2 texplorer = new Texplorer2(true, WhichGame);
             foreach (TPFTexInfo tex in validtexes)
             {
-                Overall.UpdateText("Installing mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
-                DebugOutput.PrintLn("Installing mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
-                OverallProg.IncrementBar();
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
+                
+                // Heff: match against known problematic hashes, prompt the user.
+                // (particularly textures animateed by distortion)
+                if (DistortionHashList.Contains(tex.Hash))
+                {
+                    bool install = false;
+                    this.Invoke(new Action(() =>
+                    {
+                        var dialogResult = MessageBox.Show("This texture is known to cause problems when resolution is higher than normal. \nDo you still want to try to install it? (Not recommended for normal users)", "Warning!", 
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        install = dialogResult == System.Windows.Forms.DialogResult.Yes ? true : false;
+                    }));
+                    if (!install)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            Overall.UpdateText("Skipping mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
+                            DebugOutput.PrintLn("Skipping mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
+                            OverallProg.IncrementBar();
+                        }));
+                        continue;
+                    }
+                }
+
+                this.Invoke(new Action(() =>
+                {
+                    Overall.UpdateText("Installing mod:  " + tex.TexName + " | " + count + "/" + valids + " mods completed.");
+                    DebugOutput.PrintLn("Installing mod:  " + tex.TexName + " | " + count++ + "/" + valids + " mods completed.");
+                    OverallProg.IncrementBar();
+                }));
 
                 texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true));
 
@@ -1929,11 +2033,11 @@ namespace ME3Explorer
                             modifiedDLC.Add(dlcname);
                     }
                 }
-
-                // KFreon: Check cancellation
-                if (cts.IsCancellationRequested)
-                    return false;
             }
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
 
             // KFreon: Update TOC's
             this.Invoke(new Action(() =>
@@ -1943,6 +2047,10 @@ namespace ME3Explorer
             }));
             DebugOutput.PrintLn("Updating Basegame...");
             Texplorer2.UpdateTOCs(pathBIOGame, WhichGame, DLCPath, modifiedDLC);
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
             this.Invoke(new Action(() =>
             {
                 OverallStatusLabel.Text = "All mods installed!";
@@ -2177,12 +2285,11 @@ namespace ME3Explorer
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
         {
-            if (CancelButton.Visible && MessageBox.Show("Background Tasks are running. Are you sure you want to close?", "Reeeally sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+            if (CancelButton.Visible && MessageBox.Show("Background Tasks are running. Are you sure you want to close?", "Reeeally sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
             {
-                cts.Cancel();
                 e.Cancel = true;
 
-                Task.Run(() =>
+                /*Task.Run(() =>
                 {
                     while (!OverallStatusLabel.Text.ToLowerInvariant().Contains("failed"))
                         System.Threading.Thread.Sleep(100);
@@ -2191,19 +2298,23 @@ namespace ME3Explorer
                     CurrentInstance = null;
                     SaveProperties();
                     this.Close();
-                });
+                });*/
             }
-
-            DebugOutput.PrintLn("-----Execution of TPF/DDS Tools closing...-----");
-            CurrentInstance = null;
-            SaveProperties();
+            else
+            {
+                cts.Cancel();
+                DebugOutput.PrintLn("-----Execution of TPF/DDS Tools closing...-----");
+                CurrentInstance = null;
+                SaveProperties();
+            }
         }
 
         private void RebuildTOP_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "Either works", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            var result =  MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            if (result == System.Windows.Forms.DialogResult.No)
                 RepackWithTexplorer();
-            else
+            else if (result == System.Windows.Forms.DialogResult.Yes)
                 RepackWithTexmod();
         }
 
@@ -2235,23 +2346,33 @@ namespace ME3Explorer
 
         private void ExtractAndBuildLog(string extractPath)
         {
-            // KFreon: Create path if necessary
-            if (!Directory.Exists(extractPath))
-                Directory.CreateDirectory(extractPath);
+            // Heff: delete earlier temp contents, create temp folder:
+            if (Directory.Exists(extractPath))
+                Directory.Delete(extractPath, true);
+
+            Directory.CreateDirectory(extractPath);
 
             using (FileStream fs = new FileStream(extractPath + "\\MEResults.log", FileMode.Create))
             {
+                var hashes = new List<uint>();
+                var texes = new List<TPFTexInfo>();
                 foreach (TPFTexInfo tex in LoadedTexes)
                 {
                     // KFreon: Ignore textures with no hash
                     if (tex.Hash == 0)
                         continue;
 
+                    // Heff: ignore duplicates so that texmod's generator doesn't include them several times.
+                    if (hashes.Contains(tex.Hash))
+                        continue;
+
+                    hashes.Add(tex.Hash);
+                    texes.Add(tex);
                     // KFreon: Write hashes to log
                     string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
                     fs.WriteString(hash + "|" + tex.FileName + "\n");
                 }
-                Extractor(extractPath, null, t => t.Hash != 0 && !t.isDef);
+                Extractor(extractPath, null, t => texes.Contains(t));
             }
         }
 
@@ -2300,6 +2421,7 @@ namespace ME3Explorer
             Overall.UpdateText(success ? "Build complete." : "Build failed.");
         }
 
+        // Heff: this is obsolete, the "Load" button can handle .mod as well.
         private void MODtoTPFButton_Click(object sender, EventArgs e)
         {
             string filename = "";
@@ -2350,8 +2472,25 @@ namespace ME3Explorer
             int nummods;
             modmaker.LoadMods(new string[] { filename }, out nummods, true);
             Overall.UpdateText("Formatting/Updating .mods...");
-            modmaker.FormatJobs(true, true);
+            bool conflict;
+            var result = modmaker.FormatJobs(true, true, out conflict);
+            // Heff: prompt user to chose version and re-run with version chosen
+            if (conflict)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    var gameVers = VersionPickDialog.AskForGameVersion(this, message: "Could not detect game version, the files in this .mod were present in more than one game. \n"
+                        + "Please choose the correct version:");
+                    result = modmaker.FormatJobs(true, true, out conflict, gameVers);
+                }));
+            }
 
+            if (result.Count == 0)
+            {
+                Overall.UpdateText("ERROR! See debug output.");
+                OverallProg.ChangeProgressBar(0, 1);
+                return;
+            }
 
             List<TreeTexInfo> TreeTexes = Tree.GetTreeAsList();
             int count = 1;
@@ -2469,22 +2608,22 @@ namespace ME3Explorer
         }
 
 
-        private bool FixMips(TPFTexInfo info, ResILImage img)
+        private bool FixMips(TPFTexInfo info, ResILImageBase img)
         {
             // KFreon: Build or remove mips depending on requirements. Note case where expected == existing not present as that's what MipsCorrect is.
             if (info.ExpectedMips > info.NumMips)
             {
-                if (!img.BuildMipmaps(info.NumMips == 1))
+                if (!img.BuildMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to build mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
-            else
-            {
-                if (!img.RemoveMipmaps(info.NumMips == 1))
+            else if (info.ExpectedMips == 1)  // KFreon: Don't want to remove mips when expected = 11 and num = 13
+            {                                   // Heff: Checking for 1 seems weird to me, does this need to be fixed?
+                if (!img.RemoveMipMaps(info.NumMips == 1))
                 {
-                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName, ResILImage.GetResILError()));
+                    DebugOutput.PrintLn(String.Format("Failed to remove mipmaps for {0}: {1}", info.TexName));
                     return false;
                 }
             }
@@ -2497,52 +2636,213 @@ namespace ME3Explorer
 
         private bool Autofix(params TPFTexInfo[] texes)
         {
+            if (texes.Length == 0)
+            {
+                Overall.UpdateText("All textures are valid, skipping autofix.");
+                OverallProg.ChangeProgressBar(1, 1);
+                return true;
+            }
+
             bool retval = false;
 
             OverallProg.ChangeProgressBar(0, texes.Length);
 
+            var fixedTexes = new Dictionary<uint, TPFTexInfo>();
             foreach (TPFTexInfo tex in texes)
             {
-                Overall.UpdateText("Fixing: " + tex.TexName);
-                DebugOutput.PrintLn("Fixing: " + tex.TexName + Environment.NewLine + "     FORMAT -> Current: " + tex.Format + "  Expected: " + tex.ExpectedFormat + Environment.NewLine + "     MIPS -> Current: " + tex.NumMips + "  Expected: " + tex.ExpectedMips);
-                byte[] arr = tex.Extract(null, true);
+                tex.AutofixSuccess = false;
 
-
-                using (ResILImage img = new ResILImage(arr))
+                // Heff: fix for skipping already fixed values, only skips when autofixing in bulk.
+                if (fixedTexes.ContainsKey(tex.Hash))
                 {
-                    string path = tex.Autofixedpath(TemporaryPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    ResIL.Unmanaged.CompressedDataFormat surface = ParseSurfaceFormat(tex.ExpectedFormat);
-                    bool success = false;
-
-                    FixMips(tex, img);
-
-                    if (surface == ResIL.Unmanaged.CompressedDataFormat.None)
-                        MessageBox.Show("Tell KFreon about this: format = " + tex.ExpectedFormat);
-                    else
-                        success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Dds, path, surface: surface);
-
-                    if (!success)
-                    {
-                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName + ". Reason: " + ResILImage.GetResILError());
-                        tex.AutofixSuccess = false;
-                    }
-
-                    if (!retval && success)
-                        retval = true;
-                    else if (retval && !success)
-                        retval = false;
-
-                    tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
-                    tex.EnumerateDetails();
+                    var dup = fixedTexes[tex.Hash];
+                    tex.NumMips = dup.NumMips;
+                    tex.Format = dup.Format;
+                    tex.FilePath = dup.FilePath;
+                    tex.AutofixSuccess = true;
+                    retval = true;
                 }
 
+                Overall.UpdateText("Fixing: " + tex.TexName);
+                DebugOutput.PrintLn("Fixing: " + tex.TexName + Environment.NewLine + "     FORMAT -> Current: " + tex.Format + "  Expected: " + tex.ExpectedFormat + Environment.NewLine + "     MIPS -> Current: " + tex.NumMips + "  Expected: " + tex.ExpectedMips);
 
+                // Heff: should we check like this for autofixsuccess here before trying to fix? See above "skip"
+                if (!tex.AutofixSuccess)
+                    retval = AutofixInternal(tex);
+
+                if (retval == true && !fixedTexes.ContainsKey(tex.Hash))
+                    fixedTexes.Add(tex.Hash, tex);
+
+
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
                 RedrawTreeView();
             }
             Overall.UpdateText("Autofix complete." + (!retval ? "Some errors occured." : ""));
             OverallProg.ChangeProgressBar(1, 1);
             return retval;
+        }
+
+        private bool AutofixInternal(TPFTexInfo tex)
+        {
+            bool retval = false;
+
+            string path = tex.Autofixedpath(TemporaryPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            CompressedDataFormat surface = ParseSurfaceFormat(tex.ExpectedFormat);
+
+            tex.Extract(Path.GetDirectoryName(path));
+            tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
+
+            // Heff: make sure that nvdxt does the compression from dxt5 to 1, as it looks lousy otherwise.
+            if (tex.Format.ToLower().Contains("dxt5") && (surface == CompressedDataFormat.DXT1A || surface == CompressedDataFormat.DXT1))
+            {
+                string type = surface == CompressedDataFormat.DXT1A ? "dxt1a" : "dxt1c";
+                string toolPath = @".\exec\nvdxt.exe";
+                string args = "-file \"" + Path.Combine(tex.FilePath, tex.FileName) + "\" -output \"" + path + "\" -quality_production -" + type;
+
+                args += " -nomipmap";
+
+                string output = ExecuteExternalTool(toolPath, args);
+
+                if (!output.Contains("Writing"))
+                {
+                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+            }
+
+            if (surface == CompressedDataFormat.ThreeDC || surface == CompressedDataFormat.ATI1N) // nv/dx tools dont handle this
+            {
+                byte[] arr = tex.Extract(null, true);
+                path = Path.ChangeExtension(path, ".dds");
+                tex.FilePath = Path.GetDirectoryName(path);
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
+                using (ResILImageBase img = ResILImageBase.Create(arr))
+                {
+                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Dds, path, surface: surface);
+                    if (!success)
+                    {
+                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
+                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                        tex.AutofixSuccess = false;
+                        return false;
+                    }
+                    retval = true;
+                }
+            }
+            else
+            { // should this also handle DXT2/4 ?
+                string[] sourceFormats = { ".tga", ".bmp", ".pfm", ".jpg", ".hdr", ".dds", ".png" };
+                if (!MoveToTempAndConvert(tex, path, sourceFormats))
+                    return false;
+
+                string targetPath = Path.ChangeExtension(path, ".dds");
+
+                string toolPath = @".\exec\texconv.exe";
+
+                string type = tex.ExpectedFormat;
+                if (type == "ARGB")
+                    type = "A8R8G8B8";
+
+                string args = " -ft DDS -f " + type;
+                int newMips = TPFTexInfo.CalculateMipCount(tex.Width, tex.Height);
+                if (newMips < tex.ExpectedMips)
+                    newMips = tex.ExpectedMips;
+
+                if (tex.ExpectedMips != 1)
+                    args += " -m " + newMips + " -mf D3DX_FILTER_BOX";
+                else
+                    args += " -m 1"; // Heff: seems like this is detected as 0 mips, fix.
+                args += " -o \"" + Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath)) + "\"";
+                args += " \"" + Path.Combine(tex.FilePath, tex.FileName) + "\"";
+
+                string output = ExecuteExternalTool(toolPath, args);
+
+                if (!output.Contains("writing"))
+                {
+                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+
+                if (path != targetPath)
+                    File.Delete(path); //Delete the temporary file if it had a different extension
+
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
+                retval = true;
+            }
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return false;
+            tex.EnumerateDetails();
+
+            // Heff: if fix was successfull, but the number of mips are still wrong,
+            // force it and let texplorer skip the lowest resolutions
+            if (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height))
+                tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
+
+            return retval;
+        }
+
+        private string ExecuteExternalTool(string filepath, string arguments)
+        {
+            Process proc = new Process();
+
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.FileName = filepath;
+            proc.StartInfo.Arguments = arguments;
+            proc.Start();
+
+            string cmdoutput = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return cmdoutput;
+        }
+
+        private bool MoveToTempAndConvert(TPFTexInfo tex, string path, string[] sourceFormats)
+        {
+            if (!sourceFormats.Any(f => tex.FileName.EndsWith(f)))
+            {
+                //Heff: If the source format is some type that's not supported by the nvidia dds tool, try to convert via ResIL:
+                byte[] arr = tex.Extract(null, true);
+                path = Path.ChangeExtension(path, ".tga");
+                tex.FilePath = Path.GetDirectoryName(path);
+                tex.FileName = Path.ChangeExtension(tex.FileName, ".tga");
+                using (ResILImageBase img = ResILImageBase.Create(arr))
+                {
+                    // Heff: Convert all formats to TGA for smallest possible quality loss:
+                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Tga, path, MipsMode: ResILImageBase.MipMapMode.RemoveAllButOne);
+                    if (!success)
+                    {
+                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
+                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                        tex.AutofixSuccess = false;
+                        return false;
+                    }
+                }
+            }
+            /*else
+            {
+                try
+                {
+                    // Heff: can we always assume that overwriting is okay? Or will we have problems with files of the same name?
+                    File.Copy(tex.FilePath + "\\" + tex.FileName, path, true);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Could not copy temporary file to: " + path + " | Make sure that you have sufficient hard drive space and that ME3Explorer is run as admin. ("
+                        + e.Message + ")");
+                    DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
+                    tex.AutofixSuccess = false;
+                    return false;
+                }
+            }*/
+            return true;
         }
 
         private void AutofixInstallButton_Click(object sender, EventArgs e)
@@ -2577,7 +2877,7 @@ namespace ME3Explorer
                 tex.FileName = Path.GetFileName(replacingPath);
                 tex.FilePath = Path.GetDirectoryName(replacingPath);
                 DebugOutput.PrintLn("Getting new details...");
-                tex.Thumbnail = new KFreonLib.Helpers.LiquidEngine.MemoryTributary();
+                tex.Thumbnail = new MemoryTributary();
                 tex.EnumerateDetails();
 
                 /*try
@@ -3070,6 +3370,13 @@ namespace ME3Explorer
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
             backbone.AddToBackBone((t) => Autofix(tex));
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            cts.Cancel();
+            OverallProgressBar.Value = 0;
+            OverallStatusLabel.Text = "Cancelled.";
         }
     }
 }
