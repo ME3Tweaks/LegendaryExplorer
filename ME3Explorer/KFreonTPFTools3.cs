@@ -1985,6 +1985,7 @@ namespace ME3Explorer
 
             // KFreon: Install textures
             Texplorer2 texplorer = new Texplorer2(true, WhichGame);
+            var numInstalled = 0;
             foreach (TPFTexInfo tex in validtexes)
             {
                 // Heff: Cancellation check
@@ -2021,7 +2022,8 @@ namespace ME3Explorer
                     OverallProg.IncrementBar();
                 }));
 
-                texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true));
+                if (texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true)))
+                    numInstalled++;
 
                 // KFreon: Add modified DLC to list
                 if (WhichGame == 3)
@@ -2039,23 +2041,35 @@ namespace ME3Explorer
             if (cts.IsCancellationRequested)
                 return false;
 
-            // KFreon: Update TOC's
-            this.Invoke(new Action(() =>
+            if (numInstalled > 0)
             {
-                OverallProgressBar.Value = OverallProgressBar.Maximum - 1;
-                OverallStatusLabel.Text = "Checking TOC.bin...";
-            }));
-            DebugOutput.PrintLn("Updating Basegame...");
-            Texplorer2.UpdateTOCs(pathBIOGame, WhichGame, DLCPath, modifiedDLC);
+                // KFreon: Update TOC's
+                this.Invoke(new Action(() =>
+                {
+                    OverallProgressBar.Value = OverallProgressBar.Maximum - 1;
+                    OverallStatusLabel.Text = "Checking TOC.bin...";
+                }));
+                DebugOutput.PrintLn("Updating Basegame...");
+                Texplorer2.UpdateTOCs(pathBIOGame, WhichGame, DLCPath, modifiedDLC);
 
-            // Heff: Cancellation check
-            if (cts.IsCancellationRequested)
-                return false;
-            this.Invoke(new Action(() =>
+                // Heff: Cancellation check
+                if (cts.IsCancellationRequested)
+                    return false;
+                this.Invoke(new Action(() =>
+                {
+                    OverallStatusLabel.Text = "Installed " + numInstalled + "/" + textures.Count + " mods.";
+                    OverallProgressBar.Value = OverallProgressBar.Maximum;
+                }));
+            }
+            else
             {
-                OverallStatusLabel.Text = "All mods installed!";
-                OverallProgressBar.Value = OverallProgressBar.Maximum;
-            }));
+                DebugOutput.PrintLn("All mods were skipped.");
+                this.Invoke(new Action(() =>
+                {
+                    OverallStatusLabel.Text = "No mods installed!";
+                    OverallProgressBar.Value = OverallProgressBar.Maximum;
+                }));
+            }
 
             return true;
         }

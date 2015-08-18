@@ -1225,8 +1225,13 @@ namespace ME3Explorer
                 sw.WriteLine(line);
         }
 
-        public void InstallTexture(string texname, List<string> pccs, List<int> IDs, byte[] imgdata)
+        public bool InstallTexture(string texname, List<string> pccs, List<int> IDs, byte[] imgdata)
         {
+            if (pccs.Count == 0)
+            {
+                DebugOutput.PrintLn("No PCC's found for " + texname + ", skipping.");
+                return false;
+            }
             string fulpath = pccs[0];
             //string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
             // Heff: Again, is the removal of the last dir for ME1 intended, and if so for what purpose?
@@ -1237,7 +1242,7 @@ namespace ME3Explorer
 
             // KFreon: Skip files that don't exist
             if (!File.Exists(fulpath))
-                return;
+                return false;
 
             PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
 
@@ -1263,7 +1268,7 @@ namespace ME3Explorer
             catch
             {
                 Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
-                return;
+                return false;
             }
 
 
@@ -1326,7 +1331,7 @@ namespace ME3Explorer
                         if (e.Message.Contains("Format"))
                         {
                             MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
-                            return;
+                            return false;
                         }
                     }
                 }
@@ -1376,6 +1381,7 @@ namespace ME3Explorer
             Console.WriteLine(ts.Duration().ToString());
             GC.Collect();
             DebugOutput.Print("All PCC updates finished. ");
+            return true;
         }
 
         public static void UpdateTOCs(string pathBIOGame, int WhichGame, string DLCPath, List<string> modifiedDLC = null)
