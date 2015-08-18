@@ -2782,6 +2782,7 @@ namespace ME3Explorer
 
             // Heff: if fix was successfull, but the number of mips are still wrong,
             // force it and let texplorer skip the lowest resolutions
+            // Heff: this should no longer happen, but keeping this as it might help in some real odd case.
             if (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height))
                 tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
 

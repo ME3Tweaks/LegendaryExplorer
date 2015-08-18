@@ -375,8 +375,8 @@ namespace KFreonLib.Textures
         {
             get
             {
-                bool standard = (ExpectedMips > 1 && NumMips > 1 && NumMips >= ExpectedMips) || (ExpectedMips <= 1 && NumMips <= 1);
-                bool calc = ExpectedMips > 1 && NumMips < CalculateMipCount(this.Width, this.Height);
+                bool standard = (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool calc = ExpectedMips > 1 && NumMips < (CalculateMipCount(this.Width, this.Height) - 3); // Heff: only check down to 4x4 / 4x8
                 return standard && !calc;
             }
         }
