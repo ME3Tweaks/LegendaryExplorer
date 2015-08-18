@@ -1108,6 +1108,33 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\shader.fx" />
+    <None Include="Icons\asset_explorer_64x64.png" />
+    <None Include="Icons\audio_extract_64x64.png" />
+    <None Include="Icons\autotoc_64x64.png" />
+    <None Include="Icons\backup_64x64.png" />
+    <None Include="Icons\batch_rename_64x64.png" />
+    <None Include="Icons\BIK_movie_64x64.png" />
+    <None Include="Icons\DDSConverter_64x64.png" />
+    <None Include="Icons\lang_select_64x64.png" />
+    <None Include="Icons\me1exp_64x64.png" />
+    <None Include="Icons\me1exp_icon.png" />
+    <None Include="Icons\me2exp_64x64.png" />
+    <None Include="Icons\me2exp_icon.png" />
+    <None Include="Icons\me3exp_64x64.png" />
+    <None Include="Icons\me3exp_favicon.png" />
+    <None Include="Icons\me3exp_newbanner.png" />
+    <None Include="Icons\me3exp_smallbanner_v1.png" />
+    <None Include="Icons\me3exp_smallbanner_v2.png" />
+    <None Include="Icons\modmaker_64x64.png" />
+    <None Include="Icons\plot_DB_64x64.png" />
+    <None Include="Icons\SFARTOC_64x64.png" />
+    <None Include="Icons\texplorer_64x64.png" />
+    <None Include="Icons\texturetool_64x64.png" />
+    <None Include="Icons\TOCbinUpdater_64x64.png" />
+    <None Include="Icons\TPFTools_64x64.png" />
+    <None Include="Icons\udk_explorer_64x64.png" />
+    <None Include="Icons\version_checker_64x64.png" />
+    <None Include="Icons\versioncheck.png" />
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

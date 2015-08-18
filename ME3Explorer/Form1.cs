@@ -57,27 +57,25 @@ namespace ME3Explorer
 
         private void languageSelectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Language_Selector());
+            var ls = new Language_Selector();
+            OpenMaximized(ls);
+            taskbar.AddTool(ls, Properties.Resources.lang_select_64x64);
         }
 
         private void aFCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AFCExtract af = new AFCExtract();
             lang.SetLang(af);
-            af.MdiParent = this;
-            af.WindowState = FormWindowState.Maximized;
-            af.Show();
-            taskbar.AddTool(af, imageList1.Images[10]);
+            OpenMaximized(af);
+            taskbar.AddTool(af, Properties.Resources.audio_extract_64x64);
         }
 
         private void moviestfcBikToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BIKExtract bik = new BIKExtract();
             lang.SetLang(bik);
-            bik.MdiParent = this;
-            bik.WindowState = FormWindowState.Maximized;
-            bik.Show();
-            taskbar.AddTool(bik, imageList1.Images[14]);
+            OpenMaximized(bik);
+            taskbar.AddTool(bik, Properties.Resources.BIK_movie_64x64);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -225,17 +223,16 @@ namespace ME3Explorer
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AssetExplorer ass = new AssetExplorer();
-            ass.MdiParent = this;
-            ass.Show(); //:D
-            ass.WindowState = FormWindowState.Maximized;
+            OpenMaximized(ass);
             ass.LoadMe();
-            taskbar.AddTool(ass, imageList1.Images[11]); //Add Tool ass. Ehh....
+            taskbar.AddTool(ass, Properties.Resources.asset_explorer_64x64); //Add Tool ass. Ehh....
         }
 
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ModMaker modmaker = new ModMaker();
-            modmaker.Show();
+            OpenMaximized(modmaker);
+            taskbar.AddTool(modmaker, Properties.Resources.modmaker_64x64);
         }
 
         private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -295,7 +292,9 @@ namespace ME3Explorer
 
         private void tOCbinUpdaterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new TOCUpdater.TOCUpdater());
+            var form = new TOCUpdater.TOCUpdater();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.TOCbinUpdater_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -415,7 +414,9 @@ namespace ME3Explorer
 
         private void plotVarDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new PlotVarDB.PlotVarDB());
+            var form = new PlotVarDB.PlotVarDB();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.plot_DB_64x64);
         }
 
         private void threadOptionsMenu_Click(object sender, EventArgs e)
@@ -464,15 +465,16 @@ namespace ME3Explorer
 
         private void batchrenamerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new batchrenamer.BatchRenamer());
+            var form = new batchrenamer.BatchRenamer();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.batch_rename_64x64);
         }
 
-        private void OpenMaximized(Form f, int ImageIndex = 19)
+        private void OpenMaximized(Form f)
         {
             f.MdiParent = this;
             f.Show();
             f.WindowState = FormWindowState.Maximized;
-            taskbar.AddTool(f, imageList1.Images[ImageIndex]);
         }
 
         private void meshplorer2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -547,7 +549,9 @@ namespace ME3Explorer
 
         private void dLCTOCbinUpdaterToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DLCTOCbinUpdater.DLCTOCbinUpdater());
+            var form = new DLCTOCbinUpdater.DLCTOCbinUpdater();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.SFARTOC_64x64);
         }
 
         private void tOCbinEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -585,7 +589,9 @@ namespace ME3Explorer
 
         private void autoTOCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new AutoTOC.AutoTOC());
+            var form = new AutoTOC.AutoTOC();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.autotoc_64x64);
         }
 
 		private void KFreonTPFToolsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -651,6 +657,8 @@ namespace ME3Explorer
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
+            OpenMaximized(texplorer);
+            taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64);
             texplorer.Show();
         }
 
@@ -663,6 +671,8 @@ namespace ME3Explorer
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
+            OpenMaximized(tpftools);
+            taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64);
             tpftools.Show();
         }
 
