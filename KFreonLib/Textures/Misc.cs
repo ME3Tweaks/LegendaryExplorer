@@ -122,8 +122,19 @@ namespace KFreonLib.Textures
 
                 if (tmpTex.Format == "None")
                 {
-                    if (((ResILImage)img).MemoryFormat == ResIL.Unmanaged.DataFormat.RGBA)
+                    var preview = new DDSPreview(imgData);
+                    if (preview.FormatString == "A8R8G8B8")
                         tmpTex.Format = "ARGB";
+                    else if (preview.FormatString == "R8G8B8")
+                        tmpTex.Format = "RGB";
+                    else if (preview.FormatString == "A8B8G8R8")
+                        tmpTex.Format = "ABGR";
+                    else if (preview.FormatString == "B8G8R8")
+                        tmpTex.Format = "BGR";
+
+                    // Heff: unreliable, seems to always be ARGB.
+                    //if (((ResILImage)img).MemoryFormat == ResIL.Unmanaged.DataFormat.RGBA)
+                        //tmpTex.Format = "ARGB";
                 }
 
                 
