@@ -1135,6 +1135,7 @@
     <None Include="Icons\udk_explorer_64x64.png" />
     <None Include="Icons\version_checker_64x64.png" />
     <None Include="Icons\versioncheck.png" />
+    <None Include="Icons\placeholder_64x64.png" />
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

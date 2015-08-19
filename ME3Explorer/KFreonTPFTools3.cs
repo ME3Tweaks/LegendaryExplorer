@@ -2022,8 +2022,15 @@ namespace ME3Explorer
                     OverallProg.IncrementBar();
                 }));
 
-                if (texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true)))
-                    numInstalled++;
+                try
+                {
+                    if (texplorer.InstallTexture(tex.TexName, tex.Files, tex.ExpIDs, tex.Extract(null, true)))
+                        numInstalled++;
+                } catch (Exception e)
+                {
+                    DebugOutput.PrintLn("Unknown error with mod:  " + tex.TexName + ", skipping.");
+                    continue;
+                }
 
                 // KFreon: Add modified DLC to list
                 if (WhichGame == 3)

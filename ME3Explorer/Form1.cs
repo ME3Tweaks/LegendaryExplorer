@@ -13,6 +13,7 @@ using KFreonLib.Scripting;
 using KFreonLib.Debugging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Interop;
 
 namespace ME3Explorer
 {
@@ -266,7 +267,11 @@ namespace ME3Explorer
             if (result == DialogResult.Yes)
                 System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/additional-tools-t1524.html");
             else
-                OpenMaximized(new Coalesced_Editor.CoalEditor());
+            {
+                var coalesced = new Coalesced_Editor.CoalEditor();
+                OpenMaximized(coalesced);
+                taskbar.AddTool(coalesced, Properties.Resources.coaledit1);
+            }
         }
 
         private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -315,7 +320,9 @@ namespace ME3Explorer
 
         private void soundplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Soundplorer());
+            var tool = new Soundplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -327,6 +334,9 @@ namespace ME3Explorer
         {
             UDKExplorer.UDKExplorer ex = new UDKExplorer.UDKExplorer();
             ex.Show();
+            //var tool = ex;
+            //OpenMaximized(tool);
+            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void mE2ExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -370,7 +380,9 @@ namespace ME3Explorer
         {
             LevelExplorer.ME3LevelExplorer l = new LevelExplorer.ME3LevelExplorer();
             l.Show();
-
+            //var tool = l;
+            //OpenMaximized(tool);
+            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void propertyManagerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -385,17 +397,23 @@ namespace ME3Explorer
 
         private void propertyDumperToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Property_Dumper.PropDumper());
+            var tool = new Property_Dumper.PropDumper();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void propertyDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Propertydb.PropertyDB());
+            var tool = new Propertydb.PropertyDB();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void scriptDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new ScriptDB.ScriptDB());
+            var tool = new ScriptDB.ScriptDB();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void textureToolToolStripMenuItem_Click(object sender, EventArgs e)
@@ -405,7 +423,9 @@ namespace ME3Explorer
 
         private void animationExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new AnimationExplorer.AnimationExplorer());
+            var tool = new AnimationExplorer.AnimationExplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLLInjectorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -456,12 +476,16 @@ namespace ME3Explorer
 
         private void uDKConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new UDKConverter.UDKConverter());
+            var tool = new UDKConverter.UDKConverter();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void uECodeEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new UECodeEditor.UECodeEditor());
+            var tool = new UECodeEditor.UECodeEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void batchrenamerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -480,72 +504,100 @@ namespace ME3Explorer
 
         private void meshplorer2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Meshplorer2.Meshplorer2());
+            var tool = new Meshplorer2.Meshplorer2();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void meshplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Meshplorer.Meshplorer());
+            var tool = new Meshplorer.Meshplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Material_Viewer.MaterialViewer()); 
+            var tool = new Material_Viewer.MaterialViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new PSAViewer());
+            var tool = new PSAViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSKViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new PSKViewer.PSKViewer());
+            var tool = new PSKViewer.PSKViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void codexEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Codex_Editor.CodexEditor());
+            var tool = new Codex_Editor.CodexEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void questMapEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new QuestMapEditor.QMapEditor());
+            var tool = new QuestMapEditor.QMapEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void classViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new ClassViewer.ClassViewer());
+            var tool = new ClassViewer.ClassViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void gUIDEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new GUIDCacheEditor.GUIDCacheEditor());
+            var tool = new GUIDCacheEditor.GUIDCacheEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLCEditor2ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DLCEditor2.DLCEditor2());
+            var tool = new DLCEditor2.DLCEditor2();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pAREditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new PAREditor.PAREditor());
+            var tool = new PAREditor.PAREditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dialogEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DialogEditor.DialogEditor());
+            var tool = new DialogEditor.DialogEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void faceFXAnimSetEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new FaceFXAnimSetEditor.FaceFXAnimSetEditor());
+            var tool = new FaceFXAnimSetEditor.FaceFXAnimSetEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void wwiseBankViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new WwiseBankViewer.WwiseViewer());
+            var tool = new WwiseBankViewer.WwiseViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLCTOCbinUpdaterToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -567,19 +619,29 @@ namespace ME3Explorer
 
         private void TOCbinAKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new TOCEditorAK.TOCEditorAK());
+            var tool = new TOCEditorAK.TOCEditorAK();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void subtitleScannerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new SubtitleScanner.SubtitleScanner());
+            var tool = new SubtitleScanner.SubtitleScanner();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             foreach (taskbar.task_list l in taskbar.tools)
             {
-                if (l.tool.IsDisposed)
+                if (l.tool != null && l.tool.IsDisposed)
+                {
+                    taskbar.strip.Items.Remove(l.icon);
+                    taskbar.tools.Remove(l);
+                    break;
+                }
+                else if (l.wpfWindow != null && System.Windows.PresentationSource.FromVisual(l.wpfWindow) == null)
                 {
                     taskbar.strip.Items.Remove(l.icon);
                     taskbar.tools.Remove(l);
@@ -679,7 +741,9 @@ namespace ME3Explorer
 
         private void cameraToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new CameraTool.CamTool());
+            var cam = new CameraTool.CamTool();
+            OpenMaximized(cam);
+            taskbar.AddTool(cam, Properties.Resources.placeholder_64x64);
         }
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -717,13 +781,16 @@ namespace ME3Explorer
 
         private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            MainWindow mw = new MainWindow();
-            mw.Show();
+            var tool = new MainWindow();
+            tool.Show();
+            taskbar.AddTool(null, Properties.Resources.placeholder_64x64, true, tool);
         }
 
         private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new InterpEditor.InterpEditor());
+            var tool = new InterpEditor.InterpEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void massEffect3ToolStripMenuItem_Click(object sender, EventArgs e)

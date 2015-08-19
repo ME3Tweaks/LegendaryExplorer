@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows;
 
 namespace ME3Explorer
 {
@@ -20,6 +22,7 @@ namespace ME3Explorer
             public int ID;
             public bool poppedOut;
             public TaskbarToolButton button;
+            public Window wpfWindow;
         }
         public static ToolStrip strip;
         public static Image symbol;
@@ -46,23 +49,32 @@ namespace ME3Explorer
         //call this in Form1 if you wish for your tool to appear in taskbar: taskbar.AddTool(Form X, imageList1.Images[Y]);
         //X is the form you're currently calling, example "px" for property manager
         //Y is the image to use for taskbar icon. 
-        public static void AddTool(Form original, Image symbol, bool startPoppedOut = false)
+        public static void AddTool(Form original, Image symbol, bool startPoppedOut = false, Window wpfWindow = null)
         {
-
+            
             //creating the button
             TaskbarToolButton tool_button = new TaskbarToolButton();
-            tool_button.Text = original.Text;
             tool_button.Image = symbol;
             tool_button.Tag = id_counter.ToString();
             tool_button.Click += new EventHandler(tipek_onclick); //I can haz event handler? No? ORLY?!
-            tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("Undock tool"), new MenuItem("Dock tool") });
-            tool_button.ContextMenu.MenuItems[0].Click += UndockTool;
-            tool_button.ContextMenu.MenuItems[1].Click += UndockTool;
-            tool_button.ContextMenu.MenuItems[1].Enabled = startPoppedOut;
-            tool_button.ContextMenu.MenuItems[0].Enabled = !startPoppedOut;
+            if (wpfWindow != null)
+            {
+                tool_button.Text = wpfWindow.Title;
+                tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("This tool cannot be docked.") });
+                tool_button.ContextMenu.MenuItems[0].Enabled = false;
+            }
+            else
+            {
+                tool_button.Text = original.Text;
+                tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("Undock tool"), new MenuItem("Dock tool") });
+                tool_button.ContextMenu.MenuItems[0].Click += HandleDockEvent;
+                tool_button.ContextMenu.MenuItems[1].Click += HandleDockEvent;
+                tool_button.ContextMenu.MenuItems[1].Enabled = startPoppedOut;
+                tool_button.ContextMenu.MenuItems[0].Enabled = !startPoppedOut;
+            }
             tool_button.ContextMenu.Tag = tool_button.Tag;
 
-            strip.ImageScalingSize = new Size(64, 64);
+            strip.ImageScalingSize = new System.Drawing.Size(64, 64);
             //adding to toolstrip
             strip.Items.Add(tool_button);
             //creating new structure entry
@@ -72,6 +84,7 @@ namespace ME3Explorer
             add.ID = id_counter;
             add.poppedOut = startPoppedOut;
             add.button = tool_button;
+            add.wpfWindow = wpfWindow;
             tools.Add(add);
             //counter, you be here here.
             id_counter++;
@@ -80,12 +93,27 @@ namespace ME3Explorer
         public static void RemoveTool(object sender)
         {
             Form origin = sender as Form; //see which form called the removal
-            for (int i = 0; i < tools.Count(); i++)
-            {                                       //search through structure list, see if we can find a match
-                if (tools[i].tool == origin)
-                {                                   //if match to origin form found, remove the icon from the toolbar associated with it
-                    strip.Items.Remove(tools[i].icon);
-                    tools.RemoveAt(i);
+            if (origin != null)
+            {
+                for (int i = 0; i < tools.Count(); i++)
+                {                                       //search through structure list, see if we can find a match
+                    if (tools[i].tool == origin)
+                    {                                   //if match to origin form found, remove the icon from the toolbar associated with it
+                        strip.Items.Remove(tools[i].icon);
+                        tools.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                var wpf = sender as Window;
+                for (int i = 0; i < tools.Count(); i++)
+                {                                       
+                    if (tools[i].wpfWindow == wpf)
+                    {                                   
+                        strip.Items.Remove(tools[i].icon);
+                        tools.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -98,12 +126,15 @@ namespace ME3Explorer
             {
                 if (tools[i].ID == tagID)
                 {
-                    tools[i].tool.BringToFront();
+                    if (tools[i].wpfWindow != null)
+                        tools[i].wpfWindow.Focus();
+                    else
+                        tools[i].tool.BringToFront();
                 }
             }
         }
 
-        public static void UndockTool(object sender, EventArgs e)
+        public static void HandleDockEvent(object sender, EventArgs e)
         {
             // Heff: Un-dock tool if deemed needed.
             var origin = (sender as MenuItem).Parent;

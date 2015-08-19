@@ -756,6 +756,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap placeholder_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("placeholder_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap plot_DB_64x64 {
             get {
                 object obj = ResourceManager.GetObject("plot_DB_64x64", resourceCulture);
