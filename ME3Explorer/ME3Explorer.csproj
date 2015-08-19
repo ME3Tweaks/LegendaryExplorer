@@ -55,7 +55,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon_cidatel.ico</ApplicationIcon>
+    <ApplicationIcon>me3exp.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -1253,6 +1253,7 @@
     <None Include="Icons\texplorer.ico" />
     <Content Include="icon_cidatel.ico" />
     <None Include="Resources\Image1.bmp" />
+    <Content Include="me3exp.ico" />
     <Content Include="PiccoloX\PiccoloX.csproj" />
     <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
     <Content Include="Piccolo\Piccolo.csproj" />
