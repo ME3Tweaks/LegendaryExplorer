@@ -231,8 +231,9 @@ namespace ME3Explorer
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ModMaker modmaker = new ModMaker();
-            OpenMaximized(modmaker);
-            taskbar.AddTool(modmaker, Properties.Resources.modmaker_64x64);
+            //OpenMaximized(modmaker);
+            modmaker.Show();
+            taskbar.AddTool(modmaker, Properties.Resources.modmaker_64x64, true);
         }
 
         private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -657,8 +658,9 @@ namespace ME3Explorer
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
-            OpenMaximized(texplorer);
-            taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64);
+            //OpenMaximized(texplorer);
+            texplorer.Show();
+            taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64, true);
         }
 
         private void modMakerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -670,8 +672,9 @@ namespace ME3Explorer
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
-            OpenMaximized(tpftools);
-            taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64);
+            //OpenMaximized(tpftools);
+            tpftools.Show();
+            taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64, true);
         }
 
         private void cameraToolToolStripMenuItem_Click(object sender, EventArgs e)

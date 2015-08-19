@@ -46,19 +46,20 @@ namespace ME3Explorer
         //call this in Form1 if you wish for your tool to appear in taskbar: taskbar.AddTool(Form X, imageList1.Images[Y]);
         //X is the form you're currently calling, example "px" for property manager
         //Y is the image to use for taskbar icon. 
-        public static void AddTool(Form original, Image symbol)
+        public static void AddTool(Form original, Image symbol, bool startPoppedOut = false)
         {
 
             //creating the button
             TaskbarToolButton tool_button = new TaskbarToolButton();
             tool_button.Text = original.Text;
             tool_button.Image = symbol;
-            tool_button.Tag = tools.Count().ToString();
+            tool_button.Tag = id_counter.ToString();
             tool_button.Click += new EventHandler(tipek_onclick); //I can haz event handler? No? ORLY?!
             tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("Undock tool"), new MenuItem("Dock tool") });
             tool_button.ContextMenu.MenuItems[0].Click += UndockTool;
             tool_button.ContextMenu.MenuItems[1].Click += UndockTool;
-            tool_button.ContextMenu.MenuItems[1].Enabled = false;
+            tool_button.ContextMenu.MenuItems[1].Enabled = startPoppedOut;
+            tool_button.ContextMenu.MenuItems[0].Enabled = !startPoppedOut;
             tool_button.ContextMenu.Tag = tool_button.Tag;
 
             strip.ImageScalingSize = new Size(64, 64);
@@ -69,7 +70,7 @@ namespace ME3Explorer
             add.icon = tool_button;
             add.tool = original;
             add.ID = id_counter;
-            add.poppedOut = false;
+            add.poppedOut = startPoppedOut;
             add.button = tool_button;
             tools.Add(add);
             //counter, you be here here.
@@ -117,6 +118,10 @@ namespace ME3Explorer
                     {
                         taskEntry.tool.Hide();
                         taskEntry.tool.MdiParent = (Form)strip.TopLevelControl;
+                        if (taskEntry.tool.MainMenuStrip != null)
+                        {
+                            taskEntry.tool.MainMenuStrip.Hide();
+                        }
                         taskEntry.tool.Show();
                         taskEntry.tool.BringToFront();
                         taskEntry.tool.WindowState = FormWindowState.Maximized;
@@ -128,6 +133,12 @@ namespace ME3Explorer
                     {
                         taskEntry.tool.Hide();
                         taskEntry.tool.MdiParent = null;
+                        if (taskEntry.tool.MainMenuStrip != null)
+                        {
+                            taskEntry.tool.MainMenuStrip.Dock = DockStyle.Top;
+                            taskEntry.tool.Controls.Add(taskEntry.tool.MainMenuStrip);
+                            taskEntry.tool.MainMenuStrip.Show();
+                        }
                         taskEntry.tool.Show();
                         taskEntry.tool.BringToFront();
                         taskEntry.tool.WindowState = FormWindowState.Normal;
