@@ -24,7 +24,8 @@ namespace KFreonLib.GUI
         Dictionary<string, bool> StateEffectModifiers = new Dictionary<string, bool>();
         Dictionary<string, object> Doers = new Dictionary<string, object>();
         Dictionary<string, bool> TypeOfChange = new Dictionary<string, bool>();
-        static readonly object locker = new object();
+        // Heff: Is there a point to this being static?
+        readonly object locker = new object();
         //List<bool> StateChangeTimings = new List<bool>();
 
         public Gooey(Control baseControl)

@@ -58,6 +58,7 @@
             this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.upscaleToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeTopImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +68,6 @@
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.removeTopImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.status.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -354,7 +354,7 @@
             this.easyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addBiggestImageToolStripMenuItem});
             this.easyToolStripMenuItem.Name = "easyToolStripMenuItem";
-            this.easyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.easyToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.easyToolStripMenuItem.Text = "Easy";
             // 
             // addBiggestImageToolStripMenuItem
@@ -371,7 +371,7 @@
             this.upscaleToolStripMenuItem1,
             this.removeTopImageToolStripMenuItem});
             this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.advancedToolStripMenuItem.Text = "Advanced";
             // 
             // replaceToolStripMenuItem1
@@ -388,24 +388,31 @@
             this.upscaleToolStripMenuItem1.Text = "Upscale";
             this.upscaleToolStripMenuItem1.Click += new System.EventHandler(this.upscaleToolStripMenuItem_Click);
             // 
+            // removeTopImageToolStripMenuItem
+            // 
+            this.removeTopImageToolStripMenuItem.Name = "removeTopImageToolStripMenuItem";
+            this.removeTopImageToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.removeTopImageToolStripMenuItem.Text = "Remove Top Image";
+            this.removeTopImageToolStripMenuItem.Click += new System.EventHandler(this.removeTopImageToolStripMenuItem_Click);
+            // 
             // extractToolStripMenuItem
             // 
             this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
-            this.extractToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.extractToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.extractToolStripMenuItem.Text = "Extract";
             this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
             // 
             // previewToolStripMenuItem
             // 
             this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
-            this.previewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.previewToolStripMenuItem.Text = "Preview";
             this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
             // 
             // makeModToolStripMenuItem
             // 
             this.makeModToolStripMenuItem.Name = "makeModToolStripMenuItem";
-            this.makeModToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.makeModToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.makeModToolStripMenuItem.Text = "Make Mod";
             this.makeModToolStripMenuItem.Click += new System.EventHandler(this.makeModToolStripMenuItem_Click);
             // 
@@ -447,13 +454,6 @@
             this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
-            // 
-            // removeTopImageToolStripMenuItem
-            // 
-            this.removeTopImageToolStripMenuItem.Name = "removeTopImageToolStripMenuItem";
-            this.removeTopImageToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.removeTopImageToolStripMenuItem.Text = "Remove Top Image";
-            this.removeTopImageToolStripMenuItem.Click += new System.EventHandler(this.removeTopImageToolStripMenuItem_Click);
             // 
             // AssetExplorer
             // 

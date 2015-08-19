@@ -13,6 +13,7 @@ using KFreonLib.Scripting;
 using KFreonLib.Debugging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Interop;
 
 namespace ME3Explorer
 {
@@ -57,27 +58,25 @@ namespace ME3Explorer
 
         private void languageSelectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Language_Selector());
+            var ls = new Language_Selector();
+            OpenMaximized(ls);
+            taskbar.AddTool(ls, Properties.Resources.lang_select_64x64);
         }
 
         private void aFCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AFCExtract af = new AFCExtract();
             lang.SetLang(af);
-            af.MdiParent = this;
-            af.WindowState = FormWindowState.Maximized;
-            af.Show();
-            taskbar.AddTool(af, imageList1.Images[10]);
+            OpenMaximized(af);
+            taskbar.AddTool(af, Properties.Resources.audio_extract_64x64);
         }
 
         private void moviestfcBikToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BIKExtract bik = new BIKExtract();
             lang.SetLang(bik);
-            bik.MdiParent = this;
-            bik.WindowState = FormWindowState.Maximized;
-            bik.Show();
-            taskbar.AddTool(bik, imageList1.Images[14]);
+            OpenMaximized(bik);
+            taskbar.AddTool(bik, Properties.Resources.BIK_movie_64x64);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -169,6 +168,10 @@ namespace ME3Explorer
 
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
                 ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME2InstallDir))
+                ME2Directory.GamePath(Properties.Settings.Default.ME2InstallDir);
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
+                ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -220,18 +223,19 @@ namespace ME3Explorer
 
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Asset Explorer should be used as a basic file exploration tool, ONLY. \nIts editing features are deprecated and should not be used. \nThey'll be removed in a future update.");
             AssetExplorer ass = new AssetExplorer();
-            ass.MdiParent = this;
-            ass.Show(); //:D
-            ass.WindowState = FormWindowState.Maximized;
+            OpenMaximized(ass);
             ass.LoadMe();
-            taskbar.AddTool(ass, imageList1.Images[11]); //Add Tool ass. Ehh....
+            taskbar.AddTool(ass, Properties.Resources.asset_explorer_64x64); //Add Tool ass. Ehh....
         }
 
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ModMaker modmaker = new ModMaker();
+            //OpenMaximized(modmaker);
             modmaker.Show();
+            taskbar.AddTool(modmaker, Properties.Resources.modmaker_64x64, true);
         }
 
         private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -264,7 +268,11 @@ namespace ME3Explorer
             if (result == DialogResult.Yes)
                 System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/additional-tools-t1524.html");
             else
-                OpenMaximized(new Coalesced_Editor.CoalEditor());
+            {
+                var coalesced = new Coalesced_Editor.CoalEditor();
+                OpenMaximized(coalesced);
+                taskbar.AddTool(coalesced, Properties.Resources.coaledit1);
+            }
         }
 
         private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -291,7 +299,9 @@ namespace ME3Explorer
 
         private void tOCbinUpdaterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new TOCUpdater.TOCUpdater());
+            var form = new TOCUpdater.TOCUpdater();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.TOCbinUpdater_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -311,7 +321,9 @@ namespace ME3Explorer
 
         private void soundplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Soundplorer());
+            var tool = new Soundplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -323,6 +335,9 @@ namespace ME3Explorer
         {
             UDKExplorer.UDKExplorer ex = new UDKExplorer.UDKExplorer();
             ex.Show();
+            //var tool = ex;
+            //OpenMaximized(tool);
+            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void mE2ExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -366,7 +381,9 @@ namespace ME3Explorer
         {
             LevelExplorer.ME3LevelExplorer l = new LevelExplorer.ME3LevelExplorer();
             l.Show();
-
+            //var tool = l;
+            //OpenMaximized(tool);
+            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void propertyManagerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -381,17 +398,23 @@ namespace ME3Explorer
 
         private void propertyDumperToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Property_Dumper.PropDumper());
+            var tool = new Property_Dumper.PropDumper();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void propertyDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Propertydb.PropertyDB());
+            var tool = new Propertydb.PropertyDB();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void scriptDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new ScriptDB.ScriptDB());
+            var tool = new ScriptDB.ScriptDB();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void textureToolToolStripMenuItem_Click(object sender, EventArgs e)
@@ -401,7 +424,9 @@ namespace ME3Explorer
 
         private void animationExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new AnimationExplorer.AnimationExplorer());
+            var tool = new AnimationExplorer.AnimationExplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLLInjectorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -411,7 +436,9 @@ namespace ME3Explorer
 
         private void plotVarDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new PlotVarDB.PlotVarDB());
+            var form = new PlotVarDB.PlotVarDB();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.plot_DB_64x64);
         }
 
         private void threadOptionsMenu_Click(object sender, EventArgs e)
@@ -450,119 +477,135 @@ namespace ME3Explorer
 
         private void uDKConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new UDKConverter.UDKConverter());
-        }
-
-        private void setCustomPathToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(3);
-            if (String.IsNullOrEmpty(installPath))
-                return;
-
-            ME3Directory.GamePath(installPath);
-            String cookPath = Path.Combine(installPath, "BIOGame", "CookedPCConsole");
-            if (!Directory.Exists(cookPath))
-            {
-                MessageBox.Show("Required CookedPCConsole folder not found at:\n" + cookPath, "Directory not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            Properties.Settings.Default.TexplorerME3Path = cookPath;
-            Properties.Settings.Default.ME3InstallDir = installPath;
-            Properties.Settings.Default.Save();
-            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            var tool = new UDKConverter.UDKConverter();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void uECodeEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new UECodeEditor.UECodeEditor());
+            var tool = new UECodeEditor.UECodeEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void batchrenamerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new batchrenamer.BatchRenamer());
+            var form = new batchrenamer.BatchRenamer();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.batch_rename_64x64);
         }
 
-        private void OpenMaximized(Form f, int ImageIndex = 19)
+        private void OpenMaximized(Form f)
         {
             f.MdiParent = this;
             f.Show();
             f.WindowState = FormWindowState.Maximized;
-            taskbar.AddTool(f, imageList1.Images[ImageIndex]);
         }
 
         private void meshplorer2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Meshplorer2.Meshplorer2());
+            var tool = new Meshplorer2.Meshplorer2();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void meshplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Meshplorer.Meshplorer());
+            var tool = new Meshplorer.Meshplorer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new Material_Viewer.MaterialViewer()); 
+            var tool = new Material_Viewer.MaterialViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new PSAViewer());
+            var tool = new PSAViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pSKViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new PSKViewer.PSKViewer());
+            var tool = new PSKViewer.PSKViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void codexEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new Codex_Editor.CodexEditor());
+            var tool = new Codex_Editor.CodexEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void questMapEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new QuestMapEditor.QMapEditor());
+            var tool = new QuestMapEditor.QMapEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void classViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new ClassViewer.ClassViewer());
+            var tool = new ClassViewer.ClassViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void gUIDEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new GUIDCacheEditor.GUIDCacheEditor());
+            var tool = new GUIDCacheEditor.GUIDCacheEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLCEditor2ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DLCEditor2.DLCEditor2());
+            var tool = new DLCEditor2.DLCEditor2();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void pAREditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new PAREditor.PAREditor());
+            var tool = new PAREditor.PAREditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dialogEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DialogEditor.DialogEditor());
+            var tool = new DialogEditor.DialogEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void faceFXAnimSetEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new FaceFXAnimSetEditor.FaceFXAnimSetEditor());
+            var tool = new FaceFXAnimSetEditor.FaceFXAnimSetEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void wwiseBankViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new WwiseBankViewer.WwiseViewer());
+            var tool = new WwiseBankViewer.WwiseViewer();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void dLCTOCbinUpdaterToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new DLCTOCbinUpdater.DLCTOCbinUpdater());
+            var form = new DLCTOCbinUpdater.DLCTOCbinUpdater();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.SFARTOC_64x64);
         }
 
         private void tOCbinEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -577,19 +620,29 @@ namespace ME3Explorer
 
         private void TOCbinAKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new TOCEditorAK.TOCEditorAK());
+            var tool = new TOCEditorAK.TOCEditorAK();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void subtitleScannerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            OpenMaximized(new SubtitleScanner.SubtitleScanner());
+            var tool = new SubtitleScanner.SubtitleScanner();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             foreach (taskbar.task_list l in taskbar.tools)
             {
-                if (l.tool.IsDisposed)
+                if (l.tool != null && l.tool.IsDisposed)
+                {
+                    taskbar.strip.Items.Remove(l.icon);
+                    taskbar.tools.Remove(l);
+                    break;
+                }
+                else if (l.wpfWindow != null && System.Windows.PresentationSource.FromVisual(l.wpfWindow) == null)
                 {
                     taskbar.strip.Items.Remove(l.icon);
                     taskbar.tools.Remove(l);
@@ -600,7 +653,9 @@ namespace ME3Explorer
 
         private void autoTOCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new AutoTOC.AutoTOC());
+            var form = new AutoTOC.AutoTOC();
+            OpenMaximized(form);
+            taskbar.AddTool(form, Properties.Resources.autotoc_64x64);
         }
 
 		private void KFreonTPFToolsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -611,10 +666,21 @@ namespace ME3Explorer
 
         private void showKnownPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string s = "GamePath :\n" + ME3Directory.gamePath + "\n";
-            s += "DLCPath :\n" + ME3Directory.DLCPath + "\n";
-            s += "CookedPath :\n" + ME3Directory.cookedPath + "\n";
-            s += "BioWareDocPath :\n" + ME3Directory.BioWareDocPath;
+            string s = "ME3:\n";
+            s += "  GamePath :\n\t" + ME3Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME3Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME3Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME3Directory.BioWareDocPath + "\n";
+            s += "\nME2:\n";
+            s += "  GamePath :\n\t" + ME2Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME2Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME2Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME2Directory.BioWareDocPath + "\n";
+            s += "\nME1:\n";
+            s += "  GamePath :\n\t" + ME1Directory.gamePath + "\n";
+            s += "  DLCPath :\n\t" + ME1Directory.DLCPath + "\n";
+            s += "  CookedPath :\n\t" + ME1Directory.cookedPath + "\n";
+            s += "  BioWareDocPath :\n\t" + ME1Directory.BioWareDocPath + "\n";
             MessageBox.Show(s);
         }
 
@@ -627,6 +693,10 @@ namespace ME3Explorer
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Properties.Settings.Default.ME3InstallDir = ME3Directory.gamePath;
+            Properties.Settings.Default.ME2InstallDir = ME2Directory.gamePath;
+            Properties.Settings.Default.ME1InstallDir = ME1Directory.gamePath;
+            Properties.Settings.Default.Save();
             Application.Exit();
         }
 
@@ -651,7 +721,9 @@ namespace ME3Explorer
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
+            //OpenMaximized(texplorer);
             texplorer.Show();
+            taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64, true);
         }
 
         private void modMakerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -663,12 +735,16 @@ namespace ME3Explorer
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
+            //OpenMaximized(tpftools);
             tpftools.Show();
+            taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64, true);
         }
 
         private void cameraToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new CameraTool.CamTool());
+            var cam = new CameraTool.CamTool();
+            OpenMaximized(cam);
+            taskbar.AddTool(cam, Properties.Resources.placeholder_64x64);
         }
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -706,13 +782,61 @@ namespace ME3Explorer
 
         private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            MainWindow mw = new MainWindow();
-            mw.Show();
+            var tool = new MainWindow();
+            tool.Show();
+            taskbar.AddTool(null, Properties.Resources.placeholder_64x64, true, tool);
         }
 
         private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenMaximized(new InterpEditor.InterpEditor());
+            var tool = new InterpEditor.InterpEditor();
+            OpenMaximized(tool);
+            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+        }
+
+        private void massEffect3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(3);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME3Directory.GamePath(installPath);
+            // Heff: TexplorerME3Path is only used in CloneDialog, and there it assumnes BIOGame rather than CookedPCConsole, so not using this for now.
+            /*String cookPath = Path.Combine(installPath, "BIOGame", "CookedPCConsole");
+            if (!Directory.Exists(cookPath))
+            {
+                MessageBox.Show("Required CookedPCConsole folder not found at:\n" + cookPath, "Directory not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Properties.Settings.Default.TexplorerME3Path = cookPath; */
+
+            Properties.Settings.Default.ME3InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void massEffect2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(2);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME2Directory.GamePath(installPath);
+            Properties.Settings.Default.ME2InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void massEffect1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String installPath = KFreonLib.Misc.Methods.SelectGameLoc(1);
+            if (String.IsNullOrEmpty(installPath))
+                return;
+
+            ME1Directory.GamePath(installPath);
+            Properties.Settings.Default.ME1InstallDir = installPath;
+            Properties.Settings.Default.Save();
+            MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
     }
 }

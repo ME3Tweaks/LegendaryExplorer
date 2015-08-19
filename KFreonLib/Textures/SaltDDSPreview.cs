@@ -64,7 +64,9 @@ namespace KFreonLib.Textures.SaltDDSPreview
                 case "DXT5": BPP = 1F; stdDDS = true; compressed = true; break;
                 case "V8U8": BPP = 2F; stdDDS = true; compressed = false; break;
                 case "ATI2": BPP = 1F; stdDDS = true; compressed = true; break;
+                case "A8B8G8R8":
                 case "A8R8G8B8": BPP = 4F; stdDDS = false; compressed = false; break;
+                case "B8G8R8":
                 case "R8G8B8": BPP = 3F; stdDDS = false; compressed = false; break;
                 default: BPP = 1; stdDDS = false; compressed = false; break;
             }
@@ -92,6 +94,14 @@ namespace KFreonLib.Textures.SaltDDSPreview
                         return "A8R8G8B8";
                     else if ((pfFlags & 0x1) == 0x0 && rgbBitCount == 0x18)
                         return "R8G8B8";
+                }
+                // Heff: Support for the weirder ABGR version:
+                else if (rBitMask == 0x0000FF && gBitMask == 0x00FF00 && bBitMask == 0xFF0000)
+                {
+                    if ((pfFlags & 0x1) == 0x1 && aBitMask == 0xFF000000 && rgbBitCount == 0x20)
+                        return "A8B8G8R8";
+                    else if ((pfFlags & 0x1) == 0x0 && rgbBitCount == 0x18) // Heff: unsure if this is used anywhere.
+                        return "B8G8R8";
                 }
             }
             else if ((pfFlags & 0x80000) == 0x80000 && rgbBitCount == 0x10 && rBitMask == 0xFF && gBitMask == 0xFF00) // V8U8

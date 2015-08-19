@@ -1225,17 +1225,24 @@ namespace ME3Explorer
                 sw.WriteLine(line);
         }
 
-        public void InstallTexture(string texname, List<string> pccs, List<int> IDs, byte[] imgdata)
+        public bool InstallTexture(string texname, List<string> pccs, List<int> IDs, byte[] imgdata)
         {
+            if (pccs.Count == 0)
+            {
+                DebugOutput.PrintLn("No PCC's found for " + texname + ", skipping.");
+                return false;
+            }
             string fulpath = pccs[0];
-            string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            //string temppath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            // Heff: Again, is the removal of the last dir for ME1 intended, and if so for what purpose?
+            string temppath = pathBIOGame;
             if (!fulpath.Contains(temppath))
                 fulpath = Path.Combine(temppath, fulpath);
 
 
             // KFreon: Skip files that don't exist
             if (!File.Exists(fulpath))
-                return;
+                return false;
 
             PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
 
@@ -1260,7 +1267,8 @@ namespace ME3Explorer
             }
             catch
             {
-                Console.WriteLine("");
+                Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
+                return false;
             }
 
 
@@ -1291,7 +1299,12 @@ namespace ME3Explorer
                 bool hasMips = true;
                 ImageFile imgFile = im;
                 try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
-                catch { hasMips = false; }
+                catch (Exception e)
+                { 
+                    hasMips = false; 
+                }
+
+
                 if (!hasMips)
                 {
                     //string fileformat = Path.GetExtension(texFile);
@@ -1302,7 +1315,10 @@ namespace ME3Explorer
                         //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
                         tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
                     }
-                    catch { tex2D.addBiggerImage(imgFile, pathBIOGame); }
+                    catch (Exception e)
+                    { 
+                        tex2D.addBiggerImage(imgFile, pathBIOGame); 
+                    }
                 }
                 else
                 {
@@ -1315,7 +1331,7 @@ namespace ME3Explorer
                         if (e.Message.Contains("Format"))
                         {
                             MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
-                            return;
+                            return false;
                         }
                     }
                 }
@@ -1365,6 +1381,7 @@ namespace ME3Explorer
             Console.WriteLine(ts.Duration().ToString());
             GC.Collect();
             DebugOutput.Print("All PCC updates finished. ");
+            return true;
         }
 
         public static void UpdateTOCs(string pathBIOGame, int WhichGame, string DLCPath, List<string> modifiedDLC = null)
@@ -1682,7 +1699,9 @@ namespace ME3Explorer
             message.Add("Texture Name:  " + tex2D.texName);
             message.Add("Format:  " + (tex2D.texFormat.ToLower().Contains("g8") ? tex2D.texFormat + @"/L8" : (tex2D.texFormat.ToLower().Contains("normalmap") ? "ThreeDc" : tex2D.texFormat)));
             message.Add("Width:  " + info.imgSize.width + ",  Height:  " + info.imgSize.height);
-            message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
+            //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
+            // Heff: Were ALL modified textures assigned the shadowmap texture group?
+            message.Add("LODGroup:  " + (String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
             message.Add("Texmod Hash:  " + Textures.Methods.FormatTexmodHashAsString(tex2D.Hash));
 
             if (WhichGame != 1)

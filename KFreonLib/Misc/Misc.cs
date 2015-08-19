@@ -70,7 +70,9 @@ namespace KFreonLib.Misc
 
         public static List<string> GetInstalledDLC(string DLCBasePath)
         {
-            return Directory.EnumerateDirectories(DLCBasePath).ToList();
+            if (Directory.Exists(DLCBasePath))
+                return Directory.EnumerateDirectories(DLCBasePath).ToList();
+            return new List<string>();
         }
 
         /// <summary>
@@ -142,7 +144,7 @@ namespace KFreonLib.Misc
         public static string SelectGameLoc(int GameVers)
         {
             string retval = null;
-            string gameExe = "MassEffect" + GameVers + ".exe";
+            string gameExe = "MassEffect" + (GameVers != 1 ? GameVers.ToString() : "") + ".exe";
             OpenFileDialog selectDir = new OpenFileDialog();
             selectDir.FileName = gameExe;
             selectDir.Filter = "ME" + GameVers + " exe file|" + gameExe;

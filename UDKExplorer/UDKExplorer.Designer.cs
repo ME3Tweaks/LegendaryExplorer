@@ -29,13 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UDKExplorer));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.packageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.Status = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.meshplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -56,7 +57,7 @@
             this.packageEditorToolStripMenuItem,
             this.meshplorerToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
             // 
             // packageEditorToolStripMenuItem
@@ -65,6 +66,13 @@
             this.packageEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.packageEditorToolStripMenuItem.Text = "Package Editor";
             this.packageEditorToolStripMenuItem.Click += new System.EventHandler(this.packageEditorToolStripMenuItem_Click);
+            // 
+            // meshplorerToolStripMenuItem
+            // 
+            this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
+            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.meshplorerToolStripMenuItem.Text = "Meshplorer";
+            this.meshplorerToolStripMenuItem.Click += new System.EventHandler(this.meshplorerToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -81,13 +89,6 @@
             this.Status.Name = "Status";
             this.Status.Size = new System.Drawing.Size(0, 17);
             // 
-            // meshplorerToolStripMenuItem
-            // 
-            this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
-            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.meshplorerToolStripMenuItem.Text = "Meshplorer";
-            this.meshplorerToolStripMenuItem.Click += new System.EventHandler(this.meshplorerToolStripMenuItem_Click);
-            // 
             // UDKExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,6 +96,7 @@
             this.ClientSize = new System.Drawing.Size(632, 453);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "UDKExplorer";

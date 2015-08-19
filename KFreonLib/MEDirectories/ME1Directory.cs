@@ -21,7 +21,7 @@ namespace KFreonLib.MEDirectories
 
                     files = MEDirectories.EnumerateGameFiles(1, ME1Directory.cookedPath);
 
-                    if (!String.IsNullOrEmpty(ME1Directory.DLCPath))
+                    if (!String.IsNullOrEmpty(ME1Directory.DLCPath) && Directory.Exists(ME1Directory.DLCPath))
                         files.AddRange(MEDirectories.EnumerateGameFiles(1, ME1Directory.DLCPath));
                 }
                 return files;
@@ -42,7 +42,11 @@ namespace KFreonLib.MEDirectories
         public static string GamePath(string path = null)
         {
             if (path != null)
+            {
+                if (path.Contains("BioGame"))
+                    path = path.Substring(0, path.LastIndexOf("BioGame"));
                 _gamePath = path;
+            }
 
             return _gamePath;
         }

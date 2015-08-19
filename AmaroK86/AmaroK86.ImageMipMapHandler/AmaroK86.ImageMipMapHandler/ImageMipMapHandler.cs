@@ -56,7 +56,8 @@ namespace AmaroK86.ImageFormat
                     throw new FormatException("The image doesn't have any mipmaps");
                 }
             } */
-            if (imageMipMap.imgData.Length != ImageMipMapDataSize(imageMipMap.imgSize, CprFormat(imageMipMap.format), imageMipMap.BPP))
+            var size = ImageMipMapDataSize(imageMipMap.imgSize, CprFormat(imageMipMap.format), imageMipMap.BPP);
+            if (imageMipMap.imgData.Length != size)
                 throw new FormatException("The image doesn't have any mipmaps");
 
             byte[] buffer = null;
@@ -69,7 +70,8 @@ namespace AmaroK86.ImageFormat
                 //imageList.Add(imageMipMap);
             }
 
-            int maxCount = (int)Math.Min(imageMipMap.imgSize.width, imageMipMap.imgSize.height);
+            // Heff: Use Max to support 1x1 mips for 1:2 ratio images.
+            int maxCount = (int)Math.Max(imageMipMap.imgSize.width, imageMipMap.imgSize.height);
             int count = 1;
             int imgDataPos = 0;
             while (count <= maxCount)

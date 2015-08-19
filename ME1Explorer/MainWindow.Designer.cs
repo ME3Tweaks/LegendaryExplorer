@@ -59,7 +59,7 @@
             this.saveGameEditorToolStripMenuItem,
             this.saveGameOperatorToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
             // 
             // pCCEditorToolStripMenuItem

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DLCTOCbinUpdater));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkSFARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,20 +53,20 @@
             this.checkSFARToolStripMenuItem,
             this.checkAndRebuildSFARToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // checkSFARToolStripMenuItem
             // 
             this.checkSFARToolStripMenuItem.Name = "checkSFARToolStripMenuItem";
-            this.checkSFARToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.checkSFARToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.checkSFARToolStripMenuItem.Text = "Check SFAR";
             this.checkSFARToolStripMenuItem.Click += new System.EventHandler(this.checkSFARToolStripMenuItem_Click);
             // 
             // checkAndRebuildSFARToolStripMenuItem
             // 
             this.checkAndRebuildSFARToolStripMenuItem.Name = "checkAndRebuildSFARToolStripMenuItem";
-            this.checkAndRebuildSFARToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.checkAndRebuildSFARToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.checkAndRebuildSFARToolStripMenuItem.Text = "Check and Rebuild SFAR";
             this.checkAndRebuildSFARToolStripMenuItem.Click += new System.EventHandler(this.checkAndRebuildSFARToolStripMenuItem_Click);
             // 
@@ -76,9 +77,10 @@
             this.BackgroundImage = global::ME3Explorer.Properties.Resources.back2;
             this.ClientSize = new System.Drawing.Size(595, 341);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DLCTOCbinUpdater";
-            this.Text = "DLCTOCbinUpdater";
+            this.Text = "SFAR TOC Updater";
             this.Activated += new System.EventHandler(this.DLCTOCbinUpdater_Activated);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

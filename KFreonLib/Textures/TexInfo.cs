@@ -350,6 +350,7 @@ namespace KFreonLib.Textures
         public int Height = -1;
         public int Width = -1;
         public SaltTPF.ZipReader zippy = null;
+        public bool wasAnalysed = false;
         
 
         #region Properties
@@ -374,7 +375,9 @@ namespace KFreonLib.Textures
         {
             get
             {
-                return (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool standard = (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
+                bool calc = ExpectedMips > 1 && NumMips < (CalculateMipCount(this.Width, this.Height) - 3); // Heff: only check down to 4x4 / 4x8
+                return standard && !calc;
             }
         }
 
@@ -394,6 +397,11 @@ namespace KFreonLib.Textures
             {
                 return isDef ? false : (CorrectMips && ValidFormat && ValidDimensions);
             }
+        }
+
+        public static int CalculateMipCount(int Width, int Height)
+        {
+            return (int)Math.Log(Math.Max(Width, Height), 2) + 1;
         }
 
         public bool ValidDimensions { get; set; }
@@ -483,6 +491,7 @@ namespace KFreonLib.Textures
 
         public void UndoAnalysis(int newGameVersion)
         {
+            wasAnalysed = false;
             Files.Clear();
             OriginalFiles.Clear();
             ExpIDs.Clear();
@@ -528,8 +537,9 @@ namespace KFreonLib.Textures
                 text = TexName;
                 string ending = " <----";
 
-                // KFreon: No defs and no valids
-                if (!isDef && !Valid)
+                if (Path.GetExtension(this.FileName) != ".dds")
+                    ending += "NOT DDS FORMAT";
+                else if (!isDef && !Valid)
                 {
                     if (!ValidDimensions)
                         ending += "  DIMENSIONS";
@@ -542,8 +552,11 @@ namespace KFreonLib.Textures
                     text = "----> " + text + ending;
                 }
             }
-            else if (Analysed && !isDef)
+            else if (Analysed && wasAnalysed && !isDef)
                 text = "----> " + text + "  <----   NOT FOUND IN TREE";
+            else if (Analysed && !isDef)
+                text += " <--- Not Analyzed!";
+
             return text;
         }
 

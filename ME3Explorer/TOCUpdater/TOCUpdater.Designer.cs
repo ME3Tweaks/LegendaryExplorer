@@ -55,13 +55,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkPCConsoleTOCbinToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // checkPCConsoleTOCbinToolStripMenuItem
             // 
             this.checkPCConsoleTOCbinToolStripMenuItem.Name = "checkPCConsoleTOCbinToolStripMenuItem";
-            this.checkPCConsoleTOCbinToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.checkPCConsoleTOCbinToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.checkPCConsoleTOCbinToolStripMenuItem.Text = "Check PCConsoleTOC.bin";
             this.checkPCConsoleTOCbinToolStripMenuItem.Click += new System.EventHandler(this.checkPCConsoleTOCbinToolStripMenuItem_Click);
             // 
@@ -87,9 +87,9 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.IntegralHeight = false;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(0, 24);
+            this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(292, 227);
+            this.listBox1.Size = new System.Drawing.Size(292, 251);
             this.listBox1.TabIndex = 3;
             // 
             // TOCUpdater

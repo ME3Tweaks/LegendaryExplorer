@@ -309,4 +309,118 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="back2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\back2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="asset_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\asset_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="audio_extract_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\audio_extract_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="autotoc_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\autotoc_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="backup_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\backup_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="batch_rename_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\batch_rename_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BIK_movie_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\BIK_movie_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="coaledit1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\coaledit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DDSConverter_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\DDSConverter_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lang1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\lang.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lang_select_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\lang_select_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="materialviewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\materialviewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me1exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me1exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me1exp_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me1exp_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me2exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me2exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me2exp_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me2exp_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me3exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me3exp_favicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_newbanner" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me3exp_newbanner.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_smallbanner_v1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me3exp_smallbanner_v1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_smallbanner_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\me3exp_smallbanner_v2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshexplorer1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\meshexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="modmaker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\modmaker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Patcher1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\Patcher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plot_DB_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\plot_DB_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="propertydumper1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\propertydumper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PSAViewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\PSAViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PSKViewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\PSKViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SFARTOC_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\SFARTOC_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="soundexplorer1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\soundexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="texplorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\texplorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="texturetool_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\texturetool_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tocbin2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TOCbinUpdater_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\TOCbinUpdater_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TPFTools_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\TPFTools_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="udk_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\udk_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="versioncheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\versioncheck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="version_checker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\version_checker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="placeholder_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\placeholder_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

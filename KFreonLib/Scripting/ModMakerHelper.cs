@@ -13,6 +13,7 @@ using KFreonLib.Textures;
 using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
 using ResILWrapper;
+using KFreonLib.GUI;
 
 namespace KFreonLib.Scripting
 {
@@ -41,7 +42,9 @@ namespace KFreonLib.Scripting
         public static string GenerateTextureScript(string ExecPath, List<string> pccs, List<int> ExpIDs, string texName, int WhichGame, string pathBIOGame)
         {
             // KFreon: Get game independent path to remove from all pcc names, in order to make script computer independent.  (i.e. relative instead of absolute paths)
-            string MainPath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            //string MainPath = (WhichGame == 1) ? Path.GetDirectoryName(pathBIOGame) : pathBIOGame;
+            // Heff: why were we removing the last directory for ME1 all over the place?
+            string MainPath = pathBIOGame;
 
             // KFreon: Read template in from file
             string script;
@@ -245,23 +248,74 @@ namespace KFreonLib.Scripting
                 return retval;
             }
 
+            /// <summary>
+            /// Corrects incorrect DLC PCC paths from before ME3 DLC's were extracted.
+            /// </summary>
+            public void FixLegacyDLCPaths()
+            {
+                var folders = new List<String> ()
+                {
+                    "DLC_CON_APP01",
+                    "DLC_CON_END",
+                    "DLC_CON_GUN01",
+                    "DLC_CON_GUN02",
+                    "DLC_CON_MP1",
+                    "DLC_CON_MP2",
+                    "DLC_CON_MP3",
+                    "DLC_CON_MP4",
+                    "DLC_CON_MP5",
+                    "DLC_EXP_Pack001",
+                    "DLC_EXP_Pack002",
+                    "DLC_EXP_Pack003",
+                    "DLC_EXP_Pack003_Base",
+                    "DLC_HEN_PR",
+                    "DLC_OnlinePassHidCE"
+                };
+
+                List<string> lines = new List<string>(Script.Split('\n'));
+                string processed = "";
+                foreach (string line in lines) // Heff: This could probably be done with some nixe regex, but I'm tired and just want things to work.
+                {
+                    if (line.Contains("pccs.Add"))
+                    {
+                        var lineParts = line.Split('"');
+                        var pathParts = lineParts[1].Replace("\\\\", "\\").Split(Path.DirectorySeparatorChar);
+                        if (pathParts.Length > 1 && folders.Contains(pathParts[pathParts.Length - 2]))
+                        {
+                            //Heff: if the folder is one of the ME3 DLC's, fix it up:
+                            var path = Path.GetDirectoryName(lineParts[1]);
+                            var file = Path.GetFileName(lineParts[1]);
+                            lineParts[1] = Path.Combine(path, "CookedPCConsole", file).Replace("\\", "\\\\");
+                        }
+                        processed += String.Join("\"", lineParts) + "\n";
+                    }
+                    else
+                        processed += line + "\n";
+                }
+                Script = processed;
+            }
 
             /// <summary>
             /// Gets details, like pcc's and expID's, from current script and sets local properties.
             /// Properties:
             ///     ExpID's, PCC's, Texname, WhichGame, JobType.
             /// </summary>
-            public bool GetJobDetails(bool update)
+            public bool GetJobDetails(bool update, out bool versionConflict, int version)
             {
                 JobType = DetectJobType();
+                versionConflict = false;
 
                 DebugOutput.PrintLn(String.Format("Job: {0}  type: {1}", Name, JobType));
 
                 bool isTexture = JobType == "TEXTURE" ? true : false;
                 ExpIDs = ModMaker.GetExpIDsFromScript(Script, isTexture);
+
+                //Heff: adjust script paths for legacy ME3 DLC mods that references un-extracted DLC's
+                FixLegacyDLCPaths();
+
                 PCCs = ModMaker.GetPCCsFromScript(Script, isTexture);
                 Texname = ModMaker.GetObjectNameFromScript(Script, isTexture);
-                WhichGame = ModMaker.GetGameVersionFromScript(Script, isTexture);
+                WhichGame = version == -1 ? ModMaker.GetGameVersionFromScript(Script, isTexture) : version;
 
                 DebugOutput.PrintLn(String.Format("Job: {0} Detected game version: {1}  Detected texname: {2}", Name, WhichGame, Texname));
 
@@ -276,6 +330,12 @@ namespace KFreonLib.Scripting
 
                     DebugOutput.PrintLn("Found num PCCS: " + PCCs.Count);
                     WhichGame = GuessGame(PCCs);
+
+                    if (WhichGame == -2)
+                    {
+                        versionConflict = true;
+                        return false;
+                    }
                 }
 
                 if (WhichGame == -1)
@@ -391,7 +451,20 @@ namespace KFreonLib.Scripting
                 if (NumFounds.Sum() == 0)
                     return -1;
                 else
-                    return NumFounds.ToList().IndexOf(NumFounds.Max()) + 1;
+                {
+                    int maxVal = NumFounds.Max();
+                    var indices = Enumerable.Range(0, NumFounds.Count())
+                        .Where(i => NumFounds[i] == maxVal)
+                        .ToList();
+
+                    if (indices.Count > 1)
+                    {
+                        DebugOutput.PrintLn("Could not guess game, files were present in more than one!");
+                        return -2;
+                    }
+                    else
+                        return indices[0] + 1;
+                }
             }
 
             /// <summary>
@@ -443,12 +516,14 @@ namespace KFreonLib.Scripting
 
                 // KFreon: If texture job, fix pcc pathing.
                 
-                string pathBIOGame = WhichGame == 1 ? Path.GetDirectoryName(BIOGames[WhichGame - 1]) : BIOGames[WhichGame - 1];
+                //string pathBIOGame = WhichGame == 1 ? Path.GetDirectoryName(BIOGames[WhichGame - 1]) : BIOGames[WhichGame - 1];
+                // Heff: Seems like we change the paths in so many places that it's bound to fuck up somewhere. Also VERY unfriendly to DLC mods, so chanigs this.
+                string pathBIOGame = BIOGames[WhichGame - 1];
 
-                if (WhichGame == 3)
+                /*if (WhichGame == 3)
                     pathBIOGame = Path.Combine(pathBIOGame, "CookedPCConsole");
                 else
-                    pathBIOGame = Path.Combine(pathBIOGame, "CookedPC");
+                    pathBIOGame = Path.Combine(pathBIOGame, "CookedPC");*/
 
                 // KFreon: Deal with multiple files found during search
                 List<string> multiples;
@@ -461,7 +536,7 @@ namespace KFreonLib.Scripting
                 {
                     string script = "";
                     DebugOutput.PrintLn("Validating pccs");
-                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, ObjectName, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
+                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, ObjectName, WhichGame, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
 
                     // KFreon: Texture job
                     if (JobType == "TEXTURE")
@@ -485,10 +560,24 @@ namespace KFreonLib.Scripting
             }
         }
 
-        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, string ObjectName, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
+        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, string ObjectName, int WhichGame, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
         {
             multiples = new List<string>();
             MultiInds = new List<int>();
+
+            var gameFiles = new List<String>();
+            switch (WhichGame)
+            {
+                case 1:
+                    gameFiles = ME1Directory.Files;
+                    break;
+                case 2:
+                    gameFiles = ME2Directory.Files;
+                    break;
+                case 3:
+                    gameFiles = ME3Directory.Files;
+                    break;
+            }
 
             // KFreon: Fix pccs
             List<string> pccs = new List<string>();
@@ -496,18 +585,16 @@ namespace KFreonLib.Scripting
             {
                 // KFreon: Test if pcc naming is correct. If not, fix.
                 string pcc = PCCs[i];
-                string test = pcc;
-                if (!pcc.Contains(pathBIOGame))
-                    test = Path.Combine(pathBIOGame, pcc);
+                string test = pcc.Replace("\\\\", "\\");
 
                 DebugOutput.PrintLn("About to begin validating");
-                if (!File.Exists(test))
-                {
-                    DebugOutput.PrintLn("File doesnt exist:" + test + ". Continuing...");
-                    //test = PCCObjects.Misc.SearchForPCC(pcc, pathBIOGame, ExpIDs[i], ObjectName, isTexture);
 
-                }
 
+                var result = gameFiles.Where(p => p.Contains(test)).DefaultIfEmpty("none").FirstOrDefault();
+                if (result != "none")
+                    test = result; // Heff: this can potentially be a problem for bad .mods that are for DLC's but only specify pcc name.
+                else
+                    DebugOutput.PrintLn("File not found in game files:" + test + ". Continuing...");
 
                 if (test.Contains("#"))
                 {
@@ -518,12 +605,13 @@ namespace KFreonLib.Scripting
                 }
                 else if (test != "")
                 {
-                    string temp = test.Remove(0, pathBIOGame.Length + 1);
+                    string temp = test;
+                    if (test.Contains(pathBIOGame))
+                        temp = test.Remove(0, pathBIOGame.Length + 1);
                     if (!temp.Contains("\\\\"))
                         temp = temp.Replace("\\", "\\\\");
                     pccs.Add(temp);
                 }
-                    
                 else
                 {
                     DebugOutput.PrintLn("Unable to find path for: " + pcc + ". This WILL cause errors later.");
@@ -712,22 +800,23 @@ namespace KFreonLib.Scripting
 
                 
                 // KFreon: Ask what to do about version
-                if (ExecutingVersion != null && !ExternalCall) // Heff: Changed the logic to not ask if it's an external call.
-                {
-                    DialogResult dr = MessageBox.Show("This .mod is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (ExecutingVersion != null) //&& !ExternalCall) // Heff: do we want to suppress this for external calls? should they always autoupdate?
+                {                                                 // Seems better to keep it the current way, so that users get prompted if they load old .mods.
+                    DialogResult dr = MessageBox.Show(Path.GetFileName(file) + " is old and unsupported by this version of ME3Explorer." + Environment.NewLine + "Click Yes to update .mod now, No to continue loading .mod, or Cancel to stop loading .mod", "Ancient .mod detected.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                     if (dr == System.Windows.Forms.DialogResult.Cancel)
                         return null;
                     else if (dr == System.Windows.Forms.DialogResult.Yes)
                         AutoUpdate = true;
-
-                    // KFreon: Reset stream position if necessary
-                    if (!validVersion)
-                    {
-                        count = versionLength;
-                        fs.Seek(countOffset, SeekOrigin.Begin);
-                    }
                 }
-                
+                /*else if (ExecutingVersion != null) // Heff: could use this for always updating if its an external call:
+                    AutoUpdate = true;*/
+
+                // KFreon: Reset stream position if necessary
+                if (!validVersion)
+                {
+                    count = versionLength;
+                    fs.Seek(countOffset, SeekOrigin.Begin);
+                }
 
                 // KFreon: Increment progress bar
                 if (progbar != null)
