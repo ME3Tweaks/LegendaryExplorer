@@ -537,8 +537,9 @@ namespace KFreonLib.Textures
                 text = TexName;
                 string ending = " <----";
 
-                // KFreon: No defs and no valids
-                if (!isDef && !Valid)
+                if (Path.GetExtension(this.FileName) != ".dds")
+                    ending += "NOT DDS FORMAT";
+                else if (!isDef && !Valid)
                 {
                     if (!ValidDimensions)
                         ending += "  DIMENSIONS";

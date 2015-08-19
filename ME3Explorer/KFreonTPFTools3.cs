@@ -1574,6 +1574,9 @@ namespace ME3Explorer
                     case ".txt":
                     case ".log":
                     case ".mod":
+                    case ".tga":
+                    case ".jpg":
+                    case ".png":
                         ValidDrops.Add(file);
                         break;
                     default:
@@ -1583,7 +1586,7 @@ namespace ME3Explorer
 
             // KFreon: Notify if some are invalid
             if (Invalids.Count > 0)
-                MessageBox.Show("The following files are not TPFTools things. .dds, .def/.log/.txt, .tpf/.metpf ONLY" + Environment.NewLine + String.Join(Environment.NewLine, Invalids.ToArray()), "You have failed. We will find another.");
+                MessageBox.Show("The following files are not TPFTools things:" + Environment.NewLine + String.Join(Environment.NewLine, Invalids.ToArray()), "You have failed. We will find another.");
 
             BeginLoadingFiles(ValidDrops);
         }
