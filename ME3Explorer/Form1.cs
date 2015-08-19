@@ -659,7 +659,6 @@ namespace ME3Explorer
             Texplorer2 texplorer = new Texplorer2();
             OpenMaximized(texplorer);
             taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64);
-            texplorer.Show();
         }
 
         private void modMakerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -673,7 +672,6 @@ namespace ME3Explorer
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
             OpenMaximized(tpftools);
             taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64);
-            tpftools.Show();
         }
 
         private void cameraToolToolStripMenuItem_Click(object sender, EventArgs e)
