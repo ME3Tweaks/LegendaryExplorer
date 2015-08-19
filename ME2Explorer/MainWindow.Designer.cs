@@ -35,9 +35,9 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dLCCrackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,6 +76,13 @@
             this.dLCCrackToolStripMenuItem.Text = "DLC Crack";
             this.dLCCrackToolStripMenuItem.Click += new System.EventHandler(this.dLCCrackToolStripMenuItem_Click);
             // 
+            // sequenceEditorToolStripMenuItem
+            // 
+            this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
+            this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
+            // 
             // optionToolStripMenuItem
             // 
             this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -90,13 +97,6 @@
             this.openDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.openDebugWindowToolStripMenuItem.Text = "Open Debug Window";
             this.openDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.openDebugWindowToolStripMenuItem_Click);
-            // 
-            // sequenceEditorToolStripMenuItem
-            // 
-            this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
-            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
-            this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
             // MainWindow
             // 

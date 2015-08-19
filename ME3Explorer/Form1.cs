@@ -223,6 +223,7 @@ namespace ME3Explorer
 
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Asset Explorer should be used as a basic file exploration tool, ONLY. \nIts editing features are deprecated and should not be used. \nThey'll be removed in a future update.");
             AssetExplorer ass = new AssetExplorer();
             OpenMaximized(ass);
             ass.LoadMe();
