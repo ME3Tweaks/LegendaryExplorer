@@ -2067,7 +2067,7 @@ namespace ME3Explorer
                     return false;
                 this.Invoke(new Action(() =>
                 {
-                    OverallStatusLabel.Text = "Installed " + numInstalled + "/" + textures.Count + " mods.";
+                    OverallStatusLabel.Text = "Installed " + numInstalled + "/" + valids + " valid mods.";
                     OverallProgressBar.Value = OverallProgressBar.Maximum;
                 }));
             }

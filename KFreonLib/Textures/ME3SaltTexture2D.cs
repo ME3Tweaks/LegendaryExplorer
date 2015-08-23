@@ -275,21 +275,19 @@ namespace KFreonLib.Textures
                             tempStream.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            //tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
                             // Heff: Modified to handle name references.
-                            var nameIndex = pcc.addName2(prop.Value.StringValue);
-                            tempStream.WriteValueS32(nameIndex);
-                            tempStream.WriteValueS32(prop.Value.NameValue.count);
-                            Console.WriteLine(prop.Name + ":" + prop.Value.StringValue); // HEFFTEST
+                            //var nameIndex = pcc.addName2(prop.Value.StringValue);
+                            //tempStream.WriteValueS32(nameIndex);
+                            //tempStream.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
                             tempStream.WriteValueS64(pcc.addName2(prop.Value.StringValue));
-                            //tempStream.WriteValueS64(pcc.addName2(prop.Value.String2));
+                            tempStream.WriteValueS64(pcc.addName2(prop.Value.String2));
                             // Heff: Modified to handle name references.
-                            var valueIndex = pcc.addName2(prop.Value.String2);
-                            tempStream.WriteValueS32(valueIndex);
-                            tempStream.WriteValueS32(prop.Value.NameValue.count);
-                            Console.WriteLine(prop.Name + ":" + prop.Value.String2); // HEFFTEST
+                            //var valueIndex = pcc.addName2(prop.Value.String2);
+                            //tempStream.WriteValueS32(valueIndex);
+                            //tempStream.WriteValueS32(prop.Value.NameValue.count);
 
                             //tempStream.WriteValueS32(pcc.addName2(prop.Value.String2));
                             //byte[] footer = new byte[4];
@@ -1203,11 +1201,11 @@ namespace KFreonLib.Textures
                             tempMem.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            //tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
+                            tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
                             // Heff: Modified to handle name references.
-                            var index = pcc.addName2(prop.Value.StringValue);
-                            tempMem.WriteValueS32(index);
-                            tempMem.WriteValueS32(prop.Value.NameValue.count);
+                            //var index = pcc.addName2(prop.Value.StringValue);
+                            //tempMem.WriteValueS32(index);
+                            //tempMem.WriteValueS32(prop.Value.NameValue.count);
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
                             tempMem.WriteValueS64(pcc.addName2(prop.Value.StringValue));
