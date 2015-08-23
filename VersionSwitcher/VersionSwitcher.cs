@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Diagnostics;
+using System.Text;
 
 namespace VersionSwitcher
 {
@@ -140,7 +141,8 @@ namespace VersionSwitcher
             {
                 isInPlaceUpgrade = true;
             }
-            string batchString = "::ME3Explorer Version Switching Script\r\n" +
+            string batchString = "chcp 850\n" +
+                "::ME3Explorer Version Switching Script\r\n" +
                 "@echo off\r\n" +
                 "echo Ending ME3Explorer and VersionSwitcher\r\n" +
                 "taskkill /f /im ME3Explorer.exe /T\r\n" +
@@ -149,17 +151,17 @@ namespace VersionSwitcher
             if (isInPlaceUpgrade)
             {
                 batchString += "echo Deleting existing ME3Explorer directory\r\n" +
-                "rmdir /S /Q " + executingPath +"\r\n";
+                "rmdir /S /Q \"" + executingPath +"\"\r\n";
             }
 
             batchString += "echo Moving new version to old directory\r\n" +
-                "xcopy /I /Y /S " + unzipPath + "ME3Explorer ";
+                "xcopy /I /Y /S \"" + unzipPath + "ME3Explorer\" ";
             if (isInPlaceUpgrade)
             {
                 //put in folder above ME3Explorer (in-place upgrade)
-                batchString += executingPath;
+                batchString += "\"" + executingPath + "\"";
                 batchString += "\r\n";
-                batchString += "start \"\" "+executingPath + "\\ME3Explorer.exe -version-switch-from ";
+                batchString += "start \"\" \""+executingPath + "\\ME3Explorer.exe\" -version-switch-from ";
                 //get me3explorer.exe version
                 FileVersionInfo existingInfo = FileVersionInfo.GetVersionInfo(executingPath + "\\ME3Explorer.exe");
                 batchString += existingInfo.ProductBuildPart;
@@ -168,17 +170,17 @@ namespace VersionSwitcher
             else
             {
                 //put ME3Explorer directory in executing folder (standalone)
-                batchString += executingPath + "\\ME3Explorer";
+                batchString += "\"" + executingPath + "\\ME3Explorer\"";
                 batchString += "\r\n";
-                batchString += "start \"\" " + executingPath + "\\ME3Explorer\\ME3Explorer.exe\r\n"; //run me3exp
+                batchString += "start \"\" \"" + executingPath + "\\ME3Explorer\\ME3Explorer.exe\"\r\n"; //run me3exp
             }
             batchString += "::Remove extracted copy\r\n";
-            batchString += "rmdir /S /Q " + unzipPath + "ME3Explorer\r\n";
+            batchString += "rmdir /S /Q \"" + unzipPath + "ME3Explorer\"\r\n";
             batchString += "call :deleteSelf&exit /b\r\n";
             batchString += ":deleteSelf\r\n";
             //batchString += "start /b \"\" cmd /c del \"%~f0\"&exit /b\r\n";
             batchString += "pause";
-            File.WriteAllText(Path.GetTempPath() + "me3explorer_version_switch.cmd", batchString);
+            File.WriteAllText(Path.GetTempPath() + "me3explorer_version_switch.cmd", batchString, Encoding.GetEncoding(850));
             System.Diagnostics.Process.Start(Path.GetTempPath() + "me3explorer_version_switch.cmd");
             Environment.Exit(0);
 
