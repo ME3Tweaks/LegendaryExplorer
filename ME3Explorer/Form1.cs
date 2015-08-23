@@ -172,6 +172,9 @@ namespace ME3Explorer
                 ME2Directory.GamePath(Properties.Settings.Default.ME2InstallDir);
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
                 ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
+
+            var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
+            versionToolStripMenuItem.Text += "0110 (r" + vers[2] + ")";
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
