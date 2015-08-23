@@ -2031,7 +2031,19 @@ namespace ME3Explorer
                         numInstalled++;
                 } catch (Exception e)
                 {
-                    DebugOutput.PrintLn("Unknown error with mod:  " + tex.TexName + ", skipping.");
+                    if (e is System.UnauthorizedAccessException)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            MessageBox.Show("Could not install " + tex.TexName + " due to problems with the pcc file, \nplease check that the relevant .pcc files are not set as read-only, \nand try running me3explorer as admin.", "Warning!",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }));
+                    }
+                    else
+                    {
+                        DebugOutput.PrintLn("Unknown error with mod:  " + tex.TexName + ", skipping.");
+                        DebugOutput.PrintLn("(Error:  " + e.Message + ")");
+                    }
                     continue;
                 }
 

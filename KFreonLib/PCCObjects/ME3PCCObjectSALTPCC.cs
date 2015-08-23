@@ -382,6 +382,9 @@ namespace KFreonLib.PCCObjects
             if (WriteToMemoryStream)
                 return;
 
+            // Heff: try to remove any read-only attribute if we have permission to:
+            File.SetAttributes(newFileName, FileAttributes.Normal);
+
             while (true)
             {
                 int tries = 0;
