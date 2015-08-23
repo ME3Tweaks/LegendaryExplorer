@@ -2031,7 +2031,19 @@ namespace ME3Explorer
                         numInstalled++;
                 } catch (Exception e)
                 {
-                    DebugOutput.PrintLn("Unknown error with mod:  " + tex.TexName + ", skipping.");
+                    if (e is System.UnauthorizedAccessException)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            MessageBox.Show("Could not install " + tex.TexName + " due to problems with the pcc file, \nplease check that the relevant .pcc files are not set as read-only, \nand try running me3explorer as admin.", "Warning!",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }));
+                    }
+                    else
+                    {
+                        DebugOutput.PrintLn("Unknown error with mod:  " + tex.TexName + ", skipping.");
+                        DebugOutput.PrintLn("(Error:  " + e.Message + ")");
+                    }
                     continue;
                 }
 
@@ -2067,7 +2079,7 @@ namespace ME3Explorer
                     return false;
                 this.Invoke(new Action(() =>
                 {
-                    OverallStatusLabel.Text = "Installed " + numInstalled + "/" + textures.Count + " mods.";
+                    OverallStatusLabel.Text = "Installed " + numInstalled + "/" + valids + " valid mods.";
                     OverallProgressBar.Value = OverallProgressBar.Maximum;
                 }));
             }
@@ -2808,7 +2820,7 @@ namespace ME3Explorer
             // Heff: if fix was successfull, but the number of mips are still wrong,
             // force it and let texplorer skip the lowest resolutions
             // Heff: this should no longer happen, but keeping this as it might help in some real odd case.
-            if (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height))
+            if (tex.ExpectedMips > 1 && (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height)))
                 tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
 
             return retval;
