@@ -141,7 +141,7 @@ namespace VersionSwitcher
             {
                 isInPlaceUpgrade = true;
             }
-            string batchString = "chcp 850\n" +
+            string batchString = "chcp 65001\r\n" +
                 "::ME3Explorer Version Switching Script\r\n" +
                 "@echo off\r\n" +
                 "echo Ending ME3Explorer and VersionSwitcher\r\n" +
@@ -180,7 +180,7 @@ namespace VersionSwitcher
             batchString += ":deleteSelf\r\n";
             //batchString += "start /b \"\" cmd /c del \"%~f0\"&exit /b\r\n";
             batchString += "pause";
-            File.WriteAllText(Path.GetTempPath() + "me3explorer_version_switch.cmd", batchString, Encoding.GetEncoding(850));
+            File.WriteAllText(Path.GetTempPath() + "me3explorer_version_switch.cmd", batchString);
             System.Diagnostics.Process.Start(Path.GetTempPath() + "me3explorer_version_switch.cmd");
             Environment.Exit(0);
 
