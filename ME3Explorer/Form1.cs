@@ -175,6 +175,19 @@ namespace ME3Explorer
 
             var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
             versionToolStripMenuItem.Text += "0110 (r" + vers[2] + ")";
+            versionToolStripMenuItem.Tag = "versionItem";
+            menuStrip1.Renderer = new NoHighlightRenderer();
+        }
+
+        internal class NoHighlightRenderer : ToolStripProfessionalRenderer
+        {
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                if (e.Item.Tag != "versionItem")
+                {
+                    base.OnRenderMenuItemBackground(e);
+                }
+            }
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
