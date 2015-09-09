@@ -29,7 +29,7 @@ namespace KFreonLib.PCCObjects
         int ExportDataEnd { get; set; }
         uint PackageFlags { get; set; }
         int NumChunks { get; set; }
-        MemoryTributary listsStream { get; set; }
+        MemoryStream listsStream { get; set; }
         List<string> Names { get; set; }
         List<IImportEntry> Imports { get; set; }
         List<IExportEntry> Exports { get; set; }

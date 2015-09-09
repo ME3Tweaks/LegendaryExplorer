@@ -11,6 +11,7 @@ using KFreonLib.PCCObjects;
 using KFreonLib.Helpers;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
+using CSharpImageLibrary;
 
 namespace KFreonLib.Textures
 {
@@ -1744,7 +1745,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                return Textures.Methods.GetImage(texFormat, imgdata);
+                ImageEngineImage img = new ImageEngineImage(imageData);
+                return img.GetGDIBitmap();
             }
             catch { }
             return null;

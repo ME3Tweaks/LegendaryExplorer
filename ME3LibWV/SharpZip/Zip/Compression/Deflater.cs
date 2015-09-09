@@ -56,7 +56,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	{
 		#region Deflater Documentation
 		/*
-		* The Deflater can do the following state transitions:
+		* The Deflater can do the following state UsefulThings.WinForms.Transitions:
 		*
 		* (1) -> INIT_STATE   ----> INIT_FINISHING_STATE ---.
 		*        /  | (2)      (5)                          |

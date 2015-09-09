@@ -1320,7 +1320,7 @@ namespace ME3Explorer
                     DLCPath = d.FileName;
                     inDLCFilename = dlc.listBox1.Items[result].ToString();
                     FileStream fs = new FileStream(path,FileMode.Create,FileAccess.Write);
-                    MemoryTributary mem = p.DecompressEntry(dlc.Objects[result]);
+                    MemoryStream mem = p.DecompressEntry(dlc.Objects[result]);
                     fs.Write(mem.ToArray(), 0, (int)mem.Length);
                     fs.Close();
                     

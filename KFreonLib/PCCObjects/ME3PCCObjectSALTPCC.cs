@@ -90,7 +90,7 @@ namespace KFreonLib.PCCObjects
         // KFreon: Decompresses specific blocks if compressed, or returns data specified by offset and length.
         public byte[] Decompressor(uint offset, int length)
         {
-            using (MemoryTributary retval = new MemoryTributary())
+            using (MemoryStream retval = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 uint newoffset = 0;
                 /*if (blockList.Count == 1)
@@ -161,8 +161,8 @@ namespace KFreonLib.PCCObjects
         public List<ME3ExportEntry> Exports { get; set; }
         List<Block> blocklist = null;
         public int NumChunks;
-        public MemoryTributary listsStream;
-        public MemoryTributary DataStream;
+        public MemoryStream listsStream;
+        public MemoryStream DataStream;
 
 
 
@@ -175,7 +175,7 @@ namespace KFreonLib.PCCObjects
             pccFileName = Path.GetFullPath(filePath);
             BitConverter.IsLittleEndian = true;
 
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("LET ME KNOW ABOUT THIS! filename: " + pccFileName);
 
@@ -208,10 +208,10 @@ namespace KFreonLib.PCCObjects
             ME3PCCObjectHelper(tempStream, filePath, TablesOnly);
         }
 
-        public void ME3PCCObjectHelper(MemoryTributary tempStream, string filePath, bool TablesOnly)
+        public void ME3PCCObjectHelper(MemoryStream tempStream, string filePath, bool TablesOnly)
         {
             tempStream.Seek(0, SeekOrigin.Begin);
-            DataStream = new MemoryTributary();
+            DataStream = UsefulThings.RecyclableMemoryManager.GetStream();
             tempStream.WriteTo(DataStream);
             Names = new List<string>();
             Imports = new List<ME3ImportEntry>();
@@ -283,18 +283,18 @@ namespace KFreonLib.PCCObjects
                         }
                     }
 
-                    listsStream = new MemoryTributary();
+                    listsStream = UsefulThings.RecyclableMemoryManager.GetStream();
                     tempStream.Seek(blockList[TableStart].cprOffset, SeekOrigin.Begin);
                     listsStream.Seek(blockList[TableStart].uncOffset, SeekOrigin.Begin);
                     listsStream.WriteBytes(ZBlock.Decompress(tempStream, blockList[TableStart].cprSize));
-                    DataStream = new MemoryTributary();
+                    DataStream = UsefulThings.RecyclableMemoryManager.GetStream();
                     tempStream.WriteTo(DataStream);
                     bCompressed = true;
                 }
                 else
                 {
                     //Decompress ALL blocks
-                    listsStream = new MemoryTributary();
+                    listsStream = UsefulThings.RecyclableMemoryManager.GetStream();
                     for (int i = 0; i < blockCount; i++)
                     {
                         tempStream.Seek(blockList[i].cprOffset, SeekOrigin.Begin);
@@ -306,7 +306,7 @@ namespace KFreonLib.PCCObjects
             }
             else
             {
-                listsStream = new MemoryTributary();
+                listsStream = UsefulThings.RecyclableMemoryManager.GetStream();
                 listsStream.WriteBytes(tempStream.ToArray());
             }
             tempStream.Dispose();
@@ -346,7 +346,7 @@ namespace KFreonLib.PCCObjects
         }
 
         // KFreon: Alternate intialiser to allow loading from existing stream
-        public ME3PCCObject(string filePath, MemoryTributary stream, bool TablesOnly = false)
+        public ME3PCCObject(string filePath, MemoryStream stream, bool TablesOnly = false)
         {
             pccFileName = filePath;
             BitConverter.IsLittleEndian = true;
@@ -1155,7 +1155,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        MemoryTributary IPCCObject.listsStream
+        MemoryStream IPCCObject.listsStream
         {
             get
             {

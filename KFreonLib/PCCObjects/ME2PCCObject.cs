@@ -62,7 +62,7 @@ namespace KFreonLib.PCCObjects
 
         public uint PackageFlags;
         public int NumChunks;
-        public MemoryTributary listsStream;
+        public MemoryStream listsStream;
         public List<string> Names;
         public List<ME2ImportEntry> Imports;
         public List<ME2ExportEntry> Exports;
@@ -79,7 +79,7 @@ namespace KFreonLib.PCCObjects
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -96,7 +96,7 @@ namespace KFreonLib.PCCObjects
         }
 
 
-        public ME2PCCObject(String path, MemoryTributary tempStream)
+        public ME2PCCObject(String path, MemoryStream tempStream)
         {
             lzo = new SaltLZOHelper();
             fullname = path;
@@ -107,7 +107,7 @@ namespace KFreonLib.PCCObjects
             LoadHelper(tempStream);
         }
 
-        private void LoadHelper(MemoryTributary tempStream)
+        private void LoadHelper(MemoryStream tempStream)
         {
             tempStream.Seek(12, SeekOrigin.Begin);
             int tempNameSize = tempStream.ReadValueS32();
@@ -205,7 +205,7 @@ namespace KFreonLib.PCCObjects
                 listsStream.WriteTo(fs);
         }
 
-        private void ReadNames(MemoryTributary fs)
+        private void ReadNames(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Names...");
             fs.Seek(NameOffset, SeekOrigin.Begin);
@@ -219,7 +219,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        private void ReadImports(MemoryTributary fs)
+        private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
             Imports = new List<ME2ImportEntry>();
@@ -237,7 +237,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        private void ReadExports(MemoryTributary fs)
+        private void ReadExports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Exports...");
             fs.Seek(ExportOffset, SeekOrigin.Begin);
@@ -456,7 +456,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        MemoryTributary IPCCObject.listsStream
+        MemoryStream IPCCObject.listsStream
         {
             get
             {

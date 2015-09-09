@@ -19,6 +19,9 @@ using KFreonLib.MEDirectories;
 using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
+using CSharpImageLibrary;
+using System.Text;
+using UsefulThings;
 
 namespace ME3Explorer
 {
@@ -1584,11 +1587,11 @@ namespace ME3Explorer
                                 }
                                 else
                                 {
-                                    string thumbpath = null;
                                     try
                                     {
-                                        thumbpath = Textures.Creation.GenerateThumbnail(img, savepath, ExecFolder);
-                                        tex.ThumbnailPath = thumbpath;
+                                        byte[] data = UsefulThings.WinForms.Misc.GetPixelDataFromBitmap(img);
+                                        ImageEngine.GenerateThumbnailToFile(UsefulThings.RecyclableMemoryManager.GetStream(data), savepath, 128, 128);
+                                        tex.ThumbnailPath = savepath;
                                         ind = i + 1;
                                     }
                                     catch
@@ -1611,7 +1614,12 @@ namespace ME3Explorer
                 Image thumb;
                 try
                 {
-                    thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
+                    //thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
+                    using (FileStream fs = new FileStream(tex.ThumbnailPath, FileMode.Open))
+                    {
+                        var stream = ImageEngine.GenerateThumbnailToStream(fs, 128, 128);
+                        thumb = Image.FromStream(stream);
+                    }
                     thumbs.Add(thumb);
                 }
                 catch
@@ -1661,8 +1669,8 @@ namespace ME3Explorer
 
         private void ShowContextPanel(bool state)
         {
-            Transitions.ITransitionType trans = new Transitions.TransitionType_CriticalDamping(400);
-            Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 30, trans);
+            UsefulThings.WinForms.Transitions.ITransitionType trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400);
+            UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 30, trans);
         }
 
         private void MainListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1853,7 +1861,7 @@ namespace ME3Explorer
 
         private void DetailsHideButton_Click(object sender, EventArgs e)
         {
-            Transitions.ITransitionType transition = new Transitions.TransitionType_CriticalDamping(700);
+            UsefulThings.WinForms.Transitions.ITransitionType transition = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(700);
 
             if (DetailsHideButton.Text == ">>")
             {
@@ -1861,12 +1869,12 @@ namespace ME3Explorer
                 TabSearchSplitter.Visible = false;
                 SearchBox.Visible = false;
                 SearchCountLabel.Visible = false;
-                Transitions.Transition.run(splitContainer3, "SplitterDistance", splitContainer3.Width - 40, transition);
+                UsefulThings.WinForms.Transitions.Transition.run(splitContainer3, "SplitterDistance", splitContainer3.Width - 40, transition);
                 DetailsHideButton.Text = "<<";
             }
             else
             {
-                Transitions.Transition.run(splitContainer3, "SplitterDistance", PropertiesWidth, transition);
+                UsefulThings.WinForms.Transitions.Transition.run(splitContainer3, "SplitterDistance", PropertiesWidth, transition);
                 DetailsHideButton.Text = ">>";
                 TabSearchSplitter.Visible = true;
                 SearchBox.Visible = true;
@@ -1884,7 +1892,7 @@ namespace ME3Explorer
                     {
                         if (SearchBox.Text != "")
                         {
-                            Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new Transitions.TransitionType_CriticalDamping(400));
+                            UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
                             int start = Environment.TickCount;
                             Search.SearchAllv5(SearchBox.Text, SearchListBox, "new");
                             TimeSpan ts = TimeSpan.FromTicks(Environment.TickCount - start);
@@ -1914,10 +1922,10 @@ namespace ME3Explorer
         {
             if (SearchBox.Text == "")
             {
-                Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", 0, new Transitions.TransitionType_CriticalDamping(400));
+                UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", 0, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
                 SearchCountLabel.Text = "";
                 int dest = splitContainer4.Width - (SearchBox.Location.X - TabSearchSplitter.Location.X) - 4;
-                Transitions.Transition.run(SearchBox, "Width", dest, new Transitions.TransitionType_CriticalDamping(200));
+                UsefulThings.WinForms.Transitions.Transition.run(SearchBox, "Width", dest, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(200));
             }
             else
             {
@@ -1925,7 +1933,7 @@ namespace ME3Explorer
                 {
                     if (SearchBox.Text[0] != '\\')
                     {
-                        Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new Transitions.TransitionType_CriticalDamping(400));
+                        UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
 
                         int start = Environment.TickCount;
                         Search.SearchAllv5(SearchBox.Text, SearchListBox, "new");
@@ -1935,7 +1943,7 @@ namespace ME3Explorer
 
                         SearchCountLabel.Text = SearchListBox.Items.Count.ToString();
                         int dest = splitContainer4.Width - 4 - (SearchCountLabel.Width) - (SearchBox.Location.X - TabSearchSplitter.Location.X);
-                        Transitions.Transition.run(SearchBox, "Width", dest, new Transitions.TransitionType_CriticalDamping(200));
+                        UsefulThings.WinForms.Transitions.Transition.run(SearchBox, "Width", dest, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(200));
                     }
                 }
             }
@@ -2078,22 +2086,25 @@ namespace ME3Explorer
                     path = ofd.FileName;
             }
 
+            StringBuilder sb = new StringBuilder();
+
             // KFreon: Check replacing texture
-            string selectedformat;
-            if (!Textures.Methods.CheckTextureFormat(File.ReadAllBytes(path), tex2D.texFormat, out selectedformat))
+            using (ImageEngineImage img = new ImageEngineImage(path))
             {
-                MessageBox.Show("Invalid format. Selected image is: " + selectedformat.ToUpperInvariant() + "  Required: " + tex2D.texFormat.ToUpperInvariant(), "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (img.Format.InternalFormat.ToString().Contains(tex2D.texFormat, StringComparison.OrdinalIgnoreCase))
+                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToUpperInvariant());
+
+                if (img.NumMipMaps < tex2D.Mips)
+                    sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);
+            }
+
+
+            if (sb.Length != 0)
+            {
+                MessageBox.Show(sb.ToString(), "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return "";
             }
 
-            // KFreon: Check replacing mips
-            int numMips = 0;
-            bool CorrectMips = Textures.Methods.CheckTextureMips(path, tex2D.Mips, out numMips);
-            if (!CorrectMips)
-            {
-                MessageBox.Show("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + numMips, "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return "";
-            }
             return path;
         }
 
@@ -2300,8 +2311,6 @@ namespace ME3Explorer
 
 
 
-
-
                     Parallel.ForEach(files.Keys, po, file =>
                     {
                         PCCObjects.IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, WhichGame);
@@ -2318,7 +2327,16 @@ namespace ME3Explorer
                                 try
                                 {
                                     Textures.ITexture2D tex2D = KFreonLib.Textures.Creation.CreateTexture2D(tex.Textures[0], WhichGame, pathBIOGame);
-                                    tex.ThumbnailPath = KFreonLib.Textures.Creation.GenerateThumbnail(tex2D.GetImage(), tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName), ExecFolder);
+                                    string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
+                                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
+                                    {
+                                        if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128, 128))
+                                            tex.ThumbnailPath = destination;
+                                        else
+                                            tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
+                                    }
+                                        
+
                                     DebugOutput.PrintLn("Generated thumbnail at: " + tex.ThumbnailPath);
                                     ProgBarUpdater.IncrementBar();
 
@@ -2393,7 +2411,9 @@ namespace ME3Explorer
             if (FromFile)
                 Textures.Creation.GenerateThumbnail(tex.Files[0], WhichGame, tex.ExpIDs[0], pathBIOGame, thumbpath, ExecFolder);
             else
-                Textures.Creation.GenerateThumbnail(tex2D.GetImage(), thumbpath, ExecFolder);
+                using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
+                    ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128, 128);
+
             Tree.ReplaceTex(index, tex);
         }
 

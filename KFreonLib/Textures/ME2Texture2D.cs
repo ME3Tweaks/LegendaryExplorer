@@ -9,6 +9,7 @@ using System.Diagnostics;
 using BitConverter = KFreonLib.Misc.BitConverter;
 using KFreonLib.PCCObjects;
 using KFreonLib.Helpers;
+using CSharpImageLibrary;
 
 namespace KFreonLib.Textures
 {
@@ -1320,7 +1321,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                return Textures.Methods.GetImage(texFormat, imgdata);
+                ImageEngineImage img = new ImageEngineImage(imgdata);
+                return img.GetGDIBitmap();
             }
             catch { }
             return null;

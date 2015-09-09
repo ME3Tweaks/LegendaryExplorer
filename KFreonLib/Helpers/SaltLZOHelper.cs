@@ -195,7 +195,7 @@ namespace KFreonLib.Helpers
             return imgBuffer;
         }
 
-        public MemoryTributary DecompressPCC(Stream raw, IPCCObject pcc)
+        public MemoryStream DecompressPCC(Stream raw, IPCCObject pcc)
         {
             raw.Seek(pcc.header.Length, SeekOrigin.Begin);
             int pos = 4;
@@ -278,7 +278,7 @@ namespace KFreonLib.Helpers
                 Chunks[i] = c;
             }
 
-            MemoryTributary result = new MemoryTributary();
+            MemoryStream result = UsefulThings.RecyclableMemoryManager.GetStream();
             foreach (Chunk c in Chunks)
             {
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);

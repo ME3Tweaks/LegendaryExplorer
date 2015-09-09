@@ -279,7 +279,7 @@ namespace ME3Explorer.DLCEditor2
 
         private void extractFile(int n, String exportLocation)
         {
-            MemoryTributary m = DLC.DecompressEntry(n);
+            MemoryStream m = DLC.DecompressEntry(n);
             FileStream fs = new FileStream(exportLocation, FileMode.Create, FileAccess.Write);
             fs.Write(m.ToArray(), 0, (int)m.Length);
             fs.Close();

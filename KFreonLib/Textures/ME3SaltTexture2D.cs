@@ -9,6 +9,7 @@ using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading;
 using KFreonLib.PCCObjects;
+using CSharpImageLibrary;
 
 namespace KFreonLib.Textures
 {
@@ -1655,7 +1656,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                return Textures.Methods.GetImage(texFormat, imgdata);
+                ImageEngineImage img = new ImageEngineImage(imageData);
+                return img.GetGDIBitmap();
             }
             catch { }
             return null;

@@ -13,7 +13,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using KFreonLib.PCCObjects;
 using KFreonLib.Debugging;
-using ResILWrapper;
+using CSharpImageLibrary;
 
 namespace KFreonLib.Textures
 {
@@ -23,6 +23,25 @@ namespace KFreonLib.Textures
     /// </summary>
     public static class Methods
     {
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
+        public static Bitmap GetJPGFromByteArray(byte[] imgData, int width, int height)
+        {
+            using (MemoryStream stream = new MemoryStream(imgData))
+            {
+                ImageEngineImage img = new ImageEngineImage(stream, ".dds");
+
+                using (MemoryStream savestream = new MemoryStream(imgData.Length))
+                {
+                    img.Save(savestream, ImageEngineFormat.JPG, false);
+                    return UsefulThings.WinForms.Misc.CreateBitmap(savestream.ToArray(), width, height);
+                }
+            }
+        }
+
+
+
+
+
         #region HASHES
         /// <summary>
         /// Finds hash from texture name given list of PCC's and ExpID's.
@@ -100,7 +119,7 @@ namespace KFreonLib.Textures
         /// <param name="tmpTex"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        [Obsolete("Use BetterDDSCheck instead.")]
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static Bitmap DDSCheck(abstractTexInfo tmpTex, byte[] data)
         {
             DDSPreview dds = new DDSPreview(data);
@@ -112,13 +131,15 @@ namespace KFreonLib.Textures
             return retval;
         }
 
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static Bitmap BetterDDSCheck(abstractTexInfo tmpTex, byte[] imgData)
         {
             Bitmap retval = null;
-            using (ResILImageBase img = ResILImageBase.Create(imgData))
+            using (MemoryStream ms = new MemoryStream(imgData))
             {
-                tmpTex.NumMips = img.Mips;
-                tmpTex.Format = img.SurfaceFormat.ToString();
+                ImageEngineImage img = new ImageEngineImage(ms, ".dds");
+                tmpTex.NumMips = img.NumMipMaps;
+                tmpTex.Format = img.Format.InternalFormat.ToString();
 
                 if (tmpTex.Format == "None")
                 {
@@ -134,20 +155,24 @@ namespace KFreonLib.Textures
 
                     // Heff: unreliable, seems to always be ARGB.
                     //if (((ResILImage)img).MemoryFormat == ResIL.Unmanaged.DataFormat.RGBA)
-                        //tmpTex.Format = "ARGB";
+                    //tmpTex.Format = "ARGB";
                 }
 
-                
+
                 try
                 {
-                    retval = img.ToWinFormsBitmap();
+                    using (MemoryStream savestream = new MemoryStream())
+                    {
+                        img.Save(savestream, ImageEngineFormat.JPG, false);
+                        retval = UsefulThings.WinForms.Misc.CreateBitmap(savestream.ToArray(), img.Width, img.Height);
+                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                } 
-            }
-            
+                }
+
+            }            
             return retval;
         }
 
@@ -158,6 +183,7 @@ namespace KFreonLib.Textures
         /// <param name="newtexture">Path to new texture file.</param>
         /// <param name="desiredformat">Format retrieved from tree, to which newtexture must conform.</param>
         /// <returns>Format of new texture as string, empty string if not correct, BORKED if something broke.</returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static bool CheckTextureFormat(byte[] data, string desiredformat, out string format)
         {
             format = null;
@@ -176,8 +202,8 @@ namespace KFreonLib.Textures
 
         public static bool CheckTextureFormat(string currentFormat, string desiredFormat)
         {
-            string curr = currentFormat.ToLowerInvariant().Replace("pf_", "");
-            string des = desiredFormat.ToLowerInvariant().Replace("pf_", "");
+            string curr = currentFormat.ToLowerInvariant().Replace("pf_", "").Replace("DDS_", "");
+            string des = desiredFormat.ToLowerInvariant().Replace("pf_", "").Replace("DDS_", "");
             bool correct = curr == des;
             return correct || (!correct && curr.Contains("ati") && des.Contains("normalmap")) || (!correct && curr.Contains("normalmap") && des.Contains("ati"));
         }
@@ -189,6 +215,7 @@ namespace KFreonLib.Textures
         /// <param name="newtexture">Path to texture to load.</param>
         /// <param name="ExpectedMips">Number of expected mips.</param>
         /// <returns>True if number of mips is valid.</returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static bool CheckTextureMips(string newtexture, int ExpectedMips, out int numMips)
         {
             numMips = 0;
@@ -219,6 +246,7 @@ namespace KFreonLib.Textures
         /// <param name="image">Original thumbnail.</param>
         /// <param name="size">Size to set.</param>
         /// <returns>Bitmap of new thumbnail.</returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static Bitmap FixThumb(Image image, int size)
         {
             int tw, th, tx, ty;
@@ -255,6 +283,7 @@ namespace KFreonLib.Textures
         /// <param name="imgToResize">Image to resize</param>
         /// <param name="size">Size to shape to</param>
         /// <returns>Resized image as an Image.</returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static Image resizeImage(Image imgToResize, Size size)
         {
             // KFreon: And so begins the black magic
@@ -286,83 +315,11 @@ namespace KFreonLib.Textures
         }
 
 
-        /// <summary>
-        /// Gets image from image data. PROBABLY GOING TO CHANGE!
-        /// </summary>
-        /// <param name="ddsformat">Format of DDS we're getting image from. If null or has a . in it, designated as non DDS.</param>
-        /// <param name="imgData">Array of image data.</param>
-        /// <returns>Image as a Bitmap.</returns>
+        [Obsolete("just no...", true)]
         public static Bitmap GetImage(string ddsformat, byte[] imgData)
         {
-            Bitmap img = null;
-            MemoryStream ms = null;
-
-            try
-            {
-                // KFreon: NON DDS
-                if (ddsformat == null || ddsformat.Contains('.'))
-                {
-                    ms = new MemoryStream(imgData);
-                    for (int i = 0; i < 3; i++)
-                    {
-                        try
-                        {
-                            img = Image.FromStream(ms) as Bitmap;
-                            break;
-                        }
-                        catch
-                        {
-                            System.Threading.Thread.Sleep(500);
-                        }
-                    }
-                }
-                else   // KFreon: DDS
-                {
-                    if (ddsformat.ToLower() != "dxt3")
-                    {
-                        DDSPreview data = KFreonLib.Textures.Methods.GetAllButDXT3DDSData(imgData);
-                        if (data != null)
-                        {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                try
-                                {
-                                    img = DDSImage.ToBitmap(data.GetMipData(), (data.FormatString == "G8") ? DDSFormat.G8 : data.Format, (int)data.Width, (int)data.Height);
-                                    break;
-                                }
-                                catch
-                                {
-                                    System.Threading.Thread.Sleep(500);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 3; i++) 
-                        {
-                            try
-                            {
-                                /*ms = new MemoryStream(imgData);
-                                ms = (MemoryStream)KFreonLib.Textures.Methods.GetDXTS3Data((Stream)ms);*/
-                                using (ResILImageBase kfimg = ResILImageBase.Create(imgData))
-                                    img = kfimg.ToWinFormsBitmap();
-                                break;
-                            }
-                            catch
-                            {
-                                System.Threading.Thread.Sleep(500);
-                            }
-                        }       
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                DebugOutput.PrintLn("Image creation failed: " + e.Message);
-            }
-
-            return img;
+            using (ImageEngineImage img = new ImageEngineImage(imgData))
+                return img.GetGDIBitmap();
         }
 
 
@@ -372,6 +329,7 @@ namespace KFreonLib.Textures
         /// <param name="image">Image to save.</param>
         /// <param name="savepath">Path to save image to.</param>
         /// <returns>True if saved successfully. False if failed or already exists.</returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static bool SaveImage(Image image, string savepath)
         {
             // Heff: fix to ensure that the temp directories are created.
@@ -397,6 +355,7 @@ namespace KFreonLib.Textures
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
+        [Obsolete("Use CSharpImageLibrary instead.", true)]
         public static DDSPreview GetAllButDXT3DDSData(byte[] data)
         {
             if (data == null)
@@ -408,49 +367,6 @@ namespace KFreonLib.Textures
             DDSPreview ddsimg = new DDSPreview(data);
             return ddsimg;
         }
-
-
-        /// <summary>
-        /// GOING TO CHANGE
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="imagePath"></param>
-        /// <returns></returns>
-        /*public static Stream GetDXTS3Data(byte[] data, string imagePath)
-        {
-            DevIL.ImageImporter DImporter = new DevIL.ImageImporter();
-            DevIL.Image im = DImporter.LoadImage(imagePath);
-            DevIL.ImageExporter DExporter = new DevIL.ImageExporter();
-
-            MemoryStream ms = new MemoryStream();
-            DExporter.SaveImageToStream(im, DevIL.ImageType.Bmp, ms);
-
-            DImporter.Dispose();
-            im.Dispose();
-            DExporter.Dispose();
-            return ms;
-        }*/
-
-
-        /// <summary>
-        /// GOING TO CHANGE
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        /*public static Stream GetDXTS3Data(Stream stream)
-        {
-            DevIL.ImageImporter DImporter = new DevIL.ImageImporter();
-            DevIL.Image im = DImporter.LoadImageFromStream(stream);
-            DevIL.ImageExporter DExporter = new DevIL.ImageExporter();
-
-            MemoryStream ms = new MemoryStream();
-            DExporter.SaveImageToStream(im, DevIL.ImageType.Bmp, ms);
-
-            DImporter.Dispose();
-            im.Dispose();
-            DExporter.Dispose();
-            return ms;
-        }*/
     }
 
 
@@ -466,6 +382,7 @@ namespace KFreonLib.Textures
         /// <param name="img">Image to get a thumbnail from.</param>
         /// <param name="size">OPTIONAL: Size to resize to (Maximum in any direction). Defaults to 128.</param>
         /// <returns></returns>
+        [Obsolete("not good", true)]
         public static Bitmap GenerateThumbImage(Image img, int size = 128)
         {
             // KFreon: Get resize details for resize to max size 128 (same aspect ratio)
@@ -496,6 +413,7 @@ namespace KFreonLib.Textures
         /// <param name="savepath">Path to save thumbnail to.</param>
         /// <param name="execpath">Path to ME3Explorer \exec\ folder.</param>
         /// <returns>Path to saved thumbnail.</returns>
+        [Obsolete("not good", true)]
         public static string GenerateThumbnail(Bitmap img, string savepath, string execpath)
         {
             // KFreon: Get thumbnail and set savepath
@@ -523,8 +441,9 @@ namespace KFreonLib.Textures
         public static string GenerateThumbnail(string filename, int WhichGame, int expID, string pathBIOGame, string savepath, string execpath)
         {
             ITexture2D tex2D = CreateTexture2D(filename, expID, WhichGame, pathBIOGame);
-            Bitmap bmp = tex2D.GetImage();
-            return GenerateThumbnail(bmp, savepath, execpath);
+            using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
+                ImageEngine.GenerateThumbnailToFile(ms, savepath, 128, 128);
+            return savepath;
         }
 
 
@@ -614,7 +533,6 @@ namespace KFreonLib.Textures
                     break;
                 case 3:
                     temptex2D = new ME3SaltTexture2D(texName, pccs, ExpIDs, hash, pathBIOGame, WhichGame);
-                    //temptex2D = new ME3SaltTexture2D(new ME3PCCObject(pccs[0]), ExpIDs[0], pathBIOGame, hash);
                     break;
             }
             if (hash != 0)

@@ -3,7 +3,6 @@ using KFreonLib.GUI;
 using KFreonLib.PCCObjects;
 using KFreonLib.Scripting;
 using KFreonLib.Textures;
-using ResILWrapper;
 using SaltTPF;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UsefulThings;
+using CSharpImageLibrary;
 
 namespace KFreonLib.Textures
 {
@@ -284,11 +284,9 @@ namespace KFreonLib.Textures
                 string tempthumbpath = ExecPath + "ThumbnailCaches\\" + "ME" + WhichGame + "ThumbnailCache\\" + texname + "_" + hash + ".jpg";
                 bool exists = File.Exists(tempthumbpath);
                 if (!exists)
-                {
-                    using (Bitmap imgData = temptex2D.GetImage())
-                        if (imgData != null)
-                            thumbnailPath = KFreonLib.Textures.Creation.GenerateThumbnail(imgData, tempthumbpath, ExecPath);
-                }
+                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(temptex2D.GetImageData()))
+                        if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 64, 64))
+                            thumbnailPath = tempthumbpath;
 
                 // KFreon: Initialise things
                 ValidFirstPCC = WhichGame == 2 && (!String.IsNullOrEmpty(temptex2D.arcName) && temptex2D.arcName != "None");
@@ -343,7 +341,7 @@ namespace KFreonLib.Textures
         public int TPFInd = -1;
         public string FilePath = null;
         public bool AutofixSuccess = true;
-        public MemoryTributary Thumbnail = null;
+        public MemoryStream Thumbnail = null;
         public int ThumbInd = -1;
         public List<TPFTexInfo> FileDuplicates = null;
         public List<int> TreeDuplicates = null;
@@ -431,7 +429,7 @@ namespace KFreonLib.Textures
 
             Files = new List<string>();
             ExpIDs = new List<int>();
-            Thumbnail = new MemoryTributary();
+            Thumbnail = UsefulThings.RecyclableMemoryManager.GetStream();
             OriginalExpIDs = new List<int>();
             OriginalFiles = new List<string>();
             FileDuplicates = new List<TPFTexInfo>();
@@ -460,7 +458,7 @@ namespace KFreonLib.Textures
             retval.NumMips = NumMips;
             retval.AutofixSuccess = AutofixSuccess;
             retval.ThumbInd = ThumbInd;
-            retval.Thumbnail = new MemoryTributary(Thumbnail.ToArray());
+            retval.Thumbnail = UsefulThings.RecyclableMemoryManager.GetStream(Thumbnail.ToArray());
             retval.FileDuplicates = new List<TPFTexInfo>(FileDuplicates);
             retval.TreeDuplicates = new List<int>(TreeDuplicates);
             retval.Height = Height;
@@ -733,7 +731,6 @@ namespace KFreonLib.Textures
         public void EnumerateDetails()
         {
             byte[] data = Extract("", true);
-            Image img = null;
             if (data == null)
                 DebugOutput.PrintLn("Unable to get image data for: " + FileName);
             else
@@ -741,20 +738,13 @@ namespace KFreonLib.Textures
                 // KFreon: Check formatting etc
                 try
                 {
-                    img = Textures.Methods.BetterDDSCheck(this, data);
-                    if (Format == "None")
-                        Format = Path.GetExtension(this.FileName);
-                    Height = img.Height;
-                    Width = img.Width;
-
-                    ValidDimensions = ValidateDimensions();
-
-                    // KFreon: Generate and save thumbnail
-                    Bitmap newimg = Textures.Creation.GenerateThumbImage(img, 64);
-                    newimg.Save(Thumbnail, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    
-                    newimg.Dispose();
-                    img.Dispose();
+                    MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data);
+                    ImageEngineImage image = new ImageEngineImage(ms, null);
+                    NumMips = image.NumMipMaps;
+                    Height = image.Height;
+                    Width = image.Width;
+                    Format = image.Format.InternalFormat.ToString();
+                    image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
                 }
                 catch(Exception e)
                 {
