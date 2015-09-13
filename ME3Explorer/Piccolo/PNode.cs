@@ -799,7 +799,7 @@ namespace UMD.HCIL.Piccolo {
 		public virtual Object Clone() {
 			BinaryFormatter bFormatter = new BinaryFormatter();
 			bFormatter.SurrogateSelector = PUtil.FrameworkSurrogateSelector;
-			MemoryStream stream = new MemoryStream();
+			MemoryStream stream = UsefulThings.RecyclableMemoryManager.GetStream();
 			PStream pStream = new PStream(stream);
 			pStream.WriteObjectTree(bFormatter, this);
 			return (PNode)pStream.ReadObjectTree(bFormatter);

@@ -221,7 +221,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ImportKeys(Vector3[] loc, Vector4[] rot, int time)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             int pos = 0;
             int pos2 = 28;
             byte[] buff = new byte[0];
@@ -273,7 +273,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void SaveChanges()
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(BitConverter.GetBytes((int)Unknown), 0, 4);
             foreach (PropertyReader.Property p in Props)
                 m.Write(p.raw, 0, p.raw.Length);

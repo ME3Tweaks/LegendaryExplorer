@@ -13,7 +13,7 @@ using KFreonLib.Textures;
 using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
 using KFreonLib.GUI;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Scripting
 {
@@ -479,12 +479,15 @@ namespace KFreonLib.Scripting
                 /*using (ResILImageBase img = ResILImageBase.Create(data))
                     return img.ToWinFormsBitmap(64, 64);*/
                 Bitmap bmp = null;
-                using (MemoryStream stream = new MemoryStream(data))
+                using (MemoryStream stream = UsefulThings.RecyclableMemoryManager.GetStream(data))
                 {
-                    ImageEngineImage img = new ImageEngineImage(stream, ".dds", 64);
-                    MemoryStream savestream = UsefulThings.RecyclableMemoryManager.GetStream();
-                    img.Save(savestream, ImageEngineFormat.JPG, false);
-                    bmp = UsefulThings.WinForms.Misc.CreateBitmap(savestream.ToArray(), 64, 64);
+                    using (MemoryStream savestream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    {
+                        using (ImageEngineImage img = new ImageEngineImage(stream, ".dds", 64))
+                            img.Save(savestream, ImageEngineFormat.JPG, false);
+
+                        bmp = UsefulThings.WinForms.Imaging.CreateBitmap(savestream.ToArray(), 64, 64);
+                    }
                 }
 
                 return bmp;

@@ -9,7 +9,7 @@ using System.Diagnostics;
 using BitConverter = KFreonLib.Misc.BitConverter;
 using KFreonLib.PCCObjects;
 using KFreonLib.Helpers;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -175,7 +175,7 @@ namespace KFreonLib.Textures
             //DebugOutput.PrintLn("ImageData size = " + imageData.Length);
             pccExpIdx = pccExpID;
 
-            MemoryStream dataStream = new MemoryStream(imageData);
+            MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData);
             privateimgList = new List<ImageInfo>();
             dataStream.ReadValueU32(); //Current position in pcc
             numMipMaps = dataStream.ReadValueU32();
@@ -297,7 +297,7 @@ namespace KFreonLib.Textures
 
         public byte[] ThisToArray(uint pccExportDataOffset, ME2PCCObject pcc)
         {
-            MemoryStream buffer = new MemoryStream();
+            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
             buffer.Write(headerData, 0, headerData.Length);
 
             if (properties.ContainsKey("LODGroup"))
@@ -510,7 +510,7 @@ namespace KFreonLib.Textures
                 case storage.pccSto:
                     //imgBuffer = imgFile.imgData; // copy image data as-is
                     imgBuffer = imgFile.resize();
-                    using (MemoryStream dataStream = new MemoryStream())
+                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -721,7 +721,7 @@ namespace KFreonLib.Textures
                     break;
                 case storage.pccSto:
                     imgBuffer = imgFile.resize();
-                    using (MemoryStream dataStream = new MemoryStream())
+                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -878,7 +878,7 @@ namespace KFreonLib.Textures
                 GC.Collect();
                 // store images as pccSto format
                 privateimgList = new List<ImageInfo>();
-                MemoryStream tempData = new MemoryStream();
+                MemoryStream tempData = UsefulThings.RecyclableMemoryManager.GetStream();
 
                 for (int i = 0; i < inTex.privateimgList.Count; i++)
                 {
@@ -1321,8 +1321,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                ImageEngineImage img = new ImageEngineImage(imgdata);
-                return img.GetGDIBitmap();
+                using (ImageEngineImage img = new ImageEngineImage(imgdata))
+                    return img.GetGDIBitmap();
             }
             catch { }
             return null;

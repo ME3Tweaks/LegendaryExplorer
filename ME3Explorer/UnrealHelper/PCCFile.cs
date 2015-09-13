@@ -252,7 +252,7 @@ namespace ME3Explorer.UnrealHelper
                     return;
             }
             int sizebefore = memsize;
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(memory, 0, (int)Header.offinfo + 8);
             byte[] buff = BitConverter.GetBytes(Header.ExportCount + 1);
             m.Write(buff, 0, 4);
@@ -348,14 +348,14 @@ namespace ME3Explorer.UnrealHelper
         }
         public void appendStream(byte[] buff)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(memory, 0, memsize);
             m.Write(buff, 0, buff.Length);
             memory = m.ToArray();
         }
         public void appendStream(MemoryStream buff)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(memory, 0, memsize);
             buff.Seek(0, SeekOrigin.Begin);
             for (int i = 0; i < buff.Length; i++)

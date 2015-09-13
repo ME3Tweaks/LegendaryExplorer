@@ -399,7 +399,7 @@ namespace SaltTPF
                     if (filebytes != null && filebytes.Length > 0)
                     {
                         // create a seekable memory stream of the file bytes
-                        using (filestream = new MemoryStream(filebytes))
+                        using (filestream = UsefulThings.RecyclableMemoryManager.GetStream(filebytes))
                         {
                             if (filestream != null && filestream.Length > 0 && filestream.CanSeek == true)
                             {
@@ -956,7 +956,7 @@ namespace SaltTPF
 
                     // write the bytes from each row into a memory stream and get the 
                     // resulting byte array
-                    using (msData = new MemoryStream())
+                    using (msData = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
 
                         // do we reverse the rows in the row list.
@@ -1249,7 +1249,7 @@ namespace SaltTPF
                     bool blnRowsReverse = false;
 
 
-                    using (msData = new MemoryStream())
+                    using (msData = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
                         // get the size in bytes of each row in the image
                         int intImageRowByteSize = iWidth * ((int)this.objTargaHeader.PixelDepth / 8);

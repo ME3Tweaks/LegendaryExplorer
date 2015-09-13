@@ -83,7 +83,7 @@ namespace ME3Explorer.Unreal.Classes
             Memory = new byte[buff.Length - start];
             for (int i = 0; i < buff.Length - start; i++)
                 Memory[i] = buff[i + start];//Skip Props and size int
-            MemoryStream m = new MemoryStream(Memory);
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(Memory);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);
@@ -304,7 +304,7 @@ namespace ME3Explorer.Unreal.Classes
         public void DumpToFile(string path)
         {
             BitConverter.IsLittleEndian = true;
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = false;
             Serialize(Container);
@@ -315,12 +315,12 @@ namespace ME3Explorer.Unreal.Classes
         public void Save()
         {
             BitConverter.IsLittleEndian = true;
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = false;
             Serialize(Container);
             m = Container.Memory;
-            MemoryStream res = new MemoryStream();
+            MemoryStream res = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = pcc.Exports[MyIndex].Data;
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, buff);
             int start = props[props.Count - 1].offend;

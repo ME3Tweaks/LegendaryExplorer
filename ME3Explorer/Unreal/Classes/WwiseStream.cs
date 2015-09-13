@@ -267,7 +267,7 @@ namespace ME3Explorer.Unreal.Classes
 
         private byte[] ModifyHeader(byte[] nw, byte[] old)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(nw, 0, 8);
             m.Write(old, 8, 14);
             m.Write(nw, 22, 10);

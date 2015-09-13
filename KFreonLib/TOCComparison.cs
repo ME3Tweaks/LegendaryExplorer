@@ -313,7 +313,7 @@ namespace KFreonLib
             {
                 List<Inventory> content = new List<Inventory>();
                 Inventory temp = new Inventory();
-                MemoryStream myStream = new MemoryStream(memory);
+                MemoryStream myStream = UsefulThings.RecyclableMemoryManager.GetStream(memory);
                 if (myStream.ReadValueU32() == 0x3AB70C13)
                 {
                     myStream.Seek(8, SeekOrigin.Begin);
@@ -370,7 +370,7 @@ namespace KFreonLib
             {
                 List<Inventory> content = new List<Inventory>();
                 Inventory temp = new Inventory();
-                MemoryStream myStream = new MemoryStream(memory);
+                MemoryStream myStream = UsefulThings.RecyclableMemoryManager.GetStream(memory);
                 if (myStream.ReadValueU32() == 0x3AB70C13)
                 {
                     myStream.Seek(8, SeekOrigin.Begin);

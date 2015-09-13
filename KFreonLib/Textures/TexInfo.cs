@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UsefulThings;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -284,9 +284,14 @@ namespace KFreonLib.Textures
                 string tempthumbpath = ExecPath + "ThumbnailCaches\\" + "ME" + WhichGame + "ThumbnailCache\\" + texname + "_" + hash + ".jpg";
                 bool exists = File.Exists(tempthumbpath);
                 if (!exists)
-                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(temptex2D.GetImageData()))
-                        if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 64, 64))
-                            thumbnailPath = tempthumbpath;
+                    try
+                    {
+                        using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(temptex2D.GetImageData()))
+                            if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 64))
+                                thumbnailPath = tempthumbpath;
+                    }
+                    catch { }  // KFreon: Don't really care about failures
+                    
 
                 // KFreon: Initialise things
                 ValidFirstPCC = WhichGame == 2 && (!String.IsNullOrEmpty(temptex2D.arcName) && temptex2D.arcName != "None");
@@ -738,13 +743,17 @@ namespace KFreonLib.Textures
                 // KFreon: Check formatting etc
                 try
                 {
-                    MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data);
-                    ImageEngineImage image = new ImageEngineImage(ms, null);
-                    NumMips = image.NumMipMaps;
-                    Height = image.Height;
-                    Width = image.Width;
-                    Format = image.Format.InternalFormat.ToString();
-                    image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
+                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data))
+                    {
+                        using (ImageEngineImage image = new ImageEngineImage(ms, null))
+                        {
+                            NumMips = image.NumMipMaps;
+                            Height = image.Height;
+                            Width = image.Width;
+                            Format = image.Format.InternalFormat.ToString();
+                            image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
+                        }
+                    }
                 }
                 catch(Exception e)
                 {
@@ -755,8 +764,6 @@ namespace KFreonLib.Textures
                 }
                 data = null;
             }
-
-            GC.Collect();
         }
 
         public string GetFileFromDisplay(string file)

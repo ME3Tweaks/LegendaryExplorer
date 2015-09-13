@@ -616,7 +616,7 @@ namespace ME3Explorer.Unreal.Classes
             byte[] buff = new byte[pcc.Exports[Index].Data.Length - start];
             for (int i = 0; i < pcc.Exports[Index].Data.Length - start; i++)
                 buff[i] = pcc.Exports[Index].Data[i + start];
-            MemoryStream m = new MemoryStream(buff);
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(buff);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);

@@ -284,7 +284,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] MatrixToBuff(Matrix m)
         {
-            MemoryStream mem = new MemoryStream();
+            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
             mem.Write(BitConverter.GetBytes(m.M11), 0, 4);
             mem.Write(BitConverter.GetBytes(m.M12), 0, 4);
             mem.Write(BitConverter.GetBytes(m.M13), 0, 4);

@@ -140,7 +140,7 @@ namespace ME3Explorer.GUIDCacheEditor
         {
             if (pcc == null || GUIDs == null)
                 return;
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = pcc.Exports[0].Data;
             props = PropertyReader.getPropList(pcc, buff);
             int pos = props[props.Count - 1].offend;

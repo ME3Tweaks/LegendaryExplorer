@@ -263,7 +263,7 @@ namespace KFreonLib.PCCObjects
                 }
 
                 int dataStart = 0;
-                using (MemoryStream he = new MemoryStream(header))
+                using (MemoryStream he = UsefulThings.RecyclableMemoryManager.GetStream(header))
                 {
                     he.Seek(0, SeekOrigin.Begin);
                     he.ReadValueS32();
@@ -442,7 +442,7 @@ namespace KFreonLib.PCCObjects
             if (bDLCStored)
                 saveCompress = false;
 
-            using (MemoryStream newPccStream = new MemoryStream())
+            using (MemoryStream newPccStream = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 //ME3Explorer.DebugOutput.Clear();
                 DebugOutput.PrintLn("Saving file...");

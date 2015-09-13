@@ -93,7 +93,7 @@ namespace KFreonLib.Helpers
                 pos += newChunks[i].cprSize;
             }
             byte[] result;
-            using (MemoryStream stream = new MemoryStream())
+            using (MemoryStream stream = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 byte[] magic = new byte[] { 0xC1, 0x83, 0x2A, 0x9E, 0x00, 0x00, 0x02, 0x00 };
                 pos = Gibbed.IO.NumberHelpers.LittleEndian(pos);
@@ -165,7 +165,7 @@ namespace KFreonLib.Helpers
             byte[] rawData = new byte[readCprSize];
             rawData = archiveStream.ReadBytes(readCprSize);
             archiveStream.Close();
-            using (MemoryStream data = new MemoryStream(rawData))
+            using (MemoryStream data = UsefulThings.RecyclableMemoryManager.GetStream(rawData))
             {
                 for (int i = 0; i < noChunks; i++)
                 {
@@ -298,7 +298,7 @@ namespace KFreonLib.Helpers
             head.blocksize = maxBlockSize;
             head.uncompressedsize = chunk.Uncompressed.Length;
             int pos = 0;
-            MemoryStream mem = new MemoryStream();
+            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
             List<Block> blockList = new List<Block>();
             int startData = 16 + 8 * numBlocks;
             mem.Seek(startData, SeekOrigin.Begin);

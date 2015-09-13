@@ -130,7 +130,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] Serialize()
         {
-            MemoryStream buff = new MemoryStream();
+            MemoryStream buff = UsefulThings.RecyclableMemoryManager.GetStream();
             StreamAppend(buff, BitConverter.GetBytes(index));
             StreamAppend(buff, SerializeProps());
             StreamAppend(buff, SerializeBoundings());
@@ -149,7 +149,7 @@ namespace ME3Explorer.UnrealHelper
                
         public byte[] SerializeProps()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             for (int i = 0; i < OProps.Count; i++)
                 for (int j = 0; j < OProps[i].raw.Length; j++)
                     rbuff.WriteByte((byte)OProps[i].raw[j]);
@@ -158,7 +158,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeBoundings()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = BitConverter.GetBytes(bound.origin.x);
             rbuff.Write(buff,0,4);
             buff = BitConverter.GetBytes(bound.origin.y);
@@ -190,7 +190,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeRawFaces()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = BitConverter.GetBytes((Int32)8);
             rbuff.Write(buff, 0, 4);
             buff = BitConverter.GetBytes(RawFaces.Count);
@@ -211,7 +211,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeMaterials()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = BitConverter.GetBytes((Int32)Materials.Count);
             rbuff.Write(buff, 0, 4);
             for (int i = 0; i < Materials.Count; i++)
@@ -221,7 +221,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeVertices()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = BitConverter.GetBytes((Int32)12);
             rbuff.Write(buff, 0, 4);
             buff = BitConverter.GetBytes(Vertices.Count);
@@ -243,7 +243,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeUVs()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             int count = UVSets.Count;
             if (count <= 0)
                 return null;
@@ -268,7 +268,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] SerializeIndexBuffers()
         {
-            MemoryStream rbuff = new MemoryStream();
+            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
             byte[] buff = BitConverter.GetBytes((Int32)2);
             rbuff.Write(buff, 0, 4);
             buff = BitConverter.GetBytes(IndexBuffer.Length);
@@ -789,7 +789,7 @@ namespace ME3Explorer.UnrealHelper
             if (offFace == -1 || offIndex == -1 || offUV == -1 || offVert == -1 || offUnk == -1)
                 return buff;
             List<InjectOffset> l = new List<InjectOffset>();
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             l.Add(newInject(offFace ,0));
             l.Add(newInject(offIndex, 1));
             l.Add(newInject(offUV, 2));

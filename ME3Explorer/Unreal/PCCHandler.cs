@@ -20,7 +20,7 @@ namespace ME3Explorer.Unreal
         /// <returns>a decompressed array of bytes.</returns>
         public static byte[] Decompress(byte[] rawData)
         {
-            using (MemoryStream input = new MemoryStream(rawData))
+            using (MemoryStream input = UsefulThings.RecyclableMemoryManager.GetStream(rawData))
             {
                 return Decompress(input);
             }
@@ -112,7 +112,7 @@ namespace ME3Explorer.Unreal
             byte[] buff;
 
             input.Seek(0, SeekOrigin.Begin);
-            using (MemoryStream output = new MemoryStream())
+            using (MemoryStream output = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 output.Seek(0, SeekOrigin.Begin);
 
@@ -160,7 +160,7 @@ namespace ME3Explorer.Unreal
         /// <returns>a compressed array of bytes.</returns>
         public static byte[] Compress(byte[] uncompressedPcc)
         {
-            MemoryStream uncPccStream = new MemoryStream(uncompressedPcc);
+            MemoryStream uncPccStream = UsefulThings.RecyclableMemoryManager.GetStream(uncompressedPcc);
             return ((MemoryStream)Compress(uncPccStream)).ToArray();
         }
 
@@ -245,7 +245,7 @@ namespace ME3Explorer.Unreal
             }
 
             const uint maxBlockSize = 0x100000;
-            Stream outputStream = new MemoryStream();
+            Stream outputStream = UsefulThings.RecyclableMemoryManager.GetStream();
             // copying pcc header
             byte[] buffer = new byte[130];
             uncompressedPcc.Seek(0, SeekOrigin.Begin);
@@ -360,7 +360,7 @@ namespace ME3Explorer.Unreal
 
         public static void CompressAndSave(byte[] uncompressedPcc, string pccFileName)
         {
-            CompressAndSave(new MemoryStream(uncompressedPcc), pccFileName);
+            CompressAndSave(UsefulThings.RecyclableMemoryManager.GetStream(uncompressedPcc), pccFileName);
         }
     }
 }

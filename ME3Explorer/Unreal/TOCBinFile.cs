@@ -27,7 +27,7 @@ namespace ME3Explorer.Unreal
 
         public TOCBinFile(string path)
         {
-            Memory = new MemoryStream(File.ReadAllBytes(path).ToArray());
+            Memory = UsefulThings.RecyclableMemoryManager.GetStream(File.ReadAllBytes(path).ToArray());
             ReadFile();
         }
 

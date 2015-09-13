@@ -50,7 +50,7 @@ namespace ME3Explorer.HeaderEditor
         {
             if (MyFileName == "")
                 return;
-            MemoryStream m = new MemoryStream(Memory);
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(Memory);
             BitConverter.IsLittleEndian = true;
             m.Seek(0x1A, 0);
             m.Write(BitConverter.GetBytes(Int32.Parse(textBox1.Text, System.Globalization.NumberStyles.HexNumber)), 0, 4);

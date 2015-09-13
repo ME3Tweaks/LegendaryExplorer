@@ -414,7 +414,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] Vector3ToBuff(Vector3 v)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             BitConverter.IsLittleEndian = true;
             m.Write(BitConverter.GetBytes(v.X), 0, 4);
             m.Write(BitConverter.GetBytes(v.Y), 0, 4);
@@ -424,7 +424,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] RotatorToBuff(Vector3 v)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             BitConverter.IsLittleEndian = true;
             m.Write(BitConverter.GetBytes((int)v.X), 0, 4);
             m.Write(BitConverter.GetBytes((int)v.Y), 0, 4);

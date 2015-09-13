@@ -11,7 +11,7 @@ using KFreonLib.PCCObjects;
 using KFreonLib.Helpers;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -175,7 +175,7 @@ namespace KFreonLib.Textures
             //DebugOutput.PrintLn("ImageData size = " + imageData.Length);
             pccExpIdx = pccExpID;
 
-            MemoryStream dataStream = new MemoryStream(imageData);
+            MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData);
             privateimgList = new List<ImageInfo>();
             dataStream.ReadValueU32(); //Current position in pcc
             numMipMaps = dataStream.ReadValueU32();
@@ -261,7 +261,7 @@ namespace KFreonLib.Textures
                     }
                     break;
                 case storage.pccCpr:
-                    using (MemoryStream ms = new MemoryStream(imageData))
+                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(imageData))
                     {
                         SaltLZOHelper lzohelp = new SaltLZOHelper();
                         imgBuffer = lzohelp.DecompressTex(ms, imgInfo.offset, imgInfo.uncSize, imgInfo.cprSize);
@@ -301,7 +301,7 @@ namespace KFreonLib.Textures
 
         public byte[] ToArray(int pccExportDataOffset, ME1PCCObject pcc)
         {
-            MemoryStream buffer = new MemoryStream();
+            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
             buffer.Write(headerData, 0, headerData.Length);
 
             if (properties.ContainsKey("LODGroup"))
@@ -474,7 +474,7 @@ namespace KFreonLib.Textures
                     throw new NotImplementedException("Texture replacement not supported in external packages yet");
                 case storage.pccSto:
                     imgBuffer = imgFile.resize();
-                    using (MemoryStream dataStream = new MemoryStream())
+                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -488,7 +488,7 @@ namespace KFreonLib.Textures
                     }
                     break;
                 case storage.pccCpr:
-                    using (MemoryStream dataStream = new MemoryStream())
+                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
                     {
                         dataStream.WriteBytes(imageData);
                         SaltLZOHelper lzohelper = new SaltLZOHelper();
@@ -590,7 +590,7 @@ namespace KFreonLib.Textures
             newImg.storageType = tempImg.storageType;
             newImg.imgSize = imgSize;
 
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 ms.WriteBytes(imageData);
                 newImg.offset = (int)ms.Position;
@@ -695,7 +695,7 @@ namespace KFreonLib.Textures
             propVal++;
             properties["MipTailBaseIdx"].Value.IntValue = propVal;
             //MessageBox.Show("raw size: " + properties["MipTailBaseIdx"].raw.Length + "\nproperty offset: " + properties["MipTailBaseIdx"].offsetval);
-            using (MemoryStream rawStream = new MemoryStream(properties["MipTailBaseIdx"].raw))
+            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["MipTailBaseIdx"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -707,7 +707,7 @@ namespace KFreonLib.Textures
             //SaltPropertyReader.Property Size = properties["SizeX"];
             propVal = (int)newImgInfo.imgSize.width;
             properties["SizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
+            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -716,7 +716,7 @@ namespace KFreonLib.Textures
             //properties["SizeX"] = Size;
             //Size = properties["SizeY"];
             properties["SizeY"].Value.IntValue = (int)newImgInfo.imgSize.height;
-            using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
+            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -819,7 +819,7 @@ namespace KFreonLib.Textures
                     Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
                     break;
                 case storage.pccCpr:
-                    using (MemoryStream ms = new MemoryStream(imageData))
+                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(imageData))
                     {
                         SaltLZOHelper lzohelp = new SaltLZOHelper();
                         imgBuffer = lzohelp.DecompressTex(ms, imgInfo.offset, imgInfo.uncSize, imgInfo.cprSize);
@@ -890,7 +890,7 @@ namespace KFreonLib.Textures
         public void CopyImgList(ME1Texture2D inTex, ME1PCCObject pcc, bool norender = false)
         {
             List<ImageInfo> tempList = new List<ImageInfo>();
-            MemoryStream tempData = new MemoryStream();
+            MemoryStream tempData = UsefulThings.RecyclableMemoryManager.GetStream();
             SaltLZOHelper lzo = new SaltLZOHelper();
             numMipMaps = inTex.numMipMaps;
 
@@ -943,7 +943,7 @@ namespace KFreonLib.Textures
                                 newImg.cprSize = replaceImg.uncSize;
                                 newImg.imgSize = replaceImg.imgSize;
                                 newImg.offset = (int)(tempData.Position);
-                                using (MemoryStream tempStream = new MemoryStream(inTex.imageData))
+                                using (MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream(inTex.imageData))
                                 {
                                     tempData.WriteBytes(lzo.DecompressTex(tempStream, replaceImg.offset, replaceImg.uncSize, replaceImg.cprSize));
                                 }
@@ -993,7 +993,7 @@ namespace KFreonLib.Textures
                         newImg.offset = (int)(tempData.Position);
                         if (replaceImg.storageType == storage.pccCpr)
                         {
-                            using (MemoryStream tempStream = new MemoryStream(inTex.imageData))
+                            using (MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream(inTex.imageData))
                             {
                                 tempData.WriteBytes(lzo.DecompressTex(tempStream, replaceImg.offset, replaceImg.uncSize, replaceImg.cprSize));
                             }
@@ -1027,7 +1027,7 @@ namespace KFreonLib.Textures
 
             byte[] buff;
             //Copy properties
-            using (MemoryStream tempMem = new MemoryStream())
+            using (MemoryStream tempMem = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 tempMem.WriteBytes(headerData);
                 for (int i = 0; i < inTex.properties.Count; i++)
@@ -1213,7 +1213,7 @@ namespace KFreonLib.Textures
                     }
                     break;
                 case storage.pccCpr:
-                    using (MemoryStream ms = new MemoryStream(imageData))
+                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(imageData))
                     {
                         SaltLZOHelper lzohelp = new SaltLZOHelper();
                         imgBuffer = lzohelp.DecompressTex(ms, imgInfo.offset, imgInfo.uncSize, imgInfo.cprSize);
@@ -1464,7 +1464,7 @@ namespace KFreonLib.Textures
 
             byte[] imgBuff = ddsfile.resize();
 
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream())
             {
                 ms.WriteBytes(imageData);
                 imgInfo.uncSize = imgBuff.Length;
@@ -1745,8 +1745,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                ImageEngineImage img = new ImageEngineImage(imageData);
-                return img.GetGDIBitmap();
+                using (ImageEngineImage img = new ImageEngineImage(imageData))
+                    return img.GetGDIBitmap();
             }
             catch { }
             return null;

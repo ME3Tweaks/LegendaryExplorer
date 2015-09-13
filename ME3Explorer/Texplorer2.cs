@@ -19,7 +19,7 @@ using KFreonLib.MEDirectories;
 using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 using System.Text;
 using UsefulThings;
 
@@ -1589,8 +1589,8 @@ namespace ME3Explorer
                                 {
                                     try
                                     {
-                                        byte[] data = UsefulThings.WinForms.Misc.GetPixelDataFromBitmap(img);
-                                        ImageEngine.GenerateThumbnailToFile(UsefulThings.RecyclableMemoryManager.GetStream(data), savepath, 128, 128);
+                                        byte[] data = UsefulThings.WinForms.Imaging.GetPixelDataFromBitmap(img);
+                                        ImageEngine.GenerateThumbnailToFile(UsefulThings.RecyclableMemoryManager.GetStream(data), savepath, 128);
                                         tex.ThumbnailPath = savepath;
                                         ind = i + 1;
                                     }
@@ -1615,11 +1615,12 @@ namespace ME3Explorer
                 try
                 {
                     //thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
-                    using (FileStream fs = new FileStream(tex.ThumbnailPath, FileMode.Open))
+                    /*using (FileStream fs = new FileStream(tex.ThumbnailPath, FileMode.Open))
                     {
-                        var stream = ImageEngine.GenerateThumbnailToStream(fs, 128, 128);
-                        thumb = Image.FromStream(stream);
-                    }
+                        //var stream = ImageEngine.GenerateThumbnailToStream(fs, 128);
+                        thumb = Image.FromStream(fs);
+                    }*/
+                    thumb = Image.FromFile(tex.ThumbnailPath);
                     thumbs.Add(thumb);
                 }
                 catch
@@ -2330,7 +2331,7 @@ namespace ME3Explorer
                                     string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
                                     using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
                                     {
-                                        if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128, 128))
+                                        if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128))
                                             tex.ThumbnailPath = destination;
                                         else
                                             tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
@@ -2412,7 +2413,7 @@ namespace ME3Explorer
                 Textures.Creation.GenerateThumbnail(tex.Files[0], WhichGame, tex.ExpIDs[0], pathBIOGame, thumbpath, ExecFolder);
             else
                 using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
-                    ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128, 128);
+                    ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128);
 
             Tree.ReplaceTex(index, tex);
         }

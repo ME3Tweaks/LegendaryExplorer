@@ -93,7 +93,7 @@ namespace SaltTPF
                         temppos = fs.Position;
 
                         fs2.Seek(0, SeekOrigin.Begin); // Rewind
-                        using (MemoryStream ms = new MemoryStream())
+                        using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream())
                         {
                             using (DeflateStream deflator = new DeflateStream(ms, CompressionMode.Compress))
                             {

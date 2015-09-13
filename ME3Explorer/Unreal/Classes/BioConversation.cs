@@ -691,7 +691,7 @@ namespace ME3Explorer.Unreal.Classes
             int tmp1, tmp2, size;
             if (pcc == null)
                 return;
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(BitConverter.GetBytes(Unk1), 0, 4);
             foreach(PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))

@@ -19,7 +19,7 @@ using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
-using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace ME3Explorer
 {
@@ -791,7 +791,7 @@ namespace ME3Explorer
 
             // KFreon: Thread TPF loading
             ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = 1;//Properties.Settings.Default.NumThreads;
+            po.MaxDegreeOfParallelism = Properties.Settings.Default.NumThreads;
             DebugOutput.PrintLn("Reading TPF using " + po.MaxDegreeOfParallelism + " threads.");
             List<TPFTexInfo> temptexes = new List<TPFTexInfo>();
             for (int i = 0; i < numEntries; i++)
@@ -979,7 +979,7 @@ namespace ME3Explorer
             else
             {
                 Bitmap img = null;
-                using (MemoryStream ms = new MemoryStream(data))
+                using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data))
                     using (ImageEngineImage image = new ImageEngineImage(ms, null, 512))
                         img = image.GetGDIBitmap();
 

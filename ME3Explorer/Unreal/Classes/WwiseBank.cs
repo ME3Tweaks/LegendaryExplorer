@@ -260,7 +260,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] RecreateBinary()
         {
             BitConverter.IsLittleEndian = true;
-            MemoryStream res = new MemoryStream();
+            MemoryStream res = UsefulThings.RecyclableMemoryManager.GetStream();
             res.Write(memory, 0, BinaryOffset);
             int size = 0;
             byte[] tmp;
@@ -285,7 +285,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] RecreateHIRC(byte[] buff)
         {
-            MemoryStream res = new MemoryStream();
+            MemoryStream res = UsefulThings.RecyclableMemoryManager.GetStream();
             res.Write(buff, 0, 0x8);
             res.Write(BitConverter.GetBytes(HIRCObjects.Count), 0, 4);
             int size = 4;

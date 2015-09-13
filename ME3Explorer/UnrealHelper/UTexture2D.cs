@@ -472,7 +472,7 @@ namespace ME3Explorer.UnrealHelper
 
         public Texture getDirectXTexture(Device device)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             m.Write(ImageRaw, 0, ImageRaw.Length);
             Texture t = TextureLoader.FromStream(device,m);
             
@@ -545,7 +545,7 @@ namespace ME3Explorer.UnrealHelper
             if (ImageF != null)
             {
                 Texture t = null;
-                MemoryStream m = new MemoryStream();
+                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
                 if (T2D.Tsource == "Textures" &&
                    TextureTFCs[tfc].offset > 0 &&
                    TextureTFCs[tfc].size > 0 &&
@@ -674,7 +674,7 @@ namespace ME3Explorer.UnrealHelper
 
         public MemoryStream ExportToStream(int tfc, string cachepath)
         {
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
             if (tfc < 0 || tfc >= TextureTFCs.Count)
                 return m;
             if (TextureTFCs[tfc].InCache && cachepath != "")

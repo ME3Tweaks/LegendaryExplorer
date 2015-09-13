@@ -161,11 +161,11 @@ namespace ME3Explorer.Meshplorer
             }
             skm.LODModels[MPOpt.SelectedLOD] = lodpcc;
             SerializingContainer con = new SerializingContainer();
-            con.Memory = new MemoryStream();
+            con.Memory = UsefulThings.RecyclableMemoryManager.GetStream();
             con.isLoading = false;
             skm.Serialize(con);
             int end = skm.GetPropertyEnd();
-            MemoryStream mem = new MemoryStream();
+            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
             mem.Write(MPOpt.pcc.Exports[MPOpt.SelectedObject].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             MPOpt.pcc.Exports[MPOpt.SelectedObject].Data = mem.ToArray();

@@ -135,9 +135,9 @@ namespace SaltTPF
 
             private byte[] Deflate(byte[] databuff, int start, int count)
             {
-                using (MemoryStream decompr = new MemoryStream())
+                using (MemoryStream decompr = UsefulThings.RecyclableMemoryManager.GetStream())
                 {
-                    using (MemoryStream cmpr = new MemoryStream(databuff, start, count))
+                    using (MemoryStream cmpr = UsefulThings.RecyclableMemoryManager.GetStream(databuff, start, count))
                     {
                         using (DeflateStream deflator = new DeflateStream(cmpr, CompressionMode.Decompress))
                         {
