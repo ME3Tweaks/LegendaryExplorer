@@ -284,7 +284,6 @@ namespace KFreonLib.PCCObjects
         {
             if (!disposedValue)
             {
-                this.Data = null;
                 this.info = null;
 
                 disposedValue = true;
@@ -571,7 +570,6 @@ namespace KFreonLib.PCCObjects
             if (!disposedValue)
             {
                 this.info = null;
-                this.Data = null;
 
                 disposedValue = true;
             }

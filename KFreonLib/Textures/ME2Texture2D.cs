@@ -1341,7 +1341,6 @@ namespace KFreonLib.Textures
             if (!disposedValue)
             {
                 this.privateimgList = null;
-                this.imgList = null;
                 this.allFiles = null;
                 this.allPccs = null;
                 this.expIDs = null;

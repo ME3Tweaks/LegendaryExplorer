@@ -537,7 +537,7 @@ namespace KFreonLib.PCCObjects
 
         public string getNameEntry(int index)
         {
-            throw new NotImplementedException();
+            return GetName(index);
         }
 
 
