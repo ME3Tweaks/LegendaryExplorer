@@ -112,7 +112,7 @@ namespace KFreonLib.Textures
         public static string GenerateThumbnail(string filename, int WhichGame, int expID, string pathBIOGame, string savepath, string execpath)
         {
             ITexture2D tex2D = CreateTexture2D(filename, expID, WhichGame, pathBIOGame);
-            using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(tex2D.GetImageData()))
+            using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
                 ImageEngine.GenerateThumbnailToFile(ms, savepath, 128);
             return savepath;
         }

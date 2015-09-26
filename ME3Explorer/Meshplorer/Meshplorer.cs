@@ -260,7 +260,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     SerializingContainer c = new SerializingContainer();
-                    c.Memory = UsefulThings.RecyclableMemoryManager.GetStream();
+                    c.Memory = new MemoryStream();
                     c.isLoading = false;
                     skm.Serialize(c);
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -571,11 +571,11 @@ namespace ME3Explorer.Meshplorer
                 s.MaterialIndex = (short)newmat;
                 skm.LODModels[lod].Sections[sec] = s;
                 SerializingContainer con = new SerializingContainer();
-                con.Memory = UsefulThings.RecyclableMemoryManager.GetStream();
+                con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
                 int end = skm.GetPropertyEnd();
-                MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream mem = new MemoryStream();
                 mem.Write(pcc.Exports[exp].Data, 0, end);
                 mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
                 pcc.Exports[exp].Data = mem.ToArray();
@@ -596,11 +596,11 @@ namespace ME3Explorer.Meshplorer
                 return;
             skm.Materials[t.Index] = Materials[n] + 1;
             SerializingContainer con = new SerializingContainer();
-            con.Memory = UsefulThings.RecyclableMemoryManager.GetStream();
+            con.Memory = new MemoryStream();
             con.isLoading = false;
             skm.Serialize(con);
             int end = skm.GetPropertyEnd();
-            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream mem = new MemoryStream();
             mem.Write(pcc.Exports[idx].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             pcc.Exports[idx].Data = mem.ToArray();

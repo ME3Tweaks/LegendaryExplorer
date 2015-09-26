@@ -545,7 +545,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] Serialize()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             StreamAppend(rbuff, SerializeIndex());
             StreamAppend(rbuff, SerializeProps());
             StreamAppend(rbuff, SerializeBoundings());
@@ -564,7 +564,7 @@ namespace ME3Explorer.UnrealHelper
         
         private byte[] SerializeProps()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             for (int i = 0; i < Mesh.OProps.Count; i++)
                 for (int j = 0; j < Mesh.OProps[i].raw.Length; j++)
                     rbuff.WriteByte((byte)Mesh.OProps[i].raw[j]);
@@ -573,7 +573,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeBoundings()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(Mesh.bound.origin.x);
             rbuff.Write(buff, 0, 4);
             buff = BitConverter.GetBytes(Mesh.bound.origin.y);
@@ -593,7 +593,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeMaterials()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(Mesh.materials.Count);
             rbuff.Write(buff, 0, buff.Length);
             for (int i = 0; i < Mesh.materials.Count; i++)
@@ -606,7 +606,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeRotOrg()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(Mesh.origin.x);
             rbuff.Write(buff, 0, 4);
             buff = BitConverter.GetBytes(Mesh.origin.y);
@@ -624,7 +624,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeBones()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(Mesh.Bones.Count);
             rbuff.Write(buff, 0, 4);
             for (int i = 0; i < Mesh.Bones.Count; i++)
@@ -663,7 +663,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeLODs()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(Mesh.LODs.Count);
             rbuff.Write(buff, 0, 4);
             for (int i = 0; i < Mesh.LODs.Count; i++)
@@ -734,7 +734,7 @@ namespace ME3Explorer.UnrealHelper
 
         private byte[] SerializeUnknown()
         {
-            MemoryStream rbuff = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream rbuff = new MemoryStream();
             StreamAppend(rbuff, Mesh.unk1);
             StreamAppend(rbuff, Mesh.unk2);
             return rbuff.ToArray();

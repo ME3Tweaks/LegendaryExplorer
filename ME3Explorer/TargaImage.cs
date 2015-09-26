@@ -399,7 +399,7 @@ namespace ME3Explorer
                     if (filebytes != null && filebytes.Length > 0)
                     {
                         // create a seekable memory stream of the file bytes
-                        using (filestream = UsefulThings.RecyclableMemoryManager.GetStream(filebytes))
+                        using (filestream = new MemoryStream(filebytes))
                         {
                             if (filestream != null && filestream.Length > 0 && filestream.CanSeek == true)
                             {
@@ -956,7 +956,7 @@ namespace ME3Explorer
 
                     // write the bytes from each row into a memory stream and get the 
                     // resulting byte array
-                    using (msData = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (msData = new MemoryStream())
                     {
 
                         // do we reverse the rows in the row list.
@@ -1249,7 +1249,7 @@ namespace ME3Explorer
                     bool blnRowsReverse = false;
 
                     
-                    using (msData = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (msData = new MemoryStream())
                     {
                         // get the size in bytes of each row in the image
                         int intImageRowByteSize = iWidth * ((int)this.objTargaHeader.PixelDepth / 8);

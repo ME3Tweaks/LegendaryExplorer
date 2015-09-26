@@ -175,7 +175,7 @@ namespace KFreonLib.Textures
             //DebugOutput.PrintLn("ImageData size = " + imageData.Length);
             pccExpIdx = pccExpID;
 
-            MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData);
+            MemoryStream dataStream = new MemoryStream(imageData);
             privateimgList = new List<ImageInfo>();
             dataStream.ReadValueU32(); //Current position in pcc
             numMipMaps = dataStream.ReadValueU32();
@@ -297,7 +297,7 @@ namespace KFreonLib.Textures
 
         public byte[] ThisToArray(uint pccExportDataOffset, ME2PCCObject pcc)
         {
-            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream buffer = new MemoryStream();
             buffer.Write(headerData, 0, headerData.Length);
 
             if (properties.ContainsKey("LODGroup"))
@@ -510,7 +510,7 @@ namespace KFreonLib.Textures
                 case storage.pccSto:
                     //imgBuffer = imgFile.imgData; // copy image data as-is
                     imgBuffer = imgFile.resize();
-                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (MemoryStream dataStream = new MemoryStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -721,7 +721,7 @@ namespace KFreonLib.Textures
                     break;
                 case storage.pccSto:
                     imgBuffer = imgFile.resize();
-                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (MemoryStream dataStream = new MemoryStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -878,7 +878,7 @@ namespace KFreonLib.Textures
                 GC.Collect();
                 // store images as pccSto format
                 privateimgList = new List<ImageInfo>();
-                MemoryStream tempData = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream tempData = new MemoryStream();
 
                 for (int i = 0; i < inTex.privateimgList.Count; i++)
                 {
@@ -1332,5 +1332,44 @@ namespace KFreonLib.Textures
         {
             throw new NotImplementedException();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                this.privateimgList = null;
+                this.imgList = null;
+                this.allFiles = null;
+                this.allPccs = null;
+                this.expIDs = null;
+                this.footerData = null;
+                this.headerData = null;
+                this.imageData = null;
+                
+
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME2Texture2D()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

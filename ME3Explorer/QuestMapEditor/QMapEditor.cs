@@ -151,7 +151,7 @@ namespace ME3Explorer.QuestMapEditor
             int count1 = 0xAF;
             int count2 = 0x64;
             BitConverter.IsLittleEndian = true;
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             m.Write(pcc.Exports[3].Data, 0, 0xC);
             for (int i = 0; i < count1; i++)
             {

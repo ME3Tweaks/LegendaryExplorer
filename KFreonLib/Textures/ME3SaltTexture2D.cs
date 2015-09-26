@@ -182,7 +182,7 @@ namespace KFreonLib.Textures
                 throw new Exception("Texture2D " + texIdx + " not found");
 
             pccExpIdx = texIdx;
-            MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData);  // FG: we will move forward with the memorystream (we are reading an export entry for a texture object data inside the pcc)
+            MemoryStream dataStream = new MemoryStream(imageData);  // FG: we will move forward with the memorystream (we are reading an export entry for a texture object data inside the pcc)
             numMipMaps = dataStream.ReadValueU32();                 // FG: 1st int32 (4 bytes / 32bits) is number of mipmaps
             uint count = numMipMaps;
 
@@ -223,7 +223,7 @@ namespace KFreonLib.Textures
 
         public byte[] ToArray(uint pccExportDataOffset, ME3PCCObject pcc)
         {
-            using (MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream())
+            using (MemoryStream tempStream = new MemoryStream())
             {
                 tempStream.WriteBytes(headerData);
 
@@ -353,7 +353,7 @@ namespace KFreonLib.Textures
                 }
             }
 
-            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream buffer = new MemoryStream();
             buffer.Write(headerData, 0, headerData.Length);
 
             if (lodExists)
@@ -368,7 +368,7 @@ namespace KFreonLib.Textures
                     textureGroupName = newTextureGroupName;
                     if (!pcc.Names.Exists(name => name == newTextureGroupName))
                         pcc.Names.Add(newTextureGroupName);
-                    using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(LODGroup.raw))
+                    using (MemoryStream rawStream = new MemoryStream(LODGroup.raw))
                     {
                         rawStream.Seek(32, SeekOrigin.Begin);
                         rawStream.WriteValueS32(pcc.Names.FindIndex(name => name == newTextureGroupName));
@@ -378,7 +378,7 @@ namespace KFreonLib.Textures
                 }
                 else
                     nameExists = true;
-                //MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
+                //MemoryStream buffer = new MemoryStream();
                 //buffer.Write(headerData, 0, headerData.Length);
                 foreach (KeyValuePair<string, PropertyReader.Property> kvp in properties)
                 {
@@ -410,7 +410,7 @@ namespace KFreonLib.Textures
             }
             else
             {
-                //MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
+                //MemoryStream buffer = new MemoryStream();
                 //buffer.Write(headerData, 0, headerData.Length);
                 int lodID = pcc.findName("LODGroup");
                 if (lodID == -1)
@@ -579,7 +579,7 @@ namespace KFreonLib.Textures
             propVal--;
             properties["MipTailBaseIdx"].Value.IntValue = propVal;
 
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["MipTailBaseIdx"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["MipTailBaseIdx"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -587,28 +587,28 @@ namespace KFreonLib.Textures
             }
             propVal = (int)privateimgList[0].imgSize.width;
             properties["SizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
                 properties["SizeX"].raw = rawStream.ToArray();
             }
             properties["SizeY"].Value.IntValue = (int)privateimgList[0].imgSize.height;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
                 properties["SizeY"].raw = rawStream.ToArray();
             }
             properties["OriginalSizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
                 properties["OriginalSizeX"].raw = rawStream.ToArray();
             }
             properties["OriginalSizeY"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -623,7 +623,7 @@ namespace KFreonLib.Textures
             propVal++;
             properties["MipTailBaseIdx"].Value.IntValue = propVal;
 
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["MipTailBaseIdx"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["MipTailBaseIdx"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -633,7 +633,7 @@ namespace KFreonLib.Textures
             // update Sizes
             propVal = (int)privateimgList[0].imgSize.width;
             properties["SizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -641,7 +641,7 @@ namespace KFreonLib.Textures
             }
 
             properties["SizeY"].Value.IntValue = (int)privateimgList[0].imgSize.height;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -649,14 +649,14 @@ namespace KFreonLib.Textures
             }
 
             properties["OriginalSizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
                 properties["OriginalSizeX"].raw = rawStream.ToArray();
             }
             properties["OriginalSizeY"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -691,7 +691,7 @@ namespace KFreonLib.Textures
             //PropertyReader.Property Size = properties["SizeX"];
             int propVal = (int)newImgInfo.imgSize.width;
             properties["SizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -700,7 +700,7 @@ namespace KFreonLib.Textures
             //properties["SizeX"] = Size;
             //Size = properties["SizeY"];
             properties["SizeY"].Value.IntValue = (int)newImgInfo.imgSize.height;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -708,14 +708,14 @@ namespace KFreonLib.Textures
             }
             //properties["SizeY"] = Size;
             properties["OriginalSizeX"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
                 properties["OriginalSizeX"].raw = rawStream.ToArray();
             }
             properties["OriginalSizeY"].Value.IntValue = propVal;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -811,7 +811,7 @@ namespace KFreonLib.Textures
                     imgBuffer = imgFile.imgData; // copy image data as-is
                     /*if (imgBuffer.Length != imgInfo.uncSize)
                         throw new FormatException("image sizes do not match, original is " + imgInfo.uncSize + ", new is " + imgBuffer.Length);*/
-                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (MemoryStream dataStream = new MemoryStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -827,7 +827,7 @@ namespace KFreonLib.Textures
                     /*
                     try
                     {
-                        using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData))
+                        using (MemoryStream dataStream = new MemoryStream(imageData))
                         {
                             dataStream.Seek(imgInfo.offset, SeekOrigin.Begin);
                             dataStream.Write(imgBuffer, 0, imgBuffer.Length);
@@ -835,7 +835,7 @@ namespace KFreonLib.Textures
                     }
                     catch (NotSupportedException)
                     {
-                        MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream();
+                        MemoryStream dataStream = new MemoryStream();
                         dataStream.WriteBytes(imgBuffer);
                         dataStream.WriteBytes(imageData);
                         imageData = dataStream.ToArray();
@@ -947,7 +947,7 @@ namespace KFreonLib.Textures
                     imgBuffer = imgFile.imgData; // copy image data as-is
                     if (imgBuffer.Length != imgInfo.uncSize)
                         throw new FormatException("image sizes do not match, original is " + imgInfo.uncSize + ", new is " + imgBuffer.Length);
-                    using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (MemoryStream dataStream = new MemoryStream())
                     {
                         dataStream.WriteBytes(imageData);
                         if (imgBuffer.Length <= imgInfo.uncSize && imgInfo.offset > 0)
@@ -963,7 +963,7 @@ namespace KFreonLib.Textures
                     /*
                     try
                     {
-                        using (MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream(imageData))
+                        using (MemoryStream dataStream = new MemoryStream(imageData))
                         {
                             dataStream.Seek(imgInfo.offset, SeekOrigin.Begin);
                             dataStream.Write(imgBuffer, 0, imgBuffer.Length);
@@ -971,7 +971,7 @@ namespace KFreonLib.Textures
                     }
                     catch (NotSupportedException)
                     {
-                        MemoryStream dataStream = UsefulThings.RecyclableMemoryManager.GetStream();
+                        MemoryStream dataStream = new MemoryStream();
                         dataStream.WriteBytes(imgBuffer);
                         dataStream.WriteBytes(imageData);
                         imageData = dataStream.ToArray();
@@ -1031,7 +1031,7 @@ namespace KFreonLib.Textures
             propVal++;
             properties["MipTailBaseIdx"].Value.IntValue = propVal;
             //MessageBox.Show("raw size: " + properties["MipTailBaseIdx"].raw.Length + "\nproperty offset: " + properties["MipTailBaseIdx"].offsetval);
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["MipTailBaseIdx"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["MipTailBaseIdx"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propVal);
@@ -1046,7 +1046,7 @@ namespace KFreonLib.Textures
             int propX = (int)newImgInfo.imgSize.width;
             int propY = (int)newImgInfo.imgSize.height;
             properties["SizeX"].Value.IntValue = propX;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeX"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeX"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propX);
@@ -1055,7 +1055,7 @@ namespace KFreonLib.Textures
             //properties["SizeX"] = Size;
             //Size = properties["SizeY"];
             properties["SizeY"].Value.IntValue = propY;
-            using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["SizeY"].raw))
+            using (MemoryStream rawStream = new MemoryStream(properties["SizeY"].raw))
             {
                 rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                 rawStream.WriteValueS32(propY);
@@ -1065,14 +1065,14 @@ namespace KFreonLib.Textures
             try
             {
                 properties["OriginalSizeX"].Value.IntValue = propX;
-                using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeX"].raw))
+                using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeX"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                     rawStream.WriteValueS32(propX);
                     properties["OriginalSizeX"].raw = rawStream.ToArray();
                 }
                 properties["OriginalSizeY"].Value.IntValue = propY;
-                using (MemoryStream rawStream = UsefulThings.RecyclableMemoryManager.GetStream(properties["OriginalSizeY"].raw))
+                using (MemoryStream rawStream = new MemoryStream(properties["OriginalSizeY"].raw))
                 {
                     rawStream.Seek(rawStream.Length - 4, SeekOrigin.Begin);
                     rawStream.WriteValueS32(propY);
@@ -1164,7 +1164,7 @@ namespace KFreonLib.Textures
 
             //Copy Properties
             byte[] buff;
-            using (MemoryStream tempMem = UsefulThings.RecyclableMemoryManager.GetStream())
+            using (MemoryStream tempMem = new MemoryStream())
             {
                 tempMem.WriteBytes(headerData);
                 for (int i = 0; i < inTex.properties.Count; i++)
@@ -1704,5 +1704,41 @@ namespace KFreonLib.Textures
                 sw.WriteLine(texName);
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                this.allFiles = null;
+                this.allPccs = null;
+                this.expIDs = null;
+                this.footerData = null;
+                this.headerData = null;
+                this.imageData = null;
+                this.privateimgList = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME3SaltTexture2D()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace KFreonLib.Textures
 {
-    public interface ITexture2D
+    public interface ITexture2D : IDisposable
     {
         void DumpTexture(string filename);
 

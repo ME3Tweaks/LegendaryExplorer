@@ -86,7 +86,7 @@ namespace ME3Explorer.PAREditor
             {
                 byte[] buff = Encoding.UTF8.GetBytes(rtb1.Text);
                 byte[] res = PARFileEncXOR(buff);
-                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream m = new MemoryStream();
                 m.Write(res, 0, res.Length);
                 Memory = m.ToArray();
                 hb1.ByteProvider = new DynamicByteProvider(Memory);

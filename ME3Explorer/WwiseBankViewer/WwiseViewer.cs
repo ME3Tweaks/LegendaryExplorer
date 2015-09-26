@@ -174,7 +174,7 @@ namespace ME3Explorer.WwiseBankViewer
                     return;
                 if (!int.TryParse(sres[4].Trim(), out tp))
                     return;
-                MemoryStream res = UsefulThings.RecyclableMemoryManager.GetStream(buff);
+                MemoryStream res = new MemoryStream(buff);
                 res.Seek(5, 0);
                 res.Write(BitConverter.GetBytes(ID1), 0, 4);
                 res.Seek(13, 0);

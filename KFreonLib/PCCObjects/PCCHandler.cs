@@ -20,7 +20,7 @@ namespace KFreonLib.PCCObjects
         /// <returns>a decompressed array of bytes.</returns>
         public static byte[] Decompress(byte[] rawData)
         {
-            using (MemoryStream input = UsefulThings.RecyclableMemoryManager.GetStream(rawData))
+            using (MemoryStream input = new MemoryStream(rawData))
             {
                 return Decompress(input);
             }
@@ -112,7 +112,7 @@ namespace KFreonLib.PCCObjects
             byte[] buff;
 
             input.Seek(0, SeekOrigin.Begin);
-            using (MemoryStream output = UsefulThings.RecyclableMemoryManager.GetStream())
+            using (MemoryStream output = new MemoryStream())
             {
                 output.Seek(0, SeekOrigin.Begin);
 
@@ -160,7 +160,7 @@ namespace KFreonLib.PCCObjects
         /// <returns>a compressed array of bytes.</returns>
         public static byte[] Compress(byte[] uncompressedPcc)
         {
-            MemoryStream uncPccStream = UsefulThings.RecyclableMemoryManager.GetStream(uncompressedPcc);
+            MemoryStream uncPccStream = new MemoryStream(uncompressedPcc);
             return ((MemoryStream)Compress(uncPccStream)).ToArray();
         }
 
@@ -245,7 +245,7 @@ namespace KFreonLib.PCCObjects
             }
 
             const uint maxBlockSize = 0x100000;
-            Stream outputStream = UsefulThings.RecyclableMemoryManager.GetStream();
+            Stream outputStream = new MemoryStream();
             // copying pcc header
             byte[] buffer = new byte[130];
             uncompressedPcc.Seek(0, SeekOrigin.Begin);
@@ -360,7 +360,7 @@ namespace KFreonLib.PCCObjects
 
         public static void CompressAndSave(byte[] uncompressedPcc, string pccFileName)
         {
-            CompressAndSave(UsefulThings.RecyclableMemoryManager.GetStream(uncompressedPcc), pccFileName);
+            CompressAndSave(new MemoryStream(uncompressedPcc), pccFileName);
         }
     }
 }

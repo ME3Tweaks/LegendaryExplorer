@@ -91,7 +91,7 @@ namespace ME3Explorer.ScriptDB
                 byte[] buff = BitConverter.GetBytes((int)database.Count());
                 DebugOutput.PrintLn("Creating file in memory...");
                 fs.Write(buff, 0, 4);
-                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream m = new MemoryStream();
                 foreach (ScriptEntry ent in database)
                 {
                     WriteString(m, ent.file);
@@ -125,7 +125,7 @@ namespace ME3Explorer.ScriptDB
                 }
                 fs.Close();
                 DebugOutput.PrintLn("Reading data");
-                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(buff);
+                MemoryStream m = new MemoryStream(buff);
                 m.Seek(4, SeekOrigin.Begin);
                 int count = BitConverter.ToInt32(buff, 0);
                 database = new List<ScriptEntry>();

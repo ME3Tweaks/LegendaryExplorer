@@ -280,7 +280,7 @@ namespace ME3Explorer.Unreal
 
         public MemoryStream DecompressEntry(int Index)
         {
-            MemoryStream result = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream result = new MemoryStream();
             FileEntryStruct e = Files[Index];
            uint count = 0;
             byte[] inputBlock;
@@ -335,7 +335,7 @@ namespace ME3Explorer.Unreal
 
         public MemoryStream DecompressEntry(int Index, FileStream fs)
         {
-            MemoryStream result = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream result = new MemoryStream();
             FileEntryStruct e = Files[Index];
            uint count = 0;
             byte[] inputBlock;
@@ -467,7 +467,7 @@ namespace ME3Explorer.Unreal
                 e.DataOffsetAdder = 0;                
                 for (int j = 0; j < blocks.Count; j++)
                 {
-                    MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(blocks[j]);
+                    MemoryStream m = new MemoryStream(blocks[j]);
                     fs.Write(m.ToArray(), 0, (int)m.Length);
                     pos += (uint)m.Length;
                 }
@@ -769,7 +769,7 @@ namespace ME3Explorer.Unreal
             }
             int IndexTOC = f;
             DebugOutput.PrintLn("Found PCConsoleTOC.bin(" + f + ")!\nLoading Entries...");
-            TOCBinFile TOC = new TOCBinFile(UsefulThings.RecyclableMemoryManager.GetStream(DecompressEntry(f).ToArray()));
+            TOCBinFile TOC = new TOCBinFile(new MemoryStream(DecompressEntry(f).ToArray()));
             DebugOutput.PrintLn("Checking Entries...");
             int count = 0;
 			if (TOC.Entries == null)

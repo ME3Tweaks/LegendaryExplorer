@@ -32,7 +32,7 @@ namespace ME3Explorer.Unreal.Classes
             enumTextureGroups = new List<ByteProp>();
             pccRef = pccObj;
 
-            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream(data);
+            MemoryStream buffer = new MemoryStream(data);
 
             firstVal = buffer.ReadValueU32();
             buffer.Seek(16, SeekOrigin.Begin);
@@ -71,7 +71,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] ToArray()
         {
-            MemoryStream buffer = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream buffer = new MemoryStream();
             buffer.WriteValueU32(firstVal);
             buffer.WriteValueS32(pccRef.Names.FindIndex(name => name == "None"));
             buffer.Seek(16, SeekOrigin.Begin);

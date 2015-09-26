@@ -24,7 +24,7 @@ namespace ME3Explorer
 
         public static string FromString(string s)
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream(ASCIIEncoding.Default.GetBytes(s));
+            MemoryStream m = new MemoryStream(ASCIIEncoding.Default.GetBytes(s));
             string res = FromStream(m);
             return res;
         }

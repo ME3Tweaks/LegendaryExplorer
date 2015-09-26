@@ -111,7 +111,7 @@ namespace ME3Explorer
             {
                 content = new List<Inventory>();
                 Inventory temp = new Inventory();
-                MemoryStream myStream = UsefulThings.RecyclableMemoryManager.GetStream(memory);
+                MemoryStream myStream = new MemoryStream(memory);
                 if (myStream.ReadValueU32() == 0x3AB70C13)
                 {
                     myStream.Seek(8, SeekOrigin.Begin);

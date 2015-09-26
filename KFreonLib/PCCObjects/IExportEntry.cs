@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KFreonLib.PCCObjects
 {
-    public interface IExportEntry
+    public interface IExportEntry : IDisposable
     {
         byte[] Data { get; set; }
 

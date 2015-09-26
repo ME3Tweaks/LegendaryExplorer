@@ -860,7 +860,7 @@ namespace ME3Explorer.SequenceObjects
                                 ListBuff[p[f].offsetval + pos + k] = countbuff[k];
                                 ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
                             }
-                            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                            MemoryStream m = new MemoryStream();
                             m.Write(BitConverter.GetBytes(pcc.findName("LinkedOp")), 0, 4); //name: LinkedOp
                             m.Write(BitConverter.GetBytes((int)0), 0, 4);
                             m.Write(BitConverter.GetBytes(pcc.findName("ObjectProperty")), 0, 4); //type: ObjectProperty

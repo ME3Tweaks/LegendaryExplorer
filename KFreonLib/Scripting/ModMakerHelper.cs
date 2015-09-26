@@ -479,11 +479,11 @@ namespace KFreonLib.Scripting
                 /*using (ResILImageBase img = ResILImageBase.Create(data))
                     return img.ToWinFormsBitmap(64, 64);*/
                 Bitmap bmp = null;
-                using (MemoryStream stream = UsefulThings.RecyclableMemoryManager.GetStream(data))
+                using (MemoryStream stream = new MemoryStream(data))
                 {
-                    using (MemoryStream savestream = UsefulThings.RecyclableMemoryManager.GetStream())
+                    using (MemoryStream savestream = new MemoryStream())
                     {
-                        using (ImageEngineImage img = new ImageEngineImage(stream, ".dds", 64))
+                        using (ImageEngineImage img = new ImageEngineImage(stream, ".dds", 64, false))
                             img.Save(savestream, ImageEngineFormat.JPG, false);
 
                         bmp = UsefulThings.WinForms.Imaging.CreateBitmap(savestream.ToArray(), 64, 64);

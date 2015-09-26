@@ -204,7 +204,7 @@ namespace ME3Explorer.Coalesced_Editor
             {
                 FileStream fs = new FileStream(files[listBox1.SelectedIndex],FileMode.Create,FileAccess.Write);
                 string s = rtb1.Text.ToString();
-                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream m = new MemoryStream();
                 for (int i = 0; i < s.Length; i++)
                     if (s[i] != 0xA)
                         m.WriteByte((byte)s[i]);

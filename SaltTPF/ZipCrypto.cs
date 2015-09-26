@@ -81,7 +81,7 @@ namespace SaltTPF
             int val3 = randomiser.Next();
 
             byte[] header;
-            using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 ms.Write(BitConverter.GetBytes(val1), 0, 4);
                 ms.Write(BitConverter.GetBytes(val2), 0, 4);

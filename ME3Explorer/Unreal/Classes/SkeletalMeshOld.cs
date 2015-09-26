@@ -376,7 +376,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] SerializeToBuffer()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             BitConverter.IsLittleEndian = true;
             WriteBounds(m);
             WriteMaterials(m);
@@ -389,7 +389,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] Serialize()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             byte[] buff = SerializeToBuffer();
             int end = props[props.Count - 1].offend;
             m.Write(memory, 0, end);//properties

@@ -89,7 +89,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] getRawTFCComp(uint pos)
         {
-            MemoryStream ret = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream ret = new MemoryStream();
             if (!File.Exists(filename))
                 return ret.ToArray();
             FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
@@ -151,7 +151,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] getRawTFC(uint pos,int size)
         {
-            MemoryStream ret = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream ret = new MemoryStream();
             if (!File.Exists(filename))
                 return ret.ToArray();
             FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
@@ -170,7 +170,7 @@ namespace ME3Explorer.UnrealHelper
 
         public byte[] makeRawTFCComp(byte[] input)
         {
-            MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream ms = new MemoryStream();
             byte[] buff = BitConverter.GetBytes(0x9E2A83C1);
             ms.Write(buff, 0, 4);
             buff = BitConverter.GetBytes((Int32)0x20000);

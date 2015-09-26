@@ -172,7 +172,7 @@ namespace ME1Explorer
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -222,7 +222,7 @@ namespace ME1Explorer
             {
                 DebugOutput.PrintLn("File already decompressed. Reading decompressed data.");
                 //listsStream = tempStream;
-                listsStream = UsefulThings.RecyclableMemoryManager.GetStream();
+                listsStream = new MemoryStream();
                 tempStream.WriteTo(listsStream);
             }
             tempStream.Dispose();

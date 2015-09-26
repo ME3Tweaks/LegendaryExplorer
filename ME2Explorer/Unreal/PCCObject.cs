@@ -160,7 +160,7 @@ namespace ME2Explorer
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))

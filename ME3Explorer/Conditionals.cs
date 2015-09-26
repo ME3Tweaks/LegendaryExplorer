@@ -647,7 +647,7 @@ namespace ME3Explorer
             {
                 path = FileDialog1.FileName;
                 FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-                MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                MemoryStream m = new MemoryStream();
                 m.Write(BitConverter.GetBytes((uint)0x434F4E44), 0, 4);
                 m.Write(BitConverter.GetBytes((int)1), 0, 4);
                 m.Write(BitConverter.GetBytes((Int16)UnknownInt16), 0, 2);

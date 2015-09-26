@@ -115,7 +115,7 @@ namespace ME3Explorer.UnrealHelper
 
         public MemoryStream MatrixToStream(Matrix m)
         {
-            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream mem = new MemoryStream();
             mem.Write(BitConverter.GetBytes(m.M11), 0, 4);
             mem.Write(BitConverter.GetBytes(m.M12), 0, 4);
             mem.Write(BitConverter.GetBytes(m.M13), 0, 4);
@@ -153,7 +153,7 @@ namespace ME3Explorer.UnrealHelper
             Matrix m = Matrices[index];
             Entries.Add(n);
             Matrices.Add(m);
-            MemoryStream mem = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream mem = new MemoryStream();
             int ent = UPR.FindProperty("StaticMeshComponents", props) + 1;
             int off = props[ent].offset + 8;
             int offend = props[ent].offset + props[ent].raw.Length;

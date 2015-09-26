@@ -324,7 +324,7 @@ namespace ME3Explorer.Unreal
                     byte[] uncBlock = ZBlock.Decompress(pccStream, blockList[0].cprSize);
 
                     // write decompressed block inside temporary stream
-                    listsStream = UsefulThings.RecyclableMemoryManager.GetStream();
+                    listsStream = new MemoryStream();
                     listsStream.Seek(blockList[0].uncOffset, SeekOrigin.Begin);
                     listsStream.Write(uncBlock, 0, uncBlock.Length);
                 }
@@ -467,7 +467,7 @@ namespace ME3Explorer.Unreal
             if (bDLCStored)
                 saveCompress = false;
 
-            using (MemoryStream newPccStream = UsefulThings.RecyclableMemoryManager.GetStream())
+            using (MemoryStream newPccStream = new MemoryStream())
             {
                 //ME3Explorer.DebugOutput.Clear();
                 DebugOutput.PrintLn("Saving file...");

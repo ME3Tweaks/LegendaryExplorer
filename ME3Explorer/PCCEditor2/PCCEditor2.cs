@@ -683,7 +683,7 @@ namespace ME3Explorer
             int n = GetSelected();
             if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
                 return;
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             for (int i = 0; i < hb1.ByteProvider.Length; i++)
                 m.WriteByte(hb1.ByteProvider.ReadByte(i));
             PCCObject.ExportEntry ent = pcc.Exports[n];
@@ -1280,7 +1280,7 @@ namespace ME3Explorer
                     BitConverter.IsLittleEndian = true;
                     List<ME3Explorer.Unreal.PropertyReader.Property> props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, buff);
                     int start = props[props.Count - 1].offend;
-                    MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+                    MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
                     byte[] import = File.ReadAllBytes(d.FileName);
                     m.Write(BitConverter.GetBytes((int)import.Length), 0, 4);

@@ -838,7 +838,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] SerializeToBuffer()
         {
             BitConverter.IsLittleEndian = true;
-            MemoryStream fs = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream fs = new MemoryStream();
             WriteProperties(fs);
             WriteBoundaries(fs);
             Write_kDOP(fs);

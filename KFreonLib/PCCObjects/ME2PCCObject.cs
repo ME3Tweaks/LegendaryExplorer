@@ -79,7 +79,7 @@ namespace KFreonLib.PCCObjects
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryStream tempStream = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -643,5 +643,94 @@ namespace KFreonLib.PCCObjects
         {
             return Names.IndexOf(name);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (iexports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ExportEntry entry in iexports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Exports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ExportEntry entry in Exports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Imports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ImportEntry entry in Imports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (iimports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ImportEntry entry in iimports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (listsStream != null)
+                        try
+                        {
+                            listsStream.Dispose();
+                        }
+                        catch { }
+
+                    if (m != null)
+                        try
+                        {
+                            m.Dispose();
+                        }
+                        catch { }
+                }
+
+                this.header = null;
+                this.lzo = null;
+                this.Names = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME2PCCObject()
+        {
+          // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+          Dispose(false);
+         }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

@@ -280,7 +280,7 @@ namespace ME2Explorer.Helper
                 Chunks[i] = c;
             }
 
-            MemoryStream result = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream result = new MemoryStream();
             foreach (Chunk c in Chunks)
             {
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);

@@ -177,7 +177,7 @@ namespace ME3Explorer.Unreal
         public void ExportPSA(string path)
         {
             BitConverter.IsLittleEndian = true;
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             WriteAnimHead(m);
             WriteBones(m);
             WriteInfos(m);

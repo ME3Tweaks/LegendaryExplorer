@@ -132,7 +132,7 @@ namespace ME3Explorer.UnrealHelper
 
         public MemoryStream ExportToStream()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             switch (ImageFormat)
             {
                 case 0:
@@ -174,7 +174,7 @@ namespace ME3Explorer.UnrealHelper
         }
         private MemoryStream ExportDXT1()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             DDS = CreateHeaderDDS();
             DDS.dwWidth = ImageSizeX;
             DDS.dwHeight = ImageSizeY;
@@ -208,7 +208,7 @@ namespace ME3Explorer.UnrealHelper
         }
         private MemoryStream ExportDXT5()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             DDS = CreateHeaderDDS();
             DDS.dwWidth = ImageSizeX;
             DDS.dwHeight = ImageSizeY;
@@ -244,7 +244,7 @@ namespace ME3Explorer.UnrealHelper
         }
         private MemoryStream ExportTGA()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             TGA = CreateHeaderTGA();
             TGA.width = (short)ImageSizeX;
             TGA.height = (short)ImageSizeY;
@@ -287,7 +287,7 @@ namespace ME3Explorer.UnrealHelper
         }
         private MemoryStream ExportGreyTGA()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             TGA = CreateHeaderTGA();
             TGA.width = (short)ImageSizeX;
             TGA.height = (short)ImageSizeY;
@@ -337,7 +337,7 @@ namespace ME3Explorer.UnrealHelper
         }
         private MemoryStream ExportUVTGA()
         {
-            MemoryStream m = UsefulThings.RecyclableMemoryManager.GetStream();
+            MemoryStream m = new MemoryStream();
             TGA = CreateHeaderTGA();
             TGA.width = (short)ImageSizeX;
             TGA.height = (short)ImageSizeY;

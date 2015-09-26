@@ -286,7 +286,7 @@ namespace KFreonLib.Textures
                 if (!exists)
                     try
                     {
-                        using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(temptex2D.GetImageData()))
+                        using (MemoryStream ms = new MemoryStream(temptex2D.GetImageData()))
                             if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 64))
                                 thumbnailPath = tempthumbpath;
                     }
@@ -434,7 +434,7 @@ namespace KFreonLib.Textures
 
             Files = new List<string>();
             ExpIDs = new List<int>();
-            Thumbnail = UsefulThings.RecyclableMemoryManager.GetStream();
+            Thumbnail = new MemoryStream();
             OriginalExpIDs = new List<int>();
             OriginalFiles = new List<string>();
             FileDuplicates = new List<TPFTexInfo>();
@@ -463,7 +463,7 @@ namespace KFreonLib.Textures
             retval.NumMips = NumMips;
             retval.AutofixSuccess = AutofixSuccess;
             retval.ThumbInd = ThumbInd;
-            retval.Thumbnail = UsefulThings.RecyclableMemoryManager.GetStream(Thumbnail.ToArray());
+            retval.Thumbnail = new MemoryStream(Thumbnail.ToArray());
             retval.FileDuplicates = new List<TPFTexInfo>(FileDuplicates);
             retval.TreeDuplicates = new List<int>(TreeDuplicates);
             retval.Height = Height;
@@ -743,7 +743,7 @@ namespace KFreonLib.Textures
                 // KFreon: Check formatting etc
                 try
                 {
-                    using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data))
+                    using (MemoryStream ms = new MemoryStream(data))
                     {
                         using (ImageEngineImage image = new ImageEngineImage(ms, null))
                         {

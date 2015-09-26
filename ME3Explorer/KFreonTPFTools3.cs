@@ -979,8 +979,8 @@ namespace ME3Explorer
             else
             {
                 Bitmap img = null;
-                using (MemoryStream ms = UsefulThings.RecyclableMemoryManager.GetStream(data))
-                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512))
+                using (MemoryStream ms = new MemoryStream(data))
+                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
                         img = image.GetGDIBitmap();
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
@@ -2831,7 +2831,7 @@ namespace ME3Explorer
                 tex.FileName = Path.GetFileName(replacingPath);
                 tex.FilePath = Path.GetDirectoryName(replacingPath);
                 DebugOutput.PrintLn("Getting new details...");
-                tex.Thumbnail = UsefulThings.RecyclableMemoryManager.GetStream();
+                tex.Thumbnail = new MemoryStream();
                 tex.EnumerateDetails();
 
                 /*try

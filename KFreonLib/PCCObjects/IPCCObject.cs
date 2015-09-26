@@ -9,7 +9,7 @@ using UsefulThings;
 
 namespace KFreonLib.PCCObjects
 {
-    public interface IPCCObject
+    public interface IPCCObject : IDisposable
     {
         ITexture2D CreateTexture2D(int expID, string pathBIOGame, uint hash = 0);
         int GameVersion { get; set; }
