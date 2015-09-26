@@ -115,9 +115,35 @@ namespace ME3Explorer.DLCEditor2
                             return;
                         }
                         extractFile(t.Index,extractionPath);
+                    } else if (cmdCommand.Equals("-dlcaddfile", StringComparison.Ordinal))
+                    {
+                        if (arguments.Length != 5)
+                        {
+                            //-2 for me3explorer & -dlcextract
+                            MessageBox.Show("DLCEditor2 file add automator encountered an error:\n-dlcaddfile requires 3 arguments: sfar sourcefilepath destinationpath", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        automated = true;
+                        string dlcFileName = arguments[2];
+                        string sourceFile = arguments[3];
+                        string internalDestinationPath = arguments[4];
+                        if (File.Exists(dlcFileName))
+                        {
+                            openSFAR(dlcFileName);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + dlcFileName);
+                            MessageBox.Show("Failed to autoadd: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        //SFAR was opened.                    
+                        DLC.AddFileQuick(sourceFile, internalDestinationPath);
                     }
                     else
-                        throw new Exception("Invalid arguments for this operation.");
+                        throw new Exception("Invalid command line arguments for DLCEditor2.");
                 }
                 catch (FileNotFoundException exc)
                 {
@@ -245,7 +271,7 @@ namespace ME3Explorer.DLCEditor2
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
                 SearchNode(result,treeView1.Nodes[0]);
-                MessageBox.Show("File replaced.");
+                MessageBox.Show("File added.");
             }
         }
 

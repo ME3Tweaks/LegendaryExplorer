@@ -101,7 +101,7 @@ namespace ME3Explorer
                     }
                 } else
                 //automation
-                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract"))
+                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfile") || args[1].Equals("-dlcremovefile"))
                 {
                     //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.2)
                     //saves a little duplicate code
