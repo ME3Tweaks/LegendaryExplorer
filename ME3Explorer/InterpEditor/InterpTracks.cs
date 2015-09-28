@@ -1182,6 +1182,7 @@ namespace ME3Explorer.InterpEditor
             public float fStartOffset;
             public float fEndOffset;
             public float fStartBlendDuration;
+            public float fEndBlendDuration;
             public float fWeight;
             public float fTransBlendTime;
             public bool bInvalidData;
@@ -1216,6 +1217,7 @@ namespace ME3Explorer.InterpEditor
                 root.Nodes.Add("fStartOffset : " + fStartOffset);
                 root.Nodes.Add("fEndOffset : " + fEndOffset);
                 root.Nodes.Add("fStartBlendDuration : " + fStartBlendDuration);
+                root.Nodes.Add("fEndBlendDuration : " + fEndBlendDuration);
                 root.Nodes.Add("fWeight : " + fWeight);
                 root.Nodes.Add("fTransBlendTime : " + fTransBlendTime);
                 root.Nodes.Add("bInvalidData : " + bInvalidData);
@@ -1318,6 +1320,8 @@ namespace ME3Explorer.InterpEditor
                                 key.fEndOffset = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (name == "fStartBlendDuration")
                                 key.fStartBlendDuration = BitConverter.ToSingle(p2[i].raw, 24);
+                            else if (name == "fEndBlendDuration")
+                                key.fEndBlendDuration = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (name == "fWeight")
                                 key.fWeight = BitConverter.ToSingle(p2[i].raw, 24);
                             else if (name == "fTransBlendTime")
@@ -3878,6 +3882,87 @@ namespace ME3Explorer.InterpEditor
         }
     }
 
+    public class InterpTrackSound : InterpTrackVectorBase
+    {
+        public struct SoundTrackKey
+        {
+            public float Time;
+            public float Volume;
+            public float Pitch;
+            public int Sound; //object
+
+            public TreeNode ToTree(int index, PCCObject pcc)
+            {
+                TreeNode root = new TreeNode(index + ": " + Time);
+                root.Nodes.Add("Time : " + Time);
+                root.Nodes.Add("Volume : " + Volume);
+                root.Nodes.Add("Pitch : " + Pitch);
+                root.Nodes.Add("Sound : " + Sound);
+                return root;
+            }
+        }
+
+
+        public List<SoundTrackKey> Sounds = new List<SoundTrackKey>();
+        public bool bContinueSoundOnMatineeEnd;
+        public bool bSuppressSubtitles;
+
+        public InterpTrackSound(int idx, PCCObject pccobj)
+            : base(idx, pccobj)
+        {
+            LoadData();
+            if (TrackTitle == "" || TrackTitle == "Generic Vector Track")
+                TrackTitle = "Sound";
+        }
+
+        public void LoadData()
+        {
+
+            BitConverter.IsLittleEndian = true;
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            foreach (PropertyReader.Property p in props)
+            {
+                if (pcc.getNameEntry(p.Name) == "bContinueSoundOnMatineeEnd")
+                    bContinueSoundOnMatineeEnd = p.Value.IntValue != 0;
+                else if (pcc.getNameEntry(p.Name) == "bSuppressSubtitles")
+                    bSuppressSubtitles = p.Value.IntValue != 0;
+                else if (pcc.getNameEntry(p.Name) == "Sounds")
+                {
+                    int pos = 28;
+                    int count = BitConverter.ToInt32(p.raw, 24);
+                    for (int j = 0; j < count; j++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        SoundTrackKey key = new SoundTrackKey();
+                        for (int i = 0; i < p2.Count(); i++)
+                        {
+                            if (pcc.getNameEntry(p2[i].Name) == "Time")
+                                key.Time = BitConverter.ToSingle(p2[i].raw, 24);
+                            else if (pcc.getNameEntry(p2[i].Name) == "Volume")
+                                key.Volume = BitConverter.ToSingle(p2[i].raw, 24);
+                            else if (pcc.getNameEntry(p2[i].Name) == "Pitch")
+                                key.Pitch = BitConverter.ToSingle(p2[i].raw, 24);
+                            else if (pcc.getNameEntry(p2[i].Name) == "Sound")
+                                key.Sound = p2[i].Value.IntValue;
+                            pos += p2[i].raw.Length;
+                        }
+                        Sounds.Add(key);
+                    }
+                }
+            }
+        }
+
+        public override void ToTree()
+        {
+            base.ToTree();
+            AddToTree("bContinueSoundOnMatineeEnd : " + bContinueSoundOnMatineeEnd);
+            AddToTree("bSuppressSubtitles : " + bSuppressSubtitles);
+            TreeNode t = new TreeNode("Sounds");
+            for (int i = 0; i < Sounds.Count; i++)
+                t.Nodes.Add(Sounds[i].ToTree(i, pcc));
+        }
+    }
+
     //Director
     public class BioEvtSysTrackDOF : BioInterpTrack
     {
@@ -4099,5 +4184,17 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             AddToTree("bPersistFade : " + bPersistFade);
         }
+    }
+
+    public class InterpTrackColorScale : InterpTrackVectorBase
+    {
+
+        public InterpTrackColorScale(int idx, PCCObject pccobj)
+            : base(idx, pccobj)
+        {
+            if (TrackTitle == "" || TrackTitle == "Generic Vector Track")
+                TrackTitle = "ColorScale";
+        }
+
     }
 }
