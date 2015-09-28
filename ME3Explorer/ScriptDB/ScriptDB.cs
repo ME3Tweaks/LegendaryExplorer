@@ -32,6 +32,11 @@ namespace ME3Explorer.ScriptDB
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             string pathcook = ME3Directory.cookedPath;
             DebugOutput.StartDebugger("ScriptDB");
             string[] files = Directory.GetFiles(pathcook, "*.pcc");

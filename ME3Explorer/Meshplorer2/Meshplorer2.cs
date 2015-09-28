@@ -39,6 +39,11 @@ namespace ME3Explorer.Meshplorer2
 
         private void scanToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             DebugOutput.StartDebugger("Meshplorer2");
             int count = 0;
             timer1.Enabled = false;

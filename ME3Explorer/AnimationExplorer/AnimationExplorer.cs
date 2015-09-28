@@ -59,6 +59,11 @@ namespace ME3Explorer.AnimationExplorer
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string path = ME3Directory.cookedPath;
+            if (String.IsNullOrEmpty(path))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             string[] files = Directory.GetFiles(path, "*.pcc");
             filenames = new List<string>();
             int count = 1;

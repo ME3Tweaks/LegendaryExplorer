@@ -35,6 +35,12 @@ namespace ME3Explorer.QuestMapEditor
 
         private void QMapEditor_Activated(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                this.Close();
+                return;
+            }
             string pathcook = ME3Directory.cookedPath;
             if (!File.Exists(pathcook + "SFXGameInfoSP_SF.pcc"))
             {
