@@ -52,11 +52,13 @@ namespace ME3Explorer
                         String filesize = arguments[4];
 
                         loadTOCfile(tocfile);
-                        search(filepath);
+                        searchFirstResult(filepath);
                         int n = listBox1.SelectedIndex;
                         if (n == -1)
                         {
-                            MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\n"+tocfile+"\n"+filepath, "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\nFile path in this TOC not found:\n"+tocfile+"\n"+filepath, "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Environment.Exit(0);
+                            Application.Exit();
                         }
                         editFilesize(n, filesize);
                         saveTOC(tocfile);
@@ -196,6 +198,21 @@ namespace ME3Explorer
         {
             string searchfor = Microsoft.VisualBasic.Interaction.InputBox("What string should be searched for?", "ME3 Explorer", lastsearch);
             search(searchfor);
+        }
+
+        private void searchFirstResult(String search)
+        {
+            lastsearch = search;
+            int start = listBox1.SelectedIndex;
+            if (start == -1) start = 0;
+            for (int i = start; i < content.Count(); i++)
+            {
+                if (content[i].name.Contains(search))
+                {
+                    listBox1.SelectedIndex = i;
+                    break;
+                }
+            }
         }
 
         private void search(String search)
