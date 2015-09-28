@@ -32,6 +32,12 @@ namespace ME3Explorer.Codex_Editor
         private void CodexEditor_Activated(object sender, EventArgs e)
         {
             string pathcook = ME3Directory.cookedPath;
+            if (String.IsNullOrEmpty(pathcook))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                this.Close();
+                return;
+            }
             if (!File.Exists(pathcook + "SFXGameInfoSP_SF.pcc"))
             {
                 MessageBox.Show("File SFXGameInfoSP_SF.pcc not found!");

@@ -63,9 +63,12 @@ namespace ME3Explorer.Interpreter2
             // Load the default TLK file into memory.
             if (editorTalkFile == null)
             {
-                var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                talkFile = new TalkFile();
-                talkFile.LoadTlkData(tlkPath);
+                if (ME3Directory.cookedPath != null)
+                {
+                    var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
+                    talkFile = new TalkFile();
+                    talkFile.LoadTlkData(tlkPath);
+                }
             }
             else
             {
@@ -228,7 +231,7 @@ namespace ME3Explorer.Interpreter2
                 case 9:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx.ToString() + ": ";
-                    s += talkFile.findDataById(idx);
+                    s += talkFile == null ? "(.tlk not loaded)" : talkFile.findDataById(idx);
                     break;
             }
             TreeNode ret = new TreeNode(s);

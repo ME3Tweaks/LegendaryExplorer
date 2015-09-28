@@ -66,6 +66,7 @@ namespace ME3Explorer
             }
             else
             {
+                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 this.Close();
             }
         }

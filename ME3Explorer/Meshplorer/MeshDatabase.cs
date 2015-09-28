@@ -39,6 +39,11 @@ namespace ME3Explorer.Meshplorer
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             string path = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(path, "*.pcc");
             pb1.Maximum = files.Length;

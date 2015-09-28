@@ -374,8 +374,13 @@ namespace ME3Explorer.CameraTool
 
         private void generateFromBasefolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            KFreonLib.Debugging.DebugOutput.StartDebugger("Main ME3Explorer Form");
             string basepath = KFreonLib.MEDirectories.ME3Directory.cookedPath;
+            if (String.IsNullOrEmpty(basepath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
+            KFreonLib.Debugging.DebugOutput.StartDebugger("Main ME3Explorer Form");
             string[] files = Directory.GetFiles(basepath, "*.pcc");
             OverView = new List<OverViewStruct>();
             for (int f = 0; f < files.Length; f++)

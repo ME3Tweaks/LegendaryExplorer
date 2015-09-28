@@ -27,12 +27,29 @@ namespace ME3Explorer.InterpEditor
             timeline.GroupList.tree2 = treeView2;
             BitConverter.IsLittleEndian = true;
             objects = new List<int>();
-            talkfile = new TalkFile();
-            talkfile.LoadTlkData(ME3Directory.cookedPath + "BIOGame_INT.tlk");
+        }
+
+        public void InitTalkFile(Object editorTalkFile = null)
+        {
+            if (editorTalkFile == null)
+            {
+                var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
+                talkfile = new TalkFile();
+                talkfile.LoadTlkData(tlkPath);
+            }
+            else
+            {
+                talkfile = (TalkFile)editorTalkFile;
+            }
         }
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath) && talkfile == null)
+            {
+                MessageBox.Show("ME3 install directory not found. Set its path at:\n Options > Set Custom Path > Mass Effect 3\n\n Or, specify a .tlk file location with:\n File > Load Alternate TLK");
+                return;
+            }
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -41,8 +58,16 @@ namespace ME3Explorer.InterpEditor
             }
         }
 
-        public void LoadPCC(string fileName)
+        public void LoadPCC(string fileName, Object editorTalkFile = null)
         {
+            if (editorTalkFile != null)
+            {
+                InitTalkFile(editorTalkFile);
+            }
+            else
+            {
+                InitTalkFile(talkfile);
+            }
             objects.Clear();
             pcc = new PCCObject(fileName);
             CurrentFile = fileName;
@@ -100,12 +125,17 @@ namespace ME3Explorer.InterpEditor
             d.Filter = "*.tlk|*.tlk";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                if (talkfile == null)
+                {
+                    talkfile = new TalkFile();
+                }
                 talkfile.LoadTlkData(d.FileName);
                 timeline.GroupList.Talkfile = talkfile;
                 MessageBox.Show("Done.");
             }
         }
 
+        //for debugging purposes. not exposed to user
         private void InterpTrackScan_Click(object sender, EventArgs e)
         {
             KFreonLib.Debugging.DebugOutput.StartDebugger("Main ME3Explorer Form");

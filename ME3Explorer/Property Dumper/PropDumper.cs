@@ -99,6 +99,11 @@ namespace ME3Explorer.Property_Dumper
 
         private void makeDialogDumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             string path = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(path);
             pb1.Minimum = 0;            
@@ -197,11 +202,17 @@ namespace ME3Explorer.Property_Dumper
 
         private void makePropDumpForClassToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             LetsDump2(Microsoft.VisualBasic.Interaction.InputBox("Please enter class name", "ME3 Explorer", "", 0, 0));
         }
 
         public void LetsDump2(string classname)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             string path = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(path,"*.pcc");
             pb1.Minimum = 0;
