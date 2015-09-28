@@ -80,7 +80,9 @@ namespace ME3Explorer.DLCEditor2
                             }
                             replaceFile(newFiles[i], t.Index);
                         }
-                    } else if (cmdCommand.Equals("-dlcextract", StringComparison.Ordinal)){
+                    }
+                    else if (cmdCommand.Equals("-dlcextract", StringComparison.Ordinal))
+                    {
                         if (arguments.Length != 5)
                         {
                             //-2 for me3explorer & -dlcextract
@@ -114,14 +116,77 @@ namespace ME3Explorer.DLCEditor2
                             Application.Exit();
                             return;
                         }
-                        extractFile(t.Index,extractionPath);
+                        extractFile(t.Index, extractionPath);
+                    }
+                    else if (cmdCommand.Equals("-dlcaddfile", StringComparison.Ordinal))
+                    {
+                        if (arguments.Length != 5)
+                        {
+                            //-2 for me3explorer & -dlcextract
+                            MessageBox.Show("DLCEditor2 file add automator encountered an error:\n-dlcaddfile requires 3 arguments: sfar sourcefilepath destinationpath", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        automated = true;
+                        string dlcFileName = arguments[2];
+                        string sourceFile = arguments[3];
+                        string internalDestinationPath = arguments[4];
+                        if (File.Exists(dlcFileName))
+                        {
+                            openSFAR(dlcFileName);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + dlcFileName);
+                            MessageBox.Show("Failed to autoadd: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        //SFAR was opened.                    
+                        DLC.AddFileQuick(sourceFile, internalDestinationPath);
+                    }
+                    else if (cmdCommand.Equals("-dlcremovefile", StringComparison.Ordinal))
+                    {
+                        if (arguments.Length != 4)
+                        {
+                            Console.WriteLine("Num Args: " + arguments.Length);
+                            //-2 for me3explorer & -dlcextract
+                            MessageBox.Show(arguments.Length+"DLCEditor2 file remove automator encountered an error:\n-dlcremovefile requires 2 arguments: sfar internalsfarpath", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        automated = true;
+                        string dlcFileName = arguments[2];
+                        string internalFileToDelete = arguments[3];
+                        if (File.Exists(dlcFileName))
+                        {
+                            openSFAR(dlcFileName);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + dlcFileName);
+                            MessageBox.Show("Failed to autoremove: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        //SFAR was opened.                    
+                        selectSearchedElement(internalFileToDelete);
+                        //the element is now selected, hopefully.
+                        TreeNode t = treeView1.SelectedNode;
+                        if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
+                        {
+                            MessageBox.Show("DLCEditor2 file removal automator encountered an error:\nThe file to remove does not exist or the tree has not been initialized.", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        DLC.DeleteEntry(t.Index);
                     }
                     else
-                        throw new Exception("Invalid arguments for this operation.");
+                        throw new Exception("Invalid command line arguments for DLCEditor2.");
                 }
                 catch (FileNotFoundException exc)
                 {
-                    MessageBox.Show("Failed to run DLCEditor2 Automator with the specified parameters.\n\nA file not found error occured while trying to automate a task.\n"+exc.Message, "DLC Editor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to run DLCEditor2 Automator with the specified parameters.\n\nA file not found error occured while trying to automate a task.\n" + exc.Message, "DLC Editor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Environment.Exit(1);
                     Application.Exit();
                 }
@@ -244,8 +309,8 @@ namespace ME3Explorer.DLCEditor2
                 DLC = new DLCPackage(DLC.MyFileName);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
-                SearchNode(result,treeView1.Nodes[0]);
-                MessageBox.Show("File replaced.");
+                SearchNode(result, treeView1.Nodes[0]);
+                MessageBox.Show("File added.");
             }
         }
 
@@ -273,7 +338,7 @@ namespace ME3Explorer.DLCEditor2
             d.FileName = Path.GetFileName(filename);
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                extractFile(n,d.FileName);
+                extractFile(n, d.FileName);
             }
         }
 
@@ -298,7 +363,7 @@ namespace ME3Explorer.DLCEditor2
             if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
                 return;
             int n = t.Index;
-            
+
             OpenFileDialog d = new OpenFileDialog();
             string filename = DLC.Files[n].FileName;
             d.Filter = Path.GetFileName(filename) + " | " + Path.GetFileName(filename);

@@ -101,7 +101,7 @@ namespace ME3Explorer
                     }
                 } else
                 //automation
-                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract"))
+                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfile") || args[1].Equals("-dlcremovefile"))
                 {
                     //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.2)
                     //saves a little duplicate code
@@ -172,6 +172,22 @@ namespace ME3Explorer
                 ME2Directory.GamePath(Properties.Settings.Default.ME2InstallDir);
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
                 ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
+
+            var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
+            versionToolStripMenuItem.Text += "0110 (r" + vers[2] + ")";
+            versionToolStripMenuItem.Tag = "versionItem";
+            menuStrip1.Renderer = new NoHighlightRenderer();
+        }
+
+        internal class NoHighlightRenderer : ToolStripProfessionalRenderer
+        {
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                if (e.Item.Tag != "versionItem")
+                {
+                    base.OnRenderMenuItemBackground(e);
+                }
+            }
         }
 
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
