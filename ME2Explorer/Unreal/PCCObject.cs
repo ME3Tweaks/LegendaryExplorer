@@ -142,7 +142,7 @@ namespace ME2Explorer
 
         public uint PackageFlags;
         public int NumChunks;
-        public MemoryTributary listsStream;
+        public MemoryStream listsStream;
         public List<string> Names;
         public List<ImportEntry> Imports;
         public List<ExportEntry> Exports;
@@ -160,7 +160,7 @@ namespace ME2Explorer
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -265,7 +265,7 @@ namespace ME2Explorer
             }
         }
 
-        private void ReadNames(MemoryTributary fs)
+        private void ReadNames(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Names...");
             fs.Seek(NameOffset, SeekOrigin.Begin);
@@ -279,7 +279,7 @@ namespace ME2Explorer
             }
         }
 
-        private void ReadImports(MemoryTributary fs)
+        private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
             Imports = new List<ImportEntry>();
@@ -297,7 +297,7 @@ namespace ME2Explorer
             }
         }
 
-        private void ReadExports(MemoryTributary fs)
+        private void ReadExports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Exports...");
             fs.Seek(ExportOffset, SeekOrigin.Begin);

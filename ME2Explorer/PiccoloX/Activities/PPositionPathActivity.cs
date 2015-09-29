@@ -95,7 +95,7 @@ namespace UMD.HCIL.PiccoloX.Activities {
 		/// </param>
 		/// <param name="aTarget">The object that the activity will be applied to.</param>
 		/// <param name="knots">
-		/// An array of values between 0 and 1 that indicate when the position transitions should
+		/// An array of values between 0 and 1 that indicate when the position UsefulThings.WinForms.Transitions should
 		/// occur.
 		/// </param>
 		/// <param name="positions">
@@ -122,7 +122,7 @@ namespace UMD.HCIL.PiccoloX.Activities {
 		/// </param>
 		/// <param name="aTarget">The object that the activity will be applied to.</param>
 		/// <param name="knots">
-		/// An array of values between 0 and 1 that indicate when the position transitions should
+		/// An array of values between 0 and 1 that indicate when the position UsefulThings.WinForms.Transitions should
 		/// occur.
 		/// </param>
 		/// <param name="positions">

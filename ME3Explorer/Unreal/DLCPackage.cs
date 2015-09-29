@@ -206,7 +206,7 @@ namespace ME3Explorer.Unreal
             }
             if (f == -1)
                 return;
-            MemoryTributary m = DecompressEntry(f);
+            MemoryStream m = DecompressEntry(f);
             m.Seek(0, 0);
             StreamReader r = new StreamReader(m);            
             while (!r.EndOfStream)
@@ -278,9 +278,9 @@ namespace ME3Explorer.Unreal
             return res;
         }
 
-        public MemoryTributary DecompressEntry(int Index)
+        public MemoryStream DecompressEntry(int Index)
         {
-            MemoryTributary result = new MemoryTributary();
+            MemoryStream result = new MemoryStream();
             FileEntryStruct e = Files[Index];
            uint count = 0;
             byte[] inputBlock;

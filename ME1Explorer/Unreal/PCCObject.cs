@@ -154,7 +154,7 @@ namespace ME1Explorer
 
         public uint PackageFlags;
         public int NumChunks;
-        public MemoryTributary listsStream;
+        public MemoryStream listsStream;
         public List<string> Names;
         public List<ImportEntry> Imports;
         public List<ExportEntry> Exports;
@@ -172,7 +172,7 @@ namespace ME1Explorer
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -222,7 +222,7 @@ namespace ME1Explorer
             {
                 DebugOutput.PrintLn("File already decompressed. Reading decompressed data.");
                 //listsStream = tempStream;
-                listsStream = new MemoryTributary();
+                listsStream = new MemoryStream();
                 tempStream.WriteTo(listsStream);
             }
             tempStream.Dispose();
@@ -264,7 +264,7 @@ namespace ME1Explorer
             }
         }
 
-        private void ReadNames(MemoryTributary fs)
+        private void ReadNames(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Names...");
             fs.Seek(NameOffset, SeekOrigin.Begin);
@@ -292,7 +292,7 @@ namespace ME1Explorer
             }
         }
 
-        private void ReadImports(MemoryTributary fs)
+        private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
             Imports = new List<ImportEntry>();
@@ -310,7 +310,7 @@ namespace ME1Explorer
             }
         }
 
-        private void ReadExports(MemoryTributary fs)
+        private void ReadExports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Exports...");
             fs.Seek(ExportOffset, SeekOrigin.Begin);

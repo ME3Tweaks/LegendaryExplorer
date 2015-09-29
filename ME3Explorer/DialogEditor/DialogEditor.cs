@@ -41,11 +41,16 @@ namespace ME3Explorer.DialogEditor
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath) && talkFile == null)
+            {
+                MessageBox.Show("ME3 install directory not found. Set its path at:\n Options > Set Custom Path > Mass Effect 3\n\n Or, specify a .tlk file location with:\n File > Load Different TLK");
+                return;
+            }
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                InitTalkFile();
+                InitTalkFile(talkFile);
                 pcc = new PCCObject(d.FileName);
                 Objs = new List<int>();
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -823,6 +828,10 @@ namespace ME3Explorer.DialogEditor
             d.Filter = "*.tlk|*.tlk";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                if (talkFile == null)
+                {
+                    talkFile = new TalkFile();
+                }
                 talkFile.LoadTlkData(d.FileName);
                 MessageBox.Show("Done.");
             }

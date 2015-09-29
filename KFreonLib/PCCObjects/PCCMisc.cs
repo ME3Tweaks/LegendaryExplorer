@@ -49,7 +49,7 @@ namespace KFreonLib.PCCObjects
         /// <param name="stream"></param>
         /// <param name="WhichGame"></param>
         /// <returns></returns>
-        public static IPCCObject CreatePCCObject(string file, MemoryTributary stream, int WhichGame)
+        public static IPCCObject CreatePCCObject(string file, MemoryStream stream, int WhichGame)
         {
             IPCCObject pcc;
             if (WhichGame == 1)

@@ -27,7 +27,6 @@ namespace ME3Explorer
 
         public PropGrid pg;
         private TabPage scriptTab;
-        private TalkFile talkFile;
 
         public List<int> ClassNames;
 
@@ -53,10 +52,6 @@ namespace ME3Explorer
             saveHexChangesToolStripMenuItem.Enabled = false;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
 
-            // Load the default TLK file into memory.
-            var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFile = new TalkFile();
-            talkFile.LoadTlkData(tlkPath);
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -933,7 +928,7 @@ namespace ME3Explorer
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;
-            ip.InitInterpreter(talkFile);
+            ip.InitInterpreter();
             ip.Show();
         }
 
@@ -1320,7 +1315,7 @@ namespace ME3Explorer
                     DLCPath = d.FileName;
                     inDLCFilename = dlc.listBox1.Items[result].ToString();
                     FileStream fs = new FileStream(path,FileMode.Create,FileAccess.Write);
-                    MemoryTributary mem = p.DecompressEntry(dlc.Objects[result]);
+                    MemoryStream mem = p.DecompressEntry(dlc.Objects[result]);
                     fs.Write(mem.ToArray(), 0, (int)mem.Length);
                     fs.Close();
                     

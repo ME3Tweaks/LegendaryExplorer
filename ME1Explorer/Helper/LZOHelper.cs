@@ -184,7 +184,7 @@ namespace ME1Explorer.Helper
             return imgBuffer;
         }
 
-        public MemoryTributary DecompressPCC(Stream raw, PCCObject pcc)
+        public MemoryStream DecompressPCC(Stream raw, PCCObject pcc)
         {
             raw.Seek(pcc.header.Length, SeekOrigin.Begin);
             int pos = 4;
@@ -259,7 +259,7 @@ namespace ME1Explorer.Helper
                 Chunks[i] = c;
             }
 
-            MemoryTributary result = new MemoryTributary();
+            MemoryStream result = new MemoryStream();
             foreach (Chunk c in Chunks)
             {
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);

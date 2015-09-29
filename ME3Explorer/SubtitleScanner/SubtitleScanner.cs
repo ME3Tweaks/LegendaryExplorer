@@ -49,6 +49,12 @@ namespace ME3Explorer.SubtitleScanner
 
         public SubtitleScanner()
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                this.Close();
+                return;
+            }
             InitializeComponent();
             BitConverter.IsLittleEndian = true;
         }
@@ -244,7 +250,7 @@ namespace ME3Explorer.SubtitleScanner
                             {
                                 string filename = dlc.Files[j].FileName;
                                 DebugOutput.PrintLn(" " + j.ToString("d4") + " / " + dlc.Files.Length.ToString("d4") + " : opening " + Path.GetFileName(filename),true);
-                                MemoryTributary mem = dlc.DecompressEntry(j);
+                                MemoryStream mem = dlc.DecompressEntry(j);
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
                                 PCCObject pcc = new PCCObject("temp.pcc");
                                 for (int i = 0; i < pcc.Exports.Count; i++)

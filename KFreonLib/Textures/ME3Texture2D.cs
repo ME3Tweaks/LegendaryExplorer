@@ -11,6 +11,7 @@ using KFreonLib;
 using KFreonLib.PCCObjects;
 using KFreonLib.Misc;
 using KFreonLib.MEDirectories;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -745,7 +746,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                return Textures.Methods.GetImage(texFormat, imgdata);
+                using (ImageEngineImage img = new ImageEngineImage(imageData))
+                    return img.GetGDIBitmap();
             }
             catch { }
             return null;
@@ -755,5 +757,41 @@ namespace KFreonLib.Textures
         {
             throw new NotImplementedException();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                this.allPccs = null;
+                this.allFiles = null;
+                this.expIDs = null;
+                this.headerData = null;
+                this.imageData = null;
+                this.imgList = null;
+                this.privateImageList = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME3Texture2D()
+        {
+            // do not change this code. put cleanup code in dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

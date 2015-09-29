@@ -649,6 +649,9 @@ namespace ME3Explorer.InterpEditor
                     case "SFXInterpTrackClientEffect":
                         addTrack(new SFXInterpTrackClientEffect(i, pcc));
                         break;
+                    case "InterpTrackSound":
+                        addTrack(new InterpTrackSound(i, pcc));
+                        break;
                         //Director only ?
                     case "BioEvtSysTrackDOF":
                         addTrack(new BioEvtSysTrackDOF(i, pcc));
@@ -658,6 +661,9 @@ namespace ME3Explorer.InterpEditor
                         break;
                     case "InterpTrackFade":
                         addTrack(new InterpTrackFade(i, pcc));
+                        break;
+                    case "InterpTrackColorScale":
+                        addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
                         MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: http://me3explorer.freeforums.org/bug-reports-f13.html \nwith this information: #" + i + " " + pcc.pccFileName.Substring(pcc.pccFileName.LastIndexOf(@"\")));

@@ -26,6 +26,12 @@ namespace ME3Explorer.Texture_Tool
 
         public TextureTool()
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                this.Close();
+                return;
+            }
             InitializeComponent();
             exec = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\";
             LoadMe();

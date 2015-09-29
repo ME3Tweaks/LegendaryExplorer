@@ -18,9 +18,8 @@ using KFreonLib.GUI;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using System.Reflection;
-using ResILWrapper;
-using ResIL.Unmanaged;
 using UsefulThings;
+using CSharpImageLibrary.General;
 
 namespace ME3Explorer
 {
@@ -144,6 +143,7 @@ namespace ME3Explorer
                 return gooey.GetControlAffectedState("RunAutofix");
             }
         }
+
 
         static KFreonTPFTools3 CurrentInstance = null;
 
@@ -791,7 +791,7 @@ namespace ME3Explorer
 
             // KFreon: Thread TPF loading
             ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = 1;//Properties.Settings.Default.NumThreads;
+            po.MaxDegreeOfParallelism = Properties.Settings.Default.NumThreads;
             DebugOutput.PrintLn("Reading TPF using " + po.MaxDegreeOfParallelism + " threads.");
             List<TPFTexInfo> temptexes = new List<TPFTexInfo>();
             for (int i = 0; i < numEntries; i++)
@@ -978,21 +978,14 @@ namespace ME3Explorer
             }
             else
             {
-                //KFreonLib.Textures.Methods.GetImage(tex.Format, data);
                 Bitmap img = null;
-                using (ResILImageBase kfimg = ResILImageBase.Create(data))
-                    img = kfimg.ToWinFormsBitmap();
-                if (img == null)
-                    return;
+                using (MemoryStream ms = new MemoryStream(data))
+                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
+                        img = image.GetGDIBitmap();
 
-                try
-                {
-                    this.Invoke(new Action(() => PreviewBox.Image = KFreonLib.Textures.Creation.GenerateThumbImage(img, 512)));
-                }
-                catch { }
+                this.Invoke(new Action(() => PreviewBox.Image = img));
 
                 DisappearTextBox(true);
-                img.Dispose();
             }
         }
 
@@ -1125,9 +1118,9 @@ namespace ME3Explorer
                 this.Invoke(new Action(() => ShowContextPanel(state)));
             else
             {
-                /*Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(300);
-                Transitions.Transition.run(ContextPanel, "Height", (state ? 25 : 0), trans);
-                Transitions.Transition.run(MainTreeView, "Height", (state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height), trans);*/
+                /*UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(300);
+                UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (state ? 25 : 0), trans);
+                UsefulThings.WinForms.Transitions.Transition.run(MainTreeView, "Height", (state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height), trans);*/
                 ContextPanel.Height = state ? 25 : 0;
                 MainTreeView.Height = state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height;
             }
@@ -1413,8 +1406,8 @@ namespace ME3Explorer
                 bool tempstate = state;
                 if (PCCsCheckListBox.Items.Count == 0)
                     tempstate = false;
-                Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(300);
-                //Transitions.Transition.run(PreviewTabPages, "Height", ((tempstate) ? 495 : 525), trans);
+                UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(300);
+                //UsefulThings.WinForms.Transitions.Transition.run(PreviewTabPages, "Height", ((tempstate) ? 495 : 525), trans);
 
             }
         }
@@ -2198,8 +2191,8 @@ namespace ME3Explorer
                 return;
             }
 
-            ResILWrapper.ResILImageConverter converter = new ResILImageConverter(path);
-            converter.ShowDialog();
+            /*ResILWrapper.ResILImageConverter converter = new ResILImageConverter(path);
+            converter.ShowDialog();*/
         }
 
         private void GotoInvalid_Click(object sender, EventArgs e)
@@ -2610,7 +2603,7 @@ namespace ME3Explorer
             backbone.AddToBackBone(a => Autofix(invalids.ToArray()));
         }
 
-        private ResIL.Unmanaged.CompressedDataFormat ParseSurfaceFormat(string format)
+        /*private ResIL.Unmanaged.CompressedDataFormat ParseSurfaceFormat(string format)
         {
             ResIL.Unmanaged.CompressedDataFormat surface = ResIL.Unmanaged.CompressedDataFormat.None;
             switch (format.ToLowerInvariant())
@@ -2642,10 +2635,10 @@ namespace ME3Explorer
                     break;
             }
             return surface;
-        }
+        }*/
 
 
-        private bool FixMips(TPFTexInfo info, ResILImageBase img)
+        /*private bool FixMips(TPFTexInfo info, ResILImageBase img)
         {
             // KFreon: Build or remove mips depending on requirements. Note case where expected == existing not present as that's what MipsCorrect is.
             if (info.ExpectedMips > info.NumMips)
@@ -2669,7 +2662,7 @@ namespace ME3Explorer
             info.NumMips = info.ExpectedMips;
 
             return true;
-        }
+        }*/
 
         private bool Autofix(params TPFTexInfo[] texes)
         {
@@ -2727,90 +2720,13 @@ namespace ME3Explorer
 
             string path = tex.Autofixedpath(TemporaryPath);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
-            CompressedDataFormat surface = ParseSurfaceFormat(tex.ExpectedFormat);
 
             tex.Extract(Path.GetDirectoryName(path));
             tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
 
-            // Heff: make sure that nvdxt does the compression from dxt5 to 1, as it looks lousy otherwise.
-            if (tex.Format.ToLower().Contains("dxt5") && (surface == CompressedDataFormat.DXT1A || surface == CompressedDataFormat.DXT1))
-            {
-                string type = surface == CompressedDataFormat.DXT1A ? "dxt1a" : "dxt1c";
-                string toolPath = @".\exec\nvdxt.exe";
-                string args = "-file \"" + Path.Combine(tex.FilePath, tex.FileName) + "\" -output \"" + path + "\" -quality_production -" + type;
+            using (ImageEngineImage img = new ImageEngineImage(tex.FilePath))
+                img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), !tex.CorrectMips);
 
-                args += " -nomipmap";
-
-                string output = ExecuteExternalTool(toolPath, args);
-
-                if (!output.Contains("Writing"))
-                {
-                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
-                    tex.AutofixSuccess = false;
-                    return false;
-                }
-            }
-
-            if (surface == CompressedDataFormat.ThreeDC || surface == CompressedDataFormat.ATI1N) // nv/dx tools dont handle this
-            {
-                byte[] arr = tex.Extract(null, true);
-                path = Path.ChangeExtension(path, ".dds");
-                tex.FilePath = Path.GetDirectoryName(path);
-                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
-                using (ResILImageBase img = ResILImageBase.Create(arr))
-                {
-                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Dds, path, surface: surface);
-                    if (!success)
-                    {
-                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
-                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
-                        tex.AutofixSuccess = false;
-                        return false;
-                    }
-                    retval = true;
-                }
-            }
-            else
-            { // should this also handle DXT2/4 ?
-                string[] sourceFormats = { ".tga", ".bmp", ".pfm", ".jpg", ".hdr", ".dds", ".png" };
-                if (!MoveToTempAndConvert(tex, path, sourceFormats))
-                    return false;
-
-                string targetPath = Path.ChangeExtension(path, ".dds");
-
-                string toolPath = @".\exec\texconv.exe";
-
-                string type = tex.ExpectedFormat;
-                if (type == "ARGB")
-                    type = "A8R8G8B8";
-
-                string args = " -ft DDS -f " + type;
-                int newMips = TPFTexInfo.CalculateMipCount(tex.Width, tex.Height);
-                if (newMips < tex.ExpectedMips)
-                    newMips = tex.ExpectedMips;
-
-                if (tex.ExpectedMips != 1)
-                    args += " -m " + newMips + " -mf D3DX_FILTER_BOX";
-                else
-                    args += " -m 1"; // Heff: seems like this is detected as 0 mips, fix.
-                args += " -o \"" + Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath)) + "\"";
-                args += " \"" + Path.Combine(tex.FilePath, tex.FileName) + "\"";
-
-                string output = ExecuteExternalTool(toolPath, args);
-
-                if (!output.Contains("writing"))
-                {
-                    DebugOutput.PrintLn("Failed to autofix image, skipping:\n" + output);
-                    tex.AutofixSuccess = false;
-                    return false;
-                }
-
-                if (path != targetPath)
-                    File.Delete(path); //Delete the temporary file if it had a different extension
-
-                tex.FileName = Path.ChangeExtension(tex.FileName, ".dds");
-                retval = true;
-            }
 
             // Heff: Cancellation check
             if (cts.IsCancellationRequested)
@@ -2826,7 +2742,7 @@ namespace ME3Explorer
             return retval;
         }
 
-        private string ExecuteExternalTool(string filepath, string arguments)
+        /*private string ExecuteExternalTool(string filepath, string arguments)
         {
             Process proc = new Process();
 
@@ -2840,9 +2756,9 @@ namespace ME3Explorer
             string cmdoutput = proc.StandardOutput.ReadToEnd();
             proc.WaitForExit();
             return cmdoutput;
-        }
+        }*/
 
-        private bool MoveToTempAndConvert(TPFTexInfo tex, string path, string[] sourceFormats)
+        /*private bool MoveToTempAndConvert(TPFTexInfo tex, string path, string[] sourceFormats)
         {
             if (!sourceFormats.Any(f => tex.FileName.EndsWith(f)))
             {
@@ -2880,8 +2796,8 @@ namespace ME3Explorer
                     return false;
                 }
             }*/
-            return true;
-        }
+            /*return true;
+        }*/
 
         private void AutofixInstallButton_Click(object sender, EventArgs e)
         {
@@ -2915,7 +2831,7 @@ namespace ME3Explorer
                 tex.FileName = Path.GetFileName(replacingPath);
                 tex.FilePath = Path.GetDirectoryName(replacingPath);
                 DebugOutput.PrintLn("Getting new details...");
-                tex.Thumbnail = new MemoryTributary();
+                tex.Thumbnail = new MemoryStream();
                 tex.EnumerateDetails();
 
                 /*try

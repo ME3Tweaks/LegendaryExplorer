@@ -138,8 +138,8 @@ namespace ME3Explorer
 
         private void ShowDetails(bool state)
         {
-            Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(600);
-            Transitions.Transition.run(MainSplitter, "SplitterDistance", (state ? 620 : MainSplitter.Width), trans);
+            UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(600);
+            UsefulThings.WinForms.Transitions.Transition.run(MainSplitter, "SplitterDistance", (state ? 620 : MainSplitter.Width), trans);
         }
 
 
@@ -505,14 +505,14 @@ namespace ME3Explorer
 
         private void ExpandScript(bool state)
         {
-            Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(600);
-            Transitions.Transition.run(DetailsSplitter, "SplitterDistance", (state ? 0 : DetailsSplitter.Width / 2), trans);
+            UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(600);
+            UsefulThings.WinForms.Transitions.Transition.run(DetailsSplitter, "SplitterDistance", (state ? 0 : DetailsSplitter.Width / 2), trans);
         }
 
         private void ShowHideScript(bool state)
         {
-            Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(600);
-            Transitions.Transition.run(DetailsSplitter, "SplitterDistance", (state ? DetailsSplitter.Width / 2 : DetailsSplitter.Width - 76), trans);
+            UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(600);
+            UsefulThings.WinForms.Transitions.Transition.run(DetailsSplitter, "SplitterDistance", (state ? DetailsSplitter.Width / 2 : DetailsSplitter.Width - 76), trans);
         }
 
         private void HideShowButton_Click(object sender, EventArgs e)
@@ -540,8 +540,8 @@ namespace ME3Explorer
 
         private void ShowMainContext(bool state)
         {
-            //Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(400);
-            //Transitions.Transition.run(MainContextStrip, "Height", (state ? 25 : 0), trans);
+            //UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400);
+            //UsefulThings.WinForms.Transitions.Transition.run(MainContextStrip, "Height", (state ? 25 : 0), trans);
             MainContextStrip.Height = state ? 25 : 0;
         }
 
@@ -1127,8 +1127,8 @@ namespace ME3Explorer
                 this.Invoke(new Action(() => DisappearPCCEditStuff(state)));
             else
             {
-                Transitions.TransitionType_CriticalDamping trans = new Transitions.TransitionType_CriticalDamping(400);
-                Transitions.Transition.run(PCCSplitter, "SplitterDistance", (state) ? PCCSplitter.Height : PCCSplitter.Height - 62, trans);
+                UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400);
+                UsefulThings.WinForms.Transitions.Transition.run(PCCSplitter, "SplitterDistance", (state) ? PCCSplitter.Height : PCCSplitter.Height - 62, trans);
             }
         }
 

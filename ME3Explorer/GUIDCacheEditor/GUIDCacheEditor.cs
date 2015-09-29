@@ -32,6 +32,11 @@ namespace ME3Explorer.GUIDCacheEditor
 
         private void openGUIDCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
             BitConverter.IsLittleEndian = true;
             pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
             ReadGUIDs(pcc.Exports[0].Data);

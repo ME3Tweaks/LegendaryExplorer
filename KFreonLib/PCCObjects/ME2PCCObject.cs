@@ -62,7 +62,7 @@ namespace KFreonLib.PCCObjects
 
         public uint PackageFlags;
         public int NumChunks;
-        public MemoryTributary listsStream;
+        public MemoryStream listsStream;
         public List<string> Names;
         public List<ME2ImportEntry> Imports;
         public List<ME2ExportEntry> Exports;
@@ -79,7 +79,7 @@ namespace KFreonLib.PCCObjects
             BitConverter.IsLittleEndian = true;
             DebugOutput.PrintLn("Load file : " + path);
             pccFileName = Path.GetFullPath(path);
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("PCC file not found");
             using (FileStream fs = new FileStream(pccFileName, FileMode.Open, FileAccess.Read))
@@ -96,7 +96,7 @@ namespace KFreonLib.PCCObjects
         }
 
 
-        public ME2PCCObject(String path, MemoryTributary tempStream)
+        public ME2PCCObject(String path, MemoryStream tempStream)
         {
             lzo = new SaltLZOHelper();
             fullname = path;
@@ -107,7 +107,7 @@ namespace KFreonLib.PCCObjects
             LoadHelper(tempStream);
         }
 
-        private void LoadHelper(MemoryTributary tempStream)
+        private void LoadHelper(MemoryStream tempStream)
         {
             tempStream.Seek(12, SeekOrigin.Begin);
             int tempNameSize = tempStream.ReadValueS32();
@@ -205,7 +205,7 @@ namespace KFreonLib.PCCObjects
                 listsStream.WriteTo(fs);
         }
 
-        private void ReadNames(MemoryTributary fs)
+        private void ReadNames(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Names...");
             fs.Seek(NameOffset, SeekOrigin.Begin);
@@ -219,7 +219,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        private void ReadImports(MemoryTributary fs)
+        private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
             Imports = new List<ME2ImportEntry>();
@@ -237,7 +237,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        private void ReadExports(MemoryTributary fs)
+        private void ReadExports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Exports...");
             fs.Seek(ExportOffset, SeekOrigin.Begin);
@@ -456,7 +456,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        MemoryTributary IPCCObject.listsStream
+        MemoryStream IPCCObject.listsStream
         {
             get
             {
@@ -537,7 +537,7 @@ namespace KFreonLib.PCCObjects
 
         public string getNameEntry(int index)
         {
-            throw new NotImplementedException();
+            return GetName(index);
         }
 
 
@@ -643,5 +643,94 @@ namespace KFreonLib.PCCObjects
         {
             return Names.IndexOf(name);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (iexports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ExportEntry entry in iexports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Exports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ExportEntry entry in Exports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Imports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ImportEntry entry in Imports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (iimports != null)
+                    {
+                        try
+                        {
+                            foreach (ME2ImportEntry entry in iimports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (listsStream != null)
+                        try
+                        {
+                            listsStream.Dispose();
+                        }
+                        catch { }
+
+                    if (m != null)
+                        try
+                        {
+                            m.Dispose();
+                        }
+                        catch { }
+                }
+
+                this.header = null;
+                this.lzo = null;
+                this.Names = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME2PCCObject()
+        {
+          // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+          Dispose(false);
+         }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

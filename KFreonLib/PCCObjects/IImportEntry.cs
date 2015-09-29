@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KFreonLib.PCCObjects
 {
-    public interface IImportEntry
+    public interface IImportEntry : IDisposable
     {
         int link { get; set; }
 

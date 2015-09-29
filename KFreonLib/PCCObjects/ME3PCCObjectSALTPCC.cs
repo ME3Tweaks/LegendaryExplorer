@@ -90,7 +90,7 @@ namespace KFreonLib.PCCObjects
         // KFreon: Decompresses specific blocks if compressed, or returns data specified by offset and length.
         public byte[] Decompressor(uint offset, int length)
         {
-            using (MemoryTributary retval = new MemoryTributary())
+            using (MemoryStream retval = new MemoryStream())
             {
                 uint newoffset = 0;
                 /*if (blockList.Count == 1)
@@ -161,8 +161,8 @@ namespace KFreonLib.PCCObjects
         public List<ME3ExportEntry> Exports { get; set; }
         List<Block> blocklist = null;
         public int NumChunks;
-        public MemoryTributary listsStream;
-        public MemoryTributary DataStream;
+        public MemoryStream listsStream;
+        public MemoryStream DataStream;
 
 
 
@@ -175,7 +175,7 @@ namespace KFreonLib.PCCObjects
             pccFileName = Path.GetFullPath(filePath);
             BitConverter.IsLittleEndian = true;
 
-            MemoryTributary tempStream = new MemoryTributary();
+            MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
                 throw new FileNotFoundException("LET ME KNOW ABOUT THIS! filename: " + pccFileName);
 
@@ -208,10 +208,10 @@ namespace KFreonLib.PCCObjects
             ME3PCCObjectHelper(tempStream, filePath, TablesOnly);
         }
 
-        public void ME3PCCObjectHelper(MemoryTributary tempStream, string filePath, bool TablesOnly)
+        public void ME3PCCObjectHelper(MemoryStream tempStream, string filePath, bool TablesOnly)
         {
             tempStream.Seek(0, SeekOrigin.Begin);
-            DataStream = new MemoryTributary();
+            DataStream = new MemoryStream();
             tempStream.WriteTo(DataStream);
             Names = new List<string>();
             Imports = new List<ME3ImportEntry>();
@@ -283,18 +283,18 @@ namespace KFreonLib.PCCObjects
                         }
                     }
 
-                    listsStream = new MemoryTributary();
+                    listsStream = new MemoryStream();
                     tempStream.Seek(blockList[TableStart].cprOffset, SeekOrigin.Begin);
                     listsStream.Seek(blockList[TableStart].uncOffset, SeekOrigin.Begin);
                     listsStream.WriteBytes(ZBlock.Decompress(tempStream, blockList[TableStart].cprSize));
-                    DataStream = new MemoryTributary();
+                    DataStream = new MemoryStream();
                     tempStream.WriteTo(DataStream);
                     bCompressed = true;
                 }
                 else
                 {
                     //Decompress ALL blocks
-                    listsStream = new MemoryTributary();
+                    listsStream = new MemoryStream();
                     for (int i = 0; i < blockCount; i++)
                     {
                         tempStream.Seek(blockList[i].cprOffset, SeekOrigin.Begin);
@@ -306,7 +306,7 @@ namespace KFreonLib.PCCObjects
             }
             else
             {
-                listsStream = new MemoryTributary();
+                listsStream = new MemoryStream();
                 listsStream.WriteBytes(tempStream.ToArray());
             }
             tempStream.Dispose();
@@ -346,7 +346,7 @@ namespace KFreonLib.PCCObjects
         }
 
         // KFreon: Alternate intialiser to allow loading from existing stream
-        public ME3PCCObject(string filePath, MemoryTributary stream, bool TablesOnly = false)
+        public ME3PCCObject(string filePath, MemoryStream stream, bool TablesOnly = false)
         {
             pccFileName = filePath;
             BitConverter.IsLittleEndian = true;
@@ -1155,7 +1155,7 @@ namespace KFreonLib.PCCObjects
             }
         }
 
-        MemoryTributary IPCCObject.listsStream
+        MemoryStream IPCCObject.listsStream
         {
             get
             {
@@ -1221,5 +1221,95 @@ namespace KFreonLib.PCCObjects
                 temptex2D.Hash = hash;
             return temptex2D;
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (iexports != null)
+                    {
+                        try
+                        {
+                            foreach (ME3ExportEntry entry in iexports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (iimports != null)
+                    {
+                        try
+                        {
+                            foreach (ME3ImportEntry entry in iimports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Exports != null)
+                    {
+                        try
+                        {
+                            foreach (ME3ExportEntry entry in Exports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+                    if (Imports != null)
+                    {
+                        try
+                        {
+                            foreach (ME3ImportEntry entry in Imports)
+                                entry.Dispose();
+                        }
+                        catch { }
+                    }
+
+
+                    if (listsStream != null)
+                        try
+                        {
+                            listsStream.Dispose();
+                        }
+                        catch { }
+
+                    if (DataStream != null)
+                        try
+                        {
+                            DataStream.Dispose();
+                        }
+                        catch { }
+                }
+
+                this.extraNamesList = null;
+                this.header = null;
+                this.Names = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME3PCCObject()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

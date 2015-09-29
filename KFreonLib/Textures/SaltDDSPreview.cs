@@ -6,6 +6,7 @@ using AmaroK86.ImageFormat;
 
 namespace KFreonLib.Textures.SaltDDSPreview
 {
+    [Obsolete("Use CSharpImageLibrary instead.", true)]
     public class DDSPreview
     {
         private const UInt32 DDSMagic = 0x20534444;

@@ -32,6 +32,12 @@ namespace ME3Explorer
 
         public SequenceEditor()
         {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                this.Close();
+                return;
+            }
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
@@ -824,7 +830,7 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadPCC(CurrentFile);
+            p.LoadPCC(CurrentFile, talkFile);
             if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);

@@ -19,6 +19,9 @@ using KFreonLib.MEDirectories;
 using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
+using CSharpImageLibrary.General;
+using System.Text;
+using UsefulThings;
 
 namespace ME3Explorer
 {
@@ -238,7 +241,7 @@ namespace ME3Explorer
             temptex2D.CopyImgList(tex2D, PCC);
             PCC.Exports[ExpIDs[j]].SetData(temptex2D.ToArray(PCC.Exports[ExpIDs[j]].DataOffset, PCC));
             PCC.saveToFile(currentPCC);
-            PCC = null;
+            PCC.Dispose();
             return true;
         }
 
@@ -270,22 +273,25 @@ namespace ME3Explorer
                     // KFreon: Setup objects
                     TreeTexInfo tex = Tree.GetTex(ChangedTextures[i]);
                     StatusUpdater.UpdateText("Saving " + tex.TexName + " |  " + MainProgressBar.Value + 1 + " \\ " + MainProgressBar.Maximum);
-                    PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame);
-                    Textures.ITexture2D tex2D = tex.Textures[0];
-
-                    // KFreon: Save first file
-                    PCCObjects.IExportEntry expEntry = pcc.Exports[tex2D.pccExpIdx];
-                    expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
-                    pcc.saveToFile(pcc.pccFileName);
-
-                    this.Invoke(new Action(() => MainProgressBar.Increment(1)));
-                    OutputBoxPrintLn("Initial saving complete for " + tex.TexName + ". Now saving remaining PCC's for this texture...");
-
-                    // KFreon: Save rest of files
-                    for (int j = 1; j < tex.Files.Count; j++)
+                    using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame))
                     {
-                        if (!SaveFile(tex.Files, tex.ExpIDs, tex2D, j))
-                            return false;
+                        using (Textures.ITexture2D tex2D = tex.Textures[0])
+                        {
+                            // KFreon: Save first file
+                            PCCObjects.IExportEntry expEntry = pcc.Exports[tex2D.pccExpIdx];
+                            expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
+                            pcc.saveToFile(pcc.pccFileName);
+
+                            this.Invoke(new Action(() => MainProgressBar.Increment(1)));
+                            OutputBoxPrintLn("Initial saving complete for " + tex.TexName + ". Now saving remaining PCC's for this texture...");
+
+                            // KFreon: Save rest of files
+                            for (int j = 1; j < tex.Files.Count; j++)
+                            {
+                                if (!SaveFile(tex.Files, tex.ExpIDs, tex2D, j))
+                                    return false;
+                            }
+                        } 
                     }
                 }
 
@@ -833,7 +839,7 @@ namespace ME3Explorer
             object countlock = new object();
 
 
-            //DeepScanPCC(@"R:\Games\Mass Effect\BioGame\CookedPC\BIOC_Materials.u");
+            //DeepScanPCC(@"R:\\Games\\Mass Effect\\DLC\\DLC_UNC\\CookedPC\\Maps\\UNC52\\DSG\\BIOA_UNC52_00torch_DSG.SFM");
 
             Parallel.For(0, isTree ? Tree.numPCCs : pccs.Count, po, (b, loopstate) =>
             {
@@ -863,16 +869,18 @@ namespace ME3Explorer
         {
             try
             {
-                PCCObjects.IPCCObject temppcc = PCCObjects.Creation.CreatePCCObject(filename, WhichGame);
-                // KFreon:  Search the exports list for viable texture types
-                for (int i = 0; i < temppcc.Exports.Count; i++)
+                using (PCCObjects.IPCCObject temppcc = PCCObjects.Creation.CreatePCCObject(filename, WhichGame))
                 {
-                    //TreeTexInfo tex = KFreonFormsLib.Miscextra.GenerateTexStruct(temppcc, i, WhichGame, pathBIOGame, ExecFolder, allpccs);
-                    bool result;
-                    TreeTexInfo tex = new TreeTexInfo(temppcc, i, WhichGame, pathBIOGame, ExecFolder, out result);
+                    // KFreon:  Search the exports list for viable texture types
+                    for (int i = 0; i < temppcc.Exports.Count; i++)
+                    {
+                        //TreeTexInfo tex = KFreonFormsLib.Miscextra.GenerateTexStruct(temppcc, i, WhichGame, pathBIOGame, ExecFolder, allpccs);
+                        bool result;
+                        TreeTexInfo tex = new TreeTexInfo(temppcc, i, WhichGame, pathBIOGame, ExecFolder, out result);
 
-                    if (result)
-                        Tree.AddTex(tex, (WhichGame == 1) ? temppcc.Exports[i].Package : "", filename);
+                        if (result)
+                            Tree.AddTex(tex, (WhichGame == 1) ? temppcc.Exports[i].Package : "", filename);
+                    }
                 }
             }
             catch(Exception e)
@@ -1244,144 +1252,135 @@ namespace ME3Explorer
             if (!File.Exists(fulpath))
                 return false;
 
-            PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
-
-            if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || String.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
-                throw new InvalidDataException("Export is not correct class or name!");
-
-            //Load the texture from the pcc
-            Textures.ITexture2D tex2D = null;
-            tex2D = pcc.CreateTexture2D(IDs[0], pathBIOGame);
-            tex2D.allPccs = pccs;
-            tex2D.expIDs = IDs;
-            int noImg = tex2D.imgList.Count;
-
-            DebugOutput.PrintLn("Now replacing textures in texture: " + tex2D.texName, true);
-            Debug.WriteLine("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
-            WriteDebug("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
-
-            ImageFile im = null;
-            try
+            using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame))
             {
-                im = new DDS("", imgdata);
-            }
-            catch
-            {
-                Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
-                return false;
-            }
+                if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || String.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
+                    throw new InvalidDataException("Export is not correct class or name!");
 
-
-
-            // KFreon: TESTING
-            Debug.WriteLine("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
-            WriteDebug("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
-
-
-
-            //The texture is a single image, therefore use replace function
-            if (noImg == 1)
-            {
-                string imgSize = tex2D.imgList[0].imgSize.width.ToString() + "x" + tex2D.imgList[0].imgSize.height.ToString();
-                try
+                //Load the texture from the pcc
+                using (Textures.ITexture2D tex2D = pcc.CreateTexture2D(IDs[0], pathBIOGame))
                 {
-                    tex2D.replaceImage(imgSize, im, pathBIOGame);
-                }
-                catch
-                {
-                    // KFreon:  If replace fails, it's single image thus use the singleimageupscale function
-                    tex2D.singleImageUpscale(im, pathBIOGame);
-                }
-            }
-            //If the texture has multiple images, then check the input texture for MIPMAPS
-            else
-            {
-                bool hasMips = true;
-                ImageFile imgFile = im;
-                try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
-                catch (Exception e)
-                { 
-                    hasMips = false; 
-                }
+                    
+                    tex2D.allPccs = pccs;
+                    tex2D.expIDs = IDs;
+                    int noImg = tex2D.imgList.Count;
 
+                    DebugOutput.PrintLn("Now replacing textures in texture: " + tex2D.texName, true);
+                    Debug.WriteLine("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
+                    WriteDebug("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
 
-                if (!hasMips)
-                {
-                    //string fileformat = Path.GetExtension(texFile);
-                    //imgFile = new DDS(texFile);
-                    string imgSize = imgFile.imgSize.width.ToString() + "x" + imgFile.imgSize.height.ToString();
+                    ImageFile im = null;
                     try
                     {
-                        //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
-                        tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
+                        im = new DDS("", imgdata);
                     }
-                    catch (Exception e)
-                    { 
-                        tex2D.addBiggerImage(imgFile, pathBIOGame); 
-                    }
-                }
-                else
-                {
-                    try
+                    catch
                     {
-                        tex2D.OneImageToRuleThemAll(imgFile, pathBIOGame, imgdata);
+                        Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
+                        return false;
                     }
-                    catch (Exception e)
+
+
+
+                    // KFreon: TESTING
+                    Debug.WriteLine("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
+                    WriteDebug("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
+
+
+
+                    //The texture is a single image, therefore use replace function
+                    if (noImg == 1)
                     {
-                        if (e.Message.Contains("Format"))
+                        string imgSize = tex2D.imgList[0].imgSize.width.ToString() + "x" + tex2D.imgList[0].imgSize.height.ToString();
+                        try
                         {
-                            MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
-                            return false;
+                            tex2D.replaceImage(imgSize, im, pathBIOGame);
+                        }
+                        catch
+                        {
+                            // KFreon:  If replace fails, it's single image thus use the singleimageupscale function
+                            tex2D.singleImageUpscale(im, pathBIOGame);
                         }
                     }
+
+                    //If the texture has multiple images, then check the input texture for MIPMAPS
+                    else
+                    {
+                        bool hasMips = true;
+                        ImageFile imgFile = im;
+                        try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
+                        catch (Exception e)
+                        {
+                            hasMips = false;
+                        }
+
+
+                        if (!hasMips)
+                        {
+                            string imgSize = imgFile.imgSize.width.ToString() + "x" + imgFile.imgSize.height.ToString();
+                            try
+                            {
+                                //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
+                                tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
+                            }
+                            catch (Exception e)
+                            {
+                                tex2D.addBiggerImage(imgFile, pathBIOGame);
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                tex2D.OneImageToRuleThemAll(imgFile, pathBIOGame, imgdata);
+                            }
+                            catch (Exception e)
+                            {
+                                if (e.Message.Contains("Format"))
+                                {
+                                    MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+
+                    Debug.WriteLine("After replace: " + tex2D.arcName);
+                    WriteDebug("After replace: " + tex2D.arcName);
+
+
+                    DebugOutput.PrintLn("Replacement complete. Now saving pcc: " + pcc.pccFileName, true);
+
+                    PCCObjects.IExportEntry expEntry = pcc.Exports[IDs[0]];
+                    expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
+                    expEntry.hasChanged = true;
+                    pcc.Exports[IDs[0]] = expEntry;
+
+                    pcc.saveToFile(pcc.pccFileName);
+
+                    int modCount = tex2D.allPccs.Count;
+
+                    // KFreon: Elapsed time stuff
+                    int start = Environment.TickCount;
+
+                    if (modCount > 1)
+                        for (int item = 1; item < modCount; item++)
+                        {
+                            Debug.WriteLine(pccs[item] + "   " + IDs[item]);
+                            WriteDebug(pccs[item] + "   " + IDs[item]);
+                            if (!SaveFile(pccs, IDs, tex2D, item))
+                                break;
+                        }
+                    Debug.WriteLine("");
+                    WriteDebug("");
+
+                    // KFreon: More timer stuff
+                    TimeSpan ts = TimeSpan.FromMilliseconds(Environment.TickCount - start);
+                    Console.WriteLine(ts.Duration().ToString());
+                    DebugOutput.Print("All PCC updates finished. ");
+                    return true;
                 }
             }
-
-            Debug.WriteLine("After replace: " + tex2D.arcName);
-            WriteDebug("After replace: " + tex2D.arcName);
-
-
-            DebugOutput.PrintLn("Replacement complete. Now saving pcc: " + pcc.pccFileName, true);
-
-            //tex2D.DumpTexture(@"R:\commit.txt");
-
-            PCCObjects.IExportEntry expEntry = pcc.Exports[IDs[0]];
-            expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
-            expEntry.hasChanged = true;
-            pcc.Exports[IDs[0]] = expEntry;
-
-            pcc.saveToFile(pcc.pccFileName);
-
-            /*File.Delete(loc + "tex.dds");
-            File.Delete(loc + "data.bin");*/
-
-            int modCount = tex2D.allPccs.Count;
-
-            // KFreon: Elapsed time stuff
-            int start = Environment.TickCount;
-
-            // KFreon: Start threading of save function (max 10 threads)
-            //ParallelOptions po = new ParallelOptions();
-            //po.MaxDegreeOfParallelism = 2;
-            if (modCount > 1)
-                //Parallel.For(1, modCount, po, (item, loopstate) =>
-                for (int item = 1; item < modCount; item++)
-                {
-                    Debug.WriteLine(pccs[item] +  "   " + IDs[item]);
-                    WriteDebug(pccs[item] + "   " + IDs[item]);
-                    if (!SaveFile(pccs, IDs, tex2D, item))
-                        break;
-                    /*loopstate.Stop();
-            });*/
-                }
-            Debug.WriteLine("");
-            WriteDebug("");
-            // KFreon: More timer stuff
-            TimeSpan ts = TimeSpan.FromMilliseconds(Environment.TickCount - start);
-            Console.WriteLine(ts.Duration().ToString());
-            GC.Collect();
-            DebugOutput.Print("All PCC updates finished. ");
-            return true;
         }
 
         public static void UpdateTOCs(string pathBIOGame, int WhichGame, string DLCPath, List<string> modifiedDLC = null)
@@ -1430,15 +1429,16 @@ namespace ME3Explorer
             MessageBox.Show("THIS DOESN'T WORK YET! LET ME KNOW PLEASE.");
             return;
             BeginLoadingTree(true);
-            PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(path, WhichGame);
-
-            //TreeTexInfo tex = KFreonFormsLib.Miscextra.GenerateTexStruct(pcc, exportID, WhichGame, pathBIOGame, ExecFolder, Tree.GetPCCsAsList());
-            bool Success;
-            TreeTexInfo tex = new TreeTexInfo(pcc, exportID, WhichGame, pathBIOGame, ExecFolder, out Success);
-            Tree.AddTex(tex, "", "");  // not right - should be blind add?
-            if (File.Exists(Tree.TreePath))
-                File.Delete(Tree.TreePath);
-            Tree.WriteToFile(Tree.TreePath, Path.GetDirectoryName(pathBIOGame));
+            using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(path, WhichGame))
+            {
+                //TreeTexInfo tex = KFreonFormsLib.Miscextra.GenerateTexStruct(pcc, exportID, WhichGame, pathBIOGame, ExecFolder, Tree.GetPCCsAsList());
+                bool Success;
+                TreeTexInfo tex = new TreeTexInfo(pcc, exportID, WhichGame, pathBIOGame, ExecFolder, out Success);
+                Tree.AddTex(tex, "", "");  // not right - should be blind add?
+                if (File.Exists(Tree.TreePath))
+                    File.Delete(Tree.TreePath);
+                Tree.WriteToFile(Tree.TreePath, Path.GetDirectoryName(pathBIOGame));
+            }
         }
 
         private void OutputBoxPrintLn(string message)
@@ -1572,34 +1572,38 @@ namespace ME3Explorer
                         using (Bitmap img = tex.GetImage(pathBIOGame))
                         {
 
-                            PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame);
-                            Textures.ITexture2D tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBIOGame);
-                            if (img != null)
+                            using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame))
                             {
-                                string savepath = Path.Combine(ThumbnailPath, tex.ThumbName);
-                                if (File.Exists(savepath))
+                                using (Textures.ITexture2D tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBIOGame))
                                 {
-                                    ind = i + 1;
-                                    tex.ThumbnailPath = savepath;
-                                }
-                                else
-                                {
-                                    string thumbpath = null;
-                                    try
+                                    if (img != null)
                                     {
-                                        thumbpath = Textures.Creation.GenerateThumbnail(img, savepath, ExecFolder);
-                                        tex.ThumbnailPath = thumbpath;
-                                        ind = i + 1;
-                                    }
-                                    catch
-                                    {
-                                        ind = 0;
-                                        // IGNORE
+                                        string savepath = Path.Combine(ThumbnailPath, tex.ThumbName);
+                                        if (File.Exists(savepath))
+                                        {
+                                            ind = i + 1;
+                                            tex.ThumbnailPath = savepath;
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                byte[] data = UsefulThings.WinForms.Imaging.GetPixelDataFromBitmap(img);
+                                                ImageEngine.GenerateThumbnailToFile(new MemoryStream(data), savepath, 128);
+                                                tex.ThumbnailPath = savepath;
+                                                ind = i + 1;
+                                            }
+                                            catch
+                                            {
+                                                ind = 0;
+                                                // IGNORE
+                                            }
+                                        }
+                                        tex.TriedThumbUpdate = true;
+                                        Tree.ReplaceTex(SelectedNode.TexInds[i], tex);
                                     }
                                 }
-                                tex.TriedThumbUpdate = true;
-                                Tree.ReplaceTex(SelectedNode.TexInds[i], tex);
-                            }
+                            }                                
                         }
                     }
                     catch (Exception e)
@@ -1611,7 +1615,13 @@ namespace ME3Explorer
                 Image thumb;
                 try
                 {
-                    thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
+                    //thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
+                    /*using (FileStream fs = new FileStream(tex.ThumbnailPath, FileMode.Open))
+                    {
+                        //var stream = ImageEngine.GenerateThumbnailToStream(fs, 128);
+                        thumb = Image.FromStream(fs);
+                    }*/
+                    thumb = Image.FromFile(tex.ThumbnailPath);
                     thumbs.Add(thumb);
                 }
                 catch
@@ -1661,8 +1671,8 @@ namespace ME3Explorer
 
         private void ShowContextPanel(bool state)
         {
-            Transitions.ITransitionType trans = new Transitions.TransitionType_CriticalDamping(400);
-            Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 30, trans);
+            UsefulThings.WinForms.Transitions.ITransitionType trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400);
+            UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 30, trans);
         }
 
         private void MainListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1853,7 +1863,7 @@ namespace ME3Explorer
 
         private void DetailsHideButton_Click(object sender, EventArgs e)
         {
-            Transitions.ITransitionType transition = new Transitions.TransitionType_CriticalDamping(700);
+            UsefulThings.WinForms.Transitions.ITransitionType transition = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(700);
 
             if (DetailsHideButton.Text == ">>")
             {
@@ -1861,12 +1871,12 @@ namespace ME3Explorer
                 TabSearchSplitter.Visible = false;
                 SearchBox.Visible = false;
                 SearchCountLabel.Visible = false;
-                Transitions.Transition.run(splitContainer3, "SplitterDistance", splitContainer3.Width - 40, transition);
+                UsefulThings.WinForms.Transitions.Transition.run(splitContainer3, "SplitterDistance", splitContainer3.Width - 40, transition);
                 DetailsHideButton.Text = "<<";
             }
             else
             {
-                Transitions.Transition.run(splitContainer3, "SplitterDistance", PropertiesWidth, transition);
+                UsefulThings.WinForms.Transitions.Transition.run(splitContainer3, "SplitterDistance", PropertiesWidth, transition);
                 DetailsHideButton.Text = ">>";
                 TabSearchSplitter.Visible = true;
                 SearchBox.Visible = true;
@@ -1884,7 +1894,7 @@ namespace ME3Explorer
                     {
                         if (SearchBox.Text != "")
                         {
-                            Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new Transitions.TransitionType_CriticalDamping(400));
+                            UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
                             int start = Environment.TickCount;
                             Search.SearchAllv5(SearchBox.Text, SearchListBox, "new");
                             TimeSpan ts = TimeSpan.FromTicks(Environment.TickCount - start);
@@ -1914,10 +1924,10 @@ namespace ME3Explorer
         {
             if (SearchBox.Text == "")
             {
-                Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", 0, new Transitions.TransitionType_CriticalDamping(400));
+                UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", 0, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
                 SearchCountLabel.Text = "";
                 int dest = splitContainer4.Width - (SearchBox.Location.X - TabSearchSplitter.Location.X) - 4;
-                Transitions.Transition.run(SearchBox, "Width", dest, new Transitions.TransitionType_CriticalDamping(200));
+                UsefulThings.WinForms.Transitions.Transition.run(SearchBox, "Width", dest, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(200));
             }
             else
             {
@@ -1925,7 +1935,7 @@ namespace ME3Explorer
                 {
                     if (SearchBox.Text[0] != '\\')
                     {
-                        Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new Transitions.TransitionType_CriticalDamping(400));
+                        UsefulThings.WinForms.Transitions.Transition.run(TabSearchSplitter, "SplitterDistance", TabSearchSplitter.Height / 2, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400));
 
                         int start = Environment.TickCount;
                         Search.SearchAllv5(SearchBox.Text, SearchListBox, "new");
@@ -1935,7 +1945,7 @@ namespace ME3Explorer
 
                         SearchCountLabel.Text = SearchListBox.Items.Count.ToString();
                         int dest = splitContainer4.Width - 4 - (SearchCountLabel.Width) - (SearchBox.Location.X - TabSearchSplitter.Location.X);
-                        Transitions.Transition.run(SearchBox, "Width", dest, new Transitions.TransitionType_CriticalDamping(200));
+                        UsefulThings.WinForms.Transitions.Transition.run(SearchBox, "Width", dest, new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(200));
                     }
                 }
             }
@@ -2078,22 +2088,25 @@ namespace ME3Explorer
                     path = ofd.FileName;
             }
 
+            StringBuilder sb = new StringBuilder();
+
             // KFreon: Check replacing texture
-            string selectedformat;
-            if (!Textures.Methods.CheckTextureFormat(File.ReadAllBytes(path), tex2D.texFormat, out selectedformat))
+            using (ImageEngineImage img = new ImageEngineImage(path))
             {
-                MessageBox.Show("Invalid format. Selected image is: " + selectedformat.ToUpperInvariant() + "  Required: " + tex2D.texFormat.ToUpperInvariant(), "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (img.Format.InternalFormat.ToString().Contains(tex2D.texFormat, StringComparison.OrdinalIgnoreCase))
+                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToUpperInvariant());
+
+                if (img.NumMipMaps < tex2D.Mips)
+                    sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);
+            }
+
+
+            if (sb.Length != 0)
+            {
+                MessageBox.Show(sb.ToString(), "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return "";
             }
 
-            // KFreon: Check replacing mips
-            int numMips = 0;
-            bool CorrectMips = Textures.Methods.CheckTextureMips(path, tex2D.Mips, out numMips);
-            if (!CorrectMips)
-            {
-                MessageBox.Show("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + numMips, "Mission Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return "";
-            }
             return path;
         }
 
@@ -2300,44 +2313,55 @@ namespace ME3Explorer
 
 
 
-
-
                     Parallel.ForEach(files.Keys, po, file =>
                     {
-                        PCCObjects.IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, WhichGame);
-
-                        List<int> texinds = files[file];
-
-                        // KFreon: Generate thumbnails for each texture inside this file
-                        for (int i = 0; i < texinds.Count; i++)
+                        using (PCCObjects.IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, WhichGame))
                         {
-                            TreeTexInfo tex = Tree.GetTex(texinds[i]);
+                            List<int> texinds = files[file];
 
-                            for (int j = 0; j < 3; j++)
+                            // KFreon: Generate thumbnails for each texture inside this file
+                            for (int i = 0; i < texinds.Count; i++)
                             {
-                                try
-                                {
-                                    Textures.ITexture2D tex2D = KFreonLib.Textures.Creation.CreateTexture2D(tex.Textures[0], WhichGame, pathBIOGame);
-                                    tex.ThumbnailPath = KFreonLib.Textures.Creation.GenerateThumbnail(tex2D.GetImage(), tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName), ExecFolder);
-                                    DebugOutput.PrintLn("Generated thumbnail at: " + tex.ThumbnailPath);
-                                    ProgBarUpdater.IncrementBar();
+                                TreeTexInfo tex = Tree.GetTex(texinds[i]);
 
-                                    // KFreon: Update status
-                                    lock (locker)
-                                    {
-                                        count++;
-                                        if (count % 10 == 0)
-                                            StatusUpdater.UpdateText("Regenerating thumbnails...  " + count + " of " + texCount);
-                                    }
-                                    break;
-                                }
-                                catch
+                                for (int j = 0; j < 3; j++)
                                 {
-                                    DebugOutput.PrintLn("Failed to generate thumbnail from: " + tex.TexName + ". Sleeping before trying again.");
-                                    System.Threading.Thread.Sleep(100);
+                                    try
+                                    {
+                                        using (Textures.ITexture2D tex2D = KFreonLib.Textures.Creation.CreateTexture2D(tex.Textures[0], WhichGame, pathBIOGame))
+                                        {
+                                            string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
+                                            using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
+                                            {
+                                                if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128))
+                                                    tex.ThumbnailPath = destination;
+                                                else
+                                                    tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
+                                            }
+
+
+                                            DebugOutput.PrintLn("Generated thumbnail at: " + tex.ThumbnailPath);
+                                            ProgBarUpdater.IncrementBar();
+
+                                            // KFreon: Update status
+                                            lock (locker)
+                                            {
+                                                count++;
+                                                if (count % 10 == 0)
+                                                    StatusUpdater.UpdateText("Regenerating thumbnails...  " + count + " of " + texCount);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        DebugOutput.PrintLn("Failed to generate thumbnail from: " + tex.TexName + ". Sleeping before trying again.");
+                                        System.Threading.Thread.Sleep(100);
+                                    }
                                 }
                             }
                         }
+                            
                     });
                     ProgBarUpdater.ChangeProgressBar(1, 1);
                     StatusUpdater.UpdateText("Thumbnails Regenerated.");
@@ -2393,7 +2417,9 @@ namespace ME3Explorer
             if (FromFile)
                 Textures.Creation.GenerateThumbnail(tex.Files[0], WhichGame, tex.ExpIDs[0], pathBIOGame, thumbpath, ExecFolder);
             else
-                Textures.Creation.GenerateThumbnail(tex2D.GetImage(), thumbpath, ExecFolder);
+                using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
+                    ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128);
+
             Tree.ReplaceTex(index, tex);
         }
 

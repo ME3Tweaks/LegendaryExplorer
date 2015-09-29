@@ -9,6 +9,7 @@ using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading;
 using KFreonLib.PCCObjects;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -1655,7 +1656,8 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                return Textures.Methods.GetImage(texFormat, imgdata);
+                using (ImageEngineImage img = new ImageEngineImage(imgdata))
+                    return img.GetGDIBitmap();
             }
             catch { }
             return null;
@@ -1702,5 +1704,41 @@ namespace KFreonLib.Textures
                 sw.WriteLine(texName);
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                this.allFiles = null;
+                this.allPccs = null;
+                this.expIDs = null;
+                this.footerData = null;
+                this.headerData = null;
+                this.imageData = null;
+                this.privateimgList = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~ME3SaltTexture2D()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

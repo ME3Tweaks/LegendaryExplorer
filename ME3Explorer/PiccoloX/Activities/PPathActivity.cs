@@ -66,7 +66,7 @@ namespace UMD.HCIL.PiccoloX.Activities {
 		/// The minimum number of milliseconds that this activity should delay between steps.
 		/// </param>
 		/// <param name="knots">
-		/// An array of values between 0 and 1 that indicate when the state transitions should
+		/// An array of values between 0 and 1 that indicate when the state UsefulThings.WinForms.Transitions should
 		/// occur.
 		/// </param>
 		public PPathActivity(long duration, long stepInterval, float[] knots)
@@ -89,7 +89,7 @@ namespace UMD.HCIL.PiccoloX.Activities {
 		/// The mode defines how the activity interpolates between states.
 		/// </param>
 		/// <param name="knots">
-		/// An array of values between 0 and 1 that indicate when the state transitions should
+		/// An array of values between 0 and 1 that indicate when the state UsefulThings.WinForms.Transitions should
 		/// occur.
 		/// </param>
 		public PPathActivity(long duration, long stepInterval, int loopCount, ActivityMode mode, float[] knots)
