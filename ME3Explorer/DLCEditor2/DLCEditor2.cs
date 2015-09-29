@@ -449,6 +449,18 @@ namespace ME3Explorer.DLCEditor2
             if (result == "")
                 return;
             DebugOutput.PrintLn("result : " + result);
+            FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+            fbd.Description = "Please choose a folder to unpack this DLC to. Unpacking may take a few minutes.";
+            DialogResult dresult = fbd.ShowDialog();
+            if (dresult != DialogResult.OK)
+            {
+                return;
+            }
+            string unpackFolder = fbd.SelectedPath;
+            if (!unpackFolder.EndsWith("\\"))
+                unpackFolder = unpackFolder + "\\";
+            DebugOutput.PrintLn("Extracting DLC to : " + unpackFolder);
+
             result = result.Trim();
             if (result.EndsWith(";"))
                 result = result.Substring(0, result.Length - 1);
@@ -471,7 +483,7 @@ namespace ME3Explorer.DLCEditor2
                         if (DLCpath.ToLower().EndsWith(patt[j].Trim().ToLower()) && patt[j].Trim().ToLower() != "")
                         {
                             string relPath = GetRelativePath(DLCpath);
-                            string outpath = gamebase + relPath;
+                            string outpath = unpackFolder + relPath;
                             DebugOutput.PrintLn("Extracting file #" + i.ToString("d4") + ": " + outpath);
                             if (!Directory.Exists(Path.GetDirectoryName(outpath)))
                                 Directory.CreateDirectory(Path.GetDirectoryName(outpath));
