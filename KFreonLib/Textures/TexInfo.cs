@@ -378,6 +378,10 @@ namespace KFreonLib.Textures
         {
             get
             {
+                // KFreon: The ImageEngine ignores mips for the most part. It'll just make its own as required.
+                return true;
+
+
                 bool standard = (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
                 bool calc = ExpectedMips > 1 && NumMips < (CalculateMipCount(this.Width, this.Height) - 3); // Heff: only check down to 4x4 / 4x8
                 return standard && !calc;
@@ -404,7 +408,7 @@ namespace KFreonLib.Textures
 
         public static int CalculateMipCount(int Width, int Height)
         {
-            return (int)Math.Log(Math.Max(Width, Height), 2) + 1;
+            return (int)Math.Log(Math.Max(Width, Height), 2)+ 1;
         }
 
         public bool ValidDimensions { get; set; }
@@ -715,6 +719,8 @@ namespace KFreonLib.Textures
 
                 FileDuplicates.Add(texn);
             }
+
+            ValidDimensions = ValidateDimensions();
         }
 
         public struct PCCExpID
@@ -750,7 +756,7 @@ namespace KFreonLib.Textures
                             NumMips = image.NumMipMaps;
                             Height = image.Height;
                             Width = image.Width;
-                            Format = image.Format.InternalFormat.ToString();
+                            Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
                             image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
                         }
                     }
