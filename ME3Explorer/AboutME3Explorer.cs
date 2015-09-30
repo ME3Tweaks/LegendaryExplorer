@@ -58,6 +58,7 @@ namespace ME3Explorer
                 developers.Add("Erik JS");
                 developers.Add("FemShep");
                 developers.Add("Fog.Gene");
+                developers.Add("giftfish");
                 developers.Add("Heff");
                 developers.Add("JohnP");
                 developers.Add("MrFob");
