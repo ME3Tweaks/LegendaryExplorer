@@ -37,35 +37,48 @@ namespace ME3Explorer
             {
                 //try
                 //{
-                    string cmdCommand = arguments[1];
-                    if (cmdCommand.Equals("-toceditorupdate", StringComparison.Ordinal))
+                string cmdCommand = arguments[1];
+                if (cmdCommand.Equals("-toceditorupdate", StringComparison.Ordinal))
+                {
+                    if (arguments.Length % 2 != 1 || arguments.Length < 5)
                     {
-                        if (arguments.Length != 5)
-                        {
-                            MessageBox.Show("Wrong number of arguments for automated TOC update.\nSyntax is: <exe> -toceditorupdate <TOCFILE> <UPDATESIZEFILE> <SIZE>", "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        System.Diagnostics.Debug.WriteLine("Received tocupdate signal from commandline!");
+                        MessageBox.Show("Wrong number of arguments for automated TOC update.\nSyntax is: <exe> -toceditorupdate <TOCFILE> <UPDATESIZEFILE> <SIZE> [<UPDATESIZEFILE> <SIZE>]...", "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
-                        String tocfile = arguments[2];
-                        String filepath = arguments[3];
-                        String filesize = arguments[4];
+                    String tocfile = arguments[2];
+                    int numfiles = (arguments.Length - 3) / 2;
 
-                        loadTOCfile(tocfile);
-                        searchFirstResult(filepath);
+                    string[] searchTerms = new String[numfiles];
+                    string[] filesizes = new String[numfiles];
+
+                    int argnum = 3; //starts at 3
+                    for (int i = 0; i < searchTerms.Length; i++)
+                    {
+                        searchTerms[i] = arguments[argnum];
+                        argnum++;
+                        filesizes[i] = arguments[argnum];
+                        argnum++;
+                    }
+
+                    loadTOCfile(tocfile);
+                    for (int i = 0; i < numfiles; i++)
+                    {
+                        listBox1.SelectedIndex = -1;
+                        searchFirstResult(searchTerms[i]);
                         int n = listBox1.SelectedIndex;
                         if (n == -1)
                         {
-                            MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\nFile path in this TOC not found:\n"+tocfile+"\n"+filepath, "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Environment.Exit(0);
+                            MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\nFile path in this TOC not found:\n" + tocfile + "\n" + searchTerms[i], "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Environment.Exit(1);
                             Application.Exit();
                         }
-                        editFilesize(n, filesize);
-                        saveTOC(tocfile);
-                        System.Diagnostics.Debug.WriteLine("Finished TOCEditing job, exiting");
-                        Environment.Exit(0);
-                        Application.Exit();
+                        editFilesize(n, filesizes[i]);
                     }
+                    saveTOC(tocfile);
+                    Environment.Exit(0);
+                    Application.Exit();
+                }
                 //}
             } //end automation
         }
@@ -146,7 +159,7 @@ namespace ME3Explorer
             memory = new byte[memsize];
             int count;
             int sum = 0;
-            while ((count = fileStream.Read(memory, sum, memsize - sum)) > 0) sum += count; 
+            while ((count = fileStream.Read(memory, sum, memsize - sum)) > 0) sum += count;
             fileStream.Close();
             if (memsize > 0)
             {
@@ -168,7 +181,7 @@ namespace ME3Explorer
                         uint offset = (uint)myStream.Position;
                         uint fileSize = myStream.ReadValueU32();
                         myStream.Seek(20, SeekOrigin.Current);
-                        
+
 
                         string filePath = myStream.ReadStringZ();
 
@@ -184,7 +197,7 @@ namespace ME3Explorer
                 myStream.Close();
                 for (int i = 0; i < content.Count(); i++)
                 {
-                    listBox1.Items.Add(content[i].offset.ToString("X") + " : " + content[i].name + " (bytes)" + content[i].size.ToString()); 
+                    listBox1.Items.Add(content[i].offset.ToString("X") + " : " + content[i].name + " (bytes)" + content[i].size.ToString());
                 }
             }
         }
@@ -235,7 +248,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1) return;
             string newsize = Microsoft.VisualBasic.Interaction.InputBox("Enter new size in bytes", "ME3 Explorer", content[n].size.ToString());
-            
+
             editFilesize(n, newsize);
         }
 
@@ -287,7 +300,7 @@ namespace ME3Explorer
             FileDialog1.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
             if (FileDialog1.ShowDialog() == DialogResult.OK)
             {
-                
+
                 path = FileDialog1.FileName;
                 saveTOC(path);
             }
