@@ -14,11 +14,16 @@ using KFreonLib.Debugging;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace ME3Explorer
 {
     public partial class Form1 : Form
     {
+        [DllImport("kernel32.dll")]
+        static extern bool AttachConsole(int dwProcessId);
+        private const int ATTACH_PARENT_PROCESS = -1;
+
         public Form1()
         {
             InitializeComponent();
@@ -88,6 +93,7 @@ namespace ME3Explorer
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
+                AttachConsole(ATTACH_PARENT_PROCESS);
                 if (args[1].Equals("-version-switch-from") && args.Length == 3)
                 {
 
@@ -101,7 +107,7 @@ namespace ME3Explorer
                     }
                 } else
                 //automation
-                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfile") || args[1].Equals("-dlcremovefile"))
+                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfiles") || args[1].Equals("-dlcremovefiles"))
                 {
                     //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.2)
                     //saves a little duplicate code
@@ -122,17 +128,24 @@ namespace ME3Explorer
                     pCCRepackerToolStripMenuItem.PerformClick();
                     return;
                 } else
-                if (args[1].Equals("--help") || args[1].Equals("-h")){
-                    String commandLineHelp = "ME3Explorer Command Line Options\n";
+                if (args[1].Equals("--help") || args[1].Equals("-h") || args[1].Equals("/?"))
+                {
+                    String[] version = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
+                    String commandLineHelp = "\nME3Explorer r"+version[2]+" Command Line Options\n";
+                    commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
+                    commandLineHelp += "     Automates PCCRepacker to decompress a pcc to the new location.\n\n";
                     commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
                     commandLineHelp += "     Automates injecting pairs of files into a .sfar file using DLCEditor2. SearchTerm is a value you would type into the searchbox with the first result being the file that will be replaced.\n\n";
                     commandLineHelp += " -dlcextract DLC.sfar SearchTerm ExtractionPath\n";
                     commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
+                    commandLineHelp += " -dlcaddfiles DLC.sfar InternalPath NewFile [InternalPath2 NewFile2]...\n";
+                    commandLineHelp += "     Automates DLCEditor2 to add the specified new files. InternalPath is the internal path in the SFAR the file NewFile will be placed at.\n\n";
+                    commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
+                    commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
                     commandLineHelp += " -toceditorupdate PCConsoleTOCFile.bin SearchTerm size\n";
-                    commandLineHelp += "     Automates updating a single entry in a TOC file.  SearchTerm is a value you would type into the Searchbox with the first result being the file that will be updated. Size is the new size of the file, in bytes. Interface shows up if the file is not in the TOC.\n\n";
-                    commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
-                    commandLineHelp += "     Automates PCCRepacker to decompress a file to the new location.\n\n";
+                    commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
                     System.Console.WriteLine(commandLineHelp);
+                    Environment.Exit(0);
                     Application.Exit();
                     return;
                 }
