@@ -83,89 +83,6 @@
     <Compile Include="Interpreter2\Interpreter2.Designer.cs">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PiccoloX\Activities\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Activities\PPathActivity.cs" />
-    <Compile Include="PiccoloX\Activities\PPositionPathActivity.cs" />
-    <Compile Include="PiccoloX\Components\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Components\PCacheCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Components\PDefaultScrollDirector.cs" />
-    <Compile Include="PiccoloX\Components\PScrollableControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Components\PScrollDirector.cs" />
-    <Compile Include="PiccoloX\Events\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Events\PControlEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PNavigationEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PNotification.cs" />
-    <Compile Include="PiccoloX\Events\PNotificationCenter.cs" />
-    <Compile Include="PiccoloX\Events\PSelectionEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PZoomToEventHandler.cs" />
-    <Compile Include="PiccoloX\Handles\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Handles\PBoundsHandle.cs" />
-    <Compile Include="PiccoloX\Handles\PHandle.cs" />
-    <Compile Include="PiccoloX\Handles\PStickyHandleManager.cs" />
-    <Compile Include="PiccoloX\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Nodes\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Nodes\P3DRectangle.cs" />
-    <Compile Include="PiccoloX\Nodes\PCacheCamera.cs" />
-    <Compile Include="PiccoloX\Nodes\PClip.cs" />
-    <Compile Include="PiccoloX\Nodes\PComposite.cs" />
-    <Compile Include="PiccoloX\Nodes\PControl.cs" />
-    <Compile Include="PiccoloX\Nodes\PLens.cs" />
-    <Compile Include="PiccoloX\Nodes\PNodeCache.cs" />
-    <Compile Include="PiccoloX\PForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Util\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Util\PBoundsLocator.cs" />
-    <Compile Include="PiccoloX\Util\PLocator.cs" />
-    <Compile Include="PiccoloX\Util\PNodeLocator.cs" />
-    <Compile Include="PiccoloX\Util\POcclusionDetection.cs" />
-    <Compile Include="PiccoloX\Util\PXUtil.cs" />
-    <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Activities\PActivity.cs" />
-    <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
-    <Compile Include="Piccolo\Activities\PColorActivity.cs" />
-    <Compile Include="Piccolo\Activities\PInterpolatingActivity.cs" />
-    <Compile Include="Piccolo\Activities\PTransformActivity.cs" />
-    <Compile Include="Piccolo\Event\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Event\PBasicInputEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PDragEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PDragSequenceEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PInputEventArgs.cs" />
-    <Compile Include="Piccolo\Event\PInputEventListener.cs" />
-    <Compile Include="Piccolo\Event\PPanEventHandler.cs" />
-    <Compile Include="Piccolo\Event\PPropertyEventArgs.cs" />
-    <Compile Include="Piccolo\Event\PZoomEventHandler.cs" />
-    <Compile Include="Piccolo\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Nodes\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Nodes\PImage.cs" />
-    <Compile Include="Piccolo\Nodes\PPath.cs" />
-    <Compile Include="Piccolo\Nodes\PText.cs" />
-    <Compile Include="Piccolo\PCamera.cs" />
-    <Compile Include="Piccolo\PCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Piccolo\PInputManager.cs" />
-    <Compile Include="Piccolo\PLayer.cs" />
-    <Compile Include="Piccolo\PNode.cs" />
-    <Compile Include="Piccolo\PRoot.cs" />
-    <Compile Include="Piccolo\Util\GraphicsPathSurrogate.cs" />
-    <Compile Include="Piccolo\Util\MatrixSurrogate.cs" />
-    <Compile Include="Piccolo\Util\NamespaceDoc.cs" />
-    <Compile Include="Piccolo\Util\PActivityList.cs" />
-    <Compile Include="Piccolo\Util\PCameraList.cs" />
-    <Compile Include="Piccolo\Util\PDebug.cs" />
-    <Compile Include="Piccolo\Util\PLayerList.cs" />
-    <Compile Include="Piccolo\Util\PMatrix.cs" />
-    <Compile Include="Piccolo\Util\PNodeFilter.cs" />
-    <Compile Include="Piccolo\Util\PNodeList.cs" />
-    <Compile Include="Piccolo\Util\PPaintContext.cs" />
-    <Compile Include="Piccolo\Util\PPickPath.cs" />
-    <Compile Include="Piccolo\Util\PStream.cs" />
-    <Compile Include="Piccolo\Util\PUtil.cs" />
     <Compile Include="Selector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,9 +105,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sequence Editor\GraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Sequence Editor\SequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,15 +123,6 @@
     <Compile Include="Unreal\UnrealFlags.cs" />
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PiccoloX\Components\PScrollableControl.resx">
-      <DependentUpon>PScrollableControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PiccoloX\PForm.resx">
-      <DependentUpon>PForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Piccolo\PCanvas.resx">
-      <DependentUpon>PCanvas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
@@ -285,6 +190,10 @@
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
+      <Name>Piccolo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
       <Name>SaltTPF</Name>
@@ -293,12 +202,6 @@
       <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
       <Name>Gibbed.IO</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PiccoloX\PiccoloX.csproj" />
-    <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
-    <Content Include="Piccolo\Piccolo.csproj" />
-    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
