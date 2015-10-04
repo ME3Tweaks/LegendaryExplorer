@@ -16,56 +16,142 @@ namespace ME1Explorer
 {
     public partial class PCCEditor : Form
     {
-        public int CurrList = 2;
-        public int PreviewStyle = 0;
+        public int CurrentView = 2;
+        public int NameIdx, ClassIdx, LinkIdx;
         public PCCObject pcc;
+        public PropGrid pg;
+        private TabPage scriptTab;
         public List<int> classes;
 
         public PCCEditor()
         {
             InitializeComponent();
+
         }
 
-        public void RefreshLists()
+        public void RefreshView()
         {
-            toolStripButton1.Checked = false;
-            toolStripButton2.Checked = false;
-            toolStripButton3.Checked = false;
+            listBox1.BeginUpdate();
+            listBox1.Items.Clear();
             if (pcc == null)
                 return;
             int count = 0;
-            if (CurrList == 0)
+            if (CurrentView == 0)
             {
-                toolStripButton1.Checked = true;
-                listBox1.BeginUpdate();
-                listBox1.Items.Clear();
                 foreach (string name in pcc.Names)
                     listBox1.Items.Add((count++).ToString("d6") + " : " + name);
-                listBox1.EndUpdate();
             }
-            if (CurrList == 1)
+            if (CurrentView == 1)
             {
-                toolStripButton2.Checked = true;
-                listBox1.BeginUpdate();
-                listBox1.Items.Clear();
                 foreach (PCCObject.ImportEntry imp in pcc.Imports)
                     listBox1.Items.Add((count++).ToString("d6") + " : " + pcc.FollowLink(imp.link) + imp.Name);
-                listBox1.EndUpdate();
             }
-            if (CurrList == 2)
+            string s;
+            if (CurrentView == 2)
             {
-                toolStripButton3.Checked = true;
-                listBox1.BeginUpdate();
-                listBox1.Items.Clear();
-                foreach (PCCObject.ExportEntry exp in pcc.Exports)
-                    listBox1.Items.Add((count++).ToString("d6") + " : " + exp.PackageFullName + "." + exp.ObjectName);
-                listBox1.EndUpdate();
-
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                {
+                    s = "";
+                    if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
+                        s += pcc.Exports[i].PackageFullName + ".";
+                    s += pcc.Exports[i].ObjectName;
+                    listBox1.Items.Add(i.ToString() + " : " + s);
+                }
             }
+            if (CurrentView == 3)
+            {
+                treeView1.BeginUpdate();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                {
+                    s = "";
+                    if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
+                        s += pcc.Exports[i].PackageFullName + ".";
+                    s += pcc.Exports[i].ObjectName;
+                    listBox1.Items.Add(i.ToString() + " : " + s);
+                }
+                listBox1.Visible = false;
+                treeView1.Visible = true;
+                treeView1.Nodes.Clear();
+                TreeNode t = new TreeNode(pcc.pccFileName);
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                {
+
+                    PCCObject.ExportEntry e = pcc.Exports[i];
+                    List<int> LinkList = new List<int>();
+                    LinkList.Add(i + 1);
+                    int Link = e.LinkID;
+                    while (Link != 0)
+                    {
+                        LinkList.Add(Link);
+                        if (Link > 0)
+                            Link = pcc.Exports[Link - 1].LinkID;
+                        else
+                            Link = pcc.Imports[-Link - 1].link;
+                    }
+                    t = AddPathToTree(t, LinkList);
+                }
+                for (int i = 0; i < pcc.Imports.Count; i++)
+                {
+                    PCCObject.ImportEntry e = pcc.Imports[i];
+                    List<int> LinkList = new List<int>();
+                    LinkList.Add(-(i + 1));
+                    int Link = e.link;
+                    while (Link != 0)
+                    {
+                        LinkList.Add(Link);
+                        if (Link > 0)
+                            Link = pcc.Exports[Link - 1].LinkID;
+                        else
+                            Link = pcc.Imports[-Link - 1].link;
+                    }
+                    t = AddPathToTree(t, LinkList);
+                }
+                treeView1.Nodes.Add(t);
+                treeView1.EndUpdate();
+            }
+            else
+            {
+                treeView1.Visible = false;
+                listBox1.Visible = true;
+            }
+            listBox1.EndUpdate();
             toolStripComboBox1.Items.Clear();
             foreach (int index in classes)
                 toolStripComboBox1.Items.Add(pcc.GetClass(index));
 
+        }
+
+        private TreeNode AddPathToTree(TreeNode t, List<int> LinkList)
+        {
+            string s = "";
+            int idx, f;
+            idx = LinkList[LinkList.Count() - 1];
+            if (idx > 0)
+                s = "(Exp)" + (idx - 1) + " : " + pcc.Exports[idx - 1].ObjectName + "(" + pcc.Exports[idx - 1].ClassName + ")";
+            else
+                s = "(Imp)" + (-idx - 1) + " : " + pcc.Imports[-idx - 1].Name; //+ "(" + pcc.Imports[-idx - 1].ClassName + ")";
+            f = -1;
+            for (int i = 0; i < t.Nodes.Count; i++)
+                if (t.Nodes[i].Text == s)
+                {
+                    f = i;
+                    break;
+                }
+            if (f == -1)
+            {
+                if (idx > 0)
+                    t.Nodes.Add((idx - 1).ToString(), s);
+                else
+                    t.Nodes.Add(s);
+                if (LinkList.Count() > 1)
+                    t.Nodes[t.Nodes.Count - 1] = AddPathToTree(t.Nodes[t.Nodes.Count - 1], LinkList.GetRange(0, LinkList.Count - 1));
+            }
+            else
+            {
+                if (LinkList.Count() > 1)
+                    t.Nodes[f] = AddPathToTree(t.Nodes[f], LinkList.GetRange(0, LinkList.Count - 1));
+            }
+            return t;
         }
 
         private void openPccToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -75,7 +161,7 @@ namespace ME1Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pcc = new PCCObject(d.FileName);
-                CurrList = 0;
+                CurrentView = 2;
                 classes = new List<int>();
                 foreach (PCCObject.ExportEntry ent in pcc.Exports)
                 {
@@ -99,26 +185,88 @@ namespace ME1Explorer
                             run = true;
                         }
                 }
-                RefreshLists();
+                RefreshView();
             }
+        }
+
+        public void RefreshCombos()
+        {
+            comboBox1.Items.Clear();
+            comboBox2.Items.Clear();
+            comboBox3.Items.Clear();
+            List<string> Classes = new List<string>();
+            for (int i = pcc.Imports.Count - 1; i >= 0; i--)
+                Classes.Add(-(i + 1) + " : " + pcc.Imports[i].ObjectName);
+            Classes.Add("0 : Class");
+            int count = 1;
+            foreach (PCCObject.ExportEntry exp in pcc.Exports)
+                Classes.Add((count++) + " : " + exp.ObjectName);
+            count = 0;
+            foreach (string s in pcc.Names)
+                comboBox1.Items.Add((count++) + " : " + s);
+            foreach (string s in Classes)
+            {
+                comboBox2.Items.Add(s);
+                comboBox3.Items.Add(s);
+            }
+        }
+
+        public void SetView(int n)
+        {
+            CurrentView = n;
+            switch (n)
+            {
+                case 0:
+                    toolStripButton1.Checked = true;
+                    toolStripButton2.Checked = false;
+                    toolStripButton3.Checked = false;
+                    Button5.Checked = false;
+                    break;
+                case 1:
+                    toolStripButton1.Checked = false;
+                    toolStripButton2.Checked = true;
+                    toolStripButton3.Checked = false;
+                    Button5.Checked = false;
+                    break;
+                case 3:
+                    toolStripButton1.Checked = false;
+                    toolStripButton2.Checked = false;
+                    toolStripButton3.Checked = false;
+                    Button5.Checked = true;
+                    break;
+                default:
+                case 2:
+                    toolStripButton1.Checked = false;
+                    toolStripButton2.Checked = false;
+                    toolStripButton3.Checked = true;
+                    Button5.Checked = false;
+                    break;
+            }
+
         }
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
-            CurrList = 0;
-            RefreshLists();
+            SetView(0);
+            RefreshView();
         }
 
         private void toolStripButton2_Click_1(object sender, EventArgs e)
         {
-            CurrList = 1;
-            RefreshLists();
+            SetView(1);
+            RefreshView();
         }
 
         private void toolStripButton3_Click_1(object sender, EventArgs e)
         {
-            CurrList = 2;
-            RefreshLists();
+            SetView(2);
+            RefreshView();
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            SetView(3);
+            RefreshView();
         }
 
         private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
@@ -145,79 +293,105 @@ namespace ME1Explorer
             throw new Exception();
         }
 
-        private void rawToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewStyle = 0;
-            Preview();
-        }
-
         private void Preview()
         {
-
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            if (CurrList != 2)
-                return;
-            rtb1.Visible = false;
-            hb1.Visible = false;
-            Status.Text = "Class: " + pcc.Exports[n].ClassName + " Flags: 0x" + pcc.Exports[n].flagint.ToString("X8");
-            switch (PreviewStyle)
+            PreviewProps();
+            PreviewRaw();
+            PreviewInfo();
+            int n = -1;
+            if (CurrentView == 3 && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
+                n = Convert.ToInt32(treeView1.SelectedNode.Name);
+            else
+                n = listBox1.SelectedIndex;
+            if (CurrentView == 1)
             {
-                case 0:
-                    PreviewRaw(n);
-                    break;
-                case 1:
-                    PreviewProps(n);
-                    break;
+                hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].raw);
+            }
+            if ((CurrentView == 2 || CurrentView == 3) && n != -1)
+            {
+                int off = pcc.Imports.Count;
+                NameIdx = pcc.Exports[n].ObjectNameID;
+                ClassIdx = pcc.Exports[n].ClassNameID;
+                LinkIdx = pcc.Exports[n].LinkID;
+                RefreshCombos();
+                comboBox1.SelectedIndex = NameIdx;
+                comboBox2.SelectedIndex = ClassIdx + off;
+                comboBox3.SelectedIndex = LinkIdx + off;
+                hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].info);
+            }
+            if (n >= 0)
+            {
+                Status.Text = "Class: " + pcc.Exports[n].ClassName + " Flags: 0x" + pcc.Exports[n].flagint.ToString("X8");
+            }
+            else
+            {
+                Status.Text = "";
             }
 
         }
 
-        private void PreviewProps(int n)
+        public void PreviewProps()
         {
-            PCCObject.ExportEntry ent = pcc.Exports[n];
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, ent.Data);
-            rtb1.Visible = true;
-            string s = "";
-            s += "ObjectName : " + ent.ObjectName + "\n";
-            s += "Class : " + ent.ClassName + "\n";
-            s += "Data size : 0x" + ent.DataSize.ToString("X8") + "\n";
-            s += "Data offset : 0x" + ent.DataOffset.ToString("X8") + "\n\nProperties: \n";
-            foreach (PropertyReader.Property p in props)
-                s += PropertyReader.PropertyToText(p, pcc) + "\n";
-
-            if (ent.ClassName == "Texture2D" || ent.ClassName == "LightMapTexture2D" || ent.ClassName == "TextureFlipBook")
+            int n = GetSelected();
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+                return;
+            List<PropertyReader.Property> p;
+            switch (pcc.Exports[n].ClassName)
             {
-                s += "\nImage Info: \n";
-                try
-                {
-                    Texture2D tex2D = new Texture2D(pcc, n);
-                    for (int i = 0; i < tex2D.imgList.Count; i++)
-                    {
-                        s += i + ": Location: " + tex2D.imgList[i].storageType + ", Storage: " + tex2D.imgList[i].storageType.ToString() + ", ImgSize: " + tex2D.imgList[i].imgSize.ToString() + "\n";
-                        s += "Offset = " + tex2D.imgList[i].offset + ", CprSize = " + tex2D.imgList[i].cprSize + ", UncSize = " + tex2D.imgList[i].uncSize + "\n";
-                    }
-                }
-                catch { }
+                default:
+                    byte[] buff = pcc.Exports[n].Data;
+                    p = PropertyReader.getPropList(pcc, buff);
+                    break;
             }
-
-            rtb1.Text = s;
-            //Status.Text = ent.ClassName + " Offset: " + ent.DataOffset + " - " + (ent.DataOffset + ent.DataSize);
+            pg = new PropGrid();
+            propGrid.SelectedObject = pg;
+            pg.Add(new CustomProperty("Name", "_Meta", pcc.Exports[n].ObjectName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Class", "_Meta", pcc.Exports[n].ClassName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.Exports[n].DataOffset, typeof(int), true, true));
+            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.Exports[n].DataSize, typeof(int), true, true));
+            for (int l = 0; l < p.Count; l++)
+                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
+            propGrid.Refresh();
+            propGrid.ExpandAllGridItems();
         }
 
-        private void PreviewRaw(int n)
+        private void PreviewRaw()
         {
-            hb1.Visible = true;
+            int n = GetSelected();
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+                return;  
             PCCObject.ExportEntry ent = pcc.Exports[n];
             hb1.ByteProvider = new DynamicByteProvider(ent.Data);
             //Status.Text = ent.ClassName + " Offset: " + ent.DataOffset + " - " + (ent.DataOffset + ent.DataSize);
         }
 
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        public void PreviewInfo()
         {
-            PreviewStyle = 1;
-            Preview();
+            int n = GetSelected();
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+                return;
+            textBox1.Text = pcc.Exports[n].ObjectName;
+            textBox2.Text = pcc.Exports[n].ClassName;
+            textBox3.Text = pcc.Exports[n].PackageFullName;
+            textBox4.Text = pcc.Exports[n].info.Length + " bytes";
+            textBox5.Text = pcc.Exports[n].indexValue.ToString();
+            textBox6.Text = pcc.Exports[n].ArchtypeName;
+            if (pcc.Exports[n].idxArchtypeName != 0)
+                textBox6.Text += " (" + ((pcc.Exports[n].idxArchtypeName < 0) ? "imported" : "local") + " class)";
+            textBox10.Text = "0x" + pcc.Exports[n].ObjectFlags.ToString("X16");
+            textBox7.Text = pcc.Exports[n].DataSize + " bytes";
+            textBox8.Text = "0x" + pcc.Exports[n].DataOffset.ToString("X8");
+            textBox9.Text = pcc.Exports[n].DataOffset.ToString();
+        }
+
+        private int GetSelected()
+        {
+            int n = -1;
+            if (CurrentView == 3 && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
+                n = Convert.ToInt32(treeView1.SelectedNode.Name);
+            if (CurrentView == 2)
+                n = listBox1.SelectedIndex;
+            return n;
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
@@ -230,7 +404,7 @@ namespace ME1Explorer
             int m = toolStripComboBox1.SelectedIndex;
             if (m == -1)
                 return;
-            if (CurrList != 2)
+            if (CurrentView != 2)
                 return;
             int clas = classes[m];
             for (int i = n; i < pcc.Exports.Count(); i++)
@@ -243,9 +417,7 @@ namespace ME1Explorer
 
         private void dumpRawExportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrList != 2)
-                return;
-            int n = listBox1.SelectedIndex;
+            int n = GetSelected();
             if (n < 0)
                 return;
             PCCObject.ExportEntry exp = pcc.Exports[n];
@@ -277,9 +449,7 @@ namespace ME1Explorer
 
         private void saveHexChangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrList != 2)
-                return;
-            int n = listBox1.SelectedIndex;
+            int n = GetSelected();
             if (n < 0)
                 return;
             PCCObject.ExportEntry exp = pcc.Exports[n];
@@ -298,7 +468,7 @@ namespace ME1Explorer
 
         public void Interpreter()
         {
-            int n = listBox1.SelectedIndex;
+            int n = GetSelected();
             if (n == -1)
                 return;
             Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
@@ -321,7 +491,7 @@ namespace ME1Explorer
                 n = 0;
             else
                 n++;
-            if (CurrList != 2)
+            if (CurrentView != 2)
                 return;
             string name = toolStripTextBox1.Text.ToLower();
             if (name == "")
@@ -339,5 +509,11 @@ namespace ME1Explorer
             if (e.KeyChar == (char)0xd)
                 FindByString();
         }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            Preview();
+        }
+
     }
 }
