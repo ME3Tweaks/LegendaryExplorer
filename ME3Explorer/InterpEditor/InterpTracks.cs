@@ -334,13 +334,13 @@ namespace ME3Explorer.InterpEditor
             p.SetView(2);
             p.RefreshView();
             p.InitStuff();
-            p.listBox1.SelectedIndex = index - 1;
+            p.listBox1.SelectedIndex = index;
         }
 
         public virtual void ToTree()
         {
             propView.Nodes.Clear();
-            AddToTree("Track Title : \"" + TrackTitle + "\" (#" + index + " " + pcc.getClassName(index) + ")");
+            AddToTree("Track Title : \"" + TrackTitle + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
         }
 
         public void AdditionalToTree()
@@ -3701,10 +3701,14 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             if (ParamName != -1)
                 AddToTree("ParamName : " + ParamName);
-            //TreeNode t = new TreeNode("AffectedMaterialRefs");
-            //for (int i = 0; i < AffectedMaterialRefs.Count; i++)
-            //    t.Nodes.Add(AffectedMaterialRefs[i].ToTree(i));
-            //AddToTree(t);
+            if (AffectedMaterialRefs.Count > 0)
+            {
+                TreeNode t = new TreeNode("AffectedMaterialRefs");
+                for (int i = 0; i < AffectedMaterialRefs.Count; i++)
+                    t.Nodes.Add(AffectedMaterialRefs[i].ToTree(i));
+                AddToTree(t);
+            }
+            
         }
     }
 
