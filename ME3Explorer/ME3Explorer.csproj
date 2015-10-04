@@ -1048,9 +1048,6 @@
     <None Include="Icons\versioncheck.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Back.png" />
-    <Content Include="KismetFont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
