@@ -143,7 +143,7 @@ namespace ME3Explorer
                     commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
                     commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
                     commandLineHelp += " -dlcunpack DLC.sfar Unpackpath\n";
-                    commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. The Patch_001.sfar does not work if it is unpacked and the game will crash.\n\n";
+                    commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
                     commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
                     commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
                     commandLineHelp += " -toceditorupdate PCConsoleTOCFile.bin SearchTerm size\n";
