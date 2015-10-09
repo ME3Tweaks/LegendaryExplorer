@@ -97,6 +97,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -1315,8 +1316,7 @@
 xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
-call "$(DevEnvDir)..\Tools\vsvars32.bat"
-editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
+call "$(DevEnvDir)..\Tools\vsvars32.bat"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
