@@ -107,9 +107,9 @@ namespace ME3Explorer
                     }
                 } else
                 //automation
-                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfiles") || args[1].Equals("-dlcremovefiles"))
+                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfiles") || args[1].Equals("-dlcremovefiles") || args[1].Equals("-dlcunpack") || args[1].Equals("-dlcunpack-nodebug"))
                 {
-                    //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.2)
+                    //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.1+)
                     //saves a little duplicate code
                     dLCEditor2ToolStripMenuItem.PerformClick();
                     return;
@@ -142,6 +142,10 @@ namespace ME3Explorer
                     commandLineHelp += "     Automates DLCEditor2 to add the specified new files. InternalPath is the internal path in the SFAR the file NewFile will be placed at.\n\n";
                     commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
                     commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
+                    commandLineHelp += " -dlcunpack DLC.sfar Unpackpath\n";
+                    commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
+                    commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
+                    commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
                     commandLineHelp += " -toceditorupdate PCConsoleTOCFile.bin SearchTerm size\n";
                     commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
                     System.Console.WriteLine(commandLineHelp);

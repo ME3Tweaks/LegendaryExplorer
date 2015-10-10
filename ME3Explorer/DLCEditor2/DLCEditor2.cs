@@ -21,6 +21,7 @@ namespace ME3Explorer.DLCEditor2
         string previousTerm = "";
         DLCPackage DLC;
         bool automated = false; //Mod Manager 3 automator
+        private string autoUnpackFolder;
 
         public DLCEditor2()
         {
@@ -157,7 +158,7 @@ namespace ME3Explorer.DLCEditor2
                         //SFAR was opened.    
                         for (int i = 0; i < internalPaths.Length; i++)
                         {
-                            System.Diagnostics.Debug.WriteLine("Adding file quick: " + sourcePaths[i] +" " +internalPaths[i]);
+                            System.Diagnostics.Debug.WriteLine("Adding file quick: " + sourcePaths[i] + " " + internalPaths[i]);
                             DLC.AddFileQuick(sourcePaths[i], internalPaths[i]);
                             DLC = new DLCPackage(DLC.MyFileName);
                             treeView1.Nodes.Clear();
@@ -215,6 +216,38 @@ namespace ME3Explorer.DLCEditor2
                             treeView1.Nodes.Clear();
                             treeView1.Nodes.Add(DLC.ToTree());
                         }
+                    }
+                    else if (cmdCommand.Equals("-dlcunpack", StringComparison.Ordinal) || cmdCommand.Equals("-dlcunpack-nodebug", StringComparison.Ordinal))
+                    {
+                        if (arguments.Length != 4)
+                        {
+                            MessageBox.Show("Wrong number of arguments for automated DLC unpacking:\nSyntax is: <exe> -dlcinject SFARPATH EXTRACTIONPATH", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                       
+                        string sfarPath = arguments[2];
+                        autoUnpackFolder = arguments[3];
+
+                        automated = true;
+                        if (File.Exists(sfarPath))
+                        {
+                            openSFAR(sfarPath);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + sfarPath);
+                            MessageBox.Show("Failed to autounpack: DLC file does not exist: " + sfarPath, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
+                        //SFAR was opened.
+                        if (cmdCommand.Equals("-dlcunpack"))
+                        {
+                            DebugOutput.StartDebugger("DLC Editor 2"); //open debugging window since this operation takes a long time. The main debugger won't start as this will exit before that code can be reached
+                        }
+                        //Simulate Unpack operation click.
+                        unpackSFARToolStripMenuItem.PerformClick();
                     }
                 }
                 catch (FileNotFoundException exc)
@@ -337,7 +370,7 @@ namespace ME3Explorer.DLCEditor2
                 if (result == "")
                     return;
                 path = result;
-                System.Diagnostics.Debug.WriteLine("Adding file quick: " + d.FileName+" "+path);
+                System.Diagnostics.Debug.WriteLine("Adding file quick: " + d.FileName + " " + path);
 
                 DLC.AddFileQuick(d.FileName, path);
                 DLC = new DLCPackage(DLC.MyFileName);
@@ -479,19 +512,28 @@ namespace ME3Explorer.DLCEditor2
             AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
             if (DLC == null || DLC.Files == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
-            if (result == "")
-                return;
-            DebugOutput.PrintLn("result : " + result);
-            FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
-            fbd.Description = "Choose a folder to unpack this DLC to. Unpacking may take a few minutes. To unpack the files to their proper folder choose the Mass Effect 3 directory.";
-            fbd.SelectedPath = Directory.GetParent(DLC.MyFileName).FullName;
-            DialogResult dresult = fbd.ShowDialog();
-            if (dresult != DialogResult.OK)
+            string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
+            string unpackFolder;
+            if (!automated) //if automated, just do everything. otherwise prompt user
             {
-                return;
+                Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
+
+                if (result == "")
+                    return;
+                DebugOutput.PrintLn("result : " + result);
+                FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+                fbd.Description = "Choose a folder to unpack this DLC to. Unpacking may take a few minutes. To unpack the files to their proper folder choose the Mass Effect 3 directory.";
+                fbd.SelectedPath = Directory.GetParent(DLC.MyFileName).FullName;
+                DialogResult dresult = fbd.ShowDialog();
+                if (dresult != DialogResult.OK)
+                {
+                    return;
+                }
+                unpackFolder = fbd.SelectedPath;
+            } else
+            {
+                unpackFolder = autoUnpackFolder;
             }
-            string unpackFolder = fbd.SelectedPath;
             if (!unpackFolder.EndsWith("\\"))
                 unpackFolder = unpackFolder + "\\";
             DebugOutput.PrintLn("Extracting DLC to : " + unpackFolder);
@@ -543,7 +585,10 @@ namespace ME3Explorer.DLCEditor2
             string basepath = String.Join("\\", tet.ToArray()) + '\\';
             string tocfile = t2 + "\\PCConsoleTOC.bin";
             toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
-            MessageBox.Show("SFAR Unpacked.");
+            if (!automated)
+            {
+                MessageBox.Show("SFAR Unpacked.");
+            }
         }
 
         private void unpackSFAR(DLCPackage DLC)
