@@ -48,7 +48,7 @@ namespace ME3Explorer
                 List<String> developers = new List<String>();
                 developers.Add("Toolset by:");
                 developers.Add("WarrantyVoider");
-                developers.Add("Kfreon");
+                developers.Add("KFreon");
                 developers.Add("AmaroK86");
                 developers.Add("Eudaimonium");
                 developers.Add("Saltisgood");
@@ -67,9 +67,10 @@ namespace ME3Explorer
                 developers.Add("");
                 developers.Add("Additional Thanks:");
                 developers.Add("Eliot");
-                developers.Add("Feckless");
+                developers.Add("TheFeckless");
                 developers.Add("gibbed");
                 developers.Add("gildor");
+                developers.Add("Giftfish (website and icons)");
 
                 StringBuilder sb = new StringBuilder();
                 foreach (String developer in developers)

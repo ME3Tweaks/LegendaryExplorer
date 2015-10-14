@@ -980,7 +980,7 @@ namespace ME3Explorer
             {
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
-                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
+                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, true))
                         img = image.GetGDIBitmap();
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
@@ -2721,11 +2721,11 @@ namespace ME3Explorer
             string path = tex.Autofixedpath(TemporaryPath);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-            tex.Extract(Path.GetDirectoryName(path));
+            byte[] imgData = tex.Extract(Path.GetDirectoryName(path), true);
             tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
 
-            using (ImageEngineImage img = new ImageEngineImage(tex.FilePath))
-                img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), !tex.CorrectMips);
+            using (ImageEngineImage img = new ImageEngineImage(imgData))
+                retval = img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), tex.NumMips != tex.ExpectedMips);
 
 
             // Heff: Cancellation check
