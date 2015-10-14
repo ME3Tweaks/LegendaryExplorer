@@ -1745,7 +1745,7 @@ namespace KFreonLib.Textures
                 byte[] imgdata = GetImageData(size);
                 if (imgdata == null)
                     return null;
-                using (ImageEngineImage img = new ImageEngineImage(imageData))
+                using (ImageEngineImage img = new ImageEngineImage(imgdata))
                     return img.GetGDIBitmap();
             }
             catch { }
