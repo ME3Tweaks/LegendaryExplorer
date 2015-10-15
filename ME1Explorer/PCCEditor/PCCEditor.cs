@@ -189,6 +189,11 @@ namespace ME1Explorer
             }
         }
 
+        public void listBox1SelectIndex(int i)
+        {
+            listBox1.SelectedIndex = i;
+        }
+
         public void RefreshCombos()
         {
             comboBox1.Items.Clear();

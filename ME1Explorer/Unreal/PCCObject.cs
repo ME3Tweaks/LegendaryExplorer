@@ -68,6 +68,19 @@ namespace ME1Explorer
                     return BitConverter.ToInt32(val, 0);
                 }
             }
+
+            public string GetFullPath
+            {
+                get
+                {
+                    string s = "";
+                    if (PackageFullName != "Class" && PackageFullName != "Package")
+                        s += PackageFullName + ".";
+                    s += ObjectName;
+                    return s;
+                }
+            }
+
             public PCCObject pccRef;
             public int DataSize { get { return BitConverter.ToInt32(info, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
             public int DataOffset { get { return BitConverter.ToInt32(info, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }
@@ -467,6 +480,22 @@ namespace ME1Explorer
             for (int i = 0; i < ExportCount; i++)
             {
                 if (String.Compare(Exports[i].ObjectName, name, true) == 0 && Exports[i].ClassName == className)
+                    return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Checks whether a name exists in the PCC and returns its index
+        /// If it doesn't exist returns -1
+        /// </summary>
+        /// <param name="nameToFind">The name of the string to find</param>
+        /// <returns></returns>
+        public int findName(string nameToFind)
+        {
+            for (int i = 0; i < Names.Count; i++)
+            {
+                if (String.Compare(nameToFind, GetName(i)) == 0)
                     return i;
             }
             return -1;

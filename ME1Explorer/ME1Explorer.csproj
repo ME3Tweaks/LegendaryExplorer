@@ -126,7 +126,15 @@
     <Compile Include="Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Classes\Sequence.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
@@ -159,6 +167,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -193,6 +204,10 @@
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
+      <Name>Piccolo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
       <Name>SaltTPF</Name>
@@ -221,8 +236,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>

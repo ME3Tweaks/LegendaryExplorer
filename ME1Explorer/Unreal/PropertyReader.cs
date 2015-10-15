@@ -296,8 +296,8 @@ namespace ME1Explorer.Unreal
                     p.i = 0;
                     //pos += 32;
                     v = new PropertyValue();
-                    //int tempInt = BitConverter.ToInt32(raw, pos + 24);
-                    v.StringValue = pcc.GetName(BitConverter.ToInt32(raw, pos + 24));
+                    v.IntValue = BitConverter.ToInt32(raw, pos + 24);
+                    v.StringValue = pcc.GetName(v.IntValue);
                     p.Value = v;
                     pos += 32;
                     //throw new NullReferenceException();
@@ -380,7 +380,10 @@ namespace ME1Explorer.Unreal
                         s += (char)raw[pos];
                         pos++;
                     }
-                    pos++;
+                    if (s.Length > 0)
+                    {
+                        pos++;
+                    }
                     v.StringValue = s;
                     p.Value = v;
                     break;
