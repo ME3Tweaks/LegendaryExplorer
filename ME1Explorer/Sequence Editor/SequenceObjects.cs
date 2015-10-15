@@ -11,8 +11,9 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
+using ME1Explorer;
+using ME1Explorer.Unreal;
+using ME1Explorer.Unreal.Classes;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -20,7 +21,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 
-namespace ME3Explorer.SequenceObjects
+namespace ME1Explorer.SequenceObjects
 {
     public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
 
@@ -31,7 +32,7 @@ namespace ME3Explorer.SequenceObjects
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static TalkFile talkfile { get; set;}
+        //public static TalkFile talkfile { get; set;}
         public static bool draggingOutlink = false;
         public static bool draggingVarlink = false;
         public static PNode dragTarget;
@@ -83,10 +84,10 @@ namespace ME3Explorer.SequenceObjects
         {
             string res = "";
             byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "m_aObjComment")
+                if (p[i].Name == "m_aObjComment")
                 {
                     f = i;
                     break;
@@ -104,10 +105,10 @@ namespace ME3Explorer.SequenceObjects
                     while (pos < buff2.Length && buff2[pos] != 0)
                     {
                         res += (char)buff2[pos];
-                        pos += 2;
+                        pos += 1;
                     }
                     res += "\n";
-                    pos += 2;
+                    pos += 1;
                 }
             }
             return res;
@@ -185,12 +186,12 @@ namespace ME3Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (PropertyReader.Property prop in props)
+            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            foreach (SaltPropertyReader.Property prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
+                if (prop.Name == "VarName" || prop.Name == "varName")
                 {
-                    SText VarName = new SText(pcc.getNameEntry(prop.Value.IntValue), Color.Red, false);
+                    SText VarName = new SText(prop.Value.StringValue, Color.Red, false);
                     VarName.Pickable = false;
                     VarName.TextAlignment = StringAlignment.Center;
                     VarName.X = w / 2 - VarName.Width / 2;
@@ -208,14 +209,14 @@ namespace ME3Explorer.SequenceObjects
         {
             try
             {
-                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-                PropertyReader.Property property;
+                List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+                SaltPropertyReader.Property property;
                 switch (type)
                 {
                     case VarTypes.Int:
                         if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerInt")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_sRefName"));
                             if (property != null)
                             {
                                 if (comment.Text.Length > 0)
@@ -229,11 +230,11 @@ namespace ME3Explorer.SequenceObjects
                                     comment.TranslateBy(0, -1 * comment.Height);
                                 }
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_nIndex"));
                             if (property != null)
                                 return "Plot Int\n#" + property.Value.IntValue;
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("IntValue"));
+                        property = p.FirstOrDefault(i => i.Name.Equals("IntValue"));
                         if (property != null)
                             return property.Value.IntValue.ToString();
                         else
@@ -241,7 +242,7 @@ namespace ME3Explorer.SequenceObjects
                     case VarTypes.Float:
                         if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerFloat")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_sRefName"));
                             if (property != null)
                             {
                                 if (comment.Text.Length > 0)
@@ -255,13 +256,13 @@ namespace ME3Explorer.SequenceObjects
                                     comment.TranslateBy(0, -1 * comment.Height);
                                 }
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_nIndex"));
                             if (property != null)
                                 return "Plot Float\n#" + property.Value.IntValue;
                         }
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (SaltPropertyReader.Property prop in p)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FloatValue")
+                            if (prop.Name == "FloatValue")
                             {
                                 return BitConverter.ToSingle(prop.raw, 24).ToString();
                             }
@@ -270,7 +271,7 @@ namespace ME3Explorer.SequenceObjects
                     case VarTypes.Bool:
                         if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerBool")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_sRefName"));
                             if (property != null)
                             {
                                 if (comment.Text.Length > 0)
@@ -284,11 +285,11 @@ namespace ME3Explorer.SequenceObjects
                                     comment.TranslateBy(0, -1 * comment.Height);
                                 }
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
+                            property = p.FirstOrDefault(i => i.Name.Equals("m_nIndex"));
                             if (property != null)
                                 return "Plot Bool\n#" + property.Value.IntValue;
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("bValue"));
+                        property = p.FirstOrDefault(i => i.Name.Equals("bValue"));
                         if (property != null)
                             return property.Value.IntValue > 0 ? "True" : "False";
                         else
@@ -296,13 +297,13 @@ namespace ME3Explorer.SequenceObjects
                     case VarTypes.Object:
                         if (pcc.Exports[index].ObjectName == "SeqVar_Player")
                             return "Player";
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (SaltPropertyReader.Property prop in p)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_sObjectTagToFind")
+                            if (prop.Name == "m_sObjectTagToFind")
                             {
-                                return pcc.getNameEntry(prop.Value.IntValue);
+                                return prop.Value.StringValue;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "ObjValue")
+                            else if (prop.Name == "ObjValue")
                             {
                                 if (prop.Value.IntValue > 0)
                                 {
@@ -310,41 +311,41 @@ namespace ME3Explorer.SequenceObjects
                                 }
                                 else
                                 {
-                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].ObjectName;
+                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].Name;
                                 }
                             }
                         }
                         return "???";
                     case VarTypes.StrRef:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (SaltPropertyReader.Property prop in p)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
+                            if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                             {
-                                return talkfile.findDataById(prop.Value.IntValue);
+                                //return talkfile.findDataById(prop.Value.IntValue);
                             }
                         }
                         return "???";
                     case VarTypes.String:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (SaltPropertyReader.Property prop in p)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "StrValue")
+                            if (prop.Name == "StrValue")
                             {
                                 return prop.Value.StringValue;
                             }
                         }
                         return "???";
                     case VarTypes.Extern:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (SaltPropertyReader.Property prop in p)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FindVarName")//Named Variable
+                            if (prop.Name == "FindVarName")//Named Variable
                             {
-                                return "< " + pcc.getNameEntry(prop.Value.IntValue) + " >";
+                                return "< " + prop.Value.IntValue + " >";
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "NameValue")//SeqVar_Name
+                            else if (prop.Name == "NameValue")//SeqVar_Name
                             {
-                                return pcc.getNameEntry(prop.Value.IntValue);
+                                return prop.Value.StringValue;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "VariableLabel")//External
+                            else if (prop.Name == "VariableLabel")//External
                             {
                                 return "Extern:\n" + prop.Value.StringValue;
                             }
@@ -393,6 +394,62 @@ namespace ME3Explorer.SequenceObjects
             dragTarget = null;
         }
     }
+
+    public class SFrame : SObj
+    {
+        protected PPath shape;
+        protected PPath titleBox;
+
+        public SFrame(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            string s = pcc.Exports[index].ObjectName;
+            float w = 0;
+            float h = 0;
+            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            foreach (SaltPropertyReader.Property prop in props)
+            {
+                if (prop.Name == "SizeX")
+                {
+                    w = prop.Value.IntValue;
+                }
+                if (prop.Name == "SizeY")
+                {
+                    h = prop.Value.IntValue;
+                }
+            }
+            MakeTitleBox(s);
+            shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
+            outlinePen = new Pen(Color.Black);
+            shape.Pen = outlinePen;
+            shape.Brush = new SolidBrush(Color.Transparent);
+            shape.Pickable = false;
+            this.AddChild(shape);
+            titleBox.TranslateBy(0, -titleBox.Height);
+            this.AddChild(titleBox);
+            comment.Y -= titleBox.Height;
+            this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
+            this.TranslateBy(x, y);
+        }
+
+        protected void MakeTitleBox(string s)
+        {
+            s = "#" + index.ToString() + " : " + s;
+            SText title = new SText(s, Color.FromArgb(255, 255, 128));
+            title.TextAlignment = StringAlignment.Center;
+            title.ConstrainWidthToTextWidth = false;
+            title.Width += 20;
+            title.X = 0;
+            title.Y = 3;
+            title.Pickable = false;
+            titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
+            titleBox.Pen = outlinePen;
+            titleBox.Brush = new SolidBrush(Color.FromArgb(112, 112, 112));
+            titleBox.AddChild(title);
+            titleBox.Pickable = false;
+        }
+    }
+
 
     public abstract class SBox : SObj
     {
@@ -520,10 +577,10 @@ namespace ME3Explorer.SequenceObjects
         {
             Varlinks = new List<VarLink>();
             byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
+                if (p[i].Name == "VariableLinks")
                 {
                     f = i;
                     break;
@@ -534,20 +591,18 @@ namespace ME3Explorer.SequenceObjects
                 byte[] global = p[f].raw;
                 BitConverter.IsLittleEndian = true;
                 int count = BitConverter.ToInt32(global, 24);
+                VarLink l = new VarLink();
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
                         pos += p2[i].raw.Length;
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables")
+                        if (p2[i].Name == "LinkedVariables")
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            VarLink l = new VarLink();
                             l.Links = new List<int>();
                             l.offsets = new List<int>();
-                            l.Desc = p2[i + 1].Value.StringValue;
-                            l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
                             if (count2 != 0)
                             {
                                 for (int k = 0; k < count2; k += 1)
@@ -561,8 +616,20 @@ namespace ME3Explorer.SequenceObjects
                                 l.Links.Add(-1);
                                 l.offsets.Add(-1);
                             }
-                            l.type = getType(pcc.getClassName(p2[i + 2].Value.IntValue));
-                            l.writeable = p2[i + 7].Value.IntValue == 1;
+                        }
+                        else if (p2[i].Name == "ExpectedType")
+                        {
+                            l.type = getType(pcc.GetClass(p2[i].Value.IntValue));
+                        }
+                        else if (p2[i].Name == "LinkDesc")
+                        {
+                            l.Desc = p2[i].Value.StringValue;
+                            if (l.Desc.EndsWith("\0"))
+                                l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
+                        }
+                        else if (p2[i].Name == "bWriteable")
+                        {
+                            l.writeable = p2[i].Value.IntValue == 1;
                             if (l.writeable)
                             {//downward pointing triangle
                                 l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
@@ -573,16 +640,24 @@ namespace ME3Explorer.SequenceObjects
                                 l.node = PPath.CreateRectangle(-4, 0, 8, 10);
                                 l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
                             }
-                            l.node.Brush = new SolidBrush(getColor(l.type));
-                            l.node.Pen = new Pen(getColor(l.type));
-                            l.node.Pickable = false;
-                            l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-                            ((PPath)l.node[0]).Pen = l.node.Pen;
-                            l.node[0].X = l.node.X;
-                            l.node[0].Y = l.node.Y;
-                            l.node[0].AddInputEventListener(new VarDragHandler());
-                            Varlinks.Add(l);
                         }
+                    }
+                    if (l.Links != null)
+                    {
+                        if(l.node == null)
+                        {
+                            l.node = PPath.CreateRectangle(-4, 0, 8, 10);
+                            l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
+                        }
+                        l.node.Brush = new SolidBrush(getColor(l.type));
+                        l.node.Pen = new Pen(getColor(l.type));
+                        l.node.Pickable = false;
+                        l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
+                        ((PPath)l.node[0]).Pen = l.node.Pen;
+                        l.node[0].X = l.node.X;
+                        l.node[0].Y = l.node.Y;
+                        l.node[0].AddInputEventListener(new VarDragHandler());
+                        Varlinks.Add(l);
                     }
                 }
             }
@@ -592,10 +667,10 @@ namespace ME3Explorer.SequenceObjects
         {
             Outlinks = new List<OutputLink>();
             byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
+                if (p[i].Name == "OutputLinks")
                 {
                     f = i;
                     break;
@@ -608,11 +683,11 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
                         pos += p2[i].raw.Length;
-                        string nm = pcc.getNameEntry(p2[i].Name);
+                        string nm = p2[i].Name;
                         if (nm == "Links")
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
@@ -623,11 +698,11 @@ namespace ME3Explorer.SequenceObjects
                                 l.InputIndices = new List<int>();
                                 l.offsets = new List<int>();
                                 l.Desc = p2[i + 1].Value.StringValue;
-                                if(l.Desc.Length > 0)
+                                if (l.Desc.EndsWith("\0"))
                                     l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
                                 for (int k = 0; k < count2; k += 1)
                                 {
-                                    List<PropertyReader.Property> p3 = PropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
+                                    List<SaltPropertyReader.Property> p3 = SaltPropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
                                     l.Links.Add(p3[0].Value.IntValue - 1);
                                     l.InputIndices.Add(p3[1].Value.IntValue);
                                     l.offsets.Add(pos + p3[0].offsetval - p2[i].raw.Length);
@@ -653,7 +728,8 @@ namespace ME3Explorer.SequenceObjects
                                 l.Desc = p2[i + 1].Value.StringValue;
                                 l.Links.Add(-1);
                                 l.InputIndices.Add(0);
-                                l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
+                                if (l.Desc.EndsWith("\0"))
+                                    l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
                                 if (OutputNumbers)
                                     l.Desc = l.Desc + ": #-1";
                                 l.offsets.Add(-1);
@@ -678,7 +754,8 @@ namespace ME3Explorer.SequenceObjects
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                return false;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -729,7 +806,8 @@ namespace ME3Explorer.SequenceObjects
 
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                return false;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -822,11 +900,11 @@ namespace ME3Explorer.SequenceObjects
             if (inputIndex == -1)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
+                if (p[i].Name == "OutputLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 64);
@@ -845,10 +923,10 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue + (p2[i + 1].Value.StringValue.Length == 0 ? "\0" : "" ) == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue + (p2[i + 1].Value.StringValue.Length == 0 ? "\0" : "" ) == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 52);
@@ -920,11 +998,11 @@ namespace ME3Explorer.SequenceObjects
             if(link.Links == null)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
+                if (p[i].Name == "VariableLinks")
                 {
                     
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 4);
@@ -943,10 +1021,10 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for(int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 28);
@@ -977,11 +1055,11 @@ namespace ME3Explorer.SequenceObjects
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
             OutputLink link = Outlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
+                if (p[i].Name == "OutputLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 64);
@@ -1000,10 +1078,10 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1031,11 +1109,11 @@ namespace ME3Explorer.SequenceObjects
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
             VarLink link = Varlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
+                if (p[i].Name == "VariableLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 4);
@@ -1054,10 +1132,10 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1137,12 +1215,12 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (PropertyReader.Property prop in props)
+            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            foreach (SaltPropertyReader.Property prop in props)
             {
-                if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "InputLabel" || pcc.getNameEntry(prop.Name) == "sEvent")
+                if (prop.Name.Contains("EventName") || prop.Name == "sScriptName")
+                    s += "\n\"" + prop.Value.IntValue + "\"";
+                else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
                     s += "\n\"" + prop.Value.StringValue + "\"";
             }
             float tW = GetTitleBox(s, w);
@@ -1300,20 +1378,25 @@ namespace ME3Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (PropertyReader.Property prop in props)
+            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            foreach (SaltPropertyReader.Property prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
-                    s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "EventName" || pcc.getNameEntry(prop.Name) == "StateName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "OutputLabel" || pcc.getNameEntry(prop.Name) == "m_sMovieName")
-                    s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "m_pEffect")
-                    if(prop.Value.IntValue > 0)
+                if (prop.Name == "oSequenceReference")
+                {
+                    if (prop.Value.IntValue > 0)
                         s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
                     else
                         s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].ObjectName + "\"";
+                }
+                else if (prop.Name == "EventName" || prop.Name == "StateName")
+                    s += "\n\"" + prop.Value.IntValue + "\"";
+                else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
+                    s += "\n\"" + prop.Value.StringValue + "\"";
+                else if (prop.Name == "m_pEffect")
+                    if(prop.Value.IntValue > 0)
+                        s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
+                    else
+                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].Name + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1346,10 +1429,10 @@ namespace ME3Explorer.SequenceObjects
         {
             InLinks = new List<InputLink>();
             byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "InputLinks")
+                if (p[i].Name == "InputLinks")
                 {
                     f = i;
                     break;
@@ -1362,7 +1445,7 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     InputLink l = new InputLink();
                     l.Desc = p2[0].Value.StringValue;
                     l.hasName = true;

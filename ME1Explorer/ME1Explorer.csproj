@@ -14,6 +14,21 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -111,7 +126,15 @@
     <Compile Include="Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Classes\Sequence.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
@@ -144,6 +167,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -178,6 +204,10 @@
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
+      <Name>Piccolo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
       <Name>SaltTPF</Name>
@@ -187,10 +217,29 @@
       <Name>Gibbed.IO</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

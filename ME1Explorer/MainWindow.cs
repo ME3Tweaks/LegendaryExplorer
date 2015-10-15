@@ -56,5 +56,13 @@ namespace ME1Explorer
         {
             Application.Exit();
         }
+
+        private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SequenceEditor sqed = new SequenceEditor();
+            sqed.MdiParent = this;
+            sqed.Show();
+            sqed.WindowState = FormWindowState.Maximized;
+        }
     }
 }

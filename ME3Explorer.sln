@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\ME3Explorer.csproj", "{3F331CEF-807F-4D38-9123-1B65E6871701}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -60,6 +60,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFreonLib", "KFreonLib\KFreonLib.csproj", "{8B07ED45-42F4-4B0E-A581-2C257F77241E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FemShep.VersionSwitcher", "VersionSwitcher\FemShep.VersionSwitcher.csproj", "{F3CEEE0C-42DB-406D-B165-D952D3CF0EF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piccolo", "Piccolo\Piccolo.csproj", "{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -417,6 +419,18 @@ Global
 		{F3CEEE0C-42DB-406D-B165-D952D3CF0EF7}.Release|x64.Build.0 = Release|Any CPU
 		{F3CEEE0C-42DB-406D-B165-D952D3CF0EF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{F3CEEE0C-42DB-406D-B165-D952D3CF0EF7}.Release|x86.Build.0 = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|x64.ActiveCfg = Release|Any CPU
+		{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
