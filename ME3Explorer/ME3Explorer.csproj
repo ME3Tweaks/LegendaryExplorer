@@ -1316,7 +1316,8 @@
 xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
-call "$(DevEnvDir)..\Tools\vsvars32.bat"</PostBuildEvent>
+call "$(DevEnvDir)..\Tools\vsvars32.bat"
+editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
