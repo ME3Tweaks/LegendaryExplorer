@@ -17,8 +17,8 @@ namespace ME3Explorer
             InitializeComponent();
             this.Text = String.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = "Mass Effect 3 Explorer";
-            this.labelVersion.Text = String.Format("Revision {0}", Assembly.GetExecutingAssembly().GetName().Version.Build.ToString());
-            this.labelCompanyName.Text = "Brought to you by:";
+            this.labelVersion.Text = String.Format("Revision: {0}", Assembly.GetExecutingAssembly().GetName().Version.Build.ToString());
+            this.labelCompanyName.Text = "Credits:";
             this.textBoxDescription.Text = AssemblyDescription;
         }
 
@@ -46,30 +46,42 @@ namespace ME3Explorer
             get
             {
                 List<String> developers = new List<String>();
-                developers.Add("Toolset by:");
-                developers.Add("WarrantyVoider");
-                developers.Add("KFreon");
-                developers.Add("AmaroK86");
-                developers.Add("Eudaimonium");
-                developers.Add("Saltisgood");
-                developers.Add("Ashley66444");
-                developers.Add("Aquadran");
-                developers.Add("BCSWowbagger");
-                developers.Add("Erik JS");
-                developers.Add("FemShep");
-                developers.Add("Fog.Gene");
-                developers.Add("Heff");
-                developers.Add("JohnP");
-                developers.Add("MrFob");
-                developers.Add("SirCxyrtyx");
+                developers.Add("TOOLSET CREATORS:");
+                developers.Add("- WarrantyVoider");
+                developers.Add("- KFreon");
+                developers.Add("- AmaroK86");
+                developers.Add("- Eudaimonium");
+                developers.Add("- Saltisgood");
 
                 developers.Add("");
-                developers.Add("Additional Thanks:");
-                developers.Add("Eliot");
-                developers.Add("TheFeckless");
-                developers.Add("gibbed");
-                developers.Add("gildor");
-                developers.Add("Giftfish (website and icons)");
+                developers.Add("");
+
+                developers.Add("PROGRAMMING:");
+                developers.Add("- Ashley66444");
+                developers.Add("- Aquadran");
+                developers.Add("- BCSWowbagger");
+                developers.Add("- Erik JS");
+                developers.Add("- FemShep");
+                developers.Add("- Fog.Gene");
+                developers.Add("- Heff");
+                developers.Add("- JohnP");
+                developers.Add("- MrFob");
+                developers.Add("- SirCxyrtyx");
+
+                developers.Add("");
+                developers.Add("");
+
+                developers.Add("THIRD PARTY CODE:");
+                developers.Add("- Eliot");
+                developers.Add("- TheFeckless");
+                developers.Add("- gibbed");
+                developers.Add("- gildor");
+
+                developers.Add("");
+                developers.Add("");
+                developers.Add("ICONS:");
+                developers.Add("- Giftfish");
+                developers.Add("- paragade icon by Joshua Bell, sailok.deviantart.com");
 
                 StringBuilder sb = new StringBuilder();
                 foreach (String developer in developers)
@@ -85,6 +97,11 @@ namespace ME3Explorer
         private void okButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void tableLayoutPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

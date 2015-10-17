@@ -423,4 +423,142 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="Back" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="animation_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\animation_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="camera_tool_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\camera_tool_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="class_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\class_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="coalesced_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\coalesced_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="coalesced_operator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\coalesced_operator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="codex_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\codex_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="conditionals_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\conditionals_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="decompressor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\decompressor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dialogue_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dialogue_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dlc_basiceditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dlc_basiceditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dlc_crackME2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dlc_crackME2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dlc_editor2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dlc_editor2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fxa_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\fxa_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GUIDcache_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GUIDcache_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="interp_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\interp_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="level_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\level_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="level_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\level_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="level_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\level_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="material_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\material_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3creator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\me3creator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="me3exp_favicon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\me3exp_favicon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshplorer2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\meshplorer2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshplorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\meshplorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="package_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\package_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PAR_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PAR_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pcceditor2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pcceditor2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pcc_repacker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pcc_repacker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="property_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\property_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="property_dumper_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\property_dumper_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="property_manager_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\property_manager_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="psa_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\psa_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="psk_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\psk_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="questmap_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\questmap_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_gameeditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save_gameeditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_gameoperator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save_gameoperator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="script_compiler_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\script_compiler_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="script_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\script_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sequence_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sequence_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="soundplorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\soundplorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="subtitle_scanner_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\subtitle_scanner_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TLK_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TLK_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TOCbin_editorAK86_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TOCbin_editorAK86_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TOCbin_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TOCbin_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="udk_converter_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\udk_converter_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ue_codeeditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ue_codeeditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wwisebank_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\wwisebank_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

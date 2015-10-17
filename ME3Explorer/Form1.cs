@@ -33,7 +33,8 @@ namespace ME3Explorer
             decomp.MdiParent = this;
             decomp.WindowState = FormWindowState.Maximized;
             decomp.Show();
-            taskbar.AddTool(decomp, imageList1.Images[5]);
+            
+            taskbar.AddTool(decomp, Properties.Resources.decompressor_64x64);
         }
 
         private void conditionalsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -43,7 +44,7 @@ namespace ME3Explorer
             lang.SetLang(con);
             con.WindowState = FormWindowState.Maximized;
             con.Show();
-            taskbar.AddTool(con, imageList1.Images[6]);
+            taskbar.AddTool(con, Properties.Resources.conditionals_editor_64x64);
         }
 
         private void dLCEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -53,7 +54,7 @@ namespace ME3Explorer
             expl.MdiParent = this;
             expl.WindowState = FormWindowState.Maximized;
             expl.Show();
-            taskbar.AddTool(expl, imageList1.Images[12]);
+            taskbar.AddTool(expl, Properties.Resources.dlc_basiceditor_64x64);
         }
 
         private void languageSelectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -183,7 +184,7 @@ namespace ME3Explorer
         {
             protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
             {
-                if (e.Item.Tag != "versionItem")
+                if ((string)e.Item.Tag != "versionItem")
                 {
                     base.OnRenderMenuItemBackground(e);
                 }
@@ -216,7 +217,7 @@ namespace ME3Explorer
             pccRepack.MdiParent = this;
             pccRepack.WindowState = FormWindowState.Maximized;
             pccRepack.Show();
-            taskbar.AddTool(pccRepack, imageList1.Images[2]);
+            taskbar.AddTool(pccRepack, Properties.Resources.pcc_repacker_64x64);
         }
 
         private void scriptCompilerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -225,7 +226,7 @@ namespace ME3Explorer
             sc.MdiParent = this;
             sc.WindowState = FormWindowState.Maximized;
             sc.Show();
-            taskbar.AddTool(sc, imageList1.Images[8]);
+            taskbar.AddTool(sc, Properties.Resources.script_compiler_64x64);
         }
 
         private void pCCEditor20ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -234,7 +235,7 @@ namespace ME3Explorer
             pcc.MdiParent = this;
             pcc.WindowState = FormWindowState.Maximized;
             pcc.Show();
-            taskbar.AddTool(pcc, imageList1.Images[1]);
+            taskbar.AddTool(pcc, Properties.Resources.pcceditor2_64x64);
         }
 
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -266,7 +267,7 @@ namespace ME3Explorer
             seq.MdiParent = this;
             seq.Show();
             seq.WindowState = FormWindowState.Maximized;
-            taskbar.AddTool(seq, imageList1.Images[9]);
+            taskbar.AddTool(seq, Properties.Resources.sequence_editor_64x64);
         }
         private void taskbarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -287,7 +288,7 @@ namespace ME3Explorer
             {
                 var coalesced = new Coalesced_Editor.CoalEditor();
                 OpenMaximized(coalesced);
-                taskbar.AddTool(coalesced, Properties.Resources.coaledit1);
+                taskbar.AddTool(coalesced, Properties.Resources.coalesced_editor_64x64);
             }
         }
 
@@ -302,7 +303,7 @@ namespace ME3Explorer
             newop.MdiParent = this;
             Size newvalue = new Size(900, 600);
             this.Size = newvalue;       //getting a bit cramped up at smaller resolution
-            taskbar.AddTool(newop, imageList1.Images[17]);
+            taskbar.AddTool(newop, Properties.Resources.coalesced_operator_64x64);
             newop.Show();
             newop.WindowState = FormWindowState.Maximized;
 
@@ -339,7 +340,7 @@ namespace ME3Explorer
         {
             var tool = new Soundplorer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.soundplorer_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -409,28 +410,28 @@ namespace ME3Explorer
             m.MdiParent = this;
             m.WindowState = FormWindowState.Maximized;
             m.Show();
-            taskbar.AddTool(m, imageList1.Images[7]);
+            taskbar.AddTool(m, Properties.Resources.property_manager_64x64);
         }
 
         private void propertyDumperToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new Property_Dumper.PropDumper();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.property_dumper_64x64);
         }
 
         private void propertyDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new Propertydb.PropertyDB();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.property_database_64x64);
         }
 
         private void scriptDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new ScriptDB.ScriptDB();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.script_database_64x64);
         }
 
         private void textureToolToolStripMenuItem_Click(object sender, EventArgs e)
@@ -442,7 +443,7 @@ namespace ME3Explorer
         {
             var tool = new AnimationExplorer.AnimationExplorer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.animation_explorer_64x64);
         }
 
         private void dLLInjectorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,14 +496,14 @@ namespace ME3Explorer
         {
             var tool = new UDKConverter.UDKConverter();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.udk_converter_64x64);
         }
 
         private void uECodeEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new UECodeEditor.UECodeEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.ue_codeeditor_64x64);
         }
 
         private void batchrenamerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -523,98 +524,98 @@ namespace ME3Explorer
         {
             var tool = new Meshplorer2.Meshplorer2();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.meshplorer2_64x64);
         }
 
         private void meshplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new Meshplorer.Meshplorer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.meshplorer_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new Material_Viewer.MaterialViewer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.material_viewer_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new PSAViewer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.psa_viewer_64x64);
         }
 
         private void pSKViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new PSKViewer.PSKViewer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.psk_viewer_64x64);
         }
 
         private void codexEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new Codex_Editor.CodexEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.codex_editor_64x64);
         }
 
         private void questMapEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new QuestMapEditor.QMapEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.questmap_editor_64x64);
         }
 
         private void classViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new ClassViewer.ClassViewer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.class_viewer_64x64);
         }
 
         private void gUIDEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new GUIDCacheEditor.GUIDCacheEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.GUIDcache_editor_64x64);
         }
 
         private void dLCEditor2ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new DLCEditor2.DLCEditor2();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.dlc_editor2_64x64);
         }
 
         private void pAREditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new PAREditor.PAREditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.PAR_editor_64x64);
         }
 
         private void dialogEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new DialogEditor.DialogEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.dialogue_editor_64x64);
         }
 
         private void faceFXAnimSetEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new FaceFXAnimSetEditor.FaceFXAnimSetEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.fxa_editor_64x64);
         }
 
         private void wwiseBankViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new WwiseBankViewer.WwiseViewer();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.wwisebank_editor_64x64);
         }
 
         private void dLCTOCbinUpdaterToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -631,21 +632,21 @@ namespace ME3Explorer
             tocedit.MdiParent = this;
             tocedit.WindowState = FormWindowState.Maximized;
             tocedit.Show();
-            taskbar.AddTool(tocedit, imageList1.Images[3]);
+            taskbar.AddTool(tocedit, Properties.Resources.TOCbin_editor_64x64);
         }
 
         private void TOCbinAKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new TOCEditorAK.TOCEditorAK();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.TOCbin_editorAK86_64x64);
         }
 
         private void subtitleScannerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new SubtitleScanner.SubtitleScanner();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.subtitle_scanner_64x64);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -760,7 +761,7 @@ namespace ME3Explorer
         {
             var cam = new CameraTool.CamTool();
             OpenMaximized(cam);
-            taskbar.AddTool(cam, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(cam, Properties.Resources.camera_tool_64x64);
         }
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -800,14 +801,14 @@ namespace ME3Explorer
         {
             var tool = new MainWindow();
             tool.Show();
-            taskbar.AddTool(null, Properties.Resources.placeholder_64x64, true, tool);
+            taskbar.AddTool(null, Properties.Resources.TLK_editor_64x64, true, tool);
         }
 
         private void interpEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new InterpEditor.InterpEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
+            taskbar.AddTool(tool, Properties.Resources.interp_editor_64x64);
         }
 
         private void massEffect3ToolStripMenuItem_Click(object sender, EventArgs e)
