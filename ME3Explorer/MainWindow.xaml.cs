@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer

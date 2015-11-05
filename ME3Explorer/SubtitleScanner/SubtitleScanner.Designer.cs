@@ -69,27 +69,27 @@
             this.saveResultToolStripMenuItem,
             this.loadResultToolStripMenuItem});
             this.scannerToolStripMenuItem.Name = "scannerToolStripMenuItem";
-            this.scannerToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.scannerToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.scannerToolStripMenuItem.Text = "Scanner";
             // 
             // startScanToolStripMenuItem
             // 
             this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.startScanToolStripMenuItem.Text = "Start Scan";
             this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
             // saveResultToolStripMenuItem
             // 
             this.saveResultToolStripMenuItem.Name = "saveResultToolStripMenuItem";
-            this.saveResultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveResultToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.saveResultToolStripMenuItem.Text = "Save Result";
             this.saveResultToolStripMenuItem.Click += new System.EventHandler(this.saveResultToolStripMenuItem_Click);
             // 
             // loadResultToolStripMenuItem
             // 
             this.loadResultToolStripMenuItem.Name = "loadResultToolStripMenuItem";
-            this.loadResultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadResultToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.loadResultToolStripMenuItem.Text = "Load Result";
             this.loadResultToolStripMenuItem.Click += new System.EventHandler(this.loadResultToolStripMenuItem_Click);
             // 
@@ -111,7 +111,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -121,7 +121,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer1.Size = new System.Drawing.Size(658, 368);
+            this.splitContainer1.Size = new System.Drawing.Size(658, 392);
             this.splitContainer1.SplitterDistance = 325;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -136,7 +136,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(325, 368);
+            this.listBox1.Size = new System.Drawing.Size(325, 392);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -147,7 +147,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(329, 368);
+            this.rtb1.Size = new System.Drawing.Size(329, 392);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -157,7 +157,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox1,
             this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(658, 25);
             this.toolStrip1.TabIndex = 4;
@@ -175,7 +175,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(44, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(46, 22);
             this.toolStripButton1.Text = "Search";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -188,6 +188,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SubtitleScanner";
             this.Text = "Subtitle Scanner";

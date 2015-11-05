@@ -59,20 +59,20 @@
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -83,13 +83,13 @@
             this.searchAgainToolStripMenuItem,
             this.editFilesizeToolStripMenuItem});
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.searchToolStripMenuItem.Text = "Edit";
             // 
             // findStringToolStripMenuItem
             // 
             this.findStringToolStripMenuItem.Name = "findStringToolStripMenuItem";
-            this.findStringToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.findStringToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.findStringToolStripMenuItem.Text = "Find String";
             this.findStringToolStripMenuItem.Click += new System.EventHandler(this.findStringToolStripMenuItem_Click);
             // 
@@ -97,14 +97,14 @@
             // 
             this.searchAgainToolStripMenuItem.Name = "searchAgainToolStripMenuItem";
             this.searchAgainToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.searchAgainToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.searchAgainToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.searchAgainToolStripMenuItem.Text = "Search again";
             this.searchAgainToolStripMenuItem.Click += new System.EventHandler(this.searchAgainToolStripMenuItem_Click);
             // 
             // editFilesizeToolStripMenuItem
             // 
             this.editFilesizeToolStripMenuItem.Name = "editFilesizeToolStripMenuItem";
-            this.editFilesizeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.editFilesizeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.editFilesizeToolStripMenuItem.Text = "Edit Filesize";
             this.editFilesizeToolStripMenuItem.Click += new System.EventHandler(this.editFilesizeToolStripMenuItem_Click);
             // 
@@ -115,9 +115,9 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.IntegralHeight = false;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(0, 24);
+            this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(292, 249);
+            this.listBox1.Size = new System.Drawing.Size(292, 273);
             this.listBox1.TabIndex = 1;
             // 
             // TOCeditor

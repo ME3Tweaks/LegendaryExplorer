@@ -187,6 +187,15 @@
       <Name>Gibbed.IO</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_gameoperator_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_gameeditor_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\package_editor_64x64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

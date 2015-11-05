@@ -162,6 +162,16 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap animation_explorer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("animation_explorer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mass Effect 2 TLK Tool.
         /// </summary>
         public static string ApplicationName {
@@ -251,6 +261,16 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap camera_tool_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("camera_tool_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change....
         /// </summary>
         public static string ChangeButton {
@@ -271,6 +291,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap class_viewer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("class_viewer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap coaledit {
             get {
                 object obj = ResourceManager.GetObject("coaledit", resourceCulture);
@@ -284,6 +314,46 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap coaledit1 {
             get {
                 object obj = ResourceManager.GetObject("coaledit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap coalesced_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("coalesced_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap coalesced_operator_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("coalesced_operator_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap codex_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("codex_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap conditionals_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("conditionals_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -337,6 +407,56 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap decompressor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("decompressor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap dialogue_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("dialogue_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap dlc_basiceditor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("dlc_basiceditor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap dlc_crackME2_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("dlc_crackME2_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap dlc_editor2_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("dlc_editor2_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap document_save {
             get {
                 object obj = ResourceManager.GetObject("document-save", resourceCulture);
@@ -368,6 +488,26 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap fxa_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("fxa_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GUIDcache_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("GUIDcache_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -511,9 +651,29 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap ImageEngine_icon_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("ImageEngine_icon_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap info {
             get {
                 object obj = ResourceManager.GetObject("info", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap interp_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("interp_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -549,11 +709,51 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap level_database_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("level_database_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap level_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("level_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap level_explorer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("level_explorer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load TLK file.
         /// </summary>
         public static string LoadTlkTab {
             get {
                 return ResourceManager.GetString("LoadTlkTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap material_viewer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("material_viewer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -620,6 +820,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap me3creator_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("me3creator_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap me3exp_64x64 {
             get {
                 object obj = ResourceManager.GetObject("me3exp_64x64", resourceCulture);
@@ -633,6 +843,16 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap me3exp_favicon {
             get {
                 object obj = ResourceManager.GetObject("me3exp_favicon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap me3exp_favicon_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("me3exp_favicon_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -726,9 +946,49 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap meshplorer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("meshplorer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap meshplorer2_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("meshplorer2_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap modmaker_64x64 {
             get {
                 object obj = ResourceManager.GetObject("modmaker_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap package_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap PAR_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("PAR_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -756,6 +1016,26 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap pcc_repacker_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("pcc_repacker_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pcceditor2_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("pcceditor2_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap placeholder_64x64 {
             get {
                 object obj = ResourceManager.GetObject("placeholder_64x64", resourceCulture);
@@ -769,6 +1049,36 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap plot_DB_64x64 {
             get {
                 object obj = ResourceManager.GetObject("plot_DB_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap property_database_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("property_database_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap property_dumper_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("property_dumper_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap property_manager_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("property_manager_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -796,6 +1106,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap psa_viewer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("psa_viewer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap PSAViewver {
             get {
                 object obj = ResourceManager.GetObject("PSAViewver", resourceCulture);
@@ -816,6 +1136,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap psk_viewer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("psk_viewer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap PSKViewver {
             get {
                 object obj = ResourceManager.GetObject("PSKViewver", resourceCulture);
@@ -829,6 +1159,66 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap PSKViewver1 {
             get {
                 object obj = ResourceManager.GetObject("PSKViewver1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap questmap_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("questmap_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save_gameeditor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("save_gameeditor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save_gameoperator_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("save_gameoperator_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap script_compiler_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("script_compiler_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap script_database_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("script_database_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap sequence_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("sequence_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -876,6 +1266,26 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap soundplorer_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("soundplorer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap subtitle_scanner_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("subtitle_scanner_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap texplorer {
             get {
                 object obj = ResourceManager.GetObject("texplorer", resourceCulture);
@@ -913,6 +1323,26 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap TLK_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("TLK_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon TLK_editor_icon {
+            get {
+                object obj = ResourceManager.GetObject("TLK_editor_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TLK Files (*.tlk)|*.tlk.
         /// </summary>
         public static string TlkFilesFilter {
@@ -927,6 +1357,26 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap tocbin {
             get {
                 object obj = ResourceManager.GetObject("tocbin", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap TOCbin_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("TOCbin_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap TOCbin_editorAK86_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("TOCbin_editorAK86_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -974,9 +1424,29 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap udk_converter_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("udk_converter_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap udk_explorer_64x64 {
             get {
                 object obj = ResourceManager.GetObject("udk_explorer_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ue_codeeditor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("ue_codeeditor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1016,6 +1486,16 @@ namespace ME3Explorer.Properties {
         public static string WriteTlkTab {
             get {
                 return ResourceManager.GetString("WriteTlkTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wwisebank_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("wwisebank_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

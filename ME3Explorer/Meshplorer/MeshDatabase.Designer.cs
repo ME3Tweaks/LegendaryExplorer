@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeshDatabase));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,27 +64,27 @@
             this.loadDBToolStripMenuItem,
             this.saveDBToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.databaseToolStripMenuItem.Text = "Database";
             // 
             // startScanToolStripMenuItem
             // 
             this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.startScanToolStripMenuItem.Text = "Start Scan";
             this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
             // loadDBToolStripMenuItem
             // 
             this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
-            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.loadDBToolStripMenuItem.Text = "Load DB";
             this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
             // 
             // saveDBToolStripMenuItem
             // 
             this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
-            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.saveDBToolStripMenuItem.Text = "Save DB";
             this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
             // 
@@ -154,6 +155,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MeshDatabase";
             this.Text = "MeshDatabase";

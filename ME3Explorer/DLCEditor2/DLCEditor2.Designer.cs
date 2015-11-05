@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DLCEditor2));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSFARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -160,7 +161,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -170,7 +171,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(614, 340);
+            this.splitContainer1.Size = new System.Drawing.Size(614, 364);
             this.splitContainer1.SplitterDistance = 204;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -180,7 +181,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(204, 340);
+            this.treeView1.Size = new System.Drawing.Size(204, 364);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -194,7 +195,7 @@
             this.hb1.Location = new System.Drawing.Point(0, 0);
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(406, 340);
+            this.hb1.Size = new System.Drawing.Size(406, 364);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -208,6 +209,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DLCEditor2";
             this.Text = "DLCEditor2";

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AnimationExplorer));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,10 +37,10 @@
             this.saveDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToPSAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromPSAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.importFromPSAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -66,34 +67,34 @@
             this.loadDBToolStripMenuItem,
             this.saveDBToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.openPccToolStripMenuItem.Text = "Open single pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // startScanToolStripMenuItem
             // 
             this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.startScanToolStripMenuItem.Text = "Start Scan";
             this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
             // loadDBToolStripMenuItem
             // 
             this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
-            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.loadDBToolStripMenuItem.Text = "Load DB";
             this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
             // 
             // saveDBToolStripMenuItem
             // 
             this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
-            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.saveDBToolStripMenuItem.Text = "Save DB";
             this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
             // 
@@ -103,15 +104,22 @@
             this.exportToPSAToolStripMenuItem,
             this.importFromPSAToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToPSAToolStripMenuItem
             // 
             this.exportToPSAToolStripMenuItem.Name = "exportToPSAToolStripMenuItem";
-            this.exportToPSAToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.exportToPSAToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.exportToPSAToolStripMenuItem.Text = "Export to PSA";
             this.exportToPSAToolStripMenuItem.Click += new System.EventHandler(this.exportToPSAToolStripMenuItem_Click);
+            // 
+            // importFromPSAToolStripMenuItem
+            // 
+            this.importFromPSAToolStripMenuItem.Name = "importFromPSAToolStripMenuItem";
+            this.importFromPSAToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.importFromPSAToolStripMenuItem.Text = "Import from PSA";
+            this.importFromPSAToolStripMenuItem.Click += new System.EventHandler(this.importFromPSAToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -152,13 +160,6 @@
             this.treeView1.Size = new System.Drawing.Size(425, 358);
             this.treeView1.TabIndex = 2;
             // 
-            // importFromPSAToolStripMenuItem
-            // 
-            this.importFromPSAToolStripMenuItem.Name = "importFromPSAToolStripMenuItem";
-            this.importFromPSAToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.importFromPSAToolStripMenuItem.Text = "Import from PSA";
-            this.importFromPSAToolStripMenuItem.Click += new System.EventHandler(this.importFromPSAToolStripMenuItem_Click);
-            // 
             // AnimationExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -166,6 +167,7 @@
             this.ClientSize = new System.Drawing.Size(643, 382);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AnimationExplorer";
             this.Text = "Animation Explorer";

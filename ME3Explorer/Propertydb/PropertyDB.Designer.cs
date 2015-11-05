@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertyDB));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,20 +102,20 @@
             this.warrantyVoiderMethodToolStripMenuItem,
             this.amaroksMethodToolStripMenuItem});
             this.generateTemplatesToolStripMenuItem.Name = "generateTemplatesToolStripMenuItem";
-            this.generateTemplatesToolStripMenuItem.Size = new System.Drawing.Size(124, 20);
+            this.generateTemplatesToolStripMenuItem.Size = new System.Drawing.Size(123, 20);
             this.generateTemplatesToolStripMenuItem.Text = "Generate Templates";
             // 
             // warrantyVoiderMethodToolStripMenuItem
             // 
             this.warrantyVoiderMethodToolStripMenuItem.Name = "warrantyVoiderMethodToolStripMenuItem";
-            this.warrantyVoiderMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.warrantyVoiderMethodToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.warrantyVoiderMethodToolStripMenuItem.Text = "Warranty Voiders Method";
             this.warrantyVoiderMethodToolStripMenuItem.Click += new System.EventHandler(this.warrantyVoiderMethodToolStripMenuItem_Click);
             // 
             // amaroksMethodToolStripMenuItem
             // 
             this.amaroksMethodToolStripMenuItem.Name = "amaroksMethodToolStripMenuItem";
-            this.amaroksMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.amaroksMethodToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.amaroksMethodToolStripMenuItem.Text = "Amaroks Method";
             // 
             // statistiksToolStripMenuItem
@@ -200,6 +201,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PropertyDB";
             this.Text = "Property Database";

@@ -57,20 +57,22 @@
             this.levelDatabaseToolStripMenuItem,
             this.levelEditorToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.toolsToolStripMenuItem.Text = "User Tools";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.toolsToolStripMenuItem.Text = "Open Subtool";
             // 
             // levelDatabaseToolStripMenuItem
             // 
+            this.levelDatabaseToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.level_database_64x64;
             this.levelDatabaseToolStripMenuItem.Name = "levelDatabaseToolStripMenuItem";
-            this.levelDatabaseToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.levelDatabaseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.levelDatabaseToolStripMenuItem.Text = "Level Database";
             this.levelDatabaseToolStripMenuItem.Click += new System.EventHandler(this.levelDatabaseToolStripMenuItem_Click);
             // 
             // levelEditorToolStripMenuItem
             // 
+            this.levelEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.level_editor_64x64;
             this.levelEditorToolStripMenuItem.Name = "levelEditorToolStripMenuItem";
-            this.levelEditorToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.levelEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.levelEditorToolStripMenuItem.Text = "Level Editor";
             this.levelEditorToolStripMenuItem.Click += new System.EventHandler(this.levelEditorToolStripMenuItem_Click);
             // 
@@ -79,13 +81,13 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openDebugWindowToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
             // 
             // openDebugWindowToolStripMenuItem
             // 
             this.openDebugWindowToolStripMenuItem.Name = "openDebugWindowToolStripMenuItem";
-            this.openDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.openDebugWindowToolStripMenuItem.Text = "Open Debug Window";
             this.openDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.openDebugWindowToolStripMenuItem_Click);
             // 

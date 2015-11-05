@@ -57,11 +57,12 @@
             this.packageEditorToolStripMenuItem,
             this.meshplorerToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
-            this.toolsToolStripMenuItem.Text = "User Tools";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
+            this.toolsToolStripMenuItem.Text = "Developer Tools";
             // 
             // packageEditorToolStripMenuItem
             // 
+            this.packageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("packageEditorToolStripMenuItem.Image")));
             this.packageEditorToolStripMenuItem.Name = "packageEditorToolStripMenuItem";
             this.packageEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.packageEditorToolStripMenuItem.Text = "Package Editor";
@@ -69,6 +70,7 @@
             // 
             // meshplorerToolStripMenuItem
             // 
+            this.meshplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("meshplorerToolStripMenuItem.Image")));
             this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
             this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.meshplorerToolStripMenuItem.Text = "Meshplorer";

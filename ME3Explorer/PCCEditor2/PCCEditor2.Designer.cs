@@ -412,7 +412,7 @@
             this.Button5.Image = ((System.Drawing.Image)(resources.GetObject("Button5.Image")));
             this.Button5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Button5.Name = "Button5";
-            this.Button5.Size = new System.Drawing.Size(62, 22);
+            this.Button5.Size = new System.Drawing.Size(61, 22);
             this.Button5.Text = "Tree View";
             this.Button5.Click += new System.EventHandler(this.Button5_Click);
             // 
@@ -608,6 +608,7 @@
             // 
             // propGrid
             // 
+            this.propGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";

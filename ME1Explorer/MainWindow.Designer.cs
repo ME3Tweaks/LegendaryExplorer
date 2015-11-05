@@ -33,9 +33,10 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveGameEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveGameOperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
@@ -45,6 +46,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolsToolStripMenuItem,
+            this.developerToolsToolStripMenuItem,
             this.optionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -55,22 +57,15 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pCCEditorToolStripMenuItem,
             this.saveGameEditorToolStripMenuItem,
             this.saveGameOperatorToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
-            // 
-            // pCCEditorToolStripMenuItem
-            // 
-            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
-            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.pCCEditorToolStripMenuItem.Text = "Package Editor";
-            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
             // 
             // saveGameEditorToolStripMenuItem
             // 
+            this.saveGameEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.save_gameeditor_64x64;
             this.saveGameEditorToolStripMenuItem.Name = "saveGameEditorToolStripMenuItem";
             this.saveGameEditorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveGameEditorToolStripMenuItem.Text = "Save Game Editor";
@@ -78,18 +73,35 @@
             // 
             // saveGameOperatorToolStripMenuItem
             // 
+            this.saveGameOperatorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.save_gameoperator_64x64;
             this.saveGameOperatorToolStripMenuItem.Name = "saveGameOperatorToolStripMenuItem";
             this.saveGameOperatorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.saveGameOperatorToolStripMenuItem.Text = "Save Game Operator";
             this.saveGameOperatorToolStripMenuItem.Click += new System.EventHandler(this.saveGameOperatorToolStripMenuItem_Click);
+            // 
+            // developerToolsToolStripMenuItem
+            // 
+            this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pCCEditorToolStripMenuItem});
+            this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
+            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
+            this.developerToolsToolStripMenuItem.Text = "Developer Tools";
+            // 
+            // pCCEditorToolStripMenuItem
+            // 
+            this.pCCEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.package_editor_64x64;
+            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
+            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pCCEditorToolStripMenuItem.Text = "Package Editor";
+            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
             // 
             // optionToolStripMenuItem
             // 
             this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openDebugWindowToolStripMenuItem});
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.optionToolStripMenuItem.Text = "Option";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionToolStripMenuItem.Text = "Options";
             // 
             // openDebugWindowToolStripMenuItem
             // 
@@ -121,11 +133,12 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveGameEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openDebugWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveGameOperatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem developerToolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
     }
 }
 

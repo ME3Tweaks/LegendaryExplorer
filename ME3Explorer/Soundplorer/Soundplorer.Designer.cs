@@ -77,20 +77,20 @@
             this.openDLCPccToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.openPccToolStripMenuItem.Text = "Open pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // openDLCPccToolStripMenuItem
             // 
             this.openDLCPccToolStripMenuItem.Name = "openDLCPccToolStripMenuItem";
-            this.openDLCPccToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.openDLCPccToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.openDLCPccToolStripMenuItem.Text = "Open DLC pcc";
             this.openDLCPccToolStripMenuItem.Click += new System.EventHandler(this.openDLCPccToolStripMenuItem_Click);
             // 
@@ -98,7 +98,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -108,20 +108,20 @@
             this.exportToWAVToolStripMenuItem,
             this.importFromWAVToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToWAVToolStripMenuItem
             // 
             this.exportToWAVToolStripMenuItem.Name = "exportToWAVToolStripMenuItem";
-            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.exportToWAVToolStripMenuItem.Text = "Export to WAV";
             this.exportToWAVToolStripMenuItem.Click += new System.EventHandler(this.exportToWAVToolStripMenuItem_Click);
             // 
             // importFromWAVToolStripMenuItem
             // 
             this.importFromWAVToolStripMenuItem.Name = "importFromWAVToolStripMenuItem";
-            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.importFromWAVToolStripMenuItem.Text = "Import from WAV";
             this.importFromWAVToolStripMenuItem.Click += new System.EventHandler(this.importFromWAVToolStripMenuItem_Click);
             // 
@@ -130,27 +130,27 @@
             this.advancedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.directAFCReplaceToolStripMenuItem});
             this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
             this.advancedToolStripMenuItem.Text = "Advanced";
             // 
             // directAFCReplaceToolStripMenuItem
             // 
             this.directAFCReplaceToolStripMenuItem.Name = "directAFCReplaceToolStripMenuItem";
-            this.directAFCReplaceToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.directAFCReplaceToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.directAFCReplaceToolStripMenuItem.Text = "Direct AFC replace";
             this.directAFCReplaceToolStripMenuItem.Click += new System.EventHandler(this.directAFCReplaceToolStripMenuItem_Click);
             // 
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.playToolStripMenuItem.Text = "Play";
             this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
