@@ -46,8 +46,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolsToolStripMenuItem,
-            this.optionToolStripMenuItem,
-            this.developerToolsToolStripMenuItem});
+            this.developerToolsToolStripMenuItem,
+            this.optionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(986, 24);

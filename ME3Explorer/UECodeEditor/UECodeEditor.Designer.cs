@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UECodeEditor));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,20 +74,20 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPccToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.openPccToolStripMenuItem.Text = "Open Pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // openOPCodeTableToolStripMenuItem
             // 
             this.openOPCodeTableToolStripMenuItem.Name = "openOPCodeTableToolStripMenuItem";
-            this.openOPCodeTableToolStripMenuItem.Size = new System.Drawing.Size(116, 20);
+            this.openOPCodeTableToolStripMenuItem.Size = new System.Drawing.Size(126, 20);
             this.openOPCodeTableToolStripMenuItem.Text = "Open OPCode Table";
             this.openOPCodeTableToolStripMenuItem.Click += new System.EventHandler(this.openOPCodeTableToolStripMenuItem_Click);
             // 
@@ -174,6 +175,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UECodeEditor";
             this.Text = "UECodeEditor";

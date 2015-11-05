@@ -74,20 +74,20 @@
             this.openGUIDCacheToolStripMenuItem,
             this.saveGUIDCacheToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openGUIDCacheToolStripMenuItem
             // 
             this.openGUIDCacheToolStripMenuItem.Name = "openGUIDCacheToolStripMenuItem";
-            this.openGUIDCacheToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.openGUIDCacheToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.openGUIDCacheToolStripMenuItem.Text = "Open GUID Cache";
             this.openGUIDCacheToolStripMenuItem.Click += new System.EventHandler(this.openGUIDCacheToolStripMenuItem_Click);
             // 
             // saveGUIDCacheToolStripMenuItem
             // 
             this.saveGUIDCacheToolStripMenuItem.Name = "saveGUIDCacheToolStripMenuItem";
-            this.saveGUIDCacheToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveGUIDCacheToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.saveGUIDCacheToolStripMenuItem.Text = "Save GUID Cache";
             this.saveGUIDCacheToolStripMenuItem.Click += new System.EventHandler(this.saveGUIDCacheToolStripMenuItem_Click);
             // 
@@ -97,20 +97,20 @@
             this.deleteToolStripMenuItem,
             this.cloneToolStripMenuItem});
             this.gUIDToolStripMenuItem.Name = "gUIDToolStripMenuItem";
-            this.gUIDToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.gUIDToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.gUIDToolStripMenuItem.Text = "GUID";
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // cloneToolStripMenuItem
             // 
             this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.cloneToolStripMenuItem.Text = "Clone";
             this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
@@ -136,7 +136,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(44, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(46, 22);
             this.toolStripButton1.Text = "Search";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -148,6 +148,7 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "GUIDCacheEditor";
             this.Text = "GUIDCacheEditor";

@@ -30,15 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptDB));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.rtb1 = new System.Windows.Forms.RichTextBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.saveDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -57,6 +57,11 @@
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // pb1
+            // 
+            this.pb1.Name = "pb1";
+            this.pb1.Size = new System.Drawing.Size(100, 16);
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -74,20 +79,29 @@
             this.saveDBToolStripMenuItem,
             this.loadDBToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.databaseToolStripMenuItem.Text = "Database";
             // 
             // startScanToolStripMenuItem
             // 
             this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.startScanToolStripMenuItem.Text = "Start Scan";
             this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
-            // pb1
+            // saveDBToolStripMenuItem
             // 
-            this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(100, 16);
+            this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
+            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.saveDBToolStripMenuItem.Text = "Save DB";
+            this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
+            // 
+            // loadDBToolStripMenuItem
+            // 
+            this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
+            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.loadDBToolStripMenuItem.Text = "Load DB";
+            this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -106,18 +120,6 @@
             this.splitContainer1.SplitterDistance = 386;
             this.splitContainer1.TabIndex = 2;
             // 
-            // rtb1
-            // 
-            this.rtb1.DetectUrls = false;
-            this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtb1.Location = new System.Drawing.Point(0, 0);
-            this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(504, 407);
-            this.rtb1.TabIndex = 0;
-            this.rtb1.Text = "";
-            this.rtb1.WordWrap = false;
-            // 
             // listBox1
             // 
             this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -131,19 +133,17 @@
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
-            // saveDBToolStripMenuItem
+            // rtb1
             // 
-            this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
-            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveDBToolStripMenuItem.Text = "Save DB";
-            this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
-            // 
-            // loadDBToolStripMenuItem
-            // 
-            this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
-            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.loadDBToolStripMenuItem.Text = "Load DB";
-            this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
+            this.rtb1.DetectUrls = false;
+            this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtb1.Location = new System.Drawing.Point(0, 0);
+            this.rtb1.Name = "rtb1";
+            this.rtb1.Size = new System.Drawing.Size(504, 407);
+            this.rtb1.TabIndex = 0;
+            this.rtb1.Text = "";
+            this.rtb1.WordWrap = false;
             // 
             // ScriptDB
             // 

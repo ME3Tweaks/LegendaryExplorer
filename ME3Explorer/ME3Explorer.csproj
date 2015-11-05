@@ -55,7 +55,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>me3exp.ico</ApplicationIcon>
+    <ApplicationIcon>me3exp_favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -1257,6 +1257,7 @@
     <Content Include="icon_cidatel.ico" />
     <None Include="Resources\Image1.bmp" />
     <Content Include="me3exp.ico" />
+    <Content Include="me3exp_favicon.ico" />
     <Content Include="PiccoloX\PiccoloX.csproj" />
     <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
     <Content Include="Piccolo\Piccolo.csproj" />
@@ -1312,6 +1313,8 @@
     <None Include="Resources\decompressor_64x64.png" />
     <None Include="Resources\DDSConverter_64x64.png" />
     <None Include="Resources\conditionals_editor_64x64.png" />
+    <Resource Include="Resources\TLK_editor_icon.ico" />
+    <None Include="Resources\ImageEngine_icon_64x64.png" />
     <Content Include="SevenZip.csproj" />
   </ItemGroup>
   <ItemGroup>

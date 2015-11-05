@@ -85,20 +85,20 @@
             this.openToolStripMenuItem,
             this.saveAsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.saveAsToolStripMenuItem.Text = "Save as...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -108,20 +108,20 @@
             this.saveHexChangesToolStripMenuItem,
             this.dumpBinaryToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // saveHexChangesToolStripMenuItem
             // 
             this.saveHexChangesToolStripMenuItem.Name = "saveHexChangesToolStripMenuItem";
-            this.saveHexChangesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.saveHexChangesToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.saveHexChangesToolStripMenuItem.Text = "Save Hex Changes";
             this.saveHexChangesToolStripMenuItem.Click += new System.EventHandler(this.saveHexChangesToolStripMenuItem_Click);
             // 
             // dumpBinaryToolStripMenuItem
             // 
             this.dumpBinaryToolStripMenuItem.Name = "dumpBinaryToolStripMenuItem";
-            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.dumpBinaryToolStripMenuItem.Text = "Dump Binary";
             this.dumpBinaryToolStripMenuItem.Click += new System.EventHandler(this.dumpBinaryToolStripMenuItem_Click);
             // 
@@ -166,7 +166,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(43, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
             this.toolStripButton1.Text = "Names";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -176,7 +176,7 @@
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(48, 22);
+            this.toolStripButton2.Size = new System.Drawing.Size(52, 22);
             this.toolStripButton2.Text = "Imports";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
@@ -188,7 +188,7 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(48, 22);
+            this.toolStripButton3.Size = new System.Drawing.Size(49, 22);
             this.toolStripButton3.Text = "Exports";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
@@ -203,7 +203,7 @@
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(59, 22);
+            this.toolStripButton4.Size = new System.Drawing.Size(64, 22);
             this.toolStripButton4.Text = "Find Class";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
@@ -290,7 +290,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(54, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(58, 17);
             this.toolStripStatusLabel1.Text = "Selection:";
             // 
             // tabPage2
@@ -322,6 +322,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UDKEditor";
             this.Text = "UDK Editor";

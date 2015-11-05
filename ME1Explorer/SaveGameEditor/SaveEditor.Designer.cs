@@ -68,20 +68,20 @@
             this.openSaveGameToolStripMenuItem,
             this.saveSaveGameToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openSaveGameToolStripMenuItem
             // 
             this.openSaveGameToolStripMenuItem.Name = "openSaveGameToolStripMenuItem";
-            this.openSaveGameToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.openSaveGameToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.openSaveGameToolStripMenuItem.Text = "Open Save Game";
             this.openSaveGameToolStripMenuItem.Click += new System.EventHandler(this.openSaveGameToolStripMenuItem_Click);
             // 
             // saveSaveGameToolStripMenuItem
             // 
             this.saveSaveGameToolStripMenuItem.Name = "saveSaveGameToolStripMenuItem";
-            this.saveSaveGameToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.saveSaveGameToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.saveSaveGameToolStripMenuItem.Text = "Store Save Game";
             this.saveSaveGameToolStripMenuItem.Click += new System.EventHandler(this.saveSaveGameToolStripMenuItem_Click);
             // 
@@ -92,27 +92,27 @@
             this.extractAsME1PackageToolStripMenuItem,
             this.importFromME1PackageToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // rawDumpToolStripMenuItem
             // 
             this.rawDumpToolStripMenuItem.Name = "rawDumpToolStripMenuItem";
-            this.rawDumpToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.rawDumpToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.rawDumpToolStripMenuItem.Text = "Raw Dump";
             this.rawDumpToolStripMenuItem.Click += new System.EventHandler(this.rawDumpToolStripMenuItem_Click);
             // 
             // extractAsME1PackageToolStripMenuItem
             // 
             this.extractAsME1PackageToolStripMenuItem.Name = "extractAsME1PackageToolStripMenuItem";
-            this.extractAsME1PackageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.extractAsME1PackageToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.extractAsME1PackageToolStripMenuItem.Text = "Extract as ME1 Package";
             this.extractAsME1PackageToolStripMenuItem.Click += new System.EventHandler(this.extractAsME1PackageToolStripMenuItem_Click);
             // 
             // importFromME1PackageToolStripMenuItem
             // 
             this.importFromME1PackageToolStripMenuItem.Name = "importFromME1PackageToolStripMenuItem";
-            this.importFromME1PackageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.importFromME1PackageToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.importFromME1PackageToolStripMenuItem.Text = "Import from ME1 Package";
             this.importFromME1PackageToolStripMenuItem.Click += new System.EventHandler(this.importFromME1PackageToolStripMenuItem_Click);
             // 
@@ -132,7 +132,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(102, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(107, 22);
             this.toolStripButton1.Text = "Save Hex Changes";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -190,6 +190,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SaveEditor";
             this.Text = "WV\'s Save Game Editor";

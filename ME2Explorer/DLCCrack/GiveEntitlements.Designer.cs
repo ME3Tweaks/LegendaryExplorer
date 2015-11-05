@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GiveEntitlements));
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,7 +76,7 @@
             // backupFileToolStripMenuItem
             // 
             this.backupFileToolStripMenuItem.Name = "backupFileToolStripMenuItem";
-            this.backupFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.backupFileToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.backupFileToolStripMenuItem.Text = "Backup file";
             this.backupFileToolStripMenuItem.Click += new System.EventHandler(this.backupFileToolStripMenuItem_Click);
             // 
@@ -86,6 +87,7 @@
             this.ClientSize = new System.Drawing.Size(888, 457);
             this.Controls.Add(this.rtb1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "GiveEntitlements";
             this.Text = "GiveEntitlements";

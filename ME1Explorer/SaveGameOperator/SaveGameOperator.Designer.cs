@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveGameOperator));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSaveGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,27 +68,27 @@
             this.storeSaveGameToolStripMenuItem,
             this.makeBackupToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadSaveGameToolStripMenuItem
             // 
             this.loadSaveGameToolStripMenuItem.Name = "loadSaveGameToolStripMenuItem";
-            this.loadSaveGameToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.loadSaveGameToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.loadSaveGameToolStripMenuItem.Text = "Load Save Game";
             this.loadSaveGameToolStripMenuItem.Click += new System.EventHandler(this.loadSaveGameToolStripMenuItem_Click);
             // 
             // storeSaveGameToolStripMenuItem
             // 
             this.storeSaveGameToolStripMenuItem.Name = "storeSaveGameToolStripMenuItem";
-            this.storeSaveGameToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.storeSaveGameToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.storeSaveGameToolStripMenuItem.Text = "Store Save Game";
             this.storeSaveGameToolStripMenuItem.Click += new System.EventHandler(this.storeSaveGameToolStripMenuItem_Click);
             // 
             // makeBackupToolStripMenuItem
             // 
             this.makeBackupToolStripMenuItem.Name = "makeBackupToolStripMenuItem";
-            this.makeBackupToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.makeBackupToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.makeBackupToolStripMenuItem.Text = "Make Backup";
             this.makeBackupToolStripMenuItem.Click += new System.EventHandler(this.makeBackupToolStripMenuItem_Click);
             // 
@@ -205,6 +206,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SaveGameOperator";
             this.Text = "SaveGameOperator";

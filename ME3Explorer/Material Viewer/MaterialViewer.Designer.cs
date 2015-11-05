@@ -76,13 +76,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
@@ -96,13 +96,13 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.shaderCodeToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // shaderCodeToolStripMenuItem
             // 
             this.shaderCodeToolStripMenuItem.Name = "shaderCodeToolStripMenuItem";
-            this.shaderCodeToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.shaderCodeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.shaderCodeToolStripMenuItem.Text = "Shader Code";
             this.shaderCodeToolStripMenuItem.Click += new System.EventHandler(this.shaderCodeToolStripMenuItem_Click);
             // 
@@ -179,6 +179,7 @@
             this.graphEditor1.AllowDrop = true;
             this.graphEditor1.BackColor = System.Drawing.Color.White;
             this.graphEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.graphEditor1.GridFitText = false;
             this.graphEditor1.Location = new System.Drawing.Point(0, 0);
             this.graphEditor1.Name = "graphEditor1";
             this.graphEditor1.RegionManagement = true;

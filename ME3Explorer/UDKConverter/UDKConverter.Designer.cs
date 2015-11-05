@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UDKConverter));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.convertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pccToUpkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +46,21 @@
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // convertToolStripMenuItem
+            // 
+            this.convertToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pccToUpkToolStripMenuItem});
+            this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
+            this.convertToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.convertToolStripMenuItem.Text = "Convert";
+            // 
+            // pccToUpkToolStripMenuItem
+            // 
+            this.pccToUpkToolStripMenuItem.Name = "pccToUpkToolStripMenuItem";
+            this.pccToUpkToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.pccToUpkToolStripMenuItem.Text = "pcc to upk";
+            this.pccToUpkToolStripMenuItem.Click += new System.EventHandler(this.pccToUpkToolStripMenuItem_Click);
+            // 
             // rtb1
             // 
             this.rtb1.DetectUrls = false;
@@ -56,21 +72,6 @@
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "THIS IS STILL UNDER DEVELOPMENT!";
             // 
-            // convertToolStripMenuItem
-            // 
-            this.convertToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pccToUpkToolStripMenuItem});
-            this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
-            this.convertToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.convertToolStripMenuItem.Text = "Convert";
-            // 
-            // pccToUpkToolStripMenuItem
-            // 
-            this.pccToUpkToolStripMenuItem.Name = "pccToUpkToolStripMenuItem";
-            this.pccToUpkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.pccToUpkToolStripMenuItem.Text = "pcc to upk";
-            this.pccToUpkToolStripMenuItem.Click += new System.EventHandler(this.pccToUpkToolStripMenuItem_Click);
-            // 
             // UDKConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -78,6 +79,7 @@
             this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.rtb1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UDKConverter";
             this.Text = "UDKConverter";

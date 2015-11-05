@@ -651,6 +651,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap ImageEngine_icon_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("ImageEngine_icon_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap info {
             get {
                 object obj = ResourceManager.GetObject("info", resourceCulture);
@@ -1319,6 +1329,16 @@ namespace ME3Explorer.Properties {
             get {
                 object obj = ResourceManager.GetObject("TLK_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon TLK_editor_icon {
+            get {
+                object obj = ResourceManager.GetObject("TLK_editor_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

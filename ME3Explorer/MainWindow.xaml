@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:p="clr-namespace:ME3Explorer.Properties"
     Title="Mass Effect 2 + 3 TLK Tool" Height="335" Width="612"
-    Closed="Root_Closed" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="WhiteSmoke" Loaded="root_Loaded">
+    Closed="Root_Closed" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="WhiteSmoke" Loaded="root_Loaded" Icon="pack://application:,,,/Resources/TLK_Editor_icon.ico" >
     
     <StackPanel Name="stackPanel1" >
 

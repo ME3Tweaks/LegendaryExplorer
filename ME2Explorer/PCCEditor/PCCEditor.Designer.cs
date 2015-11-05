@@ -38,6 +38,16 @@
             this.hexBox1 = new Be.Windows.Forms.HexBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.hb2 = new Be.Windows.Forms.HexBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -59,16 +69,6 @@
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveHexChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.button4 = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.hb2 = new Be.Windows.Forms.HexBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -76,11 +76,11 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // openPccToolStripMenuItem
@@ -99,14 +99,14 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(444, 434);
+            this.listBox1.Size = new System.Drawing.Size(444, 458);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -117,7 +117,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(993, 434);
+            this.splitContainer1.Size = new System.Drawing.Size(993, 458);
             this.splitContainer1.SplitterDistance = 444;
             this.splitContainer1.TabIndex = 7;
             // 
@@ -127,7 +127,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(444, 434);
+            this.treeView1.Size = new System.Drawing.Size(444, 458);
             this.treeView1.TabIndex = 2;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -142,7 +142,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(545, 434);
+            this.tabControl1.Size = new System.Drawing.Size(545, 458);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -178,18 +178,121 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(537, 432);
+            this.tabPage2.Size = new System.Drawing.Size(537, 408);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Properties";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // propGrid
             // 
+            this.propGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(531, 426);
+            this.propGrid.Size = new System.Drawing.Size(531, 402);
             this.propGrid.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.button4);
+            this.tabPage3.Controls.Add(this.label14);
+            this.tabPage3.Controls.Add(this.comboBox3);
+            this.tabPage3.Controls.Add(this.comboBox2);
+            this.tabPage3.Controls.Add(this.comboBox1);
+            this.tabPage3.Controls.Add(this.label13);
+            this.tabPage3.Controls.Add(this.label12);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(537, 408);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Meta Data Editor";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(260, 95);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(103, 23);
+            this.button4.TabIndex = 13;
+            this.button4.Text = "Save Changes";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(12, 67);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(27, 13);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Link";
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(84, 67);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(280, 21);
+            this.comboBox3.TabIndex = 11;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(84, 39);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(280, 21);
+            this.comboBox2.TabIndex = 10;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(84, 8);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(280, 21);
+            this.comboBox1.TabIndex = 9;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(12, 39);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.TabIndex = 8;
+            this.label13.Text = "Class";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(9, 8);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(35, 13);
+            this.label12.TabIndex = 7;
+            this.label12.Text = "Name";
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.hb2);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(537, 408);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Header Raw";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(0, 0);
+            this.hb2.Name = "hb2";
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(537, 408);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 1;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
             // 
             // toolStrip1
             // 
@@ -203,7 +306,7 @@
             this.toolStripTextBox1,
             this.toolStripButton5,
             this.toolStripButton6});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(993, 25);
             this.toolStrip1.TabIndex = 5;
@@ -245,7 +348,7 @@
             this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(62, 22);
+            this.toolStripButton7.Size = new System.Drawing.Size(61, 22);
             this.toolStripButton7.Text = "Tree View";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
@@ -382,108 +485,6 @@
             this.saveHexChangesToolStripMenuItem.Text = "Save Hex Changes";
             this.saveHexChangesToolStripMenuItem.Click += new System.EventHandler(this.saveHexChangesToolStripMenuItem_Click);
             // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.button4);
-            this.tabPage3.Controls.Add(this.label14);
-            this.tabPage3.Controls.Add(this.comboBox3);
-            this.tabPage3.Controls.Add(this.comboBox2);
-            this.tabPage3.Controls.Add(this.comboBox1);
-            this.tabPage3.Controls.Add(this.label13);
-            this.tabPage3.Controls.Add(this.label12);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(537, 432);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Meta Data Editor";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(260, 95);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(103, 23);
-            this.button4.TabIndex = 13;
-            this.button4.Text = "Save Changes";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(12, 67);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(27, 13);
-            this.label14.TabIndex = 12;
-            this.label14.Text = "Link";
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(84, 67);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(280, 21);
-            this.comboBox3.TabIndex = 11;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(84, 39);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(280, 21);
-            this.comboBox2.TabIndex = 10;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(84, 8);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(280, 21);
-            this.comboBox1.TabIndex = 9;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(12, 39);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(32, 13);
-            this.label13.TabIndex = 8;
-            this.label13.Text = "Class";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(9, 8);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(35, 13);
-            this.label12.TabIndex = 7;
-            this.label12.Text = "Name";
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.hb2);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(537, 408);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Header Raw";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 0);
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(537, 408);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 1;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
-            // 
             // PCCEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -503,15 +504,15 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

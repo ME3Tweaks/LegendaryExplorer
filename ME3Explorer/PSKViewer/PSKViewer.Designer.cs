@@ -32,11 +32,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForDuplicatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trimBoneNamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,15 +58,22 @@
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -74,38 +81,31 @@
             this.checkForDuplicatesToolStripMenuItem,
             this.trimBoneNamesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // checkForDuplicatesToolStripMenuItem
             // 
             this.checkForDuplicatesToolStripMenuItem.Name = "checkForDuplicatesToolStripMenuItem";
-            this.checkForDuplicatesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.checkForDuplicatesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.checkForDuplicatesToolStripMenuItem.Text = "Check for Duplicates";
             this.checkForDuplicatesToolStripMenuItem.Click += new System.EventHandler(this.checkForDuplicatesToolStripMenuItem_Click);
+            // 
+            // trimBoneNamesToolStripMenuItem
+            // 
+            this.trimBoneNamesToolStripMenuItem.Name = "trimBoneNamesToolStripMenuItem";
+            this.trimBoneNamesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.trimBoneNamesToolStripMenuItem.Text = "Trim Bone Names";
+            this.trimBoneNamesToolStripMenuItem.Click += new System.EventHandler(this.trimBoneNamesToolStripMenuItem_Click);
             // 
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeView1.Location = new System.Drawing.Point(0, 24);
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(292, 242);
+            this.treeView1.Size = new System.Drawing.Size(292, 266);
             this.treeView1.TabIndex = 1;
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
-            // 
-            // trimBoneNamesToolStripMenuItem
-            // 
-            this.trimBoneNamesToolStripMenuItem.Name = "trimBoneNamesToolStripMenuItem";
-            this.trimBoneNamesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.trimBoneNamesToolStripMenuItem.Text = "Trim Bone Names";
-            this.trimBoneNamesToolStripMenuItem.Click += new System.EventHandler(this.trimBoneNamesToolStripMenuItem_Click);
             // 
             // PSKViewer
             // 

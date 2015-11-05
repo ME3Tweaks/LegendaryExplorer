@@ -149,6 +149,7 @@
             this.pg1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
             this.pg1.Size = new System.Drawing.Size(219, 107);
@@ -329,7 +330,7 @@
             this.addInputLinkToolStripMenuItem,
             this.breakLinksToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 70);
             // 
             // openInPCCEditorToolStripMenuItem
             // 
@@ -387,6 +388,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SequenceEditor";
             this.Text = "SequenceEditor";

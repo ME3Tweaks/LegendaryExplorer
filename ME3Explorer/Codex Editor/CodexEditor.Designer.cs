@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodexEditor));
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +59,7 @@
             // saveChangesToolStripMenuItem
             // 
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
             this.saveChangesToolStripMenuItem.Text = "Save Changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -69,6 +70,7 @@
             this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CodexEditor";
             this.Text = "CodexEditor";

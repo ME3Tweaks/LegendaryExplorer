@@ -79,9 +79,10 @@ namespace ME3Explorer
 
                 developers.Add("");
                 developers.Add("");
-                developers.Add("ICONS:");
+                developers.Add("ICONS and BACKGROUNDS:");
                 developers.Add("- Giftfish");
                 developers.Add("- paragade icon by Joshua Bell, sailok.deviantart.com");
+                developers.Add("- hex code texture by Maksim Kabakou, Shutterstock");
 
                 StringBuilder sb = new StringBuilder();
                 foreach (String developer in developers)

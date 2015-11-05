@@ -766,7 +766,9 @@ namespace ME3Explorer
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
+            //MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
+            var conv = new CSharpImageLibrary.MainWindow();
+            conv.Show();
         }
 
         private void mE3WikiToolStripMenuItem_Click(object sender, EventArgs e)
