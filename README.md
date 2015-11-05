@@ -9,3 +9,6 @@ Users who have more advanced needs may find the changes in the latest revisions 
 
 ##Documentation
 For documentation on how to use the product, [check out the wiki](http://me3explorer.wikia.com).
+
+##Contributing
+To contribute to this project, you can fork the project and submit pull requests. [You can see our contributing guidelines on the github wiki](https://github.com/ME3Explorer/ME3Explorer/wiki/Contributing-Code).
