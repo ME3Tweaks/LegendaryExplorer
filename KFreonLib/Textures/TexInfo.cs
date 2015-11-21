@@ -545,7 +545,10 @@ namespace KFreonLib.Textures
                 string ending = " <----";
 
                 if (Path.GetExtension(this.FileName) != ".dds")
+                {
                     ending += "NOT DDS FORMAT";
+                    text = "----> " + text + ending;
+                }
                 else if (!isDef && !Valid)
                 {
                     if (!ValidDimensions)
@@ -784,7 +787,9 @@ namespace KFreonLib.Textures
 
         public string Autofixedpath(string TemporaryPath)
         {
-            return Path.Combine(Path.Combine(TemporaryPath, "Autofixed"), FileName);   
+            Format format = ImageFormats.FindFormatInString(ExpectedFormat);
+            string newfilename = String.IsNullOrEmpty(ExpectedFormat) ? FileName : Path.ChangeExtension(FileName, ImageFormats.GetExtensionOfFormat(format.InternalFormat));
+            return Path.Combine(Path.Combine(TemporaryPath, "Autofixed"), newfilename);   
         }
 
         public bool ValidateDimensions()

@@ -325,8 +325,8 @@ namespace KFreonLib.Scripting
                 if (WhichGame == -1 && update)
                 {
                     DebugOutput.PrintLn("Attempting to guess game version...");
-                    int index = PCCs[0].IndexOf("Mass Effect");
-                    char c = PCCs[0][index + 1];
+                    /*int index = PCCs[0].IndexOf("Mass Effect");
+                    char c = PCCs[0][index + 1];*/
 
                     DebugOutput.PrintLn("Found num PCCS: " + PCCs.Count);
                     WhichGame = GuessGame(PCCs);

@@ -685,6 +685,7 @@ namespace ME3Explorer
                         try
                         {
                             Bitmap bmp = new Bitmap(curr.Thumbnail);
+                            bmp = UsefulThings.WinForms.Imaging.PadImageToSquare(bmp, 64);
                             curr.ThumbInd = MainTreeViewImageList.Images.Count;
                             MainTreeViewImageList.Images.Add(bmp);
                         }
@@ -1570,6 +1571,7 @@ namespace ME3Explorer
                     case ".tga":
                     case ".jpg":
                     case ".png":
+                    case ".bmp":
                         ValidDrops.Add(file);
                         break;
                     default:
@@ -1742,20 +1744,21 @@ namespace ME3Explorer
                 return false;
             }
 
-            TPFTexInfo tex;
-            int index = ind == -1 ? GetSelectedTex(out tex) : ind;
-
             // KFreon: Wipe out nodes to stop preview glitch
-            MainTreeView.Nodes.Clear();
+            //MainTreeView.SuspendLayout();
+            //MainTreeView.Nodes.Clear();
             ClearPreview();
             FirstHalfInfoState(false);
 
-            // KFreon: Remove from lists
-            MainTreeView.SuspendLayout();
-            LoadedTexes.RemoveAt(index);
+            TPFTexInfo tex;
+            int index = ind == -1 ? GetSelectedTex(out tex) : ind;
 
-            RedrawTreeView();
-            MainTreeView.ResumeLayout();
+            // KFreon: Remove from lists
+            LoadedTexes.RemoveAt(index);
+            MainTreeView.Nodes.RemoveAt(index);
+
+            //RedrawTreeView();
+            //MainTreeView.ResumeLayout();
             return true;
         }
 
@@ -1770,8 +1773,15 @@ namespace ME3Explorer
 
             string text = e.Node.Text;
             myTreeNode nod = (e.Node as myTreeNode);
-            TPFTexInfo curr = nod.TexInd == -1 ? LoadedTexes[nod.TexInds[0]].FileDuplicates[nod.TexInds[1]] : LoadedTexes[nod.TexInd];
 
+            /*try
+            {
+                TPFTexInfo curr = nod.TexInd == -1 ? LoadedTexes[nod.TexInds[0]].FileDuplicates[nod.TexInds[1]] : LoadedTexes[nod.TexInd];
+            }
+            catch (Exception e)
+            {
+                DebugOutput.PrintLn("Failure in TPFTools Tree DrawNode:" + e.Message);
+            }*/
 
             TextRenderer.DrawText(e.Graphics, text, font, e.Node.Bounds, Color.Black, TextFormatFlags.VerticalCenter);
         }
@@ -2727,6 +2737,7 @@ namespace ME3Explorer
             using (ImageEngineImage img = new ImageEngineImage(imgData))
                 retval = img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), tex.NumMips != tex.ExpectedMips);
 
+            tex.FileName = path;
 
             // Heff: Cancellation check
             if (cts.IsCancellationRequested)
@@ -2739,65 +2750,9 @@ namespace ME3Explorer
             if (tex.ExpectedMips > 1 && (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height)))
                 tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
 
+            tex.AutofixSuccess = retval;
             return retval;
         }
-
-        /*private string ExecuteExternalTool(string filepath, string arguments)
-        {
-            Process proc = new Process();
-
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.CreateNoWindow = true;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.FileName = filepath;
-            proc.StartInfo.Arguments = arguments;
-            proc.Start();
-
-            string cmdoutput = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit();
-            return cmdoutput;
-        }*/
-
-        /*private bool MoveToTempAndConvert(TPFTexInfo tex, string path, string[] sourceFormats)
-        {
-            if (!sourceFormats.Any(f => tex.FileName.EndsWith(f)))
-            {
-                //Heff: If the source format is some type that's not supported by the nvidia dds tool, try to convert via ResIL:
-                byte[] arr = tex.Extract(null, true);
-                path = Path.ChangeExtension(path, ".tga");
-                tex.FilePath = Path.GetDirectoryName(path);
-                tex.FileName = Path.ChangeExtension(tex.FileName, ".tga");
-                using (ResILImageBase img = ResILImageBase.Create(arr))
-                {
-                    // Heff: Convert all formats to TGA for smallest possible quality loss:
-                    bool success = img.ConvertAndSave(ResIL.Unmanaged.ImageType.Tga, path, MipsMode: ResILImageBase.MipMapMode.RemoveAllButOne);
-                    if (!success)
-                    {
-                        MessageBox.Show("Could not convert the following format: " + tex.ExpectedFormat + " | Please report this on the me3explorer forums.");
-                        DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
-                        tex.AutofixSuccess = false;
-                        return false;
-                    }
-                }
-            }
-            /*else
-            {
-                try
-                {
-                    // Heff: can we always assume that overwriting is okay? Or will we have problems with files of the same name?
-                    File.Copy(tex.FilePath + "\\" + tex.FileName, path, true);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Could not copy temporary file to: " + path + " | Make sure that you have sufficient hard drive space and that ME3Explorer is run as admin. ("
-                        + e.Message + ")");
-                    DebugOutput.PrintLn("Autofix failed on image: " + tex.TexName);
-                    tex.AutofixSuccess = false;
-                    return false;
-                }
-            }*/
-            /*return true;
-        }*/
 
         private void AutofixInstallButton_Click(object sender, EventArgs e)
         {

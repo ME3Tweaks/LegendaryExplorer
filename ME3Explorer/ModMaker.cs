@@ -357,8 +357,11 @@ namespace ME3Explorer
                 { 
                     // Heff: If this happens then the user has already been informed via a popup.
                     // Heff: Hopefully this is a value that can be handled by all callers.
-                    cts.Cancel();
-                    return new List<string>();
+
+                    // KFreon: Still want to see the job instead of being given nothing
+                    //cts.Cancel();
+                    //return new List<string>();
+                    return names;
                 }
 
                 DebugOutput.PrintLn("Got job details");
