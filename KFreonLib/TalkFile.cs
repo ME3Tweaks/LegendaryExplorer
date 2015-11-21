@@ -9,7 +9,7 @@ using System.Xml;
 using BitConverter = KFreonLib.Misc.BitConverter;
 
 namespace KFreonLib
-{
+{ 
     public class TalkFile
     {
         public enum Fileformat
