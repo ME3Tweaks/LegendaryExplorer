@@ -1615,13 +1615,7 @@ namespace ME3Explorer
                 Image thumb;
                 try
                 {
-                    //thumb = Textures.Methods.FixThumb(Image.FromFile(tex.ThumbnailPath), 128);
-                    /*using (FileStream fs = new FileStream(tex.ThumbnailPath, FileMode.Open))
-                    {
-                        //var stream = ImageEngine.GenerateThumbnailToStream(fs, 128);
-                        thumb = Image.FromStream(fs);
-                    }*/
-                    thumb = Image.FromFile(tex.ThumbnailPath);
+                    thumb = UsefulThings.WinForms.Imaging.PadImageToSquare(tex.ThumbnailPath, 128);
                     thumbs.Add(thumb);
                 }
                 catch
