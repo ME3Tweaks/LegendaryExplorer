@@ -342,7 +342,7 @@
             this.TreeFoundLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.TreeFoundLabel.Enabled = false;
             this.TreeFoundLabel.Name = "TreeFoundLabel";
-            this.TreeFoundLabel.Size = new System.Drawing.Size(72, 22);
+            this.TreeFoundLabel.Size = new System.Drawing.Size(71, 22);
             this.TreeFoundLabel.Text = "Tree Found?";
             // 
             // BottomStrip
@@ -449,7 +449,7 @@
             this.VersionLabel.Enabled = false;
             this.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(46, 22);
+            this.VersionLabel.Size = new System.Drawing.Size(45, 22);
             this.VersionLabel.Text = "Version";
             // 
             // MainSplitter
@@ -873,7 +873,7 @@
             this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(537, 522);
+            this.PreviewTabPages.Size = new System.Drawing.Size(537, 525);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -886,7 +886,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 22);
             this.PreviewPage.Name = "PreviewPage";
             this.PreviewPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PreviewPage.Size = new System.Drawing.Size(529, 496);
+            this.PreviewPage.Size = new System.Drawing.Size(529, 499);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -897,7 +897,7 @@
             this.texmodPreviewBox.Dock = System.Windows.Forms.DockStyle.Left;
             this.texmodPreviewBox.Location = new System.Drawing.Point(3, 3);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(100, 490);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(100, 493);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             // 
@@ -915,7 +915,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 22);
             this.PCCsPage.Name = "PCCsPage";
             this.PCCsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PCCsPage.Size = new System.Drawing.Size(529, 496);
+            this.PCCsPage.Size = new System.Drawing.Size(529, 499);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -930,7 +930,7 @@
             this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.PCCsCheckListBox.Location = new System.Drawing.Point(3, 3);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(523, 490);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(523, 493);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
