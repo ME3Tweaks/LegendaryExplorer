@@ -15,6 +15,7 @@ using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
 using KFreonLib.Textures;
 using UsefulThings;
+using System.Diagnostics;
 
 namespace ME3Explorer
 {
@@ -125,7 +126,7 @@ namespace ME3Explorer
                 return;
             ClassNames = new List<int>();
             bool found;
-            for(int i=0;i<pcc.Exports.Count;i++)
+            for (int i = 0; i < pcc.Exports.Count; i++)
             {
                 found = false;
                 for (int j = 0; j < ClassNames.Count; j++)
@@ -184,7 +185,7 @@ namespace ME3Explorer
                     Button5.Checked = false;
                     break;
             }
-            
+
         }
 
         public void RefreshView()
@@ -198,30 +199,76 @@ namespace ME3Explorer
             }
             cloneObjectToolStripMenuItem.Enabled = false;
             if (CurrentView == 0)
+            {
                 for (int i = 0; i < pcc.Names.Count; i++)
+                {
                     listBox1.Items.Add(i.ToString() + " : " + pcc.Names[i]);
+                }
+            }
             if (CurrentView == 1)
+            {
                 for (int i = 0; i < pcc.Imports.Count; i++)
-                    listBox1.Items.Add(i.ToString() + " : " + pcc.Imports[i].ObjectName);
+                {
+                    string importStr = i.ToString() + " (0x" + (pcc.ImportOffset + (i * PCCObject.ImportEntry.
+                        byteSize)).ToString("X4") + "): (" + pcc.Imports[i].PackageFile + ") ";
+                    if (pcc.Imports[i].PackageFullName != "Class" && pcc.Imports[i].PackageFullName != "Package")
+                    {
+                        importStr += pcc.Imports[i].PackageFullName + ".";
+                    }
+                    importStr += pcc.Imports[i].ObjectName;
+                    listBox1.Items.Add(importStr);
+                }
+            }
             string s;
             if (CurrentView == 2)
                 for (int i = 0; i < pcc.Exports.Count; i++)
-                {                    
+                {
+                    if (i == 47)
+                    {
+                        Console.WriteLine("braek;");
+                    }
                     cloneObjectToolStripMenuItem.Enabled = true;
                     s = "";
                     if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
                         s += pcc.Exports[i].PackageFullName + ".";
                     s += pcc.Exports[i].ObjectName;
+                    if (pcc.Exports[i].ClassName == "ObjectProperty" || pcc.Exports[i].ClassName == "StructProperty")
+                    {
+                        //attempt to find type
+                        byte[] data = pcc.Exports[i].Data;
+                        int importindex = BitConverter.ToInt32(data, data.Length - 4);
+                        if (importindex < 0)
+                        {
+                            //import
+                            importindex *= -1;
+                            if (importindex > 0) importindex--;
+                            if (importindex <= pcc.Imports.Count)
+                            {
+                                s += " (" + pcc.Imports[importindex].ObjectName +")";
+                            }
+                        }
+                        else
+                        {
+                            //export
+                            if (importindex > 0) importindex--;
+                            if (importindex <= pcc.Exports.Count)
+                            {
+                                s += " [" + pcc.Exports[importindex].ObjectName + "]";
+                            }
+                        }
+                    }
                     listBox1.Items.Add(i.ToString() + " : " + s);
                 }
             if (CurrentView == 3)
             {
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
+
                     cloneObjectToolStripMenuItem.Enabled = true;
                     s = "";
                     if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
                         s += pcc.Exports[i].PackageFullName + ".";
+
                     s += pcc.Exports[i].ObjectName;
                     listBox1.Items.Add(i.ToString() + " : " + s);
                 }
@@ -231,7 +278,7 @@ namespace ME3Explorer
                 TreeNode t = new TreeNode(pcc.pccFileName);
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
-                    
+
                     cloneObjectToolStripMenuItem.Enabled = true;
                     PCCObject.ExportEntry e = pcc.Exports[i];
                     List<int> LinkList = new List<int>();
@@ -303,10 +350,10 @@ namespace ME3Explorer
             {
                 if (LinkList.Count() > 1)
                     t.Nodes[f] = AddPathToTree(t.Nodes[f], LinkList.GetRange(0, LinkList.Count - 1));
-            }                
+            }
             return t;
         }
-                
+
         private void Button3_Click(object sender, EventArgs e)
         {
             SetView(2);
@@ -351,7 +398,7 @@ namespace ME3Explorer
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].data);
                 status2.Text = pcc.Imports[n].Link.ToString();
             }
-            if ((CurrentView == 2 || CurrentView == 3) && n!=-1)
+            if ((CurrentView == 2 || CurrentView == 3) && n != -1)
             {
                 if (tabControl1.TabPages.ContainsKey("Script"))
                 {
@@ -446,24 +493,24 @@ namespace ME3Explorer
                 UpdateStatusEx(n);
             }
             else
-                PreviewRaw();            
+                PreviewRaw();
         }
 
         public void PreviewRaw()
         {
             int n = GetSelected();
             if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
-                return;           
+                return;
             //propGrid.Visible = false;
             //hb1.Visible = true;
             //rtb1.Visible = false;
             //treeView1.Visible = false;
             //byte[] total = pcc.Exports[n].info.Concat(pcc.Exports[n].Data).ToArray();
-            hb1.ByteProvider= new DynamicByteProvider(pcc.Exports[n].Data);
+            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[n].Data);
             UpdateStatusEx(n);
         }
 
-        public void UpdateStatusEx(int n)        
+        public void UpdateStatusEx(int n)
         {
             toolStripStatusLabel1.Text = "Class:" + pcc.Exports[n].ClassName + " Flags: 0x" + pcc.Exports[n].ObjectFlags.ToString("X16") + " ";
             toolStripStatusLabel1.ToolTipText = "";
@@ -519,7 +566,7 @@ namespace ME3Explorer
             pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.Exports[n].DataOffset, typeof(int), true, true));
             pg.Add(new CustomProperty("Data Size", "_Meta", pcc.Exports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
-                pg.Add(ME3Explorer.Unreal.PropertyReader.PropertyToGrid(p[l], pcc));            
+                pg.Add(ME3Explorer.Unreal.PropertyReader.PropertyToGrid(p[l], pcc));
             propGrid.Refresh();
             propGrid.ExpandAllGridItems();
             UpdateStatusEx(n);
@@ -527,7 +574,7 @@ namespace ME3Explorer
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            tabControl1_SelectedIndexChanged(null,null);
+            tabControl1_SelectedIndexChanged(null, null);
             Preview();
         }
 
@@ -535,7 +582,7 @@ namespace ME3Explorer
         {
             int n = -1;
             if (CurrentView == 3 && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
-                    n = Convert.ToInt32(treeView1.SelectedNode.Name);
+                n = Convert.ToInt32(treeView1.SelectedNode.Name);
             if (CurrentView == 2)
                 n = listBox1.SelectedIndex;
             return n;
@@ -553,7 +600,7 @@ namespace ME3Explorer
         {
             int n = GetSelected();
             if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
-                return; 
+                return;
             string name = e.ChangedItem.Label;
             GridItem parent = e.ChangedItem.Parent;
             //if (parent != null) name = parent.Label;
@@ -590,7 +637,7 @@ namespace ME3Explorer
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
                 case ME3Explorer.Unreal.PropertyReader.Type.IntProperty:
-                case ME3Explorer.Unreal.PropertyReader.Type.StringRefProperty:                
+                case ME3Explorer.Unreal.PropertyReader.Type.StringRefProperty:
                     int newv = Convert.ToInt32(e.ChangedItem.Value);
                     int oldv = Convert.ToInt32(e.OldValue);
                     buff2 = BitConverter.GetBytes(newv);
@@ -618,7 +665,7 @@ namespace ME3Explorer
                             int index = Convert.ToInt32(sidx);
                             buff2 = BitConverter.GetBytes(val);
                             for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i]; 
+                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i];
                             int t = listBox1.SelectedIndex;
                             listBox1.SelectedIndex = -1;
                             listBox1.SelectedIndex = t;
@@ -676,7 +723,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
                 return;
             MemoryStream m = new MemoryStream();
             for (int i = 0; i < hb1.ByteProvider.Length; i++)
@@ -716,19 +763,30 @@ namespace ME3Explorer
                 start = 0;
             else
                 start = n + 1;
-            if (CurrentView == 2)
+
+            if (CurrentView == 0)
             {
-                for (int i = start; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ObjectName.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
+                for (int i = start; i < pcc.Names.Count; i++)
+                    if (pcc.Names[i].ToLower().Contains(toolStripTextBox1.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
                     }
             }
-            if (CurrentView == 0)
+            if (CurrentView == 1)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
-                    if (pcc.Names[i].ToLower().Contains(toolStripTextBox1.Text.ToLower()))
+                    if (pcc.Imports[i].ObjectName.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+
+            if (CurrentView == 2)
+            {
+                for (int i = start; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ObjectName.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -767,7 +825,7 @@ namespace ME3Explorer
 
         private void combo1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(e.KeyChar == (char)13)
+            if (e.KeyChar == (char)13)
                 Find();
         }
 
@@ -777,7 +835,7 @@ namespace ME3Explorer
         }
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
-        {            
+        {
             Find();
         }
 
@@ -788,7 +846,7 @@ namespace ME3Explorer
             RFiles = new List<string>();
             RFiles.Clear();
             string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\history.log";
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
                 BitConverter.IsLittleEndian = true;
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -829,9 +887,9 @@ namespace ME3Explorer
         private void RefreshRecent()
         {
             recentToolStripMenuItem.DropDownItems.Clear();
-            for(int i=0;i<RFiles.Count;i++)
+            for (int i = 0; i < RFiles.Count; i++)
             {
-                ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count()-i-1], null, RecentFile_click);
+                ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count() - i - 1], null, RecentFile_click);
                 recentToolStripMenuItem.DropDownItems.Add(fr);
             }
         }
@@ -894,7 +952,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
                 return;
             List<ME3Explorer.Unreal.PropertyReader.Property> prop = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n].Data);
             SaveFileDialog d = new SaveFileDialog();
@@ -975,7 +1033,7 @@ namespace ME3Explorer
         private void replaceWithBINToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
                 return;
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.BIN|*.BIN";
@@ -1110,7 +1168,7 @@ namespace ME3Explorer
                 string s2 = Path.GetDirectoryName(s1);
                 string s3 = Path.GetDirectoryName(s2);
                 string s4 = Path.GetDirectoryName(s3);
-                string DLCp = DLCPath.Substring(s4.Length + 1);                
+                string DLCp = DLCPath.Substring(s4.Length + 1);
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.bin|*.bin";
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -1188,7 +1246,7 @@ namespace ME3Explorer
 
 
             //KFreon
-            
+
             return template;
         }
 
@@ -1314,15 +1372,15 @@ namespace ME3Explorer
                     string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\data.pcc";
                     DLCPath = d.FileName;
                     inDLCFilename = dlc.listBox1.Items[result].ToString();
-                    FileStream fs = new FileStream(path,FileMode.Create,FileAccess.Write);
+                    FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
                     MemoryStream mem = p.DecompressEntry(dlc.Objects[result]);
                     fs.Write(mem.ToArray(), 0, (int)mem.Length);
                     fs.Close();
-                    
+
                     LoadFile(path, true);
                 }
                 dlc.Close();
-                
+
             }
         }
 
@@ -1394,7 +1452,7 @@ namespace ME3Explorer
                         temp.saveToFile(temp.pccFileName);
                     }
                 }
-            } 
+            }
             // Reload pcc? TOC update?
         }
 

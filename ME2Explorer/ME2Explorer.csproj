@@ -212,9 +212,6 @@
     <None Include="Resources\sequence_editor_64x64.png" />
     <None Include="Resources\dlc_crackME2_icon.ico" />
     <None Include="Resources\dlc_crackME2_64x64.png" />
-    <EmbeddedResource Include="DLCCrack\GiveEntitlements.resx">
-      <DependentUpon>GiveEntitlements.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </EmbeddedResource>
