@@ -101,6 +101,8 @@ namespace ME3Explorer
         List<SaltTPF.ZipReader> zippys = new List<SaltTPF.ZipReader>();
         List<object> FormControls = new List<object>();
 
+        Dictionary<string, Bitmap> Previews = new Dictionary<string, Bitmap>();
+
         TextUpdater Overall;
         TextUpdater Current;
         ProgressBarChanger OverallProg;
@@ -940,6 +942,7 @@ namespace ME3Explorer
 
         private void ClearPreview()
         {
+            return;
             try
             {
                 if (PreviewBox.InvokeRequired)
@@ -957,6 +960,27 @@ namespace ME3Explorer
         {
             // KFreon: Clear old image
             ClearPreview();
+
+            // Clean cache if required
+            if (Previews.Keys.Count > 10)
+            {
+                var img = Previews.First();
+                img.Value.Dispose();
+                Previews.Remove(img.Key);
+            }
+
+            // KFreon: Gather from cache if available
+            string key = tex.FileName + tex.TexName + tex.Hash;
+            if (Previews.ContainsKey(key))
+            {
+                Bitmap img = Previews[key];
+                this.Invoke(new Action(() => PreviewBox.Image = img));
+                DisappearTextBox(true);
+                return;
+            }
+
+
+            
 
             // KFreon: Get data
             byte[] data = tex.Extract(null, true);
@@ -985,7 +1009,7 @@ namespace ME3Explorer
                         img = image.GetGDIBitmap();
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
-
+                Previews.Add(key, img);
                 DisappearTextBox(true);
             }
         }
