@@ -90,6 +90,8 @@ namespace ME3Explorer
         Gooey gooey;
         bool cancelling = true;
 
+        Dictionary<string, Bitmap> Previews = new Dictionary<string, Bitmap>();
+
 
         private void SaveProperties()
         {
@@ -2025,17 +2027,36 @@ namespace ME3Explorer
             if (MainListView.SelectedItems.Count <= 0)
                 return;
 
-            TreeTexInfo tex = Tree.GetTex(GetSelectedTexInd());
-            Bitmap img = tex.GetImage(pathBIOGame, 512);
 
+            if (Previews.Count > 10)
+            {
+                var prev = Previews.First();
+                prev.Value.Dispose();
+                Previews.Remove(prev.Key);
+            }
+
+
+            TreeTexInfo tex = Tree.GetTex(GetSelectedTexInd());
+            string key = tex.TexName + tex.Hash;
+
+            // Get from cache if available
+            if (Previews.ContainsKey(key))
+            {
+                MainPictureBox.Image = Previews[key];
+                MainPictureBox.Refresh();
+                MainListView.Visible = false;
+                return;
+            }
+
+            Bitmap img = tex.GetImage(pathBIOGame, 512);
+            
             // KFreon: Show image
             if (img != null)
             {
-                if (MainPictureBox.Image != null)
-                    MainPictureBox.Image.Dispose();
                 MainPictureBox.Image = img;
                 MainPictureBox.Refresh();
                 MainListView.Visible = false;
+                Previews.Add(key, img);
             }
             else
                 MessageBox.Show("Unknown DDS image. Contact KFreon.");
