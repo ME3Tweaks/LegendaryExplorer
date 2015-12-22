@@ -15,66 +15,91 @@ namespace ME3Explorer.AutoTOC
         public AutoTOC()
         {
             InitializeComponent();
+            //FemShep's Mod Manager 4.1 automator for AutoTOC.
+            string[] arguments = Environment.GetCommandLineArgs();
+            if (arguments.Length == 3)
+            {
+                //try
+                //{
+                string cmdCommand = arguments[1];
+                if (cmdCommand.Equals("-autotoc", StringComparison.Ordinal))
+                {
+
+                    String tocfile = arguments[2];
+                    prepareToCreateTOC(tocfile);
+                    Environment.Exit(0);
+                    Application.Exit();
+                }
+            }
         }
 
         private void createTOCForBasefolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "pcconsoletoc.bin|pcconsoletoc.bin";
-            d.FileName = "pcconsoletoc.bin";
+            d.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
+            d.FileName = "PCConsoleTOC.bin";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = Path.GetDirectoryName(d.FileName) + "\\";
-                List<string> files = GetFiles(path);
-                if (files.Count != 0)
+                prepareToCreateTOC(path);
+            }
+        }
+
+        private void prepareToCreateTOC(string consoletocFile)
+        {
+            if (!consoletocFile.EndsWith("\\"))
+            {
+                consoletocFile = consoletocFile + "\\";
+            }
+            List<string> files = GetFiles(consoletocFile);
+            if (files.Count != 0)
+            {
+                string t = files[0];
+                int n = t.IndexOf("DLC_");
+                if (n > 0)
                 {
-                    string t = files[0];
-                    int n = t.IndexOf("DLC_");
+                    for (int i = 0; i < files.Count; i++)
+                        files[i] = files[i].Substring(n);
+                    string t2 = files[0];
+                    n = t2.IndexOf("\\");
+                    for (int i = 0; i < files.Count; i++)
+                        files[i] = files[i].Substring(n + 1);
+                }
+                else
+                {
+                    n = t.IndexOf("BIOGame");
                     if (n > 0)
                     {
                         for (int i = 0; i < files.Count; i++)
                             files[i] = files[i].Substring(n);
-                        string t2 = files[0];
-                        n = t2.IndexOf("\\");
-                        for (int i = 0; i < files.Count; i++)
-                            files[i] = files[i].Substring(n + 1);
-                    }
-                    else
-                    {
-                        n = t.IndexOf("BIOGame");
-                        if (n > 0)
-                        {
-                            for (int i = 0; i < files.Count; i++)
-                                files[i] = files[i].Substring(n);
-                        }
                     }
                 }
-                rtb1.Text = "searching files...\n";
-                rtb1.Visible = false;
-                foreach (string s in files)
-                    rtb1.AppendText(s + "\n");
-                rtb1.Visible = true;
-                rtb1.AppendText("creating TOC...\n");
-                string pathbase;
-                string t3 = files[0];
-                int n2 = t3.IndexOf("BIOGame");
-                if (n2 >= 0)
-                {
-                    pathbase = Path.GetDirectoryName(Path.GetDirectoryName(path)) + "\\";
-                }
-                else
-                {
-                    pathbase = path;
-                }
-                CreateTOC(pathbase, d.FileName, files.ToArray());
-                rtb1.AppendText("done.\n");
             }
+            rtb1.Text = "Getting file list...\n";
+            rtb1.Visible = false;
+            foreach (string s in files)
+                rtb1.AppendText(s + "\n");
+            rtb1.Visible = true;
+            rtb1.AppendText("Creating TOC...\n");
+            string pathbase;
+            string t3 = files[0];
+            int n2 = t3.IndexOf("BIOGame");
+            if (n2 >= 0)
+            {
+                pathbase = Path.GetDirectoryName(Path.GetDirectoryName(consoletocFile)) + "\\";
+            }
+            else
+            {
+                pathbase = consoletocFile;
+            }
+            CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin",files.ToArray());
+            rtb1.AppendText("Done.\n");
         }
 
-        public void CreateTOC(string basepath, string filepath, string[] files)
+        public void CreateTOC(string basepath, string tocFile, string[] files)
         {
             BitConverter.IsLittleEndian = true;
-            FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+            FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write);
             fs.Write(BitConverter.GetBytes((int)0x3AB70C13), 0, 4);
             fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
             fs.Write(BitConverter.GetBytes((int)0x1), 0, 4);

@@ -121,7 +121,15 @@ namespace ME3Explorer
                     //saves a little duplicate code
                     tOCbinEditorToolStripMenuItem.PerformClick();
                     return;
-                } else
+                }
+                if (args[1].Equals("-autotoc"))
+                {
+                    //autostart the AutoTOC Tool (uses a path) (used by FemShep's Mod Manager 3)
+                    //saves a little duplicate code
+                    autoTOCToolStripMenuItem.PerformClick();
+                    return;
+                }
+                else
                 if (args[1].Equals("-decompresspcc"))
                 {
                     //autostart the TOCEditor (used by FemShep's Mod Manager 3.2)
