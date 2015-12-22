@@ -287,7 +287,7 @@ namespace KFreonLib.Textures
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(temptex2D.GetImageData()))
-                            if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 64))
+                            if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 128))
                                 thumbnailPath = tempthumbpath;
                     }
                     catch { }  // KFreon: Don't really care about failures
