@@ -61,8 +61,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UsefulThings, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UsefulCSharpThings.1.5.1.0\lib\net45\UsefulThings.dll</HintPath>
+    <Reference Include="UsefulThings, Version=1.5.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsefulCSharpThings.1.5.1.1\lib\net45\UsefulThings.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
