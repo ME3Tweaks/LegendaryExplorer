@@ -61,8 +61,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UsefulThings, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UsefulCSharpThings.1.5.0.0\lib\net45\UsefulThings.dll</HintPath>
+    <Reference Include="UsefulThings, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsefulCSharpThings.1.5.1.0\lib\net45\UsefulThings.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -207,6 +207,7 @@
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <None Include="packages.config" />
     <None Include="Resources\package_editor_64x64.png" />
     <None Include="Resources\sequence_editor_icon.ico" />
     <None Include="Resources\sequence_editor_64x64.png" />
@@ -253,7 +254,6 @@
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

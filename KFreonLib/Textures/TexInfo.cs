@@ -379,7 +379,8 @@ namespace KFreonLib.Textures
             get
             {
                 // KFreon: The ImageEngine ignores mips for the most part. It'll just make its own as required.
-                return true;
+                // KFreon: By request of CreeperLava, I've re-enabled mip notifications
+                //return true;
 
 
                 bool standard = (ExpectedMips > 1 && NumMips > 1) || (ExpectedMips <= 1 && NumMips <= 1);
@@ -696,7 +697,7 @@ namespace KFreonLib.Textures
             ExpectedMips = treetex.NumMips;
             ExpectedFormat = treetex.Format.Replace("PF_", "");
             if (ExpectedFormat.ToUpperInvariant().Contains("NORMALMAP"))
-                ExpectedFormat = "ThreeDC";
+                ExpectedFormat = "ATI2_3Dc";
 
             if (ExpectedFormat.ToUpperInvariant().Contains("A8R8G8B8"))
                 ExpectedFormat = "ARGB";

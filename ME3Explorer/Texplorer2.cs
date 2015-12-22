@@ -2108,7 +2108,7 @@ namespace ME3Explorer
             // KFreon: Check replacing texture
             using (ImageEngineImage img = new ImageEngineImage(path))
             {
-                if (img.Format.InternalFormat.ToString().Contains(tex2D.texFormat, StringComparison.OrdinalIgnoreCase))
+                if (!img.Format.InternalFormat.ToString().Contains(tex2D.texFormat, StringComparison.OrdinalIgnoreCase))
                     sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToUpperInvariant());
 
                 if (img.NumMipMaps < tex2D.Mips)

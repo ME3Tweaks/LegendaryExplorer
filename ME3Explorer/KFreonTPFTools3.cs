@@ -2761,7 +2761,7 @@ namespace ME3Explorer
             using (ImageEngineImage img = new ImageEngineImage(imgData))
                 retval = img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), tex.NumMips != tex.ExpectedMips);
 
-            tex.FileName = path;
+            tex.FileName = Path.GetFileName(path);
 
             // Heff: Cancellation check
             if (cts.IsCancellationRequested)
