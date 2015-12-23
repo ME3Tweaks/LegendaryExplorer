@@ -1089,7 +1089,6 @@ namespace KFreonLib.Textures
 
         public void OneImageToRuleThemAll(ImageFile im, string archiveDir, byte[] imgData)
         {
-            //throw new Exception();
             ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgData);
 
             // starts from the smaller image
@@ -1131,7 +1130,6 @@ namespace KFreonLib.Textures
                 properties["SizeX"].Value.IntValue = (int)imgMipMap.imageList[0].imgSize.width;
             if (properties.ContainsKey("SizeY"))
                 properties["SizeY"].Value.IntValue = (int)imgMipMap.imageList[0].imgSize.height;
-
         }
 
         public List<SaltPropertyReader.Property> getPropertyList()

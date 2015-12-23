@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
+using UsefulThings;
 
 namespace KFreonLib.MEDirectories
 {
@@ -26,8 +27,8 @@ namespace KFreonLib.MEDirectories
         {
             if (path != null)
             {
-                if (path.Contains("BioGame"))
-                    path = path.Substring(0, path.LastIndexOf("BioGame"));
+                if (path.Contains("BioGame", StringComparison.OrdinalIgnoreCase))
+                    path = path.Substring(0, path.LastIndexOf("BioGame", StringComparison.OrdinalIgnoreCase));
                 _gamePath = path;
             }
             return _gamePath;
@@ -86,12 +87,14 @@ namespace KFreonLib.MEDirectories
             {
                 if (_files == null)
                 {
-                    if (String.IsNullOrEmpty(ME2Directory.cookedPath))
+                    Debugging.DebugOutput.PrintLn("ME2 COOKED: " + ME2Directory.cookedPath);
+                    if (String.IsNullOrEmpty(ME2Directory.cookedPath) || !Directory.Exists(ME2Directory.cookedPath))
                         return null;
 
                     _files = MEDirectories.EnumerateGameFiles(2, ME2Directory.cookedPath);
-                    
-                    if (!String.IsNullOrEmpty(ME2Directory.DLCPath))
+
+                    Debugging.DebugOutput.PrintLn("ME2 DLC: " + ME2Directory.DLCPath);
+                    if (!String.IsNullOrEmpty(ME2Directory.DLCPath) && Directory.Exists(ME2Directory.DLCPath))
                         _files.AddRange(MEDirectories.EnumerateGameFiles(2, ME2Directory.DLCPath));
                 }
 

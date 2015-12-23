@@ -474,21 +474,10 @@ namespace KFreonLib.Scripting
             public Image GenerateJobThumbnail()
             {
                 DebugOutput.PrintLn("Generating thumbnail for: " + this.Name);
-                //Bitmap bmp = Textures.Methods.GetImage("doesnt matter", data);  // KFreon: Doesn't matter cos I gave it data instead of a file.
-                //bmp = Textures.Creation.GenerateThumbImage(bmp, 64);
-                /*using (ResILImageBase img = ResILImageBase.Create(data))
-                    return img.ToWinFormsBitmap(64, 64);*/
-                Bitmap bmp = null;
-                using (MemoryStream stream = new MemoryStream(data))
-                {
-                    using (MemoryStream savestream = new MemoryStream())
-                    {
-                        using (ImageEngineImage img = new ImageEngineImage(stream, ".dds", 64, false))
-                            img.Save(savestream, ImageEngineFormat.JPG, false);
 
-                        bmp = UsefulThings.WinForms.Imaging.CreateBitmap(savestream.ToArray(), 64, 64);
-                    }
-                }
+                Bitmap bmp = null;
+                using (ImageEngineImage img = new ImageEngineImage(data, 64, false))
+                    bmp = img.GetGDIBitmap(64);
 
                 return bmp;
             }

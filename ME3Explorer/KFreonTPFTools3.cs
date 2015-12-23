@@ -974,7 +974,13 @@ namespace ME3Explorer
             if (Previews.ContainsKey(key))
             {
                 Bitmap img = Previews[key];
-                this.Invoke(new Action(() => PreviewBox.Image = img));
+                try
+                {
+                    this.Invoke(new Action(() => PreviewBox.Image = img));
+                }
+                catch (ObjectDisposedException)
+                { } // DOn't care - it's when the form is closing. The form can become disposed while the preview is trying to be shown.
+
                 DisappearTextBox(true);
                 return;
             }
@@ -1630,7 +1636,10 @@ namespace ME3Explorer
                 // KFreon: Reset picturebox
                 if (PreviewBox.Image != null)
                 {
-                    PreviewBox.Image.Dispose();
+                    foreach (var preview in Previews)
+                        preview.Value.Dispose();
+
+                    Previews.Clear();
                     PreviewBox.Image = null;
                     PreviewBox.Refresh();
                 }
@@ -2834,6 +2843,9 @@ namespace ME3Explorer
         {
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
+            if (tex == null)
+                return;
+
             bool res = await Task<bool>.Run(() => InstallTextures(new List<TPFTexInfo>() { tex }, true));
             if (!res)
             {

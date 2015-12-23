@@ -17,11 +17,13 @@ namespace KFreonLib.MEDirectories
             {
                 if (files == null)
                 {
-                    if (String.IsNullOrEmpty(ME1Directory.cookedPath))
+                    Debugging.DebugOutput.PrintLn("ME1 COOKED: " + ME1Directory.cookedPath);
+                    if (String.IsNullOrEmpty(ME1Directory.cookedPath) || !Directory.Exists(ME1Directory.cookedPath))
                         return null;
 
                     files = MEDirectories.EnumerateGameFiles(1, ME1Directory.cookedPath);
 
+                    Debugging.DebugOutput.PrintLn("ME1 DLC: " + ME1Directory.DLCPath);
                     if (!String.IsNullOrEmpty(ME1Directory.DLCPath) && Directory.Exists(ME1Directory.DLCPath))
                         files.AddRange(MEDirectories.EnumerateGameFiles(1, ME1Directory.DLCPath));
                 }
