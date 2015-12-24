@@ -20,6 +20,7 @@ using System.Diagnostics;
 using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
+using KFreonLib.PCCObjects;
 
 namespace ME3Explorer
 {
@@ -1423,6 +1424,77 @@ namespace ME3Explorer
 
             // KFreon: Show details
             DoDetailsShowing();
+        }
+
+        private void CreateFromPCCDiffButton_Click(object sender, EventArgs e)
+        {
+            // KFreon: This is all just renamed stuff from WV's work. No credit to me.
+
+
+            // KFreon: Get pcc's
+            IPCCObject basePCC = null;
+            IPCCObject modifiedPCC = null;
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "PCC Files|*.pcc";
+                ofd.Title = "Select base (unmodified) pcc";
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                basePCC = new ME3PCCObject(ofd.FileName);
+
+                ofd.Title = "Select modified pcc";
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                modifiedPCC = new ME3PCCObject(ofd.FileName);
+            }
+
+
+            // KFreon: Compare PCC's and build script
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            string script = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
+
+            if (basePCC.ExportCount != modifiedPCC.ExportCount)
+                throw new NotImplementedException("This is apparently not implemented yet.");
+
+            // KFreon: Set pcc name
+            var bits = basePCC.pccFileName.Split('\\');
+            script.Replace("**m1**", bits.Last());
+
+            if (basePCC.NameCount != modifiedPCC.NameCount)
+            {
+                StringBuilder names = new StringBuilder();
+                foreach (var name in modifiedPCC.Names)
+                    if (!basePCC.Names.Contains(name))
+                        names.AppendLine("AddName(\"" + name + "\");");
+                script = script.Replace("**m2**", names.ToString());
+            }
+            else
+                script = script.Replace("**m2**", "\\ No names to add");
+
+            StringBuilder exports = new StringBuilder();
+            using(MemoryStream data = new MemoryStream())
+            {
+                for (int i = 0; i < basePCC.ExportCount; i++)
+                {
+                    if (!basePCC.Exports[i].Data.SequenceEqual(modifiedPCC.Exports[i].Data))
+                    {
+                        int offset = (int)data.Position;
+                        data.WriteBytes(modifiedPCC.Exports[i].Data);
+                        exports.AppendLine("ReplaceData(" + i + ", " + offset + ", " + modifiedPCC.Exports[i].Data.Length + ");");
+                    }
+                }
+                script = script.Replace("**m3**", exports.ToString());
+
+                ModJob job = new ModJob();
+                job.data = data.ToArray();
+                job.Name = "PCC Replacement Job for " + bits.Last();
+                job.Script = script;
+                KFreonLib.Scripting.ModMaker.JobList.Add(job);
+            }
+
+            Refresh();
         }
     }
 }

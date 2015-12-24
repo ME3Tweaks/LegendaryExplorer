@@ -81,6 +81,7 @@
             this.SelectAllButton = new System.Windows.Forms.ToolStripButton();
             this.UpdateJobButton = new System.Windows.Forms.ToolStripButton();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.CreateFromPCCDiffButton = new System.Windows.Forms.ToolStripButton();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -125,7 +126,8 @@
             this.OneLabel,
             this.GameFoundLabel,
             this.ChangePathsButton,
-            this.HelpButton});
+            this.HelpButton,
+            this.CreateFromPCCDiffButton});
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
             this.TopStrip.Size = new System.Drawing.Size(1331, 25);
@@ -281,7 +283,7 @@
             // 
             this.VersionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(46, 22);
+            this.VersionLabel.Size = new System.Drawing.Size(45, 22);
             this.VersionLabel.Text = "Version";
             // 
             // toolStripLabel3
@@ -700,6 +702,16 @@
             this.UpdateJobButton.Text = "Update Job";
             this.UpdateJobButton.Click += new System.EventHandler(this.UpdateJobButton_Click);
             // 
+            // CreateFromPCCDiffButton
+            // 
+            this.CreateFromPCCDiffButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.CreateFromPCCDiffButton.Image = ((System.Drawing.Image)(resources.GetObject("CreateFromPCCDiffButton.Image")));
+            this.CreateFromPCCDiffButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.CreateFromPCCDiffButton.Name = "CreateFromPCCDiffButton";
+            this.CreateFromPCCDiffButton.Size = new System.Drawing.Size(157, 22);
+            this.CreateFromPCCDiffButton.Text = "ME3 Create Job From PCC\'s";
+            this.CreateFromPCCDiffButton.Click += new System.EventHandler(this.CreateFromPCCDiffButton_Click);
+            // 
             // ModMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -808,5 +820,6 @@
         private System.Windows.Forms.TextBox SearchTextBox;
         private System.Windows.Forms.ToolStripLabel VersionLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripLabel3;
+        private System.Windows.Forms.ToolStripButton CreateFromPCCDiffButton;
     }
 }
