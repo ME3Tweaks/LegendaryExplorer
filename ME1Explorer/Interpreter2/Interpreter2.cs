@@ -60,6 +60,17 @@ namespace ME1Explorer.Interpreter2
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            StartScan();
+        }
+
+        public void Show()
+        {
+            base.Show();
+            StartScan();
+        }
+
+        private void StartScan()
+        {
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].flagint);
             BitConverter.IsLittleEndian = true;
@@ -68,6 +79,7 @@ namespace ME1Explorer.Interpreter2
             t = GenerateTree(t, l);
             treeView1.Nodes.Add(t);
             treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
         }
 
         public TreeNode GenerateTree(TreeNode input, List<PropHeader> l)

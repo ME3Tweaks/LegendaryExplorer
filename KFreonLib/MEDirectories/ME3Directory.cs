@@ -85,16 +85,14 @@ namespace KFreonLib.MEDirectories
                 if (_files == null)
                 {
                     Debugging.DebugOutput.PrintLn("ME3 COOKED: " + ME3Directory.cookedPath);
-                    if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+                    if (String.IsNullOrEmpty(ME3Directory.cookedPath) || !Directory.Exists(ME3Directory.cookedPath))
                         return null;
 
                     _files = MEDirectories.EnumerateGameFiles(3, ME3Directory.cookedPath);
 
                     Debugging.DebugOutput.PrintLn("ME3 DLC: " + ME3Directory.DLCPath);
-                    if (!String.IsNullOrEmpty(ME3Directory.DLCPath))
-                    {
+                    if (!String.IsNullOrEmpty(ME3Directory.DLCPath) && Directory.Exists(DLCPath))
                         _files.AddRange(MEDirectories.EnumerateGameFiles(3, ME3Directory.DLCPath));
-                    }
                 }
 
                 return _files;

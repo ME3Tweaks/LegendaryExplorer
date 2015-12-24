@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DAF03684-BB0B-4528-BFEE-8A3FBFC9FC4A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Piccolo</RootNamespace>
+    <AssemblyName>Piccolo</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PiccoloX\Activities\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Activities\PPathActivity.cs" />
+    <Compile Include="PiccoloX\Activities\PPositionPathActivity.cs" />
+    <Compile Include="Piccolo\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Components\PCacheCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PDefaultScrollDirector.cs" />
+    <Compile Include="PiccoloX\Components\PScrollableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Components\PScrollDirector.cs" />
+    <Compile Include="PiccoloX\Events\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Events\PControlEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNavigationEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PNotification.cs" />
+    <Compile Include="PiccoloX\Events\PNotificationCenter.cs" />
+    <Compile Include="PiccoloX\Events\PSelectionEventHandler.cs" />
+    <Compile Include="PiccoloX\Events\PZoomToEventHandler.cs" />
+    <Compile Include="PiccoloX\Handles\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Handles\PBoundsHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PHandle.cs" />
+    <Compile Include="PiccoloX\Handles\PStickyHandleManager.cs" />
+    <Compile Include="PiccoloX\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Nodes\P3DRectangle.cs" />
+    <Compile Include="PiccoloX\Nodes\PCacheCamera.cs" />
+    <Compile Include="PiccoloX\Nodes\PClip.cs" />
+    <Compile Include="PiccoloX\Nodes\PComposite.cs" />
+    <Compile Include="PiccoloX\Nodes\PControl.cs" />
+    <Compile Include="PiccoloX\Nodes\PLens.cs" />
+    <Compile Include="PiccoloX\Nodes\PNodeCache.cs" />
+    <Compile Include="PiccoloX\PForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PiccoloX\Util\NamespaceDoc.cs" />
+    <Compile Include="PiccoloX\Util\PBoundsLocator.cs" />
+    <Compile Include="PiccoloX\Util\PLocator.cs" />
+    <Compile Include="PiccoloX\Util\PNodeLocator.cs" />
+    <Compile Include="PiccoloX\Util\POcclusionDetection.cs" />
+    <Compile Include="PiccoloX\Util\PXUtil.cs" />
+    <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Activities\PActivity.cs" />
+    <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
+    <Compile Include="Piccolo\Activities\PColorActivity.cs" />
+    <Compile Include="Piccolo\Activities\PInterpolatingActivity.cs" />
+    <Compile Include="Piccolo\Activities\PTransformActivity.cs" />
+    <Compile Include="Piccolo\Event\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Event\PBasicInputEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PDragSequenceEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PInputEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PInputEventListener.cs" />
+    <Compile Include="Piccolo\Event\PPanEventHandler.cs" />
+    <Compile Include="Piccolo\Event\PPropertyEventArgs.cs" />
+    <Compile Include="Piccolo\Event\PZoomEventHandler.cs" />
+    <Compile Include="Piccolo\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Nodes\PImage.cs" />
+    <Compile Include="Piccolo\Nodes\PPath.cs" />
+    <Compile Include="Piccolo\Nodes\PText.cs" />
+    <Compile Include="Piccolo\PCamera.cs" />
+    <Compile Include="Piccolo\PCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Piccolo\PInputManager.cs" />
+    <Compile Include="Piccolo\PLayer.cs" />
+    <Compile Include="Piccolo\PNode.cs" />
+    <Compile Include="Piccolo\PRoot.cs" />
+    <Compile Include="Piccolo\Util\GraphicsPathSurrogate.cs" />
+    <Compile Include="Piccolo\Util\MatrixSurrogate.cs" />
+    <Compile Include="Piccolo\Util\NamespaceDoc.cs" />
+    <Compile Include="Piccolo\Util\PActivityList.cs" />
+    <Compile Include="Piccolo\Util\PCameraList.cs" />
+    <Compile Include="Piccolo\Util\PDebug.cs" />
+    <Compile Include="Piccolo\Util\PLayerList.cs" />
+    <Compile Include="Piccolo\Util\PMatrix.cs" />
+    <Compile Include="Piccolo\Util\PNodeFilter.cs" />
+    <Compile Include="Piccolo\Util\PNodeList.cs" />
+    <Compile Include="Piccolo\Util\PPaintContext.cs" />
+    <Compile Include="Piccolo\Util\PPickPath.cs" />
+    <Compile Include="Piccolo\Util\PStream.cs" />
+    <Compile Include="Piccolo\Util\PUtil.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PiccoloX\Components\PScrollableControl.resx">
+      <DependentUpon>PScrollableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiccoloX\PForm.resx">
+      <DependentUpon>PForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Piccolo\PCanvas.resx">
+      <DependentUpon>PCanvas.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PiccoloX\PiccoloX.csproj" />
+    <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
+    <Content Include="Piccolo\Piccolo.csproj" />
+    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1266,7 +1266,7 @@ namespace ME2Explorer.SequenceObjects
             s = s.Replace("SeqAct_", "");
             s = s.Replace("SeqCond_", "");
             float starty = 8;
-            float w = 15;
+            float w = 20;
             varLinkBox = new PPath();
             for (int i = 0; i < Varlinks.Count(); i++)
             {
@@ -1288,10 +1288,11 @@ namespace ME2Explorer.SequenceObjects
             varLinkBox.Width = w;
             varLinkBox.Pickable = false;
             outLinkBox = new PPath();
+            float outW = 0;
             for (int i = 0; i < Outlinks.Count(); i++)
             {
                 SText t2 = new SText(Outlinks[i].Desc);
-                if (t2.Width + 10 > w) w = t2.Width + 10;
+                if (t2.Width + 10 > outW) outW = t2.Width + 10;
                 t2.X = 0 - t2.Width;
                 t2.Y = starty;
                 starty += t2.Height;
@@ -1320,7 +1321,7 @@ namespace ME2Explorer.SequenceObjects
             }
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
-            w += inW;
+            if (inW + outW + 10 > w) w = inW + outW + 10;
             List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
             foreach (SaltPropertyReader.Property prop in props)
             {

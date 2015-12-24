@@ -1310,11 +1310,13 @@ namespace ME3Explorer
                     {
                         bool hasMips = true;
                         ImageFile imgFile = im;
-                        try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
+                        /*try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
                         catch (Exception e)
                         {
                             hasMips = false;
-                        }
+                        }*/
+                        using (ImageEngineImage img = new ImageEngineImage(imgdata))
+                            hasMips = img.NumMipMaps > 1;
 
 
                         if (!hasMips)

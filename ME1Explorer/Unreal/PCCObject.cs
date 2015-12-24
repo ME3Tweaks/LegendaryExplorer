@@ -29,6 +29,9 @@ namespace ME1Explorer
             public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); } }
             public int PackageNameID;
             public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); } }
+            public int indexValue { get { return BitConverter.ToInt32(info, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); } }
+            public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); } }
             public string ObjectName;
             public string PackageName 
             { 
@@ -44,6 +47,7 @@ namespace ME1Explorer
                         return temppack.Split('.')[0];
                 } 
             }
+            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].ObjectNameID]; else return "None"; } }
             public string PackageFullName;
             public string ClassName;
             public byte[] flag
@@ -64,6 +68,19 @@ namespace ME1Explorer
                     return BitConverter.ToInt32(val, 0);
                 }
             }
+
+            public string GetFullPath
+            {
+                get
+                {
+                    string s = "";
+                    if (PackageFullName != "Class" && PackageFullName != "Package")
+                        s += PackageFullName + ".";
+                    s += ObjectName;
+                    return s;
+                }
+            }
+
             public PCCObject pccRef;
             public int DataSize { get { return BitConverter.ToInt32(info, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
             public int DataOffset { get { return BitConverter.ToInt32(info, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }
@@ -115,6 +132,9 @@ namespace ME1Explorer
             public int link;
             public string Name;
             public byte[] raw;
+            internal PCCObject pccRef;
+            public int idxObjectName { get { return BitConverter.ToInt32(raw, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, raw, 20, sizeof(int)); } }
+            public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
         }
 
         public byte[] header;
@@ -306,6 +326,7 @@ namespace ME1Explorer
                 import.Name = Names[fs.ReadValueS32()];
                 fs.Seek(-24, SeekOrigin.Current);
                 import.raw = fs.ReadBytes(28);
+                import.pccRef = this;
                 Imports.Add(import);
             }
         }
@@ -459,6 +480,22 @@ namespace ME1Explorer
             for (int i = 0; i < ExportCount; i++)
             {
                 if (String.Compare(Exports[i].ObjectName, name, true) == 0 && Exports[i].ClassName == className)
+                    return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Checks whether a name exists in the PCC and returns its index
+        /// If it doesn't exist returns -1
+        /// </summary>
+        /// <param name="nameToFind">The name of the string to find</param>
+        /// <returns></returns>
+        public int findName(string nameToFind)
+        {
+            for (int i = 0; i < Names.Count; i++)
+            {
+                if (String.Compare(nameToFind, GetName(i)) == 0)
                     return i;
             }
             return -1;

@@ -14,6 +14,10 @@ using System.Text;
 
 namespace VersionSwitcher
 {
+    /**
+    * Version Switcher switches ME3Explorer versions using a cmd script after extracting and downloading.
+    * Ported from Mod Manager 4 by FemShep
+    */
     public partial class VersionSwitcher : Form
     {
         List<ReleaseRenderer> releaseData;
@@ -45,9 +49,10 @@ namespace VersionSwitcher
                     System.Console.WriteLine(r.name);
                     if (r.name.Equals("Stable: r653"))
                     {
-                        continue;
+                        continue; //Ignore 653 as it has no version switcher
                     }
                     if (r.assets.Count > 0) {
+                        //add release to list
                         releaseData.Add(new ReleaseRenderer() { Name = r.name, Value = r.assets[0].browser_download_url });
                     }
                 }
@@ -200,7 +205,7 @@ namespace VersionSwitcher
         {
 
             Debug.WriteLine("VersionSwitcher Interface has loaded");
-            // Set up the ToolTip text for the Butotn and Checkbox.
+            // Set up the ToolTip text for the Button and Checkbox.
             string executingPath = System.IO.Path.GetDirectoryName(new System.Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).LocalPath);
             if (File.Exists(executingPath + "\\ME3Explorer.exe"))
             {

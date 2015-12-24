@@ -731,7 +731,7 @@ namespace ME3Explorer
             else if (e.KeyCode == Keys.Down)
             {
                 int index = MainListView.SelectedIndices[0];
-                if (index != 0)
+                if (index != MainListView.Items.Count - 1)
                 {
                     MainListView.Items[index + 1].Selected = true;
                     MainListView.Items[index].Selected = false;
