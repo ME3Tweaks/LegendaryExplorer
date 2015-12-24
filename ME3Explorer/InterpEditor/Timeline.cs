@@ -710,7 +710,7 @@ namespace ME3Explorer.InterpEditor
             p.SetView(2);
             p.RefreshView();
             p.InitStuff();
-            p.listBox1.SelectedIndex = index - 1;
+            p.listBox1.SelectedIndex = index;
         }
 
         public void addTrack(InterpTrack t)

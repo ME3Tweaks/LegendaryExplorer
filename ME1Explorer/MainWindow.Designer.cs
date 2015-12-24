@@ -39,6 +39,7 @@
             this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +59,8 @@
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveGameEditorToolStripMenuItem,
-            this.saveGameOperatorToolStripMenuItem});
+            this.saveGameOperatorToolStripMenuItem,
+            this.sequenceEditorToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
@@ -110,6 +112,13 @@
             this.openDebugWindowToolStripMenuItem.Text = "Open Debug Window";
             this.openDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.openDebugWindowToolStripMenuItem_Click);
             // 
+            // sequenceEditorToolStripMenuItem
+            // 
+            this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
+            this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -137,6 +146,7 @@
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openDebugWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveGameOperatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sequenceEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem developerToolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
     }

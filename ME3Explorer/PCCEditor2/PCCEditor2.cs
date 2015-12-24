@@ -23,6 +23,12 @@ namespace ME3Explorer
     {
         public PCCObject pcc;
         public int CurrentView; //0 = Names, 1 = Imports, 2 = Exports
+        public const int NAMES_VIEW = 0;
+        public const int IMPORTS_VIEW = 1;
+        public const int EXPORTS_VIEW = 2;
+        public const int TREE_VIEW = 3;
+
+
         public int PreviewStyle; //0 = raw, 1 = properties, 2 = Script
         public int NameIdx, ClassIdx, LinkIdx;
 
@@ -34,6 +40,8 @@ namespace ME3Explorer
         public bool IsFromDLC = false;
         public string DLCPath;
         public string inDLCFilename;
+
+
 
         public PCCEditor2()
         {
@@ -159,26 +167,26 @@ namespace ME3Explorer
             CurrentView = n;
             switch (n)
             {
-                case 0:
+                case NAMES_VIEW:
                     Button1.Checked = true;
                     Button2.Checked = false;
                     Button3.Checked = false;
                     Button5.Checked = false;
                     break;
-                case 1:
+                case IMPORTS_VIEW:
                     Button1.Checked = false;
                     Button2.Checked = true;
                     Button3.Checked = false;
                     Button5.Checked = false;
                     break;
-                case 3:
+                case TREE_VIEW:
                     Button1.Checked = false;
                     Button2.Checked = false;
                     Button3.Checked = false;
                     Button5.Checked = true;
                     break;
+                case EXPORTS_VIEW:
                 default:
-                case 2:
                     Button1.Checked = false;
                     Button2.Checked = false;
                     Button3.Checked = true;
@@ -222,7 +230,7 @@ namespace ME3Explorer
             string s;
             if (CurrentView == 2)
                 for (int i = 0; i < pcc.Exports.Count; i++)
-                {                    
+                {
                     if (i == 47)
                     {
                         Console.WriteLine("braek;");
@@ -244,7 +252,7 @@ namespace ME3Explorer
                             if (importindex > 0) importindex--;
                             if (importindex <= pcc.Imports.Count)
                             {
-                                s += " (" + pcc.Imports[importindex].ObjectName +")";
+                                s += " (" + pcc.Imports[importindex].ObjectName + ")";
                             }
                         }
                         else
@@ -278,7 +286,7 @@ namespace ME3Explorer
                 TreeNode t = new TreeNode(pcc.pccFileName);
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
-                    
+
                     cloneObjectToolStripMenuItem.Enabled = true;
                     PCCObject.ExportEntry e = pcc.Exports[i];
                     List<int> LinkList = new List<int>();
@@ -388,17 +396,17 @@ namespace ME3Explorer
             PreviewProps();
             PreviewImport();
             int n = -1;
-            if (CurrentView == 3 && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
+            if (CurrentView == TREE_VIEW && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
                 n = Convert.ToInt32(treeView1.SelectedNode.Name);
             else
                 n = listBox1.SelectedIndex;
 
-            if (CurrentView == 1)
+            if (CurrentView == IMPORTS_VIEW)
             {
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].data);
                 status2.Text = pcc.Imports[n].Link.ToString();
             }
-            if ((CurrentView == 2 || CurrentView == 3) && n != -1)
+            if ((CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW) && n!=-1)
             {
                 if (tabControl1.TabPages.ContainsKey("Script"))
                 {
@@ -426,7 +434,7 @@ namespace ME3Explorer
         public void PreviewImport()
         {
             int n = listBox1.SelectedIndex;
-            if (n == -1 || CurrentView != 1)
+            if (n == -1 || CurrentView != IMPORTS_VIEW)
                 return;
             UpdateStatusIm(n);
         }
@@ -434,7 +442,7 @@ namespace ME3Explorer
         public void PreviewInfo()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             textBox1.Text = pcc.Exports[n].ObjectName;
             textBox2.Text = pcc.Exports[n].ClassName;
@@ -453,7 +461,7 @@ namespace ME3Explorer
         public void Previewtest()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             //propGrid.Visible = false;
             //hb1.Visible = false;
@@ -480,7 +488,7 @@ namespace ME3Explorer
         public void PreviewSript()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             //propGrid.Visible = false;
             //hb1.Visible = false;
@@ -499,7 +507,7 @@ namespace ME3Explorer
         public void PreviewRaw()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;           
             //propGrid.Visible = false;
             //hb1.Visible = true;
@@ -545,7 +553,7 @@ namespace ME3Explorer
         public void PreviewProps()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             List<ME3Explorer.Unreal.PropertyReader.Property> p;
             //propGrid.Visible = true;
@@ -581,25 +589,25 @@ namespace ME3Explorer
         private int GetSelected()
         {
             int n = -1;
-            if (CurrentView == 3 && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
+            if (CurrentView == TREE_VIEW && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
                     n = Convert.ToInt32(treeView1.SelectedNode.Name);
-            if (CurrentView == 2)
+            if (CurrentView == EXPORTS_VIEW)
                 n = listBox1.SelectedIndex;
             return n;
         }
 
         private void SetSelected(int n)
         {
-            if (CurrentView == 2)
+            if (CurrentView == EXPORTS_VIEW)
                 listBox1.SelectedIndex = n;
-            else if (CurrentView == 3)
+            else if (CurrentView == TREE_VIEW)
                 treeView1.SelectedNode = treeView1.Nodes[n];
         }
 
         private void propGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return; 
             string name = e.ChangedItem.Label;
             GridItem parent = e.ChangedItem.Parent;
@@ -723,7 +731,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW)) 
                 return;
             MemoryStream m = new MemoryStream();
             for (int i = 0; i < hb1.ByteProvider.Length; i++)
@@ -763,8 +771,8 @@ namespace ME3Explorer
                 start = 0;
             else
                 start = n + 1;
-
-            if (CurrentView == 0)
+            
+            if (CurrentView == NAMES_VIEW)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
                     if (pcc.Names[i].ToLower().Contains(toolStripTextBox1.Text.ToLower()))
@@ -773,17 +781,16 @@ namespace ME3Explorer
                         break;
                     }
             }
-            if (CurrentView == 1)
+            if (CurrentView == IMPORTS_VIEW)
             {
-                for (int i = start; i < pcc.Names.Count; i++)
+                for (int i = start; i < pcc.Exports.Count; i++)
                     if (pcc.Imports[i].ObjectName.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
                     }
             }
-
-            if (CurrentView == 2)
+            if (CurrentView == EXPORTS_VIEW)
             {
                 for (int i = start; i < pcc.Exports.Count; i++)
                     if (pcc.Exports[i].ObjectName.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
@@ -952,7 +959,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW)) 
                 return;
             List<ME3Explorer.Unreal.PropertyReader.Property> prop = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n].Data);
             SaveFileDialog d = new SaveFileDialog();
@@ -980,7 +987,7 @@ namespace ME3Explorer
         public void Interpreter()
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
             ip.MdiParent = this.MdiParent;
@@ -1017,7 +1024,7 @@ namespace ME3Explorer
         private void getDumpToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.BIN|*.BIN";
@@ -1033,7 +1040,7 @@ namespace ME3Explorer
         private void replaceWithBINToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3)) 
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW)) 
                 return;
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.BIN|*.BIN";
@@ -1052,7 +1059,7 @@ namespace ME3Explorer
         private void cloneObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             CloneDialog cl = new CloneDialog();
             cl.pcc = pcc;
@@ -1085,7 +1092,7 @@ namespace ME3Explorer
         private void editBlockingVolToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             //propGrid.Visible = false;
             //hb1.Visible = false;
@@ -1133,7 +1140,7 @@ namespace ME3Explorer
         private void createBinaryReplaceJobFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             if (!IsFromDLC)
             {
@@ -1197,7 +1204,7 @@ namespace ME3Explorer
         private void createBinaryReplaceJobFromObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             if (!IsFromDLC)
             {
@@ -1271,7 +1278,7 @@ namespace ME3Explorer
                 return;
             int n = GetSelected();
             if (n == -1 ||
-                !(CurrentView == 2 || CurrentView == 3) ||
+                !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW) ||
                 comboBox1.SelectedIndex == -1 ||
                 comboBox2.SelectedIndex == -1 ||
                 comboBox3.SelectedIndex == -1)
@@ -1297,7 +1304,7 @@ namespace ME3Explorer
         private void exportFaceFXToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             if (pcc.Exports[n].ClassName == "FaceFXAsset" || pcc.Exports[n].ClassName == "FaceFXAnimSet")
             {
@@ -1321,7 +1328,7 @@ namespace ME3Explorer
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = GetSelected();
-            if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
+            if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             if (pcc.Exports[n].ClassName == "FaceFXAsset" || pcc.Exports[n].ClassName == "FaceFXAnimSet")
             {
@@ -1413,7 +1420,7 @@ namespace ME3Explorer
 
         private void Button5_Click(object sender, EventArgs e)
         {
-            SetView(3);
+            SetView(TREE_VIEW);
             RefreshView();
         }
 
