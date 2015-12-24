@@ -214,6 +214,7 @@ namespace ME3Explorer
             gooey.AddControl(ChangeButton, "ChangeButton", true);
             gooey.AddControl(regenerateThumbnailsToolStripMenuItem, "regenerate", true);
             gooey.AddControl(startTPFModeToolStripMenuItem, "TPFMode", true);
+            gooey.AddControl(addDLCToTreeToolStripMenuItem, "addDLC", true);
         }
 
         private bool SaveFile(List<string> Filenames, List<int> ExpIDs, Textures.ITexture2D tex2D, int j)
@@ -2737,15 +2738,22 @@ namespace ME3Explorer
             Tree.AddPCCs(pccs);
             ConcurrentBag<string> errors = ScanPCCList(false, pccs);
             Tree.WriteToFile(Tree.TreePath, Path.GetDirectoryName(pathBIOGame));
+
+            if (errors != null && errors.Count != 0)
+                MessageBox.Show("Errors occured!" + Environment.NewLine + String.Join(Environment.NewLine, errors), "Your technology is based on that of the Mass Relays...", MessageBoxButtons.OK);
         }
 
         private void addDLCToTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> pccs = new List<string>();
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                fbd.Tag = "Select DLC Folder to add";
+                if (fbd.ShowDialog() != DialogResult.OK)
+                    return;
 
-            // KFreon: Scan DLC PCC's
-            MessageBox.Show("Not implemented just yet.");
-            return;
+                pccs = Directory.EnumerateFiles(fbd.SelectedPath, "*.pcc", SearchOption.AllDirectories).ToList();
+            }
 
             AddDLCToTree(pccs);
         }

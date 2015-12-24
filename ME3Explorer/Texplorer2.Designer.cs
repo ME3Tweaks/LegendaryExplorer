@@ -87,6 +87,7 @@
             this.Tree2Label = new System.Windows.Forms.Label();
             this.Tree1Label = new System.Windows.Forms.Label();
             this.TreeLabel = new System.Windows.Forms.Label();
+            this.addDLCToTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.MainMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -179,7 +180,7 @@
             this.VersionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.VersionLabel.Enabled = false;
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(49, 22);
+            this.VersionLabel.Size = new System.Drawing.Size(48, 22);
             this.VersionLabel.Text = "Versiojn";
             // 
             // MainMenuStrip
@@ -193,7 +194,8 @@
             this.startTPFModeToolStripMenuItem,
             this.rebuildDatabaseToolStripMenuItem,
             this.updateTOCsToolStripMenuItem,
-            this.regenerateThumbnailsToolStripMenuItem});
+            this.regenerateThumbnailsToolStripMenuItem,
+            this.addDLCToTreeToolStripMenuItem});
             this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MainMenuStrip.Name = "MainMenuStrip";
             this.MainMenuStrip.Size = new System.Drawing.Size(1430, 24);
@@ -217,7 +219,7 @@
             // treeIOToolStripMenuItem
             // 
             this.treeIOToolStripMenuItem.Name = "treeIOToolStripMenuItem";
-            this.treeIOToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.treeIOToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.treeIOToolStripMenuItem.Text = "Tree IO";
             this.treeIOToolStripMenuItem.Click += new System.EventHandler(this.treeIOToolStripMenuItem_Click);
             // 
@@ -245,7 +247,7 @@
             // updateTOCsToolStripMenuItem
             // 
             this.updateTOCsToolStripMenuItem.Name = "updateTOCsToolStripMenuItem";
-            this.updateTOCsToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.updateTOCsToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
             this.updateTOCsToolStripMenuItem.Text = "Update TOC\'s";
             this.updateTOCsToolStripMenuItem.Click += new System.EventHandler(this.updateTOCsToolStripMenuItem_Click);
             // 
@@ -337,7 +339,7 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
             this.splitContainer3.Size = new System.Drawing.Size(1034, 340);
-            this.splitContainer3.SplitterDistance = 728;
+            this.splitContainer3.SplitterDistance = 731;
             this.splitContainer3.SplitterWidth = 1;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -353,7 +355,7 @@
             this.ContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ContextPanel.Location = new System.Drawing.Point(0, 310);
             this.ContextPanel.Name = "ContextPanel";
-            this.ContextPanel.Size = new System.Drawing.Size(728, 30);
+            this.ContextPanel.Size = new System.Drawing.Size(731, 30);
             this.ContextPanel.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.ContextPanel, "This context menu appears when a texture is selected,\r\nand provides texture based" +
         " operations. \r\nClick this bubble to remove all instructions.");
@@ -477,7 +479,7 @@
             this.PicturePanel.Controls.Add(this.MainPictureBox);
             this.PicturePanel.Location = new System.Drawing.Point(6, 5);
             this.PicturePanel.Name = "PicturePanel";
-            this.PicturePanel.Size = new System.Drawing.Size(639, 310);
+            this.PicturePanel.Size = new System.Drawing.Size(642, 310);
             this.PicturePanel.TabIndex = 3;
             this.PrimaryToolTip.SetToolTip(this.PicturePanel, "This area shows the textures within the selected folder.\r\nIt shows a thumbnail of" +
         " each image and clicking on an\r\nimage will show details on the right.");
@@ -511,7 +513,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.TabSearchSplitter);
-            this.splitContainer4.Size = new System.Drawing.Size(305, 340);
+            this.splitContainer4.Size = new System.Drawing.Size(302, 340);
             this.splitContainer4.SplitterDistance = 25;
             this.splitContainer4.SplitterWidth = 1;
             this.splitContainer4.TabIndex = 0;
@@ -521,7 +523,7 @@
             this.SearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchBox.Location = new System.Drawing.Point(34, 2);
             this.SearchBox.Name = "SearchBox";
-            this.SearchBox.Size = new System.Drawing.Size(267, 20);
+            this.SearchBox.Size = new System.Drawing.Size(264, 20);
             this.SearchBox.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.SearchBox, "Search filters:\r\nname = Texture search\r\n@expID = Export ID search\r\n\\pcc = Game fi" +
         "lename search\r\n\\pcc @ expID = Combined search\r\n-name = Thumbnail search");
@@ -546,7 +548,7 @@
             // 
             this.SearchCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchCountLabel.AutoSize = true;
-            this.SearchCountLabel.Location = new System.Drawing.Point(289, 5);
+            this.SearchCountLabel.Location = new System.Drawing.Point(286, 5);
             this.SearchCountLabel.Name = "SearchCountLabel";
             this.SearchCountLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SearchCountLabel.Size = new System.Drawing.Size(13, 13);
@@ -571,7 +573,7 @@
             // 
             this.TabSearchSplitter.Panel2.Controls.Add(this.tabControl1);
             this.TabSearchSplitter.Panel2MinSize = 0;
-            this.TabSearchSplitter.Size = new System.Drawing.Size(305, 314);
+            this.TabSearchSplitter.Size = new System.Drawing.Size(302, 314);
             this.TabSearchSplitter.SplitterDistance = 26;
             this.TabSearchSplitter.SplitterWidth = 1;
             this.TabSearchSplitter.TabIndex = 2;
@@ -582,7 +584,7 @@
             this.SearchListBox.FormattingEnabled = true;
             this.SearchListBox.Location = new System.Drawing.Point(0, 0);
             this.SearchListBox.Name = "SearchListBox";
-            this.SearchListBox.Size = new System.Drawing.Size(305, 26);
+            this.SearchListBox.Size = new System.Drawing.Size(302, 26);
             this.SearchListBox.TabIndex = 1;
             this.SearchListBox.SelectedIndexChanged += new System.EventHandler(this.SearchListBox_SelectedIndexChanged);
             // 
@@ -594,7 +596,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(305, 287);
+            this.tabControl1.Size = new System.Drawing.Size(302, 287);
             this.tabControl1.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.tabControl1, "Displays properties and list of pcc\'s containing the selected texture");
             // 
@@ -604,7 +606,7 @@
             this.PropertiesTab.Location = new System.Drawing.Point(4, 22);
             this.PropertiesTab.Name = "PropertiesTab";
             this.PropertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PropertiesTab.Size = new System.Drawing.Size(297, 261);
+            this.PropertiesTab.Size = new System.Drawing.Size(294, 261);
             this.PropertiesTab.TabIndex = 0;
             this.PropertiesTab.Text = "Properties";
             this.PropertiesTab.UseVisualStyleBackColor = true;
@@ -617,7 +619,7 @@
             this.PropertiesRTB.Location = new System.Drawing.Point(3, 3);
             this.PropertiesRTB.Name = "PropertiesRTB";
             this.PropertiesRTB.ReadOnly = true;
-            this.PropertiesRTB.Size = new System.Drawing.Size(291, 255);
+            this.PropertiesRTB.Size = new System.Drawing.Size(288, 255);
             this.PropertiesRTB.TabIndex = 0;
             this.PropertiesRTB.Text = "";
             // 
@@ -627,7 +629,7 @@
             this.PCCsTab.Location = new System.Drawing.Point(4, 22);
             this.PCCsTab.Name = "PCCsTab";
             this.PCCsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PCCsTab.Size = new System.Drawing.Size(297, 261);
+            this.PCCsTab.Size = new System.Drawing.Size(294, 261);
             this.PCCsTab.TabIndex = 1;
             this.PCCsTab.Text = "PCC\'s";
             this.PCCsTab.UseVisualStyleBackColor = true;
@@ -641,7 +643,7 @@
             this.PCCsCheckedListBox.HorizontalScrollbar = true;
             this.PCCsCheckedListBox.Location = new System.Drawing.Point(3, 3);
             this.PCCsCheckedListBox.Name = "PCCsCheckedListBox";
-            this.PCCsCheckedListBox.Size = new System.Drawing.Size(291, 255);
+            this.PCCsCheckedListBox.Size = new System.Drawing.Size(288, 255);
             this.PCCsCheckedListBox.TabIndex = 0;
             this.PCCsCheckedListBox.SelectedIndexChanged += new System.EventHandler(this.PCCsCheckedListBox_SelectedIndexChanged);
             // 
@@ -784,6 +786,13 @@
             this.TreeLabel.TabIndex = 11;
             this.TreeLabel.Text = "Trees:";
             // 
+            // addDLCToTreeToolStripMenuItem
+            // 
+            this.addDLCToTreeToolStripMenuItem.Name = "addDLCToTreeToolStripMenuItem";
+            this.addDLCToTreeToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
+            this.addDLCToTreeToolStripMenuItem.Text = "Add DLC to tree";
+            this.addDLCToTreeToolStripMenuItem.Click += new System.EventHandler(this.addDLCToTreeToolStripMenuItem_Click);
+            // 
             // Texplorer2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -903,5 +912,6 @@
         private System.Windows.Forms.ToolStripMenuItem changePathsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripLabel1;
         private System.Windows.Forms.ToolStripLabel VersionLabel;
+        private System.Windows.Forms.ToolStripMenuItem addDLCToTreeToolStripMenuItem;
     }
 }
