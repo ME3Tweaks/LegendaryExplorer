@@ -2762,7 +2762,10 @@ namespace ME3Explorer
             tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
 
             using (ImageEngineImage img = new ImageEngineImage(imgData))
+            {
+                img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
                 retval = img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), tex.NumMips != tex.ExpectedMips);
+            }
 
             tex.FileName = Path.GetFileName(path);
 
