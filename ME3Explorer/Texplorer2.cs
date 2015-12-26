@@ -2027,6 +2027,8 @@ namespace ME3Explorer
 
         private void MainListView_DoubleClick(object sender, EventArgs e)
         {
+            MainPictureBox.Image = null; // KFreon: Reset image
+
             if (MainListView.SelectedItems.Count <= 0)
                 return;
 

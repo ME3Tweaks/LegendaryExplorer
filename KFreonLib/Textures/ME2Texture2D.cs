@@ -1322,7 +1322,7 @@ namespace KFreonLib.Textures
                 if (imgdata == null)
                     return null;
                 using (ImageEngineImage img = new ImageEngineImage(imgdata))
-                    return img.GetGDIBitmap();
+                    return img.GetGDIBitmap(false);
             }
             catch { }
             return null;

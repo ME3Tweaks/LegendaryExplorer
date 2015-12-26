@@ -942,16 +942,12 @@ namespace ME3Explorer
 
         private void ClearPreview()
         {
-            return;
             try
             {
                 if (PreviewBox.InvokeRequired)
                     this.Invoke(new Action(() => ClearPreview()));
                 else if (PreviewBox.Image != null)
-                {
-                    PreviewBox.Image.Dispose();
                     PreviewBox.Image = null;
-                }
             }
             catch { }
         }
@@ -986,8 +982,6 @@ namespace ME3Explorer
             }
 
 
-            
-
             // KFreon: Get data
             byte[] data = tex.Extract(null, true);
             if (data == null)
@@ -1012,7 +1006,7 @@ namespace ME3Explorer
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
                     using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, true))
-                        img = image.GetGDIBitmap();
+                        img = image.GetGDIBitmap(true);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
                 Previews.Add(key, img);
