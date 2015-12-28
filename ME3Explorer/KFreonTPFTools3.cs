@@ -1005,7 +1005,7 @@ namespace ME3Explorer
             {
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
-                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, true))
+                    using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
                         img = image.GetGDIBitmap(true);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
@@ -2751,6 +2751,8 @@ namespace ME3Explorer
             return retval;
         }
 
+        
+
         private bool AutofixInternal(TPFTexInfo tex)
         {
             bool retval = false;
@@ -2763,8 +2765,9 @@ namespace ME3Explorer
 
             using (ImageEngineImage img = new ImageEngineImage(imgData))
             {
+                var destFormat = ImageEngine.ParseFromString(tex.ExpectedFormat);
                 img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
-                retval = img.Save(path, ImageEngine.ParseFromString(tex.ExpectedFormat), tex.NumMips != tex.ExpectedMips);
+                retval = img.Save(path, destFormat, tex.NumMips != tex.ExpectedMips);
             }
 
             tex.FileName = Path.GetFileName(path);

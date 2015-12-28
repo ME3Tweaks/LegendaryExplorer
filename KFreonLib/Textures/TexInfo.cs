@@ -395,7 +395,7 @@ namespace KFreonLib.Textures
             {
                 string expected = ExpectedFormat.ToLowerInvariant();
                 string given = Format.ToLowerInvariant();
-                return (expected.Contains("pf_norm") && given.Contains("ati")) || (expected.Contains("ati") && given.Contains("pf_norm")) || expected.Contains(given);
+                return (expected.Contains("pf_norm") && given.Contains("ati")) || (expected.Contains("ati") && given.Contains("pf_norm")) || expected.Contains(given) || given.Contains(expected);
             }
         }
 
@@ -753,17 +753,15 @@ namespace KFreonLib.Textures
             {
                 // KFreon: Check formatting etc
                 try
-                {
-                    using (MemoryStream ms = new MemoryStream(data))
+                { 
+                    using (ImageEngineImage image = new ImageEngineImage(data))
                     {
-                        using (ImageEngineImage image = new ImageEngineImage(ms, null))
-                        {
-                            NumMips = image.NumMipMaps;
-                            Height = image.Height;
-                            Width = image.Width;
-                            Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
-                            image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
-                        }
+                        NumMips = image.NumMipMaps;
+                        Height = image.Height;
+                        Width = image.Width;
+                        Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
+
+                        image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
                     }
                 }
                 catch(Exception e)
