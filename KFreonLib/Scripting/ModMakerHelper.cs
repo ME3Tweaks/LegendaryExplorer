@@ -1041,8 +1041,8 @@ namespace KFreonLib.Scripting
             KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
 
             // KFreon: Get replacing data
-            byte[] buff = null;
-            if (data != null)
+            byte[] buff = data;
+            if (data == null)
             {
                 FileStream fs = new FileStream(newfile, FileMode.Open, FileAccess.Read);
                 buff = new byte[fs.Length];
@@ -1051,8 +1051,6 @@ namespace KFreonLib.Scripting
                 while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
                 fs.Close();
             }
-            else
-                buff = data;
             
 
             string currfile = Path.GetFileName(pccname);
