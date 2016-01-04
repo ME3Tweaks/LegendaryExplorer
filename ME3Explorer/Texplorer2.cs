@@ -1562,13 +1562,17 @@ namespace ME3Explorer
             for (int i = 0; i < SelectedNode.TexInds.Count; i++)
             {
                 TreeTexInfo tex = Tree.GetTex(SelectedNode.TexInds[i]);
-                int ind = i + 1;
+                int ind = 0;
+
+                bool FoundImage = false;
 
                 // KFreon: If no thumbnail, try again
                 if (tex.ThumbnailPath == null)
-                {
-                    ind = 0;
                     continue;
+                else if (File.Exists(tex.ThumbnailPath))
+                {
+                    FoundImage = true;
+                    ind = i + 1;
                 }
                 else if (tex.ThumbnailPath.Contains("placeholder.ico") && !tex.TriedThumbUpdate)
                 {
@@ -1588,6 +1592,7 @@ namespace ME3Explorer
                                         {
                                             ind = i + 1;
                                             tex.ThumbnailPath = savepath;
+                                            FoundImage = true;
                                         }
                                         else
                                         {
@@ -1596,11 +1601,11 @@ namespace ME3Explorer
                                                 byte[] data = UsefulThings.WinForms.Imaging.GetPixelDataFromBitmap(img);
                                                 ImageEngine.GenerateThumbnailToFile(new MemoryStream(data), savepath, 128);
                                                 tex.ThumbnailPath = savepath;
+                                                FoundImage = true;
                                                 ind = i + 1;
                                             }
                                             catch
                                             {
-                                                ind = 0;
                                                 // IGNORE
                                             }
                                         }
@@ -1608,22 +1613,29 @@ namespace ME3Explorer
                                         Tree.ReplaceTex(SelectedNode.TexInds[i], tex);
                                     }
                                 }
-                            }                                
+                            }
                         }
                     }
                     catch (Exception e)
                     {
-                        thumbs.Add(new Bitmap(1,1));
+                        thumbs.Add(new Bitmap(1, 1));
                     }
                 }
 
                 Image thumb;
-                try
-                {
-                    thumb = UsefulThings.WinForms.Imaging.PadImageToSquare(tex.ThumbnailPath, 128);
-                    thumbs.Add(thumb);
-                }
-                catch
+                if (FoundImage)
+                    try
+                    {
+                        thumb = UsefulThings.WinForms.Imaging.PadImageToSquare(tex.ThumbnailPath, 128);
+                        thumbs.Add(thumb);
+                    }
+                    catch
+                    {
+                        FoundImage = false;  // Kfreon: Set flag for later denoting that the image failed to work properly
+                    }
+
+                // KFreon: Double I know, but this way, I can set the image to the placefinder image for a variety of situations
+                if (!FoundImage)
                 {
                     DebugOutput.PrintLn("Thumbnail: " + tex.ThumbnailPath + "  not found.");
                     ind = 0;
