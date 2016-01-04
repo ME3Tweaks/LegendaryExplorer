@@ -168,7 +168,7 @@ namespace ME3Explorer.Unreal
 
             public string ObjectName   { get { return pccRef.Names[idxObjectName]; } }
             public string ClassName    { get { int val = idxClassName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Class"; } }
-            public string ClassParent  { get { int val = idxClassParent; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Class"; } }
+            public string ClassParent  { get { int val = idxClassParent; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
             public string PackageName  { get { int val = idxPackageName; if (val >= 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Package"; } }
             public string PackageFullName
             {
@@ -182,6 +182,37 @@ namespace ME3Explorer.Unreal
                         string newPackageName = pccRef.Exports[idxNewPackName].PackageName;
                         if (newPackageName != "Package")
                             result = newPackageName + "." + result;
+                        idxNewPackName = pccRef.Exports[idxNewPackName].idxPackageName;
+                    }
+                    return result;
+                }
+            }
+
+            public string ContainingPackage
+            {
+                get
+                {
+                    string result = PackageName;
+                    if (result.EndsWith(ObjectName))
+                    {
+                        result = "";
+                    }
+                    int idxNewPackName = idxPackageName;
+
+                    while (idxNewPackName >= 0)
+                    {
+                        string newPackageName = pccRef.Exports[idxNewPackName].PackageName;
+                        if (newPackageName != "Package")
+                        {
+                            if (!result.Equals(""))
+                            {
+                                result = newPackageName + "." + result;
+                            }
+                            else
+                            {
+                                result = newPackageName;
+                            }
+                        }
                         idxNewPackName = pccRef.Exports[idxNewPackName].idxPackageName;
                     }
                     return result;
@@ -218,6 +249,14 @@ namespace ME3Explorer.Unreal
                 }
 
                 set { _data = value; hasChanged = true; }
+            }
+            public bool likelyCoalescedVal
+            {
+                get
+                {
+                    return (Data.Length < 25) ? false : (Data[25] == 64); //0x40
+                }
+                set { }
             }
             public bool hasChanged { get; internal set; }
 
@@ -259,7 +298,7 @@ namespace ME3Explorer.Unreal
             pccFileName = Path.GetFullPath(pccFilePath);
             using (FileStream pccStream = File.OpenRead(pccFileName))
             {
-                Names   = new List<string>();
+                Names = new List<string>();
                 Imports = new List<ImportEntry>();
                 Exports = new List<ExportEntry>();
 
@@ -369,7 +408,7 @@ namespace ME3Explorer.Unreal
                 //Debug.WriteLine("Import Offset: " + ImportOffset);
 
                 // fill import list
-                Console.Out.WriteLine("IMPORT OFFSET: " + ImportOffset);
+                //Console.Out.WriteLine("IMPORT OFFSET: " + ImportOffset);
                 listsStream.Seek(ImportOffset, SeekOrigin.Begin);
                 byte[] buffer = new byte[ImportEntry.byteSize];
                 for (int i = 0; i < ImportCount; i++)
@@ -379,14 +418,11 @@ namespace ME3Explorer.Unreal
                     ImportEntry e = new ImportEntry(this, listsStream);
                     Imports.Add(e);
                     //Debug.WriteLine("Read import " + i + " " + e.ObjectName + ", offset: " + offset);
-                }
-
-                Debug.WriteLine("Imports done. Current offset: " + listsStream.Position);
-                Debug.WriteLine("Export Offset: " + ExportOffset);
+                };
 
                 // fill export list (only the headers, not the data)
                 listsStream.Seek(ExportOffset, SeekOrigin.Begin);
-                Console.Out.WriteLine("Export OFFSET: " + ImportOffset);
+                //Console.Out.WriteLine("Export OFFSET: " + ImportOffset);
                 for (int i = 0; i < ExportCount; i++)
                 {
                     uint expInfoOffset = (uint)listsStream.Position;

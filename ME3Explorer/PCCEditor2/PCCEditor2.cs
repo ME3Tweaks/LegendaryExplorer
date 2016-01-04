@@ -34,6 +34,7 @@ namespace ME3Explorer
 
         public PropGrid pg;
         private TabPage scriptTab;
+        private string currentFile;
 
         public List<int> ClassNames;
 
@@ -75,6 +76,7 @@ namespace ME3Explorer
         {
             try
             {
+                currentFile = s;
                 AddRecent(s);
                 SaveRecentList();
                 pcc = new PCCObject(s);
@@ -206,14 +208,14 @@ namespace ME3Explorer
                 return;
             }
             cloneObjectToolStripMenuItem.Enabled = false;
-            if (CurrentView == 0)
+            if (CurrentView == NAMES_VIEW)
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
                 {
                     listBox1.Items.Add(i.ToString() + " : " + pcc.Names[i]);
                 }
             }
-            if (CurrentView == 1)
+            if (CurrentView == IMPORTS_VIEW)
             {
                 for (int i = 0; i < pcc.Imports.Count; i++)
                 {
@@ -228,15 +230,15 @@ namespace ME3Explorer
                 }
             }
             string s;
-            if (CurrentView == 2)
+            if (CurrentView == EXPORTS_VIEW)
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
-                    if (i == 47)
-                    {
-                        Console.WriteLine("braek;");
-                    }
                     cloneObjectToolStripMenuItem.Enabled = true;
                     s = "";
+                    if (scanningCoalescedBits && pcc.Exports[i].likelyCoalescedVal)
+                    {
+                        s += "[C] ";
+                    }
                     if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
                         s += pcc.Exports[i].PackageFullName + ".";
                     s += pcc.Exports[i].ObjectName;
@@ -267,7 +269,7 @@ namespace ME3Explorer
                     }
                     listBox1.Items.Add(i.ToString() + " : " + s);
                 }
-            if (CurrentView == 3)
+            if (CurrentView == TREE_VIEW)
             {
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
@@ -446,6 +448,7 @@ namespace ME3Explorer
                 return;
             textBox1.Text = pcc.Exports[n].ObjectName;
             textBox2.Text = pcc.Exports[n].ClassName;
+            superclassTextBox.Text = pcc.Exports[n].ClassParent;
             textBox3.Text = pcc.Exports[n].PackageFullName;
             textBox4.Text = pcc.Exports[n].info.Length + " bytes";
             textBox5.Text = pcc.Exports[n].indexValue.ToString();
@@ -847,6 +850,7 @@ namespace ME3Explorer
         }
 
         public List<string> RFiles;
+        private bool scanningCoalescedBits;
 
         private void LoadRecentList()
         {
@@ -894,11 +898,18 @@ namespace ME3Explorer
         private void RefreshRecent()
         {
             recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+
             for (int i = 0; i < RFiles.Count; i++)
             {
                 ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count() - i - 1], null, RecentFile_click);
                 recentToolStripMenuItem.DropDownItems.Add(fr);
             }
+           
         }
 
         private void RecentFile_click(object sender, EventArgs e)
@@ -1427,6 +1438,13 @@ namespace ME3Explorer
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             Preview();
+        }
+
+        private void scanForCoalescedValuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scanningCoalescedBits = !scanningCoalescedBits;
+            scanForCoalescedValuesToolStripMenuItem.Checked = scanningCoalescedBits;
+            RefreshView();
         }
 
         //unused
