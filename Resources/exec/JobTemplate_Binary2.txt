@@ -4,7 +4,6 @@ using ME3Explorer;
 using ME3Explorer.Unreal;
 using KFreonLib.Scripting;
 using KFreonLib.MEDirectories;
-using KFreonLib.PCCObjects;
 using KFreonLib.Debugging;
 
 namespace SimpleScripts
@@ -18,52 +17,40 @@ namespace SimpleScripts
             string filename = "**m2**";
             string pathexec = bf.getExecPath();
             string pathtarget = Path.GetDirectoryName(ME3Directory.cookedPath);
-			DebugOutput.PrintLn(pathtarget);
+            
+            if (pathtarget.ToLower().Contains("cookedpcconsole"))
+                pathtarget = Path.GetDirectoryName(pathtarget);
+            
+            DebugOutput.PrintLn(pathtarget);
             bf.DebugPrintln("Binary Replacement in " + filename);
             string file = Path.Combine(pathtarget, filename);
-			DebugOutput.PrintLn("Targeting: " + file);
+            DebugOutput.PrintLn("Targeting: " + file);
             if (!File.Exists(file))
             {
                 bf.DebugPrintln("Cant find target pcc!");
                 return "";
             }
-            /*if (!File.Exists(pathexec + "data.bin"))
+            PCCObject pcc = new PCCObject(file);
+            bool found = true;
+            try
             {
-                bf.DebugPrintln("Cant find input data!");
-                return "";
-            }*/
-            //IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, 3);
-			PCCObject pcc = new PCCObject(file);
-            bool found = false;
-	    try
-	    {
-			PCCObject.ExportEntry e = pcc.Exports[objidx];
-			{
-				found = true;
-				//FileStream fs = new FileStream(pathexec + "data.bin", FileMode.Open, FileAccess.Read);
-				MemoryStream fs = new MemoryStream(KFreonLib.Scripting.ModMaker.ModData);
-				byte[] buff = new byte[fs.Length];
-				int cnt;
-				int sum = 0;
-				while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
-				fs.Close();
-				//pcc.Exports[objidx].LegacySetData(buff);
-				pcc.Exports[objidx].Data = buff;
-			}
-	    }
-	    catch (Exception exc)
-	    {
-		bf.DebugPrintln("Error : " + exc.Message);
-	    	found = false;
-	    }
+                PCCObject.ExportEntry e = pcc.Exports[objidx];
+                byte[] temp = KFreonLib.Scripting.ModMaker.ModData;
+                pcc.Exports[objidx].Data = temp;
+            }
+            catch (Exception exc)
+            {
+                bf.DebugPrintln("Error : " + exc.Message);
+                found = false;
+            }
+            
             if (!found)
             {
                 bf.DebugPrintln("Cant find object!");
                 return "";
             }
             bf.DebugPrintln("Found!");
-            //((ME3PCCObject)pcc).altSaveToFile(pcc.pccFileName, true);
-			pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.altSaveToFile(pcc.pccFileName, true);
             bf.DebugPrintln("Done.");
             return "";
         }
