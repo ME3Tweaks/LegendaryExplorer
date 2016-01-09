@@ -1420,12 +1420,17 @@ namespace ME3Explorer
 
             // KFreon: Update DLC TOCs
             // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works.
-            if (WhichGame == 3)
+            if (WhichGame == 3 && modifiedDLC != null && modifiedDLC.Count > 0)
             {
-                List<string> files = new List<string>(Directory.EnumerateFiles(DLCPath, "Default.sfar", SearchOption.AllDirectories));
-                DebugOutput.PrintLn("Updating DLC...");
-                dlcedit2.ExtractAllDLC();
-                DebugOutput.PrintLn("DLC Updated.");
+                if (MessageBox.Show("All DLC's will be extracted to facilitate updating. This will take ~1 hour give or take 2 hours. It'll also take up many gigabytes on your HDD." + Environment.NewLine + "Continue? If you don't, the game may not start.", "You should say yes", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    List<string> files = new List<string>(Directory.EnumerateFiles(DLCPath, "Default.sfar", SearchOption.AllDirectories));
+                    DebugOutput.PrintLn("Updating DLC...");
+                    dlcedit2.ExtractAllDLC();
+                    DebugOutput.PrintLn("DLC Updated.");
+                }
+                else
+                    DebugOutput.PrintLn("User elected not to update DLC's. This is dangerous and will likely cause game to black screen.");
             }
         }
 

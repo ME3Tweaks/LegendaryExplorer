@@ -41,6 +41,7 @@
             this.GameFoundLabel = new System.Windows.Forms.ToolStripLabel();
             this.ChangePathsButton = new System.Windows.Forms.ToolStripButton();
             this.HelpButton = new System.Windows.Forms.ToolStripButton();
+            this.CreateFromPCCDiffButton = new System.Windows.Forms.ToolStripButton();
             this.BottomStrip = new System.Windows.Forms.ToolStrip();
             this.MainProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -81,7 +82,7 @@
             this.SelectAllButton = new System.Windows.Forms.ToolStripButton();
             this.UpdateJobButton = new System.Windows.Forms.ToolStripButton();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.CreateFromPCCDiffButton = new System.Windows.Forms.ToolStripButton();
+            this.FindOther_DLC = new System.Windows.Forms.ToolStripButton();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -127,7 +128,8 @@
             this.GameFoundLabel,
             this.ChangePathsButton,
             this.HelpButton,
-            this.CreateFromPCCDiffButton});
+            this.CreateFromPCCDiffButton,
+            this.FindOther_DLC});
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
             this.TopStrip.Size = new System.Drawing.Size(1331, 25);
@@ -225,6 +227,16 @@
             this.HelpButton.Size = new System.Drawing.Size(36, 22);
             this.HelpButton.Text = "Help";
             this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
+            // 
+            // CreateFromPCCDiffButton
+            // 
+            this.CreateFromPCCDiffButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.CreateFromPCCDiffButton.Image = ((System.Drawing.Image)(resources.GetObject("CreateFromPCCDiffButton.Image")));
+            this.CreateFromPCCDiffButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.CreateFromPCCDiffButton.Name = "CreateFromPCCDiffButton";
+            this.CreateFromPCCDiffButton.Size = new System.Drawing.Size(157, 22);
+            this.CreateFromPCCDiffButton.Text = "ME3 Create Job From PCC\'s";
+            this.CreateFromPCCDiffButton.Click += new System.EventHandler(this.CreateFromPCCDiffButton_Click);
             // 
             // BottomStrip
             // 
@@ -702,15 +714,15 @@
             this.UpdateJobButton.Text = "Update Job";
             this.UpdateJobButton.Click += new System.EventHandler(this.UpdateJobButton_Click);
             // 
-            // CreateFromPCCDiffButton
+            // FindOther_DLC
             // 
-            this.CreateFromPCCDiffButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.CreateFromPCCDiffButton.Image = ((System.Drawing.Image)(resources.GetObject("CreateFromPCCDiffButton.Image")));
-            this.CreateFromPCCDiffButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.CreateFromPCCDiffButton.Name = "CreateFromPCCDiffButton";
-            this.CreateFromPCCDiffButton.Size = new System.Drawing.Size(157, 22);
-            this.CreateFromPCCDiffButton.Text = "ME3 Create Job From PCC\'s";
-            this.CreateFromPCCDiffButton.Click += new System.EventHandler(this.CreateFromPCCDiffButton_Click);
+            this.FindOther_DLC.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.FindOther_DLC.Image = ((System.Drawing.Image)(resources.GetObject("FindOther_DLC.Image")));
+            this.FindOther_DLC.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.FindOther_DLC.Name = "FindOther_DLC";
+            this.FindOther_DLC.Size = new System.Drawing.Size(171, 22);
+            this.FindOther_DLC.Text = "MESH ONLY: Detect other files";
+            this.FindOther_DLC.Click += new System.EventHandler(this.FindOther_DLC_Click);
             // 
             // ModMaker
             // 
@@ -821,5 +833,6 @@
         private System.Windows.Forms.ToolStripLabel VersionLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripLabel3;
         private System.Windows.Forms.ToolStripButton CreateFromPCCDiffButton;
+        private System.Windows.Forms.ToolStripButton FindOther_DLC;
     }
 }

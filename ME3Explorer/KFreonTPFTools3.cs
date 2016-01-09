@@ -1006,7 +1006,7 @@ namespace ME3Explorer
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
                     using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
-                        img = image.GetGDIBitmap(true);
+                        img = image.GetGDIBitmap(true, 512);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
                 Previews.Add(key, img);

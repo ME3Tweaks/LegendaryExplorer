@@ -979,7 +979,7 @@ namespace KFreonLib.Scripting
             }
             else
             {
-                texname = "Some Mesh";
+                texname = "Binary/Mesh";
             }
             
             return texname;

@@ -948,6 +948,11 @@ namespace ME3Explorer
 
         private void SaveAllButton_Click(object sender, EventArgs e)
         {
+            SaveJobs(KFreonLib.Scripting.ModMaker.JobList);
+        }
+
+        private void SaveJobs(List<ModJob> jobs)
+        {
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = "Select location for new .mod";
@@ -957,11 +962,11 @@ namespace ME3Explorer
                     backbone.AddToBackBone(b =>
                     {
                         StatusUpdater.UpdateText("Saving .mod...");
-                        MainProgBar.ChangeProgressBar(0, KFreonLib.Scripting.ModMaker.JobList.Count);
+                        MainProgBar.ChangeProgressBar(0, jobs.Count);
                         using (FileStream fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
                         {
-                            KFreonLib.Scripting.ModMaker.WriteModHeader(fs, KFreonLib.Scripting.ModMaker.JobList.Count);
-                            foreach (ModJob job in KFreonLib.Scripting.ModMaker.JobList)
+                            KFreonLib.Scripting.ModMaker.WriteModHeader(fs, jobs.Count);
+                            foreach (ModJob job in jobs)
                             {
                                 if (cts.IsCancellationRequested)
                                     break;
@@ -973,6 +978,7 @@ namespace ME3Explorer
                         MainProgBar.ChangeProgressBar(1, 1);
                         if (cts.IsCancellationRequested)
                             File.Delete(sfd.FileName);
+
                         return true;
                     });
                 }
@@ -984,29 +990,12 @@ namespace ME3Explorer
             if (MainListView.SelectedIndices == null || MainListView.SelectedIndices.Count == 0 || MainListView.SelectedIndices[0] < 0)
                 return;
 
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Title = "Select location for new .mod";
-                sfd.Filter = "ME3Explorer mods|*.mod";
-                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    backbone.AddToBackBone(b =>
-                    {
-                        StatusUpdater.UpdateText("Saving .mod...");
-                        MainProgBar.ChangeProgressBar(0, 1);
-                        using (FileStream fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
-                        {
-                            KFreonLib.Scripting.ModMaker.WriteModHeader(fs, 1);
-                            ModJob job = KFreonLib.Scripting.ModMaker.JobList[MainListView.SelectedIndices[0]];
-                            job.WriteJobToFile(fs);
-                            MainProgBar.IncrementBar();
-                        }
-                        StatusUpdater.UpdateText("Mod saved!");
-                        MainProgBar.ChangeProgressBar(1, 1);
-                        return true;
-                    });
-                }
-            }
+
+            List<ModJob> tempjobs = new List<KFreonLib.Scripting.ModMaker.ModJob>();
+            foreach (int index in MainListView.SelectedIndices)
+                tempjobs.Add(KFreonLib.Scripting.ModMaker.JobList[index]);
+
+            SaveJobs(tempjobs);
         }
 
         private void SelectAllButton_Click(object sender, EventArgs e)
@@ -1317,8 +1306,27 @@ namespace ME3Explorer
                         for (int i = 0; i < MainListView.SelectedIndices.Count; i++)
                         {
                             ModJob job = KFreonLib.Scripting.ModMaker.JobList[MainListView.SelectedIndices[i]];
-                            string destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + ".dds";
-                            File.WriteAllBytes(destpath, job.data);
+                            string destpath = null;
+                            if (job.JobType == "Texture")
+                                destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + ".dds";
+                            else
+                            {
+                                int exp = (job.ExpIDs != null && job.ExpIDs.Count > 0) ? job.ExpIDs[0] : 0;
+                                destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + "_EXP- " + exp + ".bin";
+                            }
+
+                            // KFreon: If it exists already, DO NOT overwrite. Just rename.
+                            int count = 0;
+                            string newpath = destpath;
+                            while (true)  // KFreon: Not using File.Exists as condition cos it can be a bit weird that way
+                            {
+                                if (!File.Exists(newpath))
+                                    break;
+                                
+                                newpath = Path.Combine(Path.GetDirectoryName(destpath), Path.GetFileNameWithoutExtension(destpath) + count + Path.GetExtension(destpath));
+                            }
+
+                            File.WriteAllBytes(newpath, job.data);
                             MainProgBar.IncrementBar();
                         }
                         StatusUpdater.UpdateText("Data extracted!");
@@ -1333,7 +1341,7 @@ namespace ME3Explorer
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Title = "Select destination";
-                    sfd.Filter = job.JobType == "TEXTURE" ? "DirectX images|*.dds" : "Meshes|*.mesh";
+                    sfd.Filter = job.JobType == "TEXTURE" ? "DirectX images|*.dds" : "Meshes/etc|*.bin";
 
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
@@ -1495,6 +1503,74 @@ namespace ME3Explorer
             }
 
             Refresh();
+        }
+
+        private void FindOther_DLC_Click(object sender, EventArgs e)
+        {
+            if (KFreonLib.Scripting.ModMaker.JobList == null || KFreonLib.Scripting.ModMaker.JobList.Count == 0)
+                return;
+
+            // KFreon: For each NON TEXTURE job, search for additional pcc's with the same name in basegame and DLC's
+            foreach (ModJob job in KFreonLib.Scripting.ModMaker.JobList)
+            {
+                if (job.JobType == "Texture" || job.ExpIDs == null || job.WhichGame == -1 || 
+                    job.ExpIDs.Count == 0 || job.PCCs == null || job.PCCs.Count == 0 || job.PCCs.Count > 1)  // KFreon: Skip jobs that already have more than 1 pcc i.e. Someone clicked this button twice.
+                    continue;
+
+                if(!File.Exists(job.PCCs[0]))
+                    DebugOutput.PrintLn("Looking for additional PCC's: Can't find original PCC: " + job.PCCs[0]);
+                else
+                {
+                    int basePathLength = -1;
+                    
+                    List<string> OtherFiles = new List<string>();
+                    List<int> OtherExpIDs = new List<int>();
+
+                    // KFreon: Get name of export to look for
+                    IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(job.PCCs[0], job.WhichGame);
+                    IExportEntry exp = pcc.Exports[job.ExpIDs[0]];
+                    string exportName = exp.ObjectName;
+
+                    // KFreon: Get list of files to look through based on detected game version
+                    IEnumerable<string> files = null;
+                    switch(job.WhichGame)
+                    {
+                        case 1:
+                            files = ME1Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            basePathLength = ME1Directory.cookedPath.Length;
+                            break;
+                        case 2:
+                            files = ME2Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            basePathLength = ME2Directory.cookedPath.Length;
+                            break;
+                        case 3:
+                            files = ME3Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            basePathLength = ME3Directory.cookedPath.Length;
+                            break;
+                    }
+
+                    // KFreon: Probably only 1, but just in case
+                    foreach (var file in files)
+                    {
+                        IPCCObject temppcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, job.WhichGame);
+                        for (int i = 0; i < temppcc.Exports.Count; i++) 
+                        {
+                            if (temppcc.Exports[i].ObjectName == exportName)
+                            {
+                                OtherFiles.Add(file.Remove(0, basePathLength)); // KFreon: Remove cooked part so it's relative to it. It's not always cooked...
+                                OtherExpIDs.Add(i);
+                            }
+                        }
+                    }
+
+
+                    if (OtherFiles.Count != 0)
+                    {
+                        job.PCCs.AddRange(OtherFiles);
+                        job.ExpIDs.AddRange(OtherExpIDs);
+                    }
+                }
+            }
         }
     }
 }
