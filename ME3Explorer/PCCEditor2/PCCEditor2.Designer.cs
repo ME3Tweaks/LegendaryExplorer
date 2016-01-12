@@ -1063,6 +1063,7 @@
         public System.Windows.Forms.ToolStripMenuItem saveHexChangesToolStripMenuItem;
         public System.Windows.Forms.OpenFileDialog openFileDialog;
         public Be.Windows.Forms.HexBox hb1;
+        public Be.Windows.Forms.HexBox hb2;
         public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         public System.Windows.Forms.ToolStripComboBox combo1;
         public System.Windows.Forms.ToolStripButton toolStripButton1;
@@ -1135,7 +1136,6 @@
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
-        private Be.Windows.Forms.HexBox hb2;
         private System.Windows.Forms.ToolStripMenuItem scanForCoalescedValuesToolStripMenuItem;
         private System.Windows.Forms.TextBox superclassTextBox;
         private System.Windows.Forms.Label superclassLabel;
