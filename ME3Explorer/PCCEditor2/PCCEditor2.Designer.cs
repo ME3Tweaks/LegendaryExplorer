@@ -680,7 +680,7 @@
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(652, 411);
+            this.tabPage3.Size = new System.Drawing.Size(633, 414);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Info";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -697,9 +697,9 @@
             this.groupBox2.Controls.Add(this.textBox8);
             this.groupBox2.Controls.Add(this.textBox7);
             this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Location = new System.Drawing.Point(4, 215);
+            this.groupBox2.Location = new System.Drawing.Point(4, 240);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(848, 399);
+            this.groupBox2.Size = new System.Drawing.Size(626, 171);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Export data";
@@ -786,7 +786,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(868, 230);
+            this.groupBox1.Size = new System.Drawing.Size(626, 230);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Export header";
