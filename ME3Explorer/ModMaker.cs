@@ -779,6 +779,25 @@ namespace ME3Explorer
 
         private List<string> RunJobs(List<ModJob> joblist, ref List<int> whichgames)
         {
+            bool alreadyExtracted = true;
+            foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
+            {
+                if (!Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
+                {
+                    alreadyExtracted = false;
+                    break;
+                }
+            }
+
+            DialogResult result = DialogResult.Yes;
+            this.Invoke(new Action(() =>
+            {
+                if (!alreadyExtracted)
+                    result = MessageBox.Show("NOTE: ALL DLC's will be extracted to facilitate updating. This will take ~1 hour give or take 2 hours. It'll also take up many gigabytes on your HDD." + Environment.NewLine + "Continue? If you don't, the game may not start.", "You should say yes", MessageBoxButtons.YesNo);
+            }));
+            
+
+
             int count = 1;
             List<string> DLCPCCs = new List<string>();
             foreach (ModJob job in joblist)
@@ -1463,9 +1482,6 @@ namespace ME3Explorer
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
             string script = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
 
-            if (basePCC.ExportCount != modifiedPCC.ExportCount)
-                throw new NotImplementedException("This is apparently not implemented yet.");
-
             // KFreon: Set pcc name
             var bits = basePCC.pccFileName.Split('\\');
             script.Replace("**m1**", bits.Last());
@@ -1517,7 +1533,18 @@ namespace ME3Explorer
                     job.ExpIDs.Count == 0 || job.PCCs == null || job.PCCs.Count == 0 || job.PCCs.Count > 1)  // KFreon: Skip jobs that already have more than 1 pcc i.e. Someone clicked this button twice.
                     continue;
 
-                if(!File.Exists(job.PCCs[0]))
+                string basepath = ME3Directory.cookedPath;
+                if (job.WhichGame == 2)
+                    basepath = ME2Directory.cookedPath;
+                else if (job.WhichGame == 1)
+                    basepath = ME1Directory.cookedPath;
+
+                string fullPCCPath = Path.Combine(basepath, job.PCCs[0]);
+                fullPCCPath = fullPCCPath.ToLower().Replace("cookedpcconsole\\cookedpcconsole", "cookedpcconsole");
+
+                string pccName = Path.GetFileName(fullPCCPath);
+
+                if(!File.Exists(fullPCCPath))
                     DebugOutput.PrintLn("Looking for additional PCC's: Can't find original PCC: " + job.PCCs[0]);
                 else
                 {
@@ -1527,7 +1554,7 @@ namespace ME3Explorer
                     List<int> OtherExpIDs = new List<int>();
 
                     // KFreon: Get name of export to look for
-                    IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(job.PCCs[0], job.WhichGame);
+                    IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(fullPCCPath, job.WhichGame);
                     IExportEntry exp = pcc.Exports[job.ExpIDs[0]];
                     string exportName = exp.ObjectName;
 
@@ -1536,15 +1563,15 @@ namespace ME3Explorer
                     switch(job.WhichGame)
                     {
                         case 1:
-                            files = ME1Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            files = ME1Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
                             basePathLength = ME1Directory.cookedPath.Length;
                             break;
                         case 2:
-                            files = ME2Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            files = ME2Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
                             basePathLength = ME2Directory.cookedPath.Length;
                             break;
                         case 3:
-                            files = ME3Directory.Files.Where(f => f.Contains(job.PCCs[0], StringComparison.OrdinalIgnoreCase));
+                            files = ME3Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
                             basePathLength = ME3Directory.cookedPath.Length;
                             break;
                     }
