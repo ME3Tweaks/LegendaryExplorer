@@ -82,7 +82,6 @@
             this.SelectAllButton = new System.Windows.Forms.ToolStripButton();
             this.UpdateJobButton = new System.Windows.Forms.ToolStripButton();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.FindOther_DLC = new System.Windows.Forms.ToolStripButton();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -117,6 +116,7 @@
             // 
             this.TopStrip.BackColor = System.Drawing.Color.White;
             this.TopStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.TopStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.TopStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LoadButton,
             this.RunAllButton,
@@ -128,11 +128,11 @@
             this.GameFoundLabel,
             this.ChangePathsButton,
             this.HelpButton,
-            this.CreateFromPCCDiffButton,
-            this.FindOther_DLC});
+            this.CreateFromPCCDiffButton});
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
-            this.TopStrip.Size = new System.Drawing.Size(1331, 25);
+            this.TopStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.TopStrip.Size = new System.Drawing.Size(1996, 32);
             this.TopStrip.TabIndex = 0;
             this.TopStrip.Text = "toolStrip1";
             // 
@@ -141,7 +141,7 @@
             this.LoadButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LoadButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.LoadButton.Name = "LoadButton";
-            this.LoadButton.Size = new System.Drawing.Size(37, 22);
+            this.LoadButton.Size = new System.Drawing.Size(55, 29);
             this.LoadButton.Text = "Load";
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
@@ -151,7 +151,7 @@
             this.RunAllButton.Enabled = false;
             this.RunAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunAllButton.Name = "RunAllButton";
-            this.RunAllButton.Size = new System.Drawing.Size(49, 22);
+            this.RunAllButton.Size = new System.Drawing.Size(72, 29);
             this.RunAllButton.Text = "Run All";
             this.RunAllButton.Click += new System.EventHandler(this.RunAllButton_Click);
             // 
@@ -161,7 +161,7 @@
             this.ClearAllButton.Enabled = false;
             this.ClearAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ClearAllButton.Name = "ClearAllButton";
-            this.ClearAllButton.Size = new System.Drawing.Size(81, 22);
+            this.ClearAllButton.Size = new System.Drawing.Size(121, 29);
             this.ClearAllButton.Text = "Clear All Jobs";
             this.ClearAllButton.Click += new System.EventHandler(this.ClearAllButton_Click);
             // 
@@ -171,7 +171,7 @@
             this.SaveAllButton.Enabled = false;
             this.SaveAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SaveAllButton.Name = "SaveAllButton";
-            this.SaveAllButton.Size = new System.Drawing.Size(97, 22);
+            this.SaveAllButton.Size = new System.Drawing.Size(147, 29);
             this.SaveAllButton.Text = "Save All to .mod";
             this.SaveAllButton.Click += new System.EventHandler(this.SaveAllButton_Click);
             // 
@@ -181,7 +181,7 @@
             this.ThreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.ThreeLabel.ForeColor = System.Drawing.Color.Red;
             this.ThreeLabel.Name = "ThreeLabel";
-            this.ThreeLabel.Size = new System.Drawing.Size(17, 22);
+            this.ThreeLabel.Size = new System.Drawing.Size(24, 29);
             this.ThreeLabel.Text = "3";
             // 
             // TwoLabel
@@ -190,7 +190,7 @@
             this.TwoLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.TwoLabel.ForeColor = System.Drawing.Color.Red;
             this.TwoLabel.Name = "TwoLabel";
-            this.TwoLabel.Size = new System.Drawing.Size(17, 22);
+            this.TwoLabel.Size = new System.Drawing.Size(24, 29);
             this.TwoLabel.Text = "2";
             // 
             // OneLabel
@@ -199,7 +199,7 @@
             this.OneLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.OneLabel.ForeColor = System.Drawing.Color.Red;
             this.OneLabel.Name = "OneLabel";
-            this.OneLabel.Size = new System.Drawing.Size(17, 22);
+            this.OneLabel.Size = new System.Drawing.Size(24, 29);
             this.OneLabel.Text = "1";
             // 
             // GameFoundLabel
@@ -207,7 +207,7 @@
             this.GameFoundLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.GameFoundLabel.Enabled = false;
             this.GameFoundLabel.Name = "GameFoundLabel";
-            this.GameFoundLabel.Size = new System.Drawing.Size(80, 22);
+            this.GameFoundLabel.Size = new System.Drawing.Size(122, 29);
             this.GameFoundLabel.Text = "Game Found?";
             // 
             // ChangePathsButton
@@ -215,7 +215,7 @@
             this.ChangePathsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ChangePathsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ChangePathsButton.Name = "ChangePathsButton";
-            this.ChangePathsButton.Size = new System.Drawing.Size(118, 22);
+            this.ChangePathsButton.Size = new System.Drawing.Size(174, 29);
             this.ChangePathsButton.Text = "Change Game Paths";
             this.ChangePathsButton.Click += new System.EventHandler(this.ChangePathsButton_Click);
             // 
@@ -224,7 +224,7 @@
             this.HelpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.HelpButton.Name = "HelpButton";
-            this.HelpButton.Size = new System.Drawing.Size(36, 22);
+            this.HelpButton.Size = new System.Drawing.Size(53, 29);
             this.HelpButton.Text = "Help";
             this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
             // 
@@ -234,7 +234,7 @@
             this.CreateFromPCCDiffButton.Image = ((System.Drawing.Image)(resources.GetObject("CreateFromPCCDiffButton.Image")));
             this.CreateFromPCCDiffButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.CreateFromPCCDiffButton.Name = "CreateFromPCCDiffButton";
-            this.CreateFromPCCDiffButton.Size = new System.Drawing.Size(157, 22);
+            this.CreateFromPCCDiffButton.Size = new System.Drawing.Size(235, 29);
             this.CreateFromPCCDiffButton.Text = "ME3 Create Job From PCC\'s";
             this.CreateFromPCCDiffButton.Click += new System.EventHandler(this.CreateFromPCCDiffButton_Click);
             // 
@@ -242,6 +242,7 @@
             // 
             this.BottomStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.BottomStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.BottomStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MainProgressBar,
             this.toolStripSeparator1,
@@ -250,26 +251,27 @@
             this.toolStripLabel1,
             this.VersionLabel,
             this.toolStripLabel3});
-            this.BottomStrip.Location = new System.Drawing.Point(0, 589);
+            this.BottomStrip.Location = new System.Drawing.Point(0, 908);
             this.BottomStrip.Name = "BottomStrip";
-            this.BottomStrip.Size = new System.Drawing.Size(1331, 25);
+            this.BottomStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.BottomStrip.Size = new System.Drawing.Size(1996, 37);
             this.BottomStrip.TabIndex = 1;
             this.BottomStrip.Text = "toolStrip1";
             // 
             // MainProgressBar
             // 
             this.MainProgressBar.Name = "MainProgressBar";
-            this.MainProgressBar.Size = new System.Drawing.Size(100, 22);
+            this.MainProgressBar.Size = new System.Drawing.Size(150, 34);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 37);
             // 
             // MainStatusLabel
             // 
             this.MainStatusLabel.Name = "MainStatusLabel";
-            this.MainStatusLabel.Size = new System.Drawing.Size(39, 22);
+            this.MainStatusLabel.Size = new System.Drawing.Size(60, 34);
             this.MainStatusLabel.Text = "Ready";
             // 
             // CancelationButton
@@ -278,7 +280,7 @@
             this.CancelationButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.CancelationButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.CancelationButton.Name = "CancelationButton";
-            this.CancelationButton.Size = new System.Drawing.Size(47, 22);
+            this.CancelationButton.Size = new System.Drawing.Size(67, 34);
             this.CancelationButton.Text = "Cancel";
             this.CancelationButton.Visible = false;
             this.CancelationButton.Click += new System.EventHandler(this.CancelationButton_Click);
@@ -288,21 +290,21 @@
             this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel1.Enabled = false;
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(208, 22);
+            this.toolStripLabel1.Size = new System.Drawing.Size(315, 34);
             this.toolStripLabel1.Text = "WV, AK, Salt, Gibbed = The Real Heros";
             // 
             // VersionLabel
             // 
             this.VersionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(45, 22);
+            this.VersionLabel.Size = new System.Drawing.Size(70, 34);
             this.VersionLabel.Text = "Version";
             // 
             // toolStripLabel3
             // 
             this.toolStripLabel3.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripLabel3.Size = new System.Drawing.Size(6, 37);
             // 
             // MainImageList
             // 
@@ -313,7 +315,8 @@
             // MainSplitter
             // 
             this.MainSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainSplitter.Location = new System.Drawing.Point(0, 25);
+            this.MainSplitter.Location = new System.Drawing.Point(0, 32);
+            this.MainSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainSplitter.Name = "MainSplitter";
             // 
             // MainSplitter.Panel1
@@ -328,15 +331,17 @@
             this.MainSplitter.Panel2.Controls.Add(this.DetailsSplitter);
             this.MainSplitter.Panel2.Controls.Add(this.ContextMenuStrip);
             this.MainSplitter.Panel2MinSize = 0;
-            this.MainSplitter.Size = new System.Drawing.Size(1331, 564);
-            this.MainSplitter.SplitterDistance = 620;
+            this.MainSplitter.Size = new System.Drawing.Size(1996, 876);
+            this.MainSplitter.SplitterDistance = 929;
+            this.MainSplitter.SplitterWidth = 6;
             this.MainSplitter.TabIndex = 2;
             // 
             // SearchTextBox
             // 
-            this.SearchTextBox.Location = new System.Drawing.Point(3, 4);
+            this.SearchTextBox.Location = new System.Drawing.Point(4, 6);
+            this.SearchTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SearchTextBox.Name = "SearchTextBox";
-            this.SearchTextBox.Size = new System.Drawing.Size(614, 20);
+            this.SearchTextBox.Size = new System.Drawing.Size(919, 26);
             this.SearchTextBox.TabIndex = 2;
             // 
             // MainListView
@@ -351,9 +356,10 @@
             this.columnHeader1});
             this.MainListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.MainListView.HideSelection = false;
-            this.MainListView.Location = new System.Drawing.Point(0, 30);
+            this.MainListView.Location = new System.Drawing.Point(0, 46);
+            this.MainListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(620, 509);
+            this.MainListView.Size = new System.Drawing.Size(929, 791);
             this.MainListView.SmallImageList = this.MainImageList;
             this.MainListView.TabIndex = 1;
             this.MainListView.UseCompatibleStateImageBehavior = false;
@@ -373,15 +379,17 @@
             this.MainContextStrip.AutoSize = false;
             this.MainContextStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.MainContextStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.MainContextStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MainContextStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RunSelectedButton,
             this.SaveSelectedButton,
             this.MoveUpButton,
             this.MoveDownButton,
             this.ExtractDataButton});
-            this.MainContextStrip.Location = new System.Drawing.Point(0, 539);
+            this.MainContextStrip.Location = new System.Drawing.Point(0, 838);
             this.MainContextStrip.Name = "MainContextStrip";
-            this.MainContextStrip.Size = new System.Drawing.Size(620, 25);
+            this.MainContextStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.MainContextStrip.Size = new System.Drawing.Size(929, 38);
             this.MainContextStrip.TabIndex = 0;
             this.MainContextStrip.Text = "MainContextStrip";
             // 
@@ -390,7 +398,7 @@
             this.RunSelectedButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.RunSelectedButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunSelectedButton.Name = "RunSelectedButton";
-            this.RunSelectedButton.Size = new System.Drawing.Size(79, 22);
+            this.RunSelectedButton.Size = new System.Drawing.Size(118, 35);
             this.RunSelectedButton.Text = "Run Selected";
             this.RunSelectedButton.Click += new System.EventHandler(this.RunSelectedButton_Click);
             // 
@@ -399,7 +407,7 @@
             this.SaveSelectedButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.SaveSelectedButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SaveSelectedButton.Name = "SaveSelectedButton";
-            this.SaveSelectedButton.Size = new System.Drawing.Size(127, 22);
+            this.SaveSelectedButton.Size = new System.Drawing.Size(193, 35);
             this.SaveSelectedButton.Text = "Save Selected to .mod";
             this.SaveSelectedButton.Click += new System.EventHandler(this.SaveSelectedButton_Click);
             // 
@@ -408,7 +416,7 @@
             this.MoveUpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MoveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MoveUpButton.Name = "MoveUpButton";
-            this.MoveUpButton.Size = new System.Drawing.Size(59, 22);
+            this.MoveUpButton.Size = new System.Drawing.Size(89, 35);
             this.MoveUpButton.Text = "Move Up";
             this.MoveUpButton.Click += new System.EventHandler(this.MoveUpButton_Click);
             // 
@@ -417,7 +425,7 @@
             this.MoveDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MoveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MoveDownButton.Name = "MoveDownButton";
-            this.MoveDownButton.Size = new System.Drawing.Size(75, 22);
+            this.MoveDownButton.Size = new System.Drawing.Size(113, 35);
             this.MoveDownButton.Text = "Move Down";
             this.MoveDownButton.Click += new System.EventHandler(this.MoveDownButton_Click);
             // 
@@ -427,7 +435,7 @@
             this.ExtractDataButton.Image = ((System.Drawing.Image)(resources.GetObject("ExtractDataButton.Image")));
             this.ExtractDataButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractDataButton.Name = "ExtractDataButton";
-            this.ExtractDataButton.Size = new System.Drawing.Size(73, 22);
+            this.ExtractDataButton.Size = new System.Drawing.Size(110, 35);
             this.ExtractDataButton.Text = "Extract Data";
             this.ExtractDataButton.Click += new System.EventHandler(this.ExtractDataButton_Click);
             // 
@@ -435,6 +443,7 @@
             // 
             this.DetailsSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DetailsSplitter.Location = new System.Drawing.Point(0, 0);
+            this.DetailsSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.DetailsSplitter.Name = "DetailsSplitter";
             // 
             // DetailsSplitter.Panel1
@@ -446,9 +455,9 @@
             // 
             this.DetailsSplitter.Panel2.Controls.Add(this.ScriptPaneSplitter);
             this.DetailsSplitter.Panel2MinSize = 0;
-            this.DetailsSplitter.Size = new System.Drawing.Size(707, 539);
-            this.DetailsSplitter.SplitterDistance = 354;
-            this.DetailsSplitter.SplitterWidth = 1;
+            this.DetailsSplitter.Size = new System.Drawing.Size(1061, 844);
+            this.DetailsSplitter.SplitterDistance = 531;
+            this.DetailsSplitter.SplitterWidth = 2;
             this.DetailsSplitter.TabIndex = 1;
             // 
             // MiddleSplitter
@@ -457,6 +466,7 @@
             this.MiddleSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.MiddleSplitter.IsSplitterFixed = true;
             this.MiddleSplitter.Location = new System.Drawing.Point(0, 0);
+            this.MiddleSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MiddleSplitter.Name = "MiddleSplitter";
             this.MiddleSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -469,9 +479,9 @@
             // 
             this.MiddleSplitter.Panel2.Controls.Add(this.PCCSplitter);
             this.MiddleSplitter.Panel2MinSize = 0;
-            this.MiddleSplitter.Size = new System.Drawing.Size(354, 539);
+            this.MiddleSplitter.Size = new System.Drawing.Size(531, 844);
             this.MiddleSplitter.SplitterDistance = 148;
-            this.MiddleSplitter.SplitterWidth = 1;
+            this.MiddleSplitter.SplitterWidth = 2;
             this.MiddleSplitter.TabIndex = 0;
             // 
             // TopSplitter
@@ -480,6 +490,7 @@
             this.TopSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.TopSplitter.IsSplitterFixed = true;
             this.TopSplitter.Location = new System.Drawing.Point(0, 0);
+            this.TopSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TopSplitter.Name = "TopSplitter";
             this.TopSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -491,9 +502,9 @@
             // TopSplitter.Panel2
             // 
             this.TopSplitter.Panel2.Controls.Add(this.DetailsBox);
-            this.TopSplitter.Size = new System.Drawing.Size(354, 148);
+            this.TopSplitter.Size = new System.Drawing.Size(531, 148);
             this.TopSplitter.SplitterDistance = 30;
-            this.TopSplitter.SplitterWidth = 1;
+            this.TopSplitter.SplitterWidth = 2;
             this.TopSplitter.TabIndex = 1;
             // 
             // GameVersionBox
@@ -505,18 +516,20 @@
             "1",
             "2",
             "3"});
-            this.GameVersionBox.Location = new System.Drawing.Point(85, 4);
+            this.GameVersionBox.Location = new System.Drawing.Point(128, 6);
+            this.GameVersionBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.GameVersionBox.Name = "GameVersionBox";
-            this.GameVersionBox.Size = new System.Drawing.Size(121, 21);
+            this.GameVersionBox.Size = new System.Drawing.Size(180, 28);
             this.GameVersionBox.TabIndex = 1;
             this.GameVersionBox.SelectedIndexChanged += new System.EventHandler(this.GameVersionBox_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 7);
+            this.label1.Location = new System.Drawing.Point(4, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 13);
+            this.label1.Size = new System.Drawing.Size(115, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Game Version:";
             // 
@@ -526,9 +539,10 @@
             this.DetailsBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DetailsBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DetailsBox.Location = new System.Drawing.Point(0, 0);
+            this.DetailsBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.DetailsBox.Name = "DetailsBox";
             this.DetailsBox.ReadOnly = true;
-            this.DetailsBox.Size = new System.Drawing.Size(354, 117);
+            this.DetailsBox.Size = new System.Drawing.Size(531, 116);
             this.DetailsBox.TabIndex = 1;
             this.DetailsBox.Text = "";
             this.DetailsBox.WordWrap = false;
@@ -537,6 +551,7 @@
             // 
             this.PCCSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PCCSplitter.Location = new System.Drawing.Point(0, 0);
+            this.PCCSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCSplitter.Name = "PCCSplitter";
             this.PCCSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -552,9 +567,9 @@
             this.PCCSplitter.Panel2.Controls.Add(this.ExpIDBox);
             this.PCCSplitter.Panel2.Controls.Add(this.PathBox);
             this.PCCSplitter.Panel2MinSize = 0;
-            this.PCCSplitter.Size = new System.Drawing.Size(354, 390);
-            this.PCCSplitter.SplitterDistance = 334;
-            this.PCCSplitter.SplitterWidth = 1;
+            this.PCCSplitter.Size = new System.Drawing.Size(531, 694);
+            this.PCCSplitter.SplitterDistance = 594;
+            this.PCCSplitter.SplitterWidth = 2;
             this.PCCSplitter.TabIndex = 0;
             this.PCCSplitter.Leave += new System.EventHandler(this.PCCSplitter_FocusLost);
             // 
@@ -566,8 +581,9 @@
             this.PCCList.HorizontalScrollbar = true;
             this.PCCList.IntegralHeight = false;
             this.PCCList.Location = new System.Drawing.Point(0, 0);
+            this.PCCList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCList.Name = "PCCList";
-            this.PCCList.Size = new System.Drawing.Size(354, 334);
+            this.PCCList.Size = new System.Drawing.Size(531, 594);
             this.PCCList.TabIndex = 0;
             this.PCCList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.PCCList_CheckChanged);
             this.PCCList.SelectedIndexChanged += new System.EventHandler(this.PCCList_SelectedIndexChanged);
@@ -576,9 +592,10 @@
             // 
             this.ExpIDLabel.AutoSize = true;
             this.ExpIDLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ExpIDLabel.Location = new System.Drawing.Point(3, 32);
+            this.ExpIDLabel.Location = new System.Drawing.Point(4, 49);
+            this.ExpIDLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ExpIDLabel.Name = "ExpIDLabel";
-            this.ExpIDLabel.Size = new System.Drawing.Size(45, 13);
+            this.ExpIDLabel.Size = new System.Drawing.Size(65, 20);
             this.ExpIDLabel.TabIndex = 2;
             this.ExpIDLabel.Text = "ExpID:";
             // 
@@ -586,9 +603,10 @@
             // 
             this.PathLabel.AutoSize = true;
             this.PathLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PathLabel.Location = new System.Drawing.Point(3, 6);
+            this.PathLabel.Location = new System.Drawing.Point(4, 9);
+            this.PathLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PathLabel.Name = "PathLabel";
-            this.PathLabel.Size = new System.Drawing.Size(37, 13);
+            this.PathLabel.Size = new System.Drawing.Size(53, 20);
             this.PathLabel.TabIndex = 1;
             this.PathLabel.Text = "Path:";
             // 
@@ -596,9 +614,10 @@
             // 
             this.ExpIDBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExpIDBox.Location = new System.Drawing.Point(54, 29);
+            this.ExpIDBox.Location = new System.Drawing.Point(81, 45);
+            this.ExpIDBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ExpIDBox.Name = "ExpIDBox";
-            this.ExpIDBox.Size = new System.Drawing.Size(295, 20);
+            this.ExpIDBox.Size = new System.Drawing.Size(440, 26);
             this.ExpIDBox.TabIndex = 3;
             this.ExpIDBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ExpIDBox_KeyDown);
             // 
@@ -606,9 +625,10 @@
             // 
             this.PathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.PathBox.Location = new System.Drawing.Point(54, 3);
+            this.PathBox.Location = new System.Drawing.Point(81, 5);
+            this.PathBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PathBox.Name = "PathBox";
-            this.PathBox.Size = new System.Drawing.Size(295, 20);
+            this.PathBox.Size = new System.Drawing.Size(440, 26);
             this.PathBox.TabIndex = 0;
             this.PathBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PathBox_KeyDown);
             // 
@@ -618,6 +638,7 @@
             this.ScriptPaneSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.ScriptPaneSplitter.IsSplitterFixed = true;
             this.ScriptPaneSplitter.Location = new System.Drawing.Point(0, 0);
+            this.ScriptPaneSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ScriptPaneSplitter.Name = "ScriptPaneSplitter";
             this.ScriptPaneSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -631,17 +652,18 @@
             // 
             this.ScriptPaneSplitter.Panel2.Controls.Add(this.ScriptPane);
             this.ScriptPaneSplitter.Panel2MinSize = 0;
-            this.ScriptPaneSplitter.Size = new System.Drawing.Size(352, 539);
+            this.ScriptPaneSplitter.Size = new System.Drawing.Size(528, 844);
             this.ScriptPaneSplitter.SplitterDistance = 30;
-            this.ScriptPaneSplitter.SplitterWidth = 1;
+            this.ScriptPaneSplitter.SplitterWidth = 2;
             this.ScriptPaneSplitter.TabIndex = 1;
             // 
             // HideShowButton
             // 
             this.HideShowButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.HideShowButton.Location = new System.Drawing.Point(46, 4);
+            this.HideShowButton.Location = new System.Drawing.Point(69, 6);
+            this.HideShowButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.HideShowButton.Name = "HideShowButton";
-            this.HideShowButton.Size = new System.Drawing.Size(27, 23);
+            this.HideShowButton.Size = new System.Drawing.Size(40, 35);
             this.HideShowButton.TabIndex = 2;
             this.HideShowButton.Text = ">>";
             this.HideShowButton.UseVisualStyleBackColor = true;
@@ -650,9 +672,10 @@
             // ExpandScriptButton
             // 
             this.ExpandScriptButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ExpandScriptButton.Location = new System.Drawing.Point(5, 4);
+            this.ExpandScriptButton.Location = new System.Drawing.Point(8, 6);
+            this.ExpandScriptButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ExpandScriptButton.Name = "ExpandScriptButton";
-            this.ExpandScriptButton.Size = new System.Drawing.Size(35, 23);
+            this.ExpandScriptButton.Size = new System.Drawing.Size(52, 35);
             this.ExpandScriptButton.TabIndex = 1;
             this.ExpandScriptButton.Text = "<<<";
             this.ExpandScriptButton.UseVisualStyleBackColor = true;
@@ -664,8 +687,9 @@
             this.ScriptPane.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ScriptPane.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ScriptPane.Location = new System.Drawing.Point(0, 0);
+            this.ScriptPane.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ScriptPane.Name = "ScriptPane";
-            this.ScriptPane.Size = new System.Drawing.Size(352, 508);
+            this.ScriptPane.Size = new System.Drawing.Size(528, 812);
             this.ScriptPane.TabIndex = 0;
             this.ScriptPane.Text = "";
             this.ScriptPane.WordWrap = false;
@@ -676,13 +700,15 @@
             // 
             this.ContextMenuStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ContextMenuStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.ContextMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ResetScriptButton,
             this.SelectAllButton,
             this.UpdateJobButton});
-            this.ContextMenuStrip.Location = new System.Drawing.Point(0, 539);
+            this.ContextMenuStrip.Location = new System.Drawing.Point(0, 844);
             this.ContextMenuStrip.Name = "ContextMenuStrip";
-            this.ContextMenuStrip.Size = new System.Drawing.Size(707, 25);
+            this.ContextMenuStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.ContextMenuStrip.Size = new System.Drawing.Size(1061, 32);
             this.ContextMenuStrip.TabIndex = 0;
             this.ContextMenuStrip.Text = "toolStrip1";
             // 
@@ -692,7 +718,7 @@
             this.ResetScriptButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ResetScriptButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ResetScriptButton.Name = "ResetScriptButton";
-            this.ResetScriptButton.Size = new System.Drawing.Size(72, 22);
+            this.ResetScriptButton.Size = new System.Drawing.Size(108, 29);
             this.ResetScriptButton.Text = "Reset Script";
             this.ResetScriptButton.Click += new System.EventHandler(this.ResetScriptButton_Click);
             // 
@@ -701,7 +727,7 @@
             this.SelectAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.SelectAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SelectAllButton.Name = "SelectAllButton";
-            this.SelectAllButton.Size = new System.Drawing.Size(59, 22);
+            this.SelectAllButton.Size = new System.Drawing.Size(87, 29);
             this.SelectAllButton.Text = "Select All";
             this.SelectAllButton.Click += new System.EventHandler(this.SelectAllButton_Click);
             // 
@@ -710,31 +736,22 @@
             this.UpdateJobButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.UpdateJobButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.UpdateJobButton.Name = "UpdateJobButton";
-            this.UpdateJobButton.Size = new System.Drawing.Size(70, 22);
+            this.UpdateJobButton.Size = new System.Drawing.Size(107, 29);
             this.UpdateJobButton.Text = "Update Job";
             this.UpdateJobButton.Click += new System.EventHandler(this.UpdateJobButton_Click);
             // 
-            // FindOther_DLC
-            // 
-            this.FindOther_DLC.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.FindOther_DLC.Image = ((System.Drawing.Image)(resources.GetObject("FindOther_DLC.Image")));
-            this.FindOther_DLC.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.FindOther_DLC.Name = "FindOther_DLC";
-            this.FindOther_DLC.Size = new System.Drawing.Size(171, 22);
-            this.FindOther_DLC.Text = "MESH ONLY: Detect other files";
-            this.FindOther_DLC.Click += new System.EventHandler(this.FindOther_DLC_Click);
-            // 
             // ModMaker
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1331, 614);
+            this.ClientSize = new System.Drawing.Size(1996, 945);
             this.Controls.Add(this.MainSplitter);
             this.Controls.Add(this.BottomStrip);
             this.Controls.Add(this.TopStrip);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ModMaker";
             this.Text = "Mod Maker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Closing);
@@ -833,6 +850,5 @@
         private System.Windows.Forms.ToolStripLabel VersionLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripLabel3;
         private System.Windows.Forms.ToolStripButton CreateFromPCCDiffButton;
-        private System.Windows.Forms.ToolStripButton FindOther_DLC;
     }
 }

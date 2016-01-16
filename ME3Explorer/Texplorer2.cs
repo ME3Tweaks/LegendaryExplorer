@@ -2448,6 +2448,7 @@ namespace ME3Explorer
                 }
             }
 
+            Directory.CreateDirectory(ThumbnailPath);
 
             // KFreon: Update tex details if necessary
             Textures.ITexture2D tex2D = null;

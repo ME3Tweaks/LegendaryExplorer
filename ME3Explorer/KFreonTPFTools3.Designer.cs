@@ -165,7 +165,7 @@
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
             this.TopStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.TopStrip.Size = new System.Drawing.Size(1544, 32);
+            this.TopStrip.Size = new System.Drawing.Size(1117, 32);
             this.TopStrip.TabIndex = 0;
             this.TopStrip.Text = "TopStrip";
             // 
@@ -366,10 +366,10 @@
             this.toolStripLabel1,
             this.toolStripSeparator4,
             this.VersionLabel});
-            this.BottomStrip.Location = new System.Drawing.Point(0, 1348);
+            this.BottomStrip.Location = new System.Drawing.Point(0, 807);
             this.BottomStrip.Name = "BottomStrip";
             this.BottomStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.BottomStrip.Size = new System.Drawing.Size(1544, 37);
+            this.BottomStrip.Size = new System.Drawing.Size(1117, 37);
             this.BottomStrip.TabIndex = 1;
             this.BottomStrip.Text = "BottomStrip";
             // 
@@ -474,7 +474,7 @@
             // MainSplitter.Panel2
             // 
             this.MainSplitter.Panel2.Controls.Add(this.LowerRightSplitter);
-            this.MainSplitter.Size = new System.Drawing.Size(1544, 1202);
+            this.MainSplitter.Size = new System.Drawing.Size(1117, 661);
             this.MainSplitter.SplitterDistance = 491;
             this.MainSplitter.SplitterWidth = 2;
             this.MainSplitter.TabIndex = 2;
@@ -488,7 +488,7 @@
             this.MainTabPages.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainTabPages.Name = "MainTabPages";
             this.MainTabPages.SelectedIndex = 0;
-            this.MainTabPages.Size = new System.Drawing.Size(491, 1164);
+            this.MainTabPages.Size = new System.Drawing.Size(491, 623);
             this.MainTabPages.TabIndex = 2;
             this.MainTabPages.Selected += new System.Windows.Forms.TabControlEventHandler(this.MainTabPages_TabChanged);
             // 
@@ -499,7 +499,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPage1.Size = new System.Drawing.Size(483, 1131);
+            this.tabPage1.Size = new System.Drawing.Size(483, 590);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main Page";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -518,7 +518,7 @@
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 0;
-            this.MainTreeView.Size = new System.Drawing.Size(475, 1121);
+            this.MainTreeView.Size = new System.Drawing.Size(475, 580);
             this.MainTreeView.TabIndex = 0;
             this.MainTreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.MainTreeView_DrawNode);
             this.MainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.MainTreeView_AfterSelect);
@@ -542,7 +542,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPage2.Size = new System.Drawing.Size(728, 1130);
+            this.tabPage2.Size = new System.Drawing.Size(483, 1131);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Delete Page";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -560,7 +560,7 @@
             this.MainListView.Location = new System.Drawing.Point(4, 5);
             this.MainListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(720, 1120);
+            this.MainListView.Size = new System.Drawing.Size(475, 1121);
             this.MainListView.SmallImageList = this.MainTreeViewImageList;
             this.MainListView.TabIndex = 0;
             this.MainListView.TileSize = new System.Drawing.Size(200, 200);
@@ -587,7 +587,7 @@
             this.PromoteButton,
             this.GotoDupButton,
             this.AutofixSingleButton});
-            this.ContextPanel.Location = new System.Drawing.Point(0, 1164);
+            this.ContextPanel.Location = new System.Drawing.Point(0, 623);
             this.ContextPanel.Name = "ContextPanel";
             this.ContextPanel.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.ContextPanel.Size = new System.Drawing.Size(491, 38);
@@ -686,7 +686,7 @@
             // 
             this.LowerRightSplitter.Panel2.Controls.Add(this.PreviewTabPages);
             this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
-            this.LowerRightSplitter.Size = new System.Drawing.Size(1051, 1202);
+            this.LowerRightSplitter.Size = new System.Drawing.Size(624, 661);
             this.LowerRightSplitter.SplitterDistance = 252;
             this.LowerRightSplitter.SplitterWidth = 2;
             this.LowerRightSplitter.TabIndex = 0;
@@ -720,7 +720,7 @@
             this.DetailsSplitter.Panel2.Controls.Add(this.HashLabel);
             this.DetailsSplitter.Panel2.Controls.Add(this.TPFFormatLabel);
             this.PrimaryToolTip.SetToolTip(this.DetailsSplitter.Panel2, "This area shows details of the texture,\r\nincluding tree details if applicable");
-            this.DetailsSplitter.Size = new System.Drawing.Size(1051, 252);
+            this.DetailsSplitter.Size = new System.Drawing.Size(624, 252);
             this.DetailsSplitter.SplitterDistance = 157;
             this.DetailsSplitter.SplitterWidth = 2;
             this.DetailsSplitter.TabIndex = 0;
@@ -734,7 +734,7 @@
             this.GeneralInfoRTB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.GeneralInfoRTB.Name = "GeneralInfoRTB";
             this.GeneralInfoRTB.ReadOnly = true;
-            this.GeneralInfoRTB.Size = new System.Drawing.Size(1051, 157);
+            this.GeneralInfoRTB.Size = new System.Drawing.Size(624, 157);
             this.GeneralInfoRTB.TabIndex = 0;
             this.GeneralInfoRTB.Text = resources.GetString("GeneralInfoRTB.Text");
             this.PrimaryToolTip.SetToolTip(this.GeneralInfoRTB, "This area displays details of the loaded image or tpf");
@@ -765,7 +765,7 @@
             this.DuplicatesTextBox.BackColor = System.Drawing.Color.White;
             this.DuplicatesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DuplicatesTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-            this.DuplicatesTextBox.Location = new System.Drawing.Point(747, 0);
+            this.DuplicatesTextBox.Location = new System.Drawing.Point(320, 0);
             this.DuplicatesTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.DuplicatesTextBox.Name = "DuplicatesTextBox";
             this.DuplicatesTextBox.ReadOnly = true;
@@ -904,7 +904,7 @@
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1051, 948);
+            this.PreviewTabPages.Size = new System.Drawing.Size(624, 409);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -918,7 +918,7 @@
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PreviewPage.Name = "PreviewPage";
             this.PreviewPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PreviewPage.Size = new System.Drawing.Size(1043, 915);
+            this.PreviewPage.Size = new System.Drawing.Size(616, 376);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -930,7 +930,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(4, 5);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(150, 905);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(150, 366);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             // 
@@ -950,7 +950,7 @@
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsPage.Name = "PCCsPage";
             this.PCCsPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PCCsPage.Size = new System.Drawing.Size(798, 779);
+            this.PCCsPage.Size = new System.Drawing.Size(1043, 917);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -966,7 +966,7 @@
             this.PCCsCheckListBox.Location = new System.Drawing.Point(4, 5);
             this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(790, 769);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(1035, 907);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
@@ -979,10 +979,10 @@
             this.PCCContextPanel.Controls.Add(this.ExportPCCListButton);
             this.PCCContextPanel.Controls.Add(this.PCCSelectAllButton);
             this.PCCContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PCCContextPanel.Location = new System.Drawing.Point(0, 900);
+            this.PCCContextPanel.Location = new System.Drawing.Point(0, 359);
             this.PCCContextPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCContextPanel.Name = "PCCContextPanel";
-            this.PCCContextPanel.Size = new System.Drawing.Size(1051, 48);
+            this.PCCContextPanel.Size = new System.Drawing.Size(624, 48);
             this.PCCContextPanel.TabIndex = 1;
             // 
             // CopyClipBoardButton
@@ -1022,7 +1022,7 @@
             // 
             this.AnalyseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AnalyseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AnalyseButton.Location = new System.Drawing.Point(4, 1254);
+            this.AnalyseButton.Location = new System.Drawing.Point(4, 713);
             this.AnalyseButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AnalyseButton.Name = "AnalyseButton";
             this.AnalyseButton.Size = new System.Drawing.Size(238, 88);
@@ -1036,7 +1036,7 @@
             // 
             this.SaveModButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.SaveModButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveModButton.Location = new System.Drawing.Point(252, 1254);
+            this.SaveModButton.Location = new System.Drawing.Point(252, 713);
             this.SaveModButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SaveModButton.Name = "SaveModButton";
             this.SaveModButton.Size = new System.Drawing.Size(212, 88);
@@ -1050,7 +1050,7 @@
             // 
             this.InstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.InstallButton.Location = new System.Drawing.Point(472, 1254);
+            this.InstallButton.Location = new System.Drawing.Point(472, 713);
             this.InstallButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.InstallButton.Name = "InstallButton";
             this.InstallButton.Size = new System.Drawing.Size(136, 88);
@@ -1064,7 +1064,7 @@
             // 
             this.AutofixInstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AutofixInstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutofixInstallButton.Location = new System.Drawing.Point(618, 1254);
+            this.AutofixInstallButton.Location = new System.Drawing.Point(618, 713);
             this.AutofixInstallButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AutofixInstallButton.Name = "AutofixInstallButton";
             this.AutofixInstallButton.Size = new System.Drawing.Size(192, 88);
@@ -1083,7 +1083,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1544, 1385);
+            this.ClientSize = new System.Drawing.Size(1117, 844);
             this.Controls.Add(this.TopStrip);
             this.Controls.Add(this.BottomStrip);
             this.Controls.Add(this.MainSplitter);
