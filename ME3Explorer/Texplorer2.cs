@@ -281,15 +281,15 @@ namespace ME3Explorer
                         using (Textures.ITexture2D tex2D = tex.Textures[0])
                         {
                             // KFreon: Save first file
-                            PCCObjects.IExportEntry expEntry = pcc.Exports[tex2D.pccExpIdx];
+                            /*PCCObjects.IExportEntry expEntry = pcc.Exports[tex2D.pccExpIdx];
                             expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
-                            pcc.saveToFile(pcc.pccFileName);
+                            pcc.saveToFile(pcc.pccFileName);*/
 
-                            this.Invoke(new Action(() => MainProgressBar.Increment(1)));
-                            OutputBoxPrintLn("Initial saving complete for " + tex.TexName + ". Now saving remaining PCC's for this texture...");
+                            /*this.Invoke(new Action(() => MainProgressBar.Increment(1)));
+                            OutputBoxPrintLn("Initial saving complete for " + tex.TexName + ". Now saving remaining PCC's for this texture...");*/
 
-                            // KFreon: Save rest of files
-                            for (int j = 1; j < tex.Files.Count; j++)
+                            // KFreon: Save files
+                            for (int j = 0; j < tex.Files.Count; j++)
                             {
                                 if (!SaveFile(tex.Files, tex.ExpIDs, tex2D, j))
                                     return false;
@@ -1222,10 +1222,19 @@ namespace ME3Explorer
                     PCCsCheckedListBox.SetItemChecked(i, PCCsCheckedListBox.GetItemChecked(0));
             else
                 PCCsCheckedListBox.SetItemChecked(0, false);
+
             List<string> newlist = new List<string>();
+            List<int> newlist2 = new List<int>();
             foreach (string item in PCCsCheckedListBox.CheckedItems)
-                newlist.Add(item.Split('@')[0].Trim());
+            {
+                var bits = item.Split('@');
+                newlist.Add(bits[0].Trim());
+                newlist2.Add(Convert.ToInt32(bits[1]));
+            }
             current.Files = new List<string>(newlist);
+            current.ExpIDs = new List<int>(newlist2);
+
+
             Tree.ReplaceTex(GetSelectedTexInd(), current);
         }
 
@@ -2446,11 +2455,18 @@ namespace ME3Explorer
 
             string thumbpath = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
 
-            if (FromFile)
-                Textures.Creation.GenerateThumbnail(tex.Files[0], WhichGame, tex.ExpIDs[0], pathBIOGame, thumbpath, ExecFolder);
-            else
-                using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
-                    ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128);
+            try
+            {
+                if (FromFile)
+                    Textures.Creation.GenerateThumbnail(tex.Files[0], WhichGame, tex.ExpIDs[0], pathBIOGame, thumbpath, ExecFolder);
+                else
+                    using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
+                        ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error generating thumbnail: " + e.Message);
+            }
 
             Tree.ReplaceTex(index, tex);
         }
