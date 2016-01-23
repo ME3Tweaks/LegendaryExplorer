@@ -581,13 +581,25 @@ namespace KFreonLib.Textures
         public byte[] Extract(string ExtractPath, bool ToMemory = false)
         {
             byte[] retval = null;
-            bool ExtractType = false;
 
             bool? temp = ExtractPath.isDirectory();
             if (temp == null)
                 return null;
-            else
-                ExtractType = (bool)temp;
+
+            string extractName = ExtractPath;
+            if (temp == true) // If given path is a directory
+            {
+                string hashString = KFreonLib.Textures.Methods.FormatTexmodHashAsString(Hash);
+                if (TexName == null)
+                    extractName = Path.GetFileNameWithoutExtension(FileName);
+                else
+                    extractName = TexName;
+
+                if (!extractName.Contains(hashString))
+                    extractName += "_" + hashString;
+
+                extractName += Path.GetExtension(FileName);
+            }
 
 
             // KFreon: Get byte[] of image data.
@@ -603,9 +615,9 @@ namespace KFreonLib.Textures
                 try
                 {
                     if (isExternal)
-                        File.Copy(Path.Combine(FilePath, FileName), ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                        File.Copy(Path.Combine(FilePath, FileName), Path.Combine(ExtractPath, extractName));
                     else
-                        zippy.Entries[TPFInd].Extract(false, ExtractType ? Path.Combine(ExtractPath, FileName) : ExtractPath);
+                        zippy.Entries[TPFInd].Extract(false, Path.Combine(ExtractPath, extractName));
                 }
                 catch (Exception e)
                 {

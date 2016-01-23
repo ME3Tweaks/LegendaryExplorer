@@ -90,7 +90,6 @@ namespace KFreonLib.Textures
         public const string className = "Texture2D";
         public const string class2 = "LightMapTexture2D";
         public const string class3 = "TextureFlipBook";
-        public const string CustCache = "CustTextures";
         public string texName { get; set; }
         public string arcName { get; set; }
         public string FullArcPath { get; set; }
@@ -771,7 +770,7 @@ namespace KFreonLib.Textures
                     if (imgBuffer.Length != imgInfo.uncSize)
                         throw new FormatException("image sizes do not match, original is " + imgInfo.uncSize + ", new is " + imgBuffer.Length);
 
-                    if (arcName.Length <= CustCache.Length || arcName.Substring(0, CustCache.Length) != CustCache) // Check whether existing texture is in a custom cache
+                    if (arcName.ToLower() == Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower()))
                     {
                         ChooseNewCache(archiveDir, imgBuffer.Length);
                         archivePath = FullArcPath;
@@ -906,7 +905,7 @@ namespace KFreonLib.Textures
 
                     //DebugOutput.PrintLn( "\nOK here's the stuff we came for. About to change/add cache.\n");
                     //DebugOutput.PrintLn( "Initial arcname = " + arcName + "   custCache = " + CustCache + "\n");
-                    if (arcName.Length <= CustCache.Length || arcName.Substring(0, CustCache.Length) != CustCache) // Check whether existing texture is in a custom cache
+                    if (arcName.ToLower() == Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower()))
                     {
                         ChooseNewCache(archiveDir, imgBuffer.Length);
                         archivePath = FullArcPath;
@@ -1258,51 +1257,67 @@ namespace KFreonLib.Textures
 
         private void ChooseNewCache(string bioPath, int buffLength)
         {
-            //DebugOutput.PrintLn( "\nIn ChooseNewCache\n");
-            int i = 0;
-            while (true)
+            if (File.Exists(MEDirectories.MEDirectories.CachePath))
             {
-                FileInfo cacheInfo;
-                List<string> parts = new List<string>(bioPath.Split('\\'));
-                parts.Remove("");
-                if (parts[parts.Count - 1] == "CookedPCConsole")
-                    cacheInfo = new FileInfo(Path.Combine(bioPath, CustCache + i + ".tfc"));
-                else
-                    cacheInfo = new FileInfo(Path.Combine(bioPath, "CookedPCConsole", CustCache + i + ".tfc"));
-
-                //DebugOutput.PrintLn( "Cacheinfo:  " + cacheInfo.Name + "   " + cacheInfo.DirectoryName + "   " + cacheInfo.FullName + "   " + cacheInfo.Exists + "   \n");
+                FileInfo cacheInfo = new FileInfo(MEDirectories.MEDirectories.CachePath);
+                string cacheName = Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath);
+                string cacheFileName = Path.GetFileName(MEDirectories.MEDirectories.CachePath);
+                string rootFolder = Path.GetDirectoryName(MEDirectories.MEDirectories.CachePath);
 
                 if (!cacheInfo.Exists)
-                {
-                    //DebugOutput.PrintLn( "Cache info doesn't exist. Make new cache.\n");
                     MakeCache(cacheInfo.FullName, bioPath);
-                    List<string> parts1 = new List<string>(bioPath.Split('\\'));
-                    parts1.Remove("");
-                    if (parts1[parts1.Count - 1] == "CookedPCConsole")
-                        MoveCaches(bioPath, CustCache + i + ".tfc");
-                    else
-                        MoveCaches(bioPath + "\\CookedPCConsole", CustCache + i + ".tfc");
 
-                    properties["TextureFileCacheName"].Value.StringValue = CustCache + i;
-                    arcName = CustCache + i;
-                    FullArcPath = cacheInfo.FullName;
-                    return;
-                }
-                else if (cacheInfo.Length + buffLength + ArcDataSize < 0x80000000)
-                {
-                    List<string> parts1 = new List<string>(bioPath.Split('\\'));
-                    parts1.Remove("");
-                    if (parts1[parts1.Count - 1] == "CookedPCConsole")
-                        MoveCaches(bioPath, CustCache + i + ".tfc");
-                    else
-                        MoveCaches(bioPath + "\\CookedPCConsole", CustCache + i + ".tfc");
-                    properties["TextureFileCacheName"].Value.StringValue = CustCache + i;
-                    arcName = CustCache + i;
-                    FullArcPath = cacheInfo.FullName;
-                    return;
-                }
-                i++;
+                MoveCaches(rootFolder, cacheFileName);
+                properties["TextureFileCacheName"].Value.StringValue = cacheName;
+                arcName = cacheName;
+                FullArcPath = cacheInfo.FullName;
             }
+            else
+            {
+                int i = 0;
+                string CustCache = "CustTextures";
+                while (i < 10)
+                {
+                    FileInfo cacheInfo;
+                    List<string> parts = new List<string>(bioPath.Split('\\'));
+                    parts.Remove("");
+                    if (parts[parts.Count - 1] == "CookedPCConsole")
+                        cacheInfo = new FileInfo(Path.Combine(bioPath, CustCache + i + ".tfc"));
+                    else
+                        cacheInfo = new FileInfo(Path.Combine(bioPath, "CookedPCConsole", CustCache + i + ".tfc"));
+
+                    if (!cacheInfo.Exists)
+                    {
+                        MakeCache(cacheInfo.FullName, bioPath);
+                        List<string> parts1 = new List<string>(bioPath.Split('\\'));
+                        parts1.Remove("");
+                        if (parts1[parts1.Count - 1] == "CookedPCConsole")
+                            MoveCaches(bioPath, CustCache + i + ".tfc");
+                        else
+                            MoveCaches(bioPath + "\\CookedPCConsole", CustCache + i + ".tfc");
+
+                        properties["TextureFileCacheName"].Value.StringValue = CustCache + i;
+                        arcName = CustCache + i;
+                        FullArcPath = cacheInfo.FullName;
+                        return;
+                    }
+                    else if (cacheInfo.Length + buffLength + ArcDataSize < 0x80000000)
+                    {
+                        List<string> parts1 = new List<string>(bioPath.Split('\\'));
+                        parts1.Remove("");
+                        if (parts1[parts1.Count - 1] == "CookedPCConsole")
+                            MoveCaches(bioPath, CustCache + i + ".tfc");
+                        else
+                            MoveCaches(bioPath + "\\CookedPCConsole", CustCache + i + ".tfc");
+                        properties["TextureFileCacheName"].Value.StringValue = CustCache + i;
+                        arcName = CustCache + i;
+                        FullArcPath = cacheInfo.FullName;
+                        return;
+                    }
+                    i++;
+                }
+            }
+            
 
             #region Old code
             /*

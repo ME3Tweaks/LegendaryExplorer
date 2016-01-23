@@ -336,7 +336,7 @@
             this.OneTreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.OneTreeLabel.ForeColor = System.Drawing.Color.Red;
             this.OneTreeLabel.Name = "OneTreeLabel";
-            this.OneTreeLabel.Size = new System.Drawing.Size(24, 29);
+            this.OneTreeLabel.Size = new System.Drawing.Size(24, 28);
             this.OneTreeLabel.Text = "1";
             // 
             // TreeFoundLabel
@@ -344,7 +344,7 @@
             this.TreeFoundLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.TreeFoundLabel.Enabled = false;
             this.TreeFoundLabel.Name = "TreeFoundLabel";
-            this.TreeFoundLabel.Size = new System.Drawing.Size(107, 29);
+            this.TreeFoundLabel.Size = new System.Drawing.Size(107, 25);
             this.TreeFoundLabel.Text = "Tree Found?";
             // 
             // BottomStrip
@@ -542,7 +542,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tabPage2.Size = new System.Drawing.Size(483, 1131);
+            this.tabPage2.Size = new System.Drawing.Size(483, 590);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Delete Page";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -560,7 +560,7 @@
             this.MainListView.Location = new System.Drawing.Point(4, 5);
             this.MainListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(475, 1121);
+            this.MainListView.Size = new System.Drawing.Size(475, 580);
             this.MainListView.SmallImageList = this.MainTreeViewImageList;
             this.MainListView.TabIndex = 0;
             this.MainListView.TileSize = new System.Drawing.Size(200, 200);
@@ -721,7 +721,7 @@
             this.DetailsSplitter.Panel2.Controls.Add(this.TPFFormatLabel);
             this.PrimaryToolTip.SetToolTip(this.DetailsSplitter.Panel2, "This area shows details of the texture,\r\nincluding tree details if applicable");
             this.DetailsSplitter.Size = new System.Drawing.Size(624, 252);
-            this.DetailsSplitter.SplitterDistance = 157;
+            this.DetailsSplitter.SplitterDistance = 100;
             this.DetailsSplitter.SplitterWidth = 2;
             this.DetailsSplitter.TabIndex = 0;
             // 
@@ -734,7 +734,7 @@
             this.GeneralInfoRTB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.GeneralInfoRTB.Name = "GeneralInfoRTB";
             this.GeneralInfoRTB.ReadOnly = true;
-            this.GeneralInfoRTB.Size = new System.Drawing.Size(624, 157);
+            this.GeneralInfoRTB.Size = new System.Drawing.Size(624, 100);
             this.GeneralInfoRTB.TabIndex = 0;
             this.GeneralInfoRTB.Text = resources.GetString("GeneralInfoRTB.Text");
             this.PrimaryToolTip.SetToolTip(this.GeneralInfoRTB, "This area displays details of the loaded image or tpf");
@@ -769,7 +769,7 @@
             this.DuplicatesTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.DuplicatesTextBox.Name = "DuplicatesTextBox";
             this.DuplicatesTextBox.ReadOnly = true;
-            this.DuplicatesTextBox.Size = new System.Drawing.Size(304, 93);
+            this.DuplicatesTextBox.Size = new System.Drawing.Size(304, 150);
             this.DuplicatesTextBox.TabIndex = 14;
             this.DuplicatesTextBox.Text = "";
             this.PrimaryToolTip.SetToolTip(this.DuplicatesTextBox, "This area displays any tree duplicates found for the selected texture.\r\nTree dupl" +
@@ -904,7 +904,7 @@
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(624, 409);
+            this.PreviewTabPages.Size = new System.Drawing.Size(624, 411);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -918,7 +918,7 @@
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PreviewPage.Name = "PreviewPage";
             this.PreviewPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PreviewPage.Size = new System.Drawing.Size(616, 376);
+            this.PreviewPage.Size = new System.Drawing.Size(616, 378);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -930,7 +930,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(4, 5);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(150, 366);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(150, 368);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             // 
@@ -950,7 +950,7 @@
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsPage.Name = "PCCsPage";
             this.PCCsPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PCCsPage.Size = new System.Drawing.Size(1043, 917);
+            this.PCCsPage.Size = new System.Drawing.Size(616, 378);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -966,7 +966,7 @@
             this.PCCsCheckListBox.Location = new System.Drawing.Point(4, 5);
             this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(1035, 907);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(608, 368);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;

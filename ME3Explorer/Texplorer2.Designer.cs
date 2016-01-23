@@ -88,6 +88,7 @@
             this.Tree2Label = new System.Windows.Forms.Label();
             this.Tree1Label = new System.Windows.Forms.Label();
             this.TreeLabel = new System.Windows.Forms.Label();
+            this.changeCustomTFCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.MainMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -131,10 +132,10 @@
             this.toolStripButton1,
             this.toolStripLabel1,
             this.VersionLabel});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 439);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 521);
             this.StatusStrip.Name = "StatusStrip";
             this.StatusStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.StatusStrip.Size = new System.Drawing.Size(1424, 37);
+            this.StatusStrip.Size = new System.Drawing.Size(1671, 37);
             this.StatusStrip.TabIndex = 0;
             this.StatusStrip.Text = "toolStrip1";
             // 
@@ -198,11 +199,12 @@
             this.rebuildDatabaseToolStripMenuItem,
             this.updateTOCsToolStripMenuItem,
             this.regenerateThumbnailsToolStripMenuItem,
-            this.addDLCToTreeToolStripMenuItem});
+            this.addDLCToTreeToolStripMenuItem,
+            this.changeCustomTFCToolStripMenuItem});
             this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MainMenuStrip.Name = "MainMenuStrip";
             this.MainMenuStrip.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.MainMenuStrip.Size = new System.Drawing.Size(1424, 35);
+            this.MainMenuStrip.Size = new System.Drawing.Size(1671, 35);
             this.MainMenuStrip.TabIndex = 1;
             this.MainMenuStrip.Text = "menuStrip1";
             // 
@@ -284,8 +286,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.OutputBox);
-            this.splitContainer1.Size = new System.Drawing.Size(1424, 404);
-            this.splitContainer1.SplitterDistance = 308;
+            this.splitContainer1.Size = new System.Drawing.Size(1671, 486);
+            this.splitContainer1.SplitterDistance = 370;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -304,7 +306,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(1424, 308);
+            this.splitContainer2.Size = new System.Drawing.Size(1671, 370);
             this.splitContainer2.SplitterDistance = 395;
             this.splitContainer2.SplitterWidth = 2;
             this.splitContainer2.TabIndex = 0;
@@ -319,7 +321,7 @@
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 1;
-            this.MainTreeView.Size = new System.Drawing.Size(395, 308);
+            this.MainTreeView.Size = new System.Drawing.Size(395, 370);
             this.MainTreeView.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.MainTreeView, "This area shows the textures in the selected game. \r\nFolders are often package na" +
         "mes, but only devs need that.");
@@ -353,8 +355,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer3.Size = new System.Drawing.Size(1027, 308);
-            this.splitContainer3.SplitterDistance = 726;
+            this.splitContainer3.Size = new System.Drawing.Size(1274, 370);
+            this.splitContainer3.SplitterDistance = 975;
             this.splitContainer3.SplitterWidth = 2;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -368,10 +370,10 @@
             this.ContextPanel.Controls.Add(this.ReplaceButton);
             this.ContextPanel.Controls.Add(this.AddBiggerButton);
             this.ContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.ContextPanel.Location = new System.Drawing.Point(0, 318);
+            this.ContextPanel.Location = new System.Drawing.Point(0, 324);
             this.ContextPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ContextPanel.Name = "ContextPanel";
-            this.ContextPanel.Size = new System.Drawing.Size(700, 46);
+            this.ContextPanel.Size = new System.Drawing.Size(975, 46);
             this.ContextPanel.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.ContextPanel, "This context menu appears when a texture is selected,\r\nand provides texture based" +
         " operations. \r\nClick this bubble to remove all instructions.");
@@ -504,7 +506,7 @@
             this.PicturePanel.Location = new System.Drawing.Point(9, 8);
             this.PicturePanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PicturePanel.Name = "PicturePanel";
-            this.PicturePanel.Size = new System.Drawing.Size(567, 318);
+            this.PicturePanel.Size = new System.Drawing.Size(816, 380);
             this.PicturePanel.TabIndex = 3;
             this.PrimaryToolTip.SetToolTip(this.PicturePanel, "This area shows the textures within the selected folder.\r\nIt shows a thumbnail of" +
         " each image and clicking on an\r\nimage will show details on the right.");
@@ -540,7 +542,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.TabSearchSplitter);
-            this.splitContainer4.Size = new System.Drawing.Size(299, 308);
+            this.splitContainer4.Size = new System.Drawing.Size(297, 370);
             this.splitContainer4.SplitterDistance = 25;
             this.splitContainer4.SplitterWidth = 2;
             this.splitContainer4.TabIndex = 0;
@@ -551,7 +553,7 @@
             this.SearchBox.Location = new System.Drawing.Point(51, -4);
             this.SearchBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SearchBox.Name = "SearchBox";
-            this.SearchBox.Size = new System.Drawing.Size(241, 26);
+            this.SearchBox.Size = new System.Drawing.Size(239, 26);
             this.SearchBox.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.SearchBox, "Search filters:\r\nname = Texture search\r\n@expID = Export ID search\r\n\\pcc = Game fi" +
         "lename search\r\n\\pcc @ expID = Combined search\r\n-name = Thumbnail search");
@@ -577,7 +579,7 @@
             // 
             this.SearchCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchCountLabel.AutoSize = true;
-            this.SearchCountLabel.Location = new System.Drawing.Point(275, 8);
+            this.SearchCountLabel.Location = new System.Drawing.Point(273, 8);
             this.SearchCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.SearchCountLabel.Name = "SearchCountLabel";
             this.SearchCountLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -604,8 +606,8 @@
             // 
             this.TabSearchSplitter.Panel2.Controls.Add(this.tabControl1);
             this.TabSearchSplitter.Panel2MinSize = 0;
-            this.TabSearchSplitter.Size = new System.Drawing.Size(299, 281);
-            this.TabSearchSplitter.SplitterDistance = 23;
+            this.TabSearchSplitter.Size = new System.Drawing.Size(297, 343);
+            this.TabSearchSplitter.SplitterDistance = 30;
             this.TabSearchSplitter.SplitterWidth = 2;
             this.TabSearchSplitter.TabIndex = 2;
             // 
@@ -617,7 +619,7 @@
             this.SearchListBox.Location = new System.Drawing.Point(0, 0);
             this.SearchListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SearchListBox.Name = "SearchListBox";
-            this.SearchListBox.Size = new System.Drawing.Size(299, 23);
+            this.SearchListBox.Size = new System.Drawing.Size(297, 30);
             this.SearchListBox.TabIndex = 1;
             this.SearchListBox.SelectedIndexChanged += new System.EventHandler(this.SearchListBox_SelectedIndexChanged);
             // 
@@ -630,7 +632,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(299, 256);
+            this.tabControl1.Size = new System.Drawing.Size(297, 311);
             this.tabControl1.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.tabControl1, "Displays properties and list of pcc\'s containing the selected texture");
             // 
@@ -641,7 +643,7 @@
             this.PropertiesTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PropertiesTab.Name = "PropertiesTab";
             this.PropertiesTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PropertiesTab.Size = new System.Drawing.Size(291, 223);
+            this.PropertiesTab.Size = new System.Drawing.Size(289, 278);
             this.PropertiesTab.TabIndex = 0;
             this.PropertiesTab.Text = "Properties";
             this.PropertiesTab.UseVisualStyleBackColor = true;
@@ -655,7 +657,7 @@
             this.PropertiesRTB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PropertiesRTB.Name = "PropertiesRTB";
             this.PropertiesRTB.ReadOnly = true;
-            this.PropertiesRTB.Size = new System.Drawing.Size(283, 213);
+            this.PropertiesRTB.Size = new System.Drawing.Size(281, 268);
             this.PropertiesRTB.TabIndex = 0;
             this.PropertiesRTB.Text = "";
             // 
@@ -666,7 +668,7 @@
             this.PCCsTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsTab.Name = "PCCsTab";
             this.PCCsTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PCCsTab.Size = new System.Drawing.Size(440, 409);
+            this.PCCsTab.Size = new System.Drawing.Size(289, 221);
             this.PCCsTab.TabIndex = 1;
             this.PCCsTab.Text = "PCC\'s";
             this.PCCsTab.UseVisualStyleBackColor = true;
@@ -681,7 +683,7 @@
             this.PCCsCheckedListBox.Location = new System.Drawing.Point(4, 5);
             this.PCCsCheckedListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PCCsCheckedListBox.Name = "PCCsCheckedListBox";
-            this.PCCsCheckedListBox.Size = new System.Drawing.Size(432, 399);
+            this.PCCsCheckedListBox.Size = new System.Drawing.Size(281, 211);
             this.PCCsCheckedListBox.TabIndex = 0;
             this.PCCsCheckedListBox.SelectedIndexChanged += new System.EventHandler(this.PCCsCheckedListBox_SelectedIndexChanged);
             // 
@@ -709,7 +711,7 @@
             this.OutputBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.OutputBox.Name = "OutputBox";
             this.OutputBox.ReadOnly = true;
-            this.OutputBox.Size = new System.Drawing.Size(1424, 94);
+            this.OutputBox.Size = new System.Drawing.Size(1671, 114);
             this.OutputBox.TabIndex = 0;
             this.OutputBox.Text = "";
             this.PrimaryToolTip.SetToolTip(this.OutputBox, "This area displays some useful information.\r\nBasically a filtered version of the " +
@@ -721,7 +723,7 @@
             this.ChangeButton.Enabled = false;
             this.ChangeButton.FlatAppearance.BorderSize = 0;
             this.ChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ChangeButton.Location = new System.Drawing.Point(1263, 2);
+            this.ChangeButton.Location = new System.Drawing.Point(1510, 2);
             this.ChangeButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangeButton.Name = "ChangeButton";
             this.ChangeButton.Size = new System.Drawing.Size(154, 35);
@@ -741,7 +743,7 @@
             this.Game3Label.AutoSize = true;
             this.Game3Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Game3Label.ForeColor = System.Drawing.Color.Red;
-            this.Game3Label.Location = new System.Drawing.Point(1231, 6);
+            this.Game3Label.Location = new System.Drawing.Point(1478, 6);
             this.Game3Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Game3Label.Name = "Game3Label";
             this.Game3Label.Size = new System.Drawing.Size(21, 24);
@@ -754,7 +756,7 @@
             this.Game2Label.AutoSize = true;
             this.Game2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Game2Label.ForeColor = System.Drawing.Color.Red;
-            this.Game2Label.Location = new System.Drawing.Point(1197, 6);
+            this.Game2Label.Location = new System.Drawing.Point(1444, 6);
             this.Game2Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Game2Label.Name = "Game2Label";
             this.Game2Label.Size = new System.Drawing.Size(21, 24);
@@ -767,7 +769,7 @@
             this.Game1Label.AutoSize = true;
             this.Game1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Game1Label.ForeColor = System.Drawing.Color.Red;
-            this.Game1Label.Location = new System.Drawing.Point(1165, 6);
+            this.Game1Label.Location = new System.Drawing.Point(1412, 6);
             this.Game1Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Game1Label.Name = "Game1Label";
             this.Game1Label.Size = new System.Drawing.Size(21, 24);
@@ -778,7 +780,7 @@
             // 
             this.GamesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GamesLabel.AutoSize = true;
-            this.GamesLabel.Location = new System.Drawing.Point(1091, 9);
+            this.GamesLabel.Location = new System.Drawing.Point(1338, 9);
             this.GamesLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.GamesLabel.Name = "GamesLabel";
             this.GamesLabel.Size = new System.Drawing.Size(65, 20);
@@ -791,7 +793,7 @@
             this.Tree3Label.AutoSize = true;
             this.Tree3Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Tree3Label.ForeColor = System.Drawing.Color.Red;
-            this.Tree3Label.Location = new System.Drawing.Point(1058, 6);
+            this.Tree3Label.Location = new System.Drawing.Point(1305, 6);
             this.Tree3Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Tree3Label.Name = "Tree3Label";
             this.Tree3Label.Size = new System.Drawing.Size(21, 24);
@@ -804,7 +806,7 @@
             this.Tree2Label.AutoSize = true;
             this.Tree2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Tree2Label.ForeColor = System.Drawing.Color.Red;
-            this.Tree2Label.Location = new System.Drawing.Point(1025, 6);
+            this.Tree2Label.Location = new System.Drawing.Point(1272, 6);
             this.Tree2Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Tree2Label.Name = "Tree2Label";
             this.Tree2Label.Size = new System.Drawing.Size(21, 24);
@@ -817,7 +819,7 @@
             this.Tree1Label.AutoSize = true;
             this.Tree1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Tree1Label.ForeColor = System.Drawing.Color.Red;
-            this.Tree1Label.Location = new System.Drawing.Point(992, 6);
+            this.Tree1Label.Location = new System.Drawing.Point(1239, 6);
             this.Tree1Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Tree1Label.Name = "Tree1Label";
             this.Tree1Label.Size = new System.Drawing.Size(21, 24);
@@ -828,19 +830,26 @@
             // 
             this.TreeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TreeLabel.AutoSize = true;
-            this.TreeLabel.Location = new System.Drawing.Point(935, 9);
+            this.TreeLabel.Location = new System.Drawing.Point(1182, 9);
             this.TreeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.TreeLabel.Name = "TreeLabel";
             this.TreeLabel.Size = new System.Drawing.Size(53, 20);
             this.TreeLabel.TabIndex = 11;
             this.TreeLabel.Text = "Trees:";
             // 
+            // changeCustomTFCToolStripMenuItem
+            // 
+            this.changeCustomTFCToolStripMenuItem.Name = "changeCustomTFCToolStripMenuItem";
+            this.changeCustomTFCToolStripMenuItem.Size = new System.Drawing.Size(185, 29);
+            this.changeCustomTFCToolStripMenuItem.Text = "Change Custom TFC";
+            this.changeCustomTFCToolStripMenuItem.Click += new System.EventHandler(this.changeCustomTFCToolStripMenuItem_Click);
+            // 
             // Texplorer2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1424, 476);
+            this.ClientSize = new System.Drawing.Size(1671, 558);
             this.Controls.Add(this.TreeLabel);
             this.Controls.Add(this.Tree1Label);
             this.Controls.Add(this.Tree2Label);
@@ -956,5 +965,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripLabel1;
         private System.Windows.Forms.ToolStripLabel VersionLabel;
         private System.Windows.Forms.ToolStripMenuItem addDLCToTreeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeCustomTFCToolStripMenuItem;
     }
 }

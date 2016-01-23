@@ -12,6 +12,8 @@ namespace KFreonLib.MEDirectories
 {
     public class MEDirectories
     {
+        public static string CachePath { get; set; } = "CustTextures";
+
         public List<string> BIOGames = new List<string>() { "", "", "" };
         public int WhichGame { get; set; }
         public string pathCooked
@@ -112,7 +114,6 @@ namespace KFreonLib.MEDirectories
 
         public  List<string> SetupPathing(bool AskIfNotFound)
         {
-            DebugOutput.PrintLn("Using ResIL dll at: " + Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(ExecFolder)), "ResIL.dll"));
             List<string> Messages = new List<string>();
             for (int i = 1; i <= 3; i++)
             {

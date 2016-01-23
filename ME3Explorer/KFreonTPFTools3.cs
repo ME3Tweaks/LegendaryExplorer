@@ -2204,7 +2204,10 @@ namespace ME3Explorer
             {
                 sfd.Title = "Where to extract to?";
                 sfd.Filter = "DirectX Images|*.dds";
-                sfd.FileName = tex.TexName + "_" + KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash) + ".dds";
+                string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
+                sfd.FileName = tex.TexName + "_" + hash + ".dds";
+                if (tex.TexName == null)
+                    sfd.FileName = tex.FileName.Contains(hash) ? tex.FileName : Path.GetFileNameWithoutExtension(tex.FileName) + "_" + hash + Path.GetExtension(tex.FileName);
 
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     outputPath = sfd.FileName;
@@ -2227,9 +2230,6 @@ namespace ME3Explorer
                 MessageBox.Show("Failed to extract texture for conversion.");
                 return;
             }
-
-            /*ResILWrapper.ResILImageConverter converter = new ResILImageConverter(path);
-            converter.ShowDialog();*/
         }
 
         private void GotoInvalid_Click(object sender, EventArgs e)

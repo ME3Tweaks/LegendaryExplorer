@@ -2237,6 +2237,8 @@ namespace ME3Explorer
                     AddTPFToolsJob(path, tex.Hash);
                     StatusUpdater.UpdateText("Replacement Complete and job added to TPFTools!");
                 }
+
+                Previews.Remove(tex.TexName + tex.Hash);  // KFreon: It's changed now, so needs to be regenerated.
             }
             catch (Exception exc)
             {
@@ -2534,7 +2536,7 @@ namespace ME3Explorer
 
                 DebugOutput.PrintLn("Replacing image in " + tex.TexName + " at " + imgsize + " with " + replacingfile);
 
-                tex2D.replaceImage(imgsize, im, pathBIOGame);
+                tex2D.replaceImage(imgsize, im, pathBIOGame);  // So each mipmap is made into a fully formatted DDS with no mipmaps by ImageMipMapHandler. Is that necessary?
                 UpdateModifiedTex(tex2D, tex, index);
                 DebugOutput.PrintLn("Image replaced.");
 
@@ -2556,6 +2558,8 @@ namespace ME3Explorer
                     AddTPFToolsJob(replacingfile, tex.Hash);
                     StatusUpdater.UpdateText("Replacement Complete and job added to TPFTools!");
                 }
+
+                Previews.Remove(tex.TexName + tex.Hash);
             }
         }
 
@@ -2791,6 +2795,18 @@ namespace ME3Explorer
                 AddDLCToTree(pccs);
                 return true;
             });
+        }
+
+        private void changeCustomTFCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Select new TFC to be used for new textures";
+                ofd.Filter = "Bioware Texture Caches|*.tfc";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                    MEDirectories.CachePath = ofd.FileName;
+            }
         }
     }
 }
