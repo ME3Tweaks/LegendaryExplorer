@@ -12,7 +12,7 @@ namespace KFreonLib.MEDirectories
 {
     public class MEDirectories
     {
-        public static string CachePath { get; set; } = "CustTextures";
+        public static string CachePath { get; set; }
 
         public List<string> BIOGames = new List<string>() { "", "", "" };
         public int WhichGame { get; set; }
@@ -71,15 +71,15 @@ namespace KFreonLib.MEDirectories
             }
         }
 
-        public MEDirectories(int game)
+        public MEDirectories(int game) : this()
         {
             WhichGame = game;
-            Properties.Settings.Default.Upgrade();
         }
 
         public MEDirectories()
         {
             Properties.Settings.Default.Upgrade();
+            CachePath = "CustTextures";
         }
 
         public  string GetDifferentPathCooked(int game)

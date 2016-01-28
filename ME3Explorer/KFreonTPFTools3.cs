@@ -745,6 +745,34 @@ namespace ME3Explorer
                 SetTreeImagesInternal(treeview.Nodes[i] as myTreeNode);
         }
 
+        List<string> GetHashesFromTPF(SaltTPF.ZipReader zippy)
+        {
+            string alltext = "";
+            try
+            {
+                byte[] data = zippy.Entries.Last().Extract(true);
+                char[] chars = new char[data.Length];
+                for (int i = 0; i < data.Length; i++)
+                    chars[i] = (char)data[i];
+                alltext = new string(chars);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred during extraction: " + e.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+
+            List<string> parts = alltext.Replace("\r", "").Replace("_0X", "_0x").Split('\n').ToList();
+            parts.RemoveAll(s => s == "\0");
+            List<string> tempparts = new List<string>();
+            foreach (string part in parts)
+                if (!tempparts.Contains(part))
+                    tempparts.Add(part);
+            parts = tempparts;
+
+            return parts;
+        }
+
         private void LoadTPF(string file)
         {
             EnableSecondProgressBar(true);
@@ -766,30 +794,11 @@ namespace ME3Explorer
             DebugOutput.PrintLn("Loading file: " + Path.GetFileName(file));
 
             // KFreon: Get hash info from TPF
-            string alltext = "";
-            try
-            {
-                byte[] data = zippy.Entries[numEntries - 1].Extract(true);
-                char[] chars = new char[data.Length];
-                for (int i = 0; i < data.Length; i++)
-                    chars[i] = (char)data[i];
-                alltext = new string(chars);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("An error occurred during extraction: " + e.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             // KFreon: Get individual hashes without duplicate lines
             // Heff: Fix weird uppercase X
-            List<string> parts = alltext.Replace("\r", "").Replace("_0X", "_0x").Split('\n').ToList();
-            parts.RemoveAll(s => s == "\0");
-            List<string> tempparts = new List<string>();
-            foreach (string part in parts)
-                if (!tempparts.Contains(part))
-                    tempparts.Add(part);
-            parts = tempparts;
+            List<string> parts = GetHashesFromTPF(zippy);
+            if (parts == null)
+                return;
 
 
             // KFreon: Thread TPF loading
@@ -3322,6 +3331,52 @@ namespace ME3Explorer
             cts.Cancel();
             OverallProgressBar.Value = 0;
             OverallStatusLabel.Text = "Cancelled.";
+        }
+
+        private void BulkExtractTPFButton_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                fbd.Tag = "Select folder containing multiple TPF's to extract.";
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    OverallProgressBar.Value = 0;
+                    var tpfs = Directory.EnumerateFiles(fbd.SelectedPath);
+                    OverallProgressBar.Maximum = tpfs.Count();
+                    foreach (var item in tpfs)
+                    {
+                        SaltTPF.ZipReader zippy = new SaltTPF.ZipReader(item);
+
+                        OverallStatusLabel.Text = "Extracting " + Path.GetFileName(zippy._filename);
+
+                        // KFreon: Create individual directory
+                        string extractPath = Path.Combine(fbd.SelectedPath, Path.GetFileNameWithoutExtension(zippy._filename));
+                        Directory.CreateDirectory(extractPath);
+
+                        List<string> hashes = GetHashesFromTPF(zippy);
+
+                        for (int i = 0; i < zippy.Entries.Count - 1; i++) 
+                        {
+                            var entry = zippy.Entries[i];
+                            string filename = entry.Filename;
+                            string hash = hashes[i].Split('|').First();
+
+                            if (!filename.Contains(hash))
+                            {
+                                string tempname = Path.GetFileNameWithoutExtension(filename);
+                                filename = filename.Replace(tempname, tempname + "_" + hash);
+                            }
+
+                            entry.Extract(false, Path.Combine(extractPath, filename));
+                        }
+
+                        OverallProgressBar.Value++;
+                    }
+
+                    OverallProgressBar.Value = OverallProgressBar.Maximum;
+                    MessageBox.Show("Done");
+                }
+            }
         }
     }
 }

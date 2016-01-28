@@ -2465,6 +2465,8 @@ namespace ME3Explorer
                 else
                     using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
                         ImageEngine.GenerateThumbnailToFile(ms, thumbpath, 128);
+
+                tex.ThumbnailPath = thumbpath;
             }
             catch (Exception e)
             {
