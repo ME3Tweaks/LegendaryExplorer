@@ -205,6 +205,10 @@ namespace ME2Explorer
             }
             listBox1.EndUpdate();
             treeView1.EndUpdate();
+
+            toolStripComboBox1.Items.Clear();
+            foreach (int index in classes)
+                toolStripComboBox1.Items.Add(pcc.GetClass(index));
         }
 
 

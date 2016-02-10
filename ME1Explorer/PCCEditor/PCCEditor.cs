@@ -87,7 +87,7 @@ namespace ME1Explorer
                             Link = pcc.Exports[Link - 1].LinkID;
                         else
                             Link = pcc.Imports[-Link - 1].link;
-            }
+                    }
                     t = AddPathToTree(t, LinkList);
                 }
                 for (int i = 0; i < pcc.Imports.Count; i++)
