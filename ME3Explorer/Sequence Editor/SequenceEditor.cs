@@ -444,14 +444,14 @@ namespace ME3Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pcc.altSaveToFile(d.FileName, true);
-                if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
-                    tc.MdiParent = this.ParentForm;
-                    tc.Show();
-                    tc.EasyUpdate();
-                    tc.Close();
-                }
+                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                //{
+                //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
+                //    tc.MdiParent = this.ParentForm;
+                //    tc.Show();
+                //    tc.EasyUpdate();
+                //    tc.Close();
+                //}
             }
         }
 
