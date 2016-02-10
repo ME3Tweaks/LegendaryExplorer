@@ -929,7 +929,15 @@ namespace ME3Explorer
             if (result != "")
             {
                 pcc.Names.Add(result);
-                MessageBox.Show("Done.");
+                if (CurrentView == NAMES_VIEW)
+                {
+                    int scrollTo = listBox1.TopIndex + 1;
+                    int selected = listBox1.SelectedIndex;
+                    RefreshView();
+                    listBox1.SelectedIndex = selected;
+                    listBox1.TopIndex = scrollTo;
+                }
+                MessageBox.Show("\"" + result + "\" added at index " + (pcc.Names.Count - 1));
             }
         }
 
