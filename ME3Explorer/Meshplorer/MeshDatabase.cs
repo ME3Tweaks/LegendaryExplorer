@@ -54,43 +54,51 @@ namespace ME3Explorer.Meshplorer
             {
                 pb1.Value = count++;
                 DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
-                PCCObject pcc = new PCCObject(file);
-                DBEntry ent = new DBEntry();
-                ent.filename = Path.GetFileName(file);
-                ent.Objects = new List<ObjInf>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
+                try
                 {
-                    PCCObject.ExportEntry ex = pcc.Exports[i];
-                    ObjInf obj;
-                    switch (ex.ClassName)
+                    PCCObject pcc = new PCCObject(file);
+                    DBEntry ent = new DBEntry();
+                    ent.filename = Path.GetFileName(file);
+                    ent.Objects = new List<ObjInf>();
+                    for (int i = 0; i < pcc.Exports.Count; i++)
                     {
-                        case "StaticMesh":
-                            obj = new ObjInf();
-                            obj.Index = i;
-                            obj.Type = 0;
-                            obj.name = ex.ObjectName;
-                            ent.Objects.Add(obj);
-                            break;
-                        case "SkeletalMesh":
-                            obj = new ObjInf();
-                            obj.Index = i;
-                            obj.Type = 1;
-                            obj.name = ex.ObjectName;
-                            ent.Objects.Add(obj);
-                            break;
+                        PCCObject.ExportEntry ex = pcc.Exports[i];
+                        ObjInf obj;
+                        switch (ex.ClassName)
+                        {
+                            case "StaticMesh":
+                                obj = new ObjInf();
+                                obj.Index = i;
+                                obj.Type = 0;
+                                obj.name = ex.ObjectName;
+                                ent.Objects.Add(obj);
+                                break;
+                            case "SkeletalMesh":
+                                obj = new ObjInf();
+                                obj.Index = i;
+                                obj.Type = 1;
+                                obj.name = ex.ObjectName;
+                                ent.Objects.Add(obj);
+                                break;
+                        }
+                    }
+                    if (ent.Objects.Count != 0)
+                    {
+                        DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
+                        //foreach (ObjInf o in ent.Objects)
+                        //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
+                        //DebugOutput.Update();
+                        database.Add(ent);
+                    }
+                    else
+                    {
+                        DebugOutput.PrintLn("Nothing...", false);
                     }
                 }
-                if (ent.Objects.Count != 0)
+                catch (Exception ex)
                 {
-                    DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
-                    //foreach (ObjInf o in ent.Objects)
-                    //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
-                    //DebugOutput.Update();
-                    database.Add(ent);
-                }
-                else
-                {
-                    DebugOutput.PrintLn("Nothing...", false);
+                    MessageBox.Show("Error:\n" + ex.Message);
+                    DebugOutput.PrintLn("Could not open file : " + Path.GetFileName(file));
                 }
             }
             RefreshLists();

@@ -19,7 +19,8 @@ namespace ME3Explorer.InterpEditor
 
         public InterpEditor()
         {
-            SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+            if (SText.fontcollection == null)
+                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
             InitializeComponent();
             timeline.Scrollbar = vScrollBar1;
             timeline.GroupList.ScrollbarH = hScrollBar1;
@@ -60,21 +61,28 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadPCC(string fileName, Object editorTalkFile = null)
         {
-            if (editorTalkFile != null)
+            try
             {
-                InitTalkFile(editorTalkFile);
+                pcc = new PCCObject(fileName);
+                if (editorTalkFile != null)
+                {
+                    InitTalkFile(editorTalkFile);
+                }
+                else
+                {
+                    InitTalkFile(talkfile);
+                }
+                objects.Clear();
+                CurrentFile = fileName;
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "InterpData")
+                        objects.Add(i);
+                RefreshCombo();
             }
-            else
+            catch (Exception ex)
             {
-                InitTalkFile(talkfile);
+                MessageBox.Show("Error:\n" + ex.Message);
             }
-            objects.Clear();
-            pcc = new PCCObject(fileName);
-            CurrentFile = fileName;
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == "InterpData")
-                    objects.Add(i);
-            RefreshCombo();
         }
 
         public void RefreshCombo()

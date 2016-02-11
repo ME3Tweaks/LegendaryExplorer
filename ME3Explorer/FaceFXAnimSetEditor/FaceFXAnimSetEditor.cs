@@ -29,12 +29,19 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Objects = new List<int>();
-                pcc = new PCCObject(d.FileName);
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
-                        Objects.Add(i);
-                ListRefresh();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    Objects = new List<int>();
+                    for (int i = 0; i < pcc.Exports.Count; i++)
+                        if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
+                            Objects.Add(i);
+                    ListRefresh();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

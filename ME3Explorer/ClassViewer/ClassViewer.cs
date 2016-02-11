@@ -28,12 +28,19 @@ namespace ME3Explorer.ClassViewer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                Objects = new List<int>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "Class")
-                        Objects.Add(i);
-                RefreshLists();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    Objects = new List<int>();
+                    for (int i = 0; i < pcc.Exports.Count; i++)
+                        if (pcc.Exports[i].ClassName == "Class")
+                            Objects.Add(i);
+                    RefreshLists();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

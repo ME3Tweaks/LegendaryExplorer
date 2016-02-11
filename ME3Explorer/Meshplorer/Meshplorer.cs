@@ -64,14 +64,21 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadPCC(string path)
         {
-            MeshplorerMode = 0;
-            CurrFile = path;
-            pcc = new PCCObject(path);
-            Materials = new List<int>();
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == "Material" || pcc.Exports[i].ClassName == "MaterialInstanceConstant")
-                    Materials.Add(i);
-            RefreshList1();
+            try
+            {
+                pcc = new PCCObject(path);
+                MeshplorerMode = 0;
+                CurrFile = path;
+                Materials = new List<int>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "Material" || pcc.Exports[i].ClassName == "MaterialInstanceConstant")
+                        Materials.Add(i);
+                RefreshList1();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         public void RefreshList1()

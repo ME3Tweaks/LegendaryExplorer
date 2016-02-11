@@ -139,8 +139,16 @@ namespace ME3Explorer
                 return 1;
             }
             System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
-            PCCObject pccObj = new PCCObject(sourceFile);
-            pccObj.saveToFile(outputFile,false);
+            try
+            {
+                PCCObject pccObj = new PCCObject(sourceFile);
+                pccObj.saveToFile(outputFile, false);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Error:\n" + ex.Message);
+                return 1;
+            }
             return 0;
         }
 

@@ -916,11 +916,18 @@ namespace ME3Explorer
         {
             //just load a file
             string s = sender.ToString();
-            pcc = new PCCObject(s);
-            SetView(2);
-            RefreshView();
-            InitStuff();
-            this.Text = "PCC Editor 2.0 (" + Path.GetFileName(s) + ")";
+            try
+            {
+                pcc = new PCCObject(s);
+                SetView(2);
+                RefreshView();
+                InitStuff();
+                this.Text = "PCC Editor 2.0 (" + Path.GetFileName(s) + ")";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -929,7 +936,15 @@ namespace ME3Explorer
             if (result != "")
             {
                 pcc.Names.Add(result);
-                MessageBox.Show("Done.");
+                if (CurrentView == NAMES_VIEW)
+                {
+                    int scrollTo = listBox1.TopIndex + 1;
+                    int selected = listBox1.SelectedIndex;
+                    RefreshView();
+                    listBox1.SelectedIndex = selected;
+                    listBox1.TopIndex = scrollTo;
+                }
+                MessageBox.Show("\"" + result + "\" added at index " + (pcc.Names.Count - 1));
             }
         }
 

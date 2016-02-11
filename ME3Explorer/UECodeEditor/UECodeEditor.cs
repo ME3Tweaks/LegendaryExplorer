@@ -34,12 +34,19 @@ namespace ME3Explorer.UECodeEditor
 
         public void LoadFile(string path)
         {
-            pcc = new PCCObject(path);
-            Objects = new List<int>();
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == "Function")
-                    Objects.Add(i);
-            RefreshLists();
+            try
+            {
+                pcc = new PCCObject(path);
+                Objects = new List<int>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "Function")
+                        Objects.Add(i);
+                RefreshLists();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         public void RefreshLists()

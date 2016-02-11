@@ -45,21 +45,29 @@ namespace ME3Explorer.ScriptDB
             foreach (string file in files)
             {
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
-                PCCObject pcc = new PCCObject(file);
-                int count2 = 0;
-                foreach (PCCObject.ExportEntry ent in pcc.Exports)
+                try
                 {
-                    if (ent.ClassName == "Function")
+                    PCCObject pcc = new PCCObject(file);
+                    int count2 = 0;
+                    foreach (PCCObject.ExportEntry ent in pcc.Exports)
                     {
-                        Function f = new Function(ent.Data, pcc);
-                        ScriptEntry n = new ScriptEntry();
-                        n.file = Path.GetFileName(file);
-                        n.name = ent.PackageFullName + "." + ent.ObjectName;
-                        n.script = f.ToRawText(false);
-                        database.Add(n);
-                        DebugOutput.PrintLn("\tFound \"" + n.name + "\"",false);
+                        if (ent.ClassName == "Function")
+                        {
+                            Function f = new Function(ent.Data, pcc);
+                            ScriptEntry n = new ScriptEntry();
+                            n.file = Path.GetFileName(file);
+                            n.name = ent.PackageFullName + "." + ent.ObjectName;
+                            n.script = f.ToRawText(false);
+                            database.Add(n);
+                            DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
+                        }
+                        count2++;
                     }
-                    count2++;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                    DebugOutput.PrintLn("Could not open file: " + Path.GetFileName(file));
                 }
                 {
                     pb1.Maximum = files.Length;

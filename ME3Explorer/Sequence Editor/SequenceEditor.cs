@@ -93,14 +93,20 @@ namespace ME3Explorer
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                CurrentFile = d.FileName;
-                toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
-                LoadSequences();
-                graphEditor.nodeLayer.RemoveAllChildren();
-                graphEditor.edgeLayer.RemoveAllChildren();
-                if(CurrentObjects != null)
-                    CurrentObjects.Clear();
+                try {
+                    pcc = new PCCObject(d.FileName);
+                    CurrentFile = d.FileName;
+                    toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
+                    LoadSequences();
+                    graphEditor.nodeLayer.RemoveAllChildren();
+                    graphEditor.edgeLayer.RemoveAllChildren();
+                    if(CurrentObjects != null)
+                        CurrentObjects.Clear();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 
@@ -444,14 +450,14 @@ namespace ME3Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pcc.altSaveToFile(d.FileName, true);
-                if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
-                    tc.MdiParent = this.ParentForm;
-                    tc.Show();
-                    tc.EasyUpdate();
-                    tc.Close();
-                }
+                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                //{
+                //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
+                //    tc.MdiParent = this.ParentForm;
+                //    tc.Show();
+                //    tc.EasyUpdate();
+                //    tc.Close();
+                //}
             }
         }
 
@@ -625,12 +631,20 @@ namespace ME3Explorer
             PCCEditor2 p = new PCCEditor2();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
-            p.Show();
-            p.pcc = new PCCObject(CurrentFile);
-            p.SetView(2);
-            p.RefreshView();
-            p.InitStuff();
-            p.listBox1.SelectedIndex = l;
+            p.Show(); 
+            try
+            {
+
+                p.pcc = new PCCObject(CurrentFile);
+                p.SetView(2);
+                p.RefreshView();
+                p.InitStuff();
+                p.listBox1.SelectedIndex = l;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)

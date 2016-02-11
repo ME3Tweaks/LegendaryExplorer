@@ -464,7 +464,7 @@ namespace ME3Creator
             treeView3.Nodes.Add("Parent: Index(" + exp.idxParent + ") = \"" + pcc.GetObject(exp.idxParent) + "\"");
             treeView3.Nodes.Add("Link: Index(" + exp.idxLink + ") = \"" + pcc.GetObject(exp.idxLink) + "\"");
             treeView3.Nodes.Add("Name: Index(" + exp.idxName + ") = \"" + pcc.GetName(exp.idxName) + "\"");
-            treeView3.Nodes.Add("Index: 0x" + exp.Index.ToString("X8") + " = " + pcc.GetName(exp.Index));
+            treeView3.Nodes.Add("Index: 0x" + exp.Index.ToString("X8"));
             treeView3.Nodes.Add("Archetype: Index(" + exp.idxArchetype + ")");
             treeView3.Nodes.Add("Unknown1: 0x" + exp.Unk1.ToString("X8"));
             treeView3.Nodes.Add("Object Flags: 0x" + exp.ObjectFlags.ToString("X8"));

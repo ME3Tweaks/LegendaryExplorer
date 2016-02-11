@@ -34,66 +34,73 @@ namespace ME3Explorer.UDKConverter
             int pos = 0;
             int count = 0;
             BitConverter.IsLittleEndian = true;
-            PCCObject pcc = new PCCObject(filename);
-            string newfilename = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".upk";
-            UDKObject udk = new UDKObject();
-            udk.Names = new List<UDKObject.NameEntry>();
-            udk.Imports = new List<UDKObject.ImportEntry>();
-            udk.Exports = new List<UDKObject.ExportEntry>();
-            udk.ExportCount = pcc.Exports.Count;
-            udk.ImportCount = pcc.Imports.Count;
-            udk.NameCount = pcc.Names.Count;
-            rtb1.Text = "Convert Names...\n";
-            RtbUpd();
-            foreach (string s in pcc.Names)
+            try
             {
-                UDKObject.NameEntry e = new UDKObject.NameEntry();
-                e.name = s;
-                e.flags = 0x70010;
-                udk.Names.Add(e);
-                if ((count++) % 100 == 0)
+                PCCObject pcc = new PCCObject(filename);
+                string newfilename = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".upk";
+                UDKObject udk = new UDKObject();
+                udk.Names = new List<UDKObject.NameEntry>();
+                udk.Imports = new List<UDKObject.ImportEntry>();
+                udk.Exports = new List<UDKObject.ExportEntry>();
+                udk.ExportCount = pcc.Exports.Count;
+                udk.ImportCount = pcc.Imports.Count;
+                udk.NameCount = pcc.Names.Count;
+                rtb1.Text = "Convert Names...\n";
+                RtbUpd();
+                foreach (string s in pcc.Names)
                 {
-                    this.Text = "UDK Converter " + waitline[pos++];
-                    if (pos == waitline.Length)
-                        pos = 0;
+                    UDKObject.NameEntry e = new UDKObject.NameEntry();
+                    e.name = s;
+                    e.flags = 0x70010;
+                    udk.Names.Add(e);
+                    if ((count++) % 100 == 0)
+                    {
+                        this.Text = "UDK Converter " + waitline[pos++];
+                        if (pos == waitline.Length)
+                            pos = 0;
+                    }
                 }
+                rtb1.Text += "Convert Imports...\n";
+                RtbUpd();
+                foreach (PCCObject.ImportEntry i in pcc.Imports)
+                {
+                    UDKObject.ImportEntry e = new UDKObject.ImportEntry();
+                    e.raw = i.data;
+                    udk.Imports.Add(e);
+                    if ((count++) % 100 == 0)
+                    {
+                        this.Text = "UDK Converter " + waitline[pos++];
+                        if (pos == waitline.Length)
+                            pos = 0;
+                    }
+                }
+                rtb1.Text += "Convert Exports...\n";
+                RtbUpd();
+                foreach (PCCObject.ExportEntry ex in pcc.Exports)
+                {
+                    UDKObject.ExportEntry e = new UDKObject.ExportEntry();
+                    e.raw = ex.info;
+                    e.data = ex.Data;
+                    udk.Exports.Add(e);
+                    if ((count++) % 100 == 0)
+                    {
+                        this.Text = "UDK Converter " + waitline[pos++];
+                        if (pos == waitline.Length)
+                            pos = 0;
+                    }
+                }
+                rtb1.Text += "Saving to file...\n";
+                this.Text = "UDK Converter";
+                udk._HeaderOff = 0x19;
+                udk.Header = CreateUPKHeader(pcc);
+                udk.fz.raw = new byte[0];
+                udk.SaveToFile(newfilename);
+                MessageBox.Show("Done.");
             }
-            rtb1.Text += "Convert Imports...\n";
-            RtbUpd();
-            foreach (PCCObject.ImportEntry i in pcc.Imports)
+            catch (Exception ex)
             {
-                UDKObject.ImportEntry e = new UDKObject.ImportEntry();
-                e.raw = i.data;
-                udk.Imports.Add(e);
-                if ((count++) % 100 == 0)
-                {
-                    this.Text = "UDK Converter " + waitline[pos++];
-                    if (pos == waitline.Length)
-                        pos = 0;
-                }
+                MessageBox.Show("Error:\n" + ex.Message);
             }
-            rtb1.Text += "Convert Exports...\n";
-            RtbUpd();
-            foreach (PCCObject.ExportEntry ex in pcc.Exports)
-            {
-                UDKObject.ExportEntry e = new UDKObject.ExportEntry();
-                e.raw = ex.info;
-                e.data = ex.Data;
-                udk.Exports.Add(e);
-                if ((count++) % 100 == 0)
-                {
-                    this.Text = "UDK Converter " + waitline[pos++];
-                    if (pos == waitline.Length)
-                        pos = 0;
-                }
-            }
-            rtb1.Text += "Saving to file...\n";
-            this.Text = "UDK Converter";
-            udk._HeaderOff = 0x19;
-            udk.Header = CreateUPKHeader(pcc);
-            udk.fz.raw = new byte[0];
-            udk.SaveToFile(newfilename);
-            MessageBox.Show("Done.");
         }
 
         public void RtbUpd()

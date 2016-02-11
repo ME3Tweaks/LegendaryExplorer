@@ -122,11 +122,18 @@ namespace ME3Explorer
 
         public void LoadFile(string s)
         {
-            if (!File.Exists(s))
-                return;
-            currentPCC = s;
-            pcc = new PCCObject(s);
-            GeneratePccTree();
+            try
+            {
+                if (!File.Exists(s))
+                    return;
+                pcc = new PCCObject(s);
+                currentPCC = s;
+                GeneratePccTree();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         public void GeneratePccTree()
@@ -215,22 +222,29 @@ namespace ME3Explorer
             Println("Loading " + t.Text + " ...");
 
             string DLCName = t.Parent.Text;
-            if (DLCName == mainPCCFolder)
+            try
             {
-                currentPCC = ME3Directory.cookedPath + t.Text;
-                pcc = new PCCObject(currentPCC);
-            }
-            else
-            {
-                currentPCC = t.Name;
-                string tempPCCPath = Path.GetFileName(currentPCC);
-                currentDLC = new AmaroK86.MassEffect3.DLCBase(ME3Directory.DLCFilePath(DLCName));
-                currentDLC.extractFile(currentPCC, tempPCCPath);
-                pcc = new PCCObject(tempPCCPath);
-                pcc.bDLCStored = true;
-            }
+                if (DLCName == mainPCCFolder)
+                {
+                    pcc = new PCCObject(currentPCC);
+                    currentPCC = ME3Directory.cookedPath + t.Text;
+                }
+                else
+                {
+                    currentPCC = t.Name;
+                    string tempPCCPath = Path.GetFileName(currentPCC);
+                    currentDLC = new AmaroK86.MassEffect3.DLCBase(ME3Directory.DLCFilePath(DLCName));
+                    currentDLC.extractFile(currentPCC, tempPCCPath);
+                    pcc = new PCCObject(tempPCCPath);
+                    pcc.bDLCStored = true;
+                }
 
-            GeneratePccTree();
+                GeneratePccTree();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void TV1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -1125,11 +1139,18 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.pcc = new PCCObject(currentPCC);
-            p.SetView(2);
-            p.RefreshView();
-            p.InitStuff();
-            p.listBox1.SelectedIndex = l;
+            try
+            {
+                p.pcc = new PCCObject(currentPCC);
+                p.SetView(2);
+                p.RefreshView();
+                p.InitStuff();
+                p.listBox1.SelectedIndex = l;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void AssetExplorer_FormClosing(object sender, FormClosingEventArgs e)

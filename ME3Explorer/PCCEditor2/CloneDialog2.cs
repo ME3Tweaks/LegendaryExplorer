@@ -30,8 +30,15 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                ListRefresh();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    ListRefresh();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

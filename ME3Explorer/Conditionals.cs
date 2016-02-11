@@ -676,13 +676,6 @@ namespace ME3Explorer
                 fileStream.Write(m.ToArray(), 0, (int)m.Length);
                 fileStream.Close();
 
-                TOCeditor tc = new TOCeditor();
-                tc.MdiParent = this.ParentForm;
-                tc.Show();
-                string fname = Path.GetFileName(path);
-                if (!tc.UpdateFile(fname, (uint)memsize))
-                    MessageBox.Show("Didn't found entry!");
-                tc.Close();
                 LoadFile(path);
             }
         }
