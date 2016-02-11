@@ -220,9 +220,9 @@ namespace ME3Explorer
                     BeginTreeLoading();
                     ResetImageList();
                     DisappearDuplicatesBox(true);
-                    ContextPanel.Height = 0;
+                    /*ContextPanel.Height = 0;
                     MainTreeView.Height = 753 + 25;
-                    PreviewTabPages.Height = 525;
+                    PreviewTabPages.Height = 525;*/  // KFreon: Scaling fixes
                 }));
             });
 
@@ -745,7 +745,7 @@ namespace ME3Explorer
                 SetTreeImagesInternal(treeview.Nodes[i] as myTreeNode);
         }
 
-        List<string> GetHashesFromTPF(SaltTPF.ZipReader zippy)
+        List<string> GetHashesFromTPF(SaltTPF.ZipReader zippy, bool removeDuplicates = true)
         {
             string alltext = "";
             try
@@ -764,11 +764,15 @@ namespace ME3Explorer
 
             List<string> parts = alltext.Replace("\r", "").Replace("_0X", "_0x").Split('\n').ToList();
             parts.RemoveAll(s => s == "\0");
-            List<string> tempparts = new List<string>();
-            foreach (string part in parts)
-                if (!tempparts.Contains(part))
-                    tempparts.Add(part);
-            parts = tempparts;
+
+            if (removeDuplicates)
+            {
+                List<string> tempparts = new List<string>();
+                foreach (string part in parts)
+                    if (!tempparts.Contains(part))
+                        tempparts.Add(part);
+                parts = tempparts;
+            }
 
             return parts;
         }
@@ -1155,8 +1159,8 @@ namespace ME3Explorer
                 /*UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(300);
                 UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (state ? 25 : 0), trans);
                 UsefulThings.WinForms.Transitions.Transition.run(MainTreeView, "Height", (state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height), trans);*/
-                ContextPanel.Height = state ? 25 : 0;
-                MainTreeView.Height = state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height;
+                /*ContextPanel.Height = state ? 25 : 0;
+                MainTreeView.Height = state ? MainSplitter.Panel1.Height - 25 : MainSplitter.Panel1.Height;*/ // KFreon: Scaling fixes
             }
         }
 
@@ -1819,7 +1823,8 @@ namespace ME3Explorer
                 DebugOutput.PrintLn("Failure in TPFTools Tree DrawNode:" + e.Message);
             }*/
 
-            TextRenderer.DrawText(e.Graphics, text, font, e.Node.Bounds, Color.Black, TextFormatFlags.VerticalCenter);
+            Rectangle rect = e.Bounds;
+            TextRenderer.DrawText(e.Graphics, text, font, rect, Color.Black, TextFormatFlags.VerticalCenter);
         }
 
 
@@ -3345,6 +3350,9 @@ namespace ME3Explorer
                     OverallProgressBar.Maximum = tpfs.Count();
                     foreach (var item in tpfs)
                     {
+                        if (!item.EndsWith(".tpf", StringComparison.OrdinalIgnoreCase))  // KFreon: TPF's only.
+                            continue;
+
                         SaltTPF.ZipReader zippy = new SaltTPF.ZipReader(item);
 
                         OverallStatusLabel.Text = "Extracting " + Path.GetFileName(zippy._filename);
@@ -3353,9 +3361,9 @@ namespace ME3Explorer
                         string extractPath = Path.Combine(fbd.SelectedPath, Path.GetFileNameWithoutExtension(zippy._filename));
                         Directory.CreateDirectory(extractPath);
 
-                        List<string> hashes = GetHashesFromTPF(zippy);
+                        List<string> hashes = GetHashesFromTPF(zippy, false);
 
-                        for (int i = 0; i < zippy.Entries.Count - 1; i++) 
+                        for (int i = 0; i < hashes.Count; i++) 
                         {
                             var entry = zippy.Entries[i];
                             string filename = entry.Filename;
@@ -3367,6 +3375,9 @@ namespace ME3Explorer
                                 filename = filename.Replace(tempname, tempname + "_" + hash);
                             }
 
+                            if (File.Exists(Path.Combine(extractPath, filename)))
+                                continue;
+
                             entry.Extract(false, Path.Combine(extractPath, filename));
                         }
 
@@ -3377,6 +3388,11 @@ namespace ME3Explorer
                     MessageBox.Show("Done");
                 }
             }
+        }
+
+        private void texmodPreviewBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

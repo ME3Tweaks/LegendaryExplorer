@@ -770,7 +770,7 @@ namespace KFreonLib.Textures
                     if (imgBuffer.Length != imgInfo.uncSize)
                         throw new FormatException("image sizes do not match, original is " + imgInfo.uncSize + ", new is " + imgBuffer.Length);
 
-                    if (arcName.ToLower() == Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower()))
+                    if (!arcName.ToLower().Contains(Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower())))  // CachePath is usually CustTextures, but arcName can be CustTextures#, so check for substring
                     {
                         ChooseNewCache(archiveDir, imgBuffer.Length);
                         archivePath = FullArcPath;
@@ -905,7 +905,7 @@ namespace KFreonLib.Textures
 
                     //DebugOutput.PrintLn( "\nOK here's the stuff we came for. About to change/add cache.\n");
                     //DebugOutput.PrintLn( "Initial arcname = " + arcName + "   custCache = " + CustCache + "\n");
-                    if (arcName.ToLower() == Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower()))
+                    if (!arcName.ToLower().Contains(Path.GetFileNameWithoutExtension(MEDirectories.MEDirectories.CachePath.ToLower())))  // CachePath is usually CustTextures, but arcName can be CustTextures#, so check for substring
                     {
                         ChooseNewCache(archiveDir, imgBuffer.Length);
                         archivePath = FullArcPath;
