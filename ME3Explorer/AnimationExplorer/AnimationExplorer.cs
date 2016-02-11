@@ -36,24 +36,31 @@ namespace ME3Explorer.AnimationExplorer
 
         public void LoadPcc(string s)
         {
-            AT = new List<AnimTree>();
-            AS = new List<AnimSet>();
-            pcc = new PCCObject(s);
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                switch(pcc.Exports[i].ClassName)
-                {
-                    case "AnimTree":
-                        AT.Add(new AnimTree(pcc, i));
-                        break;
-                    case "AnimSet":
-                        AS.Add(new AnimSet(pcc, i));
-                        break;
-                }
-            treeView1.Nodes.Clear();
-            foreach (AnimTree at in AT)
-                treeView1.Nodes.Add(at.ToTree());
-            foreach(AnimSet ans in AS)
-                treeView1.Nodes.Add(ans.ToTree());
+            try
+            {
+                pcc = new PCCObject(s);
+                AT = new List<AnimTree>();
+                AS = new List<AnimSet>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    switch (pcc.Exports[i].ClassName)
+                    {
+                        case "AnimTree":
+                            AT.Add(new AnimTree(pcc, i));
+                            break;
+                        case "AnimSet":
+                            AS.Add(new AnimSet(pcc, i));
+                            break;
+                    }
+                treeView1.Nodes.Clear();
+                foreach (AnimTree at in AT)
+                    treeView1.Nodes.Add(at.ToTree());
+                foreach (AnimSet ans in AS)
+                    treeView1.Nodes.Add(ans.ToTree());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
@@ -69,18 +76,26 @@ namespace ME3Explorer.AnimationExplorer
             int count = 1;
             foreach (string file in files)
             {
-                PCCObject _pcc = new PCCObject(file);
-                DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
-                bool found = false;
-                foreach(PCCObject.ExportEntry ex in _pcc.Exports)
-                    if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
-                    {
-                        DebugOutput.PrintLn("Found Animation!");
-                        found = true;
-                        break;
-                    }
-                if(found)
-                    filenames.Add(file);
+                try
+                {
+                    PCCObject _pcc = new PCCObject(file);
+                    DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
+                    bool found = false;
+                    foreach (PCCObject.ExportEntry ex in _pcc.Exports)
+                        if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
+                        {
+                            DebugOutput.PrintLn("Found Animation!");
+                            found = true;
+                            break;
+                        }
+                    if (found)
+                        filenames.Add(file);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                    DebugOutput.PrintLn("Could not open " + Path.GetFileName(file));
+                }
             }
             RefreshLists();
         }

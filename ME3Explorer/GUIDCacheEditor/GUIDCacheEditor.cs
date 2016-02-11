@@ -38,9 +38,16 @@ namespace ME3Explorer.GUIDCacheEditor
                 return;
             }
             BitConverter.IsLittleEndian = true;
-            pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
-            ReadGUIDs(pcc.Exports[0].Data);
-            RefreshLists();
+            try
+            {
+                pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
+                ReadGUIDs(pcc.Exports[0].Data);
+                RefreshLists();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         public void ReadGUIDs(byte[] buff)

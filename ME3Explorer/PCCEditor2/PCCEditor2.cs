@@ -916,11 +916,18 @@ namespace ME3Explorer
         {
             //just load a file
             string s = sender.ToString();
-            pcc = new PCCObject(s);
-            SetView(2);
-            RefreshView();
-            InitStuff();
-            this.Text = "PCC Editor 2.0 (" + Path.GetFileName(s) + ")";
+            try
+            {
+                pcc = new PCCObject(s);
+                SetView(2);
+                RefreshView();
+                InitStuff();
+                this.Text = "PCC Editor 2.0 (" + Path.GetFileName(s) + ")";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)

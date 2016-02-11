@@ -30,12 +30,19 @@ namespace ME3Explorer.WwiseBankViewer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                objects = new List<int>();
-                pcc = new PCCObject(d.FileName);
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "WwiseBank")
-                        objects.Add(i);
-                ListRefresh();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    objects = new List<int>();
+                    for (int i = 0; i < pcc.Exports.Count; i++)
+                        if (pcc.Exports[i].ClassName == "WwiseBank")
+                            objects.Add(i);
+                    ListRefresh();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

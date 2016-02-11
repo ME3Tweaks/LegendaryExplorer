@@ -40,11 +40,18 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                CurrentFile = d.FileName;
-                LoadObjects();
-                Status.Text = "Ready";
-                saveToolStripMenuItem.Enabled = true;
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    CurrentFile = d.FileName;
+                    LoadObjects();
+                    Status.Text = "Ready";
+                    saveToolStripMenuItem.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 
@@ -195,12 +202,19 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                CurrentFile = d.FileName;
-                isDLC = true;
-                LoadObjects();
-                Status.Text = "Ready";
-                saveToolStripMenuItem.Enabled = true;
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    CurrentFile = d.FileName;
+                    isDLC = true;
+                    LoadObjects();
+                    Status.Text = "Ready";
+                    saveToolStripMenuItem.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

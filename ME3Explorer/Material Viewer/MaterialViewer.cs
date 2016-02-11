@@ -51,10 +51,17 @@ namespace ME3Explorer.Material_Viewer
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                status.Text = "Loaded : " + d.FileName;
-                pcc = new PCCObject(d.FileName);
-                CurrentFile = d.FileName;
-                LoadMaterials();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    status.Text = "Loaded : " + d.FileName;
+                    CurrentFile = d.FileName;
+                    LoadMaterials();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

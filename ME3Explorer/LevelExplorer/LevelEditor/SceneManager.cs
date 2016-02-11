@@ -104,24 +104,31 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         {
             if (!File.Exists(path))
                 return;
-            Levelfile l = new Levelfile();
-            l.path = path;
-            l.pcc = new PCCObject(path);
-            for (int i = 0; i < l.pcc.Exports.Count; i++)
+            try
             {
-                PCCObject.ExportEntry e = l.pcc.Exports[i];
-                if (e.ClassName == "Level")
+                Levelfile l = new Levelfile();
+                l.path = path;
+                l.pcc = new PCCObject(path);
+                for (int i = 0; i < l.pcc.Exports.Count; i++)
                 {
-                    DebugOutput.Clear();
-                    l.level = new Level(l.pcc, i);
-                    TreeNode t = new TreeNode(Path.GetFileName(path));
-                    t.Nodes.Add(l.level.ToTree(i));
-                    GlobalTree.Visible = false;
-                    GlobalTree.Nodes.Add(t);
-                    GlobalTree.Visible = true;
-                    DirectXGlobal.Cam.dir = new Vector3(1.0f, 1.0f, 1.0f);
-                    Levels.Add(l);
+                    PCCObject.ExportEntry e = l.pcc.Exports[i];
+                    if (e.ClassName == "Level")
+                    {
+                        DebugOutput.Clear();
+                        l.level = new Level(l.pcc, i);
+                        TreeNode t = new TreeNode(Path.GetFileName(path));
+                        t.Nodes.Add(l.level.ToTree(i));
+                        GlobalTree.Visible = false;
+                        GlobalTree.Nodes.Add(t);
+                        GlobalTree.Visible = true;
+                        DirectXGlobal.Cam.dir = new Vector3(1.0f, 1.0f, 1.0f);
+                        Levels.Add(l);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 

@@ -30,8 +30,15 @@ namespace ME3Explorer.Property_Dumper
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
-                LetsDump();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    LetsDump();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 
@@ -115,63 +122,72 @@ namespace ME3Explorer.Property_Dumper
             pb2.Value = 0;
             pb2.Maximum = files.Length;
             for (int i = 0; i < files.Length; i++)
-                if (files[i].ToLower().EndsWith(".pcc"))
+            {
+                try
                 {
-                    
-                    while(pause)
-                        Application.DoEvents();
-                    pcc = new PCCObject(files[i]);
-                    pb1.Maximum = pcc.Exports.Count;
-                    pb2.Value = i;
-                    string s = "String references for file " + files[i] + "\n";
-                    for (int j = 0; j < pcc.Exports.Count; j++)
+                    if (files[i].ToLower().EndsWith(".pcc"))
                     {
-                        PCCObject.ExportEntry ent = pcc.Exports[j];
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent.Data);
-                        
-                        for (int k = 0; k < p.Count; k++)
+
+                        while (pause)
+                            Application.DoEvents();
+                        pcc = new PCCObject(files[i]);
+                        pb1.Maximum = pcc.Exports.Count;
+                        pb2.Value = i;
+                        string s = "String references for file " + files[i] + "\n";
+                        for (int j = 0; j < pcc.Exports.Count; j++)
                         {
-                            PropertyReader.Property prop = p[k];
-                            if (prop.TypeVal == PropertyReader.Type.StringRefProperty)
-                                s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                            if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
+                            PCCObject.ExportEntry ent = pcc.Exports[j];
+                            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent.Data);
+
+                            for (int k = 0; k < p.Count; k++)
                             {
-                                string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, s, 1);
-                                if (tt.Length != 0)
+                                PropertyReader.Property prop = p[k];
+                                if (prop.TypeVal == PropertyReader.Type.StringRefProperty)
+                                    s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
                                 {
-                                    s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                    s += tt;
-                                }   
-                            }
-                            if (prop.TypeVal == PropertyReader.Type.StructProperty)
-                            {
-                                string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, s, 1);
-                                if (tt.Length != 0)
+                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, s, 1);
+                                    if (tt.Length != 0)
+                                    {
+                                        s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                        s += tt;
+                                    }
+                                }
+                                if (prop.TypeVal == PropertyReader.Type.StructProperty)
                                 {
-                                    s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                    s += tt;
+                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, s, 1);
+                                    if (tt.Length != 0)
+                                    {
+                                        s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                        s += tt;
+                                    }
                                 }
                             }
-                        }
-                        if (count++ > 500)
-                        {
-                            count = 0;
-                            pb1.Value = j;
-                            Status.Text = "State : " + j + " / " + pcc.Exports.Count;
-                            if (count2++ > 10)
+                            if (count++ > 500)
                             {
-                                count2 = 0;
-                                rtb1.Text = t;
-                                rtb1.SelectionStart = rtb1.TextLength;
-                                rtb1.ScrollToCaret();
-                                rtb1.Visible = true;
+                                count = 0;
+                                pb1.Value = j;
+                                Status.Text = "State : " + j + " / " + pcc.Exports.Count;
+                                if (count2++ > 10)
+                                {
+                                    count2 = 0;
+                                    rtb1.Text = t;
+                                    rtb1.SelectionStart = rtb1.TextLength;
+                                    rtb1.ScrollToCaret();
+                                    rtb1.Visible = true;
+                                }
+                                Application.DoEvents();
                             }
-                            Application.DoEvents();
-                        }
 
+                        }
+                        t += s + "\n";
                     }
-                    t += s + "\n";
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
+            }
             Status.Text = "State : Done";
             rtb1.Text = t;
             rtb1.SelectionStart = rtb1.TextLength;
@@ -225,8 +241,9 @@ namespace ME3Explorer.Property_Dumper
             List<string> First = new List<string>();
             DebugOutput.Clear();
             for (int i = 0; i < files.Length; i++)
+            {
+                try
                 {
-
                     while (pause)
                         Application.DoEvents();
                     pcc = new PCCObject(files[i]);
@@ -253,14 +270,14 @@ namespace ME3Explorer.Property_Dumper
                                     First.Add(Path.GetFileName(files[i]) + " #" + j);
                                 }
                             }
-                        }                        
-                        if (j%500 == 0)
+                        }
+                        if (j % 500 == 0)
                         {
                             pb1.Value = j;
                             Status.Text = "State : " + j + " / " + pcc.Exports.Count;
                             string s = "Possible properties found so far for class \"" + classname + "\":\n";
                             for (int k = 0; k < Names.Count(); k++)
-                                s += Types[k] + " : \"" + Names[k] + "\" first found: " + First[k] +"\n";
+                                s += Types[k] + " : \"" + Names[k] + "\" first found: " + First[k] + "\n";
                             Action action = () => rtb1.Text = s;
                             rtb1.Invoke(action);
                             action = () => rtb1.SelectionStart = s.Length;
@@ -270,8 +287,13 @@ namespace ME3Explorer.Property_Dumper
                             Application.DoEvents();
                         }
                     }
-                   
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                    DebugOutput.PrintLn("Could not open  file : " + Path.GetFileName(files[i]));
+                }
+            }
             Status.Text = "State : Done";
             string t = "Possible properties found for class \"" + classname + "\":\n";
             for (int k = 0; k < Names.Count(); k++)

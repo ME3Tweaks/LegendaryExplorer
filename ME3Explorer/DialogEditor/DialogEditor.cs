@@ -50,13 +50,20 @@ namespace ME3Explorer.DialogEditor
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                InitTalkFile(talkFile);
-                pcc = new PCCObject(d.FileName);
-                Objs = new List<int>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "BioConversation")
-                        Objs.Add(i);
-                RefreshCombo();
+                try
+                {
+                    pcc = new PCCObject(d.FileName);
+                    InitTalkFile(talkFile);
+                    Objs = new List<int>();
+                    for (int i = 0; i < pcc.Exports.Count; i++)
+                        if (pcc.Exports[i].ClassName == "BioConversation")
+                            Objs.Add(i);
+                    RefreshCombo();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                }
             }
         }
 

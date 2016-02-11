@@ -48,9 +48,18 @@ namespace ME3Explorer.QuestMapEditor
                 this.Close();
                 return;
             }
-            pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
-            GetEntries();
-            RefreshTree();
+            try
+            {
+                pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
+                GetEntries();
+                RefreshTree();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+                this.Close();
+                return;
+            }
         }
 
         public void GetEntries()

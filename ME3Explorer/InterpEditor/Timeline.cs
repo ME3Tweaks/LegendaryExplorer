@@ -706,11 +706,18 @@ namespace ME3Explorer.InterpEditor
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.pcc = new PCCObject(pcc.pccFileName);
-            p.SetView(2);
-            p.RefreshView();
-            p.InitStuff();
-            p.listBox1.SelectedIndex = index;
+            try
+            {
+                p.pcc = new PCCObject(pcc.pccFileName);
+                p.SetView(2);
+                p.RefreshView();
+                p.InitStuff();
+                p.listBox1.SelectedIndex = index;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
         }
 
         public void addTrack(InterpTrack t)

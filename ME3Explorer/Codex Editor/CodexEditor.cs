@@ -44,7 +44,16 @@ namespace ME3Explorer.Codex_Editor
                 this.Close();
                 return;
             }
-            pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
+            try
+            {
+                pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+                this.Close();
+                return;
+            }
             GetEntries();
             RefreshTree();
         }

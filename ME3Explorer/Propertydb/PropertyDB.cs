@@ -105,67 +105,75 @@ namespace ME3Explorer.Propertydb
                                     + " : Loading file \""
                                     + file
                                     + "\"");
-                PCCObject pcc = new PCCObject(file);
-                pb2.Maximum = pcc.Exports.Count();
+                try
                 {
-                    pb1.Value = i;
-                    RefreshLists();
-                    Application.DoEvents();
-                }
-                for (int j = 0; j < pcc.Exports.Count(); j++)
-                {
-                    if (j % 100 == 0)//refresh
+                    PCCObject pcc = new PCCObject(file);
+                    pb2.Maximum = pcc.Exports.Count();
                     {
                         pb1.Value = i;
-                        pb2.Value = j;
+                        RefreshLists();
                         Application.DoEvents();
                     }
-                    int f = -1;
-                    for (int k = 0; k < Classes.Count(); k++)
-                        if (Classes[k].name == pcc.Exports[j].ClassName)
+                    for (int j = 0; j < pcc.Exports.Count(); j++)
+                    {
+                        if (j % 100 == 0)//refresh
                         {
-                            f = k;
-                            break;
+                            pb1.Value = i;
+                            pb2.Value = j;
+                            Application.DoEvents();
                         }
-                    if (f == -1)//New Class found, add
-                    {
-                        ClassDef tmp = new ClassDef();
-                        tmp.name = pcc.Exports[j].ClassName;
-                        tmp.props = new List<PropDef>();
-                        Classes.Add(tmp);
-                        f = Classes.Count() - 1;
-                        UpdateStatus();
-                    }
-                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[j].Data);
-                    ClassDef res = Classes[f];
-                    foreach (PropertyReader.Property p in props)
-                    {
-                        int f2 = -1;
-                        string name = pcc.getNameEntry(p.Name);
-                        for (int k = 0; k < res.props.Count(); k++)
-                            if (res.props[k].name == name)
+                        int f = -1;
+                        for (int k = 0; k < Classes.Count(); k++)
+                            if (Classes[k].name == pcc.Exports[j].ClassName)
                             {
-                                f2 = k;
+                                f = k;
                                 break;
                             }
-                        if (f2 == -1) //found new prop
+                        if (f == -1)//New Class found, add
                         {
-                            PropDef ptmp = new PropDef();
-                            ptmp.name = name;
-                            ptmp.type = (int)p.TypeVal;
-                            ptmp.ffpath = Path.GetFileName(file);
-                            ptmp.ffidx = j;
-                            res.props.Add(ptmp);
-                            //DebugOutput.PrintLn("\tin object #" 
-                            //                    + j 
-                            //                    + " class \"" 
-                            //                    + pcc.Exports[j].ClassName 
-                            //                    + "\" found property \"" 
-                            //                    + name 
-                            //                    + "\" type " 
-                            //                    + PropertyReader.TypeToString(ptmp.type));
+                            ClassDef tmp = new ClassDef();
+                            tmp.name = pcc.Exports[j].ClassName;
+                            tmp.props = new List<PropDef>();
+                            Classes.Add(tmp);
+                            f = Classes.Count() - 1;
+                            UpdateStatus();
+                        }
+                        List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[j].Data);
+                        ClassDef res = Classes[f];
+                        foreach (PropertyReader.Property p in props)
+                        {
+                            int f2 = -1;
+                            string name = pcc.getNameEntry(p.Name);
+                            for (int k = 0; k < res.props.Count(); k++)
+                                if (res.props[k].name == name)
+                                {
+                                    f2 = k;
+                                    break;
+                                }
+                            if (f2 == -1) //found new prop
+                            {
+                                PropDef ptmp = new PropDef();
+                                ptmp.name = name;
+                                ptmp.type = (int)p.TypeVal;
+                                ptmp.ffpath = Path.GetFileName(file);
+                                ptmp.ffidx = j;
+                                res.props.Add(ptmp);
+                                //DebugOutput.PrintLn("\tin object #" 
+                                //                    + j 
+                                //                    + " class \"" 
+                                //                    + pcc.Exports[j].ClassName 
+                                //                    + "\" found property \"" 
+                                //                    + name 
+                                //                    + "\" type " 
+                                //                    + PropertyReader.TypeToString(ptmp.type));
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:\n" + ex.Message);
+                    DebugOutput.PrintLn("Could not open file: " + file);
                 }
             }            
             Sort();
