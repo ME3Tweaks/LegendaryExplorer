@@ -1401,7 +1401,6 @@ namespace ME3Explorer
         {
             DebugOutput.PrintLn("Updating Basegame...");
             AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
-            DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
 
             // KFreon: Format filenames
             List<string> FileNames = toc.GetFiles(pathBIOGame + "\\");
@@ -1431,6 +1430,7 @@ namespace ME3Explorer
             // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works.
             if (WhichGame == 3 && modifiedDLC != null && modifiedDLC.Count > 0)
             {
+                DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                 List<string> files = new List<string>(Directory.EnumerateFiles(DLCPath, "Default.sfar", SearchOption.AllDirectories));
                 DebugOutput.PrintLn("Updating DLC...");
                 dlcedit2.ExtractAllDLC();
@@ -2473,7 +2473,7 @@ namespace ME3Explorer
                 Debug.WriteLine("Error generating thumbnail: " + e.Message);
             }
 
-            Tree.ReplaceTex(index, tex);
+            //Tree.ReplaceTex(index, tex);
         }
 
         private void RegenerateButton_Click(object sender, EventArgs e)
@@ -2777,7 +2777,14 @@ namespace ME3Explorer
             Tree.WriteToFile(Tree.TreePath, Path.GetDirectoryName(pathBIOGame));
 
             if (errors != null && errors.Count != 0)
+            {
                 MessageBox.Show("Errors occured!" + Environment.NewLine + String.Join(Environment.NewLine, errors), "Your technology is based on that of the Mass Relays...", MessageBoxButtons.OK);
+                StatusUpdater.UpdateText("Errors occured. See DebugWindow");
+            }
+            else
+                StatusUpdater.UpdateText("DLC added to tree!");
+
+            ProgBarUpdater.ChangeProgressBar(1, 1);
         }
 
         private void addDLCToTreeToolStripMenuItem_Click(object sender, EventArgs e)

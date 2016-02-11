@@ -592,11 +592,19 @@ namespace KFreonLib.Scripting
                 DebugOutput.PrintLn("About to begin validating");
 
 
-                var result = gameFiles.Where(p => p.Contains(test)).DefaultIfEmpty("none").FirstOrDefault();
-                if (result != "none")
-                    test = result; // Heff: this can potentially be a problem for bad .mods that are for DLC's but only specify pcc name.
-                else
+                try
+                {
+                    var result = gameFiles.Where(p => p.Contains(test)).DefaultIfEmpty("none").FirstOrDefault();
+                    if (result != "none")
+                        test = result; // Heff: this can potentially be a problem for bad .mods that are for DLC's but only specify pcc name.
+                    else
+                        DebugOutput.PrintLn("File not found in game files:" + test + ". Continuing...");
+                }
+                catch
+                {
                     DebugOutput.PrintLn("File not found in game files:" + test + ". Continuing...");
+                }
+
 
                 if (test.Contains("#"))
                 {

@@ -595,7 +595,7 @@ namespace KFreonLib.Textures
                 else
                     extractName = TexName;
 
-                if (!extractName.Contains(hashString))
+                if (!isDef && !extractName.Contains(hashString))
                     extractName += "_" + hashString;
 
                 extractName += Path.GetExtension(FileName);

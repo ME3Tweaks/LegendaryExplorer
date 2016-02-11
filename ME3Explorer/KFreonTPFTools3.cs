@@ -2776,7 +2776,7 @@ namespace ME3Explorer
             {
                 var destFormat = ImageEngine.ParseFromString(tex.ExpectedFormat);
                 img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
-                retval = img.Save(path, destFormat, tex.NumMips != tex.ExpectedMips);
+                retval = img.Save(path, destFormat, tex.ExpectedMips > 1);
             }
 
             tex.FileName = Path.GetFileName(path);

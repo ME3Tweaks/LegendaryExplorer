@@ -882,5 +882,15 @@ namespace ME3Explorer
             Properties.Settings.Default.Save();
             MessageBox.Show("New path setting saved", "Success", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
+
+        private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://github.com/ME3Explorer/ME3Explorer/releases");
+        }
+
+        private void nexusModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://www.nexusmods.com/masseffect3/mods/409/");
+        }
     }
 }
