@@ -3363,7 +3363,7 @@ namespace ME3Explorer
 
                         List<string> hashes = GetHashesFromTPF(zippy, false);
 
-                        for (int i = 0; i < hashes.Count; i++) 
+                        for (int i = 0; i < zippy.Entries.Count; i++) 
                         {
                             var entry = zippy.Entries[i];
                             string filename = entry.Filename;

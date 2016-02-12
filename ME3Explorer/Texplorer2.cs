@@ -1228,6 +1228,10 @@ namespace ME3Explorer
             foreach (string item in PCCsCheckedListBox.CheckedItems)
             {
                 var bits = item.Split('@');
+
+                if (bits.Length == 1)
+                    continue;
+
                 newlist.Add(bits[0].Trim());
                 newlist2.Add(Convert.ToInt32(bits[1]));
             }
@@ -1692,7 +1696,7 @@ namespace ME3Explorer
         private void ShowContextPanel(bool state)
         {
             UsefulThings.WinForms.Transitions.ITransitionType trans = new UsefulThings.WinForms.Transitions.TransitionType_CriticalDamping(400);
-            UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 30, trans);
+            UsefulThings.WinForms.Transitions.Transition.run(ContextPanel, "Height", (!state) ? 0 : 50, trans);
         }
 
         private void MainListView_SelectedIndexChanged(object sender, EventArgs e)

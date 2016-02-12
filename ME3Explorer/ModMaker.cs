@@ -1599,5 +1599,10 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void PathBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
