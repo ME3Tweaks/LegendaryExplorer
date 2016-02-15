@@ -201,7 +201,6 @@ namespace ME3Explorer.SequenceObjects
             }
             this.TranslateBy(x, y);
             this.MouseEnter += new PInputEventHandler(OnMouseEnter);
-            this.MouseLeave += new PInputEventHandler(OnMouseLeave);
         }
 
         public string GetValue()
@@ -385,12 +384,6 @@ namespace ME3Explorer.SequenceObjects
                 ((PPath)((SVar)sender)[1]).Pen = selectedPen;
                 dragTarget = (PNode)sender;
             }
-        }
-
-        public void OnMouseLeave(object sender, PInputEventArgs e)
-        {
-            ((PPath)((SVar)sender)[1]).Pen = outlinePen;
-            dragTarget = null;
         }
     }
 
