@@ -272,11 +272,45 @@ namespace ME3Explorer.Interpreter2
                         }
                         else
                         {
-                            for (int i = 0; i < header.size / 4; i++)
+                            string structType = pcc.getNameEntry(name);
+                            if (structType == "Vector")
                             {
-                                int val = BitConverter.ToInt32(memory, header.offset + 32 + i * 4);
-                                string s = (header.offset + 32 + i * 4).ToString("X4") + " : " + val.ToString();
-                                t.Nodes.Add(s);
+                                t.Nodes.Add(readerpos.ToString("X4") + " : X : " + BitConverter.ToSingle(memory, readerpos));
+                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : Y : " + BitConverter.ToSingle(memory, readerpos + 4));
+                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : Z : " + BitConverter.ToSingle(memory, readerpos + 8));
+                            }
+                            else if (structType == "Rotator")
+                            {
+                                int pitch = BitConverter.ToInt32(memory, readerpos);
+                                int yaw = BitConverter.ToInt32(memory, readerpos + 4);
+                                int roll = BitConverter.ToInt32(memory, readerpos + 8);
+                                t.Nodes.Add(readerpos.ToString("X4") + " : Pitch : " + pitch + " (" + ((float)pitch * 360f / 65536f) + " degrees)");
+                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : Yaw : " + yaw + " (" + ((float)yaw * 360f / 65536f) + " degrees)");
+                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : Roll : " + roll + " (" + ((float)roll * 360f / 65536f) + " degrees)");
+                            }
+                            else if (structType == "Color")
+                            {
+                                Color c = Color.FromArgb(BitConverter.ToInt32(memory, readerpos));
+                                t.Nodes.Add(readerpos.ToString("X4") + " : B : " + c.B);
+                                t.Nodes.Add((readerpos + 1).ToString("X4") + " : G : " + c.G);
+                                t.Nodes.Add((readerpos + 2).ToString("X4") + " : R : " + c.R);
+                                t.Nodes.Add((readerpos + 3).ToString("X4") + " : A : " + c.A);
+                            }
+                            else if (structType == "LinearColor")
+                            {
+                                t.Nodes.Add(readerpos.ToString("X4") + " : R : " + BitConverter.ToSingle(memory, readerpos));
+                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : G : " + BitConverter.ToSingle(memory, readerpos + 4));
+                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : B : " + BitConverter.ToSingle(memory, readerpos + 8));
+                                t.Nodes.Add((readerpos + 12).ToString("X4") + " : A : " + BitConverter.ToSingle(memory, readerpos + 12));
+                            }
+                            else
+                            {
+                                for (int i = 0; i < header.size / 4; i++)
+                                {
+                                    int val = BitConverter.ToInt32(memory, header.offset + 32 + i * 4);
+                                    string s = (header.offset + 32 + i * 4).ToString("X4") + " : " + val.ToString();
+                                    t.Nodes.Add(s);
+                                }
                             }
                             ret.Nodes.Add(t);
                         }

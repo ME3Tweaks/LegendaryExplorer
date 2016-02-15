@@ -72,6 +72,180 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public struct ColorProp
+    {
+        private string _name;
+        private int _nameindex;
+        private byte _a;
+        private byte _r;
+        private byte _g;
+        private byte _b;
+        [DesignOnly(true)]
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public byte Alpha
+        {
+            get { return _a; }
+            set { _a = value; }
+        }
+
+        public byte Red
+        {
+            get { return _r; }
+            set { _r = value; }
+        }
+
+        public byte Green
+        {
+            get { return _g; }
+            set { _g = value; }
+        }
+
+        public byte Blue
+        {
+            get { return _b; }
+            set { _b = value; }
+        }
+
+        public int nameindex
+        {
+            get { return _nameindex; }
+            set { _nameindex = value; }
+        }
+    }
+
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public struct VectorProp
+    {
+        private string _name;
+        private int _nameindex;
+        private float _x;
+        private float _y;
+        private float _z;
+        [DesignOnly(true)]
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public float X
+        {
+            get { return _x; }
+            set { _x = value; }
+        }
+
+        public float Y
+        {
+            get { return _y; }
+            set { _y = value; }
+        }
+
+        public float Z
+        {
+            get { return _z; }
+            set { _z = value; }
+        }
+
+        public int nameindex
+        {
+            get { return _nameindex; }
+            set { _nameindex = value; }
+        }
+    }
+
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public struct RotatorProp
+    {
+        private string _name;
+        private int _nameindex;
+        private float _pitch;
+        private float _yaw;
+        private float _roll;
+        [DesignOnly(true)]
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public float Pitch
+        {
+            get { return _pitch; }
+            set { _pitch = value; }
+        }
+
+        public float Yaw
+        {
+            get { return _yaw; }
+            set { _yaw = value; }
+        }
+
+        public float Roll
+        {
+            get { return _roll; }
+            set { _roll = value; }
+        }
+
+        public int nameindex
+        {
+            get { return _nameindex; }
+            set { _nameindex = value; }
+        }
+    }
+
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public struct LinearColorProp
+    {
+        private string _name;
+        private int _nameindex;
+        private float _r;
+        private float _g;
+        private float _b;
+        private float _a;
+        [DesignOnly(true)]
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public float Red
+        {
+            get { return _r; }
+            set { _r = value; }
+        }
+
+        public float Green
+        {
+            get { return _g; }
+            set { _g = value; }
+        }
+
+        public float Blue
+        {
+            get { return _b; }
+            set { _b = value; }
+        }
+
+        public float Alpha
+        {
+            get { return _a; }
+            set { _a = value; }
+        }
+
+        public int nameindex
+        {
+            get { return _nameindex; }
+            set { _nameindex = value; }
+        }
+    }
+
     public struct NameReference
     {
         public int index;
@@ -224,17 +398,62 @@ namespace ME3Explorer.Unreal
                     pg = new CustomProperty(pcc.Names[p.Name], cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StructProperty:
-                    StructProp ppp = new StructProp();
-                    ppp.name = pcc.getNameEntry(p.Value.IntValue);
-                    ppp.nameindex = p.Value.IntValue;
-                    byte[] buf = new byte[p.Value.Array.Count()];
-                    for (int i = 0; i < p.Value.Array.Count(); i++)
-                        buf[i] = (byte)p.Value.Array[i].IntValue;
-                    List<int> buf2 = new List<int>();
-                    for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                        buf2.Add(BitConverter.ToInt32(buf ,i * 4));
-                    ppp.data = buf2.ToArray();
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, ppp, typeof(StructProp), false, true);
+                    string structType = pcc.getNameEntry(p.Value.IntValue);
+                    if(structType == "Color") {
+                        ColorProp  cp = new ColorProp();
+                        cp.name = structType;
+                        cp.nameindex = p.Value.IntValue;
+                        System.Drawing.Color color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(p.raw, 32));
+                        cp.Alpha = color.A;
+                        cp.Red = color.R;
+                        cp.Green = color.G;
+                        cp.Blue = color.B;
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, cp, typeof(ColorProp), false, true);
+                    }
+                    else if (structType == "Vector")
+                    {
+                        VectorProp vp = new VectorProp();
+                        vp.name = structType;
+                        vp.nameindex = p.Value.IntValue;
+                        vp.X = BitConverter.ToSingle(p.raw, 32);
+                        vp.Y = BitConverter.ToSingle(p.raw, 36);
+                        vp.Z = BitConverter.ToSingle(p.raw, 40);
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, vp, typeof(VectorProp), false, true);
+                    }
+                    else if (structType == "Rotator")
+                    {
+                        RotatorProp rp = new RotatorProp();
+                        rp.name = structType;
+                        rp.nameindex = p.Value.IntValue;
+                        rp.Pitch = (float)BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
+                        rp.Yaw = (float)BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
+                        rp.Roll = (float)BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, rp, typeof(RotatorProp), false, true);
+                    }
+                    else if (structType == "LinearColor")
+                    {
+                        LinearColorProp lcp = new LinearColorProp();
+                        lcp.name = structType;
+                        lcp.nameindex = p.Value.IntValue;
+                        lcp.Red = BitConverter.ToSingle(p.raw, 32);
+                        lcp.Green = BitConverter.ToSingle(p.raw, 36);
+                        lcp.Blue = BitConverter.ToSingle(p.raw, 40);
+                        lcp.Alpha = BitConverter.ToSingle(p.raw, 44);
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, lcp, typeof(VectorProp), false, true);
+                    }
+                    else {
+                        StructProp ppp = new StructProp();
+                        ppp.name = structType;
+                        ppp.nameindex = p.Value.IntValue;
+                        byte[] buf = new byte[p.Value.Array.Count()];
+                        for (int i = 0; i < p.Value.Array.Count(); i++)
+                            buf[i] = (byte)p.Value.Array[i].IntValue;
+                        List<int> buf2 = new List<int>();
+                        for (int i = 0; i < p.Value.Array.Count() / 4; i++)
+                            buf2.Add(BitConverter.ToInt32(buf ,i * 4));
+                        ppp.data = buf2.ToArray();
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, ppp, typeof(StructProp), false, true);
+                    }
                     break;                    
                 default:
                     pg = new CustomProperty(pcc.Names[p.Name],cat,p.Value.IntValue,typeof(int),false,true);
