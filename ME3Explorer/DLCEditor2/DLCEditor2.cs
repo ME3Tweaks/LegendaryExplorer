@@ -516,7 +516,7 @@ namespace ME3Explorer.DLCEditor2
             string unpackFolder;
             if (!automated) //if automated, just do everything. otherwise prompt user
             {
-                Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
+                result = Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
 
                 if (result == "")
                     return;
