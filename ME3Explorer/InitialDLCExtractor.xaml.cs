@@ -45,19 +45,34 @@ namespace ME3Explorer
 
         private async void ExtractButton_Click(object sender, RoutedEventArgs e)
         {
+            vm.NotWorking = false;
             await Task.Run(() =>
             {
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                 DebugOutput.PrintLn("Extracting DLC...");
                 dlcedit2.ExtractAllDLC();
             });
-
+            vm.NotWorking = true;
             MessageBox.Show("DLC Extracted!");
+            this.Close();
         }
     }
 
     public class ViewModel : ViewModelBase
     {
+        bool notWorking = true;
+        public bool NotWorking
+        {
+            get
+            {
+                return notWorking;
+            }
+            set
+            {
+                SetProperty(ref notWorking, value);
+            }
+        }
+
         public bool? Required = true;
 
         string requiredSpace = null;

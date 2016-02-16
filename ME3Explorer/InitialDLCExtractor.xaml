@@ -19,7 +19,7 @@
         <Label Content="Once started, this operation cannot be interrupted." DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold"/>
 
         <DockPanel LastChildFill="False" DockPanel.Dock="Bottom">
-            <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click">
+            <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click" IsEnabled="{Binding NotWorking}">
                 <Button.Content>
                     <Grid Height="95">
                         <Label Content="ü" Foreground="Green" FontSize="100" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Wingdings" Padding="0"/>
@@ -27,7 +27,7 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button x:Name="DontExtractButton" DockPanel.Dock="Right" VerticalAlignment="Center" Background="White" Click="DontExtractButton_Click">
+            <Button x:Name="DontExtractButton" DockPanel.Dock="Right" VerticalAlignment="Center" Background="White" Click="DontExtractButton_Click" IsEnabled="{Binding NotWorking}">
                 <Button.Content>
                     <Grid>
                         <Label Content="û" FontFamily="Wingdings" Foreground="Red" FontSize="50" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
@@ -35,6 +35,23 @@
                     </Grid>
                 </Button.Content>
             </Button>
+            <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" >
+                <TextBlock.Text>
+                    Extracting DLC.
+                    Please Wait...
+                    This can take a long time.
+                </TextBlock.Text>
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding NotWorking}" Value="false">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
         </DockPanel>
     </DockPanel>
 </Window>

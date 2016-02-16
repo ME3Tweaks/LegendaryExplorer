@@ -22,6 +22,7 @@ namespace ME3Explorer
         WwiseStream w;
         WwiseBank wb;
         public bool isDLC = false;
+        public string dlcAFCPath = "";
 
         public Soundplorer()
         {
@@ -44,6 +45,8 @@ namespace ME3Explorer
                 {
                     pcc = new PCCObject(d.FileName);
                     CurrentFile = d.FileName;
+                    isDLC = false;
+                    dlcAFCPath = "";
                     LoadObjects();
                     Status.Text = "Ready";
                     saveToolStripMenuItem.Enabled = true;
@@ -113,8 +116,30 @@ namespace ME3Explorer
                 Stop();
                 w = new WwiseStream(pcc, ex.Data);
                 string path = ME3Directory.cookedPath;
-                Status.Text = "Loading...";
-                w.Play(path);
+                if (isDLC)
+                {
+                    if (dlcAFCPath == "")
+                    {
+                        OpenFileDialog d = new OpenFileDialog();
+                        d.Filter = w.FileName + ".afc|" + w.FileName + ".afc";
+                        if (d.ShowDialog() == DialogResult.OK)
+                        {
+                            dlcAFCPath = d.FileName.Substring(0, d.FileName.LastIndexOf('\\') + 1);
+                            Status.Text = "Loading...";
+                        }
+                        else
+                        {
+                            return;
+                        } 
+                    }
+                    Status.Text = "Loading...";
+                    w.Play(dlcAFCPath);
+                }
+                else
+                {
+                    Status.Text = "Loading...";
+                    w.Play(path);
+                }
                 Status.Text = "Ready";
             }
         }
@@ -207,6 +232,7 @@ namespace ME3Explorer
                     pcc = new PCCObject(d.FileName);
                     CurrentFile = d.FileName;
                     isDLC = true;
+                    dlcAFCPath = "";
                     LoadObjects();
                     Status.Text = "Ready";
                     saveToolStripMenuItem.Enabled = true;

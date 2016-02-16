@@ -620,7 +620,12 @@ namespace ME3Explorer
                 GridItem parent2 = parent.Parent;
                 if (parent2 != null) name = parent2.Label;
             }
-            if (name == "nameindex")
+            Type parentVal = null;
+            if (parent.Value != null)
+            {
+                parentVal = parent.Value.GetType();
+            }
+            if (name == "nameindex" || parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
             {
                 name = parent.Label;
             }
@@ -656,7 +661,115 @@ namespace ME3Explorer
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
                 case ME3Explorer.Unreal.PropertyReader.Type.StructProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.ColorProp))
+                    {
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Alpha":
+                                ent.Data[p[m].offsetval + 11] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Red":
+                                ent.Data[p[m].offsetval + 10] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Green":
+                                ent.Data[p[m].offsetval + 9] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Blue":
+                                ent.Data[p[m].offsetval + 8] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            default:
+                                break;
+                        }
+                        int t = listBox1.SelectedIndex;
+                        listBox1.SelectedIndex = -1;
+                        listBox1.SelectedIndex = t;
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.VectorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "X":
+                                offset = 8;
+                                break;
+                            case "Y":
+                                offset = 12;
+                                break;
+                            case "Z":
+                                offset = 16;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
+                            for (int i = 0; i < 4; i++)
+                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                        int t = listBox1.SelectedIndex;
+                        listBox1.SelectedIndex = -1;
+                        listBox1.SelectedIndex = t;
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.RotatorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Pitch":
+                                offset = 8;
+                                break;
+                            case "Yaw":
+                                offset = 12;
+                                break;
+                            case "Roll":
+                                offset = 16;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            int val = Convert.ToInt32(Convert.ToSingle(e.ChangedItem.Value) * 65536f / 360f);
+                            buff2 = BitConverter.GetBytes(val);
+                            for (int i = 0; i < 4; i++)
+                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                        int t = listBox1.SelectedIndex;
+                        listBox1.SelectedIndex = -1;
+                        listBox1.SelectedIndex = t;
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.LinearColorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Red":
+                                offset = 8;
+                                break;
+                            case "Green":
+                                offset = 12;
+                                break;
+                            case "Blue":
+                                offset = 16;
+                                break;
+                            case "Alpha":
+                                offset = 20;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
+                            for (int i = 0; i < 4; i++)
+                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                        int t = listBox1.SelectedIndex;
+                        listBox1.SelectedIndex = -1;
+                        listBox1.SelectedIndex = t;
+                    }
+                    else if (e.ChangedItem.Value.GetType() == typeof(int))
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         if (e.ChangedItem.Label == "nameindex")
