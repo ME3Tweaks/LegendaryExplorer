@@ -773,7 +773,7 @@ namespace KFreonLib.Textures
                         Width = image.Width;
                         Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
 
-                        image.Save(Thumbnail, ImageEngineFormat.JPG, false, 64);
+                        image.Save(Thumbnail, ImageEngineFormat.JPG, MipHandling.Default, 64);
                     }
                 }
                 catch(Exception e)

@@ -52,9 +52,9 @@
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripSeparator();
             this.MainImageList = new System.Windows.Forms.ImageList(this.components);
             this.MainSplitter = new System.Windows.Forms.SplitContainer();
-            this.SearchTextBox = new System.Windows.Forms.TextBox();
             this.MainListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.SearchTextBox = new System.Windows.Forms.TextBox();
             this.MainContextStrip = new System.Windows.Forms.ToolStrip();
             this.RunSelectedButton = new System.Windows.Forms.ToolStripButton();
             this.SaveSelectedButton = new System.Windows.Forms.ToolStripButton();
@@ -74,8 +74,8 @@
             this.ExpIDBox = new System.Windows.Forms.TextBox();
             this.PathBox = new System.Windows.Forms.TextBox();
             this.ScriptPaneSplitter = new System.Windows.Forms.SplitContainer();
-            this.HideShowButton = new System.Windows.Forms.Button();
             this.ExpandScriptButton = new System.Windows.Forms.Button();
+            this.HideShowButton = new System.Windows.Forms.Button();
             this.ScriptPane = new System.Windows.Forms.RichTextBox();
             this.ContextMenuStrip = new System.Windows.Forms.ToolStrip();
             this.ResetScriptButton = new System.Windows.Forms.ToolStripButton();
@@ -336,15 +336,6 @@
             this.MainSplitter.SplitterWidth = 10;
             this.MainSplitter.TabIndex = 2;
             // 
-            // SearchTextBox
-            // 
-            this.SearchTextBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.SearchTextBox.Location = new System.Drawing.Point(0, 0);
-            this.SearchTextBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.SearchTextBox.Name = "SearchTextBox";
-            this.SearchTextBox.Size = new System.Drawing.Size(843, 26);
-            this.SearchTextBox.TabIndex = 2;
-            // 
             // MainListView
             // 
             this.MainListView.Alignment = System.Windows.Forms.ListViewAlignment.Left;
@@ -372,6 +363,15 @@
             // columnHeader1
             // 
             this.columnHeader1.Width = 622;
+            // 
+            // SearchTextBox
+            // 
+            this.SearchTextBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.SearchTextBox.Location = new System.Drawing.Point(0, 0);
+            this.SearchTextBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.SearchTextBox.Name = "SearchTextBox";
+            this.SearchTextBox.Size = new System.Drawing.Size(843, 26);
+            this.SearchTextBox.TabIndex = 2;
             // 
             // MainContextStrip
             // 
@@ -550,7 +550,7 @@
             // 
             this.PCCSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PCCSplitter.Location = new System.Drawing.Point(0, 0);
-            this.PCCSplitter.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PCCSplitter.Margin = new System.Windows.Forms.Padding(0);
             this.PCCSplitter.Name = "PCCSplitter";
             this.PCCSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -576,11 +576,11 @@
             // 
             this.PCCList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.PCCList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PCCList.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PCCList.FormattingEnabled = true;
             this.PCCList.HorizontalScrollbar = true;
-            this.PCCList.IntegralHeight = false;
             this.PCCList.Location = new System.Drawing.Point(0, 0);
-            this.PCCList.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PCCList.Margin = new System.Windows.Forms.Padding(0);
             this.PCCList.Name = "PCCList";
             this.PCCList.Size = new System.Drawing.Size(481, 520);
             this.PCCList.TabIndex = 0;
@@ -657,18 +657,6 @@
             this.ScriptPaneSplitter.SplitterWidth = 14;
             this.ScriptPaneSplitter.TabIndex = 1;
             // 
-            // HideShowButton
-            // 
-            this.HideShowButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.HideShowButton.Location = new System.Drawing.Point(64, 0);
-            this.HideShowButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.HideShowButton.Name = "HideShowButton";
-            this.HideShowButton.Size = new System.Drawing.Size(56, 28);
-            this.HideShowButton.TabIndex = 2;
-            this.HideShowButton.Text = ">>";
-            this.HideShowButton.UseVisualStyleBackColor = true;
-            this.HideShowButton.Click += new System.EventHandler(this.HideShowButton_Click);
-            // 
             // ExpandScriptButton
             // 
             this.ExpandScriptButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -680,6 +668,18 @@
             this.ExpandScriptButton.Text = "<<<";
             this.ExpandScriptButton.UseVisualStyleBackColor = true;
             this.ExpandScriptButton.Click += new System.EventHandler(this.ExpandScriptButton_Click);
+            // 
+            // HideShowButton
+            // 
+            this.HideShowButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.HideShowButton.Location = new System.Drawing.Point(64, 0);
+            this.HideShowButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.HideShowButton.Name = "HideShowButton";
+            this.HideShowButton.Size = new System.Drawing.Size(56, 28);
+            this.HideShowButton.TabIndex = 2;
+            this.HideShowButton.Text = ">>";
+            this.HideShowButton.UseVisualStyleBackColor = true;
+            this.HideShowButton.Click += new System.EventHandler(this.HideShowButton_Click);
             // 
             // ScriptPane
             // 

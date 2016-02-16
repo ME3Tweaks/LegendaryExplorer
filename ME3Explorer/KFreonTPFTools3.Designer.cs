@@ -99,6 +99,10 @@
             this.TPFMipsLabel = new System.Windows.Forms.Label();
             this.HashLabel = new System.Windows.Forms.Label();
             this.TPFFormatLabel = new System.Windows.Forms.Label();
+            this.PCCContextPanel = new System.Windows.Forms.Panel();
+            this.CopyClipBoardButton = new System.Windows.Forms.Button();
+            this.ExportPCCListButton = new System.Windows.Forms.Button();
+            this.PCCSelectAllButton = new System.Windows.Forms.Button();
             this.PreviewTabPages = new System.Windows.Forms.TabControl();
             this.PreviewPage = new System.Windows.Forms.TabPage();
             this.texmodPreviewBox = new System.Windows.Forms.RichTextBox();
@@ -106,15 +110,12 @@
             this.PCCsPage = new System.Windows.Forms.TabPage();
             this.PCCsCheckListBox = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.PCCContextPanel = new System.Windows.Forms.Panel();
-            this.CopyClipBoardButton = new System.Windows.Forms.Button();
-            this.ExportPCCListButton = new System.Windows.Forms.Button();
-            this.PCCSelectAllButton = new System.Windows.Forms.Button();
             this.AnalyseButton = new System.Windows.Forms.Button();
             this.SaveModButton = new System.Windows.Forms.Button();
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.extractValidsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -133,11 +134,11 @@
             this.DetailsSplitter.Panel1.SuspendLayout();
             this.DetailsSplitter.Panel2.SuspendLayout();
             this.DetailsSplitter.SuspendLayout();
+            this.PCCContextPanel.SuspendLayout();
             this.PreviewTabPages.SuspendLayout();
             this.PreviewPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).BeginInit();
             this.PCCsPage.SuspendLayout();
-            this.PCCContextPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TopStrip
@@ -186,7 +187,8 @@
             this.ExtractTOP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ExtractTOP.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractAllToolStripMenuItem,
-            this.extractInvalidToolStripMenuItem});
+            this.extractInvalidToolStripMenuItem,
+            this.extractValidsToolStripMenuItem});
             this.ExtractTOP.Enabled = false;
             this.ExtractTOP.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractTOP.Name = "ExtractTOP";
@@ -470,9 +472,12 @@
             // 
             // MainSplitter
             // 
+            this.MainSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.MainSplitter.Location = new System.Drawing.Point(0, 32);
-            this.MainSplitter.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.MainSplitter.Margin = new System.Windows.Forms.Padding(0);
             this.MainSplitter.Name = "MainSplitter";
             // 
             // MainSplitter.Panel1
@@ -483,7 +488,7 @@
             // MainSplitter.Panel2
             // 
             this.MainSplitter.Panel2.Controls.Add(this.LowerRightSplitter);
-            this.MainSplitter.Size = new System.Drawing.Size(1642, 893);
+            this.MainSplitter.Size = new System.Drawing.Size(1642, 899);
             this.MainSplitter.SplitterDistance = 830;
             this.MainSplitter.SplitterWidth = 10;
             this.MainSplitter.TabIndex = 2;
@@ -497,7 +502,7 @@
             this.MainTabPages.Margin = new System.Windows.Forms.Padding(0);
             this.MainTabPages.Name = "MainTabPages";
             this.MainTabPages.SelectedIndex = 0;
-            this.MainTabPages.Size = new System.Drawing.Size(830, 861);
+            this.MainTabPages.Size = new System.Drawing.Size(830, 867);
             this.MainTabPages.TabIndex = 2;
             this.MainTabPages.Selected += new System.Windows.Forms.TabControlEventHandler(this.MainTabPages_TabChanged);
             // 
@@ -507,7 +512,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(0);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(822, 828);
+            this.tabPage1.Size = new System.Drawing.Size(822, 834);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main Page";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -518,6 +523,7 @@
             this.MainTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MainTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.MainTreeView.FullRowSelect = true;
             this.MainTreeView.HideSelection = false;
             this.MainTreeView.ImageIndex = 0;
             this.MainTreeView.ImageList = this.MainTreeViewImageList;
@@ -526,7 +532,7 @@
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(0);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 0;
-            this.MainTreeView.Size = new System.Drawing.Size(822, 828);
+            this.MainTreeView.Size = new System.Drawing.Size(822, 834);
             this.MainTreeView.TabIndex = 0;
             this.MainTreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.MainTreeView_DrawNode);
             this.MainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.MainTreeView_AfterSelect);
@@ -549,7 +555,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Margin = new System.Windows.Forms.Padding(0);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(483, 828);
+            this.tabPage2.Size = new System.Drawing.Size(822, 834);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Delete Page";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -567,7 +573,7 @@
             this.MainListView.Location = new System.Drawing.Point(0, 0);
             this.MainListView.Margin = new System.Windows.Forms.Padding(0);
             this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(483, 828);
+            this.MainListView.Size = new System.Drawing.Size(822, 834);
             this.MainListView.SmallImageList = this.MainTreeViewImageList;
             this.MainListView.TabIndex = 0;
             this.MainListView.TileSize = new System.Drawing.Size(200, 200);
@@ -593,7 +599,7 @@
             this.PromoteButton,
             this.GotoDupButton,
             this.AutofixSingleButton});
-            this.ContextPanel.Location = new System.Drawing.Point(0, 861);
+            this.ContextPanel.Location = new System.Drawing.Point(0, 867);
             this.ContextPanel.Name = "ContextPanel";
             this.ContextPanel.Padding = new System.Windows.Forms.Padding(0, 0, 32, 0);
             this.ContextPanel.Size = new System.Drawing.Size(830, 32);
@@ -692,7 +698,7 @@
             // 
             this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
             this.LowerRightSplitter.Panel2.Controls.Add(this.PreviewTabPages);
-            this.LowerRightSplitter.Size = new System.Drawing.Size(802, 893);
+            this.LowerRightSplitter.Size = new System.Drawing.Size(802, 899);
             this.LowerRightSplitter.SplitterDistance = 252;
             this.LowerRightSplitter.SplitterWidth = 14;
             this.LowerRightSplitter.TabIndex = 0;
@@ -899,85 +905,6 @@
             this.TPFFormatLabel.TabIndex = 0;
             this.TPFFormatLabel.Text = "Image Format:";
             // 
-            // PreviewTabPages
-            // 
-            this.PreviewTabPages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PreviewTabPages.Controls.Add(this.PreviewPage);
-            this.PreviewTabPages.Controls.Add(this.PCCsPage);
-            this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
-            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.PreviewTabPages.Name = "PreviewTabPages";
-            this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(802, 595);
-            this.PreviewTabPages.TabIndex = 0;
-            this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
-        "PCC\'s");
-            this.PreviewTabPages.Click += new System.EventHandler(this.TabControl_TabChanged);
-            // 
-            // PreviewPage
-            // 
-            this.PreviewPage.Controls.Add(this.texmodPreviewBox);
-            this.PreviewPage.Controls.Add(this.PreviewBox);
-            this.PreviewPage.Location = new System.Drawing.Point(4, 29);
-            this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
-            this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(794, 562);
-            this.PreviewPage.TabIndex = 0;
-            this.PreviewPage.Text = "Preview";
-            this.PreviewPage.UseVisualStyleBackColor = true;
-            // 
-            // texmodPreviewBox
-            // 
-            this.texmodPreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.texmodPreviewBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
-            this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
-            this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(794, 562);
-            this.texmodPreviewBox.TabIndex = 1;
-            this.texmodPreviewBox.Text = "";
-            this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
-            // 
-            // PreviewBox
-            // 
-            this.PreviewBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PreviewBox.Location = new System.Drawing.Point(0, 0);
-            this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
-            this.PreviewBox.Name = "PreviewBox";
-            this.PreviewBox.Size = new System.Drawing.Size(794, 562);
-            this.PreviewBox.TabIndex = 0;
-            this.PreviewBox.TabStop = false;
-            // 
-            // PCCsPage
-            // 
-            this.PCCsPage.Controls.Add(this.PCCsCheckListBox);
-            this.PCCsPage.Location = new System.Drawing.Point(4, 29);
-            this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
-            this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(1111, 562);
-            this.PCCsPage.TabIndex = 1;
-            this.PCCsPage.Text = "PCC\'s";
-            this.PCCsPage.UseVisualStyleBackColor = true;
-            // 
-            // PCCsCheckListBox
-            // 
-            this.PCCsCheckListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.PCCsCheckListBox.CheckBoxes = true;
-            this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
-            this.PCCsCheckListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
-            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(1111, 562);
-            this.PCCsCheckListBox.TabIndex = 0;
-            this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
-            this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
-            this.PCCsCheckListBox.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.PCCsCheckBox_IndexChanged);
-            // 
             // PCCContextPanel
             // 
             this.PCCContextPanel.AutoSize = true;
@@ -986,7 +913,7 @@
             this.PCCContextPanel.Controls.Add(this.ExportPCCListButton);
             this.PCCContextPanel.Controls.Add(this.PCCSelectAllButton);
             this.PCCContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PCCContextPanel.Location = new System.Drawing.Point(0, 597);
+            this.PCCContextPanel.Location = new System.Drawing.Point(0, 603);
             this.PCCContextPanel.Margin = new System.Windows.Forms.Padding(0);
             this.PCCContextPanel.Name = "PCCContextPanel";
             this.PCCContextPanel.Size = new System.Drawing.Size(802, 30);
@@ -1024,6 +951,90 @@
             this.PCCSelectAllButton.Text = "Select All";
             this.PCCSelectAllButton.UseVisualStyleBackColor = true;
             this.PCCSelectAllButton.Click += new System.EventHandler(this.PCCSelectAllButton_Click);
+            // 
+            // PreviewTabPages
+            // 
+            this.PreviewTabPages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PreviewTabPages.Controls.Add(this.PreviewPage);
+            this.PreviewTabPages.Controls.Add(this.PCCsPage);
+            this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
+            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PreviewTabPages.Name = "PreviewTabPages";
+            this.PreviewTabPages.SelectedIndex = 0;
+            this.PreviewTabPages.Size = new System.Drawing.Size(802, 567);
+            this.PreviewTabPages.TabIndex = 0;
+            this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
+        "PCC\'s");
+            this.PreviewTabPages.Click += new System.EventHandler(this.TabControl_TabChanged);
+            // 
+            // PreviewPage
+            // 
+            this.PreviewPage.Controls.Add(this.texmodPreviewBox);
+            this.PreviewPage.Controls.Add(this.PreviewBox);
+            this.PreviewPage.Location = new System.Drawing.Point(4, 29);
+            this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
+            this.PreviewPage.Name = "PreviewPage";
+            this.PreviewPage.Size = new System.Drawing.Size(794, 534);
+            this.PreviewPage.TabIndex = 0;
+            this.PreviewPage.Text = "Preview";
+            this.PreviewPage.UseVisualStyleBackColor = true;
+            // 
+            // texmodPreviewBox
+            // 
+            this.texmodPreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.texmodPreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
+            this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
+            this.texmodPreviewBox.Name = "texmodPreviewBox";
+            this.texmodPreviewBox.Size = new System.Drawing.Size(794, 564);
+            this.texmodPreviewBox.TabIndex = 1;
+            this.texmodPreviewBox.Text = "";
+            this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
+            // 
+            // PreviewBox
+            // 
+            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PreviewBox.Location = new System.Drawing.Point(0, 0);
+            this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
+            this.PreviewBox.Name = "PreviewBox";
+            this.PreviewBox.Size = new System.Drawing.Size(794, 564);
+            this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PreviewBox.TabIndex = 0;
+            this.PreviewBox.TabStop = false;
+            // 
+            // PCCsPage
+            // 
+            this.PCCsPage.Controls.Add(this.PCCsCheckListBox);
+            this.PCCsPage.Location = new System.Drawing.Point(4, 29);
+            this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
+            this.PCCsPage.Name = "PCCsPage";
+            this.PCCsPage.Size = new System.Drawing.Size(794, 534);
+            this.PCCsPage.TabIndex = 1;
+            this.PCCsPage.Text = "PCC\'s";
+            this.PCCsPage.UseVisualStyleBackColor = true;
+            // 
+            // PCCsCheckListBox
+            // 
+            this.PCCsCheckListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PCCsCheckListBox.CheckBoxes = true;
+            this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2});
+            this.PCCsCheckListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
+            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PCCsCheckListBox.Name = "PCCsCheckListBox";
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(794, 534);
+            this.PCCsCheckListBox.TabIndex = 0;
+            this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
+            this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
+            this.PCCsCheckListBox.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.PCCsCheckBox_IndexChanged);
             // 
             // AnalyseButton
             // 
@@ -1085,15 +1096,22 @@
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
             // 
+            // extractValidsToolStripMenuItem
+            // 
+            this.extractValidsToolStripMenuItem.Name = "extractValidsToolStripMenuItem";
+            this.extractValidsToolStripMenuItem.Size = new System.Drawing.Size(214, 30);
+            this.extractValidsToolStripMenuItem.Text = "Extract Valids";
+            this.extractValidsToolStripMenuItem.Click += new System.EventHandler(this.extractValidsToolStripMenuItem_Click);
+            // 
             // KFreonTPFTools3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1642, 1040);
+            this.Controls.Add(this.MainSplitter);
             this.Controls.Add(this.TopStrip);
             this.Controls.Add(this.BottomStrip);
-            this.Controls.Add(this.MainSplitter);
             this.Controls.Add(this.AnalyseButton);
             this.Controls.Add(this.SaveModButton);
             this.Controls.Add(this.InstallButton);
@@ -1127,11 +1145,11 @@
             this.DetailsSplitter.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DetailsSplitter)).EndInit();
             this.DetailsSplitter.ResumeLayout(false);
+            this.PCCContextPanel.ResumeLayout(false);
             this.PreviewTabPages.ResumeLayout(false);
             this.PreviewPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).EndInit();
             this.PCCsPage.ResumeLayout(false);
-            this.PCCContextPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1224,5 +1242,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripButton AutofixSingleButton;
         private System.Windows.Forms.ToolStripButton BulkExtractTPFButton;
+        private System.Windows.Forms.ToolStripMenuItem extractValidsToolStripMenuItem;
     }
 }

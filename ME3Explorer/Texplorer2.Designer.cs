@@ -281,6 +281,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(0, 45);
             this.splitContainer1.Margin = new System.Windows.Forms.Padding(0);
             this.splitContainer1.Name = "splitContainer1";
@@ -294,7 +295,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.OutputBox);
             this.splitContainer1.Size = new System.Drawing.Size(2248, 860);
-            this.splitContainer1.SplitterDistance = 653;
+            this.splitContainer1.SplitterDistance = 654;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -313,7 +314,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(2248, 653);
+            this.splitContainer2.Size = new System.Drawing.Size(2248, 654);
             this.splitContainer2.SplitterDistance = 395;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 0;
@@ -328,7 +329,7 @@
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 1;
-            this.MainTreeView.Size = new System.Drawing.Size(395, 653);
+            this.MainTreeView.Size = new System.Drawing.Size(395, 654);
             this.MainTreeView.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.MainTreeView, "This area shows the textures in the selected game. \r\nFolders are often package na" +
         "mes, but only devs need that.");
@@ -362,8 +363,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer3.Size = new System.Drawing.Size(1850, 653);
-            this.splitContainer3.SplitterDistance = 1328;
+            this.splitContainer3.Size = new System.Drawing.Size(1850, 654);
+            this.splitContainer3.SplitterDistance = 1330;
             this.splitContainer3.SplitterWidth = 3;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -377,10 +378,10 @@
             this.ContextPanel.Controls.Add(this.ReplaceButton);
             this.ContextPanel.Controls.Add(this.AddBiggerButton);
             this.ContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.ContextPanel.Location = new System.Drawing.Point(0, 598);
+            this.ContextPanel.Location = new System.Drawing.Point(0, 599);
             this.ContextPanel.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.ContextPanel.Name = "ContextPanel";
-            this.ContextPanel.Size = new System.Drawing.Size(1328, 55);
+            this.ContextPanel.Size = new System.Drawing.Size(1330, 55);
             this.ContextPanel.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.ContextPanel, "This context menu appears when a texture is selected,\r\nand provides texture based" +
         " operations. \r\nClick this bubble to remove all instructions.");
@@ -514,7 +515,7 @@
             this.PicturePanel.Location = new System.Drawing.Point(14, 12);
             this.PicturePanel.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.PicturePanel.Name = "PicturePanel";
-            this.PicturePanel.Size = new System.Drawing.Size(1089, 635);
+            this.PicturePanel.Size = new System.Drawing.Size(1091, 636);
             this.PicturePanel.TabIndex = 3;
             this.PrimaryToolTip.SetToolTip(this.PicturePanel, "This area shows the textures within the selected folder.\r\nIt shows a thumbnail of" +
         " each image and clicking on an\r\nimage will show details on the right.");
@@ -551,7 +552,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.TabSearchSplitter);
-            this.splitContainer4.Size = new System.Drawing.Size(519, 653);
+            this.splitContainer4.Size = new System.Drawing.Size(517, 654);
             this.splitContainer4.SplitterDistance = 40;
             this.splitContainer4.SplitterWidth = 3;
             this.splitContainer4.TabIndex = 0;
@@ -562,7 +563,7 @@
             this.SearchBox.Location = new System.Drawing.Point(74, 8);
             this.SearchBox.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.SearchBox.Name = "SearchBox";
-            this.SearchBox.Size = new System.Drawing.Size(430, 26);
+            this.SearchBox.Size = new System.Drawing.Size(428, 26);
             this.SearchBox.TabIndex = 2;
             this.PrimaryToolTip.SetToolTip(this.SearchBox, "Search filters:\r\nname = Texture search\r\n@expID = Export ID search\r\n\\pcc = Game fi" +
         "lename search\r\n\\pcc @ expID = Combined search\r\n-name = Thumbnail search");
@@ -588,7 +589,7 @@
             // 
             this.SearchCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchCountLabel.AutoSize = true;
-            this.SearchCountLabel.Location = new System.Drawing.Point(483, 20);
+            this.SearchCountLabel.Location = new System.Drawing.Point(481, 20);
             this.SearchCountLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.SearchCountLabel.Name = "SearchCountLabel";
             this.SearchCountLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -615,7 +616,7 @@
             // 
             this.TabSearchSplitter.Panel2.Controls.Add(this.tabControl1);
             this.TabSearchSplitter.Panel2MinSize = 0;
-            this.TabSearchSplitter.Size = new System.Drawing.Size(519, 610);
+            this.TabSearchSplitter.Size = new System.Drawing.Size(517, 611);
             this.TabSearchSplitter.SplitterDistance = 52;
             this.TabSearchSplitter.SplitterWidth = 3;
             this.TabSearchSplitter.TabIndex = 2;
@@ -628,7 +629,7 @@
             this.SearchListBox.Location = new System.Drawing.Point(0, 0);
             this.SearchListBox.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.SearchListBox.Name = "SearchListBox";
-            this.SearchListBox.Size = new System.Drawing.Size(519, 52);
+            this.SearchListBox.Size = new System.Drawing.Size(517, 52);
             this.SearchListBox.TabIndex = 1;
             this.SearchListBox.SelectedIndexChanged += new System.EventHandler(this.SearchListBox_SelectedIndexChanged);
             // 
@@ -641,7 +642,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(519, 555);
+            this.tabControl1.Size = new System.Drawing.Size(517, 556);
             this.tabControl1.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.tabControl1, "Displays properties and list of pcc\'s containing the selected texture");
             // 
@@ -652,7 +653,7 @@
             this.PropertiesTab.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.PropertiesTab.Name = "PropertiesTab";
             this.PropertiesTab.Padding = new System.Windows.Forms.Padding(6, 8, 6, 8);
-            this.PropertiesTab.Size = new System.Drawing.Size(511, 522);
+            this.PropertiesTab.Size = new System.Drawing.Size(509, 523);
             this.PropertiesTab.TabIndex = 0;
             this.PropertiesTab.Text = "Properties";
             this.PropertiesTab.UseVisualStyleBackColor = true;
@@ -666,7 +667,7 @@
             this.PropertiesRTB.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.PropertiesRTB.Name = "PropertiesRTB";
             this.PropertiesRTB.ReadOnly = true;
-            this.PropertiesRTB.Size = new System.Drawing.Size(499, 506);
+            this.PropertiesRTB.Size = new System.Drawing.Size(497, 507);
             this.PropertiesRTB.TabIndex = 0;
             this.PropertiesRTB.Text = "";
             // 
@@ -677,7 +678,7 @@
             this.PCCsTab.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.PCCsTab.Name = "PCCsTab";
             this.PCCsTab.Padding = new System.Windows.Forms.Padding(6, 8, 6, 8);
-            this.PCCsTab.Size = new System.Drawing.Size(511, 528);
+            this.PCCsTab.Size = new System.Drawing.Size(509, 523);
             this.PCCsTab.TabIndex = 1;
             this.PCCsTab.Text = "PCC\'s";
             this.PCCsTab.UseVisualStyleBackColor = true;
@@ -693,7 +694,7 @@
             this.PCCsCheckedListBox.Location = new System.Drawing.Point(6, 8);
             this.PCCsCheckedListBox.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsCheckedListBox.Name = "PCCsCheckedListBox";
-            this.PCCsCheckedListBox.Size = new System.Drawing.Size(499, 512);
+            this.PCCsCheckedListBox.Size = new System.Drawing.Size(497, 507);
             this.PCCsCheckedListBox.TabIndex = 0;
             this.PCCsCheckedListBox.SelectedIndexChanged += new System.EventHandler(this.PCCsCheckedListBox_SelectedIndexChanged);
             // 
@@ -703,12 +704,12 @@
             this.PCCBoxContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
             this.PCCBoxContext.Name = "contextMenuStrip1";
-            this.PCCBoxContext.Size = new System.Drawing.Size(167, 34);
+            this.PCCBoxContext.Size = new System.Drawing.Size(180, 34);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(166, 30);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(179, 30);
             this.toolStripMenuItem1.Text = "Export List";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.PCCBoxContext_Click);
             // 
@@ -721,7 +722,7 @@
             this.OutputBox.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.OutputBox.Name = "OutputBox";
             this.OutputBox.ReadOnly = true;
-            this.OutputBox.Size = new System.Drawing.Size(2248, 204);
+            this.OutputBox.Size = new System.Drawing.Size(2248, 203);
             this.OutputBox.TabIndex = 0;
             this.OutputBox.Text = "";
             this.PrimaryToolTip.SetToolTip(this.OutputBox, "This area displays some useful information.\r\nBasically a filtered version of the " +
@@ -730,6 +731,7 @@
             // ChangeButton
             // 
             this.ChangeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChangeButton.AutoSize = true;
             this.ChangeButton.Enabled = false;
             this.ChangeButton.FlatAppearance.BorderSize = 0;
             this.ChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;

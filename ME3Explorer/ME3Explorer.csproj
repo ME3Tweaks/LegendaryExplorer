@@ -66,8 +66,8 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="CSharpImageLibrary, Version=2.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSharpImageLibrary.2.1.5.0\lib\net45\CSharpImageLibrary.exe</HintPath>
+    <Reference Include="CSharpImageLibrary, Version=2.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpImageLibrary.2.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="lib3ds.Net">
@@ -107,8 +107,8 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="UsefulThings, Version=1.5.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UsefulCSharpThings.1.5.3.0\lib\net45\UsefulThings.dll</HintPath>
+    <Reference Include="UsefulThings, Version=1.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsefulCSharpThings.1.5.4.0\lib\net45\UsefulThings.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -248,6 +248,9 @@
     </Compile>
     <Compile Include="HeaderEditor\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InitialDLCExtractor.xaml.cs">
+      <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
     </Compile>
     <Compile Include="InterpEditor\InterpEditor.cs">
       <SubType>Form</SubType>
@@ -1330,6 +1333,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="HowToUseWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InitialDLCExtractor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -237,8 +237,6 @@ namespace ME3Explorer
         private void InitialiseGUI()
         {
             // KFreon: Make preview bigger
-            PreviewBox.Dock = DockStyle.Fill;
-            texmodPreviewBox.Dock = DockStyle.Fill;
             DisappearTextBox(true);
             EnableSecondProgressBar(false);
             FirstHalfInfoState(false);
@@ -261,6 +259,7 @@ namespace ME3Explorer
             gooey.AddControl(ChangePathsButton, "ChangePaths", true);
             gooey.AddControl(ChangeButton, "ChangeButton", true);
             gooey.AddControl(AutofixSingleButton, "AutofixSingleButton", false);
+            gooey.AddControl(extractValidsToolStripMenuItem, "extractValids", true);
 
             gooey.ChangeState(false);
 
@@ -425,6 +424,7 @@ namespace ME3Explorer
             gooey.ModifyControl("Rebuild", false);
             gooey.ModifyControl("RunAutofix", false);
             gooey.ModifyControl("extractInvalid", false);
+            gooey.ModifyControl("extractValids", false);
         }
 
 
@@ -979,7 +979,7 @@ namespace ME3Explorer
             }
 
             // KFreon: Gather from cache if available
-            string key = tex.FileName + tex.TexName + tex.Hash;
+            string key = tex.FilePath + tex.FileName + tex.TexName + tex.Hash + tex.Width + tex.Height;
             if (Previews.ContainsKey(key))
             {
                 Bitmap img = Previews[key];
@@ -1355,6 +1355,7 @@ namespace ME3Explorer
             gooey.ModifyControl("Rebuild", true);
             gooey.ModifyControl("RunAutofix", true);
             gooey.ModifyControl("extractInvalid", true);
+            gooey.ModifyControl("extractValids", true);
             gooey.ModifyControl("Analyse", false);
 
 
@@ -1370,6 +1371,7 @@ namespace ME3Explorer
             gooey.ModifyControl("Load", true);
             //gooey.ModifyControl("MODtoTPF", true);
             gooey.ModifyControl("extractInvalid", true);
+            gooey.ModifyControl("extractValids", true);
             gooey.ModifyControl("RunAutofix", true);
 
             // Heff: mark as analysed
@@ -1658,6 +1660,7 @@ namespace ME3Explorer
                 gooey.ModifyControl("Rebuild", false);
                 gooey.ModifyControl("RunAutofix", false);
                 gooey.ModifyControl("extractInvalid", false);
+                gooey.ModifyControl("extractValids", false);
                 gooey.ChangeState(true);
 
                 Cleanup();
@@ -2213,6 +2216,9 @@ namespace ME3Explorer
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
 
+            if (index < 0)
+                return;
+
             string outputPath = "";
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
@@ -2451,7 +2457,7 @@ namespace ME3Explorer
                     texes.Add(tex);
                     // KFreon: Write hashes to log
                     string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
-                    fs.WriteString(hash + "|" + tex.FileName + "\n");
+                    fs.WriteString(hash + "|" + tex.TexName + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
                 }
                 Extractor(extractPath, null, t => texes.Contains(t));
             }
@@ -2740,6 +2746,7 @@ namespace ME3Explorer
                     tex.NumMips = dup.NumMips;
                     tex.Format = dup.Format;
                     tex.FilePath = dup.FilePath;
+                    tex.FileName = dup.FileName;
                     tex.AutofixSuccess = true;
                     retval = true;
                 }
@@ -2753,7 +2760,6 @@ namespace ME3Explorer
 
                 if (retval == true && !fixedTexes.ContainsKey(tex.Hash))
                     fixedTexes.Add(tex.Hash, tex);
-
 
                 // Heff: Cancellation check
                 if (cts.IsCancellationRequested)
@@ -2781,7 +2787,7 @@ namespace ME3Explorer
             {
                 var destFormat = ImageEngine.ParseFromString(tex.ExpectedFormat);
                 img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
-                retval = img.Save(path, destFormat, tex.ExpectedMips > 1);
+                retval = img.Save(path, destFormat, tex.ExpectedMips > 1 ? MipHandling.Default : MipHandling.KeepTopOnly);
             }
 
             tex.FileName = Path.GetFileName(path);
@@ -3363,7 +3369,7 @@ namespace ME3Explorer
 
                         List<string> hashes = GetHashesFromTPF(zippy, false);
 
-                        for (int i = 0; i < zippy.Entries.Count; i++) 
+                        for (int i = 0; i < zippy.Entries.Count - 1; i++) 
                         {
                             var entry = zippy.Entries[i];
                             string filename = entry.Filename;
@@ -3393,6 +3399,21 @@ namespace ME3Explorer
         private void texmodPreviewBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void extractValidsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string outputPath = "";
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    outputPath = fbd.SelectedPath;
+                else
+                    return;
+            }
+            Overall.UpdateText("Extracting " + LoadedTexes.Where(r => r.Valid && !r.isDef).Count() + " valid textures...");
+            Extractor(outputPath, null, t => t.Valid && !t.isDef);
+            Overall.UpdateText("All valids extracted!");
         }
     }
 }

@@ -278,7 +278,7 @@ namespace ME3Explorer
                     StatusUpdater.UpdateText("Saving " + tex.TexName + " |  " + MainProgressBar.Value + 1 + " \\ " + MainProgressBar.Maximum);
                     using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame))
                     {
-                        using (Textures.ITexture2D tex2D = tex.Textures[0])
+                        Textures.ITexture2D tex2D = tex.Textures[0];
                         {
                             // KFreon: Save first file
                             /*PCCObjects.IExportEntry expEntry = pcc.Exports[tex2D.pccExpIdx];
@@ -294,13 +294,19 @@ namespace ME3Explorer
                                 if (!SaveFile(tex.Files, tex.ExpIDs, tex2D, j))
                                     return false;
                             }
+
+                            tex2D.hasChanged = false;
                         } 
                     }
+                    ProgBarUpdater.IncrementBar();
                 }
 
                 StatusUpdater.UpdateText("All textures saved!");
                 OutputBoxPrintLn("All textures saved!");
                 ChangedTextures.Clear();
+                ProgBarUpdater.ChangeProgressBar(1, 1);
+                DisableContext = false;
+                UpdateTOCs(pathBIOGame, WhichGame, DLCPath);
                 return true;
             });
         }
@@ -1431,14 +1437,30 @@ namespace ME3Explorer
 
 
             // KFreon: Update DLC TOCs
-            // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works.
-            if (WhichGame == 3 && modifiedDLC != null && modifiedDLC.Count > 0)
+            // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works. KFREON: Re-enabled as part of the TOC all day, everywhere, anywhen strategy.
+            if (WhichGame == 3)
             {
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
-                List<string> files = new List<string>(Directory.EnumerateFiles(DLCPath, "Default.sfar", SearchOption.AllDirectories));
                 DebugOutput.PrintLn("Updating DLC...");
                 dlcedit2.ExtractAllDLC();
                 DebugOutput.PrintLn("DLC Updated.");
+
+                
+                /*foreach (string dlc in modifiedDLC)
+                {
+                    var matchingDLC = files.Where(d => d.Contains(dlc));
+                    if (matchingDLC.Count() == 0)
+                    {
+                        Debug.WriteLine("No matching DLC found for " + dlc + ".  Skipping...");
+                        continue;
+                    }
+
+                    if (matchingDLC.Count() > 1)
+                        Debug.WriteLine("Weirdness detected. In UpdateTOC's more than one matching DLC found. Count = " + matchingDLC.Count());
+
+                    DLCPackage package = new DLCPackage(matchingDLC.First());
+                    package.UpdateTOCbin(true);
+                }*/
             }
         }
 
@@ -2616,7 +2638,7 @@ namespace ME3Explorer
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Title = "Select destination for file. Hash will be appended to filename.";
-                    sfd.FileName = tex.TexName + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + ".dds";
+                    sfd.FileName = tex.TexName + "_" + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + ".dds";
                     sfd.Filter = "DDS Files|*.dds";
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         savepath = sfd.FileName;

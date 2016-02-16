@@ -1,0 +1,40 @@
+﻿<Window x:Class="ME3Explorer.InitialDLCExtractor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer"
+             mc:Ignorable="d" Width="436.751" Height="246.634" Title="DLC Extractor">
+    <DockPanel LastChildFill="False">
+        <Label Content="All UNEXTRACTED DLC will be extracted." HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" FontSize="20" FontWeight="Bold"/>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label Content="Required Space: "/>
+            <TextBlock Text="{Binding RequiredSpace}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label Content="Available: "/>
+            <TextBlock Text="{Binding AvailableSpace}"/>
+        </StackPanel>
+
+        <Label Content="Once started, this operation cannot be interrupted." DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+        <DockPanel LastChildFill="False" DockPanel.Dock="Bottom">
+            <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click">
+                <Button.Content>
+                    <Grid Height="95">
+                        <Label Content="ü" Foreground="Green" FontSize="100" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Wingdings" Padding="0"/>
+                        <Label Content="Recommended" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button x:Name="DontExtractButton" DockPanel.Dock="Right" VerticalAlignment="Center" Background="White" Click="DontExtractButton_Click">
+                <Button.Content>
+                    <Grid>
+                        <Label Content="û" FontFamily="Wingdings" Foreground="Red" FontSize="50" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                        <Label Content="Advanced users only" VerticalAlignment="Bottom" FontSize="10"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+        </DockPanel>
+    </DockPanel>
+</Window>

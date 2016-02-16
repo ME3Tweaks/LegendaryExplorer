@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
@@ -23,10 +24,23 @@ namespace ME3Explorer
         [DllImport("kernel32.dll")]
         static extern bool AttachConsole(int dwProcessId);
         private const int ATTACH_PARENT_PROCESS = -1;
+        bool IsDLCDone = false;
 
         public Form1()
         {
             InitializeComponent();
+            DoDLCCheck();
+        }
+
+        private async void DoDLCCheck()
+        {
+            await Task.Delay(1000);
+            InitialDLCExtractor dlcChecker = new InitialDLCExtractor();
+            dlcChecker.Closing += (sender, args) => IsDLCDone = true;
+            if (dlcChecker.vm.Required == true)
+                dlcChecker.Show();
+            else
+                IsDLCDone = true;
         }
 
         Languages lang;
@@ -273,6 +287,9 @@ namespace ME3Explorer
 
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!IsDLCDone)
+                return;
+
             ModMaker modmaker = new ModMaker();
             //OpenMaximized(modmaker);
             modmaker.Show();
@@ -405,12 +422,6 @@ namespace ME3Explorer
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
             if (File.Exists(loc + "\\ME1Explorer.exe"))
                 RunShell(loc + "\\ME1Explorer.exe", "");
-        }
-
-        private void texplorerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Texplorer2 texplorer = new Texplorer2(false);
-            texplorer.Show();
         }
 
         private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -699,12 +710,6 @@ namespace ME3Explorer
             taskbar.AddTool(form, Properties.Resources.autotoc_64x64);
         }
 
-		private void KFreonTPFToolsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KFreonTPFTools3 tpftools = new KFreonTPFTools3();
-            tpftools.Show();
-		}
-
         private void showKnownPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string s = "ME3:\n";
@@ -761,20 +766,20 @@ namespace ME3Explorer
 
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
+            if (!IsDLCDone)
+                return;
+
             Texplorer2 texplorer = new Texplorer2();
             //OpenMaximized(texplorer);
             texplorer.Show();
             taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64, true);
         }
 
-        private void modMakerToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            ModMaker modmaker = new ModMaker();
-            modmaker.Show();
-        }
-
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!IsDLCDone)
+                return;
+
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
             //OpenMaximized(tpftools);
             tpftools.Show();
@@ -844,14 +849,6 @@ namespace ME3Explorer
                 return;
 
             ME3Directory.GamePath(installPath);
-            // Heff: TexplorerME3Path is only used in CloneDialog, and there it assumnes BIOGame rather than CookedPCConsole, so not using this for now.
-            /*String cookPath = Path.Combine(installPath, "BIOGame", "CookedPCConsole");
-            if (!Directory.Exists(cookPath))
-            {
-                MessageBox.Show("Required CookedPCConsole folder not found at:\n" + cookPath, "Directory not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            Properties.Settings.Default.TexplorerME3Path = cookPath; */
 
             Properties.Settings.Default.ME3InstallDir = installPath;
             Properties.Settings.Default.Save();

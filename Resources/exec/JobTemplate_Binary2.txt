@@ -30,8 +30,25 @@ namespace SimpleScripts
                 bf.DebugPrintln("Cant find target pcc!");
                 return "";
             }
+			
             PCCObject pcc = new PCCObject(file);
             bool found = true;
+			
+			// KFreon: Add names as necessary to PCC (Used for Modmaker PCC Compare)
+			List<string> names = new List<string>();
+			// **KF_NAMES
+			
+			try
+			{
+				foreach (string name in names)
+					pcc.AddName(name);
+			}
+			catch (Exception e)
+			{
+				DebugOutput.WriteLine("Failed to add names to PCC.", "Modmaker", e)
+			}
+			
+			
             try
             {
                 PCCObject.ExportEntry e = pcc.Exports[objidx];

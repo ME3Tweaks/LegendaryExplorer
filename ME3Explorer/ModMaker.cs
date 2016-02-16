@@ -1456,6 +1456,7 @@ namespace ME3Explorer
         private void CreateFromPCCDiffButton_Click(object sender, EventArgs e)
         {
             // KFreon: This is all just renamed stuff from WV's work. No credit to me.
+            StatusUpdater.UpdateText("Comparing PCC's...");
 
 
             // KFreon: Get pcc's
@@ -1466,13 +1467,19 @@ namespace ME3Explorer
                 ofd.Filter = "PCC Files|*.pcc";
                 ofd.Title = "Select base (unmodified) pcc";
                 if (ofd.ShowDialog() != DialogResult.OK)
+                {
+                    StatusUpdater.UpdateText("Ready.");
                     return;
+                }
 
                 basePCC = new ME3PCCObject(ofd.FileName);
 
                 ofd.Title = "Select modified pcc";
                 if (ofd.ShowDialog() != DialogResult.OK)
+                {
+                    StatusUpdater.UpdateText("Ready.");
                     return;
+                }
 
                 modifiedPCC = new ME3PCCObject(ofd.FileName);
             }
@@ -1483,42 +1490,58 @@ namespace ME3Explorer
             string script = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
 
             // KFreon: Set pcc name
-            var bits = basePCC.pccFileName.Split('\\');
-            script.Replace("**m1**", bits.Last());
+            var bits = modifiedPCC.pccFileName.Split('\\').ToList();
+            string filename = bits.Last();
+
+            int index = bits.IndexOf("DLC");
+            if (index > 0)
+            {
+                var dlcpaths = bits.GetRange(index, bits.Count - index);
+                filename = string.Join("\\", dlcpaths);
+            }
+
+            script = script.Replace("**m2**", filename);
+
 
             if (basePCC.NameCount != modifiedPCC.NameCount)
             {
                 StringBuilder names = new StringBuilder();
                 foreach (var name in modifiedPCC.Names)
                     if (!basePCC.Names.Contains(name))
-                        names.AppendLine("AddName(\"" + name + "\");");
-                script = script.Replace("**m2**", names.ToString());
+                        names.AppendLine("names.Add(\"" + name + "\");" + Environment.NewLine);
+                script = script.Replace("// **KF_NAMES", names.ToString());
             }
-            else
-                script = script.Replace("**m2**", "\\ No names to add");
 
-            StringBuilder exports = new StringBuilder();
-            using(MemoryStream data = new MemoryStream())
+            for (int i = 0; i < basePCC.ExportCount; i++)
             {
-                for (int i = 0; i < basePCC.ExportCount; i++)
+                if (!basePCC.Exports[i].Data.SequenceEqual(modifiedPCC.Exports[i].Data))
                 {
-                    if (!basePCC.Exports[i].Data.SequenceEqual(modifiedPCC.Exports[i].Data))
-                    {
-                        int offset = (int)data.Position;
-                        data.WriteBytes(modifiedPCC.Exports[i].Data);
-                        exports.AppendLine("ReplaceData(" + i + ", " + offset + ", " + modifiedPCC.Exports[i].Data.Length + ");");
-                    }
-                }
-                script = script.Replace("**m3**", exports.ToString());
+                    ModJob job = new ModJob();
+                    job.OriginalScript = script.Replace("**m1**", i.ToString());
+                    job.Script = job.OriginalScript;
 
-                ModJob job = new ModJob();
-                job.data = data.ToArray();
-                job.Name = "PCC Replacement Job for " + bits.Last();
-                job.Script = script;
-                KFreonLib.Scripting.ModMaker.JobList.Add(job);
+                    job.data = modifiedPCC.Exports[i].Data;
+                    job.Name = "PCC Replacement Job for " + bits.Last();
+
+                    job.ExpIDs = new List<int>();
+                    job.ExpIDs.Add(i);
+
+                    job.OrigExpIDs = new List<int>();
+                    job.OrigExpIDs.Add(i);
+
+                    job.PCCs = new List<string>();
+                    job.OrigPCCs = new List<string>();
+                    job.OrigPCCs.Add(modifiedPCC.pccFileName);
+                    job.PCCs.Add(modifiedPCC.pccFileName);
+                    job.Texname = basePCC.Exports[i].ObjectName;
+                    KFreonLib.Scripting.ModMaker.JobList.Add(job);
+                }
             }
 
-            Refresh();
+
+            StatusUpdater.UpdateText("Created Job.");
+            MainProgBar.ChangeProgressBar(1, 1);
+            ExternalRefresh();
         }
 
         private void FindOther_DLC_Click(object sender, EventArgs e)
