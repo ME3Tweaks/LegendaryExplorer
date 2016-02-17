@@ -258,11 +258,6 @@ namespace ME3Explorer.Unreal.Classes
                 memory[ValueOffset + i + 4] = buff[i];
             DataSize = newsize;
             DataOffset = newoff;
-            TOCeditor tc = new TOCeditor();
-            string s = Path.GetFileName(pathafc);
-            if (updateTOC)
-                if (!tc.UpdateFile("\\" + s, newafcsize, pathBIO + "PCConsoleTOC.bin"))
-                    MessageBox.Show("Didn't found Entry!");
         }
 
         private byte[] ModifyHeader(byte[] nw, byte[] old)
