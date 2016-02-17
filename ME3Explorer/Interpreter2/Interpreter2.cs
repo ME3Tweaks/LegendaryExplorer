@@ -4,7 +4,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -62,6 +61,9 @@ namespace ME3Explorer.Interpreter2
 
         public const int TOPLEVEL_TAG = -1; //indicates this is a top level object in the tree
         public const int ARRAYLEAF_TAG = -2; //indicates this is a generic leaf in an arraylist, with no defined type
+        public const int STRUCTLEAFBYTE_TAG = -3; //indicates this is a leaf of a StructProperty that is a byte
+        public const int STRUCTLEAFFLOAT_TAG = -4; //indicates this is a leaf of a StructProperty that is a float
+        public const int STRUCTLEAFDEG_TAG = -5; //indicates this is a leaf of a StructProperty that is in degrees (actually unreal rotation units)
         public const int NONARRAYLEAF_TAG = -100; //indicates this is not an array leaf but does not specify what it is (e.g. could be unknown.)
 
         private const int ARRAYSVIEW_RAW = 0;
@@ -272,36 +274,58 @@ namespace ME3Explorer.Interpreter2
                         }
                         else
                         {
+                            TreeNode node;
+                            int pos;
                             string structType = pcc.getNameEntry(name);
                             if (structType == "Vector")
                             {
-                                t.Nodes.Add(readerpos.ToString("X4") + " : X : " + BitConverter.ToSingle(memory, readerpos));
-                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : Y : " + BitConverter.ToSingle(memory, readerpos + 4));
-                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : Z : " + BitConverter.ToSingle(memory, readerpos + 8));
+                                string[] labels = {"X", "Y", "Z"};
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    pos = readerpos + (i * 4);
+                                    node = new TreeNode(pos.ToString("X4") + " : " + labels[i] + " : " + BitConverter.ToSingle(memory, pos));
+                                    node.Name = pos.ToString();
+                                    node.Tag = STRUCTLEAFFLOAT_TAG;
+                                    t.Nodes.Add(node);
+                                }
                             }
                             else if (structType == "Rotator")
                             {
-                                int pitch = BitConverter.ToInt32(memory, readerpos);
-                                int yaw = BitConverter.ToInt32(memory, readerpos + 4);
-                                int roll = BitConverter.ToInt32(memory, readerpos + 8);
-                                t.Nodes.Add(readerpos.ToString("X4") + " : Pitch : " + pitch + " (" + ((float)pitch * 360f / 65536f) + " degrees)");
-                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : Yaw : " + yaw + " (" + ((float)yaw * 360f / 65536f) + " degrees)");
-                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : Roll : " + roll + " (" + ((float)roll * 360f / 65536f) + " degrees)");
+                                string[] labels = { "Pitch", "Yaw", "Roll" };
+                                int val;
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    pos = readerpos + (i * 4);
+                                    val = BitConverter.ToInt32(memory, pos);
+                                    node = new TreeNode(pos.ToString("X4") + " : " + labels[i] + " : " + val + " (" + ((float)val * 360f / 65536f) + " degrees)");
+                                    node.Name = pos.ToString();
+                                    node.Tag = STRUCTLEAFDEG_TAG;
+                                    t.Nodes.Add(node);
+                                }
                             }
                             else if (structType == "Color")
                             {
-                                Color c = Color.FromArgb(BitConverter.ToInt32(memory, readerpos));
-                                t.Nodes.Add(readerpos.ToString("X4") + " : B : " + c.B);
-                                t.Nodes.Add((readerpos + 1).ToString("X4") + " : G : " + c.G);
-                                t.Nodes.Add((readerpos + 2).ToString("X4") + " : R : " + c.R);
-                                t.Nodes.Add((readerpos + 3).ToString("X4") + " : A : " + c.A);
+                                string[] labels = { "B", "G", "R", "A" };
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    pos = readerpos + i;
+                                    node = new TreeNode(pos.ToString("X4") + " : " + labels[i] + " : " + memory[pos]);
+                                    node.Name = pos.ToString();
+                                    node.Tag = STRUCTLEAFBYTE_TAG;
+                                    t.Nodes.Add(node);
+                                }
                             }
                             else if (structType == "LinearColor")
                             {
-                                t.Nodes.Add(readerpos.ToString("X4") + " : R : " + BitConverter.ToSingle(memory, readerpos));
-                                t.Nodes.Add((readerpos + 4).ToString("X4") + " : G : " + BitConverter.ToSingle(memory, readerpos + 4));
-                                t.Nodes.Add((readerpos + 8).ToString("X4") + " : B : " + BitConverter.ToSingle(memory, readerpos + 8));
-                                t.Nodes.Add((readerpos + 12).ToString("X4") + " : A : " + BitConverter.ToSingle(memory, readerpos + 12));
+                                string[] labels = { "R", "G", "B", "A" };
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    pos = readerpos + (i * 4);
+                                    node = new TreeNode(pos.ToString("X4") + " : " + labels[i] + " : " + BitConverter.ToSingle(memory, pos));
+                                    node.Name = pos.ToString();
+                                    node.Tag = STRUCTLEAFFLOAT_TAG;
+                                    t.Nodes.Add(node);
+                                }
                             }
                             else
                             {
@@ -496,10 +520,16 @@ namespace ME3Explorer.Interpreter2
                 lastSetOffset = off;
                 hb1.SelectionLength = 1;
                 Debug.WriteLine("Node offset: " + off);
-                if (e.Node.Tag.Equals(ARRAYLEAF_TAG))
+                if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAYLEAF_TAG))
                 {
                     TryParseArrayProperty();
                     LAST_SELECTED_PROP_TYPE = ARRAYLEAF_TAG;
+                }
+                else if (e.Node.Tag != null && (e.Node.Tag.Equals(STRUCTLEAFFLOAT_TAG) || e.Node.Tag.Equals(STRUCTLEAFBYTE_TAG) || e.Node.Tag.Equals(STRUCTLEAFDEG_TAG)))
+                {
+                    arrayPropertyDropdown.Enabled = false;
+                    TryParseStructProperty((int)e.Node.Tag);
+                    LAST_SELECTED_PROP_TYPE = (int)e.Node.Tag;
                 }
                 else
                 {
@@ -565,6 +595,33 @@ namespace ME3Explorer.Interpreter2
             }
         }
 
+        private void TryParseStructProperty(int type)
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                if (memory.Length - pos < 8)
+                    return;
+                switch (type)
+                {
+                    case STRUCTLEAFFLOAT_TAG:
+                        proptext.Text = BitConverter.ToSingle(memory, pos).ToString();
+                        break;
+                    case STRUCTLEAFBYTE_TAG:
+                        proptext.Text = memory[pos].ToString();
+                        break;
+                    case STRUCTLEAFDEG_TAG:
+                        proptext.Text = ((float)BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        break;
+                }
+                proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void TryParseArrayProperty()
         {
             try
@@ -593,9 +650,54 @@ namespace ME3Explorer.Interpreter2
             {
                 setArrayProperty();
             }
+            else if(LAST_SELECTED_PROP_TYPE == STRUCTLEAFFLOAT_TAG|| LAST_SELECTED_PROP_TYPE == STRUCTLEAFBYTE_TAG || LAST_SELECTED_PROP_TYPE == STRUCTLEAFDEG_TAG)
+            {
+                setStructProperty();
+            }
             else
             {
                 setNonArrayProperty();
+            }
+        }
+
+        private void setStructProperty()
+        {
+            try
+            {
+                int pos = lastSetOffset;
+                if (memory.Length - pos < 8)
+                    return;
+                byte b = 0;
+                float f = 0;
+                switch (LAST_SELECTED_PROP_TYPE)
+                {
+                    case STRUCTLEAFBYTE_TAG:
+                        if (byte.TryParse(proptext.Text, out b))
+                        {
+                            memory[pos] = b;
+                            RefreshMem();
+                        }
+                        break;
+                    case STRUCTLEAFFLOAT_TAG:
+                        proptext.Text = CheckSeperator(proptext.Text);
+                        if (float.TryParse(proptext.Text, out f))
+                        {
+                            WriteMem(pos, BitConverter.GetBytes(f));
+                            RefreshMem();
+                        }
+                        break;
+                    case STRUCTLEAFDEG_TAG:
+                        if (float.TryParse(proptext.Text, out f))
+                        {
+                            WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
+                            RefreshMem();
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
