@@ -545,6 +545,17 @@ namespace ME3Explorer.Interpreter2
                         proptext.Text = memory[pos + 24].ToString();
                         visible = true;
                         break;
+                    case "StrProperty":
+                        string s = "";
+                        int count = -(int)BitConverter.ToInt64(memory, pos + 24);
+                        pos += 28;
+                        for (int i = 0; i < count; i++)
+                        {
+                            s += (char)memory[pos + i*2];
+                        }
+                        proptext.Text = s;
+                        visible = true;
+                        break;
                 }
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = visible;
             }
@@ -626,6 +637,42 @@ namespace ME3Explorer.Interpreter2
                             memory[pos + 24] = (byte)i;
                             RefreshMem();
                         }
+                        break;
+                    case "StrProperty":
+                        string s = proptext.Text;
+                        int offset = pos + 24;
+                        int oldLength = -(int)BitConverter.ToInt64(memory, offset);
+                        List<byte> stringBuff = new List<byte>(s.Length * 2);
+                        for (int j = 0; j < s.Length; j++)
+                        {
+                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                        }
+                        stringBuff.Add(0);
+                        stringBuff.Add(0);
+                        byte[] buff = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
+                        for (int j = 0; j < 4; j++)
+                            memory[offset - 8 + j] = buff[j];
+                        buff = BitConverter.GetBytes(-(s.LongCount() + 1));
+                        for (int j = 0; j < 8; j++)
+                            memory[offset + j] = buff[j];
+                        buff = new byte[memory.Length - (oldLength * 2) + stringBuff.Count];
+                        int startLength = offset + 4;
+                        int startLength2 = startLength + (oldLength * 2);
+                        for (int j = 0; j < startLength; j++)
+                        {
+                            buff[j] = memory[j];
+                        }
+                        for (int j = 0; j < stringBuff.Count; j++)
+                        {
+                            buff[j + startLength] = stringBuff[j];
+                        }
+                        startLength += stringBuff.Count;
+                        for (int j = 0; j < memory.Length - startLength2; j++)
+                        {
+                            buff[j + startLength] = memory[j + startLength2];
+                        }
+                        memory = buff;
+                        RefreshMem();
                         break;
                 }
             }

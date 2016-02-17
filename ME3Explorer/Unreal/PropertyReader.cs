@@ -397,6 +397,9 @@ namespace ME3Explorer.Unreal
                     ppo.nameindex = p.Value.IntValue;
                     pg = new CustomProperty(pcc.Names[p.Name], cat, ppo, typeof(ObjectProp), false, true);
                     break;
+                case Type.StrProperty:
+                    pg = new CustomProperty(pcc.Names[p.Name], cat, p.Value.StringValue, typeof(string), false, true);
+                    break;
                 case Type.StructProperty:
                     string structType = pcc.getNameEntry(p.Value.IntValue);
                     if(structType == "Color") {
