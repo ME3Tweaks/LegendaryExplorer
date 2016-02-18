@@ -43,11 +43,11 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
 
             var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFile = new TalkFile();
-            talkFile.LoadTlkData(tlkPath);
+            talkFiles = new TalkFiles();
+            talkFiles.LoadTlkData(tlkPath);
             if(SText.fontcollection == null)
                 SText.fontcollection = LoadFont("KismetFont.ttf", 8);
-            SObj.talkfile = talkFile;
+            SObj.talkfiles = talkFiles;
             if (System.IO.File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
@@ -69,7 +69,7 @@ namespace ME3Explorer
             public float Y;
         }
 
-        private TalkFile talkFile;
+        private TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         public TreeNode SeqTree;
@@ -477,7 +477,7 @@ namespace ME3Explorer
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;
-            ip.InitInterpreter(talkFile);
+            ip.InitInterpreter(talkFiles);
             ip.Show();
         }
 
@@ -991,7 +991,7 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadPCC(CurrentFile, talkFile);
+            p.LoadPCC(CurrentFile, talkFiles);
             if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
@@ -1018,14 +1018,10 @@ namespace ME3Explorer
 
         private void loadAlternateTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.tlk|*.tlk";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                talkFile.LoadTlkData(d.FileName);
-                RefreshView();
-                MessageBox.Show("Done.");
-            }
+            TlkManager tm = new TlkManager();
+            tm.tlkFiles = talkFiles;
+            tm.InitTlkManager();
+            tm.Show();
         }
 
     }

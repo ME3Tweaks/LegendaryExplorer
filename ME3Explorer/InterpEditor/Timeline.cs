@@ -150,12 +150,12 @@ namespace ME3Explorer.InterpEditor
         }
         public TreeView tree1;
         public TreeView tree2;
-        public TalkFile Talkfile
+        public TalkFiles Talkfiles
         {
             set
             {
                 foreach (InterpGroup g in InterpGroups)
-                    g.Talkfile = value;
+                    g.Talkfiles = value;
             }
         }
 
@@ -350,14 +350,14 @@ namespace ME3Explorer.InterpEditor
         protected Color groupColor;
         protected PNode colorAccent;
         protected bool collapsed;
-        protected TalkFile talkfile;
-        public TalkFile Talkfile
+        protected TalkFiles talkfiles;
+        public TalkFiles Talkfiles
         {
             set
             {
-                talkfile = value;
+                talkfiles = value;
                 foreach (InterpTrack t in InterpTracks)
-                    t.talkfile = value;
+                    t.talkfiles = value;
             }
         }
         private TreeView propView;

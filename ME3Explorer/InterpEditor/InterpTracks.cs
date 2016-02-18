@@ -163,7 +163,7 @@ namespace ME3Explorer.InterpEditor
 
         public TreeView propView;
         public TreeView keyPropView;
-        public TalkFile talkfile;
+        public TalkFiles talkfiles;
         public PCCObject pcc;
         public int index;
 
@@ -931,7 +931,7 @@ namespace ME3Explorer.InterpEditor
             public bool bShowAtTop;
             public bool bUseOnlyAsReplyWheelHint;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc, TalkFile tlk)
+            public TreeNode ToTree(int index, float time, PCCObject pcc, TalkFiles tlk)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nStrRefID : " + tlk.findDataById(nStrRefID) + " (" + nStrRefID + ")");
@@ -993,7 +993,7 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             TreeNode t = new TreeNode("m_aSubtitleData");
             for (int i = 0; i < m_aSubtitleData.Count; i++)
-                t.Nodes.Add(m_aSubtitleData[i].ToTree(i, m_aTrackKeys[i].fTime, pcc, talkfile));
+                t.Nodes.Add(m_aSubtitleData[i].ToTree(i, m_aTrackKeys[i].fTime, pcc, talkfiles));
             AddToTree(t);
         }
     }
@@ -1102,7 +1102,7 @@ namespace ME3Explorer.InterpEditor
         public override void ToTree()
         {
             base.ToTree();
-            AddToTree("m_nStrRefID : " + talkfile.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
+            AddToTree("m_nStrRefID : " + talkfiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
             AddToTree("m_fJCutOffset : " + m_fJCutOffset);
         }
     }
@@ -1867,7 +1867,7 @@ namespace ME3Explorer.InterpEditor
             public bool bAllowInConversation;
             public bool bSubtitleHasPriority;
 
-            public TreeNode ToTree(int index, float time, TalkFile tlk)
+            public TreeNode ToTree(int index, float time, TalkFiles tlk)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pConversation : " + pConversation);
@@ -1940,7 +1940,7 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             TreeNode t = new TreeNode("m_aFOVOKeys");
             for (int i = 0; i < m_aFOVOKeys.Count; i++)
-                t.Nodes.Add(m_aFOVOKeys[i].ToTree(i, m_aTrackKeys[i].fTime, talkfile));
+                t.Nodes.Add(m_aFOVOKeys[i].ToTree(i, m_aTrackKeys[i].fTime, talkfiles));
             AddToTree(t);
         }
     }

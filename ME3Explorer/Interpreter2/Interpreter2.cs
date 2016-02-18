@@ -70,7 +70,7 @@ namespace ME3Explorer.Interpreter2
         private const int ARRAYSVIEW_IMPORTEXPORT = 1;
         private const int ARRAYSVIEW_NAMES = 2;
 
-        private TalkFile talkFile;
+        private TalkFiles talkFiles;
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private int LAST_SELECTED_PROP_TYPE = -100; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
@@ -81,7 +81,7 @@ namespace ME3Explorer.Interpreter2
             arrayViewerDropdown.SelectedIndex = 0;
         }
 
-        public void InitInterpreter(Object editorTalkFile = null)
+        public void InitInterpreter(TalkFiles editorTalkFile = null)
         {
             DynamicByteProvider db = new DynamicByteProvider(pcc.Exports[Index].Data);
             hb1.ByteProvider = db;
@@ -94,13 +94,13 @@ namespace ME3Explorer.Interpreter2
                 if (ME3Directory.cookedPath != null)
                 {
                     var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                    talkFile = new TalkFile();
-                    talkFile.LoadTlkData(tlkPath);
+                    talkFiles = new TalkFiles();
+                    talkFiles.LoadTlkData(tlkPath);
                 }
             }
             else
             {
-                talkFile = (TalkFile)editorTalkFile;
+                talkFiles = editorTalkFile;
             }
         }
 
@@ -393,7 +393,7 @@ namespace ME3Explorer.Interpreter2
                 case STRINGREF_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx.ToString() + ": ";
-                    s += talkFile == null ? "(.tlk not loaded)" : talkFile.findDataById(idx);
+                    s += talkFiles == null ? "(.tlk not loaded)" : talkFiles.findDataById(idx);
                     break;
             }
             TreeNode ret = new TreeNode(s);

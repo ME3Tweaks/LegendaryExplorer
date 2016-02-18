@@ -61,7 +61,7 @@ namespace ME3Explorer.Unreal.Classes
             public bool AlwaysHideSubtitle;
             public int GUIStyleType;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, TalkFile talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, TalkFiles talk, PCCObject pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -108,7 +108,7 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("IgnoreBodyGestures : " + IgnoreBodyGestures);
                 res.Nodes.Add("AlwaysHideSubtitle : " + AlwaysHideSubtitle);
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText));
+                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText, true));
                 res.Nodes.Add("GUIStyle : (" + pcc.getNameEntry(GUIStyleType) + ") " + pcc.getNameEntry(GUIStyleValue));
                 return res;
             }
@@ -140,7 +140,7 @@ namespace ME3Explorer.Unreal.Classes
             public int GUIStyleType;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, TalkFile talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, TalkFiles talk, PCCObject pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -156,7 +156,7 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("IsMajorDecision : " + IsMajorDecision);
                 res.Nodes.Add("ReplyType : (" + pcc.getNameEntry(ReplyTypeType) + ") " + pcc.getNameEntry(ReplyTypeValue));
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText));
+                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText, true));
                 res.Nodes.Add("ConditionalFunc : " + ConditionalFunc);
                 res.Nodes.Add("ConditionalParam : " + ConditionalParam);
                 res.Nodes.Add("StateTransition : " + StateTransition);
