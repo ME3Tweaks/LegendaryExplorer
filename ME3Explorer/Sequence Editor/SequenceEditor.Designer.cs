@@ -352,7 +352,7 @@
             // 
             this.openInInterpEditorToolStripMenuItem.Name = "openInInterpEditorToolStripMenuItem";
             this.openInInterpEditorToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.openInInterpEditorToolStripMenuItem.Text = "Open in Interp Editor";
+            this.openInInterpEditorToolStripMenuItem.Text = "Open in InterpViewer";
             this.openInInterpEditorToolStripMenuItem.Visible = false;
             this.openInInterpEditorToolStripMenuItem.Click += new System.EventHandler(this.openInInterpEditorToolStripMenuItem_Click);
             // 

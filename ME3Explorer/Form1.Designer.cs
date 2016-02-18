@@ -436,7 +436,7 @@
             this.interpEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.interp_editor_64x64;
             this.interpEditorToolStripMenuItem.Name = "interpEditorToolStripMenuItem";
             this.interpEditorToolStripMenuItem.Size = new System.Drawing.Size(270, 30);
-            this.interpEditorToolStripMenuItem.Text = "Interp Editor";
+            this.interpEditorToolStripMenuItem.Text = "Interp Viewer";
             this.interpEditorToolStripMenuItem.Click += new System.EventHandler(this.interpEditorToolStripMenuItem_Click);
             // 
             // subtitleScannerToolStripMenuItem
