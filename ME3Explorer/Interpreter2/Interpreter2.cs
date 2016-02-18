@@ -564,6 +564,7 @@ namespace ME3Explorer.Interpreter2
                     case "IntProperty":
                     case "ObjectProperty":
                     case "NameProperty":
+                    case "StringRefProperty":
                         proptext.Text = BitConverter.ToInt32(memory, pos + 24).ToString();
                         visible = true;
                         break;
@@ -719,6 +720,7 @@ namespace ME3Explorer.Interpreter2
                     case "IntProperty":
                     case "ObjectProperty":
                     case "NameProperty":
+                    case "StringRefProperty":
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos + 24, BitConverter.GetBytes(i));
