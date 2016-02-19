@@ -112,6 +112,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutME3Explorer.cs">
@@ -206,6 +207,9 @@
     </Compile>
     <Compile Include="Codex Editor\CodexEditor.Designer.cs">
       <DependentUpon>CodexEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateJobFromPCCDiff.xaml.cs">
+      <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
     </Compile>
     <Compile Include="DialogEditor\AddReply.cs">
       <SubType>Form</SubType>
@@ -1331,6 +1335,10 @@
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CreateJobFromPCCDiff.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

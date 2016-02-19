@@ -21,6 +21,7 @@ using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
 using KFreonLib.PCCObjects;
+using System.Windows.Forms.Integration;
 
 namespace ME3Explorer
 {
@@ -35,7 +36,7 @@ namespace ME3Explorer
         static ModMaker currentInstance;
         bool SuppressCheckEvent = true;
         object SuppressLocker = new object();
-        MEDirectories MEExDirecs = new MEDirectories();
+        public MEDirectories MEExDirecs = new MEDirectories();
         string EmptyText = "Search in jobs, scripts, and pccs...";
 
         string ExecFolder
@@ -1455,34 +1456,20 @@ namespace ME3Explorer
 
         private void CreateFromPCCDiffButton_Click(object sender, EventArgs e)
         {
+            CreateJobFromPCCDiff window = new CreateJobFromPCCDiff();
+            ElementHost.EnableModelessKeyboardInterop(window);
+            window.Show();
+        }
+
+        public void CreateJobsFromPCCDiff(string basePCCName, string modPCCName)
+        {
             // KFreon: This is all just renamed stuff from WV's work. No credit to me.
             StatusUpdater.UpdateText("Comparing PCC's...");
 
 
             // KFreon: Get pcc's
-            IPCCObject basePCC = null;
-            IPCCObject modifiedPCC = null;
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Filter = "PCC Files|*.pcc";
-                ofd.Title = "Select base (unmodified) pcc";
-                if (ofd.ShowDialog() != DialogResult.OK)
-                {
-                    StatusUpdater.UpdateText("Ready.");
-                    return;
-                }
-
-                basePCC = new ME3PCCObject(ofd.FileName);
-
-                ofd.Title = "Select modified pcc";
-                if (ofd.ShowDialog() != DialogResult.OK)
-                {
-                    StatusUpdater.UpdateText("Ready.");
-                    return;
-                }
-
-                modifiedPCC = new ME3PCCObject(ofd.FileName);
-            }
+            IPCCObject basePCC = new ME3PCCObject(basePCCName);
+            IPCCObject modifiedPCC = new ME3PCCObject(modPCCName);
 
 
             // KFreon: Compare PCC's and build script

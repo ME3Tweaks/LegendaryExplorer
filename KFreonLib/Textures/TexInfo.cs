@@ -469,7 +469,8 @@ namespace KFreonLib.Textures
             retval.NumMips = NumMips;
             retval.AutofixSuccess = AutofixSuccess;
             retval.ThumbInd = ThumbInd;
-            retval.Thumbnail = new MemoryStream(Thumbnail.ToArray());
+            if (retval.Thumbnail != null)
+                retval.Thumbnail = new MemoryStream(Thumbnail.ToArray());
             retval.FileDuplicates = new List<TPFTexInfo>(FileDuplicates);
             retval.TreeDuplicates = new List<int>(TreeDuplicates);
             retval.Height = Height;
