@@ -72,6 +72,8 @@ namespace ME3Explorer
 
         TLKHeader Header;
         public List<TLKStringRef> StringRefs;
+        public string name;
+        public string path;
         List<HuffmanNode> CharacterTree;
         BitArray Bits;
 
@@ -90,6 +92,8 @@ namespace ME3Explorer
         /// <param name="fileName"></param>
         public void LoadTlkData(string fileName)
         {
+            path = fileName;
+            name = Path.GetFileNameWithoutExtension(fileName);
             /* **************** STEP ONE ****************
              *          -- load TLK file header --
              * 

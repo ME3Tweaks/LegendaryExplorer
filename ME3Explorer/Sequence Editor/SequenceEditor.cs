@@ -43,11 +43,11 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
 
             var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFile = new TalkFile();
-            talkFile.LoadTlkData(tlkPath);
+            talkFiles = new TalkFiles();
+            talkFiles.LoadTlkData(tlkPath);
             if(SText.fontcollection == null)
                 SText.fontcollection = LoadFont("KismetFont.ttf", 8);
-            SObj.talkfile = talkFile;
+            SObj.talkfiles = talkFiles;
             if (System.IO.File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
@@ -69,7 +69,7 @@ namespace ME3Explorer
             public float Y;
         }
 
-        private TalkFile talkFile;
+        private TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         public TreeNode SeqTree;
@@ -477,7 +477,7 @@ namespace ME3Explorer
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;
-            ip.InitInterpreter(talkFile);
+            ip.InitInterpreter(talkFiles);
             ip.Show();
         }
 
@@ -717,7 +717,7 @@ namespace ME3Explorer
             }
         }
 
-        private void pg1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void pg1_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
 
             int n = listBox1.SelectedIndex;
@@ -771,6 +771,40 @@ namespace ME3Explorer
                     buff2 = BitConverter.GetBytes(newv);
                     for (int i = 0; i < 4; i++)
                         ent.Data[p[m].offsetval + i] = buff2[i];
+                    break;
+                case ME3Explorer.Unreal.PropertyReader.Type.StrProperty:
+                    string s = Convert.ToString(e.ChangedItem.Value);
+                    int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
+                    List<byte> stringBuff = new List<byte>(s.Length * 2);
+                    for (int i = 0; i < s.Length; i++)
+                    {
+                        stringBuff.AddRange(BitConverter.GetBytes(s[i]));
+                    }
+                    stringBuff.Add(0);
+                    stringBuff.Add(0);
+                    buff2 = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
+                    for (int i = 0; i < 4; i++)
+                        ent.Data[p[m].offsetval - 8 + i] = buff2[i];
+                    buff2 = BitConverter.GetBytes(-(s.LongCount() + 1));
+                    for (int i = 0; i < 8; i++)
+                        ent.Data[p[m].offsetval + i] = buff2[i];
+                    buff2 = new byte[ent.Data.Length - (oldLength * 2) + stringBuff.Count];
+                    int startLength = p[m].offsetval + 4;
+                    int startLength2 = startLength + (oldLength * 2);
+                    for (int i = 0; i < startLength; i++)
+                    {
+                        buff2[i] = ent.Data[i];
+                    }
+                    for (int i = 0; i < stringBuff.Count; i++)
+                    {
+                        buff2[i + startLength] = stringBuff[i];
+                    }
+                    startLength += stringBuff.Count;
+                    for (int i = 0; i < ent.Data.Length - startLength2; i++)
+                    {
+                        buff2[i + startLength] = ent.Data[i + startLength2];
+                    }
+                    ent.Data = buff2;
                     break;
                 case PropertyReader.Type.StructProperty:
                     if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.ColorProp))
@@ -957,7 +991,7 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadPCC(CurrentFile, talkFile);
+            p.LoadPCC(CurrentFile, talkFiles);
             if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
@@ -984,14 +1018,10 @@ namespace ME3Explorer
 
         private void loadAlternateTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.tlk|*.tlk";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                talkFile.LoadTlkData(d.FileName);
-                RefreshView();
-                MessageBox.Show("Done.");
-            }
+            TlkManager tm = new TlkManager();
+            tm.tlkFiles = talkFiles;
+            tm.InitTlkManager();
+            tm.Show();
         }
 
     }

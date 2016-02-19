@@ -76,20 +76,20 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public void ImportFromFile(string path, string pathBIO, string pathtoafc = "",bool updateTOC=true)
+        public void ImportFromFile(string path, string pathtoafc = "")
         {
             if (FileName == "")
                 return;
             if (pathtoafc != "")
             {
                 if (File.Exists(pathtoafc + FileName + ".afc"))
-                    ImportWav(pathtoafc + FileName + ".afc", path, DataOffset, pathBIO, updateTOC);
+                    ImportWav(pathtoafc + FileName + ".afc", path, DataOffset);
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
                     d.Filter = FileName + ".afc|" + FileName + ".afc";
                     if (d.ShowDialog() == DialogResult.OK)
-                        ImportWav(d.FileName, path, DataOffset, pathBIO, updateTOC);
+                        ImportWav(d.FileName, path, DataOffset);
                 }
             }
             else
@@ -97,7 +97,7 @@ namespace ME3Explorer.Unreal.Classes
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = FileName + ".afc|" + FileName + ".afc";
                 if (d.ShowDialog() == DialogResult.OK)
-                    ImportWav(d.FileName, path, DataOffset, pathBIO, updateTOC);
+                    ImportWav(d.FileName, path, DataOffset);
             }
         }
 
@@ -225,7 +225,7 @@ namespace ME3Explorer.Unreal.Classes
                 MessageBox.Show("Done.");
         }
 
-        private void ImportWav(string pathafc, string pathwav, int off, string pathBIO, bool updateTOC = true)
+        private void ImportWav(string pathafc, string pathwav, int off)
         {
             if (!File.Exists(pathafc) || !File.Exists(pathwav))
                 return;
@@ -258,11 +258,6 @@ namespace ME3Explorer.Unreal.Classes
                 memory[ValueOffset + i + 4] = buff[i];
             DataSize = newsize;
             DataOffset = newoff;
-            TOCeditor tc = new TOCeditor();
-            string s = Path.GetFileName(pathafc);
-            if (updateTOC)
-                if (!tc.UpdateFile("\\" + s, newafcsize, pathBIO + "PCConsoleTOC.bin"))
-                    MessageBox.Show("Didn't found Entry!");
         }
 
         private byte[] ModifyHeader(byte[] nw, byte[] old)

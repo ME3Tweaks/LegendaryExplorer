@@ -607,7 +607,7 @@ namespace ME3Explorer
                 treeView1.SelectedNode = treeView1.Nodes[n];
         }
 
-        private void propGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void propGrid_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
             int n = GetSelected();
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
@@ -659,6 +659,40 @@ namespace ME3Explorer
                     buff2 = BitConverter.GetBytes(newv);
                     for (int i = 0; i < 4; i++)
                         ent.Data[p[m].offsetval + i] = buff2[i];
+                    break;
+                case ME3Explorer.Unreal.PropertyReader.Type.StrProperty:
+                    string s = Convert.ToString(e.ChangedItem.Value);
+                    int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
+                    List<byte> stringBuff = new List<byte>(s.Length * 2);
+                    for (int i = 0; i < s.Length; i++)
+                    {
+                        stringBuff.AddRange(BitConverter.GetBytes(s[i]));
+                    }
+                    stringBuff.Add(0);
+                    stringBuff.Add(0);
+                    buff2 = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
+                    for (int i = 0; i < 4; i++)
+                        ent.Data[p[m].offsetval -8 + i] = buff2[i];
+                    buff2 = BitConverter.GetBytes(-(s.LongCount() + 1));
+                    for (int i = 0; i < 8; i++)
+                        ent.Data[p[m].offsetval + i] = buff2[i];
+                    buff2 = new byte[ent.Data.Length - (oldLength * 2) + stringBuff.Count];
+                    int startLength = p[m].offsetval + 4;
+                    int startLength2 = startLength + (oldLength * 2);
+                    for (int i = 0; i < startLength; i++)
+                    {
+                        buff2[i] = ent.Data[i];
+                    }
+                    for (int i = 0; i < stringBuff.Count; i++)
+                    {
+                        buff2[i + startLength] = stringBuff[i];
+                    }
+                    startLength += stringBuff.Count;
+                    for (int i = 0; i < ent.Data.Length - startLength2; i++)
+                    {
+                        buff2[i + startLength] = ent.Data[i + startLength2];
+                    }
+                    ent.Data = buff2;
                     break;
                 case ME3Explorer.Unreal.PropertyReader.Type.StructProperty:
                     if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.ColorProp))

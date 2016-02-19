@@ -399,6 +399,7 @@
     <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="TalkFiles.cs" />
     <Compile Include="Texplorer2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -410,6 +411,12 @@
     </Compile>
     <Compile Include="TexplorerFirstTimeSetup.Designer.cs">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TlkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TlkManager.Designer.cs">
+      <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\Classes\FaceFXAnimSet.cs" />
@@ -1079,6 +1086,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TextureExplorer.resx">
       <DependentUpon>TextureExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TlkManager.resx">
+      <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TOCeditor.resx">
       <DependentUpon>TOCeditor.cs</DependentUpon>

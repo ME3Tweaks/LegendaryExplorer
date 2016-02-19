@@ -21,8 +21,7 @@ namespace ME3Explorer
         public List<int> ObjectIndexes;
         WwiseStream w;
         WwiseBank wb;
-        public bool isDLC = false;
-        public string dlcAFCPath = "";
+        public string afcPath = "";
 
         public Soundplorer()
         {
@@ -45,8 +44,7 @@ namespace ME3Explorer
                 {
                     pcc = new PCCObject(d.FileName);
                     CurrentFile = d.FileName;
-                    isDLC = false;
-                    dlcAFCPath = "";
+                    afcPath = "";
                     LoadObjects();
                     Status.Text = "Ready";
                     saveToolStripMenuItem.Enabled = true;
@@ -115,33 +113,37 @@ namespace ME3Explorer
             {
                 Stop();
                 w = new WwiseStream(pcc, ex.Data);
-                string path = ME3Directory.cookedPath;
-                if (isDLC)
-                {
-                    if (dlcAFCPath == "")
-                    {
-                        OpenFileDialog d = new OpenFileDialog();
-                        d.Filter = w.FileName + ".afc|" + w.FileName + ".afc";
-                        if (d.ShowDialog() == DialogResult.OK)
-                        {
-                            dlcAFCPath = d.FileName.Substring(0, d.FileName.LastIndexOf('\\') + 1);
-                            Status.Text = "Loading...";
-                        }
-                        else
-                        {
-                            return;
-                        } 
-                    }
-                    Status.Text = "Loading...";
-                    w.Play(dlcAFCPath);
-                }
-                else
+                string path = getPathToAFC();
+                if (path != "")
                 {
                     Status.Text = "Loading...";
                     w.Play(path);
+                    Status.Text = "Ready";
                 }
-                Status.Text = "Ready";
             }
+        }
+
+        private string getPathToAFC()
+        {
+             string path = ME3Directory.cookedPath;
+            if (!File.Exists(path + w.FileName + ".afc"))
+            {
+                if (!File.Exists(afcPath + w.FileName + ".afc"))
+                {
+                    OpenFileDialog d = new OpenFileDialog();
+                    d.Filter = w.FileName + ".afc|" + w.FileName + ".afc";
+                    if (d.ShowDialog() == DialogResult.OK)
+                    {
+                        afcPath = Path.GetDirectoryName(d.FileName) + '\\';
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+                return afcPath;
+            }
+            return path;
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -173,11 +175,14 @@ namespace ME3Explorer
                     d.FileName = ex.ObjectName.Substring(0, ex.ObjectName.Length - 4);
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    string path = ME3Directory.cookedPath;
-                    Status.Text = "Exporting...";
-                    w.ExtractToFile(path, d.FileName,false);
-                    Status.Text = "Ready";
-                    MessageBox.Show("Done");
+                    string path = getPathToAFC();
+                    if (path != "")
+                    {
+                        Status.Text = "Exporting...";
+                        w.ExtractToFile(path, d.FileName,false);
+                        Status.Text = "Ready";
+                        MessageBox.Show("Done");
+                    }
                 }
             }
         }
@@ -195,21 +200,20 @@ namespace ME3Explorer
                 d.Filter = "*.wav|*.wav";
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    string pathcook = ME3Directory.cookedPath;
-                    string pathbio = Path.GetDirectoryName(Path.GetDirectoryName(pathcook)) + "\\";
-                    Status.Text = "Importing...";
-                    if(!isDLC)
-                        w.ImportFromFile(d.FileName,pathbio,pathcook);
-                    else
-                        w.ImportFromFile(d.FileName, pathbio, "" ,false);
-                    byte[] buff = new byte[w.memsize];
-                    for (int i = 0; i < w.memsize; i++)
-                        buff[i] = w.memory[i];
-                    ex.Data = buff;
-                    Status.Text = "Saving...";
-                    pcc.altSaveToFile(CurrentFile, true);
-                    Status.Text = "Ready";
-                    MessageBox.Show("Done");
+                    string path = getPathToAFC();
+                    if (path != "")
+                    {
+                        Status.Text = "Importing...";
+                        w.ImportFromFile(d.FileName, path);
+                        byte[] buff = new byte[w.memsize];
+                        for (int i = 0; i < w.memsize; i++)
+                            buff[i] = w.memory[i];
+                        ex.Data = buff;
+                        Status.Text = "Saving...";
+                        pcc.altSaveToFile(CurrentFile, true);
+                        Status.Text = "Ready";
+                        MessageBox.Show("Done");
+                    }
                 }
             }
         }
@@ -219,29 +223,6 @@ namespace ME3Explorer
             if (pcc != null)
                 if (CurrentFile != "")
                     pcc.altSaveToFile(CurrentFile, true);
-        }
-
-        private void openDLCPccToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                try
-                {
-                    pcc = new PCCObject(d.FileName);
-                    CurrentFile = d.FileName;
-                    isDLC = true;
-                    dlcAFCPath = "";
-                    LoadObjects();
-                    Status.Text = "Ready";
-                    saveToolStripMenuItem.Enabled = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
-            }
         }
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)

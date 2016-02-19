@@ -32,7 +32,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDLCPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToWAVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,7 +73,6 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPccToolStripMenuItem,
-            this.openDLCPccToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -83,22 +81,15 @@
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPccToolStripMenuItem.Text = "Open pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
-            // 
-            // openDLCPccToolStripMenuItem
-            // 
-            this.openDLCPccToolStripMenuItem.Name = "openDLCPccToolStripMenuItem";
-            this.openDLCPccToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.openDLCPccToolStripMenuItem.Text = "Open DLC pcc";
-            this.openDLCPccToolStripMenuItem.Click += new System.EventHandler(this.openDLCPccToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -108,20 +99,20 @@
             this.exportToWAVToolStripMenuItem,
             this.importFromWAVToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToWAVToolStripMenuItem
             // 
             this.exportToWAVToolStripMenuItem.Name = "exportToWAVToolStripMenuItem";
-            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.exportToWAVToolStripMenuItem.Text = "Export to WAV";
             this.exportToWAVToolStripMenuItem.Click += new System.EventHandler(this.exportToWAVToolStripMenuItem_Click);
             // 
             // importFromWAVToolStripMenuItem
             // 
             this.importFromWAVToolStripMenuItem.Name = "importFromWAVToolStripMenuItem";
-            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.importFromWAVToolStripMenuItem.Text = "Import from WAV";
             this.importFromWAVToolStripMenuItem.Click += new System.EventHandler(this.importFromWAVToolStripMenuItem_Click);
             // 
@@ -174,7 +165,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -187,7 +178,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
             this.splitContainer1.Panel2.Controls.Add(this.rtb1);
             this.splitContainer1.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer1.Size = new System.Drawing.Size(292, 244);
+            this.splitContainer1.Size = new System.Drawing.Size(292, 220);
             this.splitContainer1.SplitterDistance = 140;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -198,7 +189,7 @@
             this.listBox1.IntegralHeight = false;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(140, 244);
+            this.listBox1.Size = new System.Drawing.Size(140, 220);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -212,7 +203,7 @@
             this.hb1.Location = new System.Drawing.Point(0, 0);
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(148, 244);
+            this.hb1.Size = new System.Drawing.Size(148, 220);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 1;
             this.hb1.UseFixedBytesPerLine = true;
@@ -226,7 +217,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(148, 244);
+            this.rtb1.Size = new System.Drawing.Size(148, 220);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -273,7 +264,6 @@
         private System.Windows.Forms.ToolStripMenuItem importFromWAVToolStripMenuItem;
         private Be.Windows.Forms.HexBox hb1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openDLCPccToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem advancedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem directAFCReplaceToolStripMenuItem;
     }

@@ -956,7 +956,7 @@ namespace ME3Explorer
                 if (o.ShowDialog() == DialogResult.OK)
                 {
                     w = new WwiseStream(pcc, pcc.Exports[index].Data);
-                    w.ImportFromFile(o.FileName, pathBIOGame, pathCooked);
+                    w.ImportFromFile(o.FileName, pathCooked);
                     byte[] buff = new byte[w.memsize];
                     for (int i = 0; i < w.memsize; i++)
                         buff[i] = w.memory[i];

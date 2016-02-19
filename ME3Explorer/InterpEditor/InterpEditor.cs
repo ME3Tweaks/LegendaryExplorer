@@ -13,7 +13,7 @@ namespace ME3Explorer.InterpEditor
     public partial class InterpEditor : Form
     {
         public PCCObject pcc;
-        public TalkFile talkfile;
+        public TalkFiles talkfiles;
         public string CurrentFile;
         public List<int> objects;
 
@@ -30,23 +30,16 @@ namespace ME3Explorer.InterpEditor
             objects = new List<int>();
         }
 
-        public void InitTalkFile(Object editorTalkFile = null)
+        public void InitTalkFile()
         {
-            if (editorTalkFile == null)
-            {
-                var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                talkfile = new TalkFile();
-                talkfile.LoadTlkData(tlkPath);
-            }
-            else
-            {
-                talkfile = (TalkFile)editorTalkFile;
-            }
+            var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
+            talkfiles = new TalkFiles();
+            talkfiles.LoadTlkData(tlkPath);
         }
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath) && talkfile == null)
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath) && talkfiles == null)
             {
                 MessageBox.Show("ME3 install directory not found. Set its path at:\n Options > Set Custom Path > Mass Effect 3\n\n Or, specify a .tlk file location with:\n File > Load Alternate TLK");
                 return;
@@ -59,18 +52,19 @@ namespace ME3Explorer.InterpEditor
             }
         }
 
-        public void LoadPCC(string fileName, Object editorTalkFile = null)
+        public void LoadPCC(string fileName, TalkFiles editorTalkFiles = null)
         {
             try
             {
                 pcc = new PCCObject(fileName);
-                if (editorTalkFile != null)
+                InitTalkFile();
+                if (editorTalkFiles != null)
                 {
-                    InitTalkFile(editorTalkFile);
+                    talkfiles = editorTalkFiles;
                 }
                 else
                 {
-                    InitTalkFile(talkfile);
+                    InitTalkFile();
                 }
                 objects.Clear();
                 CurrentFile = fileName;
@@ -100,7 +94,7 @@ namespace ME3Explorer.InterpEditor
         {
             timeline.GroupList.LoadInterpData(index, pcc);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
-            timeline.GroupList.Talkfile = talkfile;
+            timeline.GroupList.Talkfiles = talkfiles;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -129,18 +123,10 @@ namespace ME3Explorer.InterpEditor
 
         private void loadAlternateTlkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.tlk|*.tlk";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (talkfile == null)
-                {
-                    talkfile = new TalkFile();
-                }
-                talkfile.LoadTlkData(d.FileName);
-                timeline.GroupList.Talkfile = talkfile;
-                MessageBox.Show("Done.");
-            }
+            TlkManager tm = new TlkManager();
+            tm.tlkFiles = talkfiles;
+            tm.InitTlkManager();
+            tm.Show();
         }
 
         //for debugging purposes. not exposed to user
