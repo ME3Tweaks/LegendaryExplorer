@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Forms.Integration;
 
 namespace ME3Explorer
 {
@@ -795,8 +796,8 @@ namespace ME3Explorer
 
         private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
             var conv = new CSharpImageLibrary.MainWindow();
+            ElementHost.EnableModelessKeyboardInterop(conv);
             conv.Show();
         }
 

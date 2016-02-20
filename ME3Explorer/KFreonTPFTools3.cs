@@ -2426,6 +2426,20 @@ namespace ME3Explorer
             await Task.Run(() => backbone.GetCurrentJob().Wait());
 
             List<string> files = new List<string>(Directory.GetFiles(filesPath));
+
+            // KFreon: Ensure log is the last file
+            string log = null;
+            for (int i = 0; i < files.Count; i++)
+            {
+                if (files[i].EndsWith(".log", StringComparison.OrdinalIgnoreCase))
+                {
+                    log = files[i];
+                    files.RemoveAt(i);
+                    break;
+                }
+            }
+            files.Add(log);
+
             SaltTPF.ZipWriter.Repack(path, files);
 
             Overall.UpdateText(File.Exists(path) && files.Count > 1 ? "Build complete." : "Build failed.");

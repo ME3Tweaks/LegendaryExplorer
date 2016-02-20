@@ -404,7 +404,7 @@ namespace KFreonLib.Textures
             get
             {
                 ValidDimensions = ValidateDimensions();
-                return isDef ? false : (CorrectMips && ValidFormat && ValidDimensions);
+                return found && (isDef ? false : (CorrectMips && ValidFormat && ValidDimensions));
             }
         }
 

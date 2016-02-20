@@ -2843,5 +2843,10 @@ namespace ME3Explorer
                     MEDirectories.CachePath = ofd.FileName;
             }
         }
+
+        private void Game2Label_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
