@@ -1,0 +1,635 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxdamagetype_antimatrifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.6f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_assaultrifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.35,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.45,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.125)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.75)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.1f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_atlasweapon">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.45,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.75,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.5,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_autopistol">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.1)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.4,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.70)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.70)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.1f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_crusader">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.55,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.45,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.15,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.15,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.65,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.65,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_disciple">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.5,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.6,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.6,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.6,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.6,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.6,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Heavy,ReactionChance=1.0,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.5)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.75f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_flakgun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.8,MaxRange=HitReactRange_Short,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.4,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.65,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.4,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.65,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.55,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.55,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_flamethrower_player">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="",Reaction=Reaction_Fire,ReactionChance=0.85,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="",Reaction=Reaction_Fire,ReactionChance=0.75,bIgnoreShields=true)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_gethpulserifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.1)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.1)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.075)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.075)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.08)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.08)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.5)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.1f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_gethshotgun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.8,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.55,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.7,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.5)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_handcannon">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.85,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.6,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_heavypistol">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.65,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.80)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_incisorsniperrifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.05)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.75)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.3f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_machinegun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.2)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.35,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.5,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.07,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.07,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.40,MaxRange=HitReactRange_Long)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.2f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_mattockassaultrifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.35,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.2)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.2)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.25,MaxRange=HitReactRange_Long)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.55,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_minigun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_mountedgun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.95)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_needler">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.35,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.25,MaxRange=HitReactRange_Long)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.55,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.3f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_phalanxpistol">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.95,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.4)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.6f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_raider">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.55,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.45,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.15,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.65,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.65,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.9,MaxRange=HitReactRange_Short)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_reckoning">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=1.0)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_saber">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.85,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.10)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.6,MaxRange=HitReactRange_Long)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_shotgun">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.8,MaxRange=HitReactRange_Short,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.7,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.6,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.7,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_smg_tempest">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.3)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.65,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.7)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.70)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.70)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.3f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_sniperrifle">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=1.0)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">0.6f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_sniperrifle_widow">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Heavy,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=1.0)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_tacticalmachinepistol">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.2)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.3,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_light,ReactionChance=0.25)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathLight,ReactionChance=0.6)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathLight,ReactionChance=0.4)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathLight,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathLight,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathLight,ReactionChance=0.80)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathLight,ReactionChance=0.80)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.2f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_talon">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.15,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.75,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.8,MaxRange=HitReactRange_Short,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.5,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.7,MaxRange=HitReactRange_Medium,bIgnoreShields=true)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.45,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=1.0,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Medium)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.8,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.7,MaxRange=HitReactRange_Medium)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Medium</Property>
+			<Property name="woundpct" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxdamagetype_thor">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Medium,ReactionChance=0.45)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_Heavy,ReactionChance=0.95,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Light,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_Medium,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Medium,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Medium,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_Light,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Medium,ReactionChance=0.35)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.85)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.75,MaxRange=HitReactRange_Short)</Value>
+				<Value type="2">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.5)</Value>
+				<Value type="2">(BodyPart="Chest",Reaction=Reaction_DeathHeavy,ReactionChance=0.65)</Value>
+				<Value type="2">(BodyPart="LeftArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="RightArm",Reaction=Reaction_DeathHeavy,ReactionChance=0.55)</Value>
+				<Value type="2">(BodyPart="LeftLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+				<Value type="2">(BodyPart="RightLeg",Reaction=Reaction_DeathHeavy,ReactionChance=0.40)</Value>
+			</Property>
+			<Property name="wounddamage" type="2">WoundDamage_Light</Property>
+			<Property name="woundpct" type="2">0.8f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

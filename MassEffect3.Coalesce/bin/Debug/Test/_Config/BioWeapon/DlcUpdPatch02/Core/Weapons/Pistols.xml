@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweapon_pistol_carnifex">
+			<Property name="encumbranceweight" type="0">(X=1.2f,Y=0.7f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_pistol_eagle">
+			<Property name="damage" type="0">(X=86.1,Y=107.7)</Property>
+			<Property name="encumbranceweight" type="0">(X=0.45f,Y=0.25f)</Property>
+			<Property name="magsize" type="0">(X=24,Y=24)</Property>
+			<Property name="maxspareammo" type="0">(X=192,Y=240)</Property>
+			<Property name="statbardamage" type="0">(X=86.1,Y=107.7)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_pistol_ivory">
+			<Property name="damage" type="0">(X=424.9,Y=531.1)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.0f,Y=0.7f)</Property>
+			<Property name="magsize" type="0">(X=3,Y=3)</Property>
+			<Property name="maxspareammo" type="0">(X=21,Y=33)</Property>
+			<Property name="statbardamage" type="0">(X=424.9,Y=531.1)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_pistol_scorpion">
+			<Property name="encumbranceweight" type="0">(X=1.1f,Y=0.6f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_pistol_talon">
+			<Property name="damage" type="0">(X=93.7,Y=117.1)</Property>
+			<Property name="encumbranceweight" type="0">(X=0.9f,Y=0.6f)</Property>
+			<Property name="maxspareammo" type="0">(X=24,Y=36)</Property>
+			<Property name="statbardamage" type="0">(X=468.5,Y=585.5)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_pistol_thor">
+			<Property name="damage" type="0">(X=77.2,Y=96.5)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.1f,Y=0.6f)</Property>
+			<Property name="statbardamage" type="0">(X=463.2,Y=579.0)</Property>
+			<Property name="thordamagemultiplier" type="0">3.0f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Includes>
+		<Include source="WeaponMods/AssaultRifles.xml" />
+		<Include source="WeaponMods/Pistols.xml" />
+		<Include source="WeaponMods/Shotguns.xml" />
+		<Include source="WeaponMods/SMGs.xml" />
+		<Include source="WeaponMods/SniperRifles.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.sfxweaponmod">
+			<Property name="weaponmodconversions">
+				<Value type="3">(ModEffectClass=SFXGameEffect_WeaponMod_ExtraWeight, ConversionMultiplier=-1.0f)</Value>
+				<Value type="3">(ModEffectClass=SFXGameEffect_WeaponMod_WeightBonus_Shared, ConversionMultiplier=-1.0f)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxgameeffect_weaponmod_thermalscope">
+			<Property name="updatefrequency" type="0">0.5f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

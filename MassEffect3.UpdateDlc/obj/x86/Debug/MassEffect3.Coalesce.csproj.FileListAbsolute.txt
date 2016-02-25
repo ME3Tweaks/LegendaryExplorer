@@ -1,0 +1,12 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.Coalesce.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.Coalesce.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.Coalesce.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.Coalesce\obj\x86\Debug\MassEffect3.Coalesce.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\Gibbed.MassEffect3.Coalesce.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\Gibbed.MassEffect3.Coalesce.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\Gibbed.MassEffect3.Coalesce.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Coalesce\obj\x86\Debug\MassEffect3.Coalesce.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Coalesce\obj\x86\Debug\Gibbed.MassEffect3.Coalesce.pdb

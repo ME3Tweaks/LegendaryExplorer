@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinejobsavesettings">
+			<Property name="m_save_rpc_timeout" type="0">15000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

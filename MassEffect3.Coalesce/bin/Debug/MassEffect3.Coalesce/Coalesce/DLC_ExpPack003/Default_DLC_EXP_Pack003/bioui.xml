@@ -1,0 +1,883 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultUI.ini</Property>
+    </Section>
+    <Section name="sfxgame.biosfhandler_newcharacter">
+      <Property name="bonustalents" type="3">(BonusPowerID=524288,PowerClassName="sfxgamecontentdlc_exp_pack003.SFXPowerCustomAction_StimPack",srChoiceName=766365,srChoiceTitle=766365,srChoiceDescription=766366,oChoiceImage=none)</Property>
+    </Section>
+    <Section name="sfxgame.sfxgawassetshandler">
+      <Property name="allassets">
+        <Value type="3">(ID=800,AssetName="GAWAsset_NormandyRepairs",Type=GAWAssetType_Modifier,GUIName=813562,GUIDescription=813563,ModTargets[0]=(TargetID=187,Value=35),GUICategoryID=0,bShowNotificationOnAward=true)</Value>
+        <Value type="3">(ID=801,AssetName="GAWAsset_TeamSpirit",Type=GAWAssetType_Modifier,GUIName=813564,GUIDescription=813565,ModTargets[0]=(TargetID=187,Value=35),GUICategoryID=0,bShowNotificationOnAward=true)</Value>
+        <Value type="3">(ID=803,AssetName="GAWAsset_KhansNetworkExposed",Type=GAWAssetType_Intel,GUIName=813751,GUIDescription=813752,UnlockPlotStates[0]=24828,bShowNotificationOnAward=true)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgui_weaponselection">
+      <Property name="appearancepositions" type="3">(Tag=hench_wrex, PositionOffset=(x=0,y=0,z=-6))</Property>
+    </Section>
+    <Section name="sfxgame.sfxguidata_teamselect">
+      <Property name="henchidentities">
+        <Value type="3">(MemberId=8, MemberTag=cit_femmefatale, MemberName=802222, MemberDossier=178194, MemberInPartyPlotLabel=Tut_Tech_Begin, MemberValidCID=3715, MemberAvailablePlotLabel=False_Flag, MemberDeadPlotID=0 )</Value>
+        <Value type="3">(MemberId=9, MemberTag=hench_wrex, MemberName=214249, MemberDossier=178194, MemberInPartyPlotLabel=Tut_Biotic_Begin, MemberValidCID=3324, MemberAvailablePlotLabel=IsSelectableMarine, MemberDeadPlotID=0 )</Value>
+      </Property>
+      <Property name="selectappearances">
+        <Value type="3">( AppearanceId=151, MemberAppearanceValue=0, MemberTag=cit_femmefatale, MemberAppearancePlotLabel=AppearanceGarrus, HighlightImage="GUI_Henchmen_Images_EXP3.MayaGlow", AvailableImage="GUI_Henchmen_Images_EXP3.Maya", DeadImage="GUI_Henchmen_Images.PlaceHolder", SilhouetteImage="GUI_Henchmen_Images.Garrus0_locked",DescriptionText[0]=683396,CustomToken0[0]=25,DescriptionText[0]=683395,CustomToken0[0]=25)</Value>
+        <Value type="3">( AppearanceId=150, MemberAppearanceValue=0, MemberTag=hench_wrex, MemberAppearancePlotLabel=AppearanceGarrus, HighlightImage="GUI_Henchmen_Images_EXP3.Wrex0Glow", AvailableImage="GUI_Henchmen_Images_EXP3.Wrex0", DeadImage="GUI_Henchmen_Images.PlaceHolder", SilhouetteImage="GUI_Henchmen_Images.Garrus0_locked",DescriptionText[0]=683396,CustomToken0[0]=25,DescriptionText[0]=683395,CustomToken0[0]=25)</Value>
+      </Property>
+      <Property name="selectinfos">
+        <Value type="3">(InfoId=9,MemberTag=cit_femmefatale,Ability1ID=1,Ability2ID=6,Ability3ID=7,Ability4ID=10,Ability5ID=30)</Value>
+        <Value type="3">(InfoId=8,MemberTag=hench_wrex,Ability1ID=1,Ability2ID=6,Ability3ID=7,Ability4ID=10,Ability5ID=30)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxguiinteraction">
+      <Property name="movielibrary">
+        <Value type="3">(Tag=DLC_Docks,				ZOrder=300,	MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks",		GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Value>
+        <Value type="3">(Tag=Store_NoPurchase,			ZOrder=300,	MovieClass="SFXGameContentDLC_EXP_Pack003.SFXGUI_Store_NoPurchase",		GFxResource="GUI_SF_Store_NoPurchase.Store_NoPurchase")</Value>
+        <Value type="3">(Tag=PersonalTerminalApt,		ZOrder=164, 	MovieClass="SFXGame.SFXGUI_Terminal",		GFxResource="GUI_SF_PersonalTerminalApt.PersonalTerminalApt");</Value>
+        <Value type="3">(Tag=AreaMap_Pack003,		ZOrder=360,	MovieClass="SFXGameContentDLC_EXP_Pack003.SFXSFHandler_AreaMap_Pack003",		GFxResource="GUI_SF_ME2_AreaMap_Pack003.ME2_AreaMap_Pack003", bSwfDevAutoReopen=false);</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxsfhandler_save">
+      <Property name="areadata">
+        <Value type="2">( AreaName="BioP_Cit001",    AreaStrref=769627, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Sushi_512x256")</Value>
+        <Value type="2">( AreaName="BioP_Cit002",    AreaStrref=811016, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Casino_512x256")</Value>
+        <Value type="2">( AreaName="BioP_Cit003",    AreaStrref=769629, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Archives_512x256")</Value>
+        <Value type="2">( AreaName="BioP_Cit004",    AreaStrref=769630, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Docks_512x256")</Value>
+        <Value type="2">( AreaName="BioP_CitHot",    AreaStrref=769779, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256")</Value>
+        <Value type="2">( AreaName="BioP_CitApt",    AreaStrref=812827, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Apartmnt_512x256")</Value>
+        <Value type="2">( AreaName="BioP_CitStart",  AreaStrref=769778, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Apartmnt_512x256")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweaponuidatamanager">
+      <Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_SharedSF, Resource="SFXGUI_WeaponUIDataDLC_Shared.Data")</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_bonuspowers">
+      <Property name="storeitemarray" type="3">(ItemType=TYPE_POWER,PlotUnlockConditionalID=3691,BaseCost=3000,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXPowerCustomAction_StimPack",ChoiceEntry=(srChoiceName=766365,srChoiceDescription=766366),Priority=21,BaseCost=5000,LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_normandy">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_asari",PlotUnlockConditionalID=1665,ChoiceEntry=(srChoiceName=652502,srChoiceDescription=724937),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_batarian",PlotUnlockConditionalID=1666,ChoiceEntry=(srChoiceName=652503,srChoiceDescription=724936),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_hanar",PlotUnlockConditionalID=1667,ChoiceEntry=(srChoiceName=652504,srChoiceDescription=724940),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_hospital",PlotUnlockConditionalID=1671,ChoiceEntry=(srChoiceName=661727,srChoiceDescription=724944),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_human",PlotUnlockConditionalID=1673,ChoiceEntry=(srChoiceName=652505,srChoiceDescription=724942),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_salarian",PlotUnlockConditionalID=1668,ChoiceEntry=(srChoiceName=652506,srChoiceDescription=724938),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_spectre",PlotUnlockConditionalID=1672,ChoiceEntry=(srChoiceName=693421,srChoiceDescription=724943),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_turian",PlotUnlockConditionalID=1669,ChoiceEntry=(srChoiceName=652507,srChoiceDescription=724939),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_volus",PlotUnlockConditionalID=1670,ChoiceEntry=(srChoiceName=652508,srChoiceDescription=724941),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_mail_normandy">
+      <Property name="maillist">
+        <Value type="3">(MailTitle=769225, MailBody=769226, MailStatePlot=10814, SendConditional=3239, SmallImage="")</Value>
+        <Value type="3">(MailTitle=797016, MailBody=797017, MailStatePlot=11001, SendConditional=3662, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813711, MailBody=813732, MailStatePlot=11144, SendConditional=4000, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813712, MailBody=813733, MailStatePlot=11145, SendConditional=4001, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813713, MailBody=813734, MailStatePlot=11146, SendConditional=4002, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813714, MailBody=813735, MailStatePlot=11147, SendConditional=4003, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813715, MailBody=813736, MailStatePlot=11148, SendConditional=4004, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813716, MailBody=813737, MailStatePlot=11149, SendConditional=4005, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813717, MailBody=813738, MailStatePlot=11150, SendConditional=4006, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813718, MailBody=813739, MailStatePlot=11151, SendConditional=4007, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813719, MailBody=813740, MailStatePlot=11152, SendConditional=4008, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813720, MailBody=813741, MailStatePlot=11153, SendConditional=4009, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813721, MailBody=813742, MailStatePlot=11154, SendConditional=4010, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813722, MailBody=813743, MailStatePlot=11155, SendConditional=4011, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813702, MailBody=813723, MailStatePlot=11156, SendConditional=4012, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813703, MailBody=813724, MailStatePlot=11157, SendConditional=4013, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813704, MailBody=813725, MailStatePlot=11160, SendConditional=4016, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813705, MailBody=813726, MailStatePlot=11161, SendConditional=4017, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813706, MailBody=813727, MailStatePlot=11162, SendConditional=4018, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813707, MailBody=813728, MailStatePlot=11163, SendConditional=4019, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813708, MailBody=813729, MailStatePlot=11165, SendConditional=4021, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813709, MailBody=813730, MailStatePlot=11166, SendConditional=4022, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813710, MailBody=813731, MailStatePlot=11168, SendConditional=4024, SmallImage="")</Value>
+        <Value type="3">(MailTitle=817390, MailBody=814437, MailStatePlot=11225, SendConditional=4177, SmallImage="")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_asari">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage",BaseCost=4000,PlotUnlockConditionalID=4172,PlotPurchaseID[0]=24966)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage",BaseCost=4000,PlotUnlockConditionalID=4174,PlotPurchaseID[0]=24968)</Value>
+      </Property>
+      <Property name="storename" type="0">Asari</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_batarian">
+      <Property name="storename" type="0">Batarian</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_hanar">
+      <Property name="storename" type="0">Hanar</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_hospital">
+      <Property name="storename" type="0">Hospital</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_human">
+      <Property name="storename" type="0">Human</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel">
+      <Property name="intelsummary" type="0">(ItemType=TYPE_INTELSUMMARY,ChoiceEntry=(srChoiceName=331559,srChoiceDescription=174743,srActionText=174743,eDisplayType = EChoiceDisplayType_None))</Property>
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_battlefootage",PlotUnlockConditionalID=1677,ChoiceEntry=(srChoiceName=715412,srChoiceDescription=715530))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_battleofarcturus",PlotUnlockConditionalID=1678,ChoiceEntry=(srChoiceName=715437,srChoiceDescription=715555))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_bioticresearchdata",PlotUnlockConditionalID=1679,ChoiceEntry=(srChoiceName=715482,srChoiceDescription=715600))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_destroyedminireaper",PlotUnlockConditionalID=1680,ChoiceEntry=(srChoiceName=715442,srChoiceDescription=715560))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_intactreapergun",PlotUnlockConditionalID=1681,ChoiceEntry=(srChoiceName=715460,srChoiceDescription=715578))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_intelligencearchives",PlotUnlockConditionalID=1682,ChoiceEntry=(srChoiceName=715432,srChoiceDescription=715550))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_legionintel1",PlotUnlockConditionalID=1683,ChoiceEntry=(srChoiceName=715500,srChoiceDescription=715635))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_legionintel2",PlotUnlockConditionalID=1684,ChoiceEntry=(srChoiceName=715501,srChoiceDescription=715636))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_samaramission",PlotUnlockConditionalID=1685,ChoiceEntry=(srChoiceName=715514,srChoiceDescription=715663))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_prejekpaddlefish",PlotUnlockConditionalID=1686,ChoiceEntry=(srChoiceName=715513,srChoiceDescription=715662))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_feron",PlotUnlockConditionalID=2358,ChoiceEntry=(srChoiceName=720297,srChoiceDescription=720298))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_advancedbioticamps",PlotUnlockConditionalID=2359,ChoiceEntry=(srChoiceName=715502,srChoiceDescription=715637))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_intel_medicalupgrade",PlotUnlockConditionalID=2477,ChoiceEntry=(srChoiceName=724235,srChoiceDescription=724236))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Intel_KhansNetworkExposed",PlotUnlockConditionalID=4026,ChoiceEntry=(srChoiceName=813751,srChoiceDescription=813752))</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_advancedbioticamps">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_AdvancedBioticAmps_PowerDamage",PlotPurchaseID[0]=22422,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724745)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_AdvancedBioticAmps_PowerCooldown",PlotPurchaseID[0]=22422,ChoiceEntry=(srChoiceName=650687,srChoiceDescription=718121,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724746)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_battlefootage">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BattleFootage_AmmoCapacity",PlotPurchaseID[0]=21532,ChoiceEntry=(srChoiceName=650685,srChoiceDescription=718122,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724723)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BattleFootage_WeaponDamage",PlotPurchaseID[0]=21532,ChoiceEntry=(srChoiceName=585776,srChoiceDescription=683402,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724724)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_battleofarcturus">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BattleOfArcturus_WeaponDamage",PlotPurchaseID[0]=21534,ChoiceEntry=(srChoiceName=585776,srChoiceDescription=683402,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724727)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BattleOfArcturus_Shields",PlotPurchaseID[0]=21534,ChoiceEntry=(srChoiceName=650672,srChoiceDescription=683395,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724728)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_bioticresearchdata">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BioticResearchData_PowerCooldown",PlotPurchaseID[0]=21536,ChoiceEntry=(srChoiceName=650687,srChoiceDescription=718121,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724735)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_BioticResearchData_PowerDamage",PlotPurchaseID[0]=21536,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724736)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_destroyedminireaper">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_DestroyedMiniReaper_StoreDiscount",PlotPurchaseID[0]=21538,ChoiceEntry=(srChoiceName=650678,srChoiceDescription=718147,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",CustomTokens[0]=724729)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_DestroyedMiniReaper_PowerCooldown",PlotPurchaseID[0]=21538,ChoiceEntry=(srChoiceName=650687,srChoiceDescription=718121,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724730)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_feron">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_Feron_AmmoCapacity",PlotPurchaseID[0]=22420,ChoiceEntry=(srChoiceName=650685,srChoiceDescription=718122,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724743)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_Feron_Shields",PlotPurchaseID[0]=22420,ChoiceEntry=(srChoiceName=650672,srChoiceDescription=683395,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724744)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_intactreapergun">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_IntactReaperGun_WeaponDamage",PlotPurchaseID[0]=21540,ChoiceEntry=(srChoiceName=585776,srChoiceDescription=683402,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724733)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_IntactReaperGun_AmmoCapacity",PlotPurchaseID[0]=21540,ChoiceEntry=(srChoiceName=650685,srChoiceDescription=718122,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724734)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_intelligencearchives">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_IntelligenceArchives_PowerDamage",PlotPurchaseID[0]=21542,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724725)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_IntelligenceArchives_Health",PlotPurchaseID[0]=21542,ChoiceEntry=(srChoiceName=650664,srChoiceDescription=683396,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724726)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_legionintel1">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_LegionIntel1_Shields",PlotPurchaseID[0]=21544,ChoiceEntry=(srChoiceName=650672,srChoiceDescription=683395,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724738)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_LegionIntel1_PowerDamage",PlotPurchaseID[0]=21544,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724737)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_legionintel2">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_LegionIntel2_ShieldRegen",PlotPurchaseID[0]=21546,ChoiceEntry=(srChoiceName=314070,srChoiceDescription=683401,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724739)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_LegionIntel2_PowerCooldown",PlotPurchaseID[0]=21546,ChoiceEntry=(srChoiceName=650687,srChoiceDescription=718121,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724740)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_medicalupgrade">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_MedicalUpgrade_Scars",PlotUnlockConditionalID=2478,PlotPurchaseID[0]=22641,PlotPurchaseID[1]=22642,ChoiceEntry=(srChoiceName=724235,srChoiceDescription=347453,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_MedicalUpgrade_Health",PlotPurchaseID[0]=22641,ChoiceEntry=(srChoiceName=650664,srChoiceDescription=683396,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724747)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_prejekpaddlefish">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_PrejekPaddlefish_WeaponDamage",PlotPurchaseID[0]=21550,ChoiceEntry=(srChoiceName=585776,srChoiceDescription=683402,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724741)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_PrejekPaddlefish_PowerDamage",PlotPurchaseID[0]=21550,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724742)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_intel_samaramission">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_SamaraMission_StoreDiscount",PlotPurchaseID[0]=21548,ChoiceEntry=(srChoiceName=650678,srChoiceDescription=718147,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",CustomTokens[0]=724731)</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_SamaraMission_PowerDamage",PlotPurchaseID[0]=21548,ChoiceEntry=(srChoiceName=650689,srChoiceDescription=683399,srActionText=325667,eDisplayType = EChoiceDisplayType_None),LargeImage="GUI_Codex_Images.EnergyDrain_512",SmallImage="GUI_Icons.Notifications.NT_Intel_256x128",bIsGameEffect=true,CustomTokens[0]=724732)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_salarian">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight",BaseCost=4000,PlotUnlockConditionalID=4164,PlotPurchaseID[0]=24958)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight",BaseCost=4000,PlotUnlockConditionalID=4168,PlotPurchaseID[0]=24962)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight",BaseCost=4000,PlotUnlockConditionalID=4170,PlotPurchaseID[0]=24964)</Value>
+      </Property>
+      <Property name="storename" type="0">Salarian</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_spectre">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_WEAPON,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer",BaseCost=7000,PlotUnlockConditionalID=4176,PlotPurchaseID[0]=24947)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope",BaseCost=6000,PlotUnlockConditionalID=4163,PlotPurchaseID[0]=24957)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight",BaseCost=6000,PlotUnlockConditionalID=4165,PlotPurchaseID[0]=24959)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen",BaseCost=6000,PlotUnlockConditionalID=4167,PlotPurchaseID[0]=24961)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight",BaseCost=6000,PlotUnlockConditionalID=4169,PlotPurchaseID[0]=24963)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight",BaseCost=6000,PlotUnlockConditionalID=4171,PlotPurchaseID[0]=24965)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage",BaseCost=6000,PlotUnlockConditionalID=4173,PlotPurchaseID[0]=24967)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage",BaseCost=6000,PlotUnlockConditionalID=4175,PlotPurchaseID[0]=24969)</Value>
+      </Property>
+      <Property name="storename" type="0">Spectre</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_turian">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope",BaseCost=4000,PlotUnlockConditionalID=4162,PlotPurchaseID[0]=24956)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen",BaseCost=4000,PlotUnlockConditionalID=4166,PlotPurchaseID[0]=24960)</Value>
+      </Property>
+      <Property name="storename" type="0">Turian</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_volus">
+      <Property name="storename" type="0">Volus</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_weaponupgrades">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer",ItemConditionals[0]=4159,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer",Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_aptrt">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=1,DestTitle=772300,DestSubTitle=,DestDesc=772300,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=2,DestTitle=589197,DestSubTitle=,DestDesc=589197,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=3,DestTitle=529391,DestSubTitle=,DestDesc=529391,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=4,DestTitle=589196,DestSubTitle=,DestDesc=589196,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_casinort">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=1,DestTitle=589197,DestSubTitle=704133,DestDesc=589197,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=2,DestTitle=529391,DestSubTitle=174568,DestDesc=529391,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=3,DestTitle=589196,DestSubTitle=174570,DestDesc=589196,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_casinort_lev">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=1,DestTitle=589197,DestSubTitle=704133,DestDesc=589197,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=2,DestTitle=529391,DestSubTitle=174568,DestDesc=529391,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=3,DestTitle=589196,DestSubTitle=174570,DestDesc=589196,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=4,DestTitle=733472,DestSubTitle=174625,DestDesc=733472,PlotUnlockID=23500,LargeImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",SmallImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_docksrt_exp3">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=1,DestTitle=769779,DestSubTitle=797193,DestDesc=769779,PlotUnlockID=25004,LargeImage="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256",SmallImage="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=2,DestTitle=733472,DestSubTitle=174625,DestDesc=733472,PlotUnlockID=23500,LargeImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",SmallImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_docksrt_exp3b">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=1,DestTitle=769779,DestSubTitle=797193,DestDesc=769779,PlotUnlockID=25004,LargeImage="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256",SmallImage="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_docksrt_exp3c">
+      <Property name="elevatordestinations">
+        <Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+        <Value type="3">(DestId=2,DestTitle=733472,DestSubTitle=174625,DestDesc=733472,PlotUnlockID=23500,LargeImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",SmallImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",AButtonText=163280,BButtonText=529360)</Value>
+      </Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_docksrt_exp3d">
+      <Property name="elevatordestinations" type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Property>
+      <Property name="elevatorname" type="0">Rapid Transit</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_elevator_goodbyert">
+      <Property name="elevatordestinations" type="3">(DestId=2,DestTitle=589197,DestSubTitle=,DestDesc=589197,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Property>
+      <Property name="elevatorname" type="0">Goodbye GUI</Property>
+      <Property name="srdefaultabuttontext" type="0">163280</Property>
+      <Property name="srelevatordescription" type="0">388232</Property>
+      <Property name="srelevatortitle" type="0">320640</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_mail_combatsim">
+      <Property name="maillist">
+        <Value type="1">null</Value>
+        <Value type="3">(MailTitle=785247, MailBody=785280, MailStatePlot=10891, SendConditional=3449, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785253, MailBody=785286, MailStatePlot=10897, SendConditional=3546, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785257, MailBody=785290, MailStatePlot=10901, SendConditional=3550, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785258, MailBody=785291, MailStatePlot=10902, SendConditional=3551, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785263, MailBody=785296, MailStatePlot=10907, SendConditional=3557, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785266, MailBody=785299, MailStatePlot=10910, SendConditional=3560, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785267, MailBody=785300, MailStatePlot=10911, SendConditional=3561, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785271, MailBody=785304, MailStatePlot=10915, SendConditional=3563, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785274, MailBody=785307, MailStatePlot=10918, SendConditional=3564, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785275, MailBody=785308, MailStatePlot=10919, SendConditional=3565, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785278, MailBody=785311, MailStatePlot=10922, SendConditional=3575, SmallImage="")</Value>
+        <Value type="3">(MailTitle=785279, MailBody=785312, MailStatePlot=10923, SendConditional=3576, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813077, MailBody=813078, MailStatePlot=11109, SendConditional=3956, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813079, MailBody=813080, MailStatePlot=11110, SendConditional=3968, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813098, MailBody=813099, MailStatePlot=11111, SendConditional=3957, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813101, MailBody=813102, MailStatePlot=11112, SendConditional=3969, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813103, MailBody=813104, MailStatePlot=11113, SendConditional=3958, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813105, MailBody=813106, MailStatePlot=11114, SendConditional=3970, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813122, MailBody=813123, MailStatePlot=11115, SendConditional=3959, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813124, MailBody=813139, MailStatePlot=11116, SendConditional=3971, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813140, MailBody=813141, MailStatePlot=11117, SendConditional=3960, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813142, MailBody=813143, MailStatePlot=11118, SendConditional=3972, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813144, MailBody=813145, MailStatePlot=11119, SendConditional=3961, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813146, MailBody=813147, MailStatePlot=11120, SendConditional=3973, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813148, MailBody=813149, MailStatePlot=11121, SendConditional=3962, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813150, MailBody=813151, MailStatePlot=11122, SendConditional=3974, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813152, MailBody=813153, MailStatePlot=11123, SendConditional=3963, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813154, MailBody=813155, MailStatePlot=11124, SendConditional=3975, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813156, MailBody=813157, MailStatePlot=11125, SendConditional=3964, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813158, MailBody=813159, MailStatePlot=11126, SendConditional=3976, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813160, MailBody=813161, MailStatePlot=11127, SendConditional=3965, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813164, MailBody=813552, MailStatePlot=11129, SendConditional=3966, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813553, MailBody=813554, MailStatePlot=11131, SendConditional=3967, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813555, MailBody=813556, MailStatePlot=11132, SendConditional=3979, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813664, MailBody=813665, MailStatePlot=11135, SendConditional=3981, SmallImage="")</Value>
+        <Value type="3">(MailTitle=813557, MailBody=813559, MailStatePlot=11135, SendConditional=3981, SmallImage="")</Value>
+      </Property>
+      <Property name="openmaildelay" type="0">1.0</Property>
+      <Property name="srmaildescription" type="0">785373</Property>
+      <Property name="srmailtitle" type="0">315188</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_bartender">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">567685</Property>
+      <Property name="m_srbtext" type="0">168246</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray" type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3802,PlotPurchaseID[0]=24565,BaseCost=100,ChoiceEntry=(srChoiceName=809910,srChoiceDescription=809910),LargeImage="",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286");</Property>
+      <Property name="storename" type="0">Bartender</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_charactermoment">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_srbtext" type="0">168246</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">813927</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3501,PlotPurchaseID[0]=24099,ChoiceEntry=(srChoiceName=793078,srChoiceDescription=793079,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_EDI_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3502,PlotPurchaseID[0]=24100,ChoiceEntry=(srChoiceName=793080,srChoiceDescription=793081,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="DLC_MPImages.GuestList.CDX_Cortez_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3503,PlotPurchaseID[0]=24101,ChoiceEntry=(srChoiceName=792649,srChoiceDescription=793082,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Jack_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3504,PlotPurchaseID[0]=24102,ChoiceEntry=(srChoiceName=793083,srChoiceDescription=793084,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_James_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3505,PlotPurchaseID[0]=24103,ChoiceEntry=(srChoiceName=792652,srChoiceDescription=793085,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Kaidan_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3506,PlotPurchaseID[0]=24104,ChoiceEntry=(srChoiceName=793086,srChoiceDescription=793087,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Drell_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3507,PlotPurchaseID[0]=24105,ChoiceEntry=(srChoiceName=793088,srChoiceDescription=793089,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Liara_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3508,PlotPurchaseID[0]=24106,ChoiceEntry=(srChoiceName=792654,srChoiceDescription=793090,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Miranda2_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3797,PlotPurchaseID[0]=24624,ChoiceEntry=(srChoiceName=808824,srChoiceDescription=808825,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3509,PlotPurchaseID[0]=24107,ChoiceEntry=(srChoiceName=792655,srChoiceDescription=793091,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Samara_512",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3511,PlotPurchaseID[0]=24108,ChoiceEntry=(srChoiceName=792656,srChoiceDescription=793092,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Tali_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3512,PlotPurchaseID[0]=24109,ChoiceEntry=(srChoiceName=793093,srChoiceDescription=793094,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="DLC_MPImages.GuestList.CDX_Traynor_512x256",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">CharacterMoment</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">159226</Property>
+      <Property name="m_srbtext" type="0">576055</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">771485</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_Bathroom",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793271,srChoiceDescription=793277),LargeImage="DLC_MPImages.Furniture.Vanity01-793133",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_Bed",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793272,srChoiceDescription=793278),LargeImage="DLC_MPImages.Furniture.Bed01-793123",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_Kitchen",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793273,srChoiceDescription=793279),LargeImage="DLC_MPImages.Furniture.Kitchen01-793127",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_Seating",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793274,srChoiceDescription=793280),LargeImage="DLC_MPImages.Furniture.Couch01-793103",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_Table",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793275,srChoiceDescription=793281),LargeImage="DLC_MPImages.Furniture.CoffeeTable01-793115",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Decorator_WallDecorations",PlotUnlockConditionalID=0,PlotPurchaseID[0]=0,ChoiceEntry=(srChoiceName=793276,srChoiceDescription=793282),LargeImage="DLC_MPImages.Furniture.AccentWall01-793139",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">Decorator</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_bathroom">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.Vanity01-793133</Property>
+      <Property name="m_srsubtitle" type="0">793277</Property>
+      <Property name="m_srtitle" type="0">793271</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24270,ChoiceEntry=(srChoiceName=793133,srChoiceDescription=793134,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Vanity01-793133",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3593,PlotPurchaseID[0]=24271,ChoiceEntry=(srChoiceName=793135,srChoiceDescription=793136,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Vanity02-793135",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3594,PlotPurchaseID[0]=24272,ChoiceEntry=(srChoiceName=793137,srChoiceDescription=793138,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Vanity03-793137",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">Bathroom</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_bed">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.Bed01-793123</Property>
+      <Property name="m_srsubtitle" type="0">793278</Property>
+      <Property name="m_srtitle" type="0">793272</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24273,ChoiceEntry=(srChoiceName=793123,srChoiceDescription=793124,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Bed01-793123",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3596,PlotPurchaseID[0]=24274,ChoiceEntry=(srChoiceName=793125,srChoiceDescription=793126,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Bed02-793125",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">Bed</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_kitchen">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.Kitchen01-793127</Property>
+      <Property name="m_srsubtitle" type="0">793279</Property>
+      <Property name="m_srtitle" type="0">793273</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24275,ChoiceEntry=(srChoiceName=793127,srChoiceDescription=793128,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Kitchen01-793127",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3598,PlotPurchaseID[0]=24276,ChoiceEntry=(srChoiceName=793129,srChoiceDescription=793130,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Kitchen02-793129",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3599,PlotPurchaseID[0]=24277,ChoiceEntry=(srChoiceName=793131,srChoiceDescription=793132,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Kitchen03-793131",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">Kitchen</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_seating">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.Couch01-793103</Property>
+      <Property name="m_srsubtitle" type="0">793280</Property>
+      <Property name="m_srtitle" type="0">793274</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24278,ChoiceEntry=(srChoiceName=793103,srChoiceDescription=793104,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Couch01-793103",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3601,PlotPurchaseID[0]=24279,ChoiceEntry=(srChoiceName=793105,srChoiceDescription=793106,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Couch02-793105",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3602,PlotPurchaseID[0]=24280,ChoiceEntry=(srChoiceName=793107,srChoiceDescription=793108,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Couch03-793107",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24281,ChoiceEntry=(srChoiceName=793109,srChoiceDescription=793110,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.ArmChair01-793109",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3604,PlotPurchaseID[0]=24282,ChoiceEntry=(srChoiceName=793111,srChoiceDescription=793112,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.ArmChair02-793111",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3605,PlotPurchaseID[0]=24283,ChoiceEntry=(srChoiceName=793113,srChoiceDescription=793114,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.ArmChair03-793113",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">Seating</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_table">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.CoffeeTable01-793115</Property>
+      <Property name="m_srsubtitle" type="0">793281</Property>
+      <Property name="m_srtitle" type="0">793275</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24284,ChoiceEntry=(srChoiceName=793115,srChoiceDescription=793116,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.CoffeeTable01-793115",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3607,PlotPurchaseID[0]=24285,ChoiceEntry=(srChoiceName=793117,srChoiceDescription=793118,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.CoffeeTable02-793117",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">Table</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_decorator_walldecorations">
+      <Property name="defaultimage" type="0">DLC_MPImages.Furniture.AccentWall01-793139</Property>
+      <Property name="m_srsubtitle" type="0">793282</Property>
+      <Property name="m_srtitle" type="0">793276</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24286,ChoiceEntry=(srChoiceName=793119,srChoiceDescription=793120,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Shelf01-793119",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3609,PlotPurchaseID[0]=24287,ChoiceEntry=(srChoiceName=793121,srChoiceDescription=793122,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.Shelf02-793121",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotPurchaseID[0]=24288,ChoiceEntry=(srChoiceName=793139,srChoiceDescription=793140,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.AccentWall01-793139",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3611,PlotPurchaseID[0]=24289,ChoiceEntry=(srChoiceName=793141,srChoiceDescription=793142,eDisplayType = EChoiceDisplayType_None,srActionText=793270),LargeImage="DLC_MPImages.Furniture.AccentWall02-793141",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+      </Property>
+      <Property name="storename" type="0">WallDecorations</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_furniture">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">567685</Property>
+      <Property name="m_srbtext" type="0">168246</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">817466</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3727,PlotPurchaseID[0]=24499,BaseCost=1000,ChoiceEntry=(srChoiceName=793135,srChoiceDescription=793136),LargeImage="DLC_MPImages.Furniture.Vanity02-793135",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3728,PlotPurchaseID[0]=24500,BaseCost=1500,ChoiceEntry=(srChoiceName=793137,srChoiceDescription=793138),LargeImage="DLC_MPImages.Furniture.Vanity03-793137",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3730,PlotPurchaseID[0]=24501,BaseCost=1500,ChoiceEntry=(srChoiceName=793125,srChoiceDescription=793126),LargeImage="DLC_MPImages.Furniture.Bed02-793125",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3731,PlotPurchaseID[0]=24502,BaseCost=1000,ChoiceEntry=(srChoiceName=793129,srChoiceDescription=793130),LargeImage="DLC_MPImages.Furniture.Kitchen02-793129",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3732,PlotPurchaseID[0]=24503,BaseCost=1000,ChoiceEntry=(srChoiceName=793131,srChoiceDescription=793132),LargeImage="DLC_MPImages.Furniture.Kitchen03-793131",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3733,PlotPurchaseID[0]=24504,BaseCost=1000,ChoiceEntry=(srChoiceName=793105,srChoiceDescription=793106),LargeImage="DLC_MPImages.Furniture.Couch02-793105",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3734,PlotPurchaseID[0]=24505,BaseCost=1500,ChoiceEntry=(srChoiceName=793107,srChoiceDescription=793108),LargeImage="DLC_MPImages.Furniture.Couch03-793107",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3735,PlotPurchaseID[0]=24506,BaseCost=1000,ChoiceEntry=(srChoiceName=793111,srChoiceDescription=793112),LargeImage="DLC_MPImages.Furniture.ArmChair02-793111",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3736,PlotPurchaseID[0]=24507,BaseCost=1000,ChoiceEntry=(srChoiceName=793113,srChoiceDescription=793114),LargeImage="DLC_MPImages.Furniture.ArmChair03-793113",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3737,PlotPurchaseID[0]=24508,BaseCost=1000,ChoiceEntry=(srChoiceName=793117,srChoiceDescription=793118),LargeImage="DLC_MPImages.Furniture.CoffeeTable02-793117",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3738,PlotPurchaseID[0]=24509,BaseCost=1500,ChoiceEntry=(srChoiceName=793121,srChoiceDescription=793122),LargeImage="DLC_MPImages.Furniture.Shelf02-793121",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3739,PlotPurchaseID[0]=24510,BaseCost=1000,ChoiceEntry=(srChoiceName=793141,srChoiceDescription=793142),LargeImage="DLC_MPImages.Furniture.AccentWall02-793141",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+      </Property>
+      <Property name="storename" type="0">Furniture</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_intel_khansnetworkexposed">
+      <Property name="defaultimage" type="0">gui_codex_images.galaxyAtWar.GM_Intel_512x256</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_KhansNetworkExposed_AmmoCapacity",PlotPurchaseID[0]=24829,ChoiceEntry=(srChoiceName=650685,srChoiceDescription=718122,srActionText=325667,eDisplayType = EChoiceDisplayType_None),bIsGameEffect=true,CustomTokens[0]=813752,SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_KhansNetworkExposed_ShieldRegen",PlotPurchaseID[0]=24829,ChoiceEntry=(srChoiceName=314070,srChoiceDescription=683401,srActionText=325667,eDisplayType = EChoiceDisplayType_None),bIsGameEffect=true,CustomTokens[0]=813752,SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_KhansNetworkExposed_PowerCooldown",PlotPurchaseID[0]=24829,ChoiceEntry=(srChoiceName=650687,srChoiceDescription=718121,srActionText=325667,eDisplayType = EChoiceDisplayType_None),bIsGameEffect=true,CustomTokens[0]=813752,SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,ItemClassName="Intel_KhansNetworkExposed_GrenadeBonus",PlotPurchaseID[0]=24829,ChoiceEntry=(srChoiceName=813820,srChoiceDescription=813819,srActionText=325667,eDisplayType = EChoiceDisplayType_None),bIsGameEffect=true,CustomTokens[0]=813752,SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")</Value>
+      </Property>
+      <Property name="storename" type="0">Intel_KhansNetworkExposed</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_partypeople">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_srbtext" type="0">168246</Property>
+      <Property name="m_srsubtitle" type="0">794103</Property>
+      <Property name="m_srtitle" type="0">809333</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3587,PlotPurchaseID[0]=24250,ChoiceEntry=(srChoiceName=792659,srChoiceDescription=792659,eDisplayType = EChoiceDisplayType_None,srActionText=147164),LargeImage="DLC_MPImages.Party_IMG",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=4040,PlotPurchaseID[0]=24833,ChoiceEntry=(srChoiceName=813869,srChoiceDescription=813870,eDisplayType = EChoiceDisplayType_None,srActionText=147164),LargeImage="DLC_MPImages.Party_IMG",SmallImage="",PlotPurchaseID[1]=24119 )</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23904,ChoiceEntry=(srChoiceName=789582,srChoiceDescription=794190,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Ashley_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789583,srChoiceDescription=786438,eDisplayType = EChoiceDisplayType_None),LargeImage="DLC_MPImages.GuestList.CDX_Cortez_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789584,srChoiceDescription=786439,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_EDI_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23906,ChoiceEntry=(srChoiceName=789585,srChoiceDescription=794191,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Garrus_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23913,ChoiceEntry=(srChoiceName=789586,srChoiceDescription=794192,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Grunt_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23911,ChoiceEntry=(srChoiceName=789587,srChoiceDescription=794193,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Jack_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23914,ChoiceEntry=(srChoiceName=789588,srChoiceDescription=794194,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Jacob2_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789589,srChoiceDescription=786443,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_James_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23908,ChoiceEntry=(srChoiceName=789590,srChoiceDescription=794195,eDisplayType = EChoiceDisplayType_None),LargeImage="DLC_MPImages.GuestList.CDX_Prothean_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789591,srChoiceDescription=786445,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Joker_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23905,ChoiceEntry=(srChoiceName=789592,srChoiceDescription=794196,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Kaidan_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23999,ChoiceEntry=(srChoiceName=789593,srChoiceDescription=794197,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Kasumi_512",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789594,srChoiceDescription=786446,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Liara_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23910,ChoiceEntry=(srChoiceName=789595,srChoiceDescription=794198,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Miranda2_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23912,ChoiceEntry=(srChoiceName=789596,srChoiceDescription=794199,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Samara_512",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23907,ChoiceEntry=(srChoiceName=789597,srChoiceDescription=794200,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.Codex.CDX_Tali_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24317,ChoiceEntry=(srChoiceName=789598,srChoiceDescription=786450,eDisplayType = EChoiceDisplayType_None),LargeImage="DLC_MPImages.GuestList.CDX_Traynor_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=23909,ChoiceEntry=(srChoiceName=789599,srChoiceDescription=794201,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Wrex_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockID=24000,ChoiceEntry=(srChoiceName=789600,srChoiceDescription=794202,eDisplayType = EChoiceDisplayType_None),LargeImage="gui_codex_images.galaxyAtWar.GM_Zaeed_512",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3567,PlotPurchaseID[0]=23904,ChoiceEntry=(srChoiceName=792646,srChoiceDescription=794089,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Ashley_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3568,PlotPurchaseID[0]=23906,ChoiceEntry=(srChoiceName=792647,srChoiceDescription=794090,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Garrus_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3570,PlotPurchaseID[0]=23913,ChoiceEntry=(srChoiceName=792648,srChoiceDescription=794091,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Grunt_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3577,PlotPurchaseID[0]=23911,ChoiceEntry=(srChoiceName=792649,srChoiceDescription=794092,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Jack_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3578,PlotPurchaseID[0]=23914,ChoiceEntry=(srChoiceName=792650,srChoiceDescription=794093,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Jacob2_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3579,PlotPurchaseID[0]=23908,ChoiceEntry=(srChoiceName=792651,srChoiceDescription=794094,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="DLC_MPImages.GuestList.CDX_Prothean_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3580,PlotPurchaseID[0]=23905,ChoiceEntry=(srChoiceName=792652,srChoiceDescription=794095,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Kaidan_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3581,PlotPurchaseID[0]=23999,ChoiceEntry=(srChoiceName=792653,srChoiceDescription=794096,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Kasumi_512",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3582,PlotPurchaseID[0]=23910,ChoiceEntry=(srChoiceName=792654,srChoiceDescription=794097,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Miranda2_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3583,PlotPurchaseID[0]=23912,ChoiceEntry=(srChoiceName=792655,srChoiceDescription=794098,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Samara_512",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3584,PlotPurchaseID[0]=23907,ChoiceEntry=(srChoiceName=792656,srChoiceDescription=794099,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.Codex.CDX_Tali_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3585,PlotPurchaseID[0]=23909,ChoiceEntry=(srChoiceName=792657,srChoiceDescription=794100,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Wrex_512x256",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_QUEST,PlotUnlockConditionalID=3586,PlotPurchaseID[0]=24000,ChoiceEntry=(srChoiceName=792658,srChoiceDescription=794101,eDisplayType = EChoiceDisplayType_None,srActionText=770259),LargeImage="gui_codex_images.galaxyAtWar.GM_Zaeed_512",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">PartyPeople</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_phantomarmor">
+      <Property name="busechoicenameasconfirmationmessage" type="0">true</Property>
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">325667</Property>
+      <Property name="m_srbtext" type="0">576055</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">253994</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_UNIQUEARMOR,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom",PlotUnlockConditionalID=4121,PlotPurchaseID[0]=24819,ChoiceEntry=(srChoiceName=813578,srChoiceDescription=813579,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_UNIQUEARMOR,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Weapons",PlotUnlockConditionalID=4121,PlotPurchaseID[0]=24820,ChoiceEntry=(srChoiceName=813580,srChoiceDescription=813581,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_UNIQUEARMOR,ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Powers",PlotUnlockConditionalID=4121,PlotPurchaseID[0]=24821,ChoiceEntry=(srChoiceName=813582,srChoiceDescription=813583,eDisplayType = EChoiceDisplayType_None))</Value>
+      </Property>
+      <Property name="storename" type="0">PhantomArmor</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_bronze_bottom">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">325667</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3836,PlotPurchaseInt=11090,PlotPurchaseID[0]=24688,ChoiceEntry=(srChoiceName=811473,srChoiceDescription=813629,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3838,PlotPurchaseInt=11090,PlotPurchaseID[0]=24690,ChoiceEntry=(srChoiceName=811474,srChoiceDescription=813630,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3840,PlotPurchaseInt=11090,PlotPurchaseID[0]=24702,ChoiceEntry=(srChoiceName=813682,srChoiceDescription=813684,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3842,PlotPurchaseInt=11090,PlotPurchaseID[0]=24691,ChoiceEntry=(srChoiceName=811475,srChoiceDescription=813631,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3844,PlotPurchaseInt=11090,PlotPurchaseID[0]=24693,ChoiceEntry=(srChoiceName=811476,srChoiceDescription=813632,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3852,PlotPurchaseInt=11090,PlotPurchaseID[0]=24703,ChoiceEntry=(srChoiceName=811579,srChoiceDescription=813633,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3854,PlotPurchaseInt=11090,PlotPurchaseID[0]=24704,ChoiceEntry=(srChoiceName=811580,srChoiceDescription=813634,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3856,PlotPurchaseInt=11090,PlotPurchaseID[0]=24705,ChoiceEntry=(srChoiceName=811581,srChoiceDescription=813635,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3858,PlotPurchaseInt=11090,PlotPurchaseID[0]=24706,ChoiceEntry=(srChoiceName=811582,srChoiceDescription=813636,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3860,PlotPurchaseInt=11090,PlotPurchaseID[0]=24707,ChoiceEntry=(srChoiceName=811583,srChoiceDescription=813637,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3862,PlotPurchaseInt=11090,PlotPurchaseID[0]=24708,ChoiceEntry=(srChoiceName=811584,srChoiceDescription=813638,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3864,PlotPurchaseInt=11090,PlotPurchaseID[0]=24709,ChoiceEntry=(srChoiceName=811585,srChoiceDescription=813639,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3866,PlotPurchaseInt=11090,PlotPurchaseID[0]=24710,ChoiceEntry=(srChoiceName=811586,srChoiceDescription=813640,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=0,PlotPurchaseInt=11090,PVsToIncrement[0]="CitSim_BronzeToCredits",ChoiceEntry=(srChoiceName=811620,srChoiceDescription=813641,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">BronzePrize</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_bronze_summary">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3836,ChoiceEntry=(srChoiceName=811473,srChoiceDescription=813629,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3837,ChoiceEntry=(srChoiceName=811542,srChoiceDescription=813629,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3838,ChoiceEntry=(srChoiceName=811474,srChoiceDescription=813630,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3839,ChoiceEntry=(srChoiceName=811543,srChoiceDescription=813630,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3840,ChoiceEntry=(srChoiceName=813682,srChoiceDescription=813684,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3841,ChoiceEntry=(srChoiceName=813683,srChoiceDescription=813684,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3842,ChoiceEntry=(srChoiceName=811475,srChoiceDescription=813631,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3843,ChoiceEntry=(srChoiceName=811544,srChoiceDescription=813631,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3844,ChoiceEntry=(srChoiceName=811476,srChoiceDescription=813632,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3845,ChoiceEntry=(srChoiceName=811545,srChoiceDescription=813632,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3852,ChoiceEntry=(srChoiceName=811579,srChoiceDescription=813633,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3853,ChoiceEntry=(srChoiceName=811587,srChoiceDescription=813633,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3854,ChoiceEntry=(srChoiceName=811580,srChoiceDescription=813634,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3855,ChoiceEntry=(srChoiceName=811588,srChoiceDescription=813634,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3856,ChoiceEntry=(srChoiceName=811581,srChoiceDescription=813635,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3857,ChoiceEntry=(srChoiceName=811589,srChoiceDescription=813635,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3858,ChoiceEntry=(srChoiceName=811582,srChoiceDescription=813636,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3859,ChoiceEntry=(srChoiceName=811590,srChoiceDescription=813636,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3860,ChoiceEntry=(srChoiceName=811583,srChoiceDescription=813637,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3861,ChoiceEntry=(srChoiceName=811591,srChoiceDescription=813637,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3862,ChoiceEntry=(srChoiceName=811584,srChoiceDescription=813638,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3863,ChoiceEntry=(srChoiceName=811592,srChoiceDescription=813638,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3864,ChoiceEntry=(srChoiceName=811585,srChoiceDescription=813639,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3865,ChoiceEntry=(srChoiceName=811593,srChoiceDescription=813639,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3866,ChoiceEntry=(srChoiceName=811586,srChoiceDescription=813640,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3867,ChoiceEntry=(srChoiceName=811594,srChoiceDescription=813640,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">BronzeSummary</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_bronze_top">
+      <Property name="busechoicenameasconfirmationmessage" type="0">true</Property>
+      <Property name="confirmationmessageatextoverride" type="0">134492</Property>
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">159226</Property>
+      <Property name="m_srbtext" type="0">576055</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3886,ChoiceEntry=(srChoiceName=811861,srActionText=817586,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3826,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811860,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3875,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811849,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3876,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811850,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3877,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811851,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3878,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811852,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3879,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811853,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3880,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811854,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3881,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811855,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3882,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811856,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3883,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811857,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Bottom",PlotUnlockConditionalID=3884,ChoiceEntry=(srChoiceName=811527,srChoiceDescription=811858,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Bronze_Summary",PlotUnlockConditionalID=0,ChoiceEntry=(srChoiceName=811528,srChoiceDescription=0,eDisplayType = EChoiceDisplayType_None))</Value>
+      </Property>
+      <Property name="storename" type="0">BronzeSimToken</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_gold_bottom">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">325667</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3907,PlotPurchaseInt=11092,PlotPurchaseID[0]=24722,ChoiceEntry=(srChoiceName=811879,srChoiceDescription=813651,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3939,PlotPurchaseInt=11092,PlotPurchaseID[0]=24725,ChoiceEntry=(srChoiceName=811888,srChoiceDescription=813652,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=4153,PlotPurchaseInt=11092,PlotPurchaseID[0]=24918,ChoiceEntry=(srChoiceName=814402,srChoiceDescription=814404,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=0,PlotPurchaseInt=11092,PVsToIncrement[0]="CitSim_GoldToSilver",ChoiceEntry=(srChoiceName=811895,srChoiceDescription=813653,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=0,PlotPurchaseInt=11092,PVsToIncrement[0]="CitSim_GoldToCredits",ChoiceEntry=(srChoiceName=811893,srChoiceDescription=813654,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">GoldPrize</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_gold_summary">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3907,ChoiceEntry=(srChoiceName=811879,srChoiceDescription=813651,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3908,ChoiceEntry=(srChoiceName=811883,srChoiceDescription=813651,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3939,ChoiceEntry=(srChoiceName=811888,srChoiceDescription=813652,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3940,ChoiceEntry=(srChoiceName=811891,srChoiceDescription=813652,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=4153,ChoiceEntry=(srChoiceName=814402,srChoiceDescription=814404,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=4154,ChoiceEntry=(srChoiceName=814403,srChoiceDescription=814404,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">GoldSummary</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_gold_top">
+      <Property name="busechoicenameasconfirmationmessage" type="0">true</Property>
+      <Property name="confirmationmessageatextoverride" type="0">134492</Property>
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">159226</Property>
+      <Property name="m_srbtext" type="0">576055</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3934,ChoiceEntry=(srChoiceName=811861,srActionText=817586,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3923,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811860,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3924,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811849,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3925,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811850,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3926,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811851,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3927,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811852,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3928,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811853,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3929,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811854,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3930,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811855,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3931,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811856,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3932,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811857,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Bottom",PlotUnlockConditionalID=3933,ChoiceEntry=(srChoiceName=811885,srChoiceDescription=811858,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Gold_Summary",PlotUnlockConditionalID=0,ChoiceEntry=(srChoiceName=811528,srChoiceDescription=0,eDisplayType = EChoiceDisplayType_None))</Value>
+      </Property>
+      <Property name="storename" type="0">GoldSimToken</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_silver_bottom">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">325667</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3887,PlotPurchaseInt=11091,PlotPurchaseID[0]=24711,ChoiceEntry=(srChoiceName=811862,srChoiceDescription=813642,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3889,PlotPurchaseInt=11091,PlotPurchaseID[0]=24712,ChoiceEntry=(srChoiceName=811863,srChoiceDescription=813643,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3891,PlotPurchaseInt=11091,PlotPurchaseID[0]=24713,ChoiceEntry=(srChoiceName=811864,srChoiceDescription=813678,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3893,PlotPurchaseInt=11091,PlotPurchaseID[0]=24714,ChoiceEntry=(srChoiceName=811865,srChoiceDescription=813644,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3895,PlotPurchaseInt=11091,PlotPurchaseID[0]=24716,ChoiceEntry=(srChoiceName=811866,srChoiceDescription=813645,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3897,PlotPurchaseInt=11091,PlotPurchaseID[0]=24717,ChoiceEntry=(srChoiceName=811867,srChoiceDescription=813646,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3901,PlotPurchaseInt=11091,PlotPurchaseID[0]=24719,ChoiceEntry=(srChoiceName=769377,srChoiceDescription=813647,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=3937,PlotPurchaseInt=11091,PlotPurchaseID[0]=24724,ChoiceEntry=(srChoiceName=811887,srChoiceDescription=813648,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=0,PlotPurchaseInt=11091,PVsToIncrement[0]="CitSim_SilverToBronze",ChoiceEntry=(srChoiceName=811894,srChoiceDescription=813649,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELREWARD,PlotUnlockConditionalID=0,PlotPurchaseInt=11091,PVsToIncrement[0]="CitSim_SilverToCredits",ChoiceEntry=(srChoiceName=811892,srChoiceDescription=813650,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">SilverPrize</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_silver_summary">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_srsubtitle" type="0">650548</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3887,ChoiceEntry=(srChoiceName=811862,srChoiceDescription=813642,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3888,ChoiceEntry=(srChoiceName=811869,srChoiceDescription=813642,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3889,ChoiceEntry=(srChoiceName=811863,srChoiceDescription=813643,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3890,ChoiceEntry=(srChoiceName=811870,srChoiceDescription=813643,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3891,ChoiceEntry=(srChoiceName=811864,srChoiceDescription=813678,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3892,ChoiceEntry=(srChoiceName=811871,srChoiceDescription=813678,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3893,ChoiceEntry=(srChoiceName=811865,srChoiceDescription=813644,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3894,ChoiceEntry=(srChoiceName=811872,srChoiceDescription=813644,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3895,ChoiceEntry=(srChoiceName=811866,srChoiceDescription=813645,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3896,ChoiceEntry=(srChoiceName=811873,srChoiceDescription=813645,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3897,ChoiceEntry=(srChoiceName=811867,srChoiceDescription=813646,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3898,ChoiceEntry=(srChoiceName=811874,srChoiceDescription=813646,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3901,ChoiceEntry=(srChoiceName=811876,srChoiceDescription=813647,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3902,ChoiceEntry=(srChoiceName=811880,srChoiceDescription=813647,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3937,ChoiceEntry=(srChoiceName=811887,srChoiceDescription=813648,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3938,ChoiceEntry=(srChoiceName=811890,srChoiceDescription=813648,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+      </Property>
+      <Property name="storename" type="0">SilverSummary</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_store_simtoken_silver_top">
+      <Property name="busechoicenameasconfirmationmessage" type="0">true</Property>
+      <Property name="confirmationmessageatextoverride" type="0">134492</Property>
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="m_sratext" type="0">159226</Property>
+      <Property name="m_srbtext" type="0">576055</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_INTELSUMMARY,PlotUnlockConditionalID=3921,ChoiceEntry=(srChoiceName=811861,srActionText=817586,eDisplayType = EChoiceDisplayType_None),LargeImage="",SmallImage="")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3910,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811860,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3911,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811849,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3912,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811850,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3913,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811851,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3914,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811852,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3915,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811853,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3916,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811854,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3917,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811855,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3918,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811856,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3919,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811857,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Bottom",PlotUnlockConditionalID=3920,ChoiceEntry=(srChoiceName=811884,srChoiceDescription=811858,eDisplayType = EChoiceDisplayType_None))</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontentdlc_exp_pack003.SFXGUIData_Store_SimToken_Silver_Summary",PlotUnlockConditionalID=0,ChoiceEntry=(srChoiceName=811528,srChoiceDescription=0,eDisplayType = EChoiceDisplayType_None))</Value>
+      </Property>
+      <Property name="storename" type="0">SilverSimToken</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_terminalapt">
+      <Property name="defaultimage" type="0">GUI_Codex_Images.Fortification_512</Property>
+      <Property name="srdefaultabuttontext" type="0">244393</Property>
+      <Property name="srdefaultbbuttontext" type="0">529360</Property>
+      <Property name="srterminaldescription" type="0">346114</Property>
+      <Property name="srterminaltitle" type="0">346114</Property>
+      <Property name="terminalitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemTitle=813927,ItemDesc=813927, PlotUnlockID=24953,AButtonText=244393,BButtonText=529360)</Value>
+        <Value type="3">(ItemTitle=315188,ItemDesc=724791,PlotUnlockID=0,AButtonText=244393,BButtonText=529360)</Value>
+        <Value type="3">(ItemTitle= 809333,ItemDesc= 809333,PlotUnlockID=0,AButtonText=244393,BButtonText=529360)</Value>
+      </Property>
+      <Property name="terminalname" type="0">ShepardPersonalTerminal</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxguidata_terminalapt_noguestlist">
+      <Property name="defaultimage" type="0">GUI_Codex_Images.Fortification_512</Property>
+      <Property name="srdefaultabuttontext" type="0">244393</Property>
+      <Property name="srdefaultbbuttontext" type="0">529360</Property>
+      <Property name="srterminaldescription" type="0">346114</Property>
+      <Property name="srterminaltitle" type="0">346114</Property>
+      <Property name="terminalitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemTitle=813927,ItemDesc=813927,PlotUnlockID=24953,AButtonText=244393,BButtonText=529360)</Value>
+        <Value type="3">(ItemTitle=315188,ItemDesc=724791,PlotUnlockID=0,AButtonText=244393,BButtonText=529360)</Value>
+      </Property>
+      <Property name="terminalname" type="0">ShepardPersonalTerminal</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxareamapdata_dlc">
+      <Property name="charactermapdata_dlc">
+        <Value type="3">(Floor=Pack003_1, srCharacter=809332, srLocation=340221, nConditional=3802)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=681605, srLocation=320640, nConditional=4187)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=662475, srLocation=320640, nConditional=3646)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=270431, srLocation=769779, nConditional=3656)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=349395, srLocation=817622, nConditional=3648)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=349386, srLocation=769628, nConditional=3653)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=500142, srLocation=817624, nConditional=3649)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=349391, srLocation=817623, nConditional=3657)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=178197, srLocation=340221, nConditional=3651)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=335239, srLocation=340221, nConditional=3652)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=306237, srLocation=817623, nConditional=3655)</Value>
+        <Value type="3">(Floor=Pack003_1, srCharacter=569495, srLocation=817623, nConditional=3650)</Value>
+      </Property>
+      <Property name="mapassetdata_dlc" type="3">(GroupID=3,Asset="DLC_MPImages.Areamap.CitCasHub",Floor=Pack003_1)</Property>
+      <Property name="maplocationdata_dlc">
+        <Value type="3">(Floor=Pack003_1,srLocation=320640,nIndex=1)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=769779,nIndex=2)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=817624,nIndex=3)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=769778,nIndex=4)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=817622,nIndex=5)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=817623,nIndex=6)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=769628,nIndex=7)</Value>
+        <Value type="3">(Floor=Pack003_1,srLocation=340221,nIndex=8)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgui_dlc_docks">
+      <Property name="biscancelallowed" type="0">false</Property>
+      <Property name="dockbuttons">
+        <Value type="4">(ButtonID="MainDock", srLabel=746026, VisibilityConditional=13)</Value>
+        <Value type="3">(ButtonID="MainDock", srLabel=746026, srButtonLabel=174644, VisibilityConditional=13)</Value>
+        <Value type="3">(ButtonID="Map_Apartment", srLabel=769778, srButtonLabel=797192, VisibilityConditional=3245)</Value>
+        <Value type="3">(ButtonID="BioP_CitHot", srLabel=769779, srButtonLabel=797193, VisibilityConditional=3246)</Value>
+      </Property>
+      <Property name="srcancel" type="0">181674</Property>
+      <Property name="srselect" type="0">136217</Property>
+      <Property name="srtitle" type="0">135823</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxsfhandler_areamap_dlc">
+      <Property name="locationicons">
+        <Value type="3">[AreaMap_Label_01]</Value>
+        <Value type="3">[AreaMap_Label_02]</Value>
+        <Value type="3">[AreaMap_Label_03]</Value>
+        <Value type="3">[AreaMap_Label_04]</Value>
+        <Value type="3">[AreaMap_Label_05]</Value>
+        <Value type="3">[AreaMap_Label_06]</Value>
+        <Value type="3">[AreaMap_Label_07]</Value>
+        <Value type="3">[AreaMap_Label_08]</Value>
+        <Value type="3">[AreaMap_Label_09]</Value>
+        <Value type="3">[AreaMap_Label_10]</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

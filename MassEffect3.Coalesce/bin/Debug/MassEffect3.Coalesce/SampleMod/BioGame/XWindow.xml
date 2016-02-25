@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="xwindow" name="xwindow.int" source="..\..\engine\localization\int\xwindow.int">
+	<Sections>
+		<Section name="general">
+			<Property name="propmulti" type="2">`~ Properties (`~ selected)</Property>
+			<Property name="propnone" type="2">Nothing Selected</Property>
+			<Property name="propsingle" type="2">`~ Properties</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

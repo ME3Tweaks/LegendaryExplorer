@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinegamesettings">
+			<Property name="availablemaps">
+				<Value type="3">BioP_MPJngl</Value>
+				<Value type="3">BioP_MPThes</Value>
+			</Property>
+			<Property name="mastermaplist">
+				<Value type="3">(ID=11, PackageName="BioP_MPJngl", PrettyName=728030, Description=, Image="GUI_MPImages_MP2.OptMapJade", GalaxyAtWarMapPosition=(X=231,Y=362), GalaxyAtWarMapSubtitle=500264, MusicEventName="Set_mus_map_mprctr")</Value>
+				<Value type="3">(ID=13, PackageName="BioP_MPThes", PrettyName=728031, Description=, Image="GUI_MPImages_MP2.OptMapGoddess", GalaxyAtWarMapPosition=(X=105,Y=278), GalaxyAtWarMapSubtitle=500427, MusicEventName="Set_mus_map_mpnov")</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

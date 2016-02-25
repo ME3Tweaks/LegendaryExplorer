@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxprojectile_asari_gun02">
+			<Property name="bclientpredictprojectile" type="0">false</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxprojectile_batariansniperround_gun02">
+			<Property name="bleedduration" type="0">10.f</Property>
+			<Property name="directdamageproportion" type="0">0.8f</Property>
+			<Property name="headshotmultiplier" type="0">3.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxprojectile_salarianblastshard">
+			<Property name="explosiondamage" type="0">180.f</Property>
+			<Property name="explosionradius" type="0">200.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxprojectile_salarianblastsplitter">
+			<Property name="explosiondamage" type="0">50.f</Property>
+			<Property name="numshardstospawn" type="0">5</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

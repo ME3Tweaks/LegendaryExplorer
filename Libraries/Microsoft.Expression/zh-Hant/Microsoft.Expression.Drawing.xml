@@ -1,0 +1,1631 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Drawing</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Controls.Callout">
+            <summary>
+呈現圖說文字圖形，此圖說文字圖形支援與圖說文字箭號組合的數種圖形。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeContentShape">
+             <summary>
+提供複合圖形的基底類別，此複合圖形衍生自 <see cref="T:System.Windows.Controls.ContentControl"/>，並可實作 <see cref="T:Microsoft.Expression.Media.IShape"/>。
+             </summary>
+             <remarks>
+<see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> 可實作 <see cref="T:Microsoft.Expression.Media.IShape"/> 介面，並可支援呈現和 <see cref="T:System.Windows.Shapes.Shape"/> 類似的幾何圖形，不過該幾何圖形可在版面配置邊界之外呈現。
+             
+典型的實作會將自訂的預設範本放置在 generic.xaml 中，而 generic.xaml 可透過範本將大部分的圖形屬性繫結至 <see cref="T:System.Windows.Shapes.Path"/>。它也會擴充 <see cref="P:GeometrySource"/> 屬性，以自訂 <see cref="T:System.Windows.Shapes.Path"/> 的外觀。
+            
+此類別也支援和圖形一同顯示內容。
+             </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceParameters">
+            <summary>
+提供介面以描述 Shape 的參數。
+            </summary>
+            <remarks>
+此介面是 Shape 和 GeometrySource 用來通訊的資料。一般說來，IShape 的具體實作會實作此介面並將它傳送到 GeometrySource.UpdateGeometry()，接著再以唯讀資料提供者的方式使用圖形。
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IShape">
+            <summary>
+提供定義 Shape 所需的介面。儘管基本圖形和複合圖形可能衍生自不同類型的 FrameworkElement，不過這兩者都需要和此介面相符。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+使 <see cref="T:Microsoft.Expression.Media.IShape"/> 的幾何圖形失效。失效後，<see cref="T:Microsoft.Expression.Media.IShape"/> 會以非同步方式重新計算幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Fill">
+<summary>取得或設定指定圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</summary>
+<returns>描述圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。預設值為 Null。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stroke">
+<summary>取得或設定指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</summary>
+<returns>指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.StrokeThickness">
+<summary>取得或設定 <see cref="T:System.Windows.Shapes.Shape"/> 筆觸外框的寬度。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> 外框的寬度 (以像素為單位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stretch">
+<summary>取得或設定 <see cref="T:System.Windows.Media.Stretch"/> 列舉值，其描述圖形填滿配置空間的方式。</summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.Stretch"/> 列舉值。執行階段的預設值取決於 <see cref="T:System.Windows.Shapes.Shape"/> 的型別。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.RenderedGeometry">
+            <summary>
+取得由呈現引擎所呈現的已呈現幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.GeometryMargin">
+            <summary>
+取得邏輯邊界和實際幾何邊界圖形之間的邊框間距。此值可以是正數 (如 <see cref="T:Microsoft.Expression.Shapes.Arc"/> 中的情況) 或負數 (如 <see cref="T:Microsoft.Expression.Controls.Callout"/> 中的情況)。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Media.IShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry 變更時發生。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.CreateGeometrySource">
+            <summary>
+藉由建立幾何圖形來源延伸圖形的繪製方式。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+使 <see cref="T:Microsoft.Expression.Media.IShape"/> 的幾何圖形失效。失效後，<see cref="T:Microsoft.Expression.Media.IShape"/> 會以非同步方式重新計算幾何圖形。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.ArrangeOverride(System.Windows.Size)">
+<summary>針對 Silverlight 版面配置轉換的 Arrange 部分提供行為。類別可覆寫此方法以定義其專屬的 Arrange 轉換行為。</summary>
+<returns>將元素排列在版面配置時使用的實際大小。</returns>
+<param name="finalSize">父項內的最終區域，此物件應使用此區域來排列本身與其子項。</param>
+<remarks> 當 Geometry 失效後，<see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> 會重新計算 Geometry 並更新 RenderedGeometry 和 GeometryMargin。</remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.OnContentChanged(System.Object,System.Object)">
+            <summary>
+將字串內容轉換為 <see cref="T:TextBlock"/>，並加入置中對齊和多行支援。
+            </summary>
+            <remarks>
+請使用 <see cref="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent"/> 的範本繫結 (而非 <see cref="P:Content"/>) 來啟用此方法。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Fill">
+            <summary>
+取得或設定指定圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。
+            </summary>
+<returns>描述圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stroke">
+<summary>取得或設定指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</summary>
+<returns>指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeThickness">
+<summary>取得或設定 <see cref="T:System.Windows.Shapes.Shape"/> 筆觸外框的寬度。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> 外框的寬度 (以像素為單位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stretch">
+<summary>取得或設定 <see cref="T:System.Windows.Media.Stretch"/> 列舉值，其描述圖形填滿配置空間的方式。</summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.Stretch"/> 列舉值。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeStartLineCap">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值，此列舉值描述 <see cref="P:System.Windows.Shapes.Shape.Stroke"/> 開頭的 <see cref="T:System.Windows.Shapes.Shape"/>。 </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列舉的值，此值指定 <see cref="P:System.Windows.Shapes.Shape.Stroke"/> 開頭的圖形。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeEndLineCap">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值，此列舉值描述行尾的 <see cref="T:System.Windows.Shapes.Shape"/>。 </summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeLineJoin">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineJoin"/> 列舉值，此列舉值指定用於 <see cref="T:System.Windows.Shapes.Shape"/> 端點的聯結類型。</summary>
+<returns>指定聯結外觀的 <see cref="T:System.Windows.Media.PenLineJoin"/> 列舉值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeMiterLimit">
+<summary>取得或設定斜接角長度比例的限制，將比例限制為 <see cref="T:System.Windows.Shapes.Shape"/> 元素之 <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> 的二分之一。 </summary>
+<returns>斜接角長度相對於 <see cref="T:System.Windows.Shapes.Shape"/> 元素之 <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> 的比例限制。此值一律是大於或等於 1 的正數。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashArray">
+<summary>取得或設定一組 <see cref="T:System.Double"/> 值，這些值表示用來勾勒圖形外框之虛線和空隙的圖樣。 </summary>
+<returns>一組指定虛線和空隙之圖樣的 <see cref="T:System.Double"/> 值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashCap">
+<summary>取得或設定指定虛線結尾繪製方式的 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。 </summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。預設值為 <see cref="F:System.Windows.Media.PenLineCap.Flat"/>。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashOffset">
+<summary>取得或設定指定虛線圖樣中虛線開頭距離的 <see cref="T:System.Double"/>。</summary>
+<returns>表示虛線圖樣中虛線開頭距離的 <see cref="T:System.Double"/>。預設值為 0。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometry">
+            <summary>
+取得由呈現引擎所呈現的已呈現幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.GeometryMargin">
+            <summary>
+取得邏輯邊界和實際幾何邊界圖形之間的邊框間距。此值可以是正數 (如 <see cref="T:Microsoft.Expression.Shapes.Arc"/> 中的情況) 或負數 (如 <see cref="T:Microsoft.Expression.Controls.Callout"/> 中的情況)。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent">
+            <summary>
+取得或設定可將字串轉換為置中對齊多行 TextBlock 的內部內容。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry 變更時發生。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.AnchorPoint">
+            <summary>
+取得或設定圖說文字相對於左上角的位置。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.CalloutStyle">
+            <summary>
+取得或設定圖說文字樣式。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeShape">
+            <summary>
+提供複合圖形的基底類別，此複合圖形衍生自 <see cref="T:System.Windows.Controls.Control"/>，並可實作 <see cref="T:Microsoft.Expression.Media.IShape"/>。
+            </summary>
+            <remarks>
+<see cref="T:Microsoft.Expression.Controls.CompositeShape"/> 可實作 <see cref="T:Microsoft.Expression.Media.IShape"/> 介面，並可支援呈現和 <see cref="T:System.Windows.Shapes.Shape"/> 類似的幾何圖形，不過該幾何圖形可在版面配置邊界之外呈現。
+            
+典型的實作會將自訂的預設範本放置在 generic.xaml 中，而 generic.xaml 可透過範本將大部分的圖形屬性繫結至 <see cref="T:System.Windows.Shapes.Path"/>。它也會擴充 <see cref="P:GeometrySource"/> 屬性，以自訂 <see cref="T:System.Windows.Shapes.Path"/> 的外觀。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.CreateGeometrySource">
+            <summary>
+藉由建立幾何圖形來源延伸圖形的繪製方式。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+使 <see cref="T:Microsoft.Expression.Media.IShape"/> 的幾何圖形失效。失效後，<see cref="T:Microsoft.Expression.Media.IShape"/> 會以非同步方式重新計算幾何圖形。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.ArrangeOverride(System.Windows.Size)">
+<summary>針對 Silverlight 版面配置轉換的 Arrange 部分提供行為。類別可覆寫此方法以定義其專屬的 Arrange 轉換行為。</summary>
+<returns>將元素排列在版面配置時使用的實際大小。</returns>
+<param name="finalSize">父項內的最終區域，此物件應使用此區域來排列本身與其子項。</param>
+<remarks> 當 Geometry 失效後，<see cref="T:Microsoft.Expression.Controls.CompositeShape"/> 會重新計算 Geometry 並更新 RenderedGeometry 和 GeometryMargin。</remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Fill">
+            <summary>
+取得或設定指定圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。
+            </summary>
+<returns>描述圖形內部繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stroke">
+<summary>取得或設定指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</summary>
+<returns>指定 <see cref="T:System.Windows.Shapes.Shape"/> 外框繪製方式的 <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeThickness">
+<summary>取得或設定 <see cref="T:System.Windows.Shapes.Shape"/> 筆觸外框的寬度。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> 外框的寬度 (以像素為單位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stretch">
+<summary>取得或設定 <see cref="T:System.Windows.Media.Stretch"/> 列舉值，其描述圖形填滿配置空間的方式。</summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.Stretch"/> 列舉值。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeStartLineCap">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值，此列舉值描述 <see cref="P:System.Windows.Shapes.Shape.Stroke"/> 開頭的 <see cref="T:System.Windows.Shapes.Shape"/>。 </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列舉的值，此值指定 <see cref="P:System.Windows.Shapes.Shape.Stroke"/> 開頭的圖形。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeEndLineCap">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值，此列舉值描述行尾的 <see cref="T:System.Windows.Shapes.Shape"/>。 </summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeLineJoin">
+<summary>取得或設定 <see cref="T:System.Windows.Media.PenLineJoin"/> 列舉值，此列舉值指定用於 <see cref="T:System.Windows.Shapes.Shape"/> 端點的聯結類型。</summary>
+<returns>指定聯結外觀的 <see cref="T:System.Windows.Media.PenLineJoin"/> 列舉值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeMiterLimit">
+<summary>取得或設定斜接角長度比例的限制，將比例限制為 <see cref="T:System.Windows.Shapes.Shape"/> 元素之 <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> 的二分之一。 </summary>
+<returns>斜接角長度相對於 <see cref="T:System.Windows.Shapes.Shape"/> 元素之 <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> 的比例限制。此值一律是大於或等於 1 的正數。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashArray">
+<summary>取得或設定一組 <see cref="T:System.Double"/> 值，這些值表示用來勾勒圖形外框之虛線和空隙的圖樣。 </summary>
+<returns>一組指定虛線和空隙之圖樣的 <see cref="T:System.Double"/> 值。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashCap">
+<summary>取得或設定指定虛線結尾繪製方式的 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。 </summary>
+<returns>其中一個 <see cref="T:System.Windows.Media.PenLineCap"/> 列舉值。預設值為 <see cref="F:System.Windows.Media.PenLineCap.Flat"/>。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashOffset">
+<summary>取得或設定指定虛線圖樣中虛線開頭距離的 <see cref="T:System.Double"/>。</summary>
+<returns>表示虛線圖樣中虛線開頭距離的 <see cref="T:System.Double"/>。預設值為 0。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.RenderedGeometry">
+            <summary>
+取得由呈現引擎所呈現的已呈現幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.GeometryMargin">
+            <summary>
+取得邏輯邊界和實際幾何邊界圖形之間的邊框間距。此值可以是正數 (如 <see cref="T:Microsoft.Expression.Shapes.Arc"/> 中的情況) 或負數 (如 <see cref="T:Microsoft.Expression.Controls.Callout"/> 中的情況)。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry 變更時發生。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LineArrow">
+            <summary>
+呈現彎曲的線段，並在兩端加上選用的箭號。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.LineArrow.MeasureOverride(System.Windows.Size)">
+<summary>針對 Silverlight 版面配置的 Measure 轉換提供行為。類別可覆寫此方法以定義其專屬的 Measure 轉換行為。</summary>
+<returns>此物件根據其對子物件已分配大小的計算，或諸如固定容器大小等其他考量，判斷在版面配置期間需要的大小。</returns>
+<param name="availableSize">此物件能提供給子物件的可用大小。可將 Infinity (<see cref="F:System.Double.PositiveInfinity"/>) 指定為值，表示物件將根據所有可用的內容調整大小。</param>
+            <remarks>
+預設 <see cref="T:LineArrow"/> 能以任何大小呈現。<see cref="P:RenderedGeometry"/> 將延展到版面配置邊界，並視需要呈現至外部。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.BendAmount">
+            <summary>
+取得或設定箭號的彎曲量。
+            </summary>
+<value>介於 0 到 1 之間的彎曲量。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartArrow">
+            <summary>
+取得或設定線條開頭箭頭呈現的方式。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.EndArrow">
+            <summary>
+取得或設定線條結尾箭頭呈現的方式。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartCorner">
+            <summary>
+取得或設定開始繪製箭號的起始邊角。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.ArrowSize">
+            <summary>
+取得或設定箭號的長度 (以像素為單位)。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PanningItems">
+            <summary>
+提供項目控制項，此控制項顯示一個選定項目，並允許使用觸控筆勢在項目之間移動瀏覽。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.#ctor">
+            <summary>
+PanningItems 的建構函式。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.OnApplyTemplate">
+            <summary>
+在套用 PanningItems 範本時呼叫。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.ScrollDirection">
+            <summary>
+取得或設定控制項中項目的方向。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.FlickTolerance">
+            <summary>
+取得或設定筆觸容許度。這可以是介於 0 到 1 之間的值。這個值代表 PanningItems 大小的百分比，筆勢必須涵蓋這個百分比，才會觸發項目變更。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.PreviousItem">
+            <summary>
+取得或設定所選項目前面的項目。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.NextItem">
+            <summary>
+取得或設定所選項目後面的項目。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.LoopContents">
+            <summary>
+取得或設定項目控制項的內容是否會形成迴圈，讓第一個項目接在最後一個項目後面。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.SliderValue">
+            <summary>
+取得或設定控制移動瀏覽動作之滑桿的值。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper">
+            <summary>
+可和 PathGeometry 搭配使用的 Helper 類別。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+將路徑迷你語言的字串轉換為 PathGeometry。
+            </summary>
+<param name="abbreviatedGeometry">以路徑迷你語言表示的字串。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AsPathGeometry(System.Windows.Media.Geometry)">
+            <summary>
+將指定的幾何圖形轉換為單一 PathGeometry。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.SyncPolylineGeometry(System.Windows.Media.Geometry@,System.Collections.Generic.IList{System.Windows.Point},System.Boolean)">
+            <summary>
+使用與指定之點清單相符的聚合線條，將指定的幾何圖形更新為 PathGeometry。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AbbreviatedGeometryParser">
+            <summary>
+剖析縮寫的幾何圖形語法。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentHelper">
+            <summary>
+可將 ArcSegment 轉換為 BezierSegment 的 Helper 類別。
+            </summary>
+            <summary>
+可和 PathSegment 及所有變量搭配使用的 Helper 類別。
+            </summary>
+            <summary>
+可處理不同 PathSegment 類型的策略類別。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierSegments(System.Windows.Media.ArcSegment,System.Windows.Point)">
+            <summary>
+將弧線線段轉換為貝茲格式。傳回 BezierSegment、PolyBezierSegment、LineSegment 或 Null。傳回 Null 時，弧線會變質為起點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SetIsStroked(System.Windows.Media.PathSegment,System.Boolean)">
+            <summary>
+避免呼叫有三個參數的建構函式，因為它一律會設定 IsStroked 的本機值。
+            </summary>
+            <param name="segment"></param>
+            <param name="isStroked"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+使用與指定之點清單相符的聚合線條更新 SegmentCollection。嘗試進行最少的變更；如果未發生任何變更，則傳回 false。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolyBezierSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+使用與指定之點清單相符的多重貝茲線段更新 collection[index] 線段。指定的點清單必須包含 N 個貝茲線段的 3*N 個點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.IsEmpty(System.Windows.Media.PathSegment)">
+            <summary>
+測試指定的路徑線段是否是空的。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPointCount(System.Windows.Media.PathSegment)">
+            <summary>
+取得指定的路徑線段中的點數。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetLastPoint(System.Windows.Media.PathSegment)">
+            <summary>
+取得指定的路徑線的最後一個點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPoint(System.Windows.Media.PathSegment,System.Int32)">
+            <summary>
+取得指定的線段中指定索引的點。如果輸入為 (-1)，將傳回最後一個點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.FlattenSegment(System.Windows.Media.PathSegment,System.Collections.Generic.IList{System.Windows.Point},System.Windows.Point,System.Double)">
+            <summary>
+使指定的線段平面化，並將產生的點新增至指定的點清單中。
+            </summary>
+<param name="segment">要平面化的線段。</param>
+<param name="points">產生的點清單。</param>
+<param name="start">線段的起點。</param>
+<param name="tolerance">容錯。必須為正數。可以是零。預設容錯的後援。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.ArcToBezier(System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,System.Double,System.Double,System.Windows.Point[]@,System.Int32@)">
+            <summary>
+ArcToBezier，可計算弧線的貝茲約略估算。
+            </summary>
+            <remarks>
+此公用程式可計算橢圓形弧線的貝茲約略估算，如同 SVG 弧線規格的定義。取下弧線的來源橢圓形是在本身座標上與軸對齊，並在該處由其 X 和 Y 半徑定義。旋轉角度會定義橢圓形各個軸相對於 X 軸的旋轉方式。起點和終點會定義 4 段弧線中的其中一段弧線；sweep 和 large-arc 旗標可決定要在這些弧線中選擇的弧線。
+            
+傳回 cPieces = 0 表示為線條，而非弧線；傳回 cPieces = -1 表示弧線變質為點 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetArcAngle(System.Windows.Point,System.Windows.Point,System.Boolean,System.Boolean,System.Double@,System.Double@,System.Int32@)">
+            <summary>
+取得貝茲弧線的數量，以及每段弧線的正弦/餘弦。
+            </summary>
+            <remarks>
+這是 ArcToBezier 使用的私用公用程式。將弧線分割為多個線段，使每個線段均無法跨 90 度。輸入點位於單位圓上。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetBezierDistance(System.Double,System.Double)">
+             <summary>
+GetBezierDistance 會以半徑的片段傳回距離。
+             </summary>
+            <remarks>
+取得圓弧端點到約略估算貝茲弧線控制點的間隔距離，以弧線的半徑片段表示。
+            
+由於結果相對於弧線的半徑，因此完全取決於弧線的角度。由於弧線假設為 90 度或更小，因此角度會取決於該角度的餘弦，其衍生自 rDot = 兩個半徑向量的內積。我們需要和弧線點相符的貝茲曲線，以及結尾和中點的正切函數值。接下來我們來計算曲線端點到其控制點之間的距離。
+            
+由於我們需要的是相對距離，因此可以利用單位圓來計算。將圓心置於原點，再將 X 軸當作 2 個向量間的二等分線。假設 a 是這兩個向量間的角度。於是第一個和最後一個點的 X 座標為 cos(a/2)。假設 x 是第二個和第三個點的 X 座標。在 t=1/2 之處我們可以在 (1,0) 得到一個點。但從多項式看來，它們都是相等的：
+            
+(1-t)^3 = t*(1-t)^2 = t^2*(1-t) = t^3 = 1/8,
+            
+因此，我們可以從貝茲公式取得：
+            
+1 = (1/8) * (cos(a/2) + 3x + 3x + cos(a/2)) 
+            
+因此
+            
+x = (4 - cos(a/2)) / 3
+            
+上述結果和第一個點的 X 差異為：
+                  
+DX = x - cos(a/2) = 4(1 - cos(a/2)) / 3
+            
+但 DX = distance / sin(a/2)，因此距離為
+            
+dist = (4/3)*(1 - cos(a/2)) / sin(a/2)
+            
+和角度 a 不同，因為我們已知 rDot = R^2 * cos(a)，所以我們將頂端和底部乘以 R：
+             
+dist = (4/3)*(R - Rcos(a/2)) / Rsin(a/2)
+             
+再利用一些三角函數：________________ cos(a/2)   = \/(1 + cos(a)) / 2 ______________________ R*cos(a/2) = \/(R^2 + R^2 cos(a)) / 2 ________________ = \/(R^2 + rDot) / 2
+            
+假設 A = (R^2 + rDot)/2. ____________________ R*sin(a/2) = \/R^2 - R^2 cos^2(a/2) _______ = \/R^2 - A
+            
+因此：_ 4      R - \/A dist = - * ------------ 3      _______ \/R^2 - A
+            
+歷程記錄：2001/5/29 由 MichKa 製作。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.AcceptRadius(System.Double,System.Double,System.Double@)">
+            <summary>
+如果半徑和弦的長度比較起來過短，則傳回 false (若為 NaN 則傳回 true)，半徑會修改為接受的值。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.BezierCurveFlattener">
+            <summary>
+使貝茲曲線平面化的公用程式類別。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenCubic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+使貝茲三次方曲線平面化，並將產生的聚合線條新增至第三個參數。
+            </summary>
+<param name="controlPoints">四個貝茲三次方控制點。</param>
+<param name="errorTolerance">兩相對應的點在真實曲線和平面化之聚合線條上的最大間隔距離。必須為正數。</param>
+<param name="resultPolyline">新增平面化聚合線條的位置。</param>
+<param name="skipFirstPoint">True 表示新增平面化的聚合線條時略過第一個控制點。
+<param name="resultParameters">新增和每個聚合線條端點相關聯之貝茲曲線參數值的位置。</param> 
+如果 <paramref name="resultPolyline"/> 空白，一律會新增第一個控制點及相關聯的參數。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenQuadratic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+使貝茲二次方曲線平面化，並將產生的聚合線條新增至第三個參數。利用升階來讓貝茲曲線重複使用三次方案例的程式碼。
+            </summary>
+<param name="controlPoints">三個貝茲二次方控制點。</param>
+<param name="errorTolerance">兩相對應的點在真實曲線和平面化之聚合線條上的最大間隔距離。必須為正數。</param>
+<param name="resultPolyline">新增平面化聚合線條的位置。</param>
+<param name="skipFirstPoint">新增平面化的聚合線條時，是否要略過第一個控制點。 
+<param name="resultParameters">新增和每個聚合線條端點相關聯之貝茲曲線參數值的位置。</param>
+如果 <paramref name="resultPolyline"/> 空白，一律會新增第一個控制點及相關聯的參數。</param>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.CommonExtensions">
+            <summary>
+支援非幾何圖形類型的擴充方法。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach(System.Collections.IEnumerable,System.Action{System.Object})">
+            <summary>
+允許將動作委派 (通常是非常簡單的 Lambda) 套用到整個序列中。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+允許將動作委派 (通常是非常簡單的 Lambda) 套用到整個序列中。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IList{``0},System.Action{``0,System.Int32})">
+            <summary>
+允許將動作委派 (通常是非常簡單的 Lambda) 套用到包含各項目之索引的完整序列中。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCount``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+確保清單的計數等於指定的計數。可利用指定的 Factory 建立，或視需要移除項目。如果 Input IList 是 List，當沒有 Factory 時會使用 AddRange 或 RemoveRange。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCountAtLeast``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+確保清單的計數至少等於指定的計數。可利用指定的 Factory 建立。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+將項目的範圍新增至集合的結尾。如果集合是清單，則會使用 List.AddRange。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.Last``1(System.Collections.Generic.IList{``0})">
+            <summary>
+取得指定清單的最後一個項目。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.RemoveLast``1(System.Collections.Generic.IList{``0})">
+            <summary>
+移除指定清單的最後一個項目。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.DeepCopy``1(``0)">
+            <summary>
+建立 obj 及其所有公用屬性的複本，包括所有集合屬性。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.SetIfDifferent(System.Windows.DependencyObject,System.Windows.DependencyProperty,System.Object)">
+            <summary>
+如果不同，便會設定值。盡可能避免設定本機值。當值已變更時，會傳回 true。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ClearIfSet(System.Windows.DependencyObject,System.Windows.DependencyProperty)">
+            <summary>
+清除以本機方式設定在指定相依性物件上的相依性屬性。如果相依性屬性不是以本機方式設定的，則傳回 false。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.FindVisualDesendent``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+使用橫向優先搜尋找指定類型和條件的所有視覺下階。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+取得 IEnumerable 中的所有視覺子項。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.DrawingPropertyMetadata">
+            <summary>
+統一 WPF 和 Silverlight 中的 PropertyMetadata 介面。提供呈現、排列及度量的相關必要通知。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.#ctor(Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Object)">
+            <summary>
+此私用 Ctor 只能由 AttachCallback 使用。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.AttachCallback(System.Object,Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Windows.PropertyChangedCallback)">
+            <summary>
+在屬性回呼時附加 DrawingPropertyMetadata 例項的鏈結 InternalCallback()。在 Silverlight 中，屬性中繼資料在設定後即會遭到丟棄。請使用回呼來記住它。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.InternalCallback(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+在鏈結原始的回呼前，觸發 DrawingPropertyChangedEvent。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.GeometryHelper">
+            <summary>
+幾何圖形相關資料結構 (點/向量/大小/矩形) 的擴充方法。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Resize(System.Windows.Rect,System.Double)">
+            <summary>
+將矩形的大小調整為相對大小，同時保持中心不變。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Subtract(System.Windows.Point,System.Windows.Point)">
+            <summary>
+取得兩點之間的差異向量。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Plus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+點的成員增加。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Minus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+點的成員減少。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+將迷你語言的字串轉換為 <see cref="T:PathGeometry"/>。
+            </summary>
+<remarks>請參閱：路徑標記語法 (http://msdn.microsoft.com/en-us/library/cc189041(VS.95).aspx)</remarks>
+<param name="abbreviatedGeometry">描述幾何路徑的路徑迷你語言字串。</param>
+<returns>從路徑迷你語言轉換所得的 <see cref="T:PathGeometry"/>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double)">
+            <summary>
+使 <see cref="T:PathFigure"/> 平面化，並將結果點新增至指定的 <paramref name="points"/>.
+            </summary>
+<param name="figure">輸入 <see cref="T:PathFigure"/>。</param>
+<param name="points">要附加結果點的點清單。</param>
+<param name="tolerance">一個正數，其指定結果點到輸入路徑圖形間允許的錯誤上限。零值可讓演算法自動挑選容錯。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double)">
+            <summary>
+取得 (0,0)(1,1) 方塊中的標準化弧線。零度對應至 [0.5, 0] (向上)，且為順時針方向。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double,System.Windows.Rect)">
+            <summary>
+利用指定的相對半徑取得指定繫結中的絕對弧線點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point)">
+            <summary>
+取得弧線上相對於 (0,0)(1,1) 方塊的角度。零度對應至 [0.5, 0] (向上)，且為順時針方向。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point,System.Windows.Rect)">
+            <summary>
+取得弧線上相對於繫結的指定絕對點的角度。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.Rect,System.Windows.Rect)">
+            <summary>
+計算將 "Rect from" 移動到 "Rect to" 的轉換。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.UIElement,System.Windows.UIElement)">
+            <summary>
+計算從某個 <c>UIElement</c> 座標空間到另一個座標空間的轉換。
+            </summary>
+<param name="from">來源元素。</param>
+<param name="to">目的地元素。</param>
+<returns>多個 <c>UIElement</c> 間的轉換；如果無法計算則為 Null。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeToAbsolutePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+使用指定繫結到 (0,0)(1,1) 方塊的對應，將相對點對應至絕對點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.AbsoluteToRelativePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+使用 (0,0)(1,1) 方塊到指定繫結的對應，將絕對點對應至相對點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetStretchBound(System.Windows.Rect,System.Windows.Media.Stretch,System.Windows.Size)">
+            <summary>
+計算在指定邏輯繫結中延展後的繫結。如果為一致延展，則使用指定的 aspectRatio。如果 aspectRatio 為空白，則相當於 Fill。如果延展為 [無]，則相當於 Fill 或 Uniform。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Midpoint(System.Windows.Point,System.Windows.Point)">
+            <summary>
+傳回兩點間的中點。
+            </summary>
+<param name="lhs">第一個點。</param>
+<param name="rhs">第二個點。</param>
+<returns>這兩個點之間的中點：<paramref name="lhs"/> 和 <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Vector,System.Windows.Vector)">
+            <summary>
+傳回兩個向量的內積。
+            </summary>
+<param name="lhs">第一個向量。</param>
+<param name="rhs">第二個向量。</param>
+<returns>這兩個向量的內積：<paramref name="lhs"/> 和 <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Point,System.Windows.Point)">
+            <summary>
+傳回兩個點的內積。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Distance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+傳回兩點間的距離。
+            </summary>
+<param name="lhs">第一個點。</param>
+<param name="rhs">第二個點。</param>
+<returns>這兩個點之間的距離：<paramref name="lhs"/> 和 <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.SquaredDistance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+傳回兩點間的距離平方。
+            </summary>
+<param name="lhs">第一個點。</param>
+<param name="rhs">第二個點。</param>
+<returns>這兩個點之間的距離平方：<paramref name="lhs"/> 和 <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Determinant(System.Windows.Point,System.Windows.Point)">
+            <summary>
+外積行列式。相當於向性區域。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Normal(System.Windows.Point,System.Windows.Point)">
+            <summary>
+計算指定線段的法線方向向量。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Perpendicular(System.Windows.Vector)">
+            <summary>
+計算逆時針方向 90 度的垂直向量。和右方垂直的向量會產生向上的向量。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GeometryEquals(System.Windows.Media.Geometry,System.Windows.Media.Geometry)">
+            <summary>
+傳回兩個幾何圖形是否相同。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureGeometryType``1(``0@,System.Windows.Media.Geometry@,System.Func{``0})">
+            <summary>
+確保值是結果型別 (T) 的例項。如果不是，會取代為型別 (T) 的新例項。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureSegmentType``1(``0@,System.Collections.Generic.IList{System.Windows.Media.PathSegment},System.Int32,System.Func{``0})">
+            <summary>
+確保 list[index] 是結果型別 (T) 的例項。如果不是，會取代為型別 (T) 的新例項。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MathHelper">
+            <summary>
+提供浮點算術相關靜態屬性及方法的 Helper 類別。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.Epsilon">
+            <summary>
+將兩個值視為相同時要考量的最小距離。注意：MIL/SL 中的內部浮點為浮點數，而不是雙精度浮點數。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.TwoPI">
+            <summary>
+全填滿圓形的角度值。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.PentagramInnerRadius">
+            <summary>
+五角星多邊形的內部半徑，以三位數字百分比的精準度表示。(1 - Sin36 * Sin72 / Sin54) / (Cos36) ^ 2，即 0.47210998990512996761913067272407
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsVerySmall(System.Double)">
+            <summary>
+判斷 <c>System.Double</c> 值是否小到足以視為等於零。
+            </summary>
+            <param name="value"></param>
+<returns>如果值小於 <c>DoubleTolerance</c> 則為 <c>True</c>，否則為 <c>False</c>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.EnsureRange(System.Double,System.Nullable{System.Double},System.Nullable{System.Double})">
+            <summary>
+傳回指定範圍內的值。將最小值/最大值指定為 Null 等同於不限制。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.Hypotenuse(System.Double,System.Double)">
+            <summary>
+計算向量 (x, y) 的歐幾里得範數。
+            </summary>
+<param name="x">第一個元件。</param>
+<param name="y">第二個元件。</param>
+<returns>向量 (x, y) 的歐幾里得範數。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.DoubleFromMantissaAndExponent(System.Double,System.Int32)">
+            <summary>
+利用尾數和指數計算出實數。
+            </summary>
+            <param name="x"></param>
+            <param name="exp"></param>
+<returns>如果成功的話，傳回 * 2^exp 的值。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsFiniteDouble(System.Double)">
+            <summary>
+測試雙精度浮點數。
+            </summary>
+<param name="x">要測試的雙精度浮點數。</param>
+<returns>如果 x 不是 NaN 且不等於正或負無限大則為 <c>True</c>，否則為 <c>False</c>。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathFigureHelper">
+            <summary>
+可和 PathFigure搭配使用的 Helper 類別。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double,System.Boolean)">
+            <summary>
+使指定的圖形平面化，並將結果點新增至指定的點清單中。
+            </summary>
+<param name="tolerance">容錯。必須為正數。可以是零。預設容錯的後援。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.AllSegments(System.Windows.Media.PathFigure)">
+            <summary>
+逐一查看指定圖形內的所有線段，並傳回每個線段的正確起點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncPolylineFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Boolean,System.Boolean)">
+            <summary>
+以單一聚合線段的方式同步處理圖形和指定的點清單。嘗試進行最少的變更；如果未發生任何變更，則傳回 false。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncEllipseFigure(System.Windows.Media.PathFigure,System.Windows.Rect,System.Windows.Media.SweepDirection,System.Boolean)">
+            <summary>
+將指定的圖形同步處理成有兩條弧線線段的封閉橢圓形。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentData">
+            <summary>
+PathSegment 和對應 StartPoint 的 Tuple 資料結構。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineData">
+            <summary>
+表示具有連接點清單的聚合線條。封閉的多邊形是藉由在尾端重複第一個點來表示。差異、法線、角度及長度均可視需求計算。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.#ctor(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+建構含有兩點或更多點的聚合線條。
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.Difference(System.Int32)">
+聚合線條的正向差異向量。Points[i] + Differences[i] = Points[i+1]
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.SmoothNormal(System.Int32,System.Double,System.Double)">
+            <summary>
+計算指定位置 (lerp(index, index+1, fraction) 的法線向量。如果位置位在 cornerRadius 的範圍內，則會內插法線方向。
+            </summary>
+<param name="cornerRadius">法線平滑度的範圍。如果是零，則代表沒有平滑度，並且會傳回索引上的精確法線。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.IsClosed">
+            <summary>
+重複第一個和最後一個點時，聚合線條即會封閉。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Count">
+            <summary>
+此聚合線條中的點數。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.TotalLength">
+            <summary>
+此聚合線條的總弧線長度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Points">
+            <summary>
+此聚合線條的點陣列。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Lengths">
+            <summary>
+線段間的長度 (Points[i] 到 Points[i+1])。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Normals">
+            <summary>
+每個線段的法線向量清單。Normals[i] 是線段 p[i] 到 p[i + 1] 的法線。Normals[N-1] == Normals[N-2]。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Angles">
+            <summary>
+點 p[i] 上兩條線段間的 Cos(angle) 清單。注意：值為 cos(angle) = Dot(u, v)，而不是角度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.AccumulatedLength">
+            <summary>
+points[i] 到 points[0] 的累積長度清單。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MarchLocation">
+            <summary>
+和 PathMarch 演算法溝通的資料結構。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetPoint(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+在指定的點清單中取得此 MarchLocation 的內插位置。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetNormal(Microsoft.Expression.Drawing.Core.PolylineData,System.Double)">
+            <summary>
+在指定的法線向量清單中取得此 MarchLocation 的內插法線方向。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetArcLength(System.Collections.Generic.IList{System.Double})">
+            <summary>
+取得此 MarchLocation 到整段聚合線條之起點的弧線長度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Reason">
+            <summary>
+取樣這個位置的原因。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Index">
+            <summary>
+聚合線條點清單中的點索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Ratio">
+            <summary>
+比例：[0, 1]，一律是 before / (before + after)。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Before">
+            <summary>
+停止點之前的弧線長度。非負數且小於 Length[index]。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.After">
+            <summary>
+停止點之後的弧線長度。非負數且小於 Length[index]。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Remain">
+            <summary>
+某個步驟到下一個停止點之間的剩餘長度。正數即向前移動，負數則向後移動。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineHelper">
+            <summary>
+可和點清單搭配使用的 Helper 類別。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.PathMarch(Microsoft.Expression.Drawing.Core.PolylineData,System.Double,System.Double,System.Func{Microsoft.Expression.Drawing.Core.MarchLocation,System.Double})">
+            <summary>
+依據指定的間隔向指定的聚合線條行進，並透過回呼輸出每個停止點。
+            </summary>
+<param name="polyline">要行進的目標聚合線條點。</param>
+<param name="startArcLength">停在第一個點之前要行進的弧線長度。</param>
+<param name="cornerThreshold">邊緣之間的最大角度可視為角端點。</param>
+<param name="stopCallback">當行進演算法停在某個點時回呼。回呼會傳回下個停止點的弧線長度。如果要求的長度為負數，則會向後行進。如果回呼傳回 NaN，則完成行進。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.GetWrappedPolylines(System.Collections.Generic.IList{Microsoft.Expression.Drawing.Core.PolylineData},System.Double@)">
+            <summary>
+重新排序指定的聚合線條清單，使清單中含有指定弧線長度的聚合線條排在第一個位置。在此線條之前的聚合線條會接在清單的結尾 (第一個聚合線條位在結尾)。 
+            </summary>
+<param name="lines">聚合線條清單。</param>
+<param name="startArcLength">在整個聚合線條清單中，要作為起始線之搜尋依據的弧線長度。此變數會傳回變成該線條的弧線長度。</param>
+<returns>經重新排序及換行的清單。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.RandomEngine">
+            <summary>
+支援均勻分佈和高斯分佈的隨機產生器。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.RandomEngine.Gaussian">
+            <summary>
+使用 Box-Muller 轉換的極式產生一對獨立、標準及正常分佈的亂數、零期望及單位變異。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.#ctor">
+            <summary>
+私用建構函式。強制使用 Factory 方法。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point)">
+            <summary>
+建立線段
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+從二次方曲線 (3 個控制點) 建立三次方貝茲線段
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+建立含 4 個控制點的三次方貝茲線段。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.SimpleSegment.Points">
+            <summary>
+路徑線段的控制點。長度為可變。線段有 2 個點，三次方貝茲有 4 個點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.TransformExtensions.TransformEquals(System.Windows.Media.Transform,System.Windows.Media.Transform)">
+            <summary>
+比較兩個轉換是否完全相符。值相同但結構不同的轉換 (例如，Translate(0,0) 和 Rotate(0) 並不可視為相等)。
+            </summary>
+<param name="firstTransform">第一個轉換。</param>
+<param name="secondTransform">第二個轉換。</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.UnitType">
+            <summary>
+指定粗細的單位。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Pixel">
+            <summary>
+以像素為單位。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Percent">
+            <summary>
+以相對於週框方塊的百分比為單位。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometrySource`1">
+            <summary>
+提供幾何圖形來源的基底類別。根據輸入參數和版面配置邊界產生和快取幾何圖形。
+            </summary>
+            <remarks>
+典型的實作會擴充 UpdateCachedGeometry() 以更新 this.cachedGeometry。此基底類別便會接著處理和版面配置邊界相對的失效、幾何效果之管線及快取。實作應盡可能嘗試重複使用已快取的幾何圖形，以避免在呈現執行緒中重新建構。實作可擴充 ComputeLogicalBounds 以利用不同的方式處理 Stretch。
+            </remarks>
+<typeparam name="TParameters">基底類別正在使用的幾何圖形來源參數類型。</typeparam>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySource">
+            <summary>
+提供介面以描述幾何圖形的來源。
+            </summary>
+            <remarks>
+此介面是專為以非泛型方法公開幾何圖形來源而設計的。在典型的實作中應建立 GeometrySource 的子類別，而不是直接實作此介面。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+發出幾何圖形因外部變更失效的通知。
+            </summary>
+            <remarks>
+當參數變更時，幾何圖形通常會失效。如果幾何圖形是從外部失效的，即使版面配置邊界已變更，系統仍會重新計算幾何圖形。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+使用指定的參數和版面配置邊界更新幾何圖形。如果未更新任何項目，則傳回 false。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.Geometry">
+            <summary>
+取得或設定在最新 UpdateGeometry() 之後產生的幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds">
+            <summary>
+取得幾何圖形應延展的目的地週框方塊。實際的幾何圖形可能會小於或大於此週框方塊。<see cref="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds"/> 應已將筆觸粗細和延展納入考量。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds">
+            <summary>
+取得 FrameworkElement 的實際邊界。<see cref="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds"/> 包括邏輯邊界、延展及筆觸粗細。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometrySource`1.cachedGeometry">
+            <summary>
+從之前的幾何效果程序指定幾何圖形。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+發出幾何圖形因外部變更失效的通知。
+            </summary>
+            <remarks>
+當參數變更時，幾何圖形通常會失效。如果幾何圖形是從外部失效的，即使版面配置邊界已變更，系統仍會重新計算幾何圖形。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+根據指定的參數和 layoutBounds 更新幾何圖形。如果未變更幾何圖形，則傳回 false。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateCachedGeometry(`0)">
+            <summary>
+藉由實作此函數擴充提供幾何圖形的方式。若有變更任何幾何圖形，則傳回 true。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+擴充延展模式的處理方式。預設值是一律使用 Stretch.Fill 並使筆觸置中。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ApplyGeometryEffect(Microsoft.Expression.Media.IGeometrySourceParameters,System.Boolean)">
+            <summary>
+在發生變更或強制時套用幾何效果並更新 this.Geometry；否則將 this.Geometry 保留為 this.cachedGeometry。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.Geometry">
+            <summary>
+取得或設定在最新 UpdateGeometry() 之後產生的幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds">
+            <summary>
+取得幾何圖形應延展的目的地週框方塊。實際的幾何圖形可能會小於或大於此週框方塊。<see cref="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds"/> 應已將筆觸粗細和延展納入考量。
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds">
+            <summary>
+取得 FrameworkElement 的實際邊界。<see cref="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds"/> 包括邏輯邊界、延展及筆觸粗細。
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+假設長寬比 = 1:1，弧線會將 Stretch.None 識別為與 Stretch.Fill 相同。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.NormalizeThickness(Microsoft.Expression.Media.IArcGeometrySourceParameters)">
+            <summary>
+標準化相對於週框方塊和絕對像素的粗細。相對粗細 = 0 -&gt; 全填滿圓形半徑或箝制。相對粗細 = 1 -&gt; 縮小為點或變質。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.UpdateZeroAngleGeometry(System.Boolean,System.Double)">
+            <summary>
+弧線變質為向內指向中心 / 法線的線條。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeAngleRanges(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+計算角度配對清單，定義弧線取樣的位置範圍。傳回的值包括 2、4 或 6 個雙精度浮點值，每個配對都會定義一個範圍，且它們的順序可讓角度從指定的起點跨越到終點角度。範圍將於自我交集的角度截斷。如果輸入起點/終點位在自我交集之角度的無效範圍內，則會被移到鄰近的自我交集角度。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.EnsureFirstQuadrant(System.Double)">
+            <summary>
+將角度移至 0-90 的範圍內。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.SyncPieceWiseInnerCurves(System.Windows.Media.PathFigure,System.Int32,System.Windows.Point@,System.Double[])">
+            <summary>
+利用每對輸入角度計算所有內部曲線的線段，並以多重貝茲線段加以連接。新的線段會從指定的索引輸出到指定的 figure.Segments 清單。起點則會個別輸出。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeOneInnerCurve(System.Double,System.Double,System.Windows.Rect,System.Double)">
+            <summary>
+利用指定的角度範圍計算內部曲線的一個線段，然後再以多重貝茲線段的格式輸出平滑曲線的一個線段。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.InnerCurveSelfIntersect(System.Double,System.Double,System.Double)">
+            <summary>
+計算自我交集點的參數 (角度)，以取得含指定粗細的指定橢圓形。此結果一律會位在第一個象限中，可能是代表沒有自我交集的 0 或 90。基本演算法是是利用二分法搜尋取樣點不在第一個象限中的角度。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowOrientation">
+            <summary>
+指定箭號所指方向。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Left">
+            <summary>
+箭號指向左邊。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Right">
+            <summary>
+箭號指向右邊。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Up">
+            <summary>
+箭號指向上方。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Down">
+            <summary>
+箭號指向下方。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.BlockArrowGeometrySource.ArrowBuilder">
+            <summary>
+假設左上角為 0,0，B /| / C--D A     | \ C--D \| B 演算法只會使用寬度/高度。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CalloutStyle">
+            <summary>
+指定圖說文字圖形的呈現樣式。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Rectangle">
+            <summary>
+矩形圖說文字。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.RoundedRectangle">
+            <summary>
+圓角矩形圖說文字。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Oval">
+            <summary>
+橢圓形圖說文字。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Cloud">
+            <summary>
+雲狀圖說文字。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateEdge(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double,System.Boolean)">
+            <summary>
+更新邊緣線條，然後再視需要連接至錨點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdatePolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+更新聚合線段，然後再利用圖說文字樣式連接起點、錨點及終點
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateLineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point)">
+            <summary>
+將線段更新為指定的點。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.ComputeCorners(System.Double)">
+            <summary>
+以順時針方向計算角點 (4 個角可取得 8 個點)。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateCornerArc(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point)">
+            <summary>
+角弧線一律會小於 90 度弧線。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffect">
+            <summary>
+提供基底類別給 GeometryEffect，其可將某個幾何圖形轉換為其他幾何圖形。
+            </summary>
+            <remarks>
+此類別提供的基本實作可在傳送 IShape 以進行呈現之前，先行處理 IShape 的已呈現幾何圖形。典型的實作會擴充虛擬函數 <see cref="F:ProcessGeometry"/> 以轉換輸入幾何圖形。<see cref="T:GeometryEffect"/> 通常會以附加屬性的方式附加到 <see cref="T:IShape"/>，然後在 <see cref="T:IShape"/> 幾何圖形更新時啟用。<see cref="T:GeometryEffect"/> 的 <see cref="P:OutputGeometry"/> 將取代 <see cref="T:IShape"/> 中已呈現的幾何圖形。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.GetGeometryEffect(System.Windows.DependencyObject)">
+            <summary>
+以指定相依性物件上之附加屬性的方式取得幾何效果。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.SetGeometryEffect(System.Windows.DependencyObject,Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+以指定相依性物件上之附加屬性的方式設定幾何效果。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CloneCurrentValue">
+            <summary>
+使用 <see cref="T:GeometryEffect"/> 目前的值建立此項目深層複本。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.DeepCopy">
+            <summary>
+建立幾何效果的深層複本。在 Silverlight 中實作 CloneCurrentValue。
+            </summary>
+<returns>幾何效果目前例項的複製品。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+測試指定的幾何效果是否和目前的例項相等。
+            </summary>
+<param name="geometryEffect">要比較的幾何效果。</param>
+<returns>當有兩個效果呈現出相同的外觀時傳回 true。</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffect.cachedGeometry">
+            <summary>
+從之前的幾何效果程序指定幾何圖形。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+使幾何效果失效而不實際計算幾何圖形。會通知所有父項圖形或效果使其亦失效。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.ProcessGeometry(System.Windows.Media.Geometry)">
+            <summary>
+處理指定輸入幾何圖形上的幾何效果。將結果儲存在 GeometryEffect.OutputGeometry 中。
+            </summary>
+<returns>如果未變更任何項目，則傳回 false。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+根據指定的輸入幾何圖形擴充 cachedGeometry 的更新方式。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Detach">
+            <summary>
+從父鏈結卸離時收到通知。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Attach(System.Windows.DependencyObject)">
+            <summary>
+附加至父鏈結時收到通知。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateParent(System.Windows.DependencyObject)">
+            <summary>
+當指定的相依性物件是有效的父型別 (IShape 或 GeometryEffect) 時，使該物件上的幾何圖形失效。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CreateInstanceCore">
+            <summary>
+在 WPF 中實作 Freezable。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.DefaultGeometryEffect">
+            <summary>
+只透過輸入幾何圖形傳送的預設幾何效果。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.OutputGeometry">
+            <summary>
+取得此幾何效果的輸出幾何圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.Parent">
+            <summary>
+父項可以是 IShape 或 GeometryEffectGroup。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffectConverter">
+            <summary>
+提供字串和幾何效果間的轉換。
+            </summary>
+            <remarks>
+此類別可啟用 XAML 中的簡短語法，如<code>GeometryEffect="Sketch"</code>. 建立幾何效果例項的複製品，使其能以資源的形式使用。
+            </remarks>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffectConverter.registeredEffects">
+            <summary>
+建置支援之幾何效果的預設清單。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+可從字串型別轉換的 GeometryEffect。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+可轉換為字串型別的 GeometryEffect。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+將字串轉換為幾何效果。後援值為 Null。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+將幾何效果轉換為字串。後援值為 Null。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.InvalidateGeometryReasons">
+            <summary>
+指定呼叫 <see cref="M:Microsoft.Expression.Media.InvalidateGeometry"/> 的原因。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.PropertyChanged">
+            <summary>
+由於屬性變更，因此幾何圖形已失效。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.IsAnimated">
+            <summary>
+由於屬性以動畫顯示，因此幾何圖形已失效。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ChildInvalidated">
+            <summary>
+由於子項失效，因此幾何圖形亦失效。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ParentInvalidated">
+            <summary>
+由於父項失效，因此幾何圖形亦失效。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.TemplateChanged">
+            <summary>
+由於套用新範本，因此幾何圖形已失效。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceExtensions">
+            <summary>
+提供 Helper 擴充方法以和 IGeometrySource 及參數搭配使用。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowType">
+            <summary>
+指定箭頭類型。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.NoArrow">
+            <summary>
+沒有箭頭。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.Arrow">
+            <summary>
+三角形箭頭。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.StealthArrow">
+            <summary>
+隱形的三角形箭頭。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OpenArrow">
+            <summary>
+未封閉的三角形箭頭。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OvalArrow">
+            <summary>
+橢圓形的箭頭。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CornerType">
+            <summary>
+指定邊角的位置。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopLeft">
+            <summary>
+在週框方塊的左上方。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopRight">
+            <summary>
+在週框方塊的右上方。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomRight">
+            <summary>
+在週框方塊的右下方。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomLeft">
+            <summary>
+在週框方塊的左下方。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.PolygonGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+多邊形會將 Stretch.None 視為和 Stretch.Fill 相同。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.SketchGeometryEffect">
+            <summary>
+可將任何幾何圖形轉換為 SketchFlow 中 Sketch 樣式的幾何效果。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.DeepCopy">
+            <summary>
+建立幾何效果的深層複本。
+            </summary>
+<returns>幾何效果目前例項的複製品。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+測試指定的幾何效果是否和目前的例項相等。
+            </summary>
+<param name="geometryEffect">要比較的幾何效果。</param>
+<returns>當有兩個效果呈現出相同的外觀時傳回 true。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+根據指定的輸入幾何圖形更新 cachedGeometry。
+            </summary>
+<param name="input">輸入幾何圖形。</param>
+<returns>當 cachedGeometry 上有任何已更新的項目時，傳回 true。</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.SketchGeometryEffect.randomSeed">
+            <summary>
+建立時使用相同的隨機種子，將視覺效果的閃爍情況降到最低。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.GetEffectiveSegments(System.Windows.Media.PathFigure)">
+            <summary>
+逐一查看指定路徑圖形中的所有簡單線段，包括封閉的弦。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.Arc">
+            <summary>
+呈現支援 ArcThickness 所控制之 Arc、Ring 及 Pie 模式的弧形。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.PrimitiveShape">
+            <summary>
+衍生自 WPF:Shape 或 SL:Path 之 Shape 的平台中立實作。
+            </summary>
+            <summary>
+提供衍生自平台 Shape 之 Shape 的 WPF 實作。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.CreateGeometrySource">
+            <summary>
+藉由建立幾何圖形來源延伸圖形的繪製方式。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+使 <see cref="T:Microsoft.Expression.Media.IShape"/> 的幾何圖形失效。失效後，<see cref="T:Microsoft.Expression.Media.IShape"/> 會以非同步方式重新計算幾何圖形。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.MeasureOverride(System.Windows.Size)">
+<summary>針對 Silverlight 版面配置轉換的 Measure 部分提供行為。類別可覆寫此方法以定義其專屬的 Measure 轉換行為。</summary>
+<returns>此物件根據其對子物件已分配大小的計算，或諸如固定容器大小等其他考量，判斷在版面配置期間需要的大小。</returns>
+<param name="availableSize">此物件能提供給子物件的可用大小。可將 Infinity (<see cref="F:System.Double.PositiveInfinity"/>) 指定為值，表示物件將根據所有可用的內容調整大小。</param>
+            <remarks>
+在 WPF 中，雖然可從 Shape.DefiningGeometry 使用度量覆寫，但不一定能正常運作 (請參閱 Bug 99497 以取得詳細資料)，因為依預設 WPF 並沒有正確的度量方式。
+            
+在 Silverlight 中，Path 的度量覆寫功用和基本圖形的度量覆寫功用不同。
+            
+我們應傳回此圖形能正常呈現而不需要裁切的最小大小。根據預設，圖形能以細小如點的形式呈現，因此會傳回 strokethickness。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.ArrangeOverride(System.Windows.Size)">
+<summary>針對 Silverlight 版面配置轉換的 Arrange 部分提供行為。類別可覆寫此方法以定義其專屬的 Arrange 轉換行為。</summary>
+<returns>將元素排列在版面配置時使用的實際大小。</returns>
+<param name="finalSize">父項內的最終區域，此物件應使用此區域來排列本身與其子項。</param>
+<remarks> 當 Geometry 失效後，<see cref="T:Microsoft.Expression.Shapes.PrimitiveShape"/> 會重新計算 Geometry 並更新 RenderedGeometry 和 GeometryMargin。</remarks>
+        </member>
+        <member name="E:Microsoft.Expression.Shapes.PrimitiveShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry 變更時發生。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.PrimitiveShape.GeometryMargin">
+            <summary>
+取得邏輯邊界和實際幾何邊界圖形之間的邊框間距。此值可以是正數 (如 <see cref="T:Microsoft.Expression.Shapes.Arc"/> 中的情況) 或負數 (如 <see cref="T:Microsoft.Expression.Controls.Callout"/> 中的情況)。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.StartAngle">
+            <summary>
+取得或設定起始角度。
+            </summary>
+<value>起始角度 (以度為單位)。零度指向上方。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.EndAngle">
+            <summary>
+取得或設定結束角度。
+            </summary>
+<value>結束角度 (以度為單位)。零度指向上方。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThickness">
+            <summary>
+取得或設定弧線粗細。
+            </summary>
+<value>以像素或百分比為單位 (取決於 "ArcThicknessUnit") 的弧線粗細。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThicknessUnit">
+            <summary>
+取得或設定弧線粗細單位。
+            </summary>
+<value>以像素或百分比為單位的弧線粗細單位。</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.BlockArrow">
+            <summary>
+呈現支援可調整大小之箭頭和箭身的區塊箭號圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.Orientation">
+            <summary>
+取得或設定方向。
+            </summary>
+<value>箭號所指的方向。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowheadAngle">
+            <summary>
+取得或設定箭頭角度。
+            </summary>
+<value>箭頭角度 (以度為單位)。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowBodySize">
+            <summary>
+取得或設定箭身大小。
+            </summary>
+<value>箭身大小 (以像素為單位)。</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.RegularPolygon">
+            <summary>
+呈現有各種端點數量的一般多邊形或對應的星形圖形。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.PointCount">
+            <summary>
+取得或設定 <see cref="T:Microsoft.Expression.Shapes.RegularPolygon"/> 的端點數量。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.InnerRadius">
+            <summary>
+取得或設定中心與最內側端點之間的距離。
+            </summary>
+<value>中心與最內側端點之間的距離。</value>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxobjective_mobileannex">
+			<Property name="proximityradius" type="0">700.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_annihilationsphere">
+			<Property name="blastdamage" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=100.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="force" type="0">(BaseValue=0.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_darkchannel2">
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_electricslash">
+			<Property name="damage" type="0">(BaseValue=550.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="numshockwaveimpacts" type="0">(BaseValue=10)</Property>
+			<Property name="range" type="0">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_hominggrenade">
+			<Property name="damage" type="0">(BaseValue=800.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=1000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_sonicslash">
+			<Property name="damage" type="0">(BaseValue=550.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="numshockwaveimpacts" type="0">(BaseValue=10)</Property>
+			<Property name="range" type="0">(BaseValue=2000.0f)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

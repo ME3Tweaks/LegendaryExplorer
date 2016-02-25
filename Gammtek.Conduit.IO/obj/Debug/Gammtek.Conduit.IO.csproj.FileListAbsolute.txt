@@ -1,0 +1,6 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\bin\Debug\Gammtek.Conduit.IO.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\bin\Debug\Gammtek.Conduit.IO.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\obj\Debug\Gammtek.Conduit.IO.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.IO\obj\Debug\Gammtek.Conduit.IO.pdb

@@ -1,0 +1,97 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\Gibbed.MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\bin\ru\Gibbed.MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.Editor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.InputBox.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.Properties.Localization.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.SavePicker.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.Editor.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.InputBox.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.Properties.Localization.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.SavePicker.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\ru\Gibbed.MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.SaveEdit\obj\x86\Debug\Gibbed.MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.ru.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\ru\MassEffect3.SaveEdit.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\MassEffect3.SaveEdit.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\MassEffect3.SaveEdit.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Gammtek.Conduit.MassEffect3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\MassEffect3.ColorPicker.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Gammtek.Conduit.MassEffect3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\MassEffect3.ColorPicker.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Editor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.InputBox.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Localization.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.SavePicker.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.SaveEdit\obj\x86\Debug\MassEffect3.SaveEdit.pdb

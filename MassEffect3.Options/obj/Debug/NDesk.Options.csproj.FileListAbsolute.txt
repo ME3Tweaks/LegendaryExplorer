@@ -1,0 +1,8 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\NDesk.Options\bin\Debug\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\NDesk.Options\bin\Debug\NDesk.Options.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\NDesk.Options\obj\Debug\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\NDesk.Options\obj\Debug\NDesk.Options.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\bin\Debug\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\bin\Debug\NDesk.Options.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\obj\Debug\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\obj\Debug\NDesk.Options.pdb

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Includes>
+		<Include source="Level2/Cerberus.xml" target="PostSections" />
+		<Include source="Level2/Geth.xml" target="PostSections" />
+		<Include source="Level2/Reapers.xml" target="PostSections" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="level2difficultydata">
+				<Value type="2">(Category="Global", CategoryData=((StatName="OutAIDamageScale",StatRange=(X=-0.75f,Y=-0.25f)),(StatName="OutHenchDamageScale",StatRange=(X=0.0f,Y=0.0f)),(StatName="HenchDamageTaken",StatRange=(X=-0.5f,Y=-0.5f)),(StatName="AmmoDropPct",StatRange=(X=0.4f,Y=0.4f)),(StatName="AmmoPct",StatRange=(X=0.6f,Y=0.6f)),(StatName="GrenadesPerDrop",StatRange=(X=3.0f,Y=3.0f)),(StatName="AIEnergyShieldGatePct",StatRange=(X=0.0f,Y=0.0f)),(StatName="AIArmorDamageReduction",StatRange=(X=5.0f,Y=5.0f)),(StatName="PlayerShieldRegenPct",StatRange=(X=0.5f,Y=0.5f)),(StatName="PlayerShieldRegenDelayFromDestroyed",StatRange=(X=2.5f,Y=2.5f)),(StatName="PlayerShieldRegenDelayFromPartial",StatRange=(X=1.5f,Y=1.5f)),(StatName="ReviveHealthReturn",StatRange=(X=1.0f,Y=1.0f)),(StatName="StoppingPowerScalar",StatRange=(X=0.0f,Y=0.0f)),(StatName="CoverDamageReduction",StatRange=(X=1.0f,Y=1.0f)),(StatName="GlobalEnemyGrenadeCooldown",StatRange=(X=60.0f,Y=60.0f)),(StatName="NoCoverDamageBonus",StatRange=(X=0.0f,Y=0.0f)),(StatName="ReviveDamageReductionLength",StatRange=(X=5.0f,Y=5.0f)),(StatName="ReviveDamageReductionAmount",StatRange=(X=0.75f,Y=0.75f)),(StatName="PlayerShieldGateDuration",StatRange=(X=0.75f,Y=0.75f)),(StatName="PlayerHealthGateDuration",StatRange=(X=0.75f,Y=0.75f))))</Value>
+				<Value type="2">(Category="SPGlobal", CategoryData=((StatName="MedigelHealAmount",StatRange=(X=1.0f,Y=1.0f)),(StatName="XPForExcessMedigel",StatRange=(X=25.0f,Y=25.0f)),(StatName="Cerberus_Pylon_ShieldStrength",StatRange=(X=100.0f,Y=100.0f)),(StatName="Cerberus_Pylon_RegenStrength",StatRange=(X=2.0f,Y=2.0f)),(StatName="Cerberus_Pylon_PlaceableRegenStrength",StatRange=(X=2.0f,Y=2.0f)),(StatName="Cerberus_KineticBarrier_Health",StatRange=(X=200.0f,Y=200.0f)),(StatName="Cerberus_Generator_BlastDamage",StatRange=(X=200.0f,Y=200.0f)),(StatName="Reaper_RachniiEgg_RottenBlastDamage",StatRange=(X=200.0f,Y=200.0f)),(StatName="Reaper_IndoctrinationDevice_ShieldStrength",StatRange=(X=100.0f,Y=100.0f)),(StatName="Reaper_IndoctrinationDevice_BeamCooldown",StatRange=(X=15.0f,Y=15.0f)),(StatName="Reaper_GethTripMine_ZapDamage",StatRange=(X=50.0f,Y=50.0f))))</Value>
+				<Value type="2">(Category="Harvester", CategoryData=((StatName="MaxHealth",StatRange=(X=6700.0f,Y=10050.0f)),(StatName="PowerThreshold_Standard",StatRange=(X=490.0f,Y=490.0f)),(StatName="PowerThreshold_Stagger",StatRange=(X=590.0f,Y=590.0f)),(StatName="PowerThreshold_Knockback",StatRange=(X=800.0f,Y=800.0f)),(StatName="HitReactionChanceMultiplier",StatRange=(X=1.0f,Y=1.0f))))</Value>
+				<Value type="2">(Category="KaiLeng", CategoryData=((StatName="AggressiveFrequency",StatRange=(X=20.0f,Y=20.0f)),(StatName="MaxHealth",StatRange=(X=800.0f,Y=1600.0f)),(StatName="MaxShields",StatRange=(X=1650.0f,Y=2475.0f)),(StatName="MeleeAttackInterval",StatRange=(X=0.5f,Y=0.5f)),(StatName="SyncMeleeAttackInterval",StatRange=(X=0.2f,Y=0.2f)),(StatName="KnockbackFrequency",StatRange=(X=2.5f,Y=2.5f)),(StatName="RollFrequency",StatRange=(X=2.0f,Y=2.0f)),(StatName="DamageThreshold",StatRange=(X=150.0f,Y=250.0f)),(StatName="PowerSlashInterval",StatRange=(X=40.0f,Y=40.0f)),(StatName="BreachFrequency",StatRange=(X=10.0f,Y=10.0f)),(StatName="BreachDamageResetDuration",StatRange=(X=10.0f,Y=10.0f)),(StatName="BreachDamageThreshold",StatRange=(X=750.0f,Y=750.0f)),(StatName="HitReactionChanceMultiplier",StatRange=(X=0.65f,Y=0.65f))))</Value>
+				<Value type="2">(Category="TutorialCannibal", CategoryData=((StatName="MaxHealth",StatRange=(X=400.0f,Y=400.0f))))</Value>
+				<Value type="2">(Category="TutorialHusk", CategoryData=((StatName="MaxHealth",StatRange=(X=70.0f,Y=70.0f))))</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

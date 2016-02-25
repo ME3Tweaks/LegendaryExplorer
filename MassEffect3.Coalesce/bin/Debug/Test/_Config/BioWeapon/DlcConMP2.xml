@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Includes>
+		<Include source="DlcConMP2/DamageTypes.xml" />
+		<Include source="DlcConMP2/Weapons.xml" />
+	</Includes>
+</CoalesceAsset>

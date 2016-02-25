@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="engine" name="engine.int" source="..\..\engine\localization\int\engine.int">
+  <Sections>
+    <Section name="accesscontrol">
+      <Property name="acdesctext[0]" type="2">If this password is set, players will have to enter it to join this server.</Property>
+      <Property name="acdesctext[1]" type="2">Specifies IP addresses or address ranges which have been banned.</Property>
+      <Property name="acdesctext[2]" type="2">Password required to login with administrator privileges on this server.</Property>
+      <Property name="acdisplaytext[0]" type="2">Game Password</Property>
+      <Property name="acdisplaytext[1]" type="2">Access Policies</Property>
+      <Property name="acdisplaytext[2]" type="2">Admin Password</Property>
+      <Property name="defaultkickreason" type="2">None specified</Property>
+      <Property name="idlekickreason" type="2">Kicked for idling.</Property>
+      <Property name="ipbanned" type="2">Your IP address has been banned on this server.</Property>
+      <Property name="kickedmsg" type="2">You have been forcibly removed from the game.</Property>
+      <Property name="needpassword" type="2">You need to enter a password to join this game.</Property>
+      <Property name="sessionbanned" type="2">Your IP address has been banned from the current game session.</Property>
+      <Property name="wrongpassword" type="2">The password you entered is incorrect.</Property>
+    </Section>
+    <Section name="console">
+      <Property name="classcaption" type="2">Standard Unreal Console</Property>
+    </Section>
+    <Section name="consolebufferstyle">
+      <Property name="stylename" type="2">Console Buffer Combo Style</Property>
+    </Section>
+    <Section name="consolebuffertextimagestyle">
+      <Property name="stylename" type="2">Console Buffer Background Style</Property>
+    </Section>
+    <Section name="consolebuffertextstyle">
+      <Property name="stylename" type="2">Console Buffer Text Style</Property>
+    </Section>
+    <Section name="consoleimagestyle">
+      <Property name="stylename" type="2">Console Border Style</Property>
+    </Section>
+    <Section name="consolestyle">
+      <Property name="stylename" type="2">Console Combo Style</Property>
+    </Section>
+    <Section name="consoletextstyle">
+      <Property name="stylename" type="2">Console Text Style</Property>
+    </Section>
+    <Section name="cursorimagestyle">
+      <Property name="stylename" type="2">Cursor Style</Property>
+    </Section>
+    <Section name="damagetype">
+      <Property name="deathstring" type="2">`o was killed by `k.</Property>
+      <Property name="femalesuicide" type="2">`o killed herself.</Property>
+      <Property name="malesuicide" type="2">`o killed himself.</Property>
+    </Section>
+    <Section name="dmgtype_fell">
+      <Property name="deathstring" type="2">`k pushed `o over the edge.</Property>
+      <Property name="femalesuicide" type="2">`o left a small crater</Property>
+      <Property name="malesuicide" type="2">`o left a small crater</Property>
+    </Section>
+    <Section name="dmgtype_suicided">
+      <Property name="deathstring" type="2">`o had an aneurysm.</Property>
+      <Property name="femalesuicide" type="2">`o had an aneurysm.</Property>
+      <Property name="malesuicide" type="2">`o had an aneurysm.</Property>
+    </Section>
+    <Section name="dmgtype_telefragged">
+      <Property name="deathstring" type="2">`o was telefragged by `k</Property>
+      <Property name="femalesuicide" type="2">`o was telefragged by `k</Property>
+      <Property name="malesuicide" type="2">`o was telefragged by `k</Property>
+    </Section>
+    <Section name="errors">
+      <Property name="aborttoentry" type="2">Failed; returning to Entry</Property>
+      <Property name="challocate" type="2">Couldn't allocate channel</Property>
+      <Property name="clientoutdated" type="2">The match you are trying to join is running an incompatible version of the game.  Please try upgrading your game version.</Property>
+      <Property name="connectionfailed" type="2">Your connection to the host has been lost.</Property>
+      <Property name="connectionfailed_title" type="2">Connection Lost</Property>
+      <Property name="connectiontimeout" type="2">Your connection to the host timed out</Property>
+      <Property name="creatematcherror" type="2">Error creating match</Property>
+      <Property name="debuggerpresenterror" type="2">The game has detected that you are currently running a user-mode or kernel-mode debugger and cannot continue.  Please exit all debugging utilities and restart the game.</Property>
+      <Property name="downloadfailed" type="2">Downloading package '`~' failed: `~</Property>
+      <Property name="failedbrowse" type="2">Failed to enter `~: `~. Please check the log for errors.</Property>
+      <Property name="failedfindpackage" type="2">Failed to find required package '`~'</Property>
+      <Property name="failedmapload_notfound" type="2">The map specified on the commandline '`~' could not be found. Would you like to load the default map instead?</Property>
+      <Property name="invalidlink" type="2">Invalid Link: `~</Property>
+      <Property name="invalidurl" type="2">You cannot join the match because the host has downloadable content you do not.</Property>
+      <Property name="listen" type="2">Listen failed: `~</Property>
+      <Property name="loadentry" type="2">Can't load Entry: `~</Property>
+      <Property name="loadplayerclass" type="2">Failed to load player class</Property>
+      <Property name="negativedeltatime" type="2">CPU time drift detected! Please consult release notes on how to address this.</Property>
+      <Property name="netalready" type="2">Already networking</Property>
+      <Property name="netclose" type="2">Error closing file</Property>
+      <Property name="nethdspace" type="2">There is not enough space on your HDD to download the package. You will need to free some space to download packages.</Property>
+      <Property name="netinvalid" type="2">Received invalid file request</Property>
+      <Property name="netlisten" type="2">Listen failed: No linker context available</Property>
+      <Property name="netmove" type="2">Error moving file</Property>
+      <Property name="netopen" type="2">Error opening file</Property>
+      <Property name="netrefused" type="2">Server refused to send '`~'</Property>
+      <Property name="netsize" type="2">File size mismatch</Property>
+      <Property name="networkinit" type="2">Error initializing network layer.</Property>
+      <Property name="netwrite" type="2">Error writing to file</Property>
+      <Property name="nodownload" type="2">You cannot join the match because the host has downloadable content you do not.</Property>
+      <Property name="pending" type="2">Pending connect to '`~' failed; `~</Property>
+      <Property name="requestdenied" type="2">Server requested file from pending level: Denied</Property>
+      <Property name="serverlisten" type="2">Dedicated server can't listen: `~</Property>
+      <Property name="serveropen" type="2">Servers can't open network URLs</Property>
+      <Property name="serveroutdated" type="2">Server's version is outdated</Property>
+      <Property name="usedcheatcommands" type="2">Console commands were used which are disallowed in netplay.  You must restart the game to create a match.</Property>
+    </Section>
+    <Section name="examplegamemenu">
+      <Property name="cancelbuttontext" type="2">Return To Game</Property>
+      <Property name="inlinefontsampletext" type="2">These words are small... &lt;Fonts:EngineFonts.LargeFont&gt;these words are big,&lt;Fonts:/&gt; and these words are back to normal.</Property>
+      <Property name="inlinestylesampletext" type="2">These words are normal... &lt;Styles:ConsoleStyle&gt;these words are green&lt;Styles:/&gt; and these words are normal too.</Property>
+      <Property name="reloadbuttontext" type="2">Reload Map</Property>
+      <Property name="respawnbuttontext" type="2">Respawn Player</Property>
+      <Property name="splitscreenbuttontext" type="2">Splitscreen Test Scene</Property>
+    </Section>
+    <Section name="failedconnect">
+      <Property name="failmessage[0]" type="2">FAILED TO JOIN GAME.  NEED PASSWORD.</Property>
+      <Property name="failmessage[1]" type="2">FAILED TO JOIN GAME.  WRONG PASSWORD.</Property>
+      <Property name="failmessage[2]" type="2">FAILED TO JOIN GAME.  GAME HAS STARTED.</Property>
+      <Property name="failmessage[3]" type="2">FAILED TO JOIN GAME.</Property>
+    </Section>
+    <Section name="gameinfo">
+      <Property name="defaultplayername" type="2">Player</Property>
+      <Property name="gamename" type="2">Game</Property>
+    </Section>
+    <Section name="gamemessage">
+      <Property name="arbitrationmessage" type="2">The session has already started.</Property>
+      <Property name="becamespectator" type="2">became a spectator.</Property>
+      <Property name="cantbeplayer" type="2">Sorry, you cannot become an active player at this time.</Property>
+      <Property name="cantbespectator" type="2">Sorry, you cannot become a spectator at this time.</Property>
+      <Property name="enteredmessage" type="2">entered the game.</Property>
+      <Property name="failedplacemessage" type="2">Could not find a starting spot</Property>
+      <Property name="failedspawnmessage" type="2">Could not spawn player</Property>
+      <Property name="failedteammessage" type="2">Could not find team for player</Property>
+      <Property name="globalnamechange" type="2">changed name to</Property>
+      <Property name="kickwarning" type="2">You are about to be kicked for idling!</Property>
+      <Property name="leftmessage" type="2">left the game.</Property>
+      <Property name="maxedoutmessage" type="2">Server is already at capacity.</Property>
+      <Property name="musthavestats" type="2">Must have stats enabled to join this server.</Property>
+      <Property name="newplayermessage" type="2">A new player entered the game.</Property>
+      <Property name="newspecmessage" type="2">A spectator entered the game/</Property>
+      <Property name="newteammessage" type="2">is now on</Property>
+      <Property name="nonamechange" type="2">Name is already in use.</Property>
+      <Property name="overtimemessage" type="2">Score tied at the end of regulation. Sudden Death Overtime!!!</Property>
+      <Property name="specenteredmessage" type="2">joined as a spectator.</Property>
+      <Property name="switchlevelmessage" type="2">Switching Levels</Property>
+      <Property name="votepassed" type="2">Vote passed.</Property>
+      <Property name="votestarted" type="2">started a vote.</Property>
+    </Section>
+    <Section name="gameviewportclient">
+      <Property name="connectingmessage" type="2">CONNECTING</Property>
+      <Property name="loadingmessage" type="2">LOADING</Property>
+      <Property name="pausedmessage" type="2">PAUSED</Property>
+      <Property name="precachingmessage" type="2">PRECACHING</Property>
+      <Property name="savingmessage" type="2">SAVING</Property>
+    </Section>
+    <Section name="general">
+      <Property name="upgrade" type="2">To enter this server, you need the latest free update to Unreal available from Epic's Web site:</Property>
+      <Property name="upgradequestion" type="2">Do you want to launch your web browser and go to the upgrade page now?</Property>
+      <Property name="upgradeurl" type="2">http://www.unreal.com/upgrade</Property>
+      <Property name="version" type="2">Version `~</Property>
+    </Section>
+    <Section name="hud">
+      <Property name="connectingmessage" type="2">CONNECTING</Property>
+      <Property name="loadingmessage" type="2">LOADING</Property>
+      <Property name="pausedmessage" type="2">PAUSED</Property>
+      <Property name="savingmessage" type="2">SAVING</Property>
+    </Section>
+    <Section name="inventory">
+      <Property name="pickupmessage" type="2">Snagged an item.</Property>
+    </Section>
+    <Section name="levelinfo">
+      <Property name="title" type="2">Untitled</Property>
+    </Section>
+    <Section name="mastermd5commandlet">
+      <Property name="helpcmd" type="2">mastermd5</Property>
+      <Property name="helpdesc[0]" type="2">Creates a new MD5 database</Property>
+      <Property name="helpdesc[1]" type="2">Adds new packages to the database</Property>
+      <Property name="helpdesc[2]" type="2">Show the current database.</Property>
+      <Property name="helpdesc[3]" type="2">Force the revision of all entries to &lt;param&gt;</Property>
+      <Property name="helponeliner" type="2">Manipulate the Master MD5 database</Property>
+      <Property name="helpparm[0]" type="2">-c</Property>
+      <Property name="helpparm[1]" type="2">-a</Property>
+      <Property name="helpparm[2]" type="2">-s</Property>
+      <Property name="helpparm[3]" type="2">-r</Property>
+      <Property name="helpusage" type="2">mastermd5 [-option..] &lt;params&gt;</Property>
+      <Property name="helpweblink" type="2">http://unreal.epicgames.com/servertips.htm</Property>
+    </Section>
+    <Section name="menu">
+      <Property name="centerstring" type="2">Center</Property>
+      <Property name="disabledstring" type="2">Disabled</Property>
+      <Property name="enabledstring" type="2">Enabled</Property>
+      <Property name="helpmessage" type="2"></Property>
+      <Property name="helpmessage[1]" type="2">This menu has not yet been implemented.</Property>
+      <Property name="leftstring" type="2">Left</Property>
+      <Property name="menulist" type="2"></Property>
+      <Property name="nostring" type="2">no</Property>
+      <Property name="rightstring" type="2">Right</Property>
+      <Property name="yesstring" type="2">yes</Property>
+    </Section>
+    <Section name="onlinegamesettings">
+      <Property name="averageskillrating.friendlyname" type="2">Skill Rating</Property>
+      <Property name="ballowinvites.friendlyname" type="2">Invites Allowed</Property>
+      <Property name="ballowjoininprogress.friendlyname" type="2">Join In Progress Allowed</Property>
+      <Property name="ballowjoinviapresence.friendlyname" type="2">Join Via Presence Allowed</Property>
+      <Property name="banticheatprotected.friendlyname" type="2">Anti-Cheat Protected</Property>
+      <Property name="bisdedicated.friendlyname" type="2">Dedicated</Property>
+      <Property name="bislanmatch.friendlyname" type="2">Lan Match</Property>
+      <Property name="bislistplay.friendlyname" type="2">ListPlay</Property>
+      <Property name="bshouldadvertise.friendlyname" type="2">Advertise</Property>
+      <Property name="busesarbitration.friendlyname" type="2">Arbitration</Property>
+      <Property name="busespresence.friendlyname" type="2">Presence Enabled</Property>
+      <Property name="busesstats.friendlyname" type="2">Uses Stats</Property>
+      <Property name="numopenprivateconnections.friendlyname" type="2">Open Private Slots</Property>
+      <Property name="numopenpublicconnections.friendlyname" type="2">Open Public Slots</Property>
+      <Property name="numprivateconnections.friendlyname" type="2">Max Private Slots</Property>
+      <Property name="numpublicconnections.friendlyname" type="2">Max Public Slots</Property>
+      <Property name="owningplayername.friendlyname" type="2">Server</Property>
+      <Property name="pinginms.friendlyname" type="2">Ping</Property>
+    </Section>
+    <Section name="onlineprofilesettings">
+      <Property name="ownermappings[0]" type="2">(Name="None")</Property>
+      <Property name="ownermappings[1]" type="2">(Name="Online Service Setting")</Property>
+      <Property name="ownermappings[2]" type="2">(Name="Game Setting")</Property>
+      <Property name="profilemappings[0]" type="2">(ValueMappings=((Name="Off"),(Name="On")))</Property>
+      <Property name="profilemappings[1]" type="2">(ValueMappings=((Name="Off"),(Name="On")))</Property>
+      <Property name="profilemappings[10]" type="2">(ValueMappings=((Name="Off"),(Name="On")))</Property>
+      <Property name="profilemappings[11]" type="2">(ValueMappings=((Name="Left Thumbstick"),(Name="Right Thumbstick")))</Property>
+      <Property name="profilemappings[12]" type="2">(ValueMappings=((Name="Auto"),(Name="Manual")))</Property>
+      <Property name="profilemappings[13]" type="2">(ValueMappings=((Name="Behind"),(Name="Front"),(Name="Inside")))</Property>
+      <Property name="profilemappings[14]" type="2">(ValueMappings=((Name="Trigger"),(Name="Button")))</Property>
+      <Property name="profilemappings[15]" type="2">(ValueMappings=((Name="Trigger"),(Name="Button")))</Property>
+      <Property name="profilemappings[2]" type="2">(ValueMappings=((Name="No"),(Name="Yes")))</Property>
+      <Property name="profilemappings[3]" type="2">(ValueMappings=((Name="Off"),(Name="On"),(Name="Both")))</Property>
+      <Property name="profilemappings[5]" type="2">(ValueMappings=((Name="Normal"),(Name="Easy"),(Name="Hard")))</Property>
+      <Property name="profilemappings[6]" type="2">(ValueMappings=((Name="Medium"),(Name="Low"),(Name="High")))</Property>
+      <Property name="profilemappings[7]" type="2">(ValueMappings=((Name="None"),(Name="Black"),(Name="White"),(Name="Yellow"),(Name="Orange"),(Name="Pink"),(Name="Red"),(Name="Purple"),(Name="Blue"),(Name="Green"),(Name="Brown"),(Name="Silver")))</Property>
+      <Property name="profilemappings[8]" type="2">(ValueMappings=((Name="None"),(Name="Black"),(Name="White"),(Name="Yellow"),(Name="Orange"),(Name="Pink"),(Name="Red"),(Name="Purple"),(Name="Blue"),(Name="Green"),(Name="Brown"),(Name="Silver")))</Property>
+      <Property name="profilemappings[9]" type="2">(ValueMappings=((Name="Off"),(Name="On")))</Property>
+    </Section>
+    <Section name="playercontroller">
+      <Property name="nopausemessage" type="2">Game is not pauseable</Property>
+      <Property name="owncamera" type="2">Now viewing from own camera</Property>
+      <Property name="quicksavestring" type="2">Quick Saving</Property>
+      <Property name="viewingfrom" type="2">Now viewing from</Property>
+    </Section>
+    <Section name="playerreplicationinfo">
+      <Property name="stringspectating" type="2">Spectating</Property>
+      <Property name="stringunknown" type="2">Unknown</Property>
+    </Section>
+    <Section name="progress">
+      <Property name="cancelledconnect" type="2">Cancelled Connect Attempt</Property>
+      <Property name="connecting" type="2">Connecting...</Property>
+      <Property name="connectingtext" type="2">Connecting:</Property>
+      <Property name="connectingurl" type="2">unreal://`~/`~</Property>
+      <Property name="listening" type="2">Listening for clients...</Property>
+      <Property name="loading" type="2">Loading</Property>
+      <Property name="netreceiveok" type="2">Successfully received '`~'</Property>
+      <Property name="netreceiving" type="2">Receiving '`~': `~/`~</Property>
+      <Property name="netsend" type="2">Sending '`~'</Property>
+      <Property name="netsending" type="2">Sending '`~': `~/`~</Property>
+      <Property name="paused" type="2">Paused by `~</Property>
+      <Property name="receivefile" type="2">Receiving '`~'</Property>
+      <Property name="receiveoptionalfile" type="2">Receiving optional file '`~'</Property>
+      <Property name="receivesize" type="2">Size `~K, Complete `3.1~`~</Property>
+      <Property name="runningnet" type="2">`~: `~ (`~ players)</Property>
+      <Property name="saving" type="2">Saving</Property>
+      <Property name="success" type="2">Success</Property>
+    </Section>
+    <Section name="public">
+      <Property name="object[0]" type="2">(Name=Engine.ServerCommandlet,Class=Class,MetaClass=Core.Commandlet)</Property>
+      <Property name="object[1]" type="2">(Name=Engine.MasterMD5Commandlet,Class=Class,MetaClass=Core.Commandlet)</Property>
+      <Property name="object[2]" type="2">(Name=Engine.SmokeTestCommandlet,Class=Class,MetaClass=Core.Commandlet)</Property>
+    </Section>
+    <Section name="servercommandlet">
+      <Property name="helpdescription" type="2">Network game server</Property>
+      <Property name="helpparamdescriptions[0]" type="2">Specify the log file to generate</Property>
+      <Property name="helpparamdescriptions[1]" type="2">Give all players admin privelages</Property>
+      <Property name="helpparamnames[0]" type="2">Log</Property>
+      <Property name="helpparamnames[1]" type="2">AllAdmin</Property>
+      <Property name="helpusage" type="2">server map.unr[?game=gametype] [-option...] [parm=value]...</Property>
+      <Property name="helpweblink" type="2">http://unreal.epicgames.com/servertips.htm</Property>
+    </Section>
+    <Section name="smoketestcommandlet">
+      <Property name="helpdescription" type="2">This commandlet runs a series of tests to validate a build</Property>
+      <Property name="helpparamdescriptions[0]" type="2">Runs the game as a server for one tick to validate startup and first frame code</Property>
+      <Property name="helpparamdescriptions[1]" type="2">Validates that all native classes match their script classes in member layout</Property>
+      <Property name="helpparamnames[0]" type="2">SERVER</Property>
+      <Property name="helpparamnames[1]" type="2">CHECK_NATIVE_CLASS_SIZES</Property>
+      <Property name="helpusage" type="2">gamename.exe smoketest &lt;SERVER | CHECK_NATIVE_CLASS_SIZES&gt;</Property>
+      <Property name="helpweblink" type="2"></Property>
+    </Section>
+    <Section name="teaminfo">
+      <Property name="teamname" type="2">Team</Property>
+    </Section>
+    <Section name="testmenustrings">
+      <Property name="buttontesttext" type="2">The button has been clicked &lt;SceneData:ButtonClickCount&gt; times.</Property>
+      <Property name="playerindextext" type="2">The propagated PlayerIndex is: &lt;SceneData:PlayerIndex&gt;.</Property>
+      <Property name="wrapstringtest" type="2">This is just some nonsense text that will be used for testing various string auto-sizing features. This really long string is a great one to use for testing the wrapping functionality of a UIString.  In fact, there are so many characters in this string that it is great for testing many different features of a UIString.</Property>
+    </Section>
+    <Section name="uidataprovider_onlinefriendmessages">
+      <Property name="bisfriendinvitecol" type="2">Friend Invitation</Property>
+      <Property name="bwasacceptedcol" type="2">Friend Was Accepted</Property>
+      <Property name="bwasdeniedcol" type="2">Friend Was Denied</Property>
+      <Property name="messagecol" type="2">Message</Property>
+      <Property name="sendingplayernamecol" type="2">Sender's Name</Property>
+    </Section>
+    <Section name="uidataprovider_onlinefriends">
+      <Property name="awaytext" type="2">Away</Property>
+      <Property name="bhasvoicesupportcol" type="2">Has Voice Support</Property>
+      <Property name="bisjoinablecol" type="2">Is Joinable</Property>
+      <Property name="bisonlinecol" type="2">Is Online</Property>
+      <Property name="bisplayingcol" type="2">Is Playing</Property>
+      <Property name="bisplayingthisgamecol" type="2">Is Playing This Game</Property>
+      <Property name="busytext" type="2">Busy</Property>
+      <Property name="nicknamecol" type="2">Name</Property>
+      <Property name="offlinetext" type="2">Offline</Property>
+      <Property name="onlinetext" type="2">Online</Property>
+      <Property name="presenceinfocol" type="2">Online Status</Property>
+    </Section>
+    <Section name="uidataprovider_onlinepartychatlist">
+      <Property name="nattypes" type="2">Unknown</Property>
+    </Section>
+    <Section name="uidatastore_onlinestats">
+      <Property name="playernickdata.playernickcolumnname" type="2">Player Nick</Property>
+      <Property name="ranknamemetadata.rankcolumnname" type="2">Rank</Property>
+    </Section>
+    <Section name="uieditbox">
+      <Property name="initialvalue" type="2">Initial Editbox Value</Property>
+    </Section>
+    <Section name="uievent_onenterstate">
+      <Property name="description" type="2">Activated whenever a widget enters a new menu state, such as disabled or focused</Property>
+      <Property name="displayname" type="2">Enter State</Property>
+    </Section>
+    <Section name="uievent_onleavestate">
+      <Property name="description" type="2">Activated whenever a widget leaves a menu state, such as disabled or focused</Property>
+      <Property name="displayname" type="2">Leave State</Property>
+    </Section>
+    <Section name="uievent_processinput">
+      <Property name="description" type="2">Executes actions in response to an input event, such as a keypress or mouse movement</Property>
+      <Property name="displayname" type="2">Process Input</Property>
+    </Section>
+    <Section name="uinumericeditbox">
+      <Property name="decrementbuttonname" type="2">Decrement Button</Property>
+      <Property name="incrementbuttonname" type="2">Increment Button</Property>
+    </Section>
+    <Section name="uistyle">
+      <Property name="stylename" type="2">Default Style</Property>
+    </Section>
+    <Section name="uistyle_image">
+      <Property name="stylename" type="2">Default Image Style</Property>
+    </Section>
+    <Section name="uistyle_text">
+      <Property name="stylename" type="2">Default Text Style</Property>
+    </Section>
+    <Section name="viewportstatus">
+      <Property name="occlusionchild" type="2">Occlusion Child</Property>
+      <Property name="renderingfrozene" type="2">Rendering frozen...</Property>
+    </Section>
+    <Section name="watervolume">
+      <Property name="locationname" type="2">under water</Property>
+    </Section>
+    <Section name="weapon">
+      <Property name="itemname" type="2">Weapon</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

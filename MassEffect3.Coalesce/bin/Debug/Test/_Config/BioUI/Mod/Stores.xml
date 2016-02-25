@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Includes>
+		<!-- SFXGameChoiceGUIData -->
+		<Include source="StoreData/BonusPowers.xml" />
+		<Include source="StoreData/Normandy.xml" />
+		<Include source="StoreData/TalentReset.xml" />
+
+		<!-- SFXGUIData -->
+		<Include source="Store/Asari.xml" />
+		<Include source="Store/Batarian.xml" />
+		<Include source="Store/Hanar.xml" />
+		<Include source="Store/Hospital.xml" />
+		<Include source="Store/Human.xml" />
+		<Include source="Store/Intel.xml" />
+		<Include source="Store/Omega.xml" />
+		<Include source="Store/Salarian.xml" />
+		<Include source="Store/Spectre.xml" />
+		<Include source="Store/Turian.xml" />
+		<Include source="Store/Volus.xml" />
+		<Include source="Store/WeaponUpgrades.xml" />
+	</Includes>
+</CoalesceAsset>

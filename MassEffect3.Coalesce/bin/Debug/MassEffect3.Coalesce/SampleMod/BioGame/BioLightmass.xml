@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biolightmass" name="biolightmass.ini" source="..\..\biogame\config\biolightmass.ini">
+	<Sections>
+		<Section name="devoptions.debugoptions">
+			<Property name="ballowadvancedoptions" type="2">False</Property>
+			<Property name="lightmapresolutionfactorscale" type="2">32.0</Property>
+		</Section>
+		<Section name="devoptions.importancetracing">
+			<Property name="busecosinepdf" type="2">False</Property>
+			<Property name="busepathtracer" type="2">False</Property>
+			<Property name="busestratifiedsampling" type="2">True</Property>
+			<Property name="maxhemisphererayangle" type="2">89</Property>
+			<Property name="numbouncehemispheresamples" type="2">64</Property>
+			<Property name="numhemispheresamples" type="2">64</Property>
+			<Property name="numpaths" type="2">128</Property>
+		</Section>
+		<Section name="devoptions.irradiancecache">
+			<Property name="anglesmoothfactor" type="2">2</Property>
+			<Property name="ballowirradiancecaching" type="2">True</Property>
+			<Property name="bshowgradientsonly" type="2">False</Property>
+			<Property name="buseirradiancegradients" type="2">False</Property>
+			<Property name="bvisualizeirradiancesamples" type="2">True</Property>
+			<Property name="distancesmoothfactor" type="2">2</Property>
+			<Property name="interpolationmaxangle" type="2">20</Property>
+			<Property name="maxrecordradius" type="2">1024</Property>
+			<Property name="minrecordradius" type="2">16</Property>
+			<Property name="pointbehindrecordmaxangle" type="2">10</Property>
+			<Property name="recordbounceradiusscale" type="2">.3</Property>
+			<Property name="recordradiusscale" type="2">.4</Property>
+		</Section>
+		<Section name="devoptions.mesharealights">
+			<Property name="bvisualizemesharealightprimitives" type="2">False</Property>
+			<Property name="emissiveintensitythreshold" type="2">.01</Property>
+			<Property name="mesharealightgridsize" type="2">100</Property>
+			<Property name="mesharealightsimplifycornerdistancethreshold" type="2">.5</Property>
+			<Property name="mesharealightsimplifymeshboundingradiusfractionthreshold" type="2">.1</Property>
+			<Property name="mesharealightsimplifynormalanglethreshold" type="2">25</Property>
+		</Section>
+		<Section name="devoptions.photonmapping">
+			<Property name="bcacheirradiancephotonsonsurfaces" type="2">True</Property>
+			<Property name="bemitphotonsoutsideimportancevolume" type="2">False</Property>
+			<Property name="boptimizedirectlightingwithphotons" type="2">False</Property>
+			<Property name="busefinalgathering" type="2">True</Property>
+			<Property name="buseirradiancephotons" type="2">True</Property>
+			<Property name="busephotonmapping" type="2">True</Property>
+			<Property name="busephotonsfordirectlighting" type="2">False</Property>
+			<Property name="bvisualizeirradiancephotoncalculation" type="2">False</Property>
+			<Property name="bvisualizephotongathers" type="2">True</Property>
+			<Property name="bvisualizephotonimportancesamples" type="2">True</Property>
+			<Property name="bvisualizephotonpaths" type="2">False</Property>
+			<Property name="cachedirradiancephotondownsamplefactor" type="2">2</Property>
+			<Property name="causticphotondensity" type="2">0</Property>
+			<Property name="causticphotonsearchdistance" type="2">100</Property>
+			<Property name="conefilterconstant" type="2">1</Property>
+			<Property name="directirradiancephotondensity" type="2">350</Property>
+			<Property name="directphotondensity" type="2">350</Property>
+			<Property name="directphotonsearchdistance" type="2">200</Property>
+			<Property name="finalgatherimportancesampleconeangle" type="2">10</Property>
+			<Property name="finalgatherimportancesamplefraction" type="2">.6</Property>
+			<Property name="indirectirradiancephotondensity" type="2">300</Property>
+			<Property name="indirectphotondensity" type="2">600</Property>
+			<Property name="indirectphotonemitconeangle" type="2">30</Property>
+			<Property name="indirectphotonemitdiskradius" type="2">200</Property>
+			<Property name="indirectphotonpathdensity" type="2">5</Property>
+			<Property name="indirectphotonsearchdistance" type="2">200</Property>
+			<Property name="irradiancephotonsearchconeangle" type="2">10</Property>
+			<Property name="maxdirectlightingphotonoptimizationangle" type="2">80</Property>
+			<Property name="maximportancephotonsearchdistance" type="2">2000</Property>
+			<Property name="minimportancephotonsearchdistance" type="2">20</Property>
+			<Property name="numimportancesearchphotons" type="2">10</Property>
+			<Property name="numirradiancecalculationphotons" type="2">400</Property>
+			<Property name="outsideimportancevolumedensityscale" type="2">.0005</Property>
+			<Property name="photonsearchanglethreshold" type="2">.5</Property>
+		</Section>
+		<Section name="devoptions.precomputeddynamicobjectlighting">
+			<Property name="bvisualizevolumelightinterpolation" type="2">False</Property>
+			<Property name="bvisualizevolumelightsamples" type="2">True</Property>
+			<Property name="firstsurfacesamplelayerheight" type="2">50</Property>
+			<Property name="maxvolumesamples" type="2">50000</Property>
+			<Property name="numsurfacesamplelayers" type="2">2</Property>
+			<Property name="surfacelightsamplespacing" type="2">750</Property>
+			<Property name="surfacesamplelayerheightspacing" type="2">210</Property>
+			<Property name="volumelightsamplespacing" type="2">2000</Property>
+		</Section>
+		<Section name="devoptions.staticlighting">
+			<Property name="baccountfortexelsize" type="2">True</Property>
+			<Property name="ballow64bitprocess" type="2">True</Property>
+			<Property name="ballowcropping" type="2">False</Property>
+			<Property name="balloweagerlightmapencode" type="2">False</Property>
+			<Property name="ballowlightmapcompression" type="2">True</Property>
+			<Property name="ballowmultithreadedstaticlighting" type="2">True</Property>
+			<Property name="bgarbagecollectafterexport" type="2">True</Property>
+			<Property name="brebuilddirtygeometryforlighting" type="2">True</Property>
+			<Property name="busebilinearfilterlightmaps" type="2">True</Property>
+			<Property name="buseconservativetexelrasterization" type="2">True</Property>
+			<Property name="busemaxweight" type="2">True</Property>
+			<Property name="defaultstaticmeshlightingres" type="2">32</Property>
+			<Property name="maxtriangleirradiancephotoncachesamples" type="2">4</Property>
+			<Property name="maxtrianglelightingsamples" type="2">8</Property>
+			<Property name="viewsinglebouncenumber" type="2">-1</Property>
+		</Section>
+		<Section name="devoptions.staticlightinghighquality">
+			<Property name="approximatehighrestexelspermaxtransitiondistancescale" type="2">6</Property>
+			<Property name="directphotonsearchdistancescale" type="2">.5</Property>
+			<Property name="interpolationmaxanglescale" type="2">.5</Property>
+			<Property name="mindistancefieldupsamplefactor" type="2">5</Property>
+			<Property name="minrecordradiusscale" type="2">.5</Property>
+			<Property name="numcausticphotonsscale" type="2">1</Property>
+			<Property name="numdirectphotonsscale" type="2">2</Property>
+			<Property name="numhemispheresamplesscale" type="2">4</Property>
+			<Property name="numimportancesearchphotonsscale" type="2">2</Property>
+			<Property name="numindirectirradiancephotonsscale" type="2">2</Property>
+			<Property name="numindirectphotonpathsscale" type="2">2</Property>
+			<Property name="numindirectphotonsscale" type="2">4</Property>
+			<Property name="numpenumbrashadowraysscale" type="2">8</Property>
+			<Property name="numshadowraysscale" type="2">4</Property>
+			<Property name="recordradiusscalescale" type="2">.5</Property>
+		</Section>
+		<Section name="devoptions.staticlightingmaterial">
+			<Property name="busedebugmaterial" type="2">False</Property>
+			<Property name="debugdiffuse" type="2">(R=0.500000,G=0.500000,B=0.500000)</Property>
+			<Property name="debugspecular" type="2">(R=0.000000,G=0.000000,B=0.000000)</Property>
+			<Property name="debugspecularpower" type="2">64</Property>
+			<Property name="diffusesamplesize" type="2">128</Property>
+			<Property name="emissivesamplesize" type="2">128</Property>
+			<Property name="environmentcolor" type="2">(R=0.00000,G=0.00000,B=0.00000)</Property>
+			<Property name="showmaterialattribute" type="2">None</Property>
+			<Property name="specularsamplesize" type="2">128</Property>
+			<Property name="terrainsamplescalar" type="2">4</Property>
+			<Property name="transmissionsamplesize" type="2">256</Property>
+		</Section>
+		<Section name="devoptions.staticlightingmediumquality">
+			<Property name="approximatehighrestexelspermaxtransitiondistancescale" type="2">3</Property>
+			<Property name="directphotonsearchdistancescale" type="2">.5</Property>
+			<Property name="interpolationmaxanglescale" type="2">.75</Property>
+			<Property name="mindistancefieldupsamplefactor" type="2">3</Property>
+			<Property name="minrecordradiusscale" type="2">.5</Property>
+			<Property name="numcausticphotonsscale" type="2">1</Property>
+			<Property name="numdirectphotonsscale" type="2">2</Property>
+			<Property name="numhemispheresamplesscale" type="2">2</Property>
+			<Property name="numimportancesearchphotonsscale" type="2">1</Property>
+			<Property name="numindirectirradiancephotonsscale" type="2">2</Property>
+			<Property name="numindirectphotonpathsscale" type="2">1</Property>
+			<Property name="numindirectphotonsscale" type="2">2</Property>
+			<Property name="numpenumbrashadowraysscale" type="2">4</Property>
+			<Property name="numshadowraysscale" type="2">2</Property>
+			<Property name="recordradiusscalescale" type="2">.75</Property>
+		</Section>
+		<Section name="devoptions.staticlightingproductionquality">
+			<Property name="approximatehighrestexelspermaxtransitiondistancescale" type="2">6</Property>
+			<Property name="directphotonsearchdistancescale" type="2">.5</Property>
+			<Property name="interpolationmaxanglescale" type="2">.5</Property>
+			<Property name="mindistancefieldupsamplefactor" type="2">5</Property>
+			<Property name="minrecordradiusscale" type="2">.5</Property>
+			<Property name="numcausticphotonsscale" type="2">1</Property>
+			<Property name="numdirectphotonsscale" type="2">4</Property>
+			<Property name="numhemispheresamplesscale" type="2">8</Property>
+			<Property name="numimportancesearchphotonsscale" type="2">3</Property>
+			<Property name="numindirectirradiancephotonsscale" type="2">2</Property>
+			<Property name="numindirectphotonpathsscale" type="2">2</Property>
+			<Property name="numindirectphotonsscale" type="2">8</Property>
+			<Property name="numpenumbrashadowraysscale" type="2">32</Property>
+			<Property name="numshadowraysscale" type="2">8</Property>
+			<Property name="recordradiusscalescale" type="2">.25</Property>
+		</Section>
+		<Section name="devoptions.staticlightingsceneconstants">
+			<Property name="customimportancevolumeexpandby" type="2">4000</Property>
+			<Property name="directionalcoefficientfalloffpower" type="2">.85</Property>
+			<Property name="directionalcoefficientscale" type="2">2</Property>
+			<Property name="lightgridsize" type="2">100</Property>
+			<Property name="minimumimportancevolumeextentwithoutwarning" type="2">5000.0</Property>
+			<Property name="smallesttexelradius" type="2">.1</Property>
+			<Property name="staticlightinglevelscale" type="2">1</Property>
+			<Property name="visibilitynormaloffsetdistance" type="2">3</Property>
+			<Property name="visibilitynormaloffsetsampleradiusscale" type="2">.5</Property>
+			<Property name="visibilityrayoffsetdistance" type="2">.1</Property>
+			<Property name="visibilitytangentoffsetsampleradiusscale" type="2">.8</Property>
+		</Section>
+		<Section name="devoptions.staticshadows">
+			<Property name="approximatehighrestexelspermaxtransitiondistance" type="2">50</Property>
+			<Property name="ballowsigneddistancefieldshadows" type="2">True</Property>
+			<Property name="bfiltershadowfactor" type="2">False</Property>
+			<Property name="busezeroarealightmapspacefilteredlights" type="2">False</Property>
+			<Property name="dominantshadowmaxsamples" type="2">1536000</Property>
+			<Property name="dominantshadowsupersamplefactor" type="2">10</Property>
+			<Property name="dominantshadowtransitionsampledistancex" type="2">100</Property>
+			<Property name="dominantshadowtransitionsampledistancey" type="2">100</Property>
+			<Property name="maxtransitiondistanceworldspace" type="2">50</Property>
+			<Property name="mindistancefieldupsamplefactor" type="2">3</Property>
+			<Property name="minunoccludedfraction" type="2">.01</Property>
+			<Property name="numbounceshadowrays" type="2">4</Property>
+			<Property name="numpenumbrashadowrays" type="2">8</Property>
+			<Property name="numshadowrays" type="2">8</Property>
+			<Property name="shadowfactorgradienttolerance" type="2">0.5</Property>
+		</Section>
+		<Section name="iniversion">
+			<Property name="0" type="2">1549242006.000000</Property>
+			<Property name="1" type="2">5491452638.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

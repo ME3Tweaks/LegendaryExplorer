@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgamecontentdlc_exp_pack001.sfxgui_divingatlashud">
+			<Property name="depthstring" type="0">758762</Property>
+			<Property name="depthunitstring" type="0">165335</Property>
+			<Property name="params" type="0">(SeaLevelZ=0,DepthScalar=1.0, WaterDensity=1025, AccelDueGravity=9.81,AirPressure=101325)</Property>
+			<Property name="pressurestring" type="0">758763</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack001.sfxguidata_elevator_docksrt">
+			<Property name="elevatordestinations">
+				<Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+				<Value type="3">(DestId=1,DestTitle=733472,DestSubTitle=174625,DestDesc=733472,PlotUnlockID=23500,LargeImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",SmallImage="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001",AButtonText=163280,BButtonText=529360)</Value>
+			</Property>
+			<Property name="elevatorname" type="0">Rapid Transit</Property>
+			<Property name="srdefaultabuttontext" type="0">163280</Property>
+			<Property name="srelevatordescription" type="0">388232</Property>
+			<Property name="srelevatortitle" type="0">320640</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack001.sfxguidata_elevator_labrt">
+			<Property name="elevatordestinations">
+				<Value type="3">(DestId=0,DestTitle=307346,DestSubTitle=174740,DestDesc=307346,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_NorCIC_512x256",AButtonText=163280,BButtonText=529360)</Value>
+				<Value type="3">(DestId=1,DestTitle=589197,DestSubTitle=704133,DestDesc=589197,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitDocks_512x256",AButtonText=163280,BButtonText=529360)</Value>
+				<Value type="3">(DestId=2,DestTitle=529391,DestSubTitle=174568,DestDesc=529391,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitPurg_512x256",AButtonText=163280,BButtonText=529360)</Value>
+				<Value type="3">(DestId=3,DestTitle=589196,DestSubTitle=174570,DestDesc=589196,PlotUnlockID=0,LargeImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",SmallImage="GUI_SF_SaveLoad_Images.Elevators.LVL_CitCommon_512x256",AButtonText=163280,BButtonText=529360)</Value>
+			</Property>
+			<Property name="elevatorname" type="0">Rapid Transit</Property>
+			<Property name="srdefaultabuttontext" type="0">163280</Property>
+			<Property name="srelevatordescription" type="0">388232</Property>
+			<Property name="srelevatortitle" type="0">320640</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

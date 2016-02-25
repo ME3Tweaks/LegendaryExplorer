@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets">
+				<!--  -->
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

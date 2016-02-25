@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioai" name="bioai.ini" source="..\..\biogame\config\bioai.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultAI.ini</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxai_cloneshepard">
+      <Property name="ai_burststofire" type="0">(X=1,Y=3)</Property>
+      <Property name="buseticketing" type="0">false</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxai_demo">
+      <Property name="ai_burststofire" type="0">(X=1,Y=2)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxai_heavy">
+      <Property name="ai_burststofire" type="0">(X=1,Y=2)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxai_sniper">
+      <Property name="ai_burststofire" type="0">(X=1,Y=1)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_blackwidow">
+      <Property name="ai_acccone_max" type="0">(X=1.8f,Y=1.8f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.2f,Y=1.2f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=3,Y=3)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.25f,Y=0.5f)</Property>
+      <Property name="damage" type="0">(X=200.0,Y=200.0)</Property>
+      <Property name="idealtargetdistance" type="0">1000.f</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_crusader">
+      <Property name="ai_acccone_max" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=3,Y=3)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.8f,Y=0.8f)</Property>
+      <Property name="damage" type="0">(X=500.0,Y=500.0)</Property>
+      <Property name="idealtargetdistance" type="0">1000.f</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_hurricane">
+      <Property name="ai_acccone_max" type="0">(X=1.8f,Y=1.8f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.2f,Y=1.2f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.25f,Y=0.5f)</Property>
+      <Property name="ai_burstfirercount" type="0">(X=2,Y=2)</Property>
+      <Property name="damage" type="0">(X=30.0,Y=30.0)</Property>
+      <Property name="idealtargetdistance" type="0">1000.f</Property>
+      <Property name="rateoffireai" type="0">0.75f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_incisor">
+      <Property name="ai_acccone_max" type="0">(X=1.55,Y=1.55)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.05,Y=1.05)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=3,Y=3)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=1.6f,Y=2.1f)</Property>
+      <Property name="damage" type="0">(X=160.f,Y=160.f)</Property>
+      <Property name="rateoffire" type="0">(X=450,Y=450)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_revenant">
+      <Property name="ai_acccone_max" type="0">(X=3.0f,Y=3.0f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.7f,Y=1.7f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=10,Y=14)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=1.25f,Y=1.85f)</Property>
+      <Property name="damage" type="0">(X=37.5f,Y=37.5f)</Property>
+      <Property name="ejectshellcasingtimeratio" type="0">0.486f</Property>
+      <Property name="idealmaxrange" type="0">4000.f</Property>
+      <Property name="idealminrange" type="0">300.f</Property>
+      <Property name="idealtargetdistance" type="0">800.f</Property>
+      <Property name="magsize" type="0">(X=80,Y=80)</Property>
+      <Property name="meleerange" type="0">200.0f</Property>
+      <Property name="reloadduration" type="0">(X=1.37f,Y=1.37f)</Property>
+      <Property name="shieldedburstfirecount" type="0">(X=25,Y=35)</Property>
+      <Property name="shieldedburstfiredelay" type="0">(X=0.7f,Y=1.f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_silencer">
+      <Property name="ai_acccone_max" type="0">(X=2.1,Y=2.1)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.1,Y=1.1)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=3,Y=5)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.65f,Y=2.3f)</Property>
+      <Property name="damage" type="0">(X=183.3f,Y=212.2f)</Property>
+      <Property name="headshotdamagemultiplier" type="0">(X=2.5,Y=2.5)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_tempest">
+      <Property name="ai_acccone_max" type="0">(X=2.9,Y=2.9)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.4,Y=1.4)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=5.f,Y=9.f)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.65f,Y=2.3f)</Property>
+      <Property name="damage" type="0">(X=35.7,Y=44.6)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_valkyrie">
+      <Property name="ai_acccone_max" type="0">(X=1.8f,Y=1.8f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.2f,Y=1.2f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.25f,Y=0.5f)</Property>
+      <Property name="ai_burstfirercount" type="0">(X=5,Y=5)</Property>
+      <Property name="damage" type="0">(X=60.0,Y=60.0)</Property>
+      <Property name="idealtargetdistance" type="0">1000.f</Property>
+      <Property name="rateoffireai" type="0">0.75f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxweapon_ai_wraith">
+      <Property name="ai_acccone_max" type="0">(X=1.8f,Y=1.8f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.2f,Y=1.2f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=2,Y=2)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.25f,Y=0.5f)</Property>
+      <Property name="damage" type="0">(X=50.f,Y=50.f)</Property>
+      <Property name="idealtargetdistance" type="0">1000.f</Property>
+      <Property name="rateoffireai" type="0">1.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxai_abomination_shared">
+      <Property name="damageflareclasses" type="0">SFXDamageType_Overload</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxai_collectorcaptain_shared">
+      <Property name="ai_burststofire" type="0">(X=1,Y=3)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxai_collectortrooper_shared">
+      <Property name="ai_burststofire" type="0">(X=1,Y=3)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxai_scion_shared">
+      <Property name="ai_burststofire" type="0">(X=1,Y=1)</Property>
+      <Property name="interblastdelay" type="0">0.35f</Property>
+      <Property name="postrocketdelay" type="0">0.3f</Property>
+      <Property name="preblastdelay" type="0">0.3f</Property>
+      <Property name="presyncdelay" type="0">0.4f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxdamagetype_scioncannon_shared">
+      <Property name="hitreactions" type="0">(BodyPart="",Reaction=Reaction_Medium,ReactionChance=1.f,bIgnoreShields=true)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweapon_ai_collector_shared">
+      <Property name="ai_acccone_max" type="0">(X=2.5f,Y=2.5f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.7f,Y=1.7f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=7,Y=9)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.6f,Y=1.1f)</Property>
+      <Property name="damage" type="0">(X=30.f,Y=30.f)</Property>
+      <Property name="idealmaxrange" type="0">4000.f</Property>
+      <Property name="idealminrange" type="0">400.f</Property>
+      <Property name="idealtargetdistance" type="0">1500.f</Property>
+      <Property name="magsize" type="0">(X=42,Y=42)</Property>
+      <Property name="rateoffire" type="0">(X=600,Y=600)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweapon_ai_collectorcaptain_shared">
+      <Property name="ai_acccone_max" type="0">(X=1.7f,Y=1.7f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.1f,Y=1.1f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=8,Y=10)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.45f,Y=0.75f)</Property>
+      <Property name="damage" type="0">(X=42.0,Y=42.0)</Property>
+      <Property name="idealmaxrange" type="0">4000.f</Property>
+      <Property name="idealminrange" type="0">400.f</Property>
+      <Property name="idealtargetdistance" type="0">1500.f</Property>
+      <Property name="magsize" type="0">(X=28,Y=28)</Property>
+      <Property name="rateoffire" type="0">(X=500,Y=500)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweapon_ai_scioncannon_shared">
+      <Property name="ai_acccone_max" type="0">(X=2.05,Y=2.05)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.05,Y=1.05)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=3,Y=3)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=1.8f,Y=2.0f)</Property>
+      <Property name="ammopershot" type="0">0</Property>
+      <Property name="damage" type="0">(X=400,Y=400)</Property>
+      <Property name="idealmaxrange" type="0">4000.f</Property>
+      <Property name="idealminrange" type="0">600.f</Property>
+      <Property name="idealtargetdistance" type="0">2500.f</Property>
+      <Property name="magsize" type="0">(X=50,Y=50)</Property>
+      <Property name="rateoffire" type="0">(X=60,Y=60)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

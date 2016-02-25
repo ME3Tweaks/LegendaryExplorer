@@ -1,0 +1,353 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini">
+	<Sections>
+		<Section name="sfxgame.sfxdamagetype_explosion">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="",Reaction=Reaction_ReactionHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxdamagetype_rocketlauncher">
+			<Property name="hitreactions">
+				<Value type="2">(BodyPart="",Reaction=Reaction_ReactionHeavy,ReactionChance=0.75)</Value>
+				<Value type="2">(BodyPart="",Reaction=Reaction_DeathHeavy,ReactionChance=0.75)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxheavyweapon">
+			<Property name="aimmodes" type="2">(ZoomFOV=54.4,bScoped=false,FrictionMultiplier=1,AdhesionMultiplier=1)</Property>
+			<Property name="bcandropammo" type="2">false</Property>
+			<Property name="binfiniteammo" type="2">false</Property>
+			<Property name="encumbranceweight" type="2">(X=0.f,Y=0.f)</Property>
+			<Property name="guiclassdescription" type="2">340847</Property>
+			<Property name="guiclassname" type="2">338205</Property>
+			<Property name="iconref" type="2">15</Property>
+			<Property name="idealmaxrange" type="2">5000.f</Property>
+			<Property name="idealminrange" type="2">300.f</Property>
+			<Property name="idealtargetdistance" type="2">2000.f</Property>
+			<Property name="maxspareammo" type="2">(X=0,Y=0)</Property>
+			<Property name="zoomfov" type="2">54.4</Property>
+		</Section>
+		<Section name="sfxgame.sfxinventorymanager">
+			<Property name="extramedigelplotint" type="2">10300</Property>
+			<Property name="fuelefficiency" type="2">1.5</Property>
+			<Property name="maxcredits" type="2">9999999</Property>
+			<Property name="maxeezo" type="2">9999999</Property>
+			<Property name="maxfuel" type="2">1000</Property>
+			<Property name="maxgrenades" type="2">3</Property>
+			<Property name="maxgrenadesmp" type="2">1</Property>
+			<Property name="maxiridium" type="2">9999999</Property>
+			<Property name="maxmedigel" type="2">3</Property>
+			<Property name="maxpalladium" type="2">9999999</Property>
+			<Property name="maxplatinum" type="2">9999999</Property>
+			<Property name="maxprobes" type="2">30</Property>
+			<Property name="srinventorytitle" type="2">151385</Property>
+		</Section>
+		<Section name="sfxgame.sfxplayerinventorymanager">
+			<Property name="accmod_crouched" type="2">1.0</Property>
+			<Property name="accmod_maxcameraloss" type="2">0.85</Property>
+			<Property name="accmod_mousemultiplier" type="2">0.75</Property>
+			<Property name="accmod_move" type="2">0.2</Property>
+			<Property name="accmod_viewturn" type="2">0.2</Property>
+			<Property name="base_acc_standing" type="2">0.0</Property>
+			<Property name="base_acc_zoom" type="2">0.0</Property>
+			<Property name="base_interp_speed" type="2">8.0f</Property>
+			<Property name="interpmod_move" type="2">4.f</Property>
+			<Property name="interpmul_viewturn" type="2">1.f</Property>
+			<Property name="interprange" type="2">(X=0.1,Y=1000)</Property>
+		</Section>
+		<Section name="sfxgame.sfxprojectile">
+			<Property name="bclientpredictprojectile" type="2">false;</Property>
+			<Property name="predictionaccelerationrate" type="2">1.01</Property>
+			<Property name="predictioninitialspeedgain" type="2">0.4</Property>
+			<Property name="predictionmaxspeedgain" type="2">0.8</Property>
+			<Property name="predictionspeedinterpolationspeed" type="2">28</Property>
+		</Section>
+		<Section name="sfxgame.sfxshield_base">
+			<Property name="total_shield_steps" type="2">10</Property>
+		</Section>
+		<Section name="sfxgame.sfxshield_player">
+			<Property name="partialbreakpct" type="2">0.55</Property>
+			<Property name="total_shield_steps" type="2">15</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon">
+			<Property name="accfireinterpspeed" type="2">(X=100.0f,Y=100.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=100.0f,Y=100.0f)</Property>
+			<Property name="adhesionrot" type="2">(X=0.f,Y=1.f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=100.0,Y=100.0)</Property>
+			<Property name="ai_acccone_min" type="2">(X=100.0,Y=100.0)</Property>
+			<Property name="ai_aimdelay" type="2">(X=0.0,Y=0.0)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=0,Y=0)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.0f,Y=0.0f)</Property>
+			<Property name="aimcorrectionamount" type="2">0.0;</Property>
+			<Property name="aimmodes" type="2">(ZoomFOV=39.43,bScoped=false,FrictionMultiplier=1,AdhesionMultiplier=1)</Property>
+			<Property name="ammopershot" type="2">1</Property>
+			<Property name="ammoprettyname" type="2">0</Property>
+			<Property name="badhesionduringcam" type="2">true</Property>
+			<Property name="badhesionenabled" type="2">true</Property>
+			<Property name="bcandropammo" type="2">true</Property>
+			<Property name="bcandropweapon" type="2">false</Property>
+			<Property name="bfrictiondistancescalingenabled" type="2">false</Property>
+			<Property name="bfrictionenabled" type="2">true</Property>
+			<Property name="binfiniteammo" type="2">false</Property>
+			<Property name="busesnipercam" type="2">false</Property>
+			<Property name="bzoomsnapenabled" type="2">true</Property>
+			<Property name="caminputadhesiondamping" type="2">0.4f</Property>
+			<Property name="clientsidehitleeway" type="2">4.2f</Property>
+			<Property name="clientsidehitmaxangle" type="2">0.6f</Property>
+			<Property name="clientsidehitmaxangleclose" type="2">0.2f</Property>
+			<Property name="clientsidehitmaxdistclose" type="2">30000.f</Property>
+			<Property name="clientsidehitmaxdistreallyclose" type="2">5000.f</Property>
+			<Property name="coverleanexitdelay" type="2">0.1</Property>
+			<Property name="coverleanpositions">
+				<Value type="2">(Offset=(X=0, Y=42.789, Z=0), Direction=CD_Right, Type=CT_MidLevel, WeaponTypes=(WeaponAnimType_Pistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=-81.523, Z=0), Direction=CD_Left, Type=CT_MidLevel, WeaponTypes=(WeaponAnimType_Pistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=64.038, Z=0), Direction=CD_Right, Type=CT_Standing, WeaponTypes=(WeaponAnimType_Pistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=-60.277, Z=0), Direction=CD_Left, Type=CT_Standing, WeaponTypes=(WeaponAnimType_Pistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=42.789, Z=0), Direction=CD_Right, Type=CT_MidLevel, WeaponTypes=(WeaponAnimType_Shotgun, WeaponAnimType_Rifle, WeaponAnimType_Sniper, WeaponAnimType_GrenadeLauncher, WeaponAnimType_MissileLauncher, WeaponAnimType_NukeLauncher, WeaponAnimType_ParticleBeam, WeaponAnimType_RepulsorBeam, WeaponAnimType_AutoShotgun, WeaponAnimType_AutoSniper, WeaponAnimType_AutoPistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=-81.523, Z=0), Direction=CD_Left, Type=CT_MidLevel, WeaponTypes=(WeaponAnimType_Shotgun, WeaponAnimType_Rifle, WeaponAnimType_Sniper, WeaponAnimType_GrenadeLauncher, WeaponAnimType_MissileLauncher, WeaponAnimType_NukeLauncher, WeaponAnimType_ParticleBeam, WeaponAnimType_RepulsorBeam, WeaponAnimType_AutoShotgun, WeaponAnimType_AutoSniper, WeaponAnimType_AutoPistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=64.038, Z=0), Direction=CD_Right, Type=CT_Standing, WeaponTypes=(WeaponAnimType_Shotgun, WeaponAnimType_Rifle, WeaponAnimType_Sniper, WeaponAnimType_GrenadeLauncher, WeaponAnimType_MissileLauncher, WeaponAnimType_NukeLauncher, WeaponAnimType_ParticleBeam, WeaponAnimType_RepulsorBeam, WeaponAnimType_AutoShotgun, WeaponAnimType_AutoSniper, WeaponAnimType_AutoPistol))</Value>
+				<Value type="2">(Offset=(X=0, Y=-60.277, Z=0), Direction=CD_Left, Type=CT_Standing, WeaponTypes=(WeaponAnimType_Shotgun, WeaponAnimType_Rifle, WeaponAnimType_Sniper, WeaponAnimType_GrenadeLauncher, WeaponAnimType_MissileLauncher, WeaponAnimType_NukeLauncher, WeaponAnimType_ParticleBeam, WeaponAnimType_RepulsorBeam, WeaponAnimType_AutoShotgun, WeaponAnimType_AutoSniper, WeaponAnimType_AutoPistol))</Value>
+			</Property>
+			<Property name="coverpartialleanexitdelay" type="2">0.15</Property>
+			<Property name="damage" type="2">(X=0.0,Y=0.0)</Property>
+			<Property name="damagehench" type="2">0.3f</Property>
+			<Property name="distancepenetrated" type="2">0</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.5</Property>
+			<Property name="fadingparameters">
+				<Value type="2">glow</Value>
+				<Value type="2">inner_glow</Value>
+				<Value type="2">fade_off</Value>
+			</Property>
+			<Property name="frictionmultiplierrange" type="2">(X=0.0f,Y=0.38f)</Property>
+			<Property name="frictiontargetoffset" type="2">(Z=22.f)</Property>
+			<Property name="generaldescription" type="2">209740</Property>
+			<Property name="guiclassname" type="2">0</Property>
+			<Property name="headshotdamagemultiplier" type="2">(X=2.5,Y=2.5)</Property>
+			<Property name="hearnoisetimeout" type="2">1.0</Property>
+			<Property name="iconref" type="2">1</Property>
+			<Property name="idealmaxrange" type="2">4000.f</Property>
+			<Property name="idealminrange" type="2">300.f</Property>
+			<Property name="idealtargetdistance" type="2">1200.f</Property>
+			<Property name="impactforcemodifier" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="impactrelevancedistance" type="2">8000</Property>
+			<Property name="lastbulletstrongerpercent" type="2">0.0f</Property>
+			<Property name="magneticcorrectionthresholdangle" type="2">0.5</Property>
+			<Property name="magsize" type="2">(X=1,Y=1)</Property>
+			<Property name="maxadhesiondistance" type="2">6000.f</Property>
+			<Property name="maxaimerror" type="2">(X=100.0,Y=100.0)</Property>
+			<Property name="maxcrosshairrange" type="2">(X=9999,Y=9999)</Property>
+			<Property name="maxfrictiondistance" type="2">5000.f</Property>
+			<Property name="maxlateraladhesiondist" type="2">125.f</Property>
+			<Property name="maxlevel" type="2">10</Property>
+			<Property name="maxmagneticcorrectionangle" type="2">0.25</Property>
+			<Property name="maxspareammo" type="2">(X=0,Y=0)</Property>
+			<Property name="maxweaponmods" type="2">2</Property>
+			<Property name="maxzoomaimerror" type="2">(X=100.0f,Y=100.0f)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=100,Y=100)</Property>
+			<Property name="maxzoomsnapdistance" type="2">4000</Property>
+			<Property name="meleedamagemodifier" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="meleerange" type="2">300.0f</Property>
+			<Property name="minadhesiondistance" type="2">100.f</Property>
+			<Property name="minadhesionvelocity" type="2">80.f</Property>
+			<Property name="minaimerror" type="2">(X=100.0,Y=100.0)</Property>
+			<Property name="mincrosshairrange" type="2">(X=8,Y=8)</Property>
+			<Property name="minfrictiondistance" type="2">0.f</Property>
+			<Property name="minrefiretime" type="2">0.25</Property>
+			<Property name="minzoomaimerror" type="2">(X=100.0,Y=100.0)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=100,Y=100)</Property>
+			<Property name="minzoomsnapdistance" type="2">500</Property>
+			<Property name="modcrosshairmultiplier" type="2">0.5f</Property>
+			<Property name="needreloadnotify" type="2">5</Property>
+			<Property name="notificationimage" type="2">GUI_GlobalIcons.Notifications.NewTech_256</Property>
+			<Property name="peakfrictiondistance" type="2">2000.f</Property>
+			<Property name="peakfrictionheightscale" type="2">0.4f</Property>
+			<Property name="peakfrictionradiusscale" type="2">1.25f</Property>
+			<Property name="penetrationbonus" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="penetrationdamagebonus" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="prettyname" type="2">0</Property>
+			<Property name="rateoffire" type="2">(X=1,Y=1)</Property>
+			<Property name="rateoffireai" type="2">0.1f</Property>
+			<Property name="reactionchancemodifier" type="2">(X=1,Y=1,Value=1)</Property>
+			<Property name="readoutoffset" type="2">(X=10)</Property>
+			<Property name="recoil" type="2">(X=10,Y=10)</Property>
+			<Property name="recoilcap" type="2">40.0f</Property>
+			<Property name="recoilfadespeed" type="2">0.0f</Property>
+			<Property name="recoilinterpspeed" type="2">100.f</Property>
+			<Property name="recoilminfadepitch" type="2">0.0f</Property>
+			<Property name="recoilminfadeyaw" type="2">0.0f</Property>
+			<Property name="recoilpitchfrequncy" type="2">1.0f</Property>
+			<Property name="recoilpitchoscillation" type="2">0.0f</Property>
+			<Property name="recoilyawfrequency" type="2">1.0f</Property>
+			<Property name="recoilyawscale" type="2">0.0f</Property>
+			<Property name="recoilzoomfadespeed" type="2">0.0f</Property>
+			<Property name="reloadduration" type="2">(X=1.0,Y=1.0)</Property>
+			<Property name="reloadreactionwindow" type="2">0.001</Property>
+			<Property name="roundsperburst" type="2">1</Property>
+			<Property name="shortdescription" type="2">209740</Property>
+			<Property name="showtracerdistance" type="2">350</Property>
+			<Property name="tracerange" type="2">8000</Property>
+			<Property name="tracerspawnoffset" type="2">0.0</Property>
+			<Property name="weaponmodemissivecolours">
+				<Value type="2">(R=0.00f,G=0.059f,B=1.0f,A=1.0f)</Value>
+				<Value type="2">(R=0.55f,G=1.0f,B=0.5f,A=1.0f)</Value>
+				<Value type="2">(R=0.91f,G=1.0f,B=0.0f,A=1.0f)</Value>
+				<Value type="2">(R=1.0f,G=0.3f,B=0.0f,A=1.0f)</Value>
+				<Value type="2">(R=1.0f,G=0.0f,B=0.0f,A=1.0f)</Value>
+			</Property>
+			<Property name="weaponmodgripcolours">
+				<Value type="2">(R=0.789f,G=0.615f,B=0.513f,A=0)</Value>
+				<Value type="2">(R=1.00f,G=1.00f,B=1.00f,A=0)</Value>
+				<Value type="2">(R=0.52f,G=0.68f,B=1.0f,A=0)</Value>
+				<Value type="2">(R=0.24f,G=0.24f,B=0.24f,A=0)</Value>
+				<Value type="2">(R=0.13f,G=0.1f,B=0.08f,A=0)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=100.0f,Y=100.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=100.0f,Y=100.0f)</Property>
+			<Property name="zoomfov" type="2">39.43</Property>
+			<Property name="zoomrecoil" type="2">(X=10,y=10)</Property>
+			<Property name="zoomrecoilcap" type="2">40.0f</Property>
+			<Property name="zoomsnaplist">
+				<Value type="2">( AimNode=AimNode_Cover, OuterSnapAngle=5, InnerSnapAngle=0.5, SnapOffsetMag=20 )</Value>
+				<Value type="2">( AimNode=AimNode_Head, OuterSnapAngle=3, InnerSnapAngle=0.5, SnapOffsetMag=15 )</Value>
+				<Value type="2">( AimNode=AimNode_Chest, OuterSnapAngle=10, InnerSnapAngle=1, SnapOffsetMag=50 )</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon_assaultrifle_base">
+			<Property name="allowableweaponmods">
+				<Value type="2">SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_AssaultRifleDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_AssaultRifleStability</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_AssaultRifleMagSize</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_AssaultRifleForce</Value>
+			</Property>
+			<Property name="guiclassdescription" type="2">340840</Property>
+			<Property name="guiclassname" type="2">338199</Property>
+			<Property name="iconref" type="2">5</Property>
+			<Property name="nuispeechname" type="2">701640</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon_pistol_base">
+			<Property name="allowableweaponmods">
+				<Value type="2">SFXGameContent.SFXWeaponMod_PistolReloadSpeed</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_PistolDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_PistolStability</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_PistolAccuracy</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_PistolMagSize</Value>
+			</Property>
+			<Property name="guiclassdescription" type="2">340842</Property>
+			<Property name="guiclassname" type="2">338201</Property>
+			<Property name="iconref" type="2">4</Property>
+			<Property name="nuispeechname" type="2">696419</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon_shotgun_base">
+			<Property name="accuracybonus" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="allowableweaponmods">
+				<Value type="2">SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_ShotgunDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_ShotgunAccuracy</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_ShotgunStability</Value>
+			</Property>
+			<Property name="bfrictiondistancescalingenabled" type="2">true</Property>
+			<Property name="bfrictionenabled" type="2">true</Property>
+			<Property name="bzoomsnapenabled" type="2">True</Property>
+			<Property name="frictionmultiplierrange" type="2">(X=0.0f,Y=0.25f)</Property>
+			<Property name="guiclassdescription" type="2">340845</Property>
+			<Property name="guiclassname" type="2">338202</Property>
+			<Property name="iconref" type="2">6</Property>
+			<Property name="idealmaxrange" type="2">2500.f</Property>
+			<Property name="idealminrange" type="2">300.f</Property>
+			<Property name="idealtargetdistance" type="2">1000.f</Property>
+			<Property name="magneticcorrectionthresholdangle" type="2">1</Property>
+			<Property name="maxfrictiondistance" type="2">1000.f</Property>
+			<Property name="maxmagneticcorrectionangle" type="2">0.5</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=95,Y=95)</Property>
+			<Property name="maxzoomsnapdistance" type="2">1000</Property>
+			<Property name="minfrictiondistance" type="2">320.f</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=80,Y=80)</Property>
+			<Property name="minzoomsnapdistance" type="2">250</Property>
+			<Property name="nuispeechname" type="2">696422</Property>
+			<Property name="peakfrictiondistance" type="2">500.f</Property>
+			<Property name="peakfrictionheightscale" type="2">0.4f</Property>
+			<Property name="peakfrictionradiusscale" type="2">0.4f</Property>
+			<Property name="zoomaccuracybonus" type="2">(X=0.75f,Y=0.75f)</Property>
+			<Property name="zoomsnaplist">
+				<Value type="2">( AimNode=AimNode_Cover, OuterSnapAngle=5, InnerSnapAngle=0.5, SnapOffsetMag=20 )</Value>
+				<Value type="2">( AimNode=AimNode_Chest, OuterSnapAngle=20, InnerSnapAngle=10, SnapOffsetMag=10 )</Value>
+				<Value type="2">( AimNode=AimNode_Head, OuterSnapAngle=0, InnerSnapAngle=0.0, SnapOffsetMag=0 )</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon_smg_base">
+			<Property name="allowableweaponmods">
+				<Value type="2">SFXGameContent.SFXWeaponMod_SMGDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SMGMagSize</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SMGAccuracy</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SMGStability</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SMGConstraintDamage</Value>
+			</Property>
+			<Property name="guiclassdescription" type="2">340841</Property>
+			<Property name="guiclassname" type="2">338200</Property>
+			<Property name="iconref" type="2">7</Property>
+			<Property name="idealmaxrange" type="2">2500.f</Property>
+			<Property name="idealminrange" type="2">300.f</Property>
+			<Property name="idealtargetdistance" type="2">1000.f</Property>
+			<Property name="nuispeechname" type="2">696420</Property>
+		</Section>
+		<Section name="sfxgame.sfxweapon_sniperrifle_base">
+			<Property name="adhesionrot" type="2">(X=0.0,Y=0.5)</Property>
+			<Property name="aimmodes" type="2">(ZoomFOV=10,bScoped=True,FrictionMultiplier=1,AdhesionMultiplier=1)</Property>
+			<Property name="-aimmodes" type="2">(ZoomFOV=39.43,bScoped=false,FrictionMultiplier=1,AdhesionMultiplier=1)</Property>
+			<Property name="allowableweaponmods">
+				<Value type="2">SFXGameContent.SFXWeaponMod_SniperRifleDamage</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SniperRifleAccuracy</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed</Value>
+				<Value type="2">SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage</Value>
+			</Property>
+			<Property name="bzoomsnapenabled" type="2">true</Property>
+			<Property name="frictionmultiplierrange" type="2">(X=0,Y=0.19)</Property>
+			<Property name="guiclassdescription" type="2">340846</Property>
+			<Property name="guiclassname" type="2">338204</Property>
+			<Property name="iconref" type="2">2</Property>
+			<Property name="idealmaxrange" type="2">5000.f</Property>
+			<Property name="idealminrange" type="2">2000.f</Property>
+			<Property name="idealtargetdistance" type="2">3500.f</Property>
+			<Property name="maxzoomaimerror" type="2">(X=0.f,Y=0.f)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=30,Y=30)</Property>
+			<Property name="maxzoomsnapdistance" type="2">10000</Property>
+			<Property name="minzoomaimerror" type="2">(X=0.f,Y=0.f)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=15,Y=15)</Property>
+			<Property name="minzoomsnapdistance" type="2">1000</Property>
+			<Property name="nuispeechname" type="2">696421</Property>
+			<Property name="ownertimedilationcounterscale" type="2">(X=0.4f,Y=0.4f)</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=12.0f,Y=12.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=0.5f,Y=0.5f)</Property>
+			<Property name="zoomsnaplist">
+				<Value type="2">( AimNode=AimNode_Cover, OuterSnapAngle=5, InnerSnapAngle=0.5, SnapOffsetMag=15 )</Value>
+				<Value type="2">( AimNode=AimNode_Chest, OuterSnapAngle=10, InnerSnapAngle=5, SnapOffsetMag=5 )</Value>
+				<Value type="2">( AimNode=AimNode_Head, OuterSnapAngle=0, InnerSnapAngle=0.0, SnapOffsetMag=0 )</Value>
+			</Property>
+			<Property name="zoomtimedilation" type="2">(X=1.0f,Y=1.0f)</Property>
+			<Property name="zoomtimedilationduration" type="2">(X=1.5f,Y=1.5f)</Property>
+		</Section>
+		<Section name="sfxgame.sfxweaponmod">
+			<Property name="max_rank" type="2">5</Property>
+			<Property name="modleveltokens">
+				<Value type="2">519242</Value>
+				<Value type="2">519243</Value>
+				<Value type="2">519244</Value>
+				<Value type="2">519245</Value>
+				<Value type="2">519246</Value>
+			</Property>
+			<Property name="notificationdescription" type="2">546865</Property>
+			<Property name="notificationimage" type="2">GUI_GlobalIcons.Notifications.NewTech_256</Property>
+			<Property name="notificationtitle" type="2">546864</Property>
+			<Property name="tooltiptext" type="2">TargetTipText_PickUp</Property>
+			<Property name="weaponmodconversions">
+				<Value type="2">(ModEffectClass=SFXGameEffect_WeaponMod_PenetrationBonus, ConversionMultiplier=0.01f)</Value>
+				<Value type="2">(ModEffectClass=SFXGameEffect_WeaponMod_PenetrationDamageBonus, ConversionMultiplier=-1.0f)</Value>
+				<Value type="2">(ModEffectClass=SFXGameEffect_WeaponMod_WeightBonus, ConversionMultiplier=-1.0f)</Value>
+				<Value type="2">(ModEffectClass=SFXGameEffect_WeaponMod_StabilityBonus, ConversionMultiplier=-1.0f)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

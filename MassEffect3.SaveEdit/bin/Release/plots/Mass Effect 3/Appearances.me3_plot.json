@@ -1,0 +1,204 @@
+{
+	"name": "Apperances",
+	"categories": [
+		{
+			"name": "Armor (Pieces)",
+			"bools": [
+				{
+					"id": 19000,
+					"name": "Archon Visor (Head)"
+				},
+				{
+					"id": 20920,
+					"name": "Ariake Technologies (Arms)"
+				},
+				{
+					"id": 20921,
+					"name": "Ariake Technologies (Legs)"
+				},
+				{
+					"id": 20919,
+					"name": "Ariake Technologies (Shoulders)"
+				},
+				{
+					"id": 20918,
+					"name": "Ariake Technologies (Torso)"
+				},
+				{
+					"id": 20916,
+					"name": "Armax Arsenal (Arms)"
+				},
+				{
+					"id": 20917,
+					"name": "Armax Arsenal (Legs)"
+				},
+				{
+					"id": 20915,
+					"name": "Armax Arsenal (Shoulders)"
+				},
+				{
+					"id": 20914,
+					"name": "Armax Arsenal (Torso)"
+				},
+				{
+					"id": 18999,
+					"name": "Capacitor Helmet (Head)"
+				},
+				{
+					"id": 18995,
+					"name": "Death Mask (Head)"
+				},
+				{
+					"id": 22340,
+					"name": "Delumcore Overlay (Head)"
+				},
+				{
+					"id": 21401,
+					"name": "Hahne-Kedar (Arms)"
+				},
+				{
+					"id": 21402,
+					"name": "Hahne-Kedar (Legs)"
+				},
+				{
+					"id": 21400,
+					"name": "Hahne-Kedar (Shoulders)"
+				},
+				{
+					"id": 21399,
+					"name": "Hahne-Kedar (Torso)"
+				},
+				{
+					"id": 19457,
+					"name": "Kassa Fabrication (Arms)"
+				},
+				{
+					"id": 19458,
+					"name": "Kassa Fabrication (Legs)"
+				},
+				{
+					"id": 19456,
+					"name": "Kassa Fabrication (Shoulders)"
+				},
+				{
+					"id": 19455,
+					"name": "Kassa Fabrication (Torso)"
+				},
+				{
+					"id": 19005,
+					"name": "Kestrel Helmet (Head)"
+				},
+				{
+					"id": 18988,
+					"name": "Kuwashii Visor (Head)"
+				},
+				{
+					"id": 22339,
+					"name": "Mnemonic Visor (Head)"
+				},
+				{
+					"id": 19006,
+					"name": "Recon Hood (Head)"
+				},
+				{
+					"id": 19469,
+					"name": "Rosenkov Materials (Arms)"
+				},
+				{
+					"id": 19470,
+					"name": "Rosenkov Materials (Legs)"
+				},
+				{
+					"id": 19468,
+					"name": "Rosenkov Materials (Shoulders)"
+				},
+				{
+					"id": 19467,
+					"name": "Rosenkov Materials (Torso)"
+				},
+				{
+					"id": 22341,
+					"name": "Securitel Helmet (Head)"
+				},
+				{
+					"id": 19007,
+					"name": "Sentry Interface (Head)"
+				},
+				{
+					"id": 19461,
+					"name": "Serrice Council (Arms)"
+				},
+				{
+					"id": 19462,
+					"name": "Serrice Council (Legs)"
+				},
+				{
+					"id": 19460,
+					"name": "Serrice Council (Shoulders)"
+				},
+				{
+					"id": 19459,
+					"name": "Serrice Council (Torso)"
+				},
+				{
+					"id": 19008,
+					"name": "Umbra Visor (Head)"
+				}
+			]
+		},
+		{
+			"name": "Casual Appearances",
+			"bools": [
+				{
+					"id": 22590,
+					"name": "N7 Hoodie"
+				}
+			]
+		},
+		{
+			"name": "Full Body Appearances",
+			"bools": [
+				{
+					"id": 21417,
+					"name": "Blood Dragon Armor"
+				},
+				{
+					"id": 20984,
+					"name": "Cerberus Armor"
+				},
+				{
+					"id": 24820,
+					"name": "Cerberus Nightmare Armor"
+				},
+				{
+					"id": 24819,
+					"name": "Cerberus Shade Armor"
+				},
+				{
+					"id": 24821,
+					"name": "Cerberus Spirit Armor"
+				},
+				{
+					"id": 20987,
+					"name": "Collector Armor"
+				},
+				{
+					"id": 20985,
+					"name": "Inferno Armor"
+				},
+				{
+					"id": 20988,
+					"name": "N7 Defender Armor"
+				},
+				{
+					"id": 20989,
+					"name": "Reckoner-Knight Armor"
+				},
+				{
+					"id": 20986,
+					"name": "Terminus Armor"
+				}
+			]
+		}
+	]
+}

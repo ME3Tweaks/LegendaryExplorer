@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini" source="..\..\biogame\config\bioweapon.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultWeapon.ini</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_hen_pr.sfxdamagetype_prothean">
+      <Property name="hitreactions" type="0">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.08)</Property>
+      <Property name="wounddamage" type="0">WoundDamage_Light</Property>
+      <Property name="woundpct" type="0">0.1f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_hen_pr.sfxweapon_assaultrifle_prothean">
+      <Property name="accfireinterpspeed" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="accfirepenalty" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_acccone_max" type="0">(X=1.8,Y=1.8)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.2,Y=1.2)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=20,Y=40)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.7f,Y=1.1)</Property>
+      <Property name="beaminterpspeed" type="0">(X=20.0,Y=20.0)</Property>
+      <Property name="beaminterptime" type="0">0.5f</Property>
+      <Property name="binfiniteammo" type="0">true</Property>
+      <Property name="bzoomsnapenabled" type="0">false</Property>
+      <Property name="damage" type="0">(X=17.2,Y=21.4)</Property>
+      <Property name="ejectshellcasingtimeratio" type="0">0.8f</Property>
+      <Property name="encumbranceweight" type="0">(X=2.0f,Y=1.4f)</Property>
+      <Property name="fullrechargedelay" type="0">5.f</Property>
+      <Property name="generaldescription" type="0">727494</Property>
+      <Property name="guiimage" type="0">GUI_PR_Images.asl_prothean_512x256</Property>
+      <Property name="iconref" type="0">2</Property>
+      <Property name="idealmaxrange" type="0">1000.f</Property>
+      <Property name="idealminrange" type="0">300.f</Property>
+      <Property name="idealtargetdistance" type="0">800.f</Property>
+      <Property name="lowammosoundthreshold" type="0">0</Property>
+      <Property name="magsize" type="0">(X=100,Y=100)</Property>
+      <Property name="maxaimerror" type="0">(X=0,Y=0)</Property>
+      <Property name="maxcrosshairrange" type="0">(X=20,Y=20)</Property>
+      <Property name="maxspareammo" type="0">(X=1000000,Y=1000000)</Property>
+      <Property name="maxzoomaimerror" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="maxzoomcrosshairrange" type="0">(X=20,Y=20)</Property>
+      <Property name="minaimerror" type="0">(X=0.0,Y=0.0)</Property>
+      <Property name="mincrosshairrange" type="0">(X=20,Y=20)</Property>
+      <Property name="minzoomaimerror" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="minzoomcrosshairrange" type="0">(X=20,Y=20)</Property>
+      <Property name="noammofiresounddelay" type="0">0.5</Property>
+      <Property name="notificationimage" type="0">GUI_PR_Images.asl_prothean_256x128</Property>
+      <Property name="partialrechargedelay" type="0">1.5f</Property>
+      <Property name="prettyname" type="0">727492</Property>
+      <Property name="protheandamagemultiplier" type="0">4.f</Property>
+      <Property name="rateoffire" type="0">(X=800,Y=800)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+      <Property name="rechargeratepersecond" type="0">0.35f</Property>
+      <Property name="recoil" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="recoilfadespeed" type="0">1.0f</Property>
+      <Property name="recoilinterpspeed" type="0">1.0.f</Property>
+      <Property name="recoilyawscale" type="0">0.0f</Property>
+      <Property name="recoilzoomfadespeed" type="0">1.0f</Property>
+      <Property name="reloadduration" type="0">(X=5.0f,Y=5.0f)</Property>
+      <Property name="roundsperburst" type="0">1</Property>
+      <Property name="shortdescription" type="0">727493</Property>
+      <Property name="shortprettyname" type="0">727492</Property>
+      <Property name="statbaraccuracy" type="0">(X=40.0f,Y=40.f)</Property>
+      <Property name="statbardamage" type="0">(X=17.2,Y=21.4)</Property>
+      <Property name="statbarrateoffire" type="0">(X=800,Y=800)</Property>
+      <Property name="steamsoundthreshold" type="0">1</Property>
+      <Property name="timetoheatup" type="0">2.f</Property>
+      <Property name="timetoheatupai" type="0">1.f</Property>
+      <Property name="tracerange" type="0">4000</Property>
+      <Property name="weaponacquiredid" type="0">22746</Property>
+      <Property name="weaponacquiredid_ngp" type="0">22747</Property>
+      <Property name="weaponmodbodycolours">
+        <Value type="3">(R=1.00f,G=0.24f,B=0.18f,A=0.0f)</Value>
+        <Value type="3">(R=1.00f,G=0.74f,B=0.30f,A=0.0f)</Value>
+        <Value type="3">(R=0.37f,G=0.51f,B=0.25f,A=0.0f)</Value>
+        <Value type="3">(R=0.38f,G=0.39f,B=0.65f,A=0.0f)</Value>
+        <Value type="3">(R=0.08f,G=0.09f,B=0.15f,A=0.0f)</Value>
+      </Property>
+      <Property name="zoomaccfireinterpspeed" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="zoomaccfirepenalty" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="zoomrecoil" type="0">(X=0.0f,y=0.0f)</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

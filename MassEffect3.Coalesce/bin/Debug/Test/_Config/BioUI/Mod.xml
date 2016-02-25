@@ -1,0 +1,578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Includes>
+		<!--<Include source="Mod/GameContentDlcExpPack003.xml" />-->
+		<Include source="Mod/GameContentDlcShared.xml" />
+		<!--<Include source="Mod/GAWAssets.xml" />-->
+		<Include source="Mod/Stores.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.biosfhandler_newcharacter">
+			<Property name="bonustalents" settings="Clear">
+				<Value type="-1" />
+
+				<!-- Armor Piercing Ammo -->
+				<Value type="3">
+					(BonusPowerID=8192,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_ArmorPiercingAmmo",
+					srChoiceName=93965,
+					srChoiceTitle=93965,
+					srChoiceDescription=155053,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Barrier -->
+				<Value type="3">
+					(BonusPowerID=1024,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Barrier",
+					srChoiceName=93973,
+					srChoiceTitle=93973,
+					srChoiceDescription=155065,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Carnage -->
+				<Value type="3">
+					(BonusPowerID=1,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Carnage",
+					srChoiceName=668831,
+					srChoiceTitle=668831,
+					srChoiceDescription=690808,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Dark Channel -->
+				<Value type="3">
+					(BonusPowerID=32768,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_DarkChannel",
+					srChoiceName=716448,
+					srChoiceTitle=716448,
+					srChoiceDescription=716450,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Decoy -->
+				<Value type="3">
+					(BonusPowerID=8,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Decoy",
+					srChoiceName=674631,
+					srChoiceTitle=674631,
+					srChoiceDescription=690836,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Defense Drone -->
+				<Value type="3">
+					(BonusPowerID=16,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_ProtectorDrone",
+					srChoiceName=663224,
+					srChoiceTitle=663224,
+					srChoiceDescription=690854,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Defense Matrix -->
+				<Value type="3">
+					(BonusPowerID=2048,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_GethShieldBoost",
+					srChoiceName=314066,
+					srChoiceTitle=314066,
+					srChoiceDescription=314067,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Dominate -->
+				<Value type="3">
+					(BonusPowerID=65536,
+					PowerClassName="SFXGameContentDLC_EXP_Pack001.SFXPowerCustomAction_Dominate",
+					srChoiceName=762116,
+					srChoiceTitle=762116,
+					srChoiceDescription=762123,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Energy Drain -->
+				<Value type="3">
+					(BonusPowerID=32,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_EnergyDrain",
+					srChoiceName=205894,
+					srChoiceTitle=205894,
+					srChoiceDescription=205895,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Flare -->
+				<Value type="3">
+					(BonusPowerID=131072,
+					PowerClassName="SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_BioticFlare",
+					srChoiceName=735917,
+					srChoiceTitle=735917,
+					srChoiceDescription=735918,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Fortification -->
+				<Value type="3">
+					(BonusPowerID=4096,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Fortification",
+					srChoiceName=314036,
+					srChoiceTitle=314036,
+					srChoiceDescription=314037,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Inferno Grenade -->
+				<Value type="3">
+					(BonusPowerID=64,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_InfernoGrenade",
+					srChoiceName=349055,
+					srChoiceTitle=349055,
+					srChoiceDescription=349060,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Lash -->
+				<Value type="3">
+					(BonusPowerID=262144,
+					PowerClassName="SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_AriaLash",
+					srChoiceName=765772,
+					srChoiceTitle=765772,
+					srChoiceDescription=765773,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Marksman -->
+				<Value type="3">
+					(BonusPowerID=2,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Marksman",
+					srChoiceName=572088,
+					srChoiceTitle=572088,
+					srChoiceDescription=572089,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Proximity Mine -->
+				<Value type="3">
+					(BonusPowerID=4,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_ProximityMine",
+					srChoiceName=572665,
+					srChoiceTitle=572665,
+					srChoiceDescription=658547,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Reave -->
+				<Value type="3">
+					(BonusPowerID=128,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Reave",
+					srChoiceName=314878,
+					srChoiceTitle=314878,
+					srChoiceDescription=314879,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Slam -->
+				<Value type="2">
+					(BonusPowerID=16384,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Slam",
+					srChoiceName=542178,
+					srChoiceTitle=542178,
+					srChoiceDescription=716449,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Stasis -->
+				<Value type="3">
+					(BonusPowerID=256,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_Stasis",
+					srChoiceName=127059,
+					srChoiceTitle=127059,
+					srChoiceDescription=365834,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Stimulant Pack-->
+				<Value type="3">
+					(BonusPowerID=524288,
+					PowerClassName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_StimPack",
+					srChoiceName=766365,
+					srChoiceTitle=766365,
+					srChoiceDescription=766366,
+					oChoiceImage=none)
+				</Value>
+
+				<!-- Warp Ammo -->
+				<Value type="3">
+					(BonusPowerID=512,
+					PowerClassName="SFXGameContent.SFXPowerCustomAction_WarpAmmo",
+					srChoiceName=326671,
+					srChoiceTitle=326671,
+					srChoiceDescription=326672,
+					oChoiceImage=none)
+				</Value>
+			</Property>
+			<!--<Property name="defaultfemaleme2headcode" type="2">743.Q9G.M17.F8A.JDQ.62Q.1DA.711.966.414.6G6.177</Property>-->
+			<!--<Property name="femalepregeneratedheadcodes">
+				<Value type="2">743Q9GM17F8AJDQ65Q1DA8119664126G5177</Value>
+				<Value type="2">233LPIK9E485QCJ79J1DH419C719I52G6316</Value>
+				<Value type="2">722W89Q9E417FMAA9LCFD4C1C7CHW2AG5315</Value>
+				<Value type="2">9413IIIR1M9HFPK25Q6R91D1G179B43B4317</Value>
+				<Value type="2">13116BII179JJL66BM9MG71BD66412D35176</Value>
+				<Value type="2">552ELIHAE425CLHE26PDH2G1L426L6426573</Value>
+				<Value type="2">411A8JII1791ILF7DT9AK9ADLC92A6B66616</Value>
+			</Property>-->
+			<!--<Property name="malepregeneratedheadcodes">
+				<Value type="2">541DJDLTFA3GAAVJBDMDJ6PGG72AG96455</Value>
+				<Value type="2">122WK5RGIS3RMANEDBSLG39WWK6CR28345</Value>
+				<Value type="2">532ISMG8MP3EFHQW5DGLC48L9NCEBG8465</Value>
+				<Value type="2">121AIKGMWW1AJCWGDEM8669EWF6AJAB435</Value>
+				<Value type="2">5511IABM1M46JG1FBBED733F1G13995365</Value>
+				<Value type="2">313WNMRB8H3IGMPMBBN7P2RNJ84AU3A356</Value>
+				<Value type="2">453WE1A71171H1T175S8932D1J2C84E356</Value>
+			</Property>-->
+			<Property name="newgamestartingcodexentries">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">22035</Value>
+				<Value type="2">22036</Value>
+				<Value type="2">22037</Value>
+				<Value type="2">22001</Value>
+				<Value type="2">22002</Value>
+				<Value type="2">22003</Value>
+				<Value type="2">22004</Value>
+				<Value type="2">22005</Value>
+				<Value type="2">22006</Value>
+				<Value type="2">22007</Value>
+				<Value type="2">22009</Value>
+				<Value type="2">22010</Value>
+				<Value type="2">22258</Value>
+				<Value type="2">22024</Value>
+				<Value type="2">22025</Value>
+				<Value type="2">22026</Value>
+				<Value type="2">22029</Value>
+				<Value type="2">22030</Value>
+				<Value type="2">22040</Value>
+				<Value type="2">22038</Value>
+				<Value type="2">22063</Value>
+				<Value type="2">22064</Value>
+				<Value type="2">22065</Value>
+				<Value type="2">22228</Value>
+				<Value type="2">22297</Value>
+				<Value type="2">22042</Value>
+				<Value type="2">22043</Value>
+				<Value type="2">22044</Value>
+				<Value type="2">22045</Value>
+				<Value type="2">22046</Value>
+				<Value type="2">22048</Value>
+				<Value type="2">22049</Value>
+				<Value type="2">22051</Value>
+				<Value type="2">22052</Value>
+				<Value type="2">22053</Value>
+				<Value type="2">22054</Value>
+				<Value type="2">22056</Value>
+				<Value type="2">22057</Value>
+				<Value type="2">22058</Value>
+				<Value type="2">22059</Value>
+				<Value type="2">21708</Value>
+				<Value type="2">22284</Value>
+				<Value type="2">22283</Value>
+				<Value type="2">22298</Value>
+				<Value type="2">21742</Value>
+				<Value type="2">22295</Value>
+				<Value type="2">22296</Value>
+				<Value type="2">22066</Value>
+				<Value type="2">22067</Value>
+				<Value type="2">21747</Value>
+				<Value type="2">22285</Value>
+				<Value type="2">22294</Value>
+
+				<!-- Testing -->
+				<!--<Value type="2">22635</Value>
+				<Value type="2">22633</Value>
+				<Value type="2">22634</Value>
+				<Value type="2">22632</Value>
+				<Value type="2">21187</Value>
+				<Value type="2">22590</Value>
+				<Value type="2">22629</Value>
+				<Value type="2">23743</Value>
+				<Value type="2">22628</Value>
+				<Value type="2">23809</Value>
+				<Value type="2">20988</Value>
+				<Value type="2">22630</Value>
+				<Value type="2">23741</Value>
+				<Value type="2">22636</Value>
+				<Value type="2">23811</Value>
+				<Value type="2">20989</Value>
+				<Value type="2">23702</Value>
+				<Value type="2">23705</Value>
+				<Value type="2">23701</Value>
+				<Value type="2">23704</Value>
+				<Value type="2">23700</Value>
+				<Value type="2">23703</Value>
+				<Value type="2">22631</Value>
+				<Value type="2">24050</Value>
+				<Value type="2">24048</Value>
+				<Value type="2">24047</Value>
+				<Value type="2">24053</Value>
+				<Value type="2">24049</Value>
+				<Value type="2">24052</Value>
+				<Value type="2">24051</Value>-->
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgui_store">
+			<Property name="globalstorediscounts">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(PlayerVariable="Intel_DestroyedMiniReaper_StoreDiscount", DiscountStrength=0.10)</Value>
+				<Value type="2">(PlayerVariable="Intel_SamaraMission_StoreDiscount", DiscountStrength=0.10)</Value>
+			</Property>
+			<Property name="modstringsarray">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy",
+					srModName=515088,
+					srModDescription=515089,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleDamage",
+					srModName=518965,
+					srModDescription=518966,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleForce",
+					srModName=518987,
+					srModDescription=518988,
+					Custom0Tokens=(1.00, 1.00, 1.00, 1.00, 1.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleMagSize",
+					srModName=518985,
+					srModDescription=518986,
+					Custom0Tokens=(40.00, 50.00, 60.00, 70.00, 80.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleStability",
+					srModName=518980,
+					srModDescription=518984,
+					Custom0Tokens=(30.00, 40.00, 50.00, 60.00, 70.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleAccuracy",
+					srModName=519534,
+					srModDescription=519535,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage",
+					srModName=519550,
+					srModDescription=519552,
+					Custom0Tokens=(1.00, 1.00, 1.00, 1.00, 1.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleDamage",
+					srModName=519527,
+					srModDescription=519531,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed",
+					srModName=519536,
+					srModDescription=519549,
+					Custom0Tokens=(50.00, 60.00, 70.00, 80.00, 90.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation",
+					srModName=519532,
+					srModDescription=519533,
+					Custom0Tokens=(10.00, 12.50, 15.00, 17.50, 20.00),
+					Custom1Tokens=(15.00, 17.50, 20.00, 22.50, 25.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_ShotgunAccuracy",
+					srModName=519500,
+					srModDescription=519503,
+					Custom0Tokens=(15.00, 17.50, 20.00, 22.50, 25.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_ShotgunDamage",
+					srModName=519486,
+					srModDescription=519487,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage",
+					srModName=519504,
+					srModDescription=519505,
+					Custom0Tokens=(15.00, 17.50, 20.00, 22.50, 25.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed",
+					srModName=519482,
+					srModDescription=519485,
+					Custom0Tokens=(1.00, 1.00, 1.00, 1.00, 1.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_ShotgunStability",
+					srModName=519508,
+					srModDescription=519509,
+					Custom0Tokens=(50.00, 60.00, 70.00, 80.00, 90.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_PistolAccuracy",
+					srModName=519359,
+					srModDescription=519360,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_PistolDamage",
+					srModName=519355,
+					srModDescription=519356,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_PistolMagSize",
+					srModName=519438,
+					srModDescription=519439,
+					Custom0Tokens=(40.00, 50.00, 60.00, 70.00, 80.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_PistolReloadSpeed",
+					srModName=519352,
+					srModDescription=519354,
+					Custom0Tokens=(1.00, 1.00, 1.00, 1.00, 1.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_PistolStability",
+					srModName=519357,
+					srModDescription=519358,
+					Custom0Tokens=(15.00, 17.50, 20.00, 22.50, 25.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SMGAccuracy",
+					srModName=519472,
+					srModDescription=519473,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SMGConstraintDamage",
+					srModName=519476,
+					srModDescription=519477,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SMGDamage",
+					srModName=519468,
+					srModDescription=519469,
+					Custom0Tokens=(25.00, 30.00, 35.00, 40.00, 45.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SMGMagSize",
+					srModName=519470,
+					srModDescription=519471,
+					Custom0Tokens=(40.00, 50.00, 60.00, 70.00, 80.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXWeaponMod_SMGStability",
+					srModName=519474,
+					srModDescription=519475,
+					Custom0Tokens=(50.00, 60.00, 70.00, 80.00, 90.00),
+					Custom1Tokens=(1.00, 1.00, 1.00, 1.00, 1.00))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee",
+					srModName=746321,
+					srModDescription=754702)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight",
+					srModName=747597,
+					srModDescription=754707)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadshot",
+					srModName=747595,
+					srModDescription=747594)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration",
+					srModName=746472,
+					srModDescription=746473)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization",
+					srModName=746467,
+					srModDescription=754700)
+				</Value>
+			</Property>
+			<Property name="respeccosts">
+				<Value type="-1" />
+
+				<!-- [1, 5] -->
+				<Value type="2">5000</Value>
+				<Value type="2">10000</Value>
+				<Value type="2">15000</Value>
+				<Value type="2">20000</Value>
+				<Value type="2">25000</Value>
+
+				<!-- [6, 10] -->
+				<!--<Value type="2">30000</Value>-->
+				<!--<Value type="2">35000</Value>-->
+				<!--<Value type="2">40000</Value>-->
+				<!--<Value type="2">45000</Value>-->
+				<!--<Value type="2">50000</Value>-->
+			</Property>
+			<Property name="weaponupgradecosts">
+				<Value type="-1" />
+
+				<!-- [1,7] -->
+				<Value type="2">1000</Value>
+				<Value type="2">2000</Value>
+				<Value type="2">3000</Value>
+				<Value type="2">4000</Value>
+				<Value type="2">5000</Value>
+				<Value type="2">6000</Value>
+				<Value type="2">7000</Value>
+
+				<!-- [8, 14] -->
+				<Value type="2">8000</Value>
+				<Value type="2">9000</Value>
+				<Value type="2">10000</Value>
+				<Value type="2">12500</Value>
+				<Value type="2">15000</Value>
+				<Value type="2">17500</Value>
+				<Value type="2">20000</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

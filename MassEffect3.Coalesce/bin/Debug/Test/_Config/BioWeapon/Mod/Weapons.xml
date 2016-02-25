@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Includes>
+		<!---->
+		<Include source="Weapons/AssaultRifles/Core.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConGun01.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConGun02.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConMP1.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConMP2.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConMP3.xml" />
+		<Include source="Weapons/AssaultRifles/DlcConMP5.xml" />
+		<Include source="Weapons/AssaultRifles/DlcExpPack003.xml" />
+		<Include source="Weapons/AssaultRifles/DlcHenPr.xml" />
+
+		<!---->
+		<Include source="Weapons/Heavy/Core.xml" />
+
+		<!---->
+		<Include source="Weapons/Pistols/Core.xml" />
+		<Include source="Weapons/Pistols/DlcConGun02.xml" />
+		<Include source="Weapons/Pistols/DlcConMP3.xml" />
+		<Include source="Weapons/Pistols/DlcConMP5.xml" />
+		<Include source="Weapons/Pistols/DlcExpPack003.xml" />
+
+		<!---->
+		<Include source="Weapons/Shotguns/Core.xml" />
+		<Include source="Weapons/Shotguns/DlcConGun01.xml" />
+		<Include source="Weapons/Shotguns/DlcConGun02.xml" />
+		<Include source="Weapons/Shotguns/DlcConMP2.xml" />
+		<Include source="Weapons/Shotguns/DlcConMP3.xml" />
+		<Include source="Weapons/Shotguns/DlcConMP5.xml" />
+
+		<!---->
+		<Include source="Weapons/SMGs/Core.xml" />
+		<Include source="Weapons/SMGs/DlcConGun01.xml" />
+		<Include source="Weapons/SMGs/DlcConMP1.xml" />
+		<Include source="Weapons/SMGs/DlcConMP4.xml" />
+		<Include source="Weapons/SMGs/DlcConMP5.xml" />
+
+		<!---->
+		<Include source="Weapons/SniperRifles/Core.xml" />
+		<Include source="Weapons/SniperRifles/DlcConGun01.xml" />
+		<Include source="Weapons/SniperRifles/DlcConGun02.xml" />
+		<Include source="Weapons/SniperRifles/DlcConMP1.xml" />
+		<Include source="Weapons/SniperRifles/DlcConMP2.xml" />
+		<Include source="Weapons/SniperRifles/DlcConMP4.xml" />
+	</Includes>
+</CoalesceAsset>

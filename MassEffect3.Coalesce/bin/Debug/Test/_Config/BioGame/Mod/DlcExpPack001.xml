@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxgamecontentdlc_exp_pack001.sfxpowercustomaction_dominate">
+			<Property name="cooldowntime" type="0">(BaseValue=12.00, RankBonuses[1]=0.25, Formula=DivideByBonusSum)</Property>
+			<Property name="detonationparameters" type="0">(ImpactPlaceables=false, BlockedByObjects=true)</Property>
+			<Property name="effectduration" type="0">(BaseValue=10.00, RankBonuses[2]=0.30)</Property>
+			<Property name="evolve_damagebonus1" type="0">0.40</Property>
+			<Property name="evolve_damagebonus2" type="0">0.60</Property>
+			<Property name="evolve_damageovertime" type="0">(BaseValue=50.00)</Property>
+			<Property name="evolve_damagereduction" type="0">0.50</Property>
+			<Property name="evolve_damagetakenbonus" type="0">0.30</Property>
+			<Property name="evolve_durationbonus" type="0">0.40</Property>
+			<Property name="evolve_rechargebonus" type="0">0.30</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000.00)</Property>
+			<Property name="timetargetignored" type="0">6.00</Property>
+			<Property name="unaffectedpawns">
+				<Value type="1">null</Value>
+				<Value type="3">SFXPawn_Harvester</Value>
+				<Value type="3">SFXPawn_KaiLeng</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack001.sfxpowercustomaction_tritonrocket_player">
+			<Property name="cooldowntime" type="0">(BaseValue=5.00)</Property>
+			<Property name="damage" type="0">(BaseValue=2000.00)</Property>
+			<Property name="force" type="0">(BaseValue=600.00)</Property>
+			<Property name="impactradius" type="0">(BaseValue=400.00)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=4000.00)</Property>
+			<Property name="minimumrange" type="0">(BaseValue=100.00)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=4000.00)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

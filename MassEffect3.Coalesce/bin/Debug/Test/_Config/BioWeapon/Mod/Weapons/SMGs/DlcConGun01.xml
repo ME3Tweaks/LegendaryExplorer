@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_gun01.sfxweapon_smg_bloodpack">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun01.sfxweapon_smg_geth_gun01">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<Property name="damage" type="0">(X=16.1,Y=20.1)</Property>
+			<Property name="encumbranceweight" type="0">(X=0.65f,Y=0.3f)</Property>
+			<Property name="maxspareammo" type="0">(X=600,Y=800)</Property>
+			<Property name="statbardamage" type="0">(X=16.1,Y=20.1)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

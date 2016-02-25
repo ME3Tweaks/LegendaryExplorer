@@ -1,0 +1,47 @@
+{
+  Textures:
+  {
+    Remove:
+    [
+      "EYE_Diff", "EYE_Spec", "EYE_Norm", "EYE_Mask",
+      "EYE_Iris_Diff", "EYE_Iris_Spec", "EYE_Iris_Norm", "EYE_Iris_Mask",
+      "EYE_Lens_Diff", "EYE_Lens_Spec", "EYE_Lens_Norm", "EYE_Lens_Mask",
+    ],
+    Set:
+    [
+      {Key: "EYE_Diff",      Value: "BIOG_HMM_HED_PROMorph.IllusiveMan.HMM_HED_PROIllusiveman_Eye_Diff"},
+      {Key: "EYE_Spec",      Value: "BIOG_HMM_HED_PROMorph.IllusiveMan.HMM_HED_PROIllusiveman_Eye_Spec"},
+      {Key: "EYE_Mask",      Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Spec"},
+      {Key: "EYE_Iris_Norm", Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Iris_Norm"},
+      {Key: "EYE_Lens_Norm", Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Lens_Norm"},
+    ],
+  },
+  Scalars:
+  {
+    Set:
+    [
+      {Key: "EYE_White_SPwr",              Value: 200.0},
+      {Key: "EYE_Iris_SPwr",               Value: 80.0},
+      {Key: "EYE_Whites_Spec_Colour",      Value: 1.85},
+      {Key: "EYE_Lens_Spwr_Scalar",        Value: 300.0},
+      {Key: "EYE_Lens_Spec_Colour_Scalar", Value: 2.0},
+      {Key: "EYE_Lens_Spec_Scalar",        Value: 2.0},
+      {Key: "Emis_Scalar",                 Value: 0.4},
+    ],
+  },
+  Vectors:
+  {
+    Remove:
+    [
+      "EYE_Iris_Spec_Colour",
+      "EYE_Iris_Colour_Vector",
+      "Emis_Color",
+    ],
+    Set:
+    [
+      {Key: "EYE_Iris_Spec_Colour",   Value: {R: 0.2,      G: 0.2,      B: 0.2,      A: 0.0}},
+      {Key: "EYE_Iris_Colour_Vector", Value: {R: 0.008373, G: 0.505433, B: 0.867136, A: 1.0}},
+      {Key: "Emis_Color",             Value: {R: 0.160444, G: 1.0,      B: 1.0,      A: 1.0}},
+    ]
+  },
+}

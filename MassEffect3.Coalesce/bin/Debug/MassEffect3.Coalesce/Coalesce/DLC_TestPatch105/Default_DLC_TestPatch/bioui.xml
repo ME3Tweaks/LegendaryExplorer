@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\Test\DLC_TestPatch\Config\DefaultUI.ini</Property>
+    </Section>
+    <Section name="sfxgame.biosfhandler_mainmenu">
+      <Property name="srfriendbeatbyme" type="4">718193</Property>
+      <Property name="srfriendbeatme" type="4">718192</Property>
+    </Section>
+    <Section name="sfxgame.biosfhandler_options">
+      <Property name="mpoptionpages">
+        <Value type="1">null</Value>
+        <Value type="3">(label=163117, story=163118, options=(OPTION_MPAutoLvlUp, OPTION_Subtitles, OPTION_Hints, OPTION_ActionUIHints, OPTION_CONTENT_1))</Value>
+        <Value type="3">(label=282879, story=282880, options=(OPTION_ControlBindings))</Value>
+        <Value type="3">(label=338302, story=338303, options=(OPTION_MouseInvert, OPTION_MouseSmooth, OPTION_MouseSensitivity) )</Value>
+        <Value type="3">(label=163249, story=163250, options=(OPTION_Resolution, OPTION_WindowMode, OPTION_Gamma, OPTION_AntiAliasing, OPTION_DynShadows) )</Value>
+        <Value type="3">(label=163265, story=163266, options=(OPTION_MusicVolume, OPTION_SFXVolume, OPTION_DlgVolume, OPTION_AudioDynamicRange, OPTION_MPVoiceChatMode, OPTION_MPVoiceContinueOnLostFocus, OPTION_MPVoiceChatInputDevice, OPTION_MPVoiceChatOutputDevice) )</Value>
+        <Value type="3">(label=345447, story=345448, options=(OPTION_OnlineTelemetry) )</Value>
+      </Property>
+      <Property name="optionpages">
+        <Value type="1">null</Value>
+        <Value type="3">(label=163117, story=163118, options=(OPTION_Difficulty, OPTION_AutoLvlUp, OPTION_SquadPower, OPTION_AutoSave, OPTION_Hints, OPTION_ActionUIHints, OPTION_CONTENT_1))</Value>
+        <Value type="3">(label=163187, story=722109, options=(OPTION_AutoReplyMode, OPTION_Subtitles, OPTION_HideCinematicHelmet, OPTION_HenchHelmetOption, OPTION_VOLanguage, OPTION_TextLanguage))</Value>
+        <Value type="3">(label=282879, story=282880, options=(OPTION_ControlBindings))</Value>
+        <Value type="3">(label=338302, story=338303, options=(OPTION_MouseInvert, OPTION_MouseSmooth, OPTION_MouseSensitivity) )</Value>
+        <Value type="3">(label=163249, story=163250, options=(OPTION_Resolution, OPTION_WindowMode, OPTION_Gamma, OPTION_AntiAliasing, OPTION_DynShadows) )</Value>
+        <Value type="3">(label=163265, story=163266, options=(OPTION_MusicVolume, OPTION_SFXVolume, OPTION_DlgVolume, OPTION_AudioDynamicRange, OPTION_MPVoiceChatMode, OPTION_MPVoiceContinueOnLostFocus, OPTION_MPVoiceChatInputDevice, OPTION_MPVoiceChatOutputDevice) )</Value>
+        <Value type="3">(label=345447, story=345448, options=(OPTION_OnlineTelemetry) )</Value>
+      </Property>
+      <Property name="textslideroptions" type="3">(id=OPTION_CONTENT_1, label=767420, story=0, TelemetryKey="alfx", defaultVal=0, values=((label=767421,story=767422),(label=767423,story=767424),(label=767425,story=767426)))</Property>
+    </Section>
+    <Section name="sfxgame.biosfhandler_pcoptions">
+      <Property name="aliasmap">
+        <Value type="4">(Name=337733,bCategory=true)</Value>
+        <Value type="4">(Alias="PC_MoveForward",Name=337894,Subordinates=((Alias="PC_MoveForward",GameMode=GameMode_Vehicle),(Alias="PC_MoveForward",GameMode=GameMode_Atlas),(Alias="PC_GalaxyKeyMoveForward",GameMode=GameMode_Galaxy),(Alias="PC_MoveForward",GameMode=GameMode_DreamSequence),(Alias="PC_MoveForward",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="PC_MoveBackward",Name=337895,Subordinates=((Alias="PC_MoveBackward",GameMode=GameMode_Vehicle),(Alias="PC_MoveBackward",GameMode=GameMode_Atlas),(Alias="PC_GalaxyKeyMoveBackward",GameMode=GameMode_Galaxy),(Alias="PC_MoveBackward",GameMode=GameMode_DreamSequence),(Alias="PC_MoveBackward",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="PC_StrafeLeft",Name=337896,Subordinates=((Alias="PC_StrafeLeft",GameMode=GameMode_Vehicle),(Alias="PC_StrafeLeft",GameMode=GameMode_Atlas),(Alias="PC_GalaxyKeyStrafeLeft",GameMode=GameMode_Galaxy),(Alias="PC_StrafeLeft",GameMode=GameMode_DreamSequence),(Alias="PC_StrafeLeft",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="PC_StrafeRight",Name=337897,Subordinates=((Alias="PC_StrafeRight",GameMode=GameMode_Vehicle),(Alias="PC_StrafeRight",GameMode=GameMode_Atlas),(Alias="PC_GalaxyKeyStrafeRight",GameMode=GameMode_Galaxy),(Alias="PC_StrafeRight",GameMode=GameMode_DreamSequence),(Alias="PC_StrafeRight",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="Walking",Name=174852)</Value>
+        <Value type="4">(Alias="Shared_Action",Name=337962,Subordinates=((Alias="Shared_Action",GameMode=GameMode_Vehicle),(Alias="Shared_Action",GameMode=GameMode_Atlas),(Alias="Shared_Action",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="Shared_ShowMap",Name=708554,Subordinates=((Alias="Shared_ShowMap",bAllGameModes=true),(Alias="Shared_HideMap",GameMode=GameMode_GUI),(Alias="Shared_ShowMap",GameMode=GameMode_Atlas),(Alias="Shared_ShowMap",GameMode=GameMode_Vehicle),(Alias="Shared_ShowMap",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="Shared_CoverTurn",Name=708967)</Value>
+        <Value type="4">(Alias="Shared_QuickSave",Name=282869,Subordinates=((Alias="Shared_QuickSave",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="PC_QuickLoad",Name=282870,Subordinates=((Alias="PC_QuickLoad",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Name=337781,bCategory=true)</Value>
+        <Value type="4">(Alias="Shared_Shoot",Name=337963,Subordinates=((Alias="Shared_Shoot",GameMode=GameMode_Vehicle),(Alias="Shared_Shoot",GameMode=GameMode_Atlas),(Alias="Shared_Shoot",GameMode=GameMode_IllusiveManConflict),(Alias="Shared_Shoot",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="Shared_Aim",Name=282873,Subordinates=((Alias="Shared_Aim",GameMode=GameMode_Vehicle),(Alias="Shared_Aim",GameMode=GameMode_Atlas),(Alias="PC_CommandToggleCam",GameMode=GameMode_Command),(Alias="Shared_Aim",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="PC_Reload",Name=282875,Subordinates=((Alias="PC_Reload",GameMode=GameMode_Atlas),(Alias="PC_Reload",GameMode=GameMode_Vehicle),(Alias="PC_Reload",GameMode=GameMode_InjuredShepard)))</Value>
+        <Value type="4">(Alias="Shared_Melee",Name=282877,Subordinates=((Alias="Shared_Melee",GameMode=GameMode_Atlas)))</Value>
+        <Value type="4">(Alias="PC_SwapWeapon",Name=337964)</Value>
+        <Value type="4">(Alias="PC_NextWeapon",Name=282872)</Value>
+        <Value type="4">(Alias="PC_PrevWeapon",Name=282871)</Value>
+        <Value type="4">(Alias="PC_EnterCommandMenu",Name=282856,Subordinates=((Alias="PC_EnterCommandMenu",GameMode=GameMode_Vehicle),(Alias="PC_EnterCommandMenu",GameMode=GameMode_Atlas),(Alias="PC_ExitCommandMenu",GameMode=GameMode_Command)))</Value>
+        <Value type="4">(Alias="Shared_SquadFollow",Name=337965,Subordinates=((Alias="Shared_SquadFollow",GameMode=GameMode_Vehicle),(Alias="Shared_SquadFollow",GameMode=GameMode_Atlas),(Alias="Shared_SquadFollow",GameMode=GameMode_Command)))</Value>
+        <Value type="4">(Alias="Shared_SquadMove1",Name=337966,Subordinates=((Alias="Shared_SquadMove1",GameMode=GameMode_Vehicle),(Alias="Shared_SquadMove1",GameMode=GameMode_Atlas),(Alias="Shared_SquadMove1",GameMode=GameMode_Command)))</Value>
+        <Value type="4">(Alias="Shared_SquadMove2",Name=337967,Subordinates=((Alias="Shared_SquadMove2",GameMode=GameMode_Vehicle),(Alias="Shared_SquadMove2",GameMode=GameMode_Atlas),(Alias="Shared_SquadMove2",GameMode=GameMode_Command)))</Value>
+        <Value type="4">(Alias="Shared_SquadAttack",Name=708968,Subordinates=((Alias="Shared_SquadAttack",GameMode=GameMode_Vehicle),(Alias="Shared_SquadAttack",GameMode=GameMode_Atlas),(Alias="Shared_SquadAttack",GameMode=GameMode_Command)))</Value>
+        <Value type="4">(Alias="PC_HotKey1",Name=337973)</Value>
+        <Value type="4">(Alias="PC_HotKey2",Name=337974)</Value>
+        <Value type="4">(Alias="PC_HotKey3",Name=337975)</Value>
+        <Value type="4">(Alias="PC_HotKey4",Name=337976)</Value>
+        <Value type="4">(Alias="PC_HotKey5",Name=337977)</Value>
+        <Value type="4">(Alias="PC_HotKey6",Name=337978)</Value>
+        <Value type="4">(Alias="PC_HotKey7",Name=337979,Subordinates=((Alias="UseRevivePower",GameMode=GameMode_Dying)))</Value>
+        <Value type="4">(Alias="PC_HotKey8",Name=337980)</Value>
+        <Value type="4">(Name=708645,bCategory=true)</Value>
+        <Value type="4">(Alias="PC_PushToTalk",Name=711401,Subordinates=((Alias="PC_PushToTalk",GameMode=GameMode_GUI),(Alias="PC_PushToTalk",GameMode=GameMode_Lobby),(Alias="PC_PushToTalk",GameMode=GameMode_Dying),(Alias="PC_PushToTalk",GameMode=GameMode_Spectator))))</Value>
+        <Value type="4">(Alias="ProlongLife",Name=724510,GameMode=GameMode_Dying)</Value>
+        <Value type="4">(Name=687215,bCategory=true)</Value>
+        <Value type="4">(Alias="Shared_ExitAtlas",Name=687216,GameMode=GameMode_Atlas)</Value>
+        <Value type="4">(Name=687431,bCategory=true)</Value>
+        <Value type="4">(Alias="Shared_ExitMountedGun",Name=687432,GameMode=GameMode_Vehicle)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxguiext_weaponmods">
+      <Property name="srunavailable" type="0">765459</Property>
+    </Section>
+    <Section name="sfxgame.sfxguiinteraction">
+      <Property name="controltokens" type="3">(Token=PC_Control_Unbound,TexturePath="None", Width=2, Height=2, VAlign="bottom")</Property>
+    </Section>
+    <Section name="sfxgame.sfxguivalue_markerplayer">
+      <Property name="titletextdelaytime" type="0">1.0</Property>
+    </Section>
+    <Section name="sfxgamempcontent.sfxgui_mphud">
+      <Property name="srspectatorhuddescriptionpc" type="0">738901</Property>
+    </Section>
+    <Section name="sfxgamempcontent.sfxgui_mplobby">
+      <Property name="maxonlineimages" type="0">20</Property>
+    </Section>
+    <Section name="sfxgamempcontent.sfxgui_mpmatchconsumables">
+      <Property name="bliveiniforpatch4arelive" type="0">false</Property>
+    </Section>
+    <Section name="system.saveload">
+      <Property name="unknowndlcpackagestring" type="0">766341</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

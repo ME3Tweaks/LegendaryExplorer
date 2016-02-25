@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinecomponentblazeleaderboard">
+			<Property name="bcachefriendrankhistory" type="0">true</Property>
+			<Property name="challengepointsglobal_leaderboardname" type="0">ChallengePointsGlobal</Property>
+			<Property name="mleaderboardnames">
+				<Value type="3">(Name="ChallengePointsGlobal", AppendLocaleCode=false)</Value>
+				<Value type="3">(Name="ChallengePoints", AppendLocaleCode=true)</Value>
+			</Property>
+			<Property name="nn7global_leaderboardname" type="0">N7RatingGlobal</Property>
+			<Property name="srfriendbeatbyme" type="0">718193</Property>
+			<Property name="srfriendbeatbyme_challengepoints" type="0">764399</Property>
+			<Property name="srfriendbeatme" type="0">718192</Property>
+			<Property name="srfriendbeatme_challengepoints" type="0">764398</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobsavesettings">
+			<Property name="m_save_rpc_throttle" type="0">0.1f</Property>
+			<Property name="m_save_rpc_timeout" type="0">120000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

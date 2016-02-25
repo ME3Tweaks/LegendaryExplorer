@@ -1,0 +1,218 @@
+class GFxMovieInfo : UObject
+	UArray<byte> RawData
+	UArray<UObject*> References
+	UArray<UObject*> UserReferences
+	uint bUsesFontlib : 1
+	uint bUseGFxExport : 1
+	uint bUseCompressedTextures : 1
+	UString SourceFile
+	UString GFxExportCmdLine
+	UArray<UObject*> CompressedTextureReferences
+
+
+struct SFXWeaponSelectWeaponData
+	SFXWeaponUICookData CookData
+	UString ClassPath
+	UArray<LinearColor> WeaponModGripColors
+	UArray<LinearColor> WeaponModBodyColors
+	UArray<LinearColor> WeaponModEmissiveValues
+	LoadoutWeaponInfo LoadoutInfo
+	SFXWeaponUIStats Stats
+	UName ClassName
+	UStringRef Name
+	UStringRef Description
+	UStringRef ShortDescription
+	Texture2D Image
+	GFxMovieInfo IconResource
+	int IconIndex
+	float EncumbranceWeight
+	int Level
+	uint Unlocked : 1
+	byte Type
+
+
+struct SFXWeaponModData
+	UString ClassPath
+	UArray<SFXWeaponModUIStat> Stats
+	UArray<StringRef> ModLevelTokens
+	UString CookedPackage
+	Array<UString> Meshes
+	UName className
+	UName SocketName
+	UStringRef Name
+	UStringRef ShortName
+	UStringRef Description
+	Texture2D Image
+	Texture2D LargeImage
+	int Level
+	uint MaterialEmissiveChange : 1
+	uint MaterialGripColorChange : 1
+	uint MaterialBodyColorChange : 
+	uint Unlocked : 1
+	byte ModCategory
+
+
+struct LinearColor
+	float R
+	float G
+	float B
+	float A
+
+
+struct SFXWeaponUICookData
+	UString CookedPackage
+	UString Mesh
+	UString AnimTree
+	UArray<UString> AnimSets
+
+
+struct LoadoutWeaponInfo
+	UName className
+	UName UnlockPlotId
+	int Rating
+	uint bNotRegularWeaponGUI : 1
+	uint bStartsUnlocked : 1
+
+
+struct SFXWeaponUIStats
+	float Accuracy
+	float Damage
+	float FireRate
+	float Magazine
+	float Weight
+
+
+struct SFXWeaponModUIStat
+	int Level
+	float Value
+	byte Type
+
+
+// Class Engine.Surface
+class USurface : UObject
+
+
+// Class Engine.Texture
+class UTexture : USurface
+	UPointer Resource
+	float UnpackMin[4]
+	float UnpackMax[4]
+	int LODBias
+	int CachedCombinedLODBias
+	int NumCinematicMipLevels
+	float AdjustBrightness
+	float AdjustBrightnessCurve
+	float AdjustVibrance
+	float AdjustSaturation
+	float AdjustRGBCurve
+	float AdjustHue
+	int InternalFormatLODBias
+	int OneBitAlphaThreshold
+	FadeMipMapChannelsContainer FadeMipMapChannels
+	uint SRGB : 1
+	uint RGBE : 1
+	uint bIsSourceArtUncompressed : 1
+	uint CompressionNoAlpha : 1
+	uint CompressionNone : 1
+	uint CompressionNoMipmaps : 1
+	uint CompressionFullDynamicRange : 1
+	uint DeferCompression : 1
+	uint NeverStream : 1
+	uint bDitherMipMapAlpha : 1
+	uint bPreserveBorderR : 1
+	uint bPreserveBorderG : 1
+	uint bPreserveBorderB : 1
+	uint bPreserveBorderA : 1
+	uint bNoTiling : 1
+	uint bAsyncResourceReleaseHasBeenStarted : 1
+	uint bUseCinematicMipLevels : 1
+	uint AS16 : 1
+	byte CompressionSettings
+	byte Filter
+	byte LODGroup
+	byte MipGenSettings
+
+
+// Class Engine.Texture2D
+class UTexture2D : UTexture
+	IndirectArray_Mirror Mips
+	UArray<byte> SystemMemoryData
+	UPointer ResourceMem
+	UGuid TextureFileCacheGuid
+	UGuid TFCFileGuid
+	UName TextureFileCacheName
+	int SizeX
+	int SizeY
+	int OriginalSizeX
+	int OriginalSizeY
+	int ForceMiplevelsToBeResident
+	float ForceMipLevelsToBeResidentTimestamp
+	int RequestedMips
+	int ResidentMips
+	ThreadSafeCounter PendingMipChangeRequestStatus
+	int MipTailBaseIdx
+	int FirstResourceMemMip
+	int BioMipMapCompressionSetting
+	float CurrentScreenSize
+	float CurrentDistanceFromCameraSq
+	float CurrentScreenSizeOld
+	float CurrentDistanceFromCameraSqOld
+	int StreamingLinkIndex
+	float Timer
+	uint bIsStreamable : 1
+	uint bHasCancelationPending : 1
+	uint bHasBeenLoadedFromPersistentArchive : 1
+	uint bGlobalForceMipLevelsToBeResident : 1
+	uint bConfigForceMiplevelsToBeResident : 1
+	byte Format
+	byte AddressX
+	byte AddressY
+
+
+	Texture2D* Create(int InSizeX, int InSizeY, byte InFormat);
+	void SetForceMipLevelsToBeResident(float Seconds, int CinematicTextureGroups);
+
+
+struct UArray<T>
+	T *Data
+	int Size
+	int ReservedSize
+
+
+struct UPointer
+	int Dummy
+
+
+struct UGuid
+	int A
+	int B
+	int C
+	int D
+
+
+struct UNameEntry
+	int Index
+	int Flags
+	char *Value
+
+
+struct UName
+	UNameEntry* Name
+	int Index
+
+
+struct IndirectArray_Mirror
+	UPointer Data
+	int ArrayNum
+	int ArrayMax
+
+
+struct ThreadSafeCounter
+	int Value
+
+
+struct FadeMipMapChannelsContainer
+	uint FadeRedChannel : 1
+	uint FadeGreenChannel : 1
+	uint FadeBlueChannel : 1
+	uint FadeAlphaChannel : 1

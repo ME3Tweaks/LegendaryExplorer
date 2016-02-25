@@ -1,0 +1,4 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Externals\bin\Debug\Gammtek.Conduit.Externals.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Externals\bin\Debug\Gammtek.Conduit.Externals.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Externals\obj\Debug\Gammtek.Conduit.Externals.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Externals\obj\Debug\Gammtek.Conduit.Externals.pdb

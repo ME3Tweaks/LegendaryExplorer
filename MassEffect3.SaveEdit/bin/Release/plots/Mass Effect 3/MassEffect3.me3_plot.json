@@ -1,0 +1,154 @@
+{
+	"name": "Mass Effect 3",
+	"categories": [
+		{
+			"name": "Missions",
+			"multiline_bools": false,
+			"bools": [
+				{
+					"id": 18184,
+					"name": "[Rannoch: Admiral Koris] Saved Admiral Koris"
+				},
+				{
+					"id": 21196,
+					"name": "[Citadel: Hanar Diplomat] Completed mission"
+				},
+				{
+					"id": 21451,
+					"name": "[Citadel: Hanar Diplomat] Saved homeworld"
+				}
+			],
+			"ints": [
+				{
+					"id": 10174,
+					"name": "[Rannoch: Admiral Koris] Dialogue state"
+				},
+				{
+					"id": 10176,
+					"name": "[Rannoch: Geth Fighter Squadrons] Dialogue state"
+				},
+				{
+					"id": 10212,
+					"name": "[Priority: Rannoch] Points toward Geth and Quarian peace\n(need minimum 5 points to enable paragon / renegade peace dialogue)"
+				}
+			]
+		},
+		{
+			"name": "Henchmen",
+			"bools": [
+				{
+					"id": 17678,
+					"name": "Liara acquired"
+				},
+				{
+					"id": 17679,
+					"name": "Kaidan acquired"
+				},
+				{
+					"id": 17680,
+					"name": "Ashley acquired"
+				},
+				{
+					"id": 17681,
+					"name": "Garrus acquired"
+				},
+				{
+					"id": 17682,
+					"name": "EDI acquired"
+				},
+				{
+					"id": 17683,
+					"name": "Javik acquired"
+				},
+				{
+					"id": 17694,
+					"name": "James acquired"
+				},
+				{
+					"id": 17838,
+					"name": "Tali acquired"
+				},
+				{
+					"id": 17663,
+					"name": "Liara in squad"
+				},
+				{
+					"id": 17664,
+					"name": "Kaidan in squad"
+				},
+				{
+					"id": 17665,
+					"name": "Ashley in squad"
+				},
+				{
+					"id": 17666,
+					"name": "Garrus in squad"
+				},
+				{
+					"id": 17667,
+					"name": "EDI in squad"
+				},
+				{
+					"id": 17668,
+					"name": "Javik in squad"
+				},
+				{
+					"id": 17692,
+					"name": "James in squad"
+				},
+				{
+					"id": 17836,
+					"name": "Tali in squad"
+				}
+			]
+		},
+		{
+			"name": "Romance",
+			"bools": [
+				{
+					"id": 19722,
+					"name": "Romancing Liara"
+				},
+				{
+					"id": 19723,
+					"name": "Romancing Kaiden"
+				},
+				{
+					"id": 19724,
+					"name": "Romancing Ashley"
+				},
+				{
+					"id": 19725,
+					"name": "Romancing Garrus"
+				},
+				{
+					"id": 19726,
+					"name": "Romancing Tali"
+				},
+				{
+					"id": 19835,
+					"name": "Romancing Samantha"
+				},
+				{
+					"id": 19838,
+					"name": "Romancing Steve"
+				}
+			]
+		},
+		{
+			"name": "Misc",
+			"bools": [
+				{
+					"id": 21041,
+					"name": "Caught Space Hamster"
+				}
+			],
+			"ints": [
+				{
+					"id": 10430,
+					"name": "Effective Military Strength"
+				}
+			]
+		}
+	]
+}

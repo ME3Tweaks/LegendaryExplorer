@@ -1,0 +1,493 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini" source="..\..\biogame\config\bioweapon.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultWeapon.ini</Property>
+    </Section>
+    <Section name="sfxgame.sfxweapon_assaultrifle_base">
+      <Property name="allowableweaponmods">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweapon_pistol_base">
+      <Property name="allowableweaponmods">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweapon_shotgun_base">
+      <Property name="allowableweaponmods">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweapon_smg_base">
+      <Property name="allowableweaponmods">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweapon_sniperrifle_base">
+      <Property name="allowableweaponmods">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweaponmod">
+      <Property name="weaponmodconversions">
+        <Value type="3">(ModEffectClass=SFXGameEffect_WeaponMod_ExtraWeight, ConversionMultiplier=-1.0f)</Value>
+        <Value type="3">(ModEffectClass=SFXGameEffect_WeaponMod_WeightBonus_Shared, ConversionMultiplier=-1.0f)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_con_mp3.sfxdroppedgrenade_mp3">
+      <Property name="grenadesperdrop" type="0">1</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_con_mp3.sfxprojectile_asari">
+      <Property name="bclientpredictprojectile" type="0">false</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_con_mp3.sfxweapon_assaultrifle_lmg">
+      <Property name="accfireinterpspeed" type="0">(X=20.0f,Y=20.0f)</Property>
+      <Property name="accfirepenalty" type="0">(X=6.0f,Y=6.0f)</Property>
+      <Property name="ai_acccone_max" type="0">(X=1.5,Y=1.5)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.5,Y=1.5)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=30,Y=50)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=1.25f,Y=2.25f)</Property>
+      <Property name="binfiniteammo" type="0">false</Property>
+      <Property name="damage" type="0">(X=44.4,Y=55.5)</Property>
+      <Property name="damagemultiplier" type="0">2.f</Property>
+      <Property name="damagereductionamount" type="0">0.4</Property>
+      <Property name="distancepenetrated" type="0">100</Property>
+      <Property name="ejectshellcasingtimeratio" type="0">0.460f</Property>
+      <Property name="encumbranceweight" type="0">(X=2.5f,Y=2.f)</Property>
+      <Property name="fullychargedtime" type="0">1.5</Property>
+      <Property name="generaldescription" type="0">744351</Property>
+      <Property name="gethottime" type="0">0.75</Property>
+      <Property name="guiimage" type="0">GUI_MPImages_MP3.asl_N7LMG_512x256</Property>
+      <Property name="iconref" type="0">2</Property>
+      <Property name="impactrelevancedistance" type="0">100000</Property>
+      <Property name="lowammosoundthreshold" type="0">20</Property>
+      <Property name="magsize" type="0">(X=100,Y=100)</Property>
+      <Property name="maxaimerror" type="0">(X=3.5,Y=3.5)</Property>
+      <Property name="maxspareammo" type="0">(X=400,Y=500)</Property>
+      <Property name="maxzoomaimerror" type="0">(X=1.2,Y=1.2)</Property>
+      <Property name="maxzoomcrosshairrange" type="0">(X=55,Y=55)</Property>
+      <Property name="minaimerror" type="0">(X=1.75,Y=1.75)</Property>
+      <Property name="minrof" type="0">250</Property>
+      <Property name="minzoomaimerror" type="0">(X=0.65f,Y=0.65f)</Property>
+      <Property name="minzoomcrosshairrange" type="0">(X=25,Y=25)</Property>
+      <Property name="noammofiresounddelay" type="0">0.5</Property>
+      <Property name="notificationimage" type="0">GUI_MPImages_MP3.asl_N7LMG_256x128</Property>
+      <Property name="prettyname" type="0">744335</Property>
+      <Property name="ramptime" type="0">0.75</Property>
+      <Property name="rateoffire" type="0">(X=650,Y=650)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+      <Property name="recoil" type="0">(X=0.11,Y=1.11)</Property>
+      <Property name="recoilfadespeed" type="0">0.0f</Property>
+      <Property name="recoilinterpspeed" type="0">0.0f</Property>
+      <Property name="recoilminfadeyaw" type="0">1.0f</Property>
+      <Property name="recoilyawfrequency" type="0">2.25f</Property>
+      <Property name="recoilyawscale" type="0">2.25f</Property>
+      <Property name="recoilzoomfadespeed" type="0">0.0f</Property>
+      <Property name="reloadduration" type="0">(X=2.9f,Y=2.9f)</Property>
+      <Property name="shortdescription" type="0">744336</Property>
+      <Property name="shortprettyname" type="0">744335</Property>
+      <Property name="statbaraccuracy" type="0">(X=30.0f,Y=30.f)</Property>
+      <Property name="statbardamage" type="0">(X=60.2f,Y=90.0f)</Property>
+      <Property name="statbarrateoffire" type="0">(X=650,Y=650)</Property>
+      <Property name="steamsoundthreshold" type="0">10</Property>
+      <Property name="tracerange" type="0">100000</Property>
+      <Property name="weaponmodbodycolours" type="0">(R=0.19f,G=0.19f,B=0.22f,A=0.0f)</Property>
+      <Property name="zoomaccfireinterpspeed" type="0">(X=35.0f,Y=35.0f)</Property>
+      <Property name="zoomaccfirepenalty" type="0">(X=37.0f,Y=37.0f)</Property>
+      <Property name="zoomrecoil" type="0">(X=0.21,y=1.15)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_con_mp3.sfxweapon_pistol_asari">
+      <Property name="accfireinterpspeed" type="0">(X=20.0f,Y=20.0f)</Property>
+      <Property name="accfirepenalty" type="0">(X=20.8f,Y=20.8f)</Property>
+      <Property name="ai_acccone_max" type="0">(X=1.5,Y=1.5)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.1,Y=1.1)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=1,Y=2)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.65f,Y=2.3f)</Property>
+      <Property name="damage" type="0">(X=420.2f,Y=490.0f)</Property>
+      <Property name="ejectshellcasingtimeratio" type="0">0.558f</Property>
+      <Property name="encumbranceweight" type="0">(X=0.5f,Y=0.2f)</Property>
+      <Property name="generaldescription" type="0">744304</Property>
+      <Property name="guiimage" type="0">GUI_MPImages_MP3.pst_acolyte_512x256</Property>
+      <Property name="iconref" type="0">2</Property>
+      <Property name="lazyrateoffire" type="0">0.01</Property>
+      <Property name="lowammosoundthreshold" type="0">1</Property>
+      <Property name="magsize" type="0">(X=3,Y=3)</Property>
+      <Property name="maxaimerror" type="0">(X=0.4,Y=0.4)</Property>
+      <Property name="maxchargetime" type="0">1.1f</Property>
+      <Property name="maxspareammo" type="0">(X=12,Y=24)</Property>
+      <Property name="maxzoomaimerror" type="0">(X=0.1,Y=0.1)</Property>
+      <Property name="maxzoomcrosshairrange" type="0">(X=32,Y=32)</Property>
+      <Property name="minaimerror" type="0">(X=0.2,Y=0.2)</Property>
+      <Property name="minchargetime" type="0">1.0f</Property>
+      <Property name="minzoomaimerror" type="0">(X=0.01,Y=0.01)</Property>
+      <Property name="minzoomcrosshairrange" type="0">(X=25,Y=25)</Property>
+      <Property name="notificationimage" type="0">GUI_MPImages_MP3.pst_acolyte_256x128</Property>
+      <Property name="prettyname" type="0">744302</Property>
+      <Property name="rateoffire" type="0">(X=80,Y=80)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+      <Property name="recoil" type="0">(X=0.262f,Y=0.262f)</Property>
+      <Property name="recoilyawfrequency" type="0">0.5f</Property>
+      <Property name="recoilyawscale" type="0">0.2f</Property>
+      <Property name="reloadduration" type="0">(X=1.5f,Y=1.5f)</Property>
+      <Property name="roundsperburst" type="0">1</Property>
+      <Property name="shortdescription" type="0">744303</Property>
+      <Property name="shortprettyname" type="0">744302</Property>
+      <Property name="statbaraccuracy" type="0">(X=50.0f,Y=50.f)</Property>
+      <Property name="statbardamage" type="0">(X=420.2f,Y=490.0f)</Property>
+      <Property name="statbarrateoffire" type="0">(X=80,Y=80)</Property>
+      <Property name="tracerspawnoffset" type="0">3.0</Property>
+      <Property name="weaponmodbodycolours" type="0">(R=0.05f,G=0.06f,B=0.07f,A=1.0f)</Property>
+      <Property name="zoomaccfireinterpspeed" type="0">(X=10.0f,Y=10.0f)</Property>
+      <Property name="zoomaccfirepenalty" type="0">(X=10.4f,Y=10.4f)</Property>
+      <Property name="zoomrecoil" type="0">(X=0.35f,Y=0.35f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_con_mp3.sfxweapon_shotgun_assault">
+      <Property name="accfireinterpspeed" type="0">(X=1.0f,Y=1.0f)</Property>
+      <Property name="accfirepenalty" type="0">(X=0.25f,Y=0.25f)</Property>
+      <Property name="ai_acccone_max" type="0">(X=1.8,Y=1.8)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.1,Y=1.1)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=2,Y=3)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.65f,Y=2.3)</Property>
+      <Property name="binfiniteammo" type="0">false</Property>
+      <Property name="damage" type="0">(X=63.6,Y=79.6)</Property>
+      <Property name="ejectshellcasingtimeratio" type="0">0.405f</Property>
+      <Property name="encumbranceweight" type="0">(X=1.5f,Y=0.9f)</Property>
+      <Property name="generaldescription" type="0">744427</Property>
+      <Property name="guiimage" type="0">GUI_MPImages_MP3.asl_N7Shotgun_512x256</Property>
+      <Property name="iconref" type="0">2</Property>
+      <Property name="lazyrateoffire" type="0">0.01</Property>
+      <Property name="lowammosoundthreshold" type="0">2</Property>
+      <Property name="magsize" type="0">(X=8,Y=8)</Property>
+      <Property name="maxaimerror" type="0">(X=0,Y=0)</Property>
+      <Property name="maxspareammo" type="0">(X=48,Y=64)</Property>
+      <Property name="maxzoomaimerror" type="0">(X=0,Y=0)</Property>
+      <Property name="maxzoomcrosshairrange" type="0">(X=400,Y=400)</Property>
+      <Property name="minaimerror" type="0">(X=0,Y=0)</Property>
+      <Property name="minzoomaimerror" type="0">(X=0,Y=0)</Property>
+      <Property name="minzoomcrosshairrange" type="0">(X=180,Y=180)</Property>
+      <Property name="noammofiresounddelay" type="0">0.9</Property>
+      <Property name="notificationimage" type="0">GUI_MPImages_MP3.asl_N7Shotgun_256x128</Property>
+      <Property name="prettyname" type="0">744389</Property>
+      <Property name="rateoffire" type="0">(X=150,Y=150)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+      <Property name="recoil" type="0">(X=2.18f,Y=2.18f)</Property>
+      <Property name="recoilyawscale" type="0">0.5f</Property>
+      <Property name="reloadduration" type="0">(X=2.57f,Y=2.57f)</Property>
+      <Property name="roundsperburst" type="0">1</Property>
+      <Property name="shortdescription" type="0">744425</Property>
+      <Property name="shortprettyname" type="0">744389</Property>
+      <Property name="statbaraccuracy" type="0">(X=10.0f,Y=10.f)</Property>
+      <Property name="statbardamage" type="0">(X=384.8f,Y=481.6f)</Property>
+      <Property name="statbarrateoffire" type="0">(X=150,Y=150)</Property>
+      <Property name="weaponmodbodycolours" type="0">(R=0.08f,G=0.09f,B=0.10f,A=0.0f)</Property>
+      <Property name="zoomaccfireinterpspeed" type="0">(X=1.0f,Y=1.0f)</Property>
+      <Property name="zoomaccfirepenalty" type="0">(X=0.25f,Y=0.25f)</Property>
+      <Property name="zoomrecoil" type="0">(X=2.5,Y=2.5)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgameeffect_weaponmod_thermalscope">
+      <Property name="updatefrequency" type="0">0.5f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_assaultriflemelee">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.175f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.225f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.25f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.omi_melee_A_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.omi_melee_A_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Blade</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_assaultriflesuperpen">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.75f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.60f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.90f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.55f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.6f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=1.05f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.50f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.7f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=1.2f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.45f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.8f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=1.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.9f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.asl_bar_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.asl_bar_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_assaultriflesuperscope">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.6f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2000.f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.67f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2250.f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.74f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2500.f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.30f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.30f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.81f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2750.f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.9f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=3000.f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.asl_sco_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.asl_sco_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Scope</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolheadshot">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.2f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.3f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.4f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.pst_bar_H_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.pst_bar_H_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolsuperdamage">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.2f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.3f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.4f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.pst_bar_G_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.pst_bar_G_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolultralight">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.30f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.35f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.45f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.50f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">gui_codex_images.Weapons.MOD_ultralight-material_512x256</Property>
+      <Property name="notificationimage" type="0">GUI_Icons.Weapons.MOD_ultralight-material_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Body</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_shotgundamageandpen">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.50f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.175f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.45f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.45f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.45f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.225f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.55f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.35f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.55f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.65f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.30f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.65f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.bls_bar_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.bls_bar_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_shotgunsupermelee">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.30f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.40f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.45f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.50f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.omi_melee_A_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.omi_melee_A_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Blade</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_smgpenetration">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.60f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.55f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.6f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.45f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.50f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.7f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.55f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.45f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.8f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.65f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.9f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.pst_bar_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.pst_bar_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_smgstabilization">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_StabilityBonus", EffectValue=-0.30f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_StabilityBonus", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_StabilityBonus", EffectValue=-0.50f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_StabilityBonus", EffectValue=-0.60f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_StabilityBonus", EffectValue=-0.70f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">gui_codex_images.Weapons.MOD_stability-damper_512x256</Property>
+      <Property name="notificationimage" type="0">GUI_Icons.Weapons.MOD_stability-damper_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Body</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_sniperrifledamageandpen">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.50f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.175f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.65f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.45f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.8f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.40f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.45f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.225f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.95f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.35f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.55f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=1.1f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.30f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.65f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.snp_bar_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.snp_bar_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxweaponmod_sniperriflesuperscope">
+      <Property name="gameeffects">
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.15f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.6f)</Value>
+        <Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2000.f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.20f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.67f)</Value>
+        <Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2250.f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.25f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.74f)</Value>
+        <Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2500.f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.30f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.30f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.81f)</Value>
+        <Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=2750.f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.5f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.35f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ZoomShakeModifier", EffectValue=-0.9f)</Value>
+        <Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ThermalScope", EffectValue=3000.f)</Value>
+      </Property>
+      <Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.snp_sco_F_512x256</Property>
+      <Property name="notificationimage" type="0">DLC_SharedImages.Mods.snp_sco_F_256x128</Property>
+      <Property name="weaponmodcategory" type="0">WModCategory_Scope</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

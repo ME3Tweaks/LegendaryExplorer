@@ -1,0 +1,1041 @@
+﻿<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Effects</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindOrientation">
+            <summary>
+ブラインドの方向を決定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindsTransitionEffect">
+            <summary>
+表示状態の切り替え時に、ブラインドが徐々に開く状態をシミュレートする切り替え効果シェーダー。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.OrientationProperty">
+            <summary>
+ブラインドの方向を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.CountProperty">
+            <summary>
+ブラインドの数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientationProperty">
+            <summary>
+シェーダー内で Amplitude 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.DeepCopy">
+            <summary>
+BlindsTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>BlindsTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Orientation">
+            <summary>
+ブラインドの方向を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Count">
+            <summary>
+表示するブラインドの数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientation">
+            <summary>
+ブラインドの方向を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BloomEffect">
+            <summary>
+画像にブルーム照明を適用する効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+            
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensityProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BloomIntensity 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensityProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BaseIntensity 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturationProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BaseIntensity 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturationProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BaseSaturation 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensityProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BloomIntensity 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturationProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BaseIntensity 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.ThresholdProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で BaseSaturation 変数にマップされます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BloomEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Threshold">
+            <summary>
+ブルームの最小強度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensity">
+            <summary>
+ベースの強度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensity">
+            <summary>
+ブルームの強度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturation">
+            <summary>
+ベースの彩度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturation">
+            <summary>
+ブルームの彩度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensity">
+            <summary>
+シェーダー内で Base/BloomIntensity 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturation">
+            <summary>
+シェーダー内で BaseBloomSaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect">
+            <summary>
+拡大/縮小中の円から 2 つの画像を徐々に表示していく切り替え効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmountProperty">
+            <summary>
+ピクセル シェーダー内でフェザー量の変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseProperty">
+            <summary>
+円の動きを変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShaderProperty">
+            <summary>
+ピクセル シェーダー内で reverseShader 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.DeepCopy">
+            <summary>
+CircleRevealTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>CircleRevealTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmount">
+            <summary>
+シェーダー内で FuzzyAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.Reverse">
+            <summary>
+Circle Reveal の背景の再生を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShader">
+            <summary>
+Circle Reveal の背景の再生をシェーダーに取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect">
+            <summary>
+雲のテクスチャーをサンプラーのしきい値として使用して、2 つの画像を切り替える切り替え効果。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudyTransitionEffect">
+            <summary>
+2 つのビジュアル間にピクセル値を補間するため、サンプラーのしきい値として 1 つのイメージを使用する、切り替えシェーダー効果を定義します。 
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect">
+            <summary>
+効果が実行されるたびに異なるバリエーションの効果を表示できるように、ランダム値を提供する切り替えシェーダー効果を定義します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeedProperty">
+            <summary>
+ピクセル シェーダー内で RandomSeed 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.#ctor">
+            <summary>
+シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeed">
+            <summary>
+シェーダー内で RandomSeed 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImageProperty">
+            <summary>
+ピクセル シェーダー内で CloudImage 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImage">
+            <summary>
+シェーダー内で CloudImage 変数を取得または設定します。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.DeepCopy">
+            <summary>
+CloudRevealTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>CloudRevealTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.ColorToneEffect">
+            <summary>
+2 色をサンプリングとして使用し、画像の色調を変化させる効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DesaturationProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Desaturation 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmountProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Tone 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColorProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で LightColor 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColorProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で DarkColor 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.ColorToneEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Desaturation">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmount">
+            <summary>
+シェーダー内で Tone 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColor">
+            <summary>
+シェーダー内で LightColor 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColor">
+            <summary>
+シェーダー内で DarkColor 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.EmbossedEffect">
+            <summary>
+画像のエンボス スタイルをシミュレートする効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.AmountProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Amount 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.HeightProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Height 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.ColorProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Color 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.EmbossedEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Amount">
+            <summary>
+シェーダー内で Amount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Height">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Color">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.FadeTransitionEffect">
+            <summary>
+1 つの画像から別の画像へ徐々に移行していく切り替え効果
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.DeepCopy">
+            <summary>
+FadeTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>FadeTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect">
+            <summary>
+拡大鏡をシミュレートする効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadiusProperty">
+            <summary>
+シェーダー内で InnerRadius 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadiusProperty">
+            <summary>
+シェーダー内で OuterRadius 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.CenterProperty">
+            <summary>
+シェーダー内で中心の変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.AmountProperty">
+            <summary>
+シェーダー内で amount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InputProperty">
+            <summary>
+シェーダーで使用される Input を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.generalTransform">
+            <summary>
+このシェーダーに使用される変換。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadius">
+            <summary>
+シェーダー内で InnerRadius 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadius">
+            <summary>
+シェーダー内で OuterRadius 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Center">
+            <summary>
+シェーダー内で Center 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Amount">
+            <summary>
+ShrinkFactor を取得または設定します。縮小係数が高いほうが、楕円内のコンテンツがより小さく表示されます。 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.EffectMapping">
+            <summary>
+EffectMapping を取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform">
+            <summary>
+Magnify 効果に相当する GeneralTransform。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.biasValue">
+            <summary>
+効果を基に点の変換を試みます。
+            </summary>
+<param name="targetPoint">変換する点。</param>
+<param name="result">該当する場合の結果。</param>
+<returns>成功すると true を返します。</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.effect">
+            <summary>
+効果のインスタンス。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.IsInverse">
+            <summary>
+変換が逆の場合。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.inverseTransform">
+            <summary>
+この効果に固有の変換。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.MagnifyEffect)">
+            <summary>
+新しいインスタンスを作成します。
+            </summary>
+<param name="fx">ソースとなる効果。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+この効果は、軸に配置された線をそのまま軸上に維持するため、Rect の変換は頂点の変換のみになります。
+            </summary>
+<param name="rect">入力する Rect。</param>
+<returns>出力される Rect。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.OutToIn(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+シェーダーの逆変換の場合は、Pout をテクスチャー入力として、Pixel Ouput である Pin を見つけます (シェーダーの反対)。ただし、シェーダーのアルゴリズムは、中心からのピクセル出力に依存し、これは逆変換を計算する際には不明の変数となります。収束を行うには、次の方程式を使って二分法を行う必要があります: PHatout = PHat_in*Scalar where PHatout = Pout - Pcenter pHatin = Pin -Pcenter
+            
+スカラーは Pin (不明) の半径に依存します。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.InToOut(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+任意のピクセル出力 (Pin) で、テクスチャー入力 (Pout) を求めます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.CreateInstanceCore">
+            <summary>
+新しいインスタンスを作成します。
+            </summary>
+<returns>これの新しいインスタンス。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.PointIsInCircle(System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+点が楕円内にあるかどうか決定します。
+            </summary>
+<param name="pt">テスト点。</param>
+<param name="center">楕円の中心点。</param>
+<param name="radius">楕円の半径。</param>
+<returns>成功すると true を返します。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.Inverse">
+            <summary>
+逆変換を取得します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MonochromeEffect">
+             <summary>
+画像をモノクロ色に変換する効果。
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.ColorProperty">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.InputProperty">
+            <summary>
+シェーダー内で Input を取得または設定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MonochromeEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Color">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Input">
+            <summary>
+シェーダーで使用される Input を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateEffect">
+            <summary>
+画像にモザイクをかける (ピクセル化) 効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.PixelationProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Pixelation 変数にマップされます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Pixelation">
+            <summary>
+シェーダー内でモザイク (ピクセル化) の量を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateTransitionEffect">
+            <summary>
+2 つの画像間でモザイク (ピクセル化) の量を増加または減少する切り替え効果
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.DeepCopy">
+            <summary>
+PixelateTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>PixelateTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect">
+            <summary>
+Radial Blur を実行し、現在の画像を放射状にぼかして新しい画像を表示していく切り替え効果。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.DeepCopy">
+            <summary>
+RadialBlurTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>RadialBlurTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleEffect">
+            <summary>
+画像に波紋をシミュレートする効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.CenterProperty">
+            <summary>
+シェーダー内で Center 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.MagnitudeProperty">
+            <summary>
+シェーダー内で Amplitude 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.FrequencyProperty">
+            <summary>
+シェーダー内で Frequency 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.PhaseProperty">
+            <summary>
+シェーダー内で Phase 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.InputProperty">
+            <summary>
+シェーダーで使用される Input ブラシを取得または設定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Center">
+            <summary>
+シェーダー内で Center 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Magnitude">
+            <summary>
+シェーダー内で Amplitude 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Frequency">
+            <summary>
+シェーダー内で Frequency 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Phase">
+            <summary>
+シェーダー内で Phase 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleTransitionEffect">
+            <summary>
+切り替わり時に波紋をシミュレートする効果。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.DeepCopy">
+            <summary>
+RippleTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>RippleTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SharpenEffect">
+            <summary>
+画像をよりくっきりと鮮明にする効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.AmountProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Amount 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.HeightProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Width 変数にマップされます。 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SharpenEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Amount">
+            <summary>
+シェーダー内で Amount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Height">
+            <summary>
+シェーダー内で Desaturation 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideDirection">
+            <summary>
+スライドの方向を定義します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideInTransitionEffect">
+            <summary>
+現在の画像を押し出すようにして、新しい画像を徐々に表示していく切り替え効果。 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirectionProperty">
+            <summary>
+ピクセル シェーダー内で SlideAmount 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormalProperty">
+            <summary>
+ピクセル シェーダー内で SlideAmount 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.DeepCopy">
+            <summary>
+SlideInTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>SlideInTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirection">
+            <summary>
+シェーダー内で SlideAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormal">
+            <summary>
+シェーダー内で SlideAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect">
+             <summary>
+現在の画像に渦巻き効果を適用して、新しい画像を表示していく切り替え効果。
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmountProperty">
+            <summary>
+ピクセル シェーダー内で TwistAmount 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCountProperty">
+            <summary>
+ピクセルをねじるセル数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor(System.Double)">
+            <summary>
+インスタンスを作成し、シェーダーの twist 変数を指定値に設定します。
+            </summary>
+<param name="twist">渦巻きのねじりのレベル。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.DeepCopy">
+            <summary>
+SmoothSwirlGridTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>SmoothSwirlGridTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmount">
+            <summary>
+シェーダー内で TwistAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCount">
+            <summary>
+シェーダー内で CellCount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect">
+            <summary>
+現在の画像に渦巻きを適用する効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.InputProperty">
+            <summary>
+このピクセル シェーダーの明示的入力。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.CenterProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で Center 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmountProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で TwistAmount 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequencyProperty">
+            <summary>
+このプロパティは、ピクセル シェーダー内で AngleFrequency 変数にマップされます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.generalTransform">
+            <summary>
+この効果の適用時に使用する変換。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Center">
+            <summary>
+シェーダー内で Center 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmount">
+            <summary>
+シェーダー内で TwistAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequency">
+            <summary>
+シェーダー内で AngleFrequency 変数を取得または設定します。このプロパティは公開されません。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Input">
+            <summary>
+Input シェーダー サンプラーを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.EffectMapping">
+            <summary>
+この効果の GeneralTransform を取得します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform">
+            <summary>
+入力変換とツリー変換に使用されます。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.theEffect">
+            <summary>
+Effect のインスタンス。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.thisIsInverse">
+            <summary>
+変換の逆転。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.inverseTransform">
+            <summary>
+GeneralTransform の逆転。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.SwirlEffect)">
+            <summary>
+このクラスのインスタンスを作成します。
+            </summary>
+<param name="eff">効果自体。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+この演算では、変換された 4 つの点を持つ境界ボックスが境界です。それぞれを変換して、外接させます。前方変換にも逆変換にも該当します。
+            </summary>
+<param name="rect">入力する Rect。</param>
+<returns>変換された Rect。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TryTransform(System.Windows.Point,System.Windows.Point@)">
+            <summary>
+Swirl 効果を使って、inPoint を変換します。
+            </summary>
+<param name="targetPoint">入力点。</param>
+<param name="result">Swirl 効果を使用した変換後の出力点。</param>
+<returns>true を返しますが、false の場合はスローします。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.CreateInstanceCore">
+            <summary>
+これの新しいインスタンスを返します。
+            </summary>
+<returns>新しいインスタンス。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.Inverse">
+            <summary>
+現在の変換の逆転のクローンを取得します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WaveTransitionEffect">
+            <summary>
+現在の画像に波の効果を適用して、新しい画像を表示していく切り替え効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.MagnitudeProperty">
+            <summary>
+ピクセル シェーダー内で Magnitude 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.PhaseProperty">
+            <summary>
+ピクセル シェーダー内で Phase 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.FrequencyProperty">
+            <summary>
+ピクセル シェーダー内で Frequency 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.#ctor">
+            <summary>
+シェーダーのインスタンスを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.DeepCopy">
+            <summary>
+WaveTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>WaveTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Magnitude">
+            <summary>
+波の大きさを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Phase">
+            <summary>
+波のフェーズを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Frequency">
+            <summary>
+波の大きさを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeDirection">
+            <summary>
+ワイプの方向を定義します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeTransitionEffect">
+            <summary>
+現在の画像にワイプ効果を適用して、新しい画像を表示していく切り替え効果。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirectionProperty">
+            <summary>
+ピクセル シェーダー内で WipeDirection 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmountProperty">
+            <summary>
+ピクセル シェーダー内で FeatherAmount 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOriginProperty">
+            <summary>
+ピクセル シェーダー内で LineOrigin 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormalProperty">
+            <summary>
+ピクセル シェーダー内で LineNormal 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffsetProperty">
+            <summary>
+ピクセル シェーダー内で LineOffset 変数を変更する依存関係プロパティ。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.#ctor">
+            <summary>
+インスタンスを作成し、シェーダーの変数を既定値に更新します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.DeepCopy">
+            <summary>
+WipeTransitionEffect 効果のディープ コピーを作成します。 
+            </summary>
+<returns>WipeTransitionEffect 効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirection">
+            <summary>
+ワイプの方法を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmount">
+            <summary>
+シェーダー内で FeatherAmount 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOrigin">
+            <summary>
+シェーダー内で LineOrigin  変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormal">
+            <summary>
+シェーダー内で LineNormal 変数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffset">
+            <summary>
+シェーダー内で LineOffset 変数を取得または設定します。
+            </summary>
+        </member>
+    </members>
+</doc>

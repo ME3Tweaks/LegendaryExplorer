@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioDifficulty">
+	<Includes>
+		<Include source="SinglePlayer/Narrative.xml" />
+		<Include source="SinglePlayer/Easy.xml" />
+		<Include source="SinglePlayer/Normal.xml" />
+		<Include source="SinglePlayer/Hardcore.xml" />
+		<Include source="SinglePlayer/Insanity.xml" />
+		<Include source="SinglePlayer/BeyondInsanity.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="maxplayerlevel" type="2">60</Property>
+			<Property name="normalizeddifficulty" type="2">DO_Level3</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

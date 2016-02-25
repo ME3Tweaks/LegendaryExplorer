@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biotest" name="biotest.ini" source="..\..\biogame\config\biotest.ini">
+  <Sections>
+    <Section name="cistest_flag1_is_false=false rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=true)</Property>
+      <Property name="conditionalid" type="2">949</Property>
+      <Property name="description" type="2">Verify testing a plot flag is equal to false returns false.</Property>
+      <Property name="expectedresult" type="2">false</Property>
+    </Section>
+    <Section name="cistest_flag1_is_false=true rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=false)</Property>
+      <Property name="conditionalid" type="2">949</Property>
+      <Property name="description" type="2">Verify testing a plot flag is equal to false returns true.</Property>
+      <Property name="expectedresult" type="2">true</Property>
+    </Section>
+    <Section name="cistest_flag1_is_not_false=false rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=false)</Property>
+      <Property name="conditionalid" type="2">951</Property>
+      <Property name="description" type="2">Verify testing a plot flag is not false returns false.</Property>
+      <Property name="expectedresult" type="2">false</Property>
+    </Section>
+    <Section name="cistest_flag1_is_not_false=true rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=true)</Property>
+      <Property name="conditionalid" type="2">951</Property>
+      <Property name="description" type="2">Verify testing a plot flag is not false returns true.</Property>
+      <Property name="expectedresult" type="2">true</Property>
+    </Section>
+    <Section name="cistest_flag1_is_not_true=false rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=true)</Property>
+      <Property name="conditionalid" type="2">950</Property>
+      <Property name="description" type="2">Verify testing a plot flag is not true returns false.</Property>
+      <Property name="expectedresult" type="2">false</Property>
+    </Section>
+    <Section name="cistest_flag1_is_not_true=true rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=false)</Property>
+      <Property name="conditionalid" type="2">950</Property>
+      <Property name="description" type="2">Verify testing a plot flag is not true returns true.</Property>
+      <Property name="expectedresult" type="2">true</Property>
+    </Section>
+    <Section name="cistest_flag1_is_true=false rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=false)</Property>
+      <Property name="conditionalid" type="2">948</Property>
+      <Property name="description" type="2">Verify testing a plot flag is equal to true returns false.</Property>
+      <Property name="expectedresult" type="2">false</Property>
+    </Section>
+    <Section name="cistest_flag1_is_true=true rvrunittestconditional">
+      <Property name="argument" type="2">0</Property>
+      <Property name="bools" type="2">(id=20068,value=true)</Property>
+      <Property name="conditionalid" type="2">948</Property>
+      <Property name="description" type="2">Verify testing a plot flag is equal to true returns true.</Property>
+      <Property name="expectedresult" type="2">true</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="unittesteditorframework" type="2">EditorTest.UnitTestRunnerEditor</Property>
+      <Property name="unittestframework" type="2">SFXTest.BioUnitTestRunnerSP</Property>
+    </Section>
+    <Section name="consoleunittesting.ps3">
+      <Property name="applicationpath" type="2">-app:"Binaries/PS3/BioGame-PS3%s.elf"</Property>
+      <Property name="consolepathformat" type="2">-console:"%s"</Property>
+      <Property name="consolewaitseconds" type="2">5</Property>
+      <Property name="logpathformat" type="2">-logpath:"%s"</Property>
+      <Property name="paramformat" type="2">-params:"%s"</Property>
+      <Property name="rootlogpath" type="2">..\..\BIOGame\Logs\ConsoleUnitTests_PS3\</Property>
+      <Property name="serverwaitseconds" type="2">45</Property>
+      <Property name="snifftoolpath" type="2">..\..\BioTools\Binaries\360Sniff.exe</Property>
+      <Property name="staticswitches" type="2">-noui -nocopy -timeout:600</Property>
+      <Property name="unittestbinaries">
+        <Value type="2">Debug</Value>
+        <Value type="2">Release</Value>
+        <Value type="2">ReleaseLTCG</Value>
+      </Property>
+    </Section>
+    <Section name="consoleunittesting.xenon">
+      <Property name="applicationpath" type="2">-app:"xe:\ME3-UNITTEST\BioGame-Xe%s.xex"</Property>
+      <Property name="consolepathformat" type="2">-console:"%s"</Property>
+      <Property name="consolewaitseconds" type="2">20</Property>
+      <Property name="logpathformat" type="2">-logpath:"%s"</Property>
+      <Property name="paramformat" type="2">-params:"%s"</Property>
+      <Property name="rootlogpath" type="2">..\..\BIOGame\Logs\ConsoleUnitTests_Xenon\</Property>
+      <Property name="serverwaitseconds" type="2">45</Property>
+      <Property name="snifftoolpath" type="2">..\..\BioTools\Binaries\360Sniff.exe</Property>
+      <Property name="staticswitches" type="2">-noui -nocopy -timeout:600</Property>
+      <Property name="unittestbinaries">
+        <Value type="2">Debug</Value>
+        <Value type="2">Release</Value>
+        <Value type="2">ReleaseLTCG</Value>
+      </Property>
+    </Section>
+    <Section name="contenttesting">
+      <Property name="contentpackages" type="2">SFXContentTest</Property>
+    </Section>
+    <Section name="editortest.unittestbasiceditor">
+      <Property name="m_soneofeveryresourcepackage" type="2">..\..\BIOGame\Content\Packages\UnitTests\TestOneOfEveryResource.upk</Property>
+      <Property name="m_sstaticmeshresource" type="2">EditorMeshes.TexPropCube</Property>
+    </Section>
+    <Section name="editortest.unittestgenericbrowser">
+      <Property name="m_sstaticmeshresource" type="2">EditorMeshes.TexPropCube</Property>
+    </Section>
+    <Section name="editortest.unittestrunnereditor">
+      <Property name="m_fmaxtesttime" type="2">0;</Property>
+      <Property name="m_nheapcheckfrequency" type="2">100</Property>
+    </Section>
+    <Section name="enginetest.unittestrunner">
+      <Property name="m_fmaxtesttime" type="2">0;</Property>
+      <Property name="m_nheapcheckfrequency" type="2">100</Property>
+    </Section>
+    <Section name="iniversion">
+      <Property name="0" type="2">3580499817.000000</Property>
+      <Property name="1" type="2">4818676181.000000</Property>
+    </Section>
+    <Section name="sfxeditor.biotesttexturelocalisation">
+      <Property name="locpackagenames" type="2">BioT_Localisation</Property>
+      <Property name="searchpaths" type="2">..\..\BIOGame\Content\</Property>
+    </Section>
+    <Section name="sfxeditortest.sfxunittestkismet">
+      <Property name="m_ssequencereferencepath" type="2">BioTestResources.Subscripts.Elevator</Property>
+      <Property name="m_ssequencereferencetitle" type="2">Elevator</Property>
+      <Property name="m_stestpawnasset" type="2">BioTestResources.Actors.ConvTestActor</Property>
+    </Section>
+    <Section name="sfxtest.bioseqact_creaturelog">
+      <Property name="creaturetoprofile">
+        <Value type="2">char_Enemies.Archetypes.Cerberus.AssaultTrooper</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Centurion</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Engineer</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Guardian</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Nemesis</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Atlas</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Cannibal</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Marauder</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Brute</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Banshee</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Harvester</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Husk</Value>
+        <Value type="2">char_Enemies.Archetypes.Reapers.Ravager</Value>
+        <Value type="2">char_Enemies.Archetypes.Geth.GethTrooper</Value>
+        <Value type="2">char_Enemies.Archetypes.Geth.GethRocketTrooper</Value>
+        <Value type="2">char_Enemies.Archetypes.Geth.GethPyro</Value>
+        <Value type="2">char_Enemies.Archetypes.Geth.GethHunter</Value>
+        <Value type="2">char_Enemies.Archetypes.Geth.GethPrime</Value>
+        <Value type="2">char_Enemies.Archetypes.Cerberus.Phantom</Value>
+      </Property>
+    </Section>
+    <Section name="sfxtest.biounittestbini">
+      <Property name="binarizedfile" type="2">Cooked%PLATFORM%\Coalesced.bin</Property>
+      <Property name="configdir" type="2">..\..\BIOGame\Config\</Property>
+      <Property name="testfiles" type="2">bioengine.ini</Property>
+    </Section>
+    <Section name="sfxtest.biounittestconversations">
+      <Property name="m_freplayscripttimeout" type="2">60.0</Property>
+      <Property name="m_stestconversation" type="2">unittest_conversation_D.unittest_conversation_dlg</Property>
+      <Property name="m_stestgestureanim" type="2">BIOG_HMM_DL_A.HMM_DL_StandingDefault.DL_PointForward</Property>
+      <Property name="m_stestpawnasset" type="2">SFX_Appearance_Human.HumanMale.Shepard_Preview_Archetype</Property>
+      <Property name="m_stestposeanim" type="2">BIOG_HMM_DL_A.HMM_DL_StandingDefault.DL_Idle</Property>
+    </Section>
+    <Section name="sfxtest.biounittestmpmatchmakingbot">
+      <Property name="m_bskipmmbottest" type="2">true</Property>
+    </Section>
+    <Section name="sfxtest.biounittestrunnermp">
+      <Property name="clientcount" type="2">2</Property>
+    </Section>
+    <Section name="sfxtest.biounittestsave">
+      <Property name="m_fcurrentxp" type="2">0</Property>
+      <Property name="m_flocationx" type="2">0</Property>
+      <Property name="m_flocationy" type="2">0</Property>
+      <Property name="m_flocationz" type="2">0</Property>
+      <Property name="m_fmaxloadtime" type="2">60</Property>
+      <Property name="m_m_sclassname" type="2">Soldier</Property>
+      <Property name="m_ndeletetime" type="2">1</Property>
+      <Property name="m_ngalaxystate" type="2">3</Property>
+      <Property name="m_ngalaxystate_galaxy" type="2">1</Property>
+      <Property name="m_ngalaxystate_system" type="2">3</Property>
+      <Property name="m_ngalaxystateindex" type="2">10164</Property>
+      <Property name="m_nlevel" type="2">0</Property>
+      <Property name="m_nloadtime" type="2">3</Property>
+      <Property name="m_nnotoriety" type="2">1</Property>
+      <Property name="m_noverwritetime" type="2">1</Property>
+      <Property name="m_npendingaction" type="2">0</Property>
+      <Property name="m_npendingtype" type="2">0</Property>
+      <Property name="m_nsaveslot" type="2">1</Property>
+      <Property name="m_nsavetime" type="2">3</Property>
+      <Property name="m_ntalentpoints" type="2">0</Property>
+      <Property name="m_scareername" type="2">UnitTest_Career</Property>
+      <Property name="m_slevelname" type="2">Entry</Property>
+      <Property name="m_sme2savenamepc" type="2">ME2Save.pcsav</Property>
+      <Property name="m_sme2savenameps3" type="2">ME2Save.pssav</Property>
+      <Property name="m_sme2savenamexbox" type="2">ME2Save.xbsav</Property>
+      <Property name="m_splayername" type="2">John</Property>
+    </Section>
+    <Section name="sfxtest.sfxunittestguimainmp">
+      <Property name="bskipguitests" type="2">true</Property>
+      <Property name="characterbuttonpath" type="2">screen.m_CharacterButtons.listHolder.item0</Property>
+      <Property name="characterlistitem1path" type="2">screen.m_CharacterList.listHolder.item1</Property>
+      <Property name="characterlistitem2path" type="2">screen.m_CharacterList.listHolder.item2</Property>
+      <Property name="characterlistitem3path" type="2">screen.m_CharacterList.listHolder.item3</Property>
+      <Property name="createcharacterbuttonpath" type="2">screen.ConfirmButton</Property>
+      <Property name="createcharacterclass1path" type="2">screen.Classes.listHolder.item1</Property>
+      <Property name="createcharacterlistitempath" type="2">screen.m_CharacterList.listHolder.item3</Property>
+      <Property name="createcharacterselectbuttonpath" type="2">SelectButton</Property>
+      <Property name="custommatchbuttonpath" type="2">screen.m_MenuButtons.listHolder.item1</Property>
+      <Property name="custommatchscreenbackbutton" type="2">PCController.PCBtnRight</Property>
+      <Property name="defaulttestdelay" type="2">0.5</Property>
+      <Property name="defaulttesttimeout" type="2">5.0</Property>
+      <Property name="deletecharacterbuttonpath" type="2">m_PCDeleteButton</Property>
+      <Property name="kititem0path" type="2">screen.m_KitPanel.listHolder.item0</Property>
+      <Property name="leaderboardsbuttonpath" type="2">screen.m_MenuButtons.listHolder.item2</Property>
+      <Property name="leaderboardscreenbackbutton" type="2">screen.m_PCButtonExit</Property>
+      <Property name="lobbyleaderboardsbuttonpath" type="2">screen.m_MatchButtons.listHolder.item2</Property>
+      <Property name="markerclipname" type="2">MarkerClip0</Property>
+      <Property name="matchresultscontinuebuttonpath" type="2">PC_ContinueButton</Property>
+      <Property name="matchrewardscontinuebuttonpath" type="2">PC_ContinueButton</Property>
+      <Property name="matchsettingsbuttonpath" type="2">screen.m_MatchButtons.listHolder.item1</Property>
+      <Property name="matchsettingsscreenbackbutton" type="2">PCController.PCBtnRight</Property>
+      <Property name="numtintswatchrows" type="2">4</Property>
+      <Property name="objectiveprogressbarpath" type="2">ObjectiveBar.objectiveBar</Property>
+      <Property name="playerindicatoronframe" type="2">2</Property>
+      <Property name="playerindicatorpath" type="2">screen.m_PlayerList.listHolder.item0.slot.titleBarHolder.ready</Property>
+      <Property name="readybuttoncheckboxpath" type="2">screen.m_MatchButtons.listHolder.item0.checkbox</Property>
+      <Property name="readybuttononframe" type="2">2</Property>
+      <Property name="readybuttonpath" type="2">screen.m_MatchButtons.listHolder.item0</Property>
+      <Property name="scoreboardpath" type="2">screen.Scoreboard</Property>
+      <Property name="scoretagpath" type="2">ScoreTagInstance</Property>
+      <Property name="selectcharacterbuttonpath" type="2">m_PCSelectButton</Property>
+      <Property name="storebuttonpath" type="2">screen.m_CharacterButtons.listHolder.item2</Property>
+      <Property name="storescreenbackbutton" type="2">mcBackButton</Property>
+      <Property name="talentslevelupscreenbackbutton" type="2">PCButtonB</Property>
+      <Property name="tintswatch1path" type="2">screen.TintHolder.ArmorTintPanel.ArmorTintSwatch1</Property>
+      <Property name="toggledetailsbuttonpath" type="2">PC_SwitchButton</Property>
+      <Property name="weaponsbuttonpath" type="2">screen.m_CharacterButtons.listHolder.item1</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

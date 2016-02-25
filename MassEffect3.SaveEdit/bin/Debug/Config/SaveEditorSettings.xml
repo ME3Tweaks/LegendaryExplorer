@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SaveEditor>
+	<LevelRewards>
+		<LevelReward Level="1" ExperienceRequired="0" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="2" ExperienceRequired="1000" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="3" ExperienceRequired="2000" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="4" ExperienceRequired="3000" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="5" ExperienceRequired="4000" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="6" ExperienceRequired="5000" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="7" ExperienceRequired="6100" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="8" ExperienceRequired="7200" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="9" ExperienceRequired="8300" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="10" ExperienceRequired="9400" TalentReward="2" HenchmanTalentReward="1" />
+
+		<LevelReward Level="11" ExperienceRequired="10625" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="12" ExperienceRequired="11850" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="13" ExperienceRequired="13075" TalentReward="2" HenchmanTalentReward="1" />
+		<LevelReward Level="14" ExperienceRequired="14300" TalentReward="3" HenchmanTalentReward="1" />
+		<LevelReward Level="15" ExperienceRequired="15525" TalentReward="3" HenchmanTalentReward="1" />
+		<LevelReward Level="16" ExperienceRequired="16875" TalentReward="3" HenchmanTalentReward="1" />
+		<LevelReward Level="17" ExperienceRequired="18225" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="18" ExperienceRequired="19575" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="19" ExperienceRequired="20925" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="20" ExperienceRequired="22275" TalentReward="3" HenchmanTalentReward="2" />
+
+		<LevelReward Level="21" ExperienceRequired="23775" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="22" ExperienceRequired="25275" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="23" ExperienceRequired="26775" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="24" ExperienceRequired="28725" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="25" ExperienceRequired="29775" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="26" ExperienceRequired="31425" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="27" ExperienceRequired="33075" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="28" ExperienceRequired="34725" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="29" ExperienceRequired="36375" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="30" ExperienceRequired="38025" TalentReward="3" HenchmanTalentReward="2" />
+
+		<LevelReward Level="31" ExperienceRequired="39850" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="32" ExperienceRequired="41675" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="33" ExperienceRequired="43500" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="34" ExperienceRequired="45325" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="35" ExperienceRequired="47150" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="36" ExperienceRequired="49175" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="37" ExperienceRequired="51200" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="38" ExperienceRequired="53225" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="39" ExperienceRequired="55250" TalentReward="3" HenchmanTalentReward="2" />
+		<LevelReward Level="40" ExperienceRequired="57275" TalentReward="3" HenchmanTalentReward="2" />
+
+		<LevelReward Level="41" ExperienceRequired="59525" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="42" ExperienceRequired="61775" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="43" ExperienceRequired="64025" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="44" ExperienceRequired="66275" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="45" ExperienceRequired="68525" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="46" ExperienceRequired="71000" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="47" ExperienceRequired="73475" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="48" ExperienceRequired="75950" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="49" ExperienceRequired="78425" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="50" ExperienceRequired="80900" TalentReward="4" HenchmanTalentReward="2" />
+
+		<LevelReward Level="51" ExperienceRequired="83600" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="52" ExperienceRequired="86300" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="53" ExperienceRequired="89000" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="54" ExperienceRequired="91700" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="55" ExperienceRequired="94400" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="56" ExperienceRequired="99800" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="57" ExperienceRequired="105200" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="58" ExperienceRequired="110600" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="59" ExperienceRequired="116000" TalentReward="4" HenchmanTalentReward="2" />
+		<LevelReward Level="60" ExperienceRequired="121400" TalentReward="4" HenchmanTalentReward="2" />
+	</LevelRewards>
+</SaveEditor>

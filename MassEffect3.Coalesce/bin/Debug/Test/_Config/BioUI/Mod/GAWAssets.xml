@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets" settings="SortBy=id">
+				<Include source="GAWAssetType/Military.xml" />
+				<Include source="GAWAssetType/Device.xml" />
+				<Include source="GAWAssetType/Intel.xml" />
+				<Include source="GAWAssetType/Artifact.xml" />
+				<Include source="GAWAssetType/Salvage.xml" />
+				<Include source="GAWAssetType/Treasure.xml" />
+				<Include source="GAWAssetType/External.xml" />
+				<Include source="GAWAssetType/Modifier.xml" />
+				<Include source="GAWAssetType/Quest.xml" />
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

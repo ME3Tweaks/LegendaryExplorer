@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="sfxgamempcontent.sfxgui_mpreinforcementsreveal">
+      <Property name="cardtypetextdata" type="3">(CardType="gearUpgrade", GUIType=724441 )</Property>
+    </Section>
+    <Section name="sfxgamempcontentdlc_shared_mp.sfxgui_mpselectkit_dlc">
+      <Property name="kitdescriptions">
+        <Value type="4">(KitName="SoldierMQuarian",ClassString=768115,IPNameString=0,IPEntryString=727976,GameplayEntryString=771246,StatsString1=728003,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SoldierMQuarian",ClassString=768115,IPNameString=0,IPEntryString=727976,GameplayEntryString=771246,StatsString1=728002,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolheadshot">
+			<Property name="gameeffects">
+				<Value type="-1" />
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.20)</Value>
+
+				<!-- Level 2 -->
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.25)</Value>
+
+				<!-- Level 3 -->
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.30)</Value>
+
+				<!-- Level 4 -->
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.35)</Value>
+
+				<!-- Level 5 -->
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_HeadshotBonus", EffectValue=0.40)</Value>
+			</Property>
+			<!--<Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.pst_bar_H_512x256</Property>-->
+			<!--<Property name="notificationimage" type="0">DLC_SharedImages.Mods.pst_bar_H_256x128</Property>-->
+			<!--<Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolsuperdamage">
+			<Property name="gameeffects">
+				<Value type="-1" />
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.00)</Value>
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.20)</Value>
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.00)</Value>
+
+				<!-- Level 2 -->
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.00)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.25)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.00)</Value>
+
+				<!-- Level 3 -->
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.00)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.30)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.00)</Value>
+
+				<!-- Level 4 -->
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.00)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.35)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.00)</Value>
+
+				<!-- Level 5 -->
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_CustomFlag", EffectValue=0.00)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.40)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ExtraWeight", EffectValue=0.00)</Value>
+			</Property>
+			<!--<Property name="largenotificationimage" type="0">DLC_SharedImages.Mods.pst_bar_G_512x256</Property>-->
+			<!--<Property name="notificationimage" type="0">DLC_SharedImages.Mods.pst_bar_G_256x128</Property>-->
+			<!--<Property name="weaponmodcategory" type="0">WModCategory_Barrel</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxweaponmod_pistolultralight">
+			<Property name="gameeffects">
+				<Value type="-1" />
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.30)</Value>
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.35)</Value>
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.40)</Value>
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.45)</Value>
+
+				<!-- Level 1 -->
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus_Shared", EffectValue=-0.50)</Value>
+			</Property>
+			<!--<Property name="largenotificationimage" type="0">gui_codex_images.Weapons.MOD_ultralight-material_512x256</Property>-->
+			<!--<Property name="notificationimage" type="0">GUI_Icons.Weapons.MOD_ultralight-material_256x128</Property>-->
+			<!--<Property name="weaponmodcategory" type="0">WModCategory_Body</Property>-->
+		</Section>
+	</Sections>
+</CoalesceAsset>

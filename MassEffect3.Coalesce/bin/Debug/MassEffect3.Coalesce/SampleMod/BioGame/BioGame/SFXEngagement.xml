@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxengagement_annex_0 sfxengagement_annex">
+			<Property name="objectivesrequired" type="2">(ObjectiveType=AnnexZoneHack, MinimumObjectivesRequired=1, MaximumObjectivesAllowed=1)</Property>
+			<Property name="srannexprogressticker" type="2">701600</Property>
+			<Property name="srannexprogresstickerplural" type="2">701541</Property>
+			<Property name="srbeginwavemessage" type="2">581493</Property>
+			<Property name="srendwavemessage" type="2">581494</Property>
+			<Property name="srscorehudobjectivetitle" type="2">627006</Property>
+			<Property name="srwavefailedhint" type="2">724698</Property>
+			<Property name="weightedchanceofselection" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxengagement_annex_1 sfxengagement_annex">
+			<Property name="objectivesrequired" type="2">(ObjectiveType=AnnexZoneUpload, MinimumObjectivesRequired=1, MaximumObjectivesAllowed=1)</Property>
+			<Property name="srannexprogressticker" type="2">701601</Property>
+			<Property name="srannexprogresstickerplural" type="2">701542</Property>
+			<Property name="srbeginwavemessage" type="2">628647</Property>
+			<Property name="srendwavemessage" type="2">628649</Property>
+			<Property name="srscorehudobjectivetitle" type="2">629462</Property>
+			<Property name="srwavefailedhint" type="2">724697</Property>
+			<Property name="weightedchanceofselection" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxengagement_assassination_0 sfxengagement_assassination">
+			<Property name="objectivesrequired"
+			          type="2">(ObjectiveType=AssassinationObjective, MinimumObjectivesRequired=1, MaximumObjectivesAllowed=1)
+			</Property>
+			<Property name="operationtimelimit" type="2">0</Property>
+			<Property name="srbeginwavemessage" type="2">712057</Property>
+			<Property name="srendwavemessage" type="2">602479</Property>
+			<Property name="srscorehudobjectivetitle" type="2">713163</Property>
+			<Property name="srwavefailedhint" type="2">724694</Property>
+			<Property name="waveinstructionvodelay" type="2">4.0f</Property>
+			<Property name="weightedchanceofselection" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxengagement_disarm_0 sfxengagement_disarm">
+			<Property name="objectivesrequired" type="2">(ObjectiveType=DisarmEnable, MinimumObjectivesRequired=4, MaximumObjectivesAllowed=4)</Property>
+			<Property name="srbeginwavemessage" type="2">601210</Property>
+			<Property name="srbombdisarmedticker" type="2">701536</Property>
+			<Property name="srdisarmbombmessage" type="2">601802</Property>
+			<Property name="srdisarmnextbombmessage" type="2">601803</Property>
+			<Property name="srendwavemessage" type="2">601211</Property>
+			<Property name="srscorehudobjectivetitle" type="2">627008</Property>
+			<Property name="srwavefailedhint" type="2">724695</Property>
+			<Property name="weightedchanceofselection" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxengagement_disarm_1 sfxengagement_disarm">
+			<Property name="objectivesrequired" type="2">(ObjectiveType=DisarmDisable, MinimumObjectivesRequired=4, MaximumObjectivesAllowed=4)</Property>
+			<Property name="srbeginwavemessage" type="2">667724</Property>
+			<Property name="srbombdisarmedticker" type="2">701537</Property>
+			<Property name="srdisarmbombmessage" type="2">667726</Property>
+			<Property name="srdisarmnextbombmessage" type="2">601803</Property>
+			<Property name="srendwavefailure" type="2">602479</Property>
+			<Property name="srendwavesuccess" type="2">667725</Property>
+			<Property name="srscorehudobjectivetitle" type="2">667727</Property>
+			<Property name="srwavefailedhint" type="2">724696</Property>
+			<Property name="weightedchanceofselection" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxengagement_extraction_0 sfxengagement_extraction">
+			<Property name="objectivesrequired" type="2">(ObjectiveType=ExtractionPoint, MinimumObjectivesRequired=1, MaximumObjectivesAllowed=1)</Property>
+			<Property name="srbeginwavemessage" type="2">665458</Property>
+		</Section>
+		<Section name="sfxengagement_retrieve_0 sfxengagement_retrieve">
+			<Property name="numdropoffsrequired" type="2">3</Property>
+			<Property name="objectivesrequired">
+				<Value type="2">(ObjectiveType=RetrievePickup, MinimumObjectivesRequired=3, MaximumObjectivesAllowed=3)</Value>
+				<Value type="2">(ObjectiveType=RetrieveDropOff, MinimumObjectivesRequired=1, MaximumObjectivesAllowed=1)</Value>
+			</Property>
+			<Property name="spawndistanceideal" type="2">3000</Property>
+			<Property name="spawnpenaltylongdistance" type="2">0.2</Property>
+			<Property name="spawnpenaltyshortdistance" type="2">0.8</Property>
+			<Property name="srbeginwavemessage" type="2">596061</Property>
+			<Property name="srendwavemessage" type="2">596062</Property>
+			<Property name="srobjectivecompletedreward" type="2">597257</Property>
+			<Property name="srpickupdroppedoff" type="2">596616</Property>
+			<Property name="srretrieveprogress" type="2">596615</Property>
+			<Property name="srscorehudobjectivetitle" type="2">627007</Property>
+			<Property name="srteamscorereward" type="2">597255</Property>
+			<Property name="weightedchanceofselection" type="2">0.0f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

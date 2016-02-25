@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioai" name="bioai.ini" source="..\..\biogame\config\bioai.ini">
+	<Includes>
+		<Include source="BioAI/SFXGame.xml" />
+		<Include source="BioAI/SFXGameContent.xml" />
+	</Includes>
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">3318390393.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

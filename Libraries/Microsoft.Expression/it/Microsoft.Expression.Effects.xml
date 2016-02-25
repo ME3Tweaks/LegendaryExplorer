@@ -1,0 +1,1041 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Effects</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindOrientation">
+            <summary>
+            Determina l'orientamento della veneziana.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindsTransitionEffect">
+            <summary>
+            Shader di transizione che simula l'apertura di una veneziana durante la transizione da un elemento visivo a un altro. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.OrientationProperty">
+            <summary>
+            Recupera o imposta l'orientamento della veneziana.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.CountProperty">
+            <summary>
+            Recupera o imposta il numero di lamelle della veneziana.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientationProperty">
+            <summary>
+            Recupera o imposta la variabile Amplitude nello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto BlindsTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto BlindsTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Orientation">
+            <summary>
+            Recupera o imposta l'orientamento della veneziana.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Count">
+            <summary>
+            Recupera o imposta il numero di lamelle della veneziana da visualizzare.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientation">
+            <summary>
+            Recupera o imposta l'orientamento della veneziana.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BloomEffect">
+            <summary>
+            Effetto che implementa un'illuminazione bloom di un elemento visivo. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+            
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensityProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BloomIntensity nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensityProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BaseIntensity nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturationProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BloomSaturation nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturationProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BaseSaturation nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensityProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BloomIntensity nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturationProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BloomSaturation nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.ThresholdProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile BaseSaturation nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BloomEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Threshold">
+            <summary>
+            Recupera o imposta l'intensità minima che verrà utilizzata per il bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensity">
+            <summary>
+            Recupera o imposta l'intensità di base.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensity">
+            <summary>
+            Recupera o imposta l'intensità del bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturation">
+            <summary>
+            Recupera o imposta la saturazione di base.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturation">
+            <summary>
+            Recupera o imposta la saturazione del bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensity">
+            <summary>
+            Recupera o imposta la variabile Base/BloomIntensity nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturation">
+            <summary>
+            Recupera o imposta la variabile BaseBloomSaturation nello shader.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect">
+            <summary>
+            Effetto di transizione che rivela due elementi visivi attraverso un cerchio che si espande/restringe. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmountProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile della quantità di sfumatura nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseProperty">
+            <summary>
+            Proprietà di dipendenza che modifica il movimento del cerchio.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShaderProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile reverseShader nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto CircleRevealTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto CircleRevealTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmount">
+            <summary>
+            Recupera o imposta la variabile FuzzyAmount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.Reverse">
+            <summary>
+            Recupera o imposta se invertire la direzione della comparsa a cerchio.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShader">
+            <summary>
+            Recupera o imposta se invertire la direzione della comparsa a cerchio nello shader.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect">
+            <summary>
+            Effetto di transizione fra due elementi visivi che utilizza un motivo simile a una nuvola come soglia del sampler.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudyTransitionEffect">
+            <summary>
+            Definisce un effetto dello shader di transizione che utilizza un'immagine come soglia del sampler per interpolare il valore in pixel tra due elementi visivi. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect">
+            <summary>
+            Definisce un effetto dello shader di transizione che fornisce un valore casuale, facendo sì che l'effetto fornisca variazioni ogni volta che viene eseguito.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeedProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile RandomSeed nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.#ctor">
+            <summary>
+            Aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeed">
+            <summary>
+            Recupera o imposta la variabile RandomSeed nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImageProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile CloudImage nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImage">
+            <summary>
+            Recupera o imposta la variabile CloudImage nello shader utilizzato per il campionamento. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto CloudRevealTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto CloudRevealTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.ColorToneEffect">
+            <summary>
+            Effetto che modifica la tonalità di colore di un elemento visivo utilizzando due colori come campionamento.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DesaturationProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Desaturation nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmountProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Toned nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColorProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile LightColor nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColorProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile DarkColor nel pixel shader. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.ColorToneEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Desaturation">
+            <summary>
+            Recupera o imposta la variabile Desaturation nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmount">
+            <summary>
+            Recupera o imposta la variabile Toned nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColor">
+            <summary>
+            Recupera o imposta la variabile LightColor nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColor">
+            <summary>
+            Recupera o imposta la variabile DarkColor nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.EmbossedEffect">
+            <summary>
+            Effetto che simula un aspetto in rilievo nell'elemento visivo. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.AmountProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Amount nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.HeightProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Height nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.ColorProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Color nel pixel shader. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.EmbossedEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Amount">
+            <summary>
+            Recupera o imposta la variabile Amount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Height">
+            <summary>
+            Recupera o imposta la variabile Height nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Color">
+            <summary>
+            Recupera o imposta la variabile Color nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.FadeTransitionEffect">
+            <summary>
+            Effetto di transizione che passa gradualmente da un elemento visivo a un altro.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto FadeTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto FadeTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect">
+            <summary>
+            Effetto che simula una lente di ingrandimento.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadiusProperty">
+            <summary>
+            Recupera o imposta la variabile InnerRadius nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadiusProperty">
+            <summary>
+            Recupera o imposta la variabile OuterRadius nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.CenterProperty">
+            <summary>
+            Recupera o imposta la variabile Center nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.AmountProperty">
+            <summary>
+            Recupera o imposta la variabile Amount nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InputProperty">
+            <summary>
+            Recupera o imposta l'input utilizzato nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.generalTransform">
+            <summary>
+            La trasformazione utilizzata per questo shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadius">
+            <summary>
+            Recupera o imposta la variabile InnerRadius nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadius">
+            <summary>
+            Recupera o imposta la variabile OuterRadius nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Center">
+            <summary>
+            Recupera o imposta la variabile Center nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Amount">
+            <summary>
+            Recupera o imposta il valore ShrinkFactor. Con un fattore di riduzione maggiore, il contenuto all'interno dell'ellisse apparirà più piccolo. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.EffectMapping">
+            <summary>
+            Recupera l'effetto EffectMapping.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform">
+            <summary>
+            GeneralTransform corrispondente all'effetto Magnify.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.biasValue">
+            <summary>
+            Tenta di trasformare un punto in base all'effetto.
+            </summary>
+            <param name="targetPoint">Il punto da trasformare.</param>
+            <param name="result">Il risultato, se disponibile.</param>
+            <returns>Restituisce true se l'operazione viene completata.</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.effect">
+            <summary>
+            L'istanza dell'effetto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.IsInverse">
+            <summary>
+            Se la trasformazione è un inverso.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.inverseTransform">
+            <summary>
+            La trasformazione specifica per questo effetto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.MagnifyEffect)">
+            <summary>
+            Crea una nuova istanza.
+            </summary>
+            <param name="fx">L'effetto di origine.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            Questo particolare effetto mantiene allineate sull'asse le linee allineate all'asse, in modo che la trasformazione dell'elemento Rect interessi solamente i punti d'angolo.
+            </summary>
+            <param name="rect">L'elemento Rect di input.</param>
+            <returns>L'elemento Rect di output.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.OutToIn(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            Per ottenere l'inverso dello shader è necessario trovare Pin, vale a dire l'output pixel, considerando Pout come l'input della trama (l'inverso dello shader). Tuttavia l'algoritmo dello shader dipende dal raggio dell'output pixel dal centro, cioè una variabile di cui non si dispone quando si calcola l'inverso. Per ottenere la convergenza è necessario eseguire la bisezione utilizzando l'equazione seguente PHatout = PHat_in*Scalar dove PHatout = Pout - Pcenter pHatin = Pin -Pcenter
+            
+            Scalar dipende dal raggio di Pin (non disponibile). 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.InToOut(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            Dato un output pixel (Pin) trova l'input della trama (Pout).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.CreateInstanceCore">
+            <summary>
+            Crea una nuova istanza.
+            </summary>
+            <returns>Una nuova istanza.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.PointIsInCircle(System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+            Determina se un punto è all'interno di un'ellisse.
+            </summary>
+            <param name="pt">Il punto di test.</param>
+            <param name="center">Il punto centrale dell'ellisse.</param>
+            <param name="radius">Il raggio dell'ellisse.</param>
+            <returns>Restituisce true se l'operazione viene completata.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.Inverse">
+            <summary>
+            Recupera la trasformazione inversa.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MonochromeEffect">
+             <summary>
+            Effetto che trasforma un elemento visivo in monocromatico.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.ColorProperty">
+            <summary>
+            Recupera o imposta la variabile Color nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.InputProperty">
+            <summary>
+            Recupera o imposta l'input dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MonochromeEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Color">
+            <summary>
+            Recupera o imposta la variabile Color nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Input">
+            <summary>
+            Recupera o imposta l'input utilizzato nello shader.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateEffect">
+            <summary>
+            Effetto che applica un effetto pixel a un elemento visivo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.PixelationProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Pixelation nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Pixelation">
+            <summary>
+            Recupera o imposta la quantità di effetto pixel nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateTransitionEffect">
+            <summary>
+            Effetto di transizione che aumenta o diminuisce l'effetto pixel tra due elementi visivi.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto PixelateTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto PixelateTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect">
+            <summary>
+            Effetto di transizione che esegue una sfocatura radiale dell'elemento visivo corrente mentre appare quello successivo.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto RadialBlurTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto RadialBlurTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleEffect">
+            <summary>
+            Effetto che simula un'increspatura sull'elemento visivo. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.CenterProperty">
+            <summary>
+            Recupera o imposta la variabile Center nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.MagnitudeProperty">
+            <summary>
+            Recupera o imposta la variabile Amplitude nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.FrequencyProperty">
+            <summary>
+            Recupera o imposta la variabile Frequency nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.PhaseProperty">
+            <summary>
+            Recupera o imposta la variabile Phase nello shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.InputProperty">
+            <summary>
+            Recupera o imposta il pennello di input utilizzato nello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Center">
+            <summary>
+            Recupera o imposta la variabile Center nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Magnitude">
+            <summary>
+            Recupera o imposta la variabile Amplitude nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Frequency">
+            <summary>
+            Recupera o imposta la variabile Frequency nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Phase">
+            <summary>
+            Recupera o imposta la variabile Phase nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleTransitionEffect">
+            <summary>
+            Effetto di transizione che simula un'increspatura durante la transizione. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto RippleTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto RippleTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SharpenEffect">
+            <summary>
+            Effetto che rende un elemento visivo più nitido e delineato. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.AmountProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Amount nel pixel shader. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.HeightProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Width nel pixel shader. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SharpenEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Amount">
+            <summary>
+            Recupera o imposta la variabile Amount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Height">
+            <summary>
+            Recupera o imposta la variabile Height nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideDirection">
+            <summary>
+            Definisce la direzione dello scorrimento.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideInTransitionEffect">
+            <summary>
+            Effetto di transizione che fa scorrere via l'elemento visivo corrente per rivelare quello successivo. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirectionProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile SlideAmount nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormalProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile SlideAmount nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto SlideInTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto SlideInTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirection">
+            <summary>
+            Recupera o imposta la variabile SlideAmount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormal">
+            <summary>
+            Recupera o imposta la variabile SlideAmount nello shader.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect">
+             <summary>
+            Effetto di transizione che applica un vortice all'elemento visivo corrente per rivelare quello successivo.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmountProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile TwistAmount nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCountProperty">
+            <summary>
+            Proprietà di dipendenza che modifica il numero di celle in cui verrà applicato il vortice ai pixel.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor(System.Double)">
+            <summary>
+            Crea un'istanza e imposta la variabile del vortice dello shader ai valori predefiniti.
+            </summary>
+            <param name="twist">Livello della spirale del vortice.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto SmoothSwirlGridTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto SmoothSwirlGridTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmount">
+            <summary>
+            Recupera o imposta la variabile TwistAmount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCount">
+            <summary>
+            Recupera o imposta la variabile CellCount nello shader.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect">
+            <summary>
+            Effetto che crea una spirale sull'elemento visivo corrente.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.InputProperty">
+            <summary>
+            L'input esplicito per questo pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.CenterProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile Center nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmountProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile TwistAmount nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequencyProperty">
+            <summary>
+            Questa proprietà è mappata sulla variabile AngleFrequency nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.generalTransform">
+            <summary>
+            La trasformazione utilizzata quando questo effetto viene applicato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Center">
+            <summary>
+            Recupera o imposta la variabile Center nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmount">
+            <summary>
+            Recupera o imposta la variabile TwistAmount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequency">
+            <summary>
+            Recupera o imposta la variabile AngleFrequency nello shader. Questa proprietà non è esposta.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Input">
+            <summary>
+            Recupera o imposta il sampler dello shader Input.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.EffectMapping">
+            <summary>
+            Recupera GeneralTransform per questo effetto.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform">
+            <summary>
+            Viene utilizzato per la trasformazione dell'input e le trasformazioni ad albero.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.theEffect">
+            <summary>
+            L'istanza dell'effetto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.thisIsInverse">
+            <summary>
+            L'inverso della trasformazione.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.inverseTransform">
+            <summary>
+            L'inverso di questa trasformazione GeneralTransform.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.SwirlEffect)">
+            <summary>
+            Crea un'istanza di questa classe.
+            </summary>
+            <param name="eff">L'effetto stesso.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            Per questa operazione, i limiti sono definiti dal rettangolo di selezione dei 4 punti trasformati. È necessario per trasformare ciascuno di essi e quindi circoscriverli.  È valido sia per l'effetto in avanti che inverso.
+            </summary>
+            <param name="rect">L'elemento Rect di input.</param>
+            <returns>L'elemento Rect trasformato.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TryTransform(System.Windows.Point,System.Windows.Point@)">
+            <summary>
+            Tenta di trasformare inPoint con l'effetto Swirl.
+            </summary>
+            <param name="targetPoint">Il punto di input.</param>
+            <param name="result">Il punto di output dopo la trasformazione con l'effetto Swirl.</param>
+            <returns>Restituisce true ma genera un'eccezione se è false.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.CreateInstanceCore">
+            <summary>
+            Restituisce una nuova istanza.
+            </summary>
+            <returns>Una nuova istanza.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.Inverse">
+            <summary>
+            Recupera un clone dell'inverso della trasformazione corrente.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WaveTransitionEffect">
+            <summary>
+            Effetto di transizione che applica un motivo a onda all'elemento visivo corrente per rivelare quello successivo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.MagnitudeProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile Magnitude nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.PhaseProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile Phase nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.FrequencyProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile Frequency nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza dello shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto WaveTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto WaveTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Magnitude">
+            <summary>
+            Recupera o imposta l'ampiezza dell'onda.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Phase">
+            <summary>
+            Recupera o imposta la fase dell'onda.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Frequency">
+            <summary>
+            Recupera o imposta l'ampiezza dell'onda.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeDirection">
+            <summary>
+            Definisce la direzione della comparsa.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeTransitionEffect">
+            <summary>
+            Effetto di transizione che fa scomparire l'elemento visivo corrente per rivelare quello successivo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirectionProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile WipeDirection nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmountProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile FeatherAmount nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOriginProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile LineOrigin nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormalProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile LineNormal nel pixel shader.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffsetProperty">
+            <summary>
+            Proprietà di dipendenza che modifica la variabile LineOffset nel pixel shader.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.#ctor">
+            <summary>
+            Crea un'istanza e aggiorna le variabili dello shader ai valori predefiniti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto WipeTransitionEffect. 
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto WipeTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirection">
+            <summary>
+            Recupera o imposta la direzione della comparsa.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmount">
+            <summary>
+            Recupera o imposta la variabile FeatherAmount nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOrigin">
+            <summary>
+            Recupera o imposta la variabile LineOrigin nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormal">
+            <summary>
+            Recupera o imposta la variabile LineNormal nello shader.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffset">
+            <summary>
+            Recupera o imposta la variabile LineOffset nello shader.
+            </summary>
+        </member>
+    </members>
+</doc>

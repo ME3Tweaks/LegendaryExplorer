@@ -1,0 +1,23 @@
+
+Bools:
+17663: True => False
+17666: True => False
+18514: False => True
+18521: False => True
+20267: False => True
+20268: False => True
+20891: False => True
+21320: True => False
+21837: True => False
+21868: True => False
+21898: True => False
+21922: True => False
+22293: True => False
+22399: True => False
+22734: True => False
+
+Floats:
+
+Ints:
+[10461] = 4 => [10210] = 1
+[10646] = 5 => [10169] = 10

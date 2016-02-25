@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxcustomaction_mercbow_charged">
+			<Property name="fullchargetime" type="0">0.25f</Property>
+			<Property name="maxchargetime" type="0">0.35f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxgethhexshield">
+			<Property name="blockedprojectiles" type="3">SFXProjectile_GethPrimePulse2</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_bioticfocus">
+			<Property name="damageinvul" type="0">0.5f</Property>
+			<Property name="evolve_healthshielddamagetaken2" type="0">0.20f</Property>
+			<Property name="evolve_meleedamagebonus2" type="0">0.3f</Property>
+			<Property name="evolve_shieldincrease" type="0">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_biotichammermodal">
+			<Property name="cooldowntime" type="0">(BaseValue=18.0,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_darkchannelprothean">
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_fembotmeleepassive">
+			<Property name="heavymeleedamage" type="0">(BaseValue=650)</Property>
+			<Property name="meleedamage" type="0">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_linestrike">
+			<Property name="damage" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,DistancedSorted=true)</Property>
+			<Property name="poisondamagepersec" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="teleportdistance" type="0">(BaseValue=1200.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_mercbowmodalone">
+			<Property name="arrowspershot" type="0">(BaseValue=5,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_mercbowmodaltwo">
+			<Property name="arrowspershot" type="0">(BaseValue=5,Formula=BonusIsHardValue)</Property>
+			<Property name="damage" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="numberofcharges" type="0">(BaseValue=3,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_mercmeleepassive">
+			<Property name="arrowspershot" type="0">(BaseValue=5,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_bowspreebonus" type="0">0.25f</Property>
+			<Property name="evolve_bowspreeduration" type="0">30.0f</Property>
+			<Property name="evolve_meleedamagebonus1" type="0">0.35f</Property>
+			<Property name="evolve_meleedamagebonus2" type="0">0.5f</Property>
+			<Property name="heavymeleedamage" type="0">(BaseValue=100.0f)</Property>
+			<Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.25f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_mercpassive">
+			<Property name="chargecooldown" type="0">(BaseValue=60,Formula=DivideByBonusSum)</Property>
+			<Property name="evolve_chargecooldownbonus" type="0">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_protheanmeleepassive">
+			<Property name="ascensionduration" type="0">45.0f</Property>
+			<Property name="damagetaken" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_damagetaken2" type="0">0.10f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_repairmatrix">
+			<Property name="effectduration" type="0">(BaseValue=8.0f)</Property>
+			<Property name="evolve_damagereductionbonus" type="0">0.05f</Property>
+			<Property name="evolve_damagereductionbonus1" type="0">0.10f</Property>
+			<Property name="shieldregenerationbonus" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_techhammermodal">
+			<Property name="cooldowntime" type="0">(BaseValue=18.0,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="evolve_dotdamageamount" type="0">(BaseValue=250.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_venomtippedblades">
+			<Property name="damage" type="0">(BaseValue=1200.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="poisondamagepersecond" type="0">(BaseValue=50.f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_warlordmeleepassive">
+			<Property name="heavymeleedamage" type="0">(BaseValue=675)</Property>
+			<Property name="meleedamage" type="0">(BaseValue=360)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

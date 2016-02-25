@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgame.biosfhandler_newcharacter">
+			<Property name="bonustalents" type="3">(BonusPowerID=524288,PowerClassName="sfxgamecontentdlc_exp_pack003.SFXPowerCustomAction_StimPack",srChoiceName=766365,srChoiceTitle=766365,srChoiceDescription=766366,oChoiceImage=none)</Property>
+		</Section>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets">
+				<Value type="3">(ID=800,AssetName="GAWAsset_NormandyRepairs",Type=GAWAssetType_Modifier,GUIName=813562,GUIDescription=813563,ModTargets[0]=(TargetID=187,Value=35),GUICategoryID=0,bShowNotificationOnAward=true)</Value>
+				<Value type="3">(ID=801,AssetName="GAWAsset_TeamSpirit",Type=GAWAssetType_Modifier,GUIName=813564,GUIDescription=813565,ModTargets[0]=(TargetID=187,Value=35),GUICategoryID=0,bShowNotificationOnAward=true)</Value>
+				<Value type="3">(ID=803,AssetName="GAWAsset_KhansNetworkExposed",Type=GAWAssetType_Intel,GUIName=813751,GUIDescription=813752,UnlockPlotStates[0]=24828,bShowNotificationOnAward=true)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgui_weaponselection">
+			<Property name="appearancepositions" type="3">(Tag=hench_wrex, PositionOffset=(x=0,y=0,z=-6))</Property>
+		</Section>
+		<Section name="sfxgame.sfxguidata_teamselect">
+			<Property name="henchidentities">
+				<Value type="3">(MemberId=8, MemberTag=cit_femmefatale, MemberName=802222, MemberDossier=178194, MemberInPartyPlotLabel=Tut_Tech_Begin, MemberValidCID=3715, MemberAvailablePlotLabel=False_Flag, MemberDeadPlotID=0 )</Value>
+				<Value type="3">(MemberId=9, MemberTag=hench_wrex, MemberName=214249, MemberDossier=178194, MemberInPartyPlotLabel=Tut_Biotic_Begin, MemberValidCID=3324, MemberAvailablePlotLabel=IsSelectableMarine, MemberDeadPlotID=0 )</Value>
+			</Property>
+			<Property name="selectappearances">
+				<Value type="3">( AppearanceId=151, MemberAppearanceValue=0, MemberTag=cit_femmefatale, MemberAppearancePlotLabel=AppearanceGarrus, HighlightImage="GUI_Henchmen_Images_EXP3.MayaGlow", AvailableImage="GUI_Henchmen_Images_EXP3.Maya", DeadImage="GUI_Henchmen_Images.PlaceHolder", SilhouetteImage="GUI_Henchmen_Images.Garrus0_locked",DescriptionText[0]=683396,CustomToken0[0]=25,DescriptionText[0]=683395,CustomToken0[0]=25)</Value>
+				<Value type="3">( AppearanceId=150, MemberAppearanceValue=0, MemberTag=hench_wrex, MemberAppearancePlotLabel=AppearanceGarrus, HighlightImage="GUI_Henchmen_Images_EXP3.Wrex0Glow", AvailableImage="GUI_Henchmen_Images_EXP3.Wrex0", DeadImage="GUI_Henchmen_Images.PlaceHolder", SilhouetteImage="GUI_Henchmen_Images.Garrus0_locked",DescriptionText[0]=683396,CustomToken0[0]=25,DescriptionText[0]=683395,CustomToken0[0]=25)</Value>
+			</Property>
+			<Property name="selectinfos">
+				<Value type="3">(InfoId=9,MemberTag=cit_femmefatale,Ability1ID=1,Ability2ID=6,Ability3ID=7,Ability4ID=10,Ability5ID=30)</Value>
+				<Value type="3">(InfoId=8,MemberTag=hench_wrex,Ability1ID=1,Ability2ID=6,Ability3ID=7,Ability4ID=10,Ability5ID=30)</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxguiinteraction">
+			<Property name="movielibrary">
+				<Value type="3">(Tag=DLC_Docks, ZOrder=300, MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks", GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Value>
+				<Value type="3">(Tag=Store_NoPurchase, ZOrder=300, MovieClass="SFXGameContentDLC_EXP_Pack003.SFXGUI_Store_NoPurchase", GFxResource="GUI_SF_Store_NoPurchase.Store_NoPurchase")</Value>
+				<Value type="3">(Tag=PersonalTerminalApt, ZOrder=164, MovieClass="SFXGame.SFXGUI_Terminal", GFxResource="GUI_SF_PersonalTerminalApt.PersonalTerminalApt");</Value>
+				<Value type="3">(Tag=AreaMap_Pack003, ZOrder=360, MovieClass="SFXGameContentDLC_EXP_Pack003.SFXSFHandler_AreaMap_Pack003", GFxResource="GUI_SF_ME2_AreaMap_Pack003.ME2_AreaMap_Pack003", bSwfDevAutoReopen=false);</Value>
+			</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxsfhandler_save">
+			<Property name="areadata">
+				<Value type="2">( AreaName="BioP_Cit001", AreaStrref=769627, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Sushi_512x256")</Value>
+				<Value type="2">( AreaName="BioP_Cit002", AreaStrref=811016, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Casino_512x256")</Value>
+				<Value type="2">( AreaName="BioP_Cit003", AreaStrref=769629, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Archives_512x256")</Value>
+				<Value type="2">( AreaName="BioP_Cit004", AreaStrref=769630, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Docks_512x256")</Value>
+				<Value type="2">( AreaName="BioP_CitHot", AreaStrref=769779, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Street_512x256")</Value>
+				<Value type="2">( AreaName="BioP_CitApt", AreaStrref=812827, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Apartmnt_512x256")</Value>
+				<Value type="2">( AreaName="BioP_CitStart", AreaStrref=769778, ImageName="DLC_MPImages.SaveLoad.LVL_Cit_Apartmnt_512x256")</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxweaponuidatamanager">
+			<Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_SharedSF, Resource="SFXGUI_WeaponUIDataDLC_Shared.Data")</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

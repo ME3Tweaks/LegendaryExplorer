@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioengine" name="bioengine.ini" source="..\..\biogame\config\bioengine.ini">
+  <Sections>
+    <Section name="alternatenonpackageresources">
+      <Property name="conditionalsfiles" type="3">ConditionalsDLC_Shared.cnd</Property>
+      <Property name="talktablemodules" type="3">DLC_Shared</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_HEN_PR\Config\DefaultEngine.ini</Property>
+    </Section>
+    <Section name="core.system">
+      <Property name="cookpaths">
+        <Value type="1">null</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content\Maps\_Global</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\ScriptFinalRelease</Value>
+      </Property>
+      <Property name="frscriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\ScriptFinalRelease</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\ScriptFinalRelease</Value>
+      </Property>
+      <Property name="paths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\TestContent</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\TestContent</Value>
+      </Property>
+      <Property name="scriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Script</Value>
+      </Property>
+      <Property name="seekfreepcpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\CookedPCConsole</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_HEN_PR\CookedPCConsole</Value>
+      </Property>
+    </Section>
+    <Section name="engine.dlcmodules">
+      <Property name="dlc_hen_pr" type="0">9</Property>
+      <Property name="dlc_shared" type="0">3</Property>
+    </Section>
+    <Section name="engine.startuppackages">
+      <Property name="dlcstartuppackage" type="3">Startup_HEN_PR</Property>
+      <Property name="dlcstartuppackagename" type="0">Startup_HEN_PR</Property>
+      <Property name="package" type="3">PlotManagerAutoDLC_HEN_PR</Property>
+    </Section>
+    <Section name="sfxgame.bioworldinfo">
+      <Property name="m_aps3rubbermouthconvlist">
+        <Value type="3">dlcpro_banter_ext_b_dlg</Value>
+        <Value type="3">dlcpro_ext_edenprime_b_dlg</Value>
+        <Value type="3">dlcpro_int_spires_b_dlg</Value>
+        <Value type="3">dlcpro_ext_colony_b_dlg</Value>
+        <Value type="3">dlcpro_ext_lab_bulk_b_dlg</Value>
+        <Value type="3">dlcpro_ext_lab_signal_b_dlg</Value>
+        <Value type="3">dlcpro_ext_plaza_b_dlg</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxengine">
+      <Property name="dynamicloadmapping">
+        <Value type="3">(ObjectName="BIOG_GesturesConfigDLC.RuntimeData",SeekFreePackageName="GesturesConfigDLC")</Value>
+        <Value type="3">(ObjectName="GUI_Achievement_Images.51_freedom-fighter",SeekFreePackageName="SFXAchievementImages_DLC1")</Value>
+        <Value type="3">(ObjectName="GUI_Achievement_Images.52_prothean-expert",SeekFreePackageName="SFXAchievementImages_DLC1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean",SeekFreePackageName="SFXWeapon_AssaultRifles_DLC1", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_HEN_PR.SFXGUIData_Store_Intel_TestIntel01",SeekFreePackageName="SFXGUIData_DLCProtheanStore")</Value>
+        <Value type="3">(ObjectName="GUI_PR_Images.asl_prothean_256x128",SeekFreePackageName="SFX_GUI_PR_Images_1")</Value>
+        <Value type="3">(ObjectName="GUI_PR_Images.asl_prothean_512x256",SeekFreePackageName="SFX_GUI_PR_Images_1")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Ashley3",SeekFreePackageName="SFXHenchImagesAshley_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Ashley3Glow",SeekFreePackageName="SFXHenchImagesAshley_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Garrus2",SeekFreePackageName="SFXHenchImagesGarrus_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Garrus2Glow",SeekFreePackageName="SFXHenchImagesGarrus_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Kaidan3",SeekFreePackageName="SFXHenchImagesKaidan_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Kaidan3Glow",SeekFreePackageName="SFXHenchImagesKaidan_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.EDI2",SeekFreePackageName="SFXHenchImagesEDI_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.EDI2Glow",SeekFreePackageName="SFXHenchImagesEDI_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Tali2",SeekFreePackageName="SFXHenchImagesTali_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Tali2Glow",SeekFreePackageName="SFXHenchImagesTali_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Liara3",SeekFreePackageName="SFXHenchImagesLiara_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Liara3Glow",SeekFreePackageName="SFXHenchImagesLiara_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.James3",SeekFreePackageName="SFXHenchImagesJames_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.James3Glow",SeekFreePackageName="SFXHenchImagesJames_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Prothean1",SeekFreePackageName="SFXHenchImagesProthean_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_Henchmen_Images.Prothean1Glow",SeekFreePackageName="SFXHenchImagesProthean_HENPR")</Value>
+        <Value type="3">(ObjectName="GUI_PR_Images.LVL_Prothean_512x256",SeekFreePackageName="SFX_GUI_PR_SaveLoadImages_1")</Value>
+      </Property>
+      <Property name="sfxuniqueids">
+        <Value type="3">DLC_PROTHEAN1</Value>
+        <Value type="3">DLC_PROTHEAN2</Value>
+        <Value type="3">SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean</Value>
+      </Property>
+    </Section>
+    <Section name="unrealed.editorengine">
+      <Property name="editpackages" type="3">SFXGameContentDLC_HEN_PR</Property>
+    </Section>
+    <Section name="wwiseaudiosettings">
+      <Property name="bundledir" type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Content\WwiseBundles</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

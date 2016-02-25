@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_NullOrEmpty" xml:space="preserve">
+    <value>Value cannot be null or an empty string.</value>
+  </data>
+  <data name="AttributeOrNamespaceInIncludeLocationError" xml:space="preserve">
+    <value>Include location identifies an attribute or namespace node!</value>
+  </data>
+  <data name="CircularInclusion" xml:space="preserve">
+    <value>Circular inclusion has been detected, inclusion location: {0}.</value>
+  </data>
+  <data name="CircularInclusionLong" xml:space="preserve">
+    <value>Circular inclusion has been detected, inclusion location: {0}. In {1}, Line {2}, Position {3}.</value>
+  </data>
+  <data name="CircumflexCharMustBeEscaped" xml:space="preserve">
+    <value>Circumflex character must be escaped in XPointer.</value>
+  </data>
+  <data name="CustomXmlResolverError" xml:space="preserve">
+    <value>An exception has occured during GetEntity call to custom XmlResolver.</value>
+  </data>
+  <data name="CustomXmlResolverReturnedNull" xml:space="preserve">
+    <value>Custom XmlResolver returned null.</value>
+  </data>
+  <data name="CustomXmlResolverReturnedUnsupportedType" xml:space="preserve">
+    <value>Custom XmlResolver returned object of an unsupported type '{0}'.</value>
+  </data>
+  <data name="EmptyElementSchemeXPointer" xml:space="preserve">
+    <value>Syntax error in element() scheme data: empty XPointer.</value>
+  </data>
+  <data name="FallbackNotChildOfInclude" xml:space="preserve">
+    <value>xi:fallback element must be direct child of xi:include element. Location: {0}.</value>
+  </data>
+  <data name="FallbackNotChildOfIncludeLong" xml:space="preserve">
+    <value>xi:fallback element must be direct child of xi:include element. Location: {0}, Line {1}, Position {2}.</value>
+  </data>
+  <data name="FatalResourceException" xml:space="preserve">
+    <value>Resource error has occured and no fallback has been provided: {0}.</value>
+  </data>
+  <data name="FragmentIDInHref" xml:space="preserve">
+    <value>Fragment identifiers must not be used in 'href' attribute.</value>
+  </data>
+  <data name="IncludeChildOfInclude" xml:space="preserve">
+    <value>xi:include element cannot be child of xi:include element. Location: {0}.</value>
+  </data>
+  <data name="IncludeChildOfIncludeLong" xml:space="preserve">
+    <value>xi:include element cannot be child of xi:include element. Location: {0}, Line {1}, Position {2}.</value>
+  </data>
+  <data name="IndexingXPathNavigator_KeyArgumentNotString" xml:space="preserve">
+    <value>Type of the first argument of key() function must be string.</value>
+  </data>
+  <data name="IndexingXPathNavigator_KeyWrongArguments" xml:space="preserve">
+    <value>Wrong number of arguments of key() function.</value>
+    <comment>The key() function was called with invalid number of args.</comment>
+  </data>
+  <data name="IntradocumentReferencesNotSupported" xml:space="preserve">
+    <value>XIncludingReader doesn't support intra-document references.</value>
+  </data>
+  <data name="InvalidCharForAccept" xml:space="preserve">
+    <value>'accept' attribute contains a character not allowed in HTTP header: 0x{0}.</value>
+  </data>
+  <data name="InvalidNameToken" xml:space="preserve">
+    <value>Invalid Name token: {0}:{1}.</value>
+  </data>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>Invalid token.</value>
+  </data>
+  <data name="InvalidTokenAfterShorthandPointer" xml:space="preserve">
+    <value>Invalid token after shorthand pointer.</value>
+  </data>
+  <data name="InvalidTokenInElementSchemeWhileClosingRoundBracketExpected" xml:space="preserve">
+    <value>Syntax error in element() scheme data: Invalid token in ChildSequence, a closing round bracket was expected.</value>
+  </data>
+  <data name="InvalidTokenInElementSchemeWhileNumberExpected" xml:space="preserve">
+    <value>Syntax error in element() scheme data: Invalid token in ChildSequence, a number was expected.</value>
+  </data>
+  <data name="InvalidTokenInXmlnsSchemeWhileNCNameExpected" xml:space="preserve">
+    <value>Syntax error in xmlns() scheme data: Invalid token in XmlnsSchemaData, NCName was expected.</value>
+  </data>
+  <data name="InvalidTokenInXmlnsSchemeWhileEqualsSignExpected" xml:space="preserve">
+    <value>Syntax error in xmlns() scheme data: Invalid token in XmlnsSchemaData, equal sign was expected.</value>
+  </data>
+  <data name="InvalidURI" xml:space="preserve">
+    <value>Invalid URI '{0}'.</value>
+  </data>
+  <data name="IOErrorWhileFetchingResource" xml:space="preserve">
+    <value>I/O error while reading resource '{0}'.</value>
+  </data>
+  <data name="MalformedXInclusionResult" xml:space="preserve">
+    <value>Malformed XInclusion result - xi:include element at the top level must include a single element and optional comments and PIs.</value>
+  </data>
+  <data name="MissingHrefAndXpointerException" xml:space="preserve">
+    <value>'href' or 'xpointer' attributes can't both be omitted on xi:include element. Location: {0}."</value>
+  </data>
+  <data name="MissingHrefAndXpointerExceptionLong" xml:space="preserve">
+    <value>'href' or 'xpointer' attributes can't both be omitted on xi:include element. Location: {0}, Line {1}, Position {2}.</value>
+  </data>
+  <data name="NonXmlCharacter" xml:space="preserve">
+    <value>Included document contains a character not allowed in XML: 0x{0}.</value>
+  </data>
+  <data name="NoSubresourcesIdentifiedException" xml:space="preserve">
+    <value>XPointer '{0}' doesn't identify any subresources.</value>
+  </data>
+  <data name="NotSupportedEncoding" xml:space="preserve">
+    <value>Not supported encoding '{0}'.</value>
+  </data>
+  <data name="NullXPointer" xml:space="preserve">
+    <value>XPointer pointer cannot be null.</value>
+  </data>
+  <data name="OutOfMemoryWhileFetchingResource" xml:space="preserve">
+    <value>Out of memory error while reading resource '{0}'.</value>
+  </data>
+  <data name="ResourceError" xml:space="preserve">
+    <value>Resource '{0}' cannot be fetched.</value>
+  </data>
+  <data name="SecurityException" xml:space="preserve">
+    <value>Security exception while fetching '{0}'.</value>
+  </data>
+  <data name="SyntaxErrorInXmlnsSchemeData" xml:space="preserve">
+    <value>Syntax error in xmlns() scheme data: {0}</value>
+  </data>
+  <data name="SyntaxErrorInXPath1SchemeData" xml:space="preserve">
+    <value>Syntax error in xpath1() scheme data: {0}</value>
+  </data>
+  <data name="SyntaxErrorInXPointerSchemeData" xml:space="preserve">
+    <value>Syntax error in xpointer() scheme data: {0}</value>
+  </data>
+  <data name="TwoFallbacks" xml:space="preserve">
+    <value>xi:include element cannot contain more than one xi:fallback element. Location: {0}.</value>
+  </data>
+  <data name="TwoFallbacksLong" xml:space="preserve">
+    <value>xi:include element cannot contain more than one xi:fallback element. Location: {0}, Line {1}, Position {2}.</value>
+  </data>
+  <data name="UndeclaredPrefix" xml:space="preserve">
+    <value>Undeclared prefix '{0}'.</value>
+  </data>
+  <data name="UnexpectedEndOfSchemeData" xml:space="preserve">
+    <value>Unexpected end of scheme data.</value>
+  </data>
+  <data name="UnknownParseAttrValue" xml:space="preserve">
+    <value>Unknown 'parse' attribute value: '{0}'.</value>
+  </data>
+  <data name="UnknownParseAttrValueLong" xml:space="preserve">
+    <value>Unknown 'parse' attribute value: '{0}'. In {1}, Line {2}, Position {3}.</value>
+  </data>
+  <data name="UnknownXIncludeElement" xml:space="preserve">
+    <value>Unknown element in the XInclude namespace has been detected: {0}.</value>
+  </data>
+  <data name="UnresolvableURI" xml:space="preserve">
+    <value>Unable to resolve URI reference '{0}'.</value>
+  </data>
+  <data name="URISchemaNotSupported" xml:space="preserve">
+    <value>URI schema is not supported: '{0}'.</value>
+  </data>
+  <data name="Xml_MissingRoot" xml:space="preserve">
+    <value>Root element is missing.</value>
+  </data>
+  <data name="XmlDocumentFactory_NotImplementedDOM" xml:space="preserve">
+    <value>The XmlDocument instance can only be used for serialization purposes.</value>
+    <comment>All methods except for WriteTo() are unimplemented.</comment>
+  </data>
+  <data name="XmlFragmentStream_EOF" xml:space="preserve">
+    <value>Attempt to read past EOF.</value>
+    <comment>The read method was called while the class is already in EOF.</comment>
+  </data>
+  <data name="XmlNodeListFactory_IHasXmlNodeMissing" xml:space="preserve">
+    <value>The XPath query was not executed against an XmlNode-based object (such as XmlDocument).</value>
+    <comment>The factory received an XPathNodeIterator that was not obtained from querying an XmlDocument or XmlNode.</comment>
+  </data>
+  <data name="XPathCache_BadSortObject" xml:space="preserve">
+    <value>Sort expression must be either a string or an XPathExpression.</value>
+    <comment>Sort expression is invalid.</comment>
+  </data>
+  <data name="XPathNavigatorIterator_CantAddAfterMove" xml:space="preserve">
+    <value>Can't add new elements after the iterator has moved.</value>
+    <comment>Can't add new elements after the iterator has moved.</comment>
+  </data>
+  <data name="ZeroIndexInElementSchemechildSequence" xml:space="preserve">
+    <value>Syntax error in element() scheme data: 0 index in ChildSequence.</value>
+  </data>
+</root>

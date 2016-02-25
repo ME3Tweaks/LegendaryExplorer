@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceFile id="" name="" source="">
+  <Assets>
+    <Asset source="bioai.xml" />
+    <Asset source="biocompat.xml" />
+    <Asset source="biocredits.xml" />
+    <Asset source="biodifficulty.xml" />
+    <Asset source="bioengine.xml" />
+    <Asset source="biogame.xml" />
+    <Asset source="bioinput.xml" />
+    <Asset source="biolightmass.xml" />
+    <Asset source="biotest.xml" />
+    <Asset source="bioui.xml" />
+    <Asset source="bioweapon.xml" />
+    <Asset source="core.xml" />
+    <Asset source="descriptions.xml" />
+    <Asset source="editortips.xml" />
+    <Asset source="engine.xml" />
+    <Asset source="gfxui.xml" />
+    <Asset source="ipdrv.xml" />
+    <Asset source="launch.xml" />
+    <Asset source="onlinesubsystemgamespy.xml" />
+    <Asset source="startup.xml" />
+    <Asset source="subtitles.xml" />
+    <Asset source="unrealed.xml" />
+    <Asset source="windrv.xml" />
+    <Asset source="xwindow.xml" />
+  </Assets>
+</CoalesceFile>

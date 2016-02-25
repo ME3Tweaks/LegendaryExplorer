@@ -1,0 +1,15 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\bin\Release\MassEffect3.DifficultyEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\bin\Release\MassEffect3.DifficultyEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\bin\Release\MassEffect3.DifficultyEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\bin\Release\MassEffect.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\bin\Release\MassEffect.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MainWindow.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MainWindow.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\App.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor_MarkupCompile.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.g.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.DifficultyEditor\obj\Release\MassEffect3.DifficultyEditor.pdb

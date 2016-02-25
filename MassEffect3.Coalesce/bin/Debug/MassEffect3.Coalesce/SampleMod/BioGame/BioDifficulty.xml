@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini" source="..\..\biogame\config\biodifficulty.ini">
+	<Includes>
+		<Include source="BioDifficulty/SFXGame.xml" />
+		<Include source="BioDifficulty/SFXGameMPContent.xml" />
+	</Includes>
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">2477421267.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

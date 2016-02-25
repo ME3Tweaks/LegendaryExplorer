@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="_RootNewMaleToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 22</value>
+  </data>
+  <data name="_RootNewMaleToolStripMenuItem.Text" xml:space="preserve">
+    <value>Новый &amp;Мужчина</value>
+  </data>
+  <data name="_RootNewFemaleToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 22</value>
+  </data>
+  <data name="_RootNewFemaleToolStripMenuItem.Text" xml:space="preserve">
+    <value>Новая &amp;Женщина</value>
+  </data>
+  <data name="_RootNewSplitButton.Text" xml:space="preserve">
+    <value>Новый</value>
+  </data>
+  <data name="_RootOpenFromCareerMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>222, 22</value>
+  </data>
+  <data name="_RootOpenFromCareerMenuItem.Text" xml:space="preserve">
+    <value>Открыть из &amp;прохождения...</value>
+  </data>
+  <data name="_RootOpenFromFileMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>222, 22</value>
+  </data>
+  <data name="_RootOpenFromFileMenuItem.Text" xml:space="preserve">
+    <value>Открыть из &amp;файла...</value>
+  </data>
+  <data name="_RootOpenFromGenericButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>86, 22</value>
+  </data>
+  <data name="_RootOpenFromGenericButton.Text" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="_RootSaveToCareerMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 22</value>
+  </data>
+  <data name="_RootSaveToCareerMenuItem.Text" xml:space="preserve">
+    <value>Сохранить в &amp;Прохождение...</value>
+  </data>
+  <data name="_RootSaveToFileMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 22</value>
+  </data>
+  <data name="_RootSaveToFileMenuItem.Text" xml:space="preserve">
+    <value>Сохранить в &amp;файл...</value>
+  </data>
+  <data name="_RootSaveToGenericButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>97, 22</value>
+  </data>
+  <data name="_RootSaveToGenericButton.Text" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="_RootDontUseCareerPickerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>283, 22</value>
+  </data>
+  <data name="_RootDontUseCareerPickerToolStripMenuItem.Text" xml:space="preserve">
+    <value>Не использовать выбор прохождения</value>
+  </data>
+  <data name="_RootSettingsButton.Text" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="_PlayerBasicGenderWarningLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>441, 26</value>
+  </data>
+  <data name="_PlayerBasicGenderWarningLabel.Text" xml:space="preserve">
+    <value>* При смене пола персонажа, сбросьте модель лица или импортируйте подходящею,
+иначе в игре голова будет отображаться неправильно.</value>
+  </data>
+  <data name="_PlayerBasicTabPage.Text" xml:space="preserve">
+    <value>Основы</value>
+  </data>
+  <data name="_PlayerAppearanceColorAddColorButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>106, 22</value>
+  </data>
+  <data name="_PlayerAppearanceColorAddColorButton.Text" xml:space="preserve">
+    <value>Добавить цвет</value>
+  </data>
+  <data name="_PlayerAppearanceColorRemoveColorButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>98, 22</value>
+  </data>
+  <data name="_PlayerAppearanceColorRemoveColorButton.Text" xml:space="preserve">
+    <value>Удалить цвет</value>
+  </data>
+  <data name="_PlayerAppearanceColorChangeColorButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 22</value>
+  </data>
+  <data name="_PlayerAppearanceColorChangeColorButton.Text" xml:space="preserve">
+    <value>Изменить цвет</value>
+  </data>
+  <data name="_PlayerAppearanceColorTabPage.Text" xml:space="preserve">
+    <value>Цвета</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadImportButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadImportButton.Text" xml:space="preserve">
+    <value>Импорт из файла...</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadExportButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadExportButton.Text" xml:space="preserve">
+    <value>Экспорт в файл...</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadDropDownButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>109, 22</value>
+  </data>
+  <data name="_PlayerAppearanceMorphHeadDropDownButton.Text" xml:space="preserve">
+    <value>Модель лица</value>
+  </data>
+  <data name="_PlayerAppearancePresetOpenFromFileButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>183, 22</value>
+  </data>
+  <data name="_PlayerAppearancePresetOpenFromFileButton.Text" xml:space="preserve">
+    <value>Открыть из файла...</value>
+  </data>
+  <data name="_PlayerAppearancePresetSaveToFileButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>183, 22</value>
+  </data>
+  <data name="_PlayerAppearancePresetSaveToFileButton.Text" xml:space="preserve">
+    <value>Сохранить в файл...</value>
+  </data>
+  <data name="_PlayerAppearancePresetDropDownButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>149, 22</value>
+  </data>
+  <data name="_PlayerAppearancePresetDropDownButton.Text" xml:space="preserve">
+    <value>Предустановленные</value>
+  </data>
+  <data name="_PlayerAppearancePresetDropDownButton.ToolTipText" xml:space="preserve">
+    <value>Предустановленные настройки</value>
+  </data>
+  <data name="_PlayerAppearanceRootTabPage.Text" xml:space="preserve">
+    <value>Внешность</value>
+  </data>
+  <data name="_PlayerRootTabPage.Text" xml:space="preserve">
+    <value>Игрок</value>
+  </data>
+  <data name="_PlotManualClearLogButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 22</value>
+  </data>
+  <data name="_PlotManualClearLogButton.Text" xml:space="preserve">
+    <value>Очистить лог</value>
+  </data>
+  <data name="_PlotManualFloatGetButton.Text" xml:space="preserve">
+    <value>Получить</value>
+  </data>
+  <data name="_PlotManualFloatSetButton.Text" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="_PlotManualFloatGroupBox.Text" xml:space="preserve">
+    <value>Дробное</value>
+  </data>
+  <data name="_PlotManualIntGetButton.Text" xml:space="preserve">
+    <value>Получить</value>
+  </data>
+  <data name="_PlotManualIntSetButton.Text" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="_PlotManualIntGroupBox.Text" xml:space="preserve">
+    <value>Целое</value>
+  </data>
+  <data name="_PlotManualBoolSetButton.Text" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="_PlotManualBoolGetButton.Text" xml:space="preserve">
+    <value>Получить</value>
+  </data>
+  <data name="_PlotManualBoolValueCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 17</value>
+  </data>
+  <data name="_PlotManualBoolValueCheckBox.Text" xml:space="preserve">
+    <value>установлен</value>
+  </data>
+  <data name="_PlotManualBoolGroupBox.Text" xml:space="preserve">
+    <value>Флаг</value>
+  </data>
+  <data name="_PlotManualTabPage.Text" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="_PlotRootTabPage.Text" xml:space="preserve">
+    <value>Точки</value>
+  </data>
+  <data name="_RawTabPage.Text" xml:space="preserve">
+    <value>Таблица</value>
+  </data>
+  <data name="_RootSaveGameOpenFileDialog.Filter" xml:space="preserve">
+    <value>Сейвы Mass Effect 3 (*.pcsav, *.xbsav)|*.pcsav;*.xbsav|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="_RootSaveGameSaveFileDialog.Filter" xml:space="preserve">
+    <value>Сейвы Mass Effect 3 PC (*.pcsav)|*.pcsav|Сейвы Mass Effect 3 XBOX 360 (*.xbsav)|*.xbsav|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="_RootMorphHeadOpenFileDialog.Filter" xml:space="preserve">
+    <value>Модель лица из Mass Effect 3 (*.me3headmorph)|*.me3headmorph</value>
+  </data>
+  <data name="_RootMorphHeadSaveFileDialog.Filter" xml:space="preserve">
+    <value>Модель лица из Mass Effect 3 (*.me3headmorph)|*.me3headmorph</value>
+  </data>
+  <data name="_RootFaqLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>162, 13</value>
+  </data>
+  <data name="_RootFaqLinkLabel.Text" xml:space="preserve">
+    <value>Есть вопросы? Читайте ЧАВО</value>
+  </data>
+  <data name="_RootIssueLinkLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>274, 458</value>
+  </data>
+  <data name="_RootIssueLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>322, 13</value>
+  </data>
+  <data name="_RootIssueLinkLabel.Text" xml:space="preserve">
+    <value>Есть проблемы? Сообщите о них (Сначала прочитайте ЧАВО!)</value>
+  </data>
+  <data name="_RootAppearancePresetOpenFileDialog.Filter" xml:space="preserve">
+    <value>Пресет внешности Mass Effect 3 (*.me3appearance)|*.me3appearance</value>
+  </data>
+  <data name="_RootAppearancePresetSaveFileDialog.Filter" xml:space="preserve">
+    <value>Пресет внешности Mass Effect 3 (*.me3appearance)|*.me3appearance</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Редактор сохранений игры Mass Effect 3 от Gibbed</value>
+  </data>
+</root>

@@ -1,0 +1,1313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxgamempcontent.sfxcharacterclass_contentmp">
+			<Property name="startingencumbrancecapacity" type="2">0.3f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_adept">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Singularity</Value>
+				<Value type="2">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="2">SFXPowerCustomActionMP_Shockwave</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_adept_asari">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Stasis</Value>
+				<Value type="2">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="2">SFXPowerCustomActionMP_Throw</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_adept_drell">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Reave</Value>
+				<Value type="2">SFXPowerCustomActionMP_Pull</Value>
+				<Value type="2">SFXPowerCustomActionMP_BioticGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_engineer">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_CombatDrone</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="2">SFXPowerCustomActionMP_Overload</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_engineer_quarian_female">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_SentryTurret</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="2">SFXPowerCustomActionMP_CryoBlast</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_engineer_salarian">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_EnergyDrain</Value>
+				<Value type="2">SFXPowerCustomActionMP_Decoy</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_infiltrator">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="2">SFXPowerCustomActionMP_CryoBlast</Value>
+				<Value type="2">SFXPowerCustomActionMP_StickyGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_infiltrator_bf3">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="2">SFXPowerCustomActionMP_StickyGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_infiltrator_quarian_female">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="2">SFXPowerCustomActionMP_StickyGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_AIHacking</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_infiltrator_salarian">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="2">SFXPowerCustomActionMP_EnergyDrain</Value>
+				<Value type="2">SFXPowerCustomActionMP_ProximityMine</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_sentinel">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_TechArmor</Value>
+				<Value type="2">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="2">SFXPowerCustomActionMP_Throw</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_sentinel_krogan">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_TechArmor_Turian</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="2">SFXPowerCustomActionMP_LiftGrenade</Value>
+			</Property>
+			<Property name="startingencumbrancecapacity" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_sentinel_turian">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_TechArmor_Turian</Value>
+				<Value type="2">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="2">SFXPowerCustomActionMP_Overload</Value>
+			</Property>
+			<Property name="startingencumbrancecapacity" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_soldier">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_AdrenalineRush</Value>
+				<Value type="2">SFXPowerCustomActionMP_ConcussiveShot</Value>
+				<Value type="2">SFXPowerCustomActionMP_FragGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_soldier_bf3">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_AdrenalineRush</Value>
+				<Value type="2">SFXPowerCustomActionMP_Carnage</Value>
+				<Value type="2">SFXPowerCustomActionMP_FragGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_soldier_krogan">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Fortification</Value>
+				<Value type="2">SFXPowerCustomActionMP_Carnage</Value>
+				<Value type="2">SFXPowerCustomActionMP_InfernoGrenade</Value>
+			</Property>
+			<Property name="startingencumbrancecapacity" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_soldier_turian">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_Marksman</Value>
+				<Value type="2">SFXPowerCustomActionMP_ConcussiveShot</Value>
+				<Value type="2">SFXPowerCustomActionMP_ProximityMine</Value>
+			</Property>
+			<Property name="startingencumbrancecapacity" type="2">0.4f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_vanguard">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="2">SFXPowerCustomActionMP_Shockwave</Value>
+				<Value type="2">SFXPowerCustomActionMP_Discharge</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_vanguard_asari">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="2">SFXPowerCustomActionMP_Stasis</Value>
+				<Value type="2">SFXPowerCustomActionMP_LiftGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcharacterclassmp_vanguard_drell">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="2">SFXPowerCustomActionMP_Pull</Value>
+				<Value type="2">SFXPowerCustomActionMP_BioticGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxcheatmanagernonnativemp">
+			<Property name="displaypools">
+				<Value type="2">bronzecommon</Value>
+				<Value type="2">silvercommon</Value>
+				<Value type="2">goldcommon</Value>
+				<Value type="2">silverrare</Value>
+				<Value type="2">goldrare</Value>
+				<Value type="2">goldultrarare</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxengagement_annex">
+			<Property name="operationfirstwarning" type="2">30.0f</Property>
+			<Property name="operationsecondwarning" type="2">240.0f</Property>
+			<Property name="spawndistanceideal" type="2">2500</Property>
+			<Property name="spawnpenaltylongdistance" type="2">0.6</Property>
+			<Property name="spawnpenaltyshortdistance" type="2">0.4</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxengagement_disarm">
+			<Property name="activatenextbombdelay" type="2">3.0f</Property>
+			<Property name="instructionreminderdelay" type="2">35.0f</Property>
+			<Property name="numdisarmsrequired" type="2">4</Property>
+			<Property name="spawndistanceideal" type="2">3000</Property>
+			<Property name="spawnpenaltylongdistance" type="2">0.2</Property>
+			<Property name="spawnpenaltyshortdistance" type="2">0.8</Property>
+			<Property name="waveinstructionvodelay" type="2">4.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxengagement_extraction">
+			<Property name="finishwavedelay" type="2">0</Property>
+			<Property name="musiceventname" type="2">Set_mus_gameplaymode_finalwave</Property>
+			<Property name="operationscorereward" type="2">0</Property>
+			<Property name="operationtimelimit" type="2">120</Property>
+			<Property name="operationtimelimitbuffer" type="2">0</Property>
+			<Property name="spawndistanceideal" type="2">3500</Property>
+			<Property name="spawnpenaltylongdistance" type="2">0.2</Property>
+			<Property name="spawnpenaltyshortdistance" type="2">0.8</Property>
+			<Property name="srendwavefailure" type="2">0</Property>
+			<Property name="weightedchanceofselection" type="2">0</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameconfigmp">
+			<Property name="dropheavyweapononholster" type="2">false</Property>
+			<Property name="droppedweaponlifespan" type="2">90.0f</Property>
+			<Property name="emptydroppedweaponlifespan" type="2">12.0f</Property>
+			<Property name="levelrewards">
+				<Value type="2">(Level=1, ExperienceRequired=0,TalentReward=2)</Value>
+				<Value type="2">(Level=2, ExperienceRequired=12500,TalentReward=3)</Value>
+				<Value type="2">(Level=3, ExperienceRequired=37500,TalentReward=3)</Value>
+				<Value type="2">(Level=4, ExperienceRequired=62500,TalentReward=3)</Value>
+				<Value type="2">(Level=5, ExperienceRequired=100000,TalentReward=3)</Value>
+				<Value type="2">(Level=6, ExperienceRequired=150000,TalentReward=3)</Value>
+				<Value type="2">(Level=7, ExperienceRequired=200000,TalentReward=3)</Value>
+				<Value type="2">(Level=8, ExperienceRequired=250000,TalentReward=4)</Value>
+				<Value type="2">(Level=9, ExperienceRequired=312500,TalentReward=4)</Value>
+				<Value type="2">(Level=10,ExperienceRequired=375000,TalentReward=4)</Value>
+				<Value type="2">(Level=11,ExperienceRequired=437500,TalentReward=4)</Value>
+				<Value type="2">(Level=12,ExperienceRequired=500000,TalentReward=4)</Value>
+				<Value type="2">(Level=13,ExperienceRequired=625000,TalentReward=5)</Value>
+				<Value type="2">(Level=14,ExperienceRequired=750000,TalentReward=5)</Value>
+				<Value type="2">(Level=15,ExperienceRequired=875000,TalentReward=5)</Value>
+				<Value type="2">(Level=16,ExperienceRequired=1000000,TalentReward=5)</Value>
+				<Value type="2">(Level=17,ExperienceRequired=1250000,TalentReward=6)</Value>
+				<Value type="2">(Level=18,ExperienceRequired=1500000,TalentReward=6)</Value>
+				<Value type="2">(Level=19,ExperienceRequired=2000000,TalentReward=6)</Value>
+				<Value type="2">(Level=20,ExperienceRequired=2500000,TalentReward=6)</Value>
+			</Property>
+			<Property name="maxplayerexperience" type="2">13000000</Property>
+			<Property name="scoretoxpmultiplier" type="2">1.0f</Property>
+			<Property name="showmpprogressionscreens" type="2">false</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_ammopower_armorpiercing">
+			<Property name="armorreduction[0]" type="2">0.50f</Property>
+			<Property name="armorreduction[1]" type="2">0.65f</Property>
+			<Property name="armorreduction[2]" type="2">0.75f</Property>
+			<Property name="damage[0]" type="2">0.10f</Property>
+			<Property name="damage[1]" type="2">0.20f</Property>
+			<Property name="damage[2]" type="2">0.30f</Property>
+			<Property name="penetration[0]" type="2">0.50f</Property>
+			<Property name="penetration[1]" type="2">0.75f</Property>
+			<Property name="penetration[2]" type="2">1.00f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_ammopower_cryo">
+			<Property name="armorweakness[0]" type="2">0.25f</Property>
+			<Property name="armorweakness[1]" type="2">0.35f</Property>
+			<Property name="armorweakness[2]" type="2">0.50f</Property>
+			<Property name="delayedfreezerandduration" type="2">0.2f</Property>
+			<Property name="delayedfreezestaticduration" type="2">0.5f</Property>
+			<Property name="freezechance[0]" type="2">1.0f</Property>
+			<Property name="freezechance[1]" type="2">1.4f</Property>
+			<Property name="freezechance[2]" type="2">1.8f</Property>
+			<Property name="frostduration[0]" type="2">3.f</Property>
+			<Property name="frostduration[1]" type="2">4.f</Property>
+			<Property name="frostduration[2]" type="2">5.f</Property>
+			<Property name="speedreduction[0]" type="2">0.15f</Property>
+			<Property name="speedreduction[1]" type="2">0.25f</Property>
+			<Property name="speedreduction[2]" type="2">0.35f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_ammopower_disruptor">
+			<Property name="damage[0]" type="2">0.05f</Property>
+			<Property name="damage[1]" type="2">0.10f</Property>
+			<Property name="damage[2]" type="2">0.15f</Property>
+			<Property name="electriccomboduration[0]" type="2">3.5f</Property>
+			<Property name="electriccomboduration[1]" type="2">3.5f</Property>
+			<Property name="electriccomboduration[2]" type="2">3.5f</Property>
+			<Property name="shieldregenpenalty" type="2">1.0f</Property>
+			<Property name="shieldregenpenaltyduration" type="2">8.0f</Property>
+			<Property name="stunchance[0]" type="2">1.0f</Property>
+			<Property name="stunchance[1]" type="2">1.4f</Property>
+			<Property name="stunchance[2]" type="2">1.8f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_ammopower_incendiary">
+			<Property name="damage[0]" type="2">0.10f</Property>
+			<Property name="damage[1]" type="2">0.20f</Property>
+			<Property name="damage[2]" type="2">0.30f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_ammopower_warp">
+			<Property name="armorweakness[0]" type="2">0.25f</Property>
+			<Property name="armorweakness[1]" type="2">0.35f</Property>
+			<Property name="armorweakness[2]" type="2">0.50f</Property>
+			<Property name="damage[0]" type="2">0.15f</Property>
+			<Property name="damage[1]" type="2">0.25f</Property>
+			<Property name="damage[2]" type="2">0.35f</Property>
+			<Property name="liftdamagebonus[0]" type="2">0.25f</Property>
+			<Property name="liftdamagebonus[1]" type="2">0.50f</Property>
+			<Property name="liftdamagebonus[2]" type="2">0.75f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_powerbonus">
+			<Property name="affectedparameter[0]" type="2">CooldownTime</Property>
+			<Property name="affectedparameter[1]" type="2">CooldownTime</Property>
+			<Property name="affectedparameter[2]" type="2">CooldownTime</Property>
+			<Property name="effectvalues[0]" type="2">0.1f</Property>
+			<Property name="effectvalues[1]" type="2">0.2f</Property>
+			<Property name="effectvalues[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_powerbonusdamage">
+			<Property name="affectedparameter[0]" type="2">Damage</Property>
+			<Property name="affectedparameter[1]" type="2">Damage</Property>
+			<Property name="affectedparameter[2]" type="2">Damage</Property>
+			<Property name="effectvalues[0]" type="2">0.1f</Property>
+			<Property name="effectvalues[1]" type="2">0.2f</Property>
+			<Property name="effectvalues[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_shieldbonus">
+			<Property name="shieldbonus[0]" type="2">0.3f</Property>
+			<Property name="shieldbonus[1]" type="2">0.6f</Property>
+			<Property name="shieldbonus[2]" type="2">1.0f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_speedbonus">
+			<Property name="speedbonus[0]" type="2">0.05f</Property>
+			<Property name="speedbonus[1]" type="2">0.15f</Property>
+			<Property name="speedbonus[2]" type="2">0.25f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_weapondamagebonus_assaultrifle">
+			<Property name="damagebonus[0]" type="2">0.1f</Property>
+			<Property name="damagebonus[1]" type="2">0.2f</Property>
+			<Property name="damagebonus[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_weapondamagebonus_pistol">
+			<Property name="damagebonus[0]" type="2">0.1f</Property>
+			<Property name="damagebonus[1]" type="2">0.2f</Property>
+			<Property name="damagebonus[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_weapondamagebonus_shotgun">
+			<Property name="damagebonus[0]" type="2">0.1f</Property>
+			<Property name="damagebonus[1]" type="2">0.2f</Property>
+			<Property name="damagebonus[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_weapondamagebonus_smg">
+			<Property name="damagebonus[0]" type="2">0.1f</Property>
+			<Property name="damagebonus[1]" type="2">0.2f</Property>
+			<Property name="damagebonus[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameeffect_matchconsumable_weapondamagebonus_sniperrifle">
+			<Property name="damagebonus[0]" type="2">0.1f</Property>
+			<Property name="damagebonus[1]" type="2">0.2f</Property>
+			<Property name="damagebonus[2]" type="2">0.3f</Property>
+			<Property name="versioncount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameinfomp">
+			<Property name="backtolobbyfailsafedelay" type="2">5.0f</Property>
+			<Property name="joininprogressreplicationdelay" type="2">1.5f</Property>
+			<Property name="mpapproval">
+				<Value type="2">SFXPowerCustomActionMP_AdrenalineRush</Value>
+				<Value type="2">SFXPowerCustomActionMP_AIHacking</Value>
+				<Value type="2">SFXPowerCustomActionMP_Barrier</Value>
+				<Value type="2">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="2">SFXPowerCustomActionMP_BioticGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_Carnage</Value>
+				<Value type="2">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="2">SFXPowerCustomActionMP_CombatDrone</Value>
+				<Value type="2">SFXPowerCustomActionMP_ConcussiveShot</Value>
+				<Value type="2">SFXPowerCustomActionMP_CryoBlast</Value>
+				<Value type="2">SFXPowerCustomActionMP_Decoy</Value>
+				<Value type="2">SFXPowerCustomActionMP_Discharge</Value>
+				<Value type="2">SFXPowerCustomActionMP_EnergyDrain</Value>
+				<Value type="2">SFXPowerCustomAction_Flashbang</Value>
+				<Value type="2">SFXPowerCustomActionMP_Fortification</Value>
+				<Value type="2">SFXPowerCustomActionMP_FragGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_GethShieldBoost</Value>
+				<Value type="2">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="2">SFXPowerCustomActionMP_InfernoGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_LiftGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_Marksman</Value>
+				<Value type="2">SFXPowerCustomActionMP_Overload</Value>
+				<Value type="2">SFXPowerCustomActionMP_ProximityMine</Value>
+				<Value type="2">SFXPowerCustomActionMP_Pull</Value>
+				<Value type="2">SFXPowerCustomActionMP_Reave</Value>
+				<Value type="2">SFXPowerCustomActionMP_SentryTurret</Value>
+				<Value type="2">SFXPowerCustomActionMP_Shockwave</Value>
+				<Value type="2">SFXPowerCustomActionMP_Singularity</Value>
+				<Value type="2">SFXPowerCustomActionMP_Stasis</Value>
+				<Value type="2">SFXPowerCustomActionMP_StickyGrenade</Value>
+				<Value type="2">SFXPowerCustomActionMP_TechArmor</Value>
+				<Value type="2">SFXPowerCustomActionMP_TechArmor_Turian</Value>
+				<Value type="2">SFXPowerCustomActionMP_TechArmor_Krogan</Value>
+				<Value type="2">SFXPowerCustomActionMP_Throw</Value>
+				<Value type="2">SFXPowerCustomAction_Unity</Value>
+				<Value type="2">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="2">SFXPowerCustomActionMP_Consumable_Rocket</Value>
+				<Value type="2">SFXPowerCustomActionMP_Consumable_Shield</Value>
+				<Value type="2">SFXPowerCustomActionMP_Consumable_Revive</Value>
+				<Value type="2">SFXPowerCustomActionMP_Consumable_Ammo</Value>
+				<Value type="2">SFXPowerCustomActionMP_ConsumableAmmoPower</Value>
+				<Value type="2">SFXPowerCustomAction_IncendiaryAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_DisruptorAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_CryoAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_ArmorPiercingAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_ShredderAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_AdeptMeleePassive</Value>
+				<Value type="2">SFXPowerCustomAction_SoldierMeleePassive</Value>
+				<Value type="2">SFXPowerCustomAction_EngineerMeleePassive</Value>
+				<Value type="2">SFXPowerCustomAction_SentinelMeleePassive</Value>
+				<Value type="2">SFXPowerCustomAction_InfiltratorMeleePassive</Value>
+				<Value type="2">SFXPowerCustomAction_VanguardMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_AsariMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_FemQuarianMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_KroganMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_SalarianMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_TurianMeleePassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_FemQuarianPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_KroganPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_SalarianPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_TurianPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_AsariPassive</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Adept</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Engineer</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Infiltrator</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Sentinel</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Soldier</Value>
+				<Value type="2">SFXPowerCustomActionMP_HumanMeleePassive_Vanguard</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellEvadeLeft</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellEvadeRight</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellEvadeForward</Value>
+				<Value type="2">SFXPowerCustomActionMP_DrellEvadeBackwards</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Avenger</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Vindicator</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Mattock</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Cobra</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Geth</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Falcon</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Saber</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Revenant</Value>
+				<Value type="2">SFXWeapon_AssaultRifle_Collector</Value>
+				<Value type="2">SFXWeapon_Pistol_Phalanx</Value>
+				<Value type="2">SFXWeapon_Pistol_Talon</Value>
+				<Value type="2">SFXWeapon_Pistol_Carnifex</Value>
+				<Value type="2">SFXWeapon_Pistol_Predator</Value>
+				<Value type="2">SFXWeapon_Pistol_Ivory</Value>
+				<Value type="2">SFXWeapon_Pistol_Scorpion</Value>
+				<Value type="2">SFXWeapon_Pistol_Thor</Value>
+				<Value type="2">SFXWeapon_SMG_Tempest</Value>
+				<Value type="2">SFXWeapon_SMG_Hornet</Value>
+				<Value type="2">SFXWeapon_SMG_Locust</Value>
+				<Value type="2">SFXWeapon_SMG_Shuriken</Value>
+				<Value type="2">SFXWeapon_Shotgun_Eviscerator</Value>
+				<Value type="2">SFXWeapon_Shotgun_Claymore</Value>
+				<Value type="2">SFXWeapon_Shotgun_Scimitar</Value>
+				<Value type="2">SFXWeapon_Shotgun_Geth</Value>
+				<Value type="2">SFXWeapon_Shotgun_Katana</Value>
+				<Value type="2">SFXWeapon_Shotgun_Striker</Value>
+				<Value type="2">SFXWeapon_Shotgun_Disciple</Value>
+				<Value type="2">SFXWeapon_Shotgun_Graal</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Raptor</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Incisor</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Viper</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Mantis</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Javelin</Value>
+				<Value type="2">SFXWeapon_SniperRifle_Widow</Value>
+				<Value type="2">SFXWeapon_SniperRifle_BlackWidow</Value>
+				<Value type="2">SFXWeapon_Heavy_ConsumableRocketLauncher</Value>
+			</Property>
+			<Property name="waitingforplayerstimeout" type="2">20.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgameinfomp_lobby">
+			<Property name="matchstarttimerduration" type="2">5</Property>
+			<Property name="natwarningshowdelay" type="2">30.0</Property>
+			<Property name="natwarningshowduration" type="2">6.0</Property>
+			<Property name="srcancel" type="2">168246</Property>
+			<Property name="srcreatinggame" type="2">626902</Property>
+			<Property name="srmatchmakingerror" type="2">591379</Property>
+			<Property name="srok" type="2">152938</Property>
+			<Property name="sronlineprivilegeerror" type="2">652174</Property>
+			<Property name="srsearchingforgames" type="2">506693</Property>
+			<Property name="srstrictnaterror" type="2">724659</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgametype_horde_operation">
+			<Property name="endofmatchdelay" type="2">1.0f</Property>
+			<Property name="maxdelaystartwavestime" type="2">60.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgawreinforcementkitunlock">
+			<Property name="xpbonus[0]" type="2">12500</Property>
+			<Property name="xpbonus[1]" type="2">50000</Property>
+			<Property name="xpbonus[2]" type="2">100000</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgawreinforcementmanager">
+			<Property name="carddata">
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Ammo", Rarity=Rarity_Common, GUIName=661162, GUIDescription=661163, GUIType="consumable", GUITextureRef="GUI_MPImages.Cards.EquipAmmo")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Revive", Rarity=Rarity_Common, GUIName=661168, GUIDescription=661169, GUIType="consumable", GUITextureRef="GUI_MPImages.Cards.EquipRevive")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Rocket", Rarity=Rarity_Common, GUIName=661166, GUIDescription=661167, GUIType="consumable", GUITextureRef="GUI_MPImages.Cards.EquipRocket")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Shield", Rarity=Rarity_Common, GUIName=661164, GUIDescription=661165, GUIType="consumable", GUITextureRef="GUI_MPImages.Cards.EquipShield")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Incendiary", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 1, GUICategory=EReinforcementGUICategory_MatchConsumableAmmo, GUIName=711347, GUIDescription=676662, GUIType="ammoUpgrade", GUITextureRef="GUI_MPImages.Cards.AmmoIncendiary")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Disruptor", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 1, GUICategory=EReinforcementGUICategory_MatchConsumableAmmo, GUIName=711348, GUIDescription=676663, GUIType="ammoUpgrade", GUITextureRef="GUI_MPImages.Cards.AmmoDisrupt")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_ArmorPiercing", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 1, GUICategory=EReinforcementGUICategory_MatchConsumableAmmo, GUIName=711349, GUIDescription=676664, GUIType="ammoUpgrade", GUITextureRef="GUI_MPImages.Cards.AmmoPiercing")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Warp", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 1, GUICategory=EReinforcementGUICategory_MatchConsumableAmmo, GUIName=711350, GUIDescription=676665, GUIType="ammoUpgrade", GUITextureRef="GUI_MPImages.Cards.AmmoWarp")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_AmmoPower_Cryo", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 1, GUICategory=EReinforcementGUICategory_MatchConsumableAmmo, GUIName=711351, GUIDescription=676666, GUIType="ammoUpgrade", GUITextureRef="GUI_MPImages.Cards.AmmoCryo")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonus", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=711352, GUIDescription=676667, GUIType="armorUpgrade", GUITextureRef="GUI_MPImages.Cards.BoostTime")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonusDamage", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=711353, GUIDescription=676668, GUIType="armorUpgrade", GUITextureRef="GUI_MPImages.Cards.BoostPower")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_WeaponDamageBonus_AssaultRifle", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=711354, GUIDescription=676669, GUIType="weaponUpgrade", GUITextureRef="GUI_MPImages.Cards.DamageAssault")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_WeaponDamageBonus_SniperRifle", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=711355, GUIDescription=676670, GUIType="weaponUpgrade", GUITextureRef="GUI_MPImages.Cards.DamageSniper")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_WeaponDamageBonus_Shotgun", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=711356, GUIDescription=676671, GUIType="weaponUpgrade", GUITextureRef="GUI_MPImages.Cards.DamageShotgun")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_WeaponDamageBonus_Pistol", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=711357, GUIDescription=676672, GUIType="weaponUpgrade", GUITextureRef="GUI_MPImages.Cards.DamagePistol")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_WeaponDamageBonus_SMG", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=711358, GUIDescription=676673, GUIType="weaponUpgrade", GUITextureRef="GUI_MPImages.Cards.DamageSMG")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_SpeedBonus", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=711359, GUIDescription=676674, GUIType="armorUpgrade", GUITextureRef="GUI_MPImages.Cards.BoostSpeed")</Value>
+				<Value type="2">(UniqueName="SFXGameMPContent.SFXGameEffect_MatchConsumable_ShieldBonus", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=711360, GUIDescription=676675, GUIType="armorUpgrade", GUITextureRef="GUI_MPImages.Cards.BoostShields")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Avenger", MaxCount = 10, Rarity=Rarity_Common, GUIName=589047, GUIDescription=339266, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_avenger_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Mantis", MaxCount = 10, Rarity=Rarity_Common, GUIName=209737, GUIDescription=339320, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_mantis_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Predator", MaxCount = 10, Rarity=Rarity_Common, GUIName=209732, GUIDescription=339301, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_predator_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SMG_Shuriken", MaxCount = 10, Rarity=Rarity_Common, GUIName=209730, GUIDescription=339296, GUICategory=EReinforcementGUICategory_SMG, GUIType="smg", GUITextureRef="GUI_Icons.Weapons.smg_shuriken_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Katana", MaxCount = 10, Rarity=Rarity_Common, GUIName=209734, GUIDescription=339313, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_katana_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Cobra", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=634278, GUIDescription=634280, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_cobra_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Vindicator", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=621121, GUIDescription=621123, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_vindicator_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Scimitar", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=209735, GUIDescription=339316, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_scimitar_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Viper", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=209738, GUIDescription=339322, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_viper_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Raptor", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=551044, GUIDescription=551046, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_raptor_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Phalanx", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=546166, GUIDescription=652049, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_phalanx_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Mattock", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=545842, GUIDescription=619710, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_mattock_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SMG_Tempest", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=209731, GUIDescription=339299, GUICategory=EReinforcementGUICategory_SMG, GUIType="smg", GUITextureRef="GUI_Icons.Weapons.smg_tempest_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SMG_Locust", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=546170, GUIDescription=619711, GUICategory=EReinforcementGUICategory_SMG, GUIType="smg", GUITextureRef="GUI_Icons.Weapons.smg_locust_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Eviscerator", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=314330, GUIDescription=352863, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_eviscerator_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Incisor", MaxCount = 10, Rarity=Rarity_Uncommon, GUIName=546171, GUIDescription=351820, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_incisor_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Falcon", MaxCount = 10, Rarity=Rarity_Rare, GUIName=550944, GUIDescription=570666, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_falcon_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Revenant", MaxCount = 10, Rarity=Rarity_Rare, GUIName=209729, GUIDescription=339279, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_revenant_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Geth", MaxCount = 10, Rarity=Rarity_Rare, GUIName=546169, GUIDescription=339329, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_gethpulse_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Thor", MaxCount = 10, Rarity=Rarity_Rare, GUIName=551034, GUIDescription=551036, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_thor_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Carnifex", MaxCount = 10, Rarity=Rarity_Rare, GUIName=209733, GUIDescription=339305, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_carniflex_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SMG_Hornet", MaxCount = 10, Rarity=Rarity_Rare, GUIName=551028, GUIDescription=551030, GUICategory=EReinforcementGUICategory_SMG, GUIType="smg", GUITextureRef="GUI_Icons.Weapons.smg_hornet_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Graal", MaxCount = 10, Rarity=Rarity_Rare, GUIName=551037, GUIDescription=551039, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_graal_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Claymore", MaxCount = 10, Rarity=Rarity_Rare, GUIName=209736, GUIDescription=339318, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_claymore_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Disciple", MaxCount = 10, Rarity=Rarity_Rare, GUIName=581148, GUIDescription=581149, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_disciple_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Geth", MaxCount = 10, Rarity=Rarity_Rare, GUIName=560869, GUIDescription=560871, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_gethplasma_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Widow", MaxCount = 10, Rarity=Rarity_Rare, GUIName=209739, GUIDescription=339324, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_widow_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Scorpion", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=551025, GUIDescription=551027, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_scorpion_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_Javelin", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=551047, GUIDescription=551049, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_javelin_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_AssaultRifle_Saber", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=676841, GUIDescription=676842, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="GUI_Icons.Weapons.asl_saber_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Talon", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=551031, GUIDescription=551033, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_talon_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_SniperRifle_BlackWidow", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=692577, GUIDescription=707215, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="GUI_Icons.Weapons.snp_widow_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Pistol_Ivory", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=704673, GUIDescription=707217, GUICategory=EReinforcementGUICategory_Pistol, GUIType="pistol", GUITextureRef="GUI_Icons.Weapons.pst_carniflex_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeapon_Shotgun_Striker", MaxCount = 10, Rarity=Rarity_UltraRare, GUIName=709355, GUIDescription=707213, GUICategory=EReinforcementGUICategory_Shotgun, GUIType="shotgun", GUITextureRef="GUI_Icons.Weapons.bls_eviscerator_256x128")</Value>
+				<Value type="2">(UniqueName="AdeptHumanMale", Rarity=Rarity_Common, GUIName=711364, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitBioticMale")</Value>
+				<Value type="2">(UniqueName="AdeptHumanFemale", Rarity=Rarity_Common, GUIName=711370, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitBiotic")</Value>
+				<Value type="2">(UniqueName="EngineerHumanMale", Rarity=Rarity_Common, GUIName=711365, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgentMale")</Value>
+				<Value type="2">(UniqueName="EngineerHumanFemale", Rarity=Rarity_Common, GUIName=711371, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgent")</Value>
+				<Value type="2">(UniqueName="InfiltratorHumanMale", Rarity=Rarity_Common, GUIName=711366, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgentMale")</Value>
+				<Value type="2">(UniqueName="InfiltratorHumanFemale", Rarity=Rarity_Common, GUIName=711372, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgent")</Value>
+				<Value type="2">(UniqueName="SentinelHumanMale", Rarity=Rarity_Common, GUIName=711367, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitBioticMale")</Value>
+				<Value type="2">(UniqueName="SentinelHumanFemale", Rarity=Rarity_Common, GUIName=711373, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitBiotic")</Value>
+				<Value type="2">(UniqueName="SoldierHumanMale", Rarity=Rarity_Common, GUIName=711368, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSoldierMale")</Value>
+				<Value type="2">(UniqueName="SoldierHumanFemale", Rarity=Rarity_Common, GUIName=711374, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSoldier")</Value>
+				<Value type="2">(UniqueName="VanguardHumanMale", Rarity=Rarity_Common, GUIName=711369, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSoldierMale")</Value>
+				<Value type="2">(UniqueName="VanguardHumanFemale", Rarity=Rarity_Common, GUIName=711375, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSoldier")</Value>
+				<Value type="2">(UniqueName="SoldierHumanMaleBF3", Rarity=Rarity_Uncommon, GUIName=723302, GUIDescription=723303, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSoldierMale")</Value>
+				<Value type="2">(UniqueName="InfiltratorHumanFemaleBF3", Rarity=Rarity_Uncommon, GUIName=723371, GUIDescription=723303, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgent")</Value>
+				<Value type="2">(UniqueName="AdeptDrell", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711377, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitDrell")</Value>
+				<Value type="2">(UniqueName="VanguardDrell", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711386, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitDrell")</Value>
+				<Value type="2">(UniqueName="EngineerSalarian", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711379, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSalarian")</Value>
+				<Value type="2">(UniqueName="InfiltratorSalarian", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711380, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitSalarian")</Value>
+				<Value type="2">(UniqueName="InfiltratorQuarian", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711381, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitQuarian")</Value>
+				<Value type="2">(UniqueName="EngineerQuarian", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711378, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitQuarian")</Value>
+				<Value type="2">(UniqueName="SentinelTurian", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711382, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitTurian")</Value>
+				<Value type="2">(UniqueName="SoldierTurian", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711385, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitTurian")</Value>
+				<Value type="2">(UniqueName="VanguardAsari", Rarity=Rarity_Uncommon, VersionIdx=1, GUIName=711387, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAsari")</Value>
+				<Value type="2">(UniqueName="AdeptAsari", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711376, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAsari")</Value>
+				<Value type="2">(UniqueName="SentinelKrogan", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711383, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitKrogan")</Value>
+				<Value type="2">(UniqueName="SoldierKrogan", Rarity=Rarity_Rare, VersionIdx=2, GUIName=711384, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitKrogan")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_PistolAccuracy", MaxCount = 5, Rarity=Rarity_Common, GUIName=519359, GUIDescription=711318, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.pst_sco_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SMGMagSize", MaxCount = 5, Rarity=Rarity_Common, GUIName=519470, GUIDescription=711326, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.MOD_ammo-capacity_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_AssaultRifleStability", MaxCount = 5, Rarity=Rarity_Common, GUIDescription=711330, GUICategory=EReinforcementGUICategory_Mod, GUIName=518980, GUIType="assaultmod", GUITextureRef="GUI_Icons.Weapons.MOD_stability-damper_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_ShotgunAccuracy", MaxCount = 5, Rarity=Rarity_Common, GUIName=519500, GUIDescription=711336, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="GUI_Icons.Weapons.MOD_barrel-choke_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed", MaxCount = 5, Rarity=Rarity_Common, GUIName=519536, GUIDescription=711340, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="GUI_Icons.Weapons.MOD_heat-sink_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_PistolMagSize", MaxCount = 5, Rarity=Rarity_Common, GUIName=519438, GUIDescription=711321, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.MOD_ammo-capacity_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_PistolDamage", MaxCount = 5, Rarity=Rarity_Common, GUIName=519355, GUIDescription=711319, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.pst_bar_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SMGAccuracy", MaxCount = 5, Rarity=Rarity_Common, GUIName=519472, GUIDescription=711323, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.pst_sco_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SMGConstraintDamage", MaxCount = 5, Rarity=Rarity_Common, GUIName=519476, GUIDescription=711327, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.MOD_smg_heat-sink-mod_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy", MaxCount = 5, Rarity=Rarity_Common, GUIName=515088, GUIDescription=711328, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="GUI_Icons.Weapons.asl_sco_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_AssaultRifleMagSize", MaxCount = 5, Rarity=Rarity_Common, GUIName=518985, GUIDescription=711331, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="GUI_Icons.Weapons.MOD_ammo-capacity_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_ShotgunDamage", MaxCount = 5, Rarity=Rarity_Common, GUIName=519486, GUIDescription=711333, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="GUI_Icons.Weapons.bls_bar_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage", MaxCount = 5, Rarity=Rarity_Common, GUIName=519504, GUIDescription=711334, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="GUI_Icons.Weapons.bls_melee_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SniperRifleDamage", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519527, GUIDescription=711339, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="GUI_Icons.Weapons.snp_bar_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_PistolStability", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519357, GUIDescription=711320, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.MOD_tazer-mod_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_PistolReloadSpeed", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519352, GUIDescription=711322, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.MOD_penetration-mod_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SMGStability", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519474, GUIDescription=711325, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.MOD_ultralight-material_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SMGDamage", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519468, GUIDescription=711324, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.pst_bar_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_AssaultRifleDamage", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=518965, GUIDescription=711329, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="GUI_Icons.Weapons.asl_bar_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_AssaultRifleForce", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=518987, GUIDescription=711332, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="GUI_Icons.Weapons.MOD_penetration-mod_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_ShotgunStability", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519508, GUIDescription=711335, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="GUI_Icons.Weapons.MOD_heat-sink_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519482, GUIDescription=711337, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="GUI_Icons.Weapons.MOD_shredder-mod_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SniperRifleAccuracy", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519534, GUIDescription=711338, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="GUI_Icons.Weapons.snp_sco_a_256x128")</Value>
+				<Value type="2">(UniqueName="SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage", MaxCount = 5, Rarity=Rarity_Uncommon, GUIName=519550, GUIDescription=711342, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="GUI_Icons.Weapons.MOD_penetration-mod_256x128")</Value>
+				<Value type="2">(UniqueName="MPCapacity_Ammo", MaxCount = 10, Rarity=Rarity_Rare, GUIName=723382, GUIDescription=723378, GUIType="capacity", GUITextureRef="GUI_MPImages.Cards.AddAmmo")</Value>
+				<Value type="2">(UniqueName="MPCapacity_Revive", MaxCount = 10, Rarity=Rarity_Rare, GUIName=723385, GUIDescription=723381, GUIType="capacity", GUITextureRef="GUI_MPImages.Cards.AddRevive")</Value>
+				<Value type="2">(UniqueName="MPCapacity_Rocket", MaxCount = 10, Rarity=Rarity_Rare, GUIName=723384, GUIDescription=723380, GUIType="capacity", GUITextureRef="GUI_MPImages.Cards.AddRockets")</Value>
+				<Value type="2">(UniqueName="MPCapacity_Shield", MaxCount = 10, Rarity=Rarity_Rare, GUIName=723383, GUIDescription=723379, GUIType="capacity", GUITextureRef="GUI_MPImages.Cards.AddShield")</Value>
+				<Value type="2">(UniqueName="MPRespec", Rarity=Rarity_Rare, GUIName=708848, GUIType="respec", GUITextureRef="GUI_MPImages.Cards.Talent")</Value>
+				<Value type="2">(UniqueName="MPCredits", Rarity=Rarity_Rare, GUIName=720016, GUIDescription=720018, GUIType="bonus", GUITextureRef="GUI_MPImages.Cards.Credits")</Value>
+			</Property>
+			<Property name="ftimeoutconsumeid" type="2">60.0</Property>
+			<Property name="ftimeoutrefreshdigitalrights" type="2">60.0</Property>
+			<Property name="ftimeoutrefreshmpsaves" type="2">60.0</Property>
+			<Property name="ftimeoutsavemprecord" type="2">60.0</Property>
+			<Property name="packpurchasedentitlement" type="2">(nID=4000112)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgrimp">
+			<Property name="fupdatescoreinterval" type="2">1.0f</Property>
+			<Property name="maxplayersallowedmp" type="2">4</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxgrimp_lobby">
+			<Property name="srexiting" type="2">608470</Property>
+			<Property name="srloading" type="2">608467</Property>
+			<Property name="srmapchangedduetodlcmismatch" type="2">702536</Property>
+			<Property name="srmatchstartcountdown" type="2">633549</Property>
+			<Property name="srok" type="2">152938</Property>
+			<Property name="srstartingmatch" type="2">608469</Property>
+			<Property name="srwaitingforplayers" type="2">608468</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxhudmp">
+			<Property name="consolemessagecount" type="2">0</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxlobbyflow">
+			<Property name="bshowrevealreinforcementsonunexpectedawarding" type="2">TRUE</Property>
+			<Property name="framestowaitbeforefadingfromblack" type="2">5</Property>
+			<Property name="lobbyscreentag" type="2">MPNewLobby</Property>
+			<Property name="mpguipackages" type="2">GUI_MPImages</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_annex_defendzone">
+			<Property name="activateobjectiveonspawn" type="2">true</Property>
+			<Property name="benablecombatzone" type="2">true</Property>
+			<Property name="completionrateperplayer" type="2">0.004f</Property>
+			<Property name="playerupdatedelaytime" type="2">0.5f</Property>
+			<Property name="scorerewardfrequency" type="2">5.0f</Property>
+			<Property name="waveinstructionvodelay" type="2">4.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_assassination">
+			<Property name="activateobjectiveonspawn" type="2">false</Property>
+			<Property name="assassinationtargetdataarray">
+				<Value type="2">(MinWavePointCost=90,TimeToKill=60,DamageReductionBonus=0.0f)</Value>
+				<Value type="2">(MinWavePointCost=70,TimeToKill=50,DamageReductionBonus=0.15f)</Value>
+				<Value type="2">(MinWavePointCost=40,TimeToKill=40,DamageReductionBonus=0.30f)</Value>
+				<Value type="2">(MinWavePointCost=20,TimeToKill=30,DamageReductionBonus=0.50f)</Value>
+			</Property>
+			<Property name="benablecombatzone" type="2">false</Property>
+			<Property name="difficultytimemodifier">
+				<Value type="2">1.0f</Value>
+				<Value type="2">1.1f</Value>
+				<Value type="2">1.2f</Value>
+			</Property>
+			<Property name="firsttargettimebonus" type="2">30.0f</Property>
+			<Property name="instructionreminderdelay" type="2">20.0f</Property>
+			<Property name="numtargetstokill" type="2">4</Property>
+			<Property name="srendwavesuccess" type="2">712058</Property>
+			<Property name="srkillnexttargetmessage" type="2">712060</Property>
+			<Property name="srtargetkilledmessage" type="2">712059</Property>
+			<Property name="waveinstructionvodelay" type="2">4.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_disarm_base">
+			<Property name="activateobjectiveonspawn" type="2">false</Property>
+			<Property name="benablecombatzone" type="2">true</Property>
+			<Property name="waveinstructionvodelay" type="2">4.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_extractionpoint">
+			<Property name="activateobjectiveonspawn" type="2">true</Property>
+			<Property name="benablecombatzone" type="2">true</Property>
+			<Property name="lastnotificationtime" type="2">118.0f</Property>
+			<Property name="musicrtpcmax" type="2">120</Property>
+			<Property name="shuttlearrivedendofmatchdelay" type="2">5.0f</Property>
+			<Property name="shuttlearrivestart" type="2">110.0f</Property>
+			<Property name="shuttleclosepct" type="2">0.66f</Property>
+			<Property name="shuttlefarawaypct" type="2">0.33f</Property>
+			<Property name="shuttlematineeduration" type="2">5.0f</Property>
+			<Property name="updatemusicfrequency" type="2">0.1f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_retrieve_dropofflocation">
+			<Property name="activateobjectiveonspawn" type="2">false</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_retrieve_pickupobject">
+			<Property name="activateobjectiveonspawn" type="2">false</Property>
+			<Property name="benablecombatzone" type="2">true</Property>
+			<Property name="movementspeeddecrease" type="2">-0.3f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpawn_playermp">
+			<Property name="deathflourishduration" type="2">4.f</Property>
+			<Property name="fpermadeathtimer" type="2">12.f</Property>
+			<Property name="invalidragdollstatecounterthreshold" type="2">5</Property>
+			<Property name="joininprogressdelay" type="2">10.f</Property>
+			<Property name="srplayerbledout" type="2">718419</Property>
+			<Property name="srplayerdownpopup" type="2">618713</Property>
+			<Property name="srplayerexecuted" type="2">718397</Property>
+			<Property name="srplayerjoined" type="2">708941</Property>
+			<Property name="srplayerkilled" type="2">718396</Property>
+			<Property name="srplayerleft" type="2">708942</Property>
+			<Property name="srplayerrevived" type="2">661135</Property>
+			<Property name="srplayersuicide" type="2">722513</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxplayercontrollermp">
+			<Property name="buseoldlobbyprototype" type="2">false</Property>
+			<Property name="dlcremovedtext" type="2">720546</Property>
+			<Property name="mpmapnames[0]" type="2">biop_mptowr</Property>
+			<Property name="mpmapnames[1]" type="2">biop_mpcer</Property>
+			<Property name="mpmapnames[2]" type="2">biop_mpnov</Property>
+			<Property name="mpmapnames[3]" type="2">biop_mpslum</Property>
+			<Property name="mpmapnames[4]" type="2">biop_mprctr</Property>
+			<Property name="mpmapnames[5]" type="2">biop_mpdish</Property>
+			<Property name="srcancel" type="2">665537</Property>
+			<Property name="srconfirm" type="2">153362</Property>
+			<Property name="srexitmessage" type="2">641884</Property>
+			<Property name="srexitmessagelobby" type="2">631051</Property>
+			<Property name="srwaitmessagegeneric" type="2">727560</Property>
+			<Property name="srwaitmessagematchended" type="2">727562</Property>
+			<Property name="srwaitmessagematchstarted" type="2">727561</Property>
+			<Property name="ticksavegameinterval" type="2">60.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxplayercustomizationmp">
+			<Property name="emissiveappearances">
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000,A=1.000000),ParameterName="Emissive")),Id=0,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Emissive")),Id=1,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255,A=1.000000),ParameterName="Emissive")),Id=2,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569,A=1.000000),ParameterName="Emissive")),Id=3,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784,A=1.000000),ParameterName="Emissive")),Id=4,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Emissive")),Id=5,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000,A=1.000000),ParameterName="Emissive")),Id=6,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255,A=1.000000),ParameterName="Emissive")),Id=7,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Emissive")),Id=8,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Emissive")),Id=9,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Emissive")),Id=10,Type=CustomizableType_Tint))</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Emissive")),Id=11,Type=CustomizableType_Tint))</Value>
+			</Property>
+			<Property name="patternappearances">
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_01"),Stripe2Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_02"),Stripe3Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_03")),Id=0,Type=CustomizableType_Pattern)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=1.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_01"),Stripe2Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_02"),Stripe3Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_03")),Id=1,Type=CustomizableType_Pattern)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000,G=1.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_01"),Stripe2Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_02"),Stripe3Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_03")),Id=2,Type=CustomizableType_Pattern)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000,G=0.000000,B=1.000000,A=1.000000),ParameterName="Stripe_Parameter_01"),Stripe2Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_02"),Stripe3Param=(ParameterValue=(R=0.000000,G=0.000000,B=0.000000,A=1.000000),ParameterName="Stripe_Parameter_03")),Id=3,Type=CustomizableType_Pattern)</Value>
+			</Property>
+			<Property name="patterncolorappearances">
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922,A=1.000000),ParameterName="Stripe_Color_03")),Id=0,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176,A=1.000000),ParameterName="Stripe_Color_03")),Id=1,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510,A=1.000000),ParameterName="Stripe_Color_03")),Id=2,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=3,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255,A=1.000000),ParameterName="Stripe_Color_03")),Id=4,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882,A=1.000000),ParameterName="Stripe_Color_03")),Id=5,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=6,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725,A=1.000000),ParameterName="Stripe_Color_03")),Id=7,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098,A=1.000000),ParameterName="Stripe_Color_03")),Id=8,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=9,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=10,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922,A=1.000000),ParameterName="Stripe_Color_03")),Id=11,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118,A=1.000000),ParameterName="Stripe_Color_03")),Id=12,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059,A=1.000000),ParameterName="Stripe_Color_03")),Id=13,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765,A=1.000000),ParameterName="Stripe_Color_03")),Id=14,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490,A=1.000000),ParameterName="Stripe_Color_03")),Id=15,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196,A=1.000000),ParameterName="Stripe_Color_03")),Id=16,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765,A=1.000000),ParameterName="Stripe_Color_03")),Id=17,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490,A=1.000000),ParameterName="Stripe_Color_03")),Id=18,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608,A=1.000000),ParameterName="Stripe_Color_03")),Id=19,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392,A=1.000000),ParameterName="Stripe_Color_03")),Id=20,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=21,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569,A=1.000000),ParameterName="Stripe_Color_03")),Id=22,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=23,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=24,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=25,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=26,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118,A=1.000000),ParameterName="Stripe_Color_03")),Id=27,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255,A=1.000000),ParameterName="Stripe_Color_03")),Id=28,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627,A=1.000000),ParameterName="Stripe_Color_03")),Id=29,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157,A=1.000000),ParameterName="Stripe_Color_03")),Id=30,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333,A=1.000000),ParameterName="Stripe_Color_03")),Id=31,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137,A=1.000000),ParameterName="Stripe_Color_03")),Id=32,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961,A=1.000000),ParameterName="Stripe_Color_03")),Id=33,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549,A=1.000000),ParameterName="Stripe_Color_03")),Id=34,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098,A=1.000000),ParameterName="Stripe_Color_03")),Id=35,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118,A=1.000000),ParameterName="Stripe_Color_03")),Id=36,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627,A=1.000000),ParameterName="Stripe_Color_03")),Id=37,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098,A=1.000000),ParameterName="Stripe_Color_03")),Id=38,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196,A=1.000000),ParameterName="Stripe_Color_03")),Id=39,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784,A=1.000000),ParameterName="Stripe_Color_03")),Id=40,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020,A=1.000000),ParameterName="Stripe_Color_03")),Id=41,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098,A=1.000000),ParameterName="Stripe_Color_03")),Id=42,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863,A=1.000000),ParameterName="Stripe_Color_03")),Id=43,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608,A=1.000000),ParameterName="Stripe_Color_03")),Id=44,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=45,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314,A=1.000000),ParameterName="Stripe_Color_03")),Id=46,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000,A=1.000000),ParameterName="Stripe_Color_03")),Id=47,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471,A=1.000000),ParameterName="Stripe_Color_03")),Id=48,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255,A=1.000000),ParameterName="Stripe_Color_03")),Id=49,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000,A=1.000000),ParameterName="Stripe_Color_03")),Id=50,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588,A=1.000000),ParameterName="Stripe_Color_03")),Id=51,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608,A=1.000000),ParameterName="Stripe_Color_03")),Id=52,Type=CustomizableType_PatternColor)</Value>
+				<Value type="2">(Pattern=(Stripe1Param=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373,A=1.000000),ParameterName="Stripe_Color_01"),Stripe2Param=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373,A=1.000000),ParameterName="Stripe_Color_02"),Stripe3Param=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373,A=1.000000),ParameterName="Stripe_Color_03")),Id=53,Type=CustomizableType_PatternColor)</Value>
+			</Property>
+			<Property name="phongappearances">
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922, A=1.000000),ParameterName="Phong_Spec_Color")),Id=0,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176, A=1.000000),ParameterName="Phong_Spec_Color")),Id=1,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510, A=1.000000),ParameterName="Phong_Spec_Color")),Id=2,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=3,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255, A=1.000000),ParameterName="Phong_Spec_Color")),Id=4,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882, A=1.000000),ParameterName="Phong_Spec_Color")),Id=5,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=6,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725, A=1.000000),ParameterName="Phong_Spec_Color")),Id=7,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098, A=1.000000),ParameterName="Phong_Spec_Color")),Id=8,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=9,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=10,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922, A=1.000000),ParameterName="Phong_Spec_Color")),Id=11,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118, A=1.000000),ParameterName="Phong_Spec_Color")),Id=12,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059, A=1.000000),ParameterName="Phong_Spec_Color")),Id=13,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765, A=1.000000),ParameterName="Phong_Spec_Color")),Id=14,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490, A=1.000000),ParameterName="Phong_Spec_Color")),Id=15,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196, A=1.000000),ParameterName="Phong_Spec_Color")),Id=16,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765, A=1.000000),ParameterName="Phong_Spec_Color")),Id=17,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490, A=1.000000),ParameterName="Phong_Spec_Color")),Id=18,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608, A=1.000000),ParameterName="Phong_Spec_Color")),Id=19,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392, A=1.000000),ParameterName="Phong_Spec_Color")),Id=20,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=21,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569, A=1.000000),ParameterName="Phong_Spec_Color")),Id=22,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=23,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=24,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=25,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=26,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118, A=1.000000),ParameterName="Phong_Spec_Color")),Id=27,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255, A=1.000000),ParameterName="Phong_Spec_Color")),Id=28,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627, A=1.000000),ParameterName="Phong_Spec_Color")),Id=29,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157, A=1.000000),ParameterName="Phong_Spec_Color")),Id=30,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333, A=1.000000),ParameterName="Phong_Spec_Color")),Id=31,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137, A=1.000000),ParameterName="Phong_Spec_Color")),Id=32,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961, A=1.000000),ParameterName="Phong_Spec_Color")),Id=33,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549, A=1.000000),ParameterName="Phong_Spec_Color")),Id=34,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098, A=1.000000),ParameterName="Phong_Spec_Color")),Id=35,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118, A=1.000000),ParameterName="Phong_Spec_Color")),Id=36,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627, A=1.000000),ParameterName="Phong_Spec_Color")),Id=37,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098, A=1.000000),ParameterName="Phong_Spec_Color")),Id=38,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196, A=1.000000),ParameterName="Phong_Spec_Color")),Id=39,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784, A=1.000000),ParameterName="Phong_Spec_Color")),Id=40,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020, A=1.000000),ParameterName="Phong_Spec_Color")),Id=41,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098, A=1.000000),ParameterName="Phong_Spec_Color")),Id=42,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863, A=1.000000),ParameterName="Phong_Spec_Color")),Id=43,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608, A=1.000000),ParameterName="Phong_Spec_Color")),Id=44,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=45,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314, A=1.000000),ParameterName="Phong_Spec_Color")),Id=46,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=47,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471, A=1.000000),ParameterName="Phong_Spec_Color")),Id=48,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255, A=1.000000),ParameterName="Phong_Spec_Color")),Id=49,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000, A=1.000000),ParameterName="Phong_Spec_Color")),Id=50,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588, A=1.000000),ParameterName="Phong_Spec_Color")),Id=51,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608, A=1.000000),ParameterName="Phong_Spec_Color")),Id=52,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(PhongParam=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373, A=1.000000),ParameterName="Phong_Spec_Color")),Id=53,Type=CustomizableType_Tint)</Value>
+			</Property>
+			<Property name="skintoneappearances">
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.631373, G=0.858824, B=0.945098, A=1.000000),ParameterName="SkinTone")),Id=0,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.658824, G=0.627451, B=0.850980, A=1.000000),ParameterName="SkinTone")),Id=1,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.870588, G=0.729412, B=0.870588, A=1.000000),ParameterName="SkinTone")),Id=2,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.600000, G=0.737255, B=0.901961, A=1.000000),ParameterName="SkinTone")),Id=3,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765, A=1.000000),ParameterName="SkinTone")),Id=4,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.729412, G=0.901961, B=0.709804, A=1.000000),ParameterName="SkinTone")),Id=5,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.839216, G=0.933333, B=0.690196, A=1.000000),ParameterName="SkinTone")),Id=6,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000, A=1.000000),ParameterName="SkinTone")),Id=7,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.941176, G=0.815686, B=0.592157, A=1.000000),ParameterName="SkinTone")),Id=8,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="SkinTone")),Id=9,Type=CustomizableType_Tint)</Value>
+			</Property>
+			<Property name="tint1appearances">
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922, A=1.000000),ParameterName="Tint_Color01")),Id=0,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176, A=1.000000),ParameterName="Tint_Color01")),Id=1,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510, A=1.000000),ParameterName="Tint_Color01")),Id=2,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=3,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255, A=1.000000),ParameterName="Tint_Color01")),Id=4,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882, A=1.000000),ParameterName="Tint_Color01")),Id=5,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=6,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725, A=1.000000),ParameterName="Tint_Color01")),Id=7,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098, A=1.000000),ParameterName="Tint_Color01")),Id=8,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=9,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=10,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922, A=1.000000),ParameterName="Tint_Color01")),Id=11,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118, A=1.000000),ParameterName="Tint_Color01")),Id=12,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059, A=1.000000),ParameterName="Tint_Color01")),Id=13,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765, A=1.000000),ParameterName="Tint_Color01")),Id=14,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490, A=1.000000),ParameterName="Tint_Color01")),Id=15,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196, A=1.000000),ParameterName="Tint_Color01")),Id=16,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765, A=1.000000),ParameterName="Tint_Color01")),Id=17,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490, A=1.000000),ParameterName="Tint_Color01")),Id=18,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608, A=1.000000),ParameterName="Tint_Color01")),Id=19,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392, A=1.000000),ParameterName="Tint_Color01")),Id=20,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=21,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569, A=1.000000),ParameterName="Tint_Color01")),Id=22,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color01")),Id=23,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color01")),Id=24,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=25,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color01")),Id=26,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118, A=1.000000),ParameterName="Tint_Color01")),Id=27,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255, A=1.000000),ParameterName="Tint_Color01")),Id=28,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627, A=1.000000),ParameterName="Tint_Color01")),Id=29,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157, A=1.000000),ParameterName="Tint_Color01")),Id=30,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333, A=1.000000),ParameterName="Tint_Color01")),Id=31,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137, A=1.000000),ParameterName="Tint_Color01")),Id=32,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961, A=1.000000),ParameterName="Tint_Color01")),Id=33,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549, A=1.000000),ParameterName="Tint_Color01")),Id=34,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098, A=1.000000),ParameterName="Tint_Color01")),Id=35,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118, A=1.000000),ParameterName="Tint_Color01")),Id=36,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627, A=1.000000),ParameterName="Tint_Color01")),Id=37,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098, A=1.000000),ParameterName="Tint_Color01")),Id=38,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196, A=1.000000),ParameterName="Tint_Color01")),Id=39,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784, A=1.000000),ParameterName="Tint_Color01")),Id=40,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020, A=1.000000),ParameterName="Tint_Color01")),Id=41,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098, A=1.000000),ParameterName="Tint_Color01")),Id=42,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863, A=1.000000),ParameterName="Tint_Color01")),Id=43,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608, A=1.000000),ParameterName="Tint_Color01")),Id=44,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color01")),Id=45,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314, A=1.000000),ParameterName="Tint_Color01")),Id=46,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color01")),Id=47,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471, A=1.000000),ParameterName="Tint_Color01")),Id=48,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255, A=1.000000),ParameterName="Tint_Color01")),Id=49,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000, A=1.000000),ParameterName="Tint_Color01")),Id=50,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588, A=1.000000),ParameterName="Tint_Color01")),Id=51,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608, A=1.000000),ParameterName="Tint_Color01")),Id=52,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373, A=1.000000),ParameterName="Tint_Color01")),Id=53,Type=CustomizableType_Tint)</Value>
+			</Property>
+			<Property name="tint2appearances">
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.003922, A=1.000000),ParameterName="Tint_Color02")),Id=0,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.929412, G=0.105882, B=0.141176, A=1.000000),ParameterName="Tint_Color02")),Id=1,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.964706, G=0.592157, B=0.474510, A=1.000000),ParameterName="Tint_Color02")),Id=2,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.482353, G=0.180392, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=3,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.952941, G=0.396078, B=0.137255, A=1.000000),ParameterName="Tint_Color02")),Id=4,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.980392, G=0.678431, B=0.505882, A=1.000000),ParameterName="Tint_Color02")),Id=5,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.490196, G=0.286275, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=6,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.968627, G=0.580392, B=0.113725, A=1.000000),ParameterName="Tint_Color02")),Id=7,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.992157, G=0.780392, B=0.545098, A=1.000000),ParameterName="Tint_Color02")),Id=8,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.513725, G=0.482353, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=9,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.996078, G=0.949020, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=10,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.968627, B=0.603922, A=1.000000),ParameterName="Tint_Color02")),Id=11,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.250980, G=0.403922, B=0.094118, A=1.000000),ParameterName="Tint_Color02")),Id=12,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.552941, G=0.780392, B=0.247059, A=1.000000),ParameterName="Tint_Color02")),Id=13,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.768627, G=0.874510, B=0.611765, A=1.000000),ParameterName="Tint_Color02")),Id=14,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.368627, B=0.125490, A=1.000000),ParameterName="Tint_Color02")),Id=15,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.227451, G=0.709804, B=0.290196, A=1.000000),ParameterName="Tint_Color02")),Id=16,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.635294, G=0.827451, B=0.611765, A=1.000000),ParameterName="Tint_Color02")),Id=17,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.349020, B=0.325490, A=1.000000),ParameterName="Tint_Color02")),Id=18,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.003922, G=0.658824, B=0.619608, A=1.000000),ParameterName="Tint_Color02")),Id=19,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.482353, G=0.803922, B=0.780392, A=1.000000),ParameterName="Tint_Color02")),Id=20,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=21,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.650980, B=0.321569, A=1.000000),ParameterName="Tint_Color02")),Id=22,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color02")),Id=23,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color02")),Id=24,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=25,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=0.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color02")),Id=26,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.003922, G=0.356863, B=0.494118, A=1.000000),ParameterName="Tint_Color02")),Id=27,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.678431, B=0.937255, A=1.000000),ParameterName="Tint_Color02")),Id=28,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.431373, G=0.815686, B=0.968627, A=1.000000),ParameterName="Tint_Color02")),Id=29,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.211765, B=0.392157, A=1.000000),ParameterName="Tint_Color02")),Id=30,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.447059, B=0.733333, A=1.000000),ParameterName="Tint_Color02")),Id=31,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.494118, G=0.650980, B=0.843137, A=1.000000),ParameterName="Tint_Color02")),Id=32,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.050980, G=0.003922, B=0.301961, A=1.000000),ParameterName="Tint_Color02")),Id=33,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.180392, G=0.192157, B=0.572549, A=1.000000),ParameterName="Tint_Color02")),Id=34,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.533333, G=0.509804, B=0.745098, A=1.000000),ParameterName="Tint_Color02")),Id=35,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.200000, G=0.000000, B=0.294118, A=1.000000),ParameterName="Tint_Color02")),Id=36,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.400000, G=0.180392, B=0.568627, A=1.000000),ParameterName="Tint_Color02")),Id=37,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.635294, G=0.529412, B=0.745098, A=1.000000),ParameterName="Tint_Color02")),Id=38,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.298039, G=0.000000, B=0.290196, A=1.000000),ParameterName="Tint_Color02")),Id=39,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.572549, G=0.152941, B=0.560784, A=1.000000),ParameterName="Tint_Color02")),Id=40,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.737255, G=0.556863, B=0.749020, A=1.000000),ParameterName="Tint_Color02")),Id=41,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.478431, G=0.000000, B=0.145098, A=1.000000),ParameterName="Tint_Color02")),Id=42,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.929412, G=0.078431, B=0.356863, A=1.000000),ParameterName="Tint_Color02")),Id=43,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.968627, G=0.596078, B=0.619608, A=1.000000),ParameterName="Tint_Color02")),Id=44,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.000000, G=0.000000, B=0.000000, A=1.000000),ParameterName="Tint_Color02")),Id=45,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.384314, G=0.384314, B=0.384314, A=1.000000),ParameterName="Tint_Color02")),Id=46,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=1.000000, G=1.000000, B=1.000000, A=1.000000),ParameterName="Tint_Color02")),Id=47,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.219608, G=0.188235, B=0.176471, A=1.000000),ParameterName="Tint_Color02")),Id=48,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.450980, G=0.388235, B=0.337255, A=1.000000),ParameterName="Tint_Color02")),Id=49,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.780392, G=0.694118, B=0.600000, A=1.000000),ParameterName="Tint_Color02")),Id=50,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.376471, G=0.223529, B=0.070588, A=1.000000),ParameterName="Tint_Color02")),Id=51,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.549020, G=0.384314, B=0.219608, A=1.000000),ParameterName="Tint_Color02")),Id=52,Type=CustomizableType_Tint)</Value>
+				<Value type="2">(Tint=(TintParam=(ParameterValue=(R=0.776471, G=0.607843, B=0.431373, A=1.000000),ParameterName="Tint_Color02")),Id=53,Type=CustomizableType_Tint)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_adrenalinerush">
+			<Property name="cooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="evolve_damagebonusincrease" type="2">0.15f</Property>
+			<Property name="evolve_timedilationincrease" type="2">0.0f</Property>
+			<Property name="timedilation" type="2">(BaseValue=0.0f,Formula=BonusIsHardValue)</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.35f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_aihacking">
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_asarimeleepassive">
+			<Property name="evolve_customspreebonus" type="2">0.30f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="heavymeleeconeangle" type="2">(BaseValue=360.0f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=500)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=650)</Property>
+			<Property name="heavymeleeimpactradius" type="2">(BaseValue=450)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_barrier">
+			<Property name="blastmaxtargets" type="2">3</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_bioticcharge">
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_bioticgrenade">
+			<Property name="additionalchildpieces" type="2">1</Property>
+			<Property name="damage" type="2">(BaseValue=450.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="evolve_grenadecountbonus" type="2">1</Property>
+			<Property name="numchildpieces" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_carnage">
+			<Property name="impactradius" type="2">(BaseValue=100.0f)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_consumable_ammo">
+			<Property name="numgrenadesrestored" type="2">10</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_consumable_revive">
+			<Property name="immunityduration" type="2">4.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_consumable_shield">
+			<Property name="shieldduration" type="2">20.0f</Property>
+			<Property name="shieldstrength" type="2">1000.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_discharge">
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_drellmeleepassive">
+			<Property name="evolve_customspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.2f</Property>
+			<Property name="evolve_movementspeedbonus" type="2">0.05f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.10f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=500)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=900)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1.0f)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+			<Property name="movementspeedbonus" type="2">(BaseValue=0.10f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_femquarianmeleepassive">
+			<Property name="evolve_customspreebonus" type="2">0.30f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_fraggrenade">
+			<Property name="evolve_grenadecountbonus" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_adept">
+			<Property name="heavymeleeconeangle" type="2">(BaseValue=180.0f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=250)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=900)</Property>
+			<Property name="heavymeleeimpactradius" type="2">(BaseValue=300)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_engineer">
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_infiltrator">
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_sentinel">
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_soldier">
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassive_vanguard">
+			<Property name="heavymeleedamage" type="2">(BaseValue=500)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=900)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1.0f)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_humanmeleepassivebase">
+			<Property name="evolve_customspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_incinerate">
+			<Property name="evolve_radiusbonus" type="2">150.0f</Property>
+			<Property name="largeflamecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_infernogrenade">
+			<Property name="evolve_grenadecountbonus" type="2">1.0f</Property>
+			<Property name="numchildprojectiles" type="2">(BaseValue=2,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_kroganmeleepassive">
+			<Property name="evolve_ragedamagereductionbonus1" type="2">0.05f</Property>
+			<Property name="evolve_ragedamagereductionbonus2" type="2">0.05f</Property>
+			<Property name="evolve_ragemeleedamagebonus" type="2">0.30f</Property>
+			<Property name="evolve_ragenumenemies" type="2">2</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.10f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=700)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=850)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=300)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=450)</Property>
+			<Property name="ragedamagereduction" type="2">(BaseValue=0.2f,Formula=BonusIsHardValue)</Property>
+			<Property name="rageduration" type="2">30.0f</Property>
+			<Property name="ragekillwindow" type="2">30.0f</Property>
+			<Property name="ragemeleedamagebonus" type="2">(BaseValue=0.50f,Formula=BonusIsHardValue)</Property>
+			<Property name="ragenumenemies" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_liftgrenade">
+			<Property name="evolve_grenadecountbonus" type="2">1</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_marksman">
+			<Property name="accuracyincrease" type="2">(BaseValue=0.35f, Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_accuracyandrofbonus" type="2">0.1f</Property>
+			<Property name="evolve_accuracybonus" type="2">0.15f</Property>
+			<Property name="evolve_rateoffirebonus" type="2">0.15f</Property>
+			<Property name="rateoffireincrease" type="2">(BaseValue=0.25f, Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_meleepassivebase">
+			<Property name="evolve_customspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_overload">
+			<Property name="effectduration" type="2">(BaseValue=3.5f)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_proximitymine">
+			<Property name="maxactivemines" type="2">2</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_pull">
+			<Property name="evolve_combobonus" type="2">0.5f</Property>
+			<Property name="evolve_durationbonus2" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_salarianmeleepassive">
+			<Property name="evolve_customspreebonus" type="2">0.30f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=100)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_sentryturret">
+			<Property name="evolve_cryofreezechance" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_shockwave">
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_singularity">
+			<Property name="detonatemaxragdollcount" type="2">1</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=100.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_stickygrenade">
+			<Property name="evolve_grenadecountbonus" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_throw">
+			<Property name="evolve_forcebonus2" type="2">0.50f</Property>
+			<Property name="evolve_impactdamage" type="2">(BaseValue=200)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_turianmeleepassive">
+			<Property name="evolve_customspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_customspreeduration" type="2">20.0f</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=675)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=200)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxprimp">
+			<Property name="defaultloadclasses">
+				<Value type="2">SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Ammo</Value>
+				<Value type="2">SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Revive</Value>
+				<Value type="2">SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Rocket</Value>
+				<Value type="2">SFXGameMPContent.SFXPowerCustomActionMP_Consumable_Shield</Value>
+			</Property>
+			<Property name="endofmatchscreendisplaytime" type="2">5.0</Property>
+			<Property name="globalzoneincrease" type="2">1.0</Property>
+			<Property name="mapsettings">
+				<Value type="2">(MapName="BioP_MPCer",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Terminus,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPDish",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Attican,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPMoon",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_InnerCouncil,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPNov",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Earth,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPRctr",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Council,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPSlum",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Earth,ZoneIncrease=7)</Value>
+				<Value type="2">(MapName="BioP_MPTowr",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_InnerCouncil,ZoneIncrease=7)</Value>
+			</Property>
+			<Property name="maxreadinessxpbonus" type="2">0.05;</Property>
+			<Property name="numconsumablesallowedpermatch" type="2">3;</Property>
+			<Property name="randomglobalzoneincrease" type="2">3.0</Property>
+			<Property name="scaledglobalzoneincrease" type="2">2.0</Property>
+			<Property name="scaledmapzoneincrease" type="2">3.0</Property>
+			<Property name="scaledrandomglobalzoneincrease" type="2">2.0</Property>
+			<Property name="xpbonusmultipliers[1]" type="2">0.1f</Property>
+			<Property name="xpbonusmultipliers[2]" type="2">0.25f</Property>
+			<Property name="xpbonusmultipliers[3]" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxwave_horde">
+			<Property name="berserkstartcounts">
+				<Value type="2">(Difficulty=DO_Level1,EnemiesLeft=2)</Value>
+				<Value type="2">(Difficulty=DO_Level2,EnemiesLeft=4)</Value>
+				<Value type="2">(Difficulty=DO_Level3,EnemiesLeft=6)</Value>
+			</Property>
+			<Property name="damagereductiontimeronspawnin" type="2">6</Property>
+			<Property name="enemiesremainingtoactivateobjective" type="2">1</Property>
+			<Property name="enemylist">
+				<Value type="2">(EnemyType="WAVE_CER_AssaultTrooper", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.AssaultTrooper", WaveCost=20)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Centurion", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Centurion", WaveCost=30)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Nemesis", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Nemesis", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Engineer", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Engineer", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Guardian", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Guardian", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Phantom", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Phantom", WaveCost=80)</Value>
+				<Value type="2">(EnemyType="WAVE_CER_Atlas", EnemyArchetypeName = "Char_Enemies.Archetypes.Cerberus.Atlas", WaveCost=100)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Husk", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Husk", WaveCost=10)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Cannibal", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Cannibal", WaveCost=25)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Marauder", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Marauder", WaveCost=35)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Brute", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Brute", WaveCost=70)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Ravager", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Ravager", WaveCost=60)</Value>
+				<Value type="2">(EnemyType="WAVE_RPR_Banshee", EnemyArchetypeName = "Char_Enemies.Archetypes.Reapers.Banshee", WaveCost=100)</Value>
+				<Value type="2">(EnemyType="WAVE_GTH_GethTrooper", EnemyArchetypeName = "Char_Enemies.Archetypes.Geth.GethTrooper", WaveCost=25)</Value>
+				<Value type="2">(EnemyType="WAVE_GTH_GethRocketTrooper", EnemyArchetypeName = "Char_Enemies.Archetypes.Geth.GethRocketTrooper", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_GTH_GethPyro", EnemyArchetypeName = "Char_Enemies.Archetypes.Geth.GethPyro", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_GTH_GethHunter", EnemyArchetypeName = "Char_Enemies.Archetypes.Geth.GethHunter", WaveCost=40)</Value>
+				<Value type="2">(EnemyType="WAVE_GTH_GethPrime", EnemyArchetypeName = "Char_Enemies.Archetypes.Geth.GethPrime", WaveCost=100)</Value>
+			</Property>
+			<Property name="enemyobjectivemarkerdelay" type="2">10.0f</Property>
+			<Property name="enemysquadlist">
+				<Value type="2">(EnemyTypes = ("WAVE_CER_AssaultTrooper", "WAVE_CER_AssaultTrooper", "WAVE_CER_AssaultTrooper", "WAVE_CER_AssaultTrooper", "WAVE_CER_Centurion", "WAVE_CER_Centurion"), WaveCost=0)</Value>
+				<Value type="2">(EnemyTypes = ("WAVE_CER_AssaultTrooper", "WAVE_CER_AssaultTrooper", "WAVE_CER_AssaultTrooper", "WAVE_CER_Centurion", "WAVE_CER_Atlas"), WaveCost=0)</Value>
+			</Property>
+			<Property name="maxenemies" type="2">8</Property>
+			<Property name="maxenemiesperspawnpoint" type="2">5</Property>
+			<Property name="minplayerstospawnsquad" type="2">1</Property>
+			<Property name="petlist">
+				<Value type="2">(ClassName="SFXPawn_GethPrimeShieldDrone", WaveCost=5)</Value>
+				<Value type="2">(ClassName="SFXPawn_GethPrimeTurret", WaveCost=7)</Value>
+				<Value type="2">(ClassName="SFXPawn_GunnerTurret", WaveCost=20)</Value>
+				<Value type="2">(ClassName="SFXPawn_Swarmer",WaveCost=2)</Value>
+			</Property>
+			<Property name="spawnbaserating" type="2">100.0f</Property>
+			<Property name="spawndelay" type="2">0.3f</Property>
+			<Property name="spawndesignerweightmultiplier" type="2">0.1f</Property>
+			<Property name="spawndistanceclose" type="2">3000</Property>
+			<Property name="spawndistancepenaltyclose" type="2">0.2f</Property>
+			<Property name="spawnminratingforrespawn" type="2">90.0f</Property>
+			<Property name="spawnpenaltylineofsight" type="2">0.6f</Property>
+			<Property name="spawnpenaltylineofsightmaxdist" type="2">5000</Property>
+			<Property name="spawnpenaltyontop" type="2">0.3f</Property>
+			<Property name="spawnrandomvariance" type="2">0.1f</Property>
+			<Property name="squadchance" type="2">0.0</Property>
+			<Property name="wavepointstobudget" type="2">13.5f</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxwave_operation">
+			<Property name="creditbonustime" type="2">(X=90.0f,Y=150.0f)</Property>
+			<Property name="creditbonustimepct" type="2">0.25</Property>
+			<Property name="finishwavedelay" type="2">3.0f</Property>
+			<Property name="musiceventname" type="2">Set_mus_gameplaymode_objective</Property>
+			<Property name="operationscorereward" type="2">2000.0f</Property>
+			<Property name="operationtimelimit" type="2">301.0f</Property>
+			<Property name="operationtimelimitbuffer" type="2">1.75f</Property>
+			<Property name="operationtimewarning" type="2">30.0f</Property>
+			<Property name="srendwavefailure" type="2">602479</Property>
+			<Property name="sreventtickerstring" type="2">664988</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxwavecoordinator_hordeoperation">
+			<Property name="betweenwavedelay" type="2">10</Property>
+			<Property name="bextractionwaveenabled" type="2">true</Property>
+			<Property name="biosimpledialogclassname" type="2">SFXGameMPContent.BioSimpleDlgContainer_Horde</Property>
+			<Property name="initialinstructiondelay" type="2">3</Property>
+			<Property name="initialstartdelay" type="2">10</Property>
+			<Property name="mandownvocooldown" type="2">4.0f</Property>
+			<Property name="numwaves" type="2">11</Property>
+			<Property name="operationenemybudgetmultiplier" type="2">3.0f</Property>
+			<Property name="operationwaves">
+				<Value type="2">(WaveNumber=2, CreditScale=0.15)</Value>
+				<Value type="2">(WaveNumber=5, CreditScale=0.25)</Value>
+				<Value type="2">(WaveNumber=9, CreditScale=0.6)</Value>
+				<Value type="2">(WaveNumber=10)</Value>
+			</Property>
+			<Property name="srwavecompletepopup" type="2">708507</Property>
+			<Property name="srwavenumberpopup" type="2">572616</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxwavemanager_horde">
+			<Property name="maxwaves" type="2">11</Property>
+			<Property name="wavepointsranges">
+				<Value type="2">(Difficulty=DO_Level1,PointRange=(X=240,Y=550))</Value>
+				<Value type="2">(Difficulty=DO_Level2,PointRange=(X=400,Y=1000))</Value>
+				<Value type="2">(Difficulty=DO_Level3,PointRange=(X=600,Y=1800))</Value>
+			</Property>
+			<Property name="waveprogressionrange" type="2">(X=1,Y=11)</Property>
+			<Property name="wavetypes">
+				<Value type="2">(WaveClassName="SFXGameMPContent.SFXWave_Horde_Reaper",SelectionWeight=100)</Value>
+				<Value type="2">(WaveClassName="SFXGameMPContent.SFXWave_Horde_Cerberus",SelectionWeight=100)</Value>
+				<Value type="2">(WaveClassName="SFXGameMPContent.SFXWave_Horde_Geth",SelectionWeight=65)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

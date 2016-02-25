@@ -1,0 +1,600 @@
+{
+	"name": "Weapons",
+	"categories": [
+		{
+			"name": "Assault Rifles",
+			"bools": [
+				{
+					"id": 23811,
+					"name": "Chakram Launcher"
+				},
+				{
+					"id": 23812,
+					"name": "Chakram Launcher (New Game Plus)"
+				},
+				{
+					"id": 21227,
+					"name": "Geth Pulse Rifle"
+				},
+				{
+					"id": 21563,
+					"name": "Geth Pulse Rifle (New Game Plus)"
+				},
+				{
+					"id": 24947,
+					"name": "M-7 Lancer"
+				},
+				{
+					"id": 24948,
+					"name": "M-7 Lancer (New Game Plus)"
+				},
+				{
+					"id": 21224,
+					"name": "M-8 Avenger"
+				},
+				{
+					"id": 21560,
+					"name": "M-8 Avenger (New Game Plus)"
+				},
+				{
+					"id": 21231,
+					"name": "M-15 Vindicator"
+				},
+				{
+					"id": 21566,
+					"name": "M-15 Vindicator (New Game Plus)"
+				},
+				{
+					"id": 21226,
+					"name": "M-37 Falcon"
+				},
+				{
+					"id": 21562,
+					"name": "M-37 Falcon (New Game Plus)"
+				},
+				{
+					"id": 23743,
+					"name": "M-55 Argus"
+				},
+				{
+					"id": 23744,
+					"name": "M-55 Argus (New Game Plus)"
+				},
+				{
+					"id": 21229,
+					"name": "M-76 Revenant"
+				},
+				{
+					"id": 21565,
+					"name": "M-76 Revenant (New Game Plus)"
+				},
+				{
+					"id": 21228,
+					"name": "M-96 Mattock"
+				},
+				{
+					"id": 21564,
+					"name": "M-96 Mattock (New Game Plus)"
+				},
+				{
+					"id": 21568,
+					"name": "M-99 Saber"
+				},
+				{
+					"id": 21567,
+					"name": "M-99 Saber (New Game Plus)"
+				},
+				{
+					"id": 23809,
+					"name": "N7 Valkyrie"
+				},
+				{
+					"id": 23810,
+					"name": "N7 Valkyrie (New Game Plus)"
+				},
+				{
+					"id": 22746,
+					"name": "Particle Rifle"
+				},
+				{
+					"id": 22747,
+					"name": "Particle Rifle (New Game Plus)"
+				},
+				{
+					"id": 21225,
+					"name": "Phaeston"
+				},
+				{
+					"id": 21561,
+					"name": "Phaeston (New Game Plus)"
+				}
+			],
+			"variables": [
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian",
+					"name": "Adas Anti-Synthetic Rifle"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01",
+					"name": "Cerberus Harrier"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Reckoning",
+					"name": "Chakram Launcher"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Collector",
+					"name": "Collector Assault Rifle"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Geth",
+					"name": "Geth Pulse Rifle"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Spitfire",
+					"name": "Geth Spitfire"
+				},
+				{
+					"id": "SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer",
+					"name": "M-7 Lancer"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Avenger",
+					"name": "M-8 Avenger"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Vindicator",
+					"name": "M-15 Vindicator"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Falcon",
+					"name": "M-37 Falcon"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Argus",
+					"name": "M-55 Argus"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Revenant",
+					"name": "M-76 Revenant"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Mattock",
+					"name": "M-96 Mattock"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Saber",
+					"name": "M-99 Saber"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02",
+					"name": "N7 Typhoon"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie",
+					"name": "N7 Valkyrie"
+				},
+				{
+					"id": "SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean",
+					"name": "Particle Rifle"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_AssaultRifle_Cobra",
+					"name": "Phaeston"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02",
+					"name": "Striker Assault Rifle"
+				}
+			]
+		},
+		{
+			"name": "Pistols",
+			"bools": [
+				{
+					"id": 21251,
+					"name": "Arc Pistol"
+				},
+				{
+					"id": 21588,
+					"name": "Arc Pistol (New Game Plus)"
+				},
+				{
+					"id": 21569,
+					"name": "M-3 Predator"
+				},
+				{
+					"id": 21589,
+					"name": "M-3 Predator (New Game Plus)"
+				},
+				{
+					"id": 21249,
+					"name": "M-5 Phalanx"
+				},
+				{
+					"id": 21586,
+					"name": "M-5 Phalanx (New Game Plus)"
+				},
+				{
+					"id": 21247,
+					"name": "M-6 Carnifex"
+				},
+				{
+					"id": 21585,
+					"name": "M-6 Carnifex (New Game Plus)"
+				},
+				{
+					"id": 21248,
+					"name": "M-77 Paladin"
+				},
+				{
+					"id": 21570,
+					"name": "M-358 Talon"
+				},
+				{
+					"id": 21590,
+					"name": "M-358 Talon (New Game Plus)"
+				},
+				{
+					"id": 21250,
+					"name": "Scorpion"
+				},
+				{
+					"id": 21587,
+					"name": "Scorpion (New Game Plus)"
+				}
+			],
+			"variables": [
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02",
+					"name": "Acolyte"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Thor",
+					"name": "Arc Pistol"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack",
+					"name": "Executioner Pistol"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Predator",
+					"name": "M-3 Predator"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Phalanx",
+					"name": "M-5 Phalanx"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Carnifex",
+					"name": "M-6 Carnifex"
+				},
+				{
+					"id": "SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer",
+					"name": "M-11 Suppressor"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Ivory",
+					"name": "M-77 Paladin"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Talon",
+					"name": "M-358 Talon"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Eagle",
+					"name": "N7 Eagle"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Pistol_Scorpion",
+					"name": "Scorpion"
+				}
+			]
+		},
+		{
+			"name": "Shotguns",
+			"bools": [
+				{
+					"id": 23741,
+					"name": "AT-12 Raider"
+				},
+				{
+					"id": 23742,
+					"name": "AT-12 Raider (New Game Plus)"
+				},
+				{
+					"id": 21239,
+					"name": "Disciple"
+				},
+				{
+					"id": 21579,
+					"name": "Disciple (New Game Plus)"
+				},
+				{
+					"id": 21241,
+					"name": "Geth Plasma Shotgun"
+				},
+				{
+					"id": 21581,
+					"name": "Geth Plasma Shotgun (New Game Plus)"
+				},
+				{
+					"id": 21242,
+					"name": "Graal Spike Thrower"
+				},
+				{
+					"id": 21582,
+					"name": "Graal Spike Thrower (New Game Plus)"
+				},
+				{
+					"id": 21245,
+					"name": "M-11 Wraith"
+				},
+				{
+					"id": 21240,
+					"name": "M-22 Eviscerator"
+				},
+				{
+					"id": 21580,
+					"name": "M-22 Eviscerator (New Game Plus)"
+				},
+				{
+					"id": 21243,
+					"name": "M-23 Katana"
+				},
+				{
+					"id": 21583,
+					"name": "M-23 Katana (New Game Plus)"
+				},
+				{
+					"id": 21244,
+					"name": "M-27 Scimitar"
+				},
+				{
+					"id": 21584,
+					"name": "M-27 Scimitar (New Game Plus)"
+				},
+				{
+					"id": 21238,
+					"name": "M-300 Claymore"
+				},
+				{
+					"id": 21578,
+					"name": "M-300 Claymore (New Game Plus)"
+				}
+			],
+			"variables": [
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Raider",
+					"name": "AT-12 Raider"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Disciple",
+					"name": "Disciple"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Geth",
+					"name": "Geth Plasma Shotgun"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Graal",
+					"name": "Graal Spike Thrower"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Striker",
+					"name": "M-11 Wraith"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Eviscerator",
+					"name": "M-22 Eviscerator"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Katana",
+					"name": "M-23 Katana"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Scimitar",
+					"name": "M-27 Scimitar"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Claymore",
+					"name": "M-300 Claymore"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_Shotgun_Crusader",
+					"name": "N7 Crusader"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02",
+					"name": "N7 Piranha"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01",
+					"name": "Reegar Carbine"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian",
+					"name": "Venom Shotgun"
+				}
+			]
+		},
+		{
+			"name": "SMG's",
+			"bools": [
+				{
+					"id": 21255,
+					"name": "M-4 Shuriken"
+				},
+				{
+					"id": 21593,
+					"name": "M-4 Shuriken (New Game Plus)"
+				},
+				{
+					"id": 21256,
+					"name": "M-9 Tempest"
+				},
+				{
+					"id": 21594,
+					"name": "M-9 Tempest (New Game Plus)"
+				},
+				{
+					"id": 21254,
+					"name": "M-12 Locust"
+				},
+				{
+					"id": 21592,
+					"name": "M-12 Locust (New Game Plus)"
+				},
+				{
+					"id": 21252,
+					"name": "M-25 Hornet"
+				},
+				{
+					"id": 21591,
+					"name": "M-25 Hornet (New Game Plus)"
+				}
+			],
+			"variables": [
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack",
+					"name": "Blood Pack Punisher"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_MP4.SFXWeapon_SMG_Collector",
+					"name": "Collector SMG"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01",
+					"name": "Geth Plasma SMG"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SMG_Shuriken",
+					"name": "M-4 Shuriken"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SMG_Tempest",
+					"name": "M-9 Tempest"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SMG_Locust",
+					"name": "M-12 Locust"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SMG_Hornet",
+					"name": "M-25 Hornet"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SMG_Hurricane",
+					"name": "N7 Hurricane"
+				}
+			]
+		},
+		{
+			"name": "Sniper Rifles",
+			"bools": [
+				{
+					"id": 21246,
+					"name": "Black Widow"
+				},
+				{
+					"id": 21236,
+					"name": "Javelin"
+				},
+				{
+					"id": 21573,
+					"name": "Javelin (New Game Plus)"
+				},
+				{
+					"id": 21234,
+					"name": "M-13 Raptor"
+				},
+				{
+					"id": 21575,
+					"name": "M-13 Raptor (New Game Plus)"
+				},
+				{
+					"id": 21235,
+					"name": "M-29 Incisor"
+				},
+				{
+					"id": 21572,
+					"name": "M-29 Incisor (New Game Plus)"
+				},
+				{
+					"id": 21232,
+					"name": "M-92 Mantis"
+				},
+				{
+					"id": 21574,
+					"name": "M-92 Mantis (New Game Plus)"
+				},
+				{
+					"id": 21233,
+					"name": "M-97 Viper"
+				},
+				{
+					"id": 21576,
+					"name": "M-97 Viper (New Game Plus)"
+				},
+				{
+					"id": 21237,
+					"name": "M-98 Widow"
+				},
+				{
+					"id": 21577,
+					"name": "M-98 Widow (New Game Plus)"
+				}
+			],
+			"variables": [
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_BlackWidow",
+					"name": "Black Widow"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_MP4.SFXWeapon_SniperRifle_Collector",
+					"name": "Collector Sniper Rifle"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Javelin",
+					"name": "Javelin"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN02.SFXWeapon_Sniperrifle_Batarian_GUN02",
+					"name": "Kishock Harpoon Gun"
+				},
+				{
+					"id": "SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01",
+					"name": "Krysae Sniper Rifle"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Raptor",
+					"name": "M-13 Raptor"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Incisor",
+					"name": "M-29 Incisor"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Indra",
+					"name": "M-90 Indra"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Mantis",
+					"name": "M-92 Mantis"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Viper",
+					"name": "M-97 Viper"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Widow",
+					"name": "M-98 Widow"
+				},
+				{
+					"id": "SFXGameContent.SFXWeapon_SniperRifle_Valiant",
+					"name": "N7 Valiant"
+				}
+			]
+		}
+	]
+}

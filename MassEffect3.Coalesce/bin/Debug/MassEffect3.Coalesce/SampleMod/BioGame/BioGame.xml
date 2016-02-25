@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini" source="..\..\biogame\config\biogame.ini">
+	<Includes>
+		<Include source="BioGame/BioGame.xml" />
+		<Include source="BioGame/Engine.xml" />
+		<Include source="BioGame/SFXEngagement.xml" />
+		<Include source="BioGame/SFXGame.xml" />
+		<Include source="BioGame/SFXGameContent.xml" />
+		<Include source="BioGame/SFXGameContentLiveKismet.xml" />
+		<Include source="BioGame/SFXGameMPContent.xml" />
+		<Include source="BioGame/SFXObjData.xml" />
+		<Include source="BioGame/SFXOnlineFoundation.xml" />
+		<Include source="BioGame/SFXWave_Horde_Cerberus.xml" />
+		<Include source="BioGame/SFXWave_Horde_Geth.xml" />
+		<Include source="BioGame/SFXWave_Horde_Reaper.xml" />
+	</Includes>
+	<Sections>
+		<Section name="defaultplayer">
+			<Property name="class" type="2">SFXGame.SFXPlayerController</Property>
+			<Property name="name" type="2">Player</Property>
+			<Property name="team" type="2">255</Property>
+		</Section>
+		<Section name="iniversion">
+			<Property name="0" type="2">1820265756.000000</Property>
+			<Property name="1" type="2">5445285500.000000</Property>
+			<Property name="2" type="2">2820964252.000000</Property>
+			<Property name="3" type="2">2537391399.000000</Property>
+		</Section>
+		<Section name="performancebudgetdesign">
+			<Property name="inactivepawnreductionfactor" type="2">0.25</Property>
+			<Property name="pawnaicontroller0" type="2">SFXAI_None</Property>
+			<Property name="pawnaicontroller1" type="2">SFXAI_Humanoid</Property>
+			<Property name="pawnaicontroller2" type="2">SFXAI_LightMech</Property>
+			<Property name="pawnaicontroller3" type="2">SFXAI_MechDog</Property>
+			<Property name="pawnaicontroller5" type="2">SFXAI_Krogan</Property>
+			<Property name="pawnaicontroller6" type="2">SFXAI_HeavyMech</Property>
+			<Property name="pawnaicontroller7" type="2">SFXAI_Henchman</Property>
+			<Property name="pawnaicontroller8" type="2">SFXAI_Scion</Property>
+			<Property name="pawncost0" type="2">5</Property>
+			<Property name="pawncost1" type="2">10</Property>
+			<Property name="pawncost2" type="2">10</Property>
+			<Property name="pawncost3" type="2">20</Property>
+			<Property name="pawncost5" type="2">20</Property>
+			<Property name="pawncost6" type="2">30</Property>
+			<Property name="pawncost7" type="2">40</Property>
+			<Property name="pawncost8" type="2">30</Property>
+			<Property name="placeablecost" type="2">1</Property>
+			<Property name="totalbudget" type="2">200;</Property>
+		</Section>
+		<Section name="rvrclienteffectpools">
+			<Property name="effect" type="2">80</Property>
+			<Property name="emitter" type="2">100</Property>
+			<Property name="framebuffer" type="2">1</Property>
+			<Property name="light" type="2">10</Property>
+			<Property name="spawnactor" type="2">15</Property>
+		</Section>
+		<Section name="wwiseprocfoley">
+			<Property name="defaultmaxthreshold" type="2">500.0</Property>
+			<Property name="defaultsmoothfactor" type="2">500.0</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

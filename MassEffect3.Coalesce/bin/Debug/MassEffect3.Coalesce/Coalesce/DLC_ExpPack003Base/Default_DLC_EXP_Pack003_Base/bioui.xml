@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultUI.ini</Property>
+    </Section>
+    <Section name="sfxgame.sfxguiinteraction">
+      <Property name="movielibrary">
+        <Value type="3">(Tag=DLC_Docks,				ZOrder=300,	MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks",		GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Value>
+        <Value type="3">(Tag=Store_NoPurchase,			ZOrder=300,	MovieClass="SFXGameContentDLC_EXP_Pack003.SFXGUI_Store_NoPurchase",		GFxResource="GUI_SF_Store_NoPurchase.Store_NoPurchase")</Value>
+        <Value type="3">(Tag=PersonalTerminalApt,		ZOrder=164, 	MovieClass="SFXGame.SFXGUI_Terminal",		GFxResource="GUI_SF_PersonalTerminalApt.PersonalTerminalApt");</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgui_dlc_docks">
+      <Property name="biscancelallowed" type="0">false</Property>
+      <Property name="dockbuttons">
+        <Value type="4">(ButtonID="MainDock", srLabel=746026, VisibilityConditional=13)</Value>
+        <Value type="3">(ButtonID="MainDock", srLabel=746026, srButtonLabel=174644, VisibilityConditional=13)</Value>
+      </Property>
+      <Property name="srcancel" type="0">181674</Property>
+      <Property name="srselect" type="0">136217</Property>
+      <Property name="srtitle" type="0">135823</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

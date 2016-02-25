@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxobjective_retrieve_pickupobject_dlc">
+			<Property name="dropobjectcustomactions" type="3">SFXPowerCustomActionMP_JetPackCharge</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

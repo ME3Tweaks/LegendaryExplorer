@@ -1,0 +1,1041 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Effects</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindOrientation">
+            <summary>
+            Determina la orientación de las persianas.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindsTransitionEffect">
+            <summary>
+            Sombreador de transición que simula la apertura de persianas al realizar la transición de un elemento visual a otro. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.OrientationProperty">
+            <summary>
+            Obtiene o establece la orientación de las persianas.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.CountProperty">
+            <summary>
+            Obtiene o establece el número de persianas.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientationProperty">
+            <summary>
+            Obtiene o establece la variable Amplitude en el sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto BlindsTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto BlindsTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Orientation">
+            <summary>
+            Obtiene o establece la orientación de las persianas.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Count">
+            <summary>
+            Obtiene o establece el número de persianas que se van a mostrar.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientation">
+            <summary>
+            Obtiene o establece la orientación de las persianas.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BloomEffect">
+            <summary>
+            Efecto que implementa una iluminación bloom de un elemento visual. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+            
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensityProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BloomIntensity en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensityProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BaseIntensity en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturationProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BloomSaturation en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturationProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BaseSaturation en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensityProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BloomIntensity en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturationProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BloomSaturation en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.ThresholdProperty">
+            <summary>
+            Esta propiedad se asigna a la variable BaseSaturation en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BloomEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Threshold">
+            <summary>
+            Obtiene o establece la intensidad mínima que se va a utilizar para el efecto bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensity">
+            <summary>
+            Obtiene o establece la intensidad de base.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensity">
+            <summary>
+            Obtiene o establece la intensidad del efecto bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturation">
+            <summary>
+            Obtiene o establece la saturación de base.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturation">
+            <summary>
+            Obtiene o establece la saturación del efecto bloom.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensity">
+            <summary>
+            Obtiene o establece la variable de Base/BloomIntensity en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturation">
+            <summary>
+            Obtiene o establece la variable BaseBloomSaturation en el sombreador.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect">
+            <summary>
+            Efecto de transición que muestra dos elementos visuales a través de un círculo cuyo tamaño aumenta y se reduce. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmountProperty">
+            <summary>
+            Propiedad de dependencia que modifica el valor de la variable FeatherAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseProperty">
+            <summary>
+            Propiedad de dependencia que modifica el movimiento del círculo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShaderProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable reverseShader en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto CircleRevealTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto CircleRevealTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmount">
+            <summary>
+            Obtiene o establece la variable FuzzyAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.Reverse">
+            <summary>
+            Obtiene o establece la reproducción de la presentación del círculo en sentido inverso.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShader">
+            <summary>
+            Obtiene o establece la reproducción de la presentación del círculo en sentido inverso en el sombreador.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect">
+            <summary>
+            Efecto de transición que realiza la transición entre dos elementos visuales mediante una textura de nube como umbral de muestrario.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudyTransitionEffect">
+            <summary>
+            Define un efecto de sombreador de transición que utiliza una imagen como un umbral de muestrario para interpolar valores de píxeles entre dos elementos visuales. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect">
+            <summary>
+            Define un efecto de sombreador de transición que proporciona un valor aleatorio que permite variar el efecto cada vez que se ejecuta.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeedProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable RandomSeed en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.#ctor">
+            <summary>
+            Actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeed">
+            <summary>
+            Obtiene o establece la variable RandomSeed en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImageProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable CloudImage en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImage">
+            <summary>
+            Obtiene o establece la variable CloudImage en el sombreador usado para el muestreo. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto CloudRevealTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto CloudRevealTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.ColorToneEffect">
+            <summary>
+            Efecto que modifica el tono de color de un elemento visual utilizando dos colores como muestreo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DesaturationProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Desaturation en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmountProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Tone en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColorProperty">
+            <summary>
+            Esta propiedad se asigna a la variable LightColor en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColorProperty">
+            <summary>
+            Esta propiedad se asigna a la variable DarkColor en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.ColorToneEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Desaturation">
+            <summary>
+            Obtiene o establece la variable Desaturation en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmount">
+            <summary>
+            Obtiene o establece la variable Tone en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColor">
+            <summary>
+            Obtiene o establece la variable LightColor en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColor">
+            <summary>
+            Obtiene o establece la variable DarkColor en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.EmbossedEffect">
+            <summary>
+            Efecto que simula una apariencia en relieve para el elemento visual. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.AmountProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Amount en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.HeightProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Height en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.ColorProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Color en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.EmbossedEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Amount">
+            <summary>
+            Obtiene o establece la variable Amount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Height">
+            <summary>
+            Obtiene o establece la variable Height en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Color">
+            <summary>
+            Obtiene o establece la variable Color en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.FadeTransitionEffect">
+            <summary>
+            Efecto de transición que realiza una transición gradual desde un elemento visual a otro.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto FadeTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto FadeTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect">
+            <summary>
+            Efecto que simula una lupa.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadiusProperty">
+            <summary>
+            Obtiene o establece la variable InnerRadius en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadiusProperty">
+            <summary>
+            Obtiene o establece la variable OuterRadius en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.CenterProperty">
+            <summary>
+            Obtiene o establece la variable center en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.AmountProperty">
+            <summary>
+            Obtiene o establece la variable amount en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InputProperty">
+            <summary>
+            Obtiene o establece la variable de entrada usada en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.generalTransform">
+            <summary>
+            La transformación utilizada para este sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadius">
+            <summary>
+            Obtiene o establece la variable InnerRadius en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadius">
+            <summary>
+            Obtiene o establece la variable OuterRadius en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Center">
+            <summary>
+            Obtiene o establece la variable Center en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Amount">
+            <summary>
+            Obtiene o establece el valor de ShrinkFactor. Cuanto mayor sea el factor de reducción, "menor" será el contenido mostrado dentro de la elipse. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.EffectMapping">
+            <summary>
+            Obtiene EffectMapping.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform">
+            <summary>
+            GeneralTransform correspondiente al efecto Magnify.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.biasValue">
+            <summary>
+            Intenta transformar un punto en función del efecto.
+            </summary>
+            <param name="targetPoint">El punto que se va a transformar.</param>
+            <param name="result">El resultado, si está disponible.</param>
+            <returns>Devuelve true si se realiza correctamente.</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.effect">
+            <summary>
+            La instancia del efecto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.IsInverse">
+            <summary>
+            Si la transformación es inversa.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.inverseTransform">
+            <summary>
+            La transformación específica de este efecto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.MagnifyEffect)">
+            <summary>
+            Crea una nueva instancia.
+            </summary>
+            <param name="fx">El efecto de origen.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            Este efecto concreto mantiene las líneas alineadas con el eje, por lo que la transformación del rectángulo sólo es la transformación de sus puntos de esquina.
+            </summary>
+            <param name="rect">El rectángulo de entrada. </param>
+            <returns>El rectángulo de salida.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.OutToIn(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            Para la inversa del sombreador hay que buscar el valor de Pin correspondiente a la salida de píxeles, siendo Pout la entrada de textura (es la inversa del sombreador). Sin embargo, el algoritmo del sombreador depende del radio de la salida de píxeles del centro, que es una variable que no conocemos al calcular la inversa. Hay que realizar la bisección para buscar la convergencia mediante la ecuación siguiente: PHatout = PHat_in*Scalar, donde PHatout = Pout - Pcenter pHatin = Pin -Pcenter
+            
+            Scalar depende del radio de Pin (que no tenemos). 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.InToOut(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            Dada una salida de píxeles (Pin), calcula la entrada de textura (Pout).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.CreateInstanceCore">
+            <summary>
+            Crea una nueva instancia.
+            </summary>
+            <returns>Una nueva instancia de este objeto.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.PointIsInCircle(System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+            Determina si un punto está dentro de una elipse.
+            </summary>
+            <param name="pt">El punto de prueba.</param>
+            <param name="center">El punto central de la elipse.</param>
+            <param name="radius">El radio de la elipse.</param>
+            <returns>Devuelve true si se realiza correctamente.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.Inverse">
+            <summary>
+            Obtiene la transformación inversa.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MonochromeEffect">
+             <summary>
+            Efecto que convierte un elemento visual a color monocromo.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.ColorProperty">
+            <summary>
+            Obtiene o establece la variable Color en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.InputProperty">
+            <summary>
+            Obtiene o establece la variable Input del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MonochromeEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Color">
+            <summary>
+            Obtiene o establece la variable Color en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Input">
+            <summary>
+            Obtiene o establece la variable de entrada usada en el sombreador.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateEffect">
+            <summary>
+            Efecto que pixela un elemento visual.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.PixelationProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Pixelation en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Pixelation">
+            <summary>
+            Obtiene o establece la cantidad de pixelación en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateTransitionEffect">
+            <summary>
+            Efecto de transición que aumenta o reduce la pixelación entre dos elementos visuales.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto PixelateTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto PixelateTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect">
+            <summary>
+            Efecto de transición que realiza un desenfoque radial del elemento visual actual cuando entra el nuevo elemento visual.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto RadialBlurTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto RadialBlurTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleEffect">
+            <summary>
+            Efecto que simula ondas de agua en el elemento visual. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.CenterProperty">
+            <summary>
+            Obtiene o establece la variable Center en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.MagnitudeProperty">
+            <summary>
+            Obtiene o establece la variable Amplitude en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.FrequencyProperty">
+            <summary>
+            Obtiene o establece la variable Frequency en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.PhaseProperty">
+            <summary>
+            Obtiene o establece la variable Phase en el sombreador.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.InputProperty">
+            <summary>
+            Obtiene o establece el pincel de entrada usado en el sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Center">
+            <summary>
+            Obtiene o establece la variable Center en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Magnitude">
+            <summary>
+            Obtiene o establece la variable Amplitude en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Frequency">
+            <summary>
+            Obtiene o establece la variable Frequency en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Phase">
+            <summary>
+            Obtiene o establece la variable Phase en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleTransitionEffect">
+            <summary>
+            Efecto de transición que simula una onda de agua durante la transición. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto RippleTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto RippleTransitionEffect.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SharpenEffect">
+            <summary>
+            Efecto que hace que un elemento visual sea más nítido y definido. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.AmountProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Amount en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.HeightProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Width en el sombreador de píxeles. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SharpenEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Amount">
+            <summary>
+            Obtiene o establece la variable Amount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Height">
+            <summary>
+            Obtiene o establece la variable Height en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideDirection">
+            <summary>
+            Define la orientación de la diapositiva.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideInTransitionEffect">
+            <summary>
+            Efecto de transición que desliza el elemento visual actual hacia fuera para mostrar el nuevo elemento visual. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirectionProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable SlideAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormalProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable SlideAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto SlideInTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto SlideInTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirection">
+            <summary>
+            Obtiene o establece la variable SlideAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormal">
+            <summary>
+            Obtiene o establece la variable SlideAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect">
+             <summary>
+            Efecto de transición que aplica un remolino al elemento visual actual al mostrar el nuevo elemento visual.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmountProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable TwistAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCountProperty">
+            <summary>
+            Propiedad de dependencia que modifica el número de celdas en las que se tuercen los píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor(System.Double)">
+            <summary>
+            Crea una instancia y actualiza la variable de torsión del sombreador a los valores especificados.
+            </summary>
+            <param name="twist">Nivel de torsión de remolino.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto SmoothSwirlGridTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto SmoothSwirlGridTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmount">
+            <summary>
+            Obtiene o establece la variable TwistAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCount">
+            <summary>
+            Obtiene o establece la variable CellCount en el sombreador.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect">
+            <summary>
+            Efecto que aplica un remolino al elemento visual actual.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.InputProperty">
+            <summary>
+            Entrada explícita de este sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.CenterProperty">
+            <summary>
+            Esta propiedad se asigna a la variable Center en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmountProperty">
+            <summary>
+            Esta propiedad se asigna a la variable TwistAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequencyProperty">
+            <summary>
+            Esta propiedad se asigna a la variable AngleFrequency en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.generalTransform">
+            <summary>
+            Transformación que se utiliza cuando se aplica este efecto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Center">
+            <summary>
+            Obtiene o establece la variable Center en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmount">
+            <summary>
+            Obtiene o establece la variable TwistAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequency">
+            <summary>
+            Obtiene o establece la variable AngleFrequency en el sombreador. Esta propiedad no se expone.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Input">
+            <summary>
+            Obtiene o establece el muestrario del sombreador de entrada.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.EffectMapping">
+            <summary>
+            Obtiene el objeto GeneralTransform para este efecto.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform">
+            <summary>
+            Se usa para transformar la entrada y realizar transformaciones de árbol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.theEffect">
+            <summary>
+            La instancia del efecto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.thisIsInverse">
+            <summary>
+            La inversa de la transformación.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.inverseTransform">
+            <summary>
+            La inversa de este objeto GeneralTransform.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.SwirlEffect)">
+            <summary>
+            Crea una instancia de esta clase.
+            </summary>
+            <param name="eff">El mismo efecto.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            Para esta operación, los límites están definidos por el cuadro delimitador de los cuatro puntos transformados. Hay que transformar cada uno de estos puntos y después circunscribirlos.  Esto es cierto tanto para la transformación directa como para la transformación inversa.
+            </summary>
+            <param name="rect">El rectángulo de entrada. </param>
+            <returns>El rectángulo transformado.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TryTransform(System.Windows.Point,System.Windows.Point@)">
+            <summary>
+            Intenta transformar inPoint con el efecto Swirl.
+            </summary>
+            <param name="targetPoint">El punto de entrada. </param>
+            <param name="result">El punto de salida después de su transformación con el efecto Swirl.</param>
+            <returns>Devuelve true, aunque inicia una excepción si es false.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.CreateInstanceCore">
+            <summary>
+            Devuelve una nueva instancia de este objeto.
+            </summary>
+            <returns>Una nueva instancia.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.Inverse">
+            <summary>
+            Obtiene un clon de la inversa de la transformación actual.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WaveTransitionEffect">
+            <summary>
+            Efecto de transición que aplica ondas al elemento visual actual al mostrar el nuevo elemento visual.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.MagnitudeProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable Magnitude en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.PhaseProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable Phase en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.FrequencyProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable Frequency en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia del sombreador.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto WaveTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto WaveTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Magnitude">
+            <summary>
+            Obtiene o establece la magnitud de la onda.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Phase">
+            <summary>
+            Obtiene o establece la fase de la onda.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Frequency">
+            <summary>
+            Obtiene o establece la magnitud de la onda.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeDirection">
+            <summary>
+            Define la dirección de barrido.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeTransitionEffect">
+            <summary>
+            Efecto de transición que realiza un barrido del elemento visual actual al mostrar el nuevo elemento visual.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirectionProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable WipeDirection en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmountProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable FeatherAmount en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOriginProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable LineOrigin en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormalProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable LineNormal en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffsetProperty">
+            <summary>
+            Propiedad de dependencia que modifica la variable LineOffset en el sombreador de píxeles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.#ctor">
+            <summary>
+            Crea una instancia y actualiza las variables del sombreador a los valores predeterminados.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.DeepCopy">
+            <summary>
+            Realiza una copia en profundidad del efecto WipeTransitionEffect. 
+            </summary>
+            <returns>Un clon de la instancia actual del efecto WipeTransitionEffect.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirection">
+            <summary>
+            Obtiene o establece el sentido del barrido.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmount">
+            <summary>
+            Obtiene o establece la variable FeatherAmount en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOrigin">
+            <summary>
+            Obtiene o establece la variable LineOrigin en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormal">
+            <summary>
+            Obtiene o establece la variable LineNormal en el sombreador.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffset">
+            <summary>
+            Obtiene o establece la variable LineOffset en el sombreador.
+            </summary>
+        </member>
+    </members>
+</doc>

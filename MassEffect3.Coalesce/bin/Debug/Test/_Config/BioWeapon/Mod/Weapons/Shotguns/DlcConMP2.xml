@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxweapon_shotgun_quarian">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

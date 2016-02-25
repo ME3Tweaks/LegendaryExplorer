@@ -1,0 +1,6 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Release\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Release\Gibbed.MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Release\Gibbed.MassEffect3.ConditionalDump.pdb

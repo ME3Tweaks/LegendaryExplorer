@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<!--<Section name="sfxgame.sfxguiinteraction">
+			<Property name="movielibrary" type="3">(Tag=DLC_Docks, ZOrder=300, MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks", GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Property>
+		</Section>-->
+		<!--<Section name="sfxgame.sfxweaponuidatamanager">
+			<Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_CON_GUN02SF, Resource="SFXGUI_WeaponUIDataDLC_CON_GUN02.Data")</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

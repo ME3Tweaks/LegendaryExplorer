@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="level1difficultydata">
+
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

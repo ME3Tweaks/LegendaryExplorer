@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="level6difficultydata">
+				<Value type="2">
+					(Category="GethBomber", CategoryData=(
+					<!-- X=(2633.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=4607.75, Y=5529.30)),
+
+					<!-- X=(1976.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=3458.00, Y=4149.60)),
+
+					<!-- Other -->
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.20, Y=0.10)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.30, Y=0.20)),
+					(StatName="EvadeFrequency", StatRange=(X=5.00, Y=5.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=2.00, Y=2.50)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.60, Y=0.70)),
+					(StatName="MeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="BombingRunInterval", StatRange=(X=5.00, Y=5.00)),
+					(StatName="GlobalBombingRunInterval", StatRange=(X=10.00, Y=10.00)),
+					(StatName="NumGrenadesToDrop", StatRange=(X=5.00, Y=5.00)),
+					(StatName="ExplosionDamage", StatRange=(X=400.00, Y=400.00)),
+					(StatName="ExplosionRadius", StatRange=(X=350.00, Y=350.00)),
+					(StatName="ExplosionDelay", StatRange=(X=3.00, Y=3.00)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.70, Y=0.70)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=5.50, Y=5.50)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.35, Y=0.35)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=250.00, Y=250.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=300.00, Y=300.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.60, Y=0.60))
+					))
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

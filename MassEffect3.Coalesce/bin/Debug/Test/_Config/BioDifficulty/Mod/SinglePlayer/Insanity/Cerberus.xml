@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="level5difficultydata">
+				<Value type="2">
+					(Category="AssaultTrooper", CategoryData=(
+					<!-- X=(2194.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=3839.50, Y=4607.40)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=2.00, Y=2.00)),
+					(StatName="CancelFirePct", StatRange=(X=0.05, Y=0.05)),
+					(StatName="MaxFireWaitTime", StatRange=(X=14.00, Y=16.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.10, Y=0.05)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.20, Y=0.10)),
+					(StatName="EvadeFrequency", StatRange=(X=4.00, Y=4.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=2.00, Y=2.50)),
+					(StatName="PartialLeanPct", StatRange=(X=0.80, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.50, Y=0.60)),
+					(StatName="FlankReactionTime", StatRange=(X=0.15, Y=0.00)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=125.00, Y=125.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=150.00, Y=150.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.65, Y=0.65)),
+					(StatName="GrenadeInterval", StatRange=(X=4.00, Y=4.00))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Atlas", CategoryData=(
+					<!-- X=(30000.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=52500.00, Y=63000.00)),
+
+					<!-- X=(27422.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=47988.50, Y=57586.20)),
+
+					<!-- X=(1500.00 * 1.40 * 1.25), Y=(X) -->
+					(StatName="ArmourPieceHealth", StatRange=(X=1500.00, Y=1500.00)),
+
+					<!-- X=(Y * 1.40 * 1.25), Y=(X) -->
+					(StatName="GlassCockpitHealth", StatRange=(X=10000.00, Y=10000.00)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=1.50, Y=1.50)),
+					(StatName="SyncMeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="SmokeInterval", StatRange=(X=8.00, Y=8.00)),
+					(StatName="RocketInterval", StatRange=(X=4.00, Y=4.00)),
+					(StatName="BlockInterval", StatRange=(X=12.00, Y=12.00)),
+					(StatName="CockpitDamageResetDuration", StatRange=(X=2.50, Y=2.50)),
+					(StatName="CockpitBlockThreshold", StatRange=(X=3600.00, Y=3600.00)),
+					(StatName="SyncKillChance", StatRange=(X=0.95, Y=0.95)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.75, Y=0.75)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.20, Y=0.20)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=1000.00, Y=1000.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=1600.00, Y=1600.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=2000.00, Y=2000.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.25, Y=0.25))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Atlas2", CategoryData=(
+					<!-- X=(30000.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=52500.00, Y=63000.00)),
+
+					<!-- X=(27422.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=47988.50, Y=57586.20)),
+
+					<!-- X=(1500.00 * 1.40 * 1.25), Y=(X) -->
+					(StatName="ArmourPieceHealth", StatRange=(X=1500.00, Y=1500.00)),
+
+					<!-- X=(Y * 1.40 * 1.25), Y=(X) -->
+					(StatName="GlassCockpitHealth", StatRange=(X=10000.00, Y=10000.00)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=1.50, Y=1.50)),
+					(StatName="SyncMeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="SmokeInterval", StatRange=(X=8.00, Y=8.00)),
+					(StatName="RocketInterval", StatRange=(X=4.00, Y=4.00)),
+					(StatName="BlockInterval", StatRange=(X=12.00, Y=12.00)),
+					(StatName="CockpitDamageResetDuration", StatRange=(X=2.50, Y=2.50)),
+					(StatName="CockpitBlockThreshold", StatRange=(X=3600.00, Y=3600.00)),
+					(StatName="SyncKillChance", StatRange=(X=0.95, Y=0.95)),
+					(StatName="ArmourPieceDamage", StatRange=(X=3000.00, Y=3000.00)),
+					(StatName="ArmourDestroyedStaggerChance", StatRange=(X=1.00, Y=1.00)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.75, Y=0.75)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.20, Y=0.20)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=1200.00, Y=1200.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=1600.00, Y=1600.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=2000.00, Y=2000.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.25, Y=0.25))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Centurion", CategoryData=(
+					<!-- X=(2418.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=4231.50, Y=5077.80)),
+
+					<!-- X=(2194.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=3839.50, Y=4607.40)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="CancelFirePct", StatRange=(X=0.05, Y=0.05)),
+					(StatName="MaxFireWaitTime", StatRange=(X=13.00, Y=18.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.07, Y=0.03)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.08, Y=0.05)),
+					(StatName="EvadeFrequency", StatRange=(X=5.00, Y=4.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=3.50, Y=4.00)),
+					(StatName="PartialLeanPct", StatRange=(X=1.00, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.90, Y=1.00)),
+					(StatName="FlankReactionTime", StatRange=(X=0.10, Y=0.00)),
+					(StatName="CoverMoveSmokeChance", StatRange=(X=1.00, Y=1.00)),
+					(StatName="FlankedSmokeChance", StatRange=(X=1.00, Y=1.00)),
+					(StatName="SmokeFrequency", StatRange=(X=4.00, Y=3.00)),
+					(StatName="GrenadeInterval", StatRange=(X=3.00, Y=3.00)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.90, Y=0.90)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.40, Y=0.40)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=240.00, Y=240.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=300.00, Y=300.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.50, Y=0.50))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Guardian", CategoryData=(
+					<!-- X=(2632.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=4606.00, Y=5527.20)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="CancelFirePct", StatRange=(X=0.10, Y=0.05)),
+					(StatName="MaxFireWaitTime", StatRange=(X=13.00, Y=15.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.10, Y=0.05)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.15, Y=0.10)),
+					(StatName="EvadeFrequency", StatRange=(X=5.00, Y=4.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=3.50, Y=4.00)),
+					(StatName="PartialLeanPct", StatRange=(X=0.80, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.50, Y=0.60)),
+					(StatName="FlankReactionTime", StatRange=(X=0.15, Y=0.00)),
+					(StatName="BreachFrequency", StatRange=(X=9.00, Y=9.00)),
+					(StatName="ShieldResetDuration", StatRange=(X=2.50, Y=2.50)),
+					(StatName="ShieldDamageBreachThreshold", StatRange=(X=1600.00, Y=2000.00)),
+					(StatName="ShieldBashInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=250.00, Y=250.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=300.00, Y=300.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.50, Y=0.50))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Gunner", CategoryData=(
+					<!-- X=(2194.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=3839.50, Y=4607.40)),
+
+					<!-- X=(2194.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=3839.50, Y=4607.40)),
+
+					<!-- Other -->
+					(StatName="CancelFirePct", StatRange=(X=0.05, Y=0.025)),
+					(StatName="MaxFireWaitTime", StatRange=(X=15.00, Y=18.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.15, Y=0.05)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.15, Y=0.10)),
+					(StatName="EvadeFrequency", StatRange=(X=3.00, Y=3.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=3.50, Y=4.00)),
+					(StatName="PartialLeanPct", StatRange=(X=1.00, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.90, Y=1.00)),
+					(StatName="FlankReactionTime", StatRange=(X=0.15, Y=0.00)),
+					(StatName="RepairPct", StatRange=(X=1.00, Y=1.00)),
+					(StatName="DeployBreachThreshold", StatRange=(X=1518.75, Y=2278.13)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.85, Y=0.85)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=4.00, Y=4.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.33, Y=0.33)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=210.00, Y=210.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=300.00, Y=300.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.50, Y=0.50))
+					))
+				</Value>
+				<Value type="2">
+					(Category="GunnerTurret", CategoryData=(
+					<!-- X=(3543.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=6200.25, Y=7440.30)),
+
+					<!-- X=(3543.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=6200.25, Y=7440.30)),
+
+					<!-- Other -->
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.90, Y=0.90)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.40, Y=0.40)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=240.00, Y=240.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=290.00, Y=290.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=500.00, Y=500.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=1.00, Y=1.00))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Nemesis", CategoryData=(
+					<!-- X=(1534.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=2684.50, Y=3221.40)),
+
+					<!-- X=(2522.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=4413.50, Y=5296.20)),
+
+					<!-- Other -->
+					(StatName="CancelFirePct", StatRange=(X=0.05, Y=0.01)),
+					(StatName="MaxFireWaitTime", StatRange=(X=25.00, Y=25.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.10, Y=0.05)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.15, Y=0.10)),
+					(StatName="EvadeFrequency", StatRange=(X=4.00, Y=3.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=3.50, Y=4.00)),
+					(StatName="PartialLeanPct", StatRange=(X=1.00, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=0.90, Y=1.00)),
+					(StatName="FlankReactionTime", StatRange=(X=0.00, Y=0.00)),
+					(StatName="NemesisAimDelay", StatRange=(X=0.25, Y=0.25)),
+					(StatName="AimTrackingDuration", StatRange=(X=0.75, Y=0.75)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.90, Y=0.90)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.40, Y=0.40)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=10.00, Y=10.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=125.00, Y=125.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=150.00, Y=150.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.50, Y=0.50))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Phantom", CategoryData=(
+					<!-- X=(3997.50 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxBarriers", StatRange=(X=6995.63, Y=8394.75)),
+
+					<!-- X=(2194.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=3839.50, Y=4607.40)),
+
+					<!-- Other -->
+					(StatName="CancelFirePct", StatRange=(X=0.05, Y=0.01)),
+					(StatName="MaxFireWaitTime", StatRange=(X=20.00, Y=20.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.02, Y=0.01)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.03, Y=0.02)),
+					(StatName="EvadeFrequency", StatRange=(X=2.00, Y=1.50)),
+					(StatName="EvadeResetDuration", StatRange=(X=2.00, Y=2.50)),
+					(StatName="EvadeDamageScalePct", StatRange=(X=0.25, Y=0.25)),
+					(StatName="ShieldDamageScalePct", StatRange=(X=0.25, Y=0.25)),
+					(StatName="PartialLeanPct", StatRange=(X=1.00, Y=1.00)),
+					(StatName="PowerEvadeChance", StatRange=(X=1.00, Y=1.00)),
+					(StatName="FlankReactionTime", StatRange=(X=0.00, Y=0.00)),
+					(StatName="CloakHealthPct", StatRange=(X=0.95, Y=0.95)),
+					(StatName="VortexDamageWindow", StatRange=(X=2.00, Y=2.00)),
+					(StatName="VortexFrequency", StatRange=(X=10.00, Y=10.00)),
+					(StatName="ShieldFrequency", StatRange=(X=5.00, Y=5.00)),
+					(StatName="AggressiveFrequency", StatRange=(X=3.00, Y=3.00)),
+					(StatName="MeleeAttackInterval", StatRange=(X=0.00, Y=0.00)),
+					(StatName="SyncMeleeAttackInterval", StatRange=(X=1.00, Y=1.00)),
+					(StatName="SyncKillChance", StatRange=(X=0.60, Y=0.60)),
+					(StatName="MaxEnemyShieldRecharge", StatRange=(X=0.85, Y=0.85)),
+					(StatName="AIShieldRegenDelay", StatRange=(X=6.00, Y=6.00)),
+					(StatName="AIShieldRegenPct", StatRange=(X=0.30, Y=0.30)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=600.00, Y=600.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=1000.00, Y=1000.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=1500.00, Y=1500.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.10, Y=0.10))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Phoenix", CategoryData=(
+					<!-- X=(6254.00 * 1.40 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=10944.50, Y=13133.40)),
+
+					<!-- Other -->
+					(StatName="MeleeAttackInterval", StatRange=(X=0.00, Y=0.00)),
+					(StatName="EvadeDamagePctLow", StatRange=(X=0.01, Y=0.01)),
+					(StatName="EvadeDamagePctHigh", StatRange=(X=0.02, Y=0.02)),
+					(StatName="EvadeFrequency", StatRange=(X=5.00, Y=5.00)),
+					(StatName="EvadeResetDuration", StatRange=(X=2.50, Y=2.50)),
+					(StatName="GlobalChargeInterval", StatRange=(X=3.00, Y=3.00)),
+					(StatName="PowerThreshold_Standard", StatRange=(X=550.00, Y=550.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=750.00, Y=750.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=1000.00, Y=1000.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.50, Y=0.50))
+					))
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,538 @@
+﻿<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Controls</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Initialize">
+            <summary>
+ポリラインをループ オーバーする前に呼び出されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ComputeAutoCapacity">
+            <summary>
+LayoutPath.Capacity が Auto に設定されているときに使用される値を計算します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ShouldBreak(System.Int32)">
+            <summary>
+ポリラインが引き続きループ オーバーされるべきかどうかをチェックします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineBegin(Microsoft.Expression.Drawing.Core.PolylineData)">
+            <summary>
+新しいポリラインをマーチする前に呼び出されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineCompleted(System.Double)">
+            <summary>
+ポリラインが完了すると呼び出されます。
+            </summary>
+<param name="remaingLength">ポリライン内の残りの弧の長さ。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnStepCompleted(System.Double)">
+            <summary>
+ステップが正常に完了すると呼び出されます。
+            </summary>
+<param name="actualStepDistance">実際のステップの距離。別のポリラインがラップされている場合は、これが Step とは異なることがあります。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Distribute(Microsoft.Expression.Controls.PathPanel,System.Int32,System.Int32)">
+            <summary>
+指定されたレイアウト パスに沿って、パス パネルの子を配置します。
+            </summary>
+<param name="pathPanel">パス パネル。</param>
+<param name="pathIndex">pathPanel.LayoutPaths のパスのインデックス。</param>
+<param name="childIndex">このパスにレイアウトする最初の子のインデックス。</param>
+<returns>次に配置する子のインデックス。childIndex が返される場合、この関数は何も行わなかったことを意味します。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.ChildIndex">
+            <summary>
+次に配置する子のインデックス。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Span">
+            <summary>
+レイアウトに使用される弧長における距離。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Step">
+            <summary>
+現在のポリラインに沿って進む弧長における距離。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Capacity">
+            <summary>
+LayoutPath に配置する要素の合計数。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.EvenDistributionStrategy">
+            <summary>
+レイアウト パスに沿って、パス パネルの子を配置します。均等配置では、パス上のすべての要素の各中心の間の弧長が等しくなります。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.ChangedPathLayoutProperties">
+            <summary>
+どのパス レイアウト プロパティに変更があったかを指定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs">
+            <summary>
+<see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> イベントのデータを提供します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.#ctor(Microsoft.Expression.Controls.ChangedPathLayoutProperties)">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs"/> クラスの新しいインスタンスを初期化します。
+            </summary>
+<param name="changedProperties">イベントのデータ。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.ChangedProperties">
+            <summary>
+<see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> イベントで変更されたプロパティを取得します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutData">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> を更新するのに必要なデータをカプセル化します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LayoutPathIndex">
+            <summary>
+要素が整列されたパスのインデックスを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalIndex">
+            <summary>
+要素のコレクションにおける要素のインデックスを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalIndex">
+            <summary>
+パス上の要素のインデックスを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalOffset">
+            <summary>
+パスのコレクションの長さの合計に比例する要素のオフセットを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalOffset">
+            <summary>
+パスの長さに比例する要素のオフセットを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.NormalAngle">
+            <summary>
+要素の位置でパスに垂直になる角度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.OrientationAngle">
+            <summary>
+要素の向きをパスに合わせてある場合は、要素の位置でパスに垂直になる角度を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.IsArranged">
+            <summary>
+要素がパス上に整列されるかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IPathLayoutItem">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathPanel"/> によって整列される要素を表します。
+            </summary>
+            <remarks>
+このインターフェイスを実装すると、要素を配置するときに <see cref="T:Microsoft.Expression.Controls.PathPanel"/> でこれらのプロパティを設定できるようになります。このインターフェイスは、一般的な実装用ではありません。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+指定された <see cref="T:Microsoft.Expression.Controls.PathLayoutData"/> を基に <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> プロパティを更新し、<see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> イベントを発生させます。
+            </summary>
+<param name="data"><see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> を更新するのに必要なデータ。</param>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> プロパティの変更があると発生します。
+            </summary>
+            <remarks>
+このイベントは、パス上のアイテムの位置が更新されると発生します。これは、<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> のプロパティの変更、または、<see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> の変更に起因して発生することがあります。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex">
+            <summary>
+要素が整列されたパスのインデックスを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex">
+            <summary>
+要素のコレクションにおけるこの要素のインデックスを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex">
+            <summary>
+アイテムが配置されているパス上のそのアイテムのインデックスを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset">
+            <summary>
+パスのコレクションの長さの合計に比例する要素のオフセットを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset">
+            <summary>
+アイテムが配置されているパスの長さに比例するそのアイテムのオフセットを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle">
+            <summary>
+アイテムの位置でパスに垂直になる角度を取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle">
+            <summary>
+アイテムの向きをパスに合わせてある場合は、アイテムの位置でパスに垂直になる角度を取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged">
+            <summary>
+アイテムがパス上に整列されるかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IsArrangedToScaleConverter">
+            <summary>
+要素が整列されるかどうかを表す <see cref="T:System.Boolean"/> を、要素の拡大縮小に使用される <see cref="T:System.Double"/> 値に変換します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+すべての場合に <see cref="T:System.NotImplementedException"/> をスローします。
+            </summary>
+<param name="value">ソースに渡されているターゲット データ。</param>
+<param name="targetType">ソース オブジェクトが必要とするデータの <see cref="T:System.Type"/>。</param>
+<param name="parameter">コンバーターのロジックで使用されるオプションのパラメーター。</param>
+<param name="culture">変換のカルチャー。</param>
+<returns>ソース オブジェクトに渡される値。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+指定の <see cref="T:System.Boolean"/> を <see cref="T:System.Double"/> に変換します。 
+            </summary>		
+<param name="value">ターゲットに渡されているソース データ。</param>
+<param name="targetType">ターゲットの依存関係プロパティが必要とするデータの <see cref="T:System.Type"/>。</param>
+<param name="parameter">コンバーターのロジックで使用されるオプションのパラメーター。</param>
+<param name="culture">変換のカルチャー。</param>
+<returns><see cref="T:System.Boolean"/> が true の場合は、1 が返されます。それ以外は、0 が返されます。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Distribution">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> の配置を指定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Orientation">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 上の要素の方向を指定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.FillBehavior">
+            <summary>
+開かれているパスの <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> を変更するメソッドを指定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LayoutPath">
+            <summary>
+要素が整列されたパスを記述します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Controls.LayoutPath.transformedPolylines">
+            <summary>
+変換により平面化に影響が及ぶため、平面化の前にベジエ曲線をキャッシュすることが推奨されます。そのためには、適切にサポートされていない段階の曲線をキャッシュしなければなりません。その代り、配置戦略において平面化された点群をキャッシュし、要求に応じて変換します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.SourceElement">
+            <summary>
+パスを定義する要素を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Distribution">
+            <summary>
+アイテムを均等に配置するか、固定のパディングを使用して配置するかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Capacity">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> に表示されるアイテムの最大数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Padding">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> の弧に沿った 2 つのアイテムの間隔をピクセル単位で取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Orientation">
+            <summary>
+アイテムの方向を取得または設定します。
+            </summary>
+            <remarks>
+このプロパティは <see cref="T:Microsoft.Expression.Controls.PathListBox"/> でサポートされますが、<see cref="T:Microsoft.Expression.Controls.PathPanel"/> ではサポートされません。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Start">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> の始点から 1 番目のアイテムまでの距離を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Span">
+            <summary>
+レイアウトに含まれる <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> の割合 (パーセント) を取得または指定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.FillBehavior">
+            <summary>
+開かれているパスの <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> を変更するメソッドを指定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.ActualCapacity">
+            <summary>
+計算された Capacity を取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.IsValid">
+            <summary>
+<see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> がコンテキストにおいて有効かどうかを取得します。<see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> は、それ使用されている <see cref="T:Microsoft.Expression.Controls.PathPanel"/> の子孫である場合は、有効ではありません。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PaddedDistributionStrategy">
+            <summary>
+それぞれの子のサイズと子の間の指定されたパディングを基に、レイアウト パスの子を配置します。子と子の間の弧長における距離は、パディングとす子の境界ボックスの半径の合計の合算により決定されます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBox">
+            <summary>
+1 つまたは複数のパスに沿って配置されるアイテムのリストを含みます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.#ctor">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathListBox"/> クラスの新しいインスタンスを初期化します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.GetContainerForItemOverride">
+            <summary>
+指定のアイテムを表示するのに使用される要素を作成します。
+            </summary>
+<returns>指定のアイテムに相応する <see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.IsItemItsOwnContainerOverride(System.Object)">
+            <summary>
+指定のアイテムがそれ自体のアイテム コンテナーであるかどうか (またはその資格があるかどうか) を決定します。
+            </summary>
+<returns>アイテムがそれ自体のコンテナーである場合は true、それ以外の場合は false。</returns>
+<param name="item">指定のアイテム。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.ArrangeOverride(System.Windows.Size)">
+            <summary>
+子要素の位置。
+            </summary>
+<param name="finalSize">このオブジェクトが子要素の配置に使用すべきサイズ。</param>
+<returns>実際に使用されたサイズ。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.LayoutPaths">
+            <summary>
+レイアウトに使用されるパス (複数可) を定義するオブジェクトのコレクションを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.StartItemIndex">
+            <summary>
+アイテムのリスト内で使用するインデックスを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.WrapItems">
+            <summary>
+StartItemIndex が 0 より大きい場合、アイテムのインデックスをコレクションの先頭に折り返すかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBoxItem">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathListBox"/> 内のアイテムを表します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.#ctor">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/> クラスの新しいインスタンスを初期化します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+このメンバーの説明については、「<see cref="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.PathListBoxItem.PathLayoutUpdated">
+            <summary>
+このメンバーの説明については、「<see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LayoutPathIndex">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalIndex">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalIndex">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalOffset">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalOffset">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.NormalAngle">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.OrientationAngle">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.IsArranged">
+            <summary>
+このメンバーの説明については、「<see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged"/>」を参照してください。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathPanel">
+            <summary>
+子要素を 1 つまたは複数のパスに沿って整列します。
+            </summary>
+            <remarks>
+選択が必須でない場合は、<see cref="T:Microsoft.Expression.Controls.PathPanel"/> を <see cref="T:Microsoft.Expression.Controls.PathListBox"/>  の代わりに使用することができます。<see cref="P:Microsoft.Expression.Controls.LayoutPath.Orientation"/> プロパティは <see cref="T:Microsoft.Expression.Controls.PathPanel"/> ではサポートされません。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.#ctor">
+            <summary>
+<see cref="T:Microsoft.Expression.Controls.PathPanel"/> クラスの新しいインスタンスを初期化します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.MeasureOverride(System.Windows.Size)">
+            <summary>
+子要素に必要なサイズを測定します。
+            </summary>
+<param name="availableSize">このオブジェクトが子要素に割り当てることのできる使用可能サイズ。 </param>
+<returns>子要素のサイズ計算に基づいて、レイアウト過程でこの要素が必要であると判断するサイズ。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeOverride(System.Windows.Size)">
+            <summary>
+子要素の位置。
+            </summary>
+<param name="finalSize">このオブジェクトが子要素の配置に使用すべきサイズ。</param>
+<returns>実際に使用されたサイズ。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeChild(System.Int32,System.Int32,Microsoft.Expression.Drawing.Core.PolylineData,Microsoft.Expression.Drawing.Core.MarchLocation,System.Int32)">
+            <summary>
+LayoutPath の特定位置のインデックスに子を配置します。
+            </summary>
+<param name="indirectIndex">0 ～ PathPanel.Count の範囲からのインデックス。</param>
+<param name="pathIndex">子を配置するレイアウト パスのインデックス。</param>
+<param name="polyline">レイアウト パスのポリライン。</param>
+<param name="location">ポリラインの位置。</param>
+<param name="localIndex">LayoutPath の子のインデックス。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.GetChildRadius(System.Int32)">
+            <summary>
+指定のインデックス位置にある子の、境界円の半径を計算します。
+            </summary>
+<param name="indirectIndex">0 ～ PathPanel.Count の範囲からのインデックス。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.LayoutPaths">
+            <summary>
+レイアウトに使用されるパス (複数可) を定義するオブジェクトのコレクションを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex">
+            <summary>
+アイテムのリスト内で使用するインデックスを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.WrapItems">
+            <summary>
+<see cref="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex"/> が 0 より大きい場合、アイテムのインデックスをコレクションの先頭に折り返すかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.ValidPaths">
+            <summary>
+アタッチされ、折りたたまれていない LayoutPath のサブセット。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.Count">
+            <summary>
+Count は、PathPanel が配置する Children の数です。StartItemIndex が 0 より大きくて WrapItems が false の場合は、この値が PathPanel.Children.Count 未満になることもあります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetItemsHost(System.Windows.Controls.ItemsControl)">
+            <summary>
+ItemsControl のコンテナーを含むパネルを取得します。
+            </summary>
+<param name="control">ItemsControl。</param>
+            <returns>
+ItemsControl のコンテナーを含むパネル、または、パネルが見つからない場合は null。
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+<paramref name="control"/> null です。
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.TraverseBreadthFirst``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Boolean})">
+            <summary>
+初期値およびノードの子ノードを取得する関数を受け入れて、スキャンします。
+            </summary>
+<typeparam name="T">ストリームの型。</typeparam>
+<param name="initialNode">初期ノード。</param>
+<param name="getChildNodes">ノードの子ノードを取得する関数。</param>
+<param name="traversePredicate">ノードを評価して、ノードとその子をスキャンすべきかどうかを指定する値を返す述語。</param>
+<returns>ノードのストリーム。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+要素の子のビジュアル ツリーを取得します。
+            </summary>
+<param name="element">要素。</param>
+<returns>要素の子のビジュアル ツリー。</returns>
+            <exception cref="T:System.ArgumentNullException">
+<paramref name="element"/> null です。
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildrenAndSelfIterator(System.Windows.DependencyObject)">
+            <summary>
+要素の子と要素自体のビジュアル ツリーを取得します。
+            </summary>
+<param name="element">要素。</param>
+            <returns>
+要素の子と要素自体のビジュアル ツリー。
+            </returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalChildren(System.Windows.FrameworkElement)">
+            <summary>
+幅優先検索を使用して、フレームワーク要素のすべての論理子を取得します。パフォーマンスのため、このメソッドは再帰を使用せずにスタックを手動で管理します。
+            </summary>
+<param name="parent">親フレームワーク要素。</param>
+<returns>フレームワーク要素の論理子。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalDescendents(System.Windows.FrameworkElement)">
+            <summary>
+幅優先検索を使用して、フレームワーク要素のすべての論理子孫を取得します。パフォーマンスのため、このメソッドは再帰を使用せずにスタックを手動で管理します。
+            </summary>
+<param name="parent">親フレームワーク要素。</param>
+<returns>フレームワーク要素の論理子。</returns>
+        </member>
+    </members>
+</doc>

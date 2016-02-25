@@ -1,0 +1,779 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioinput" name="bioinput.ini" source="..\..\biogame\config\bioinput.ini">
+  <Sections>
+    <Section name="engine.console">
+      <Property name="consolekey" type="2">Tilde</Property>
+      <Property name="historybot" type="2">-1</Property>
+      <Property name="manualautocompletelist">
+        <Value type="2">(Command="Exit",Desc="Exit (Exits the game)")</Value>
+        <Value type="2">(Command="Open",Desc="Open &lt;MapName&gt; (Opens the specified map)")</Value>
+        <Value type="2">(Command="DisplayAll",Desc="DisplayAll &lt;ClassName&gt; &lt;PropertyName&gt; (Display property values for instances of classname)")</Value>
+        <Value type="2">(Command="DisplayAllState",Desc="DisplayAllState &lt;ClassName&gt; (Display state names for all instances of classname)")</Value>
+        <Value type="2">(Command="DisplayClear",Desc="DisplayClear (Clears previous DisplayAll entries)")</Value>
+        <Value type="2">(Command="FlushPersistentDebugLines",Desc="FlushPersistentDebugLines (Clears persistent debug line cache)")</Value>
+        <Value type="2">(Command="GetAll ",Desc="GetAll &lt;ClassName&gt; &lt;PropertyName&gt; &lt;Name=ObjectInstanceName&gt; (Log property values of all instances of classname)")</Value>
+        <Value type="2">(Command="GetAllState",Desc="GetAllState &lt;ClassName&gt; (Log state names for all instances of classname)")</Value>
+        <Value type="2">(Command="Obj List ",Desc="Obj List &lt;Class=ClassName&gt; &lt;Type=MetaClass&gt; &lt;Outer=OuterObject&gt; &lt;Package=InsidePackage&gt; &lt;Inside=InsideObject&gt;")</Value>
+        <Value type="2">(Command="Obj ListContentRefs",Desc="Obj ListContentRefs &lt;Class=ClassName&gt; &lt;ListClass=ClassName&gt;")</Value>
+        <Value type="2">(Command="Obj Classes",Desc="Obj Classes (Shows all classes)")</Value>
+        <Value type="2">(Command="EditActor",Desc="EditActor &lt;Class=ClassName&gt; or &lt;Name=ObjectName&gt; or TRACE")</Value>
+        <Value type="2">(Command="EditDefault",Desc="EditDefault &lt;Class=ClassName&gt;")</Value>
+        <Value type="2">(Command="EditObject",Desc="EditObject &lt;Class=ClassName&gt; or &lt;Name=ObjectName&gt; or &lt;ObjectName&gt;")</Value>
+        <Value type="2">(Command="ReloadCfg ",Desc="ReloadCfg &lt;Class/ObjectName&gt; (Reloads config variables for the specified object/class)")</Value>
+        <Value type="2">(Command="ReloadLoc ",Desc="ReloadLoc &lt;Class/ObjectName&gt; (Reloads localized variables for the specified object/class)")</Value>
+        <Value type="2">(Command="Set ",Desc="Set &lt;ClassName&gt; &lt;PropertyName&gt; &lt;Value&gt; (Sets property to value on objectname)")</Value>
+        <Value type="2">(Command="Show BOUNDS",Desc="Show BOUNDS (Displays bounding boxes for all visible objects)")</Value>
+        <Value type="2">(Command="Show BSP",Desc="Show BSP (Toggles BSP rendering)")</Value>
+        <Value type="2">(Command="Show COLLISION",Desc="Show COLLISION (Toggles collision rendering)")</Value>
+        <Value type="2">(Command="Show COVER",Desc="Show COVER (Toggles cover rendering)")</Value>
+        <Value type="2">(Command="Show DECALS",Desc="Show DECALS (Toggles decal rendering)")</Value>
+        <Value type="2">(Command="Show FOG",Desc="Show FOG (Toggles fog rendering)")</Value>
+        <Value type="2">(Command="Show LEVELCOLORATION",Desc="Show LEVELCOLORATION (Toggles per-level coloration)")</Value>
+        <Value type="2">(Command="Show PATHS",Desc="Show PATHS (Toggles path rendering)")</Value>
+        <Value type="2">(Command="Show POSTPROCESS",Desc="Show POSTPROCESS (Toggles post process rendering)")</Value>
+        <Value type="2">(Command="Show SKELMESHES",Desc="Show SKELMESHES (Toggles skeletal mesh rendering)")</Value>
+        <Value type="2">(Command="Show TERRAIN",Desc="Show TERRAIN (Toggles terrain rendering)")</Value>
+        <Value type="2">(Command="Show VOLUMES",Desc="Show VOLUMES (Toggles volume rendering)")</Value>
+        <Value type="2">(Command="Show SPLINES",Desc="Show SPLINES (Toggles spline rendering)")</Value>
+        <Value type="2">(Command="Stat FPS",Desc="Stat FPS (Shows FPS counter)")</Value>
+        <Value type="2">(Command="Stat UNIT",Desc="Stat UNIT (Shows hardware unit framerate)")</Value>
+        <Value type="2">(Command="Stat LEVELS",Desc="Stat LEVELS (Displays level streaming info)")</Value>
+        <Value type="2">(Command="Stat GAME",Desc="Stat GAME (Displays game performance stats)")</Value>
+        <Value type="2">(Command="Stat MEMORY",Desc="Stat MEMORY (Displays memory stats)")</Value>
+        <Value type="2">(Command="Stat XBOXMEMORY",Desc="Stat XBOXMEMORY (Displays Xbox memory stats while playing on PC)")</Value>
+        <Value type="2">(Command="Stat PHYSICS",Desc="Stat PHYSICS (Displays physics performance stats)")</Value>
+        <Value type="2">(Command="Stat STREAMING",Desc="Stat STREAMING")</Value>
+        <Value type="2">(Command="Stat COLLISION",Desc="Stat COLLISION")</Value>
+        <Value type="2">(Command="Stat PARTICLES",Desc="Stat PARTICLES")</Value>
+        <Value type="2">(Command="Stat SCRIPT",Desc="Stat SCRIPT")</Value>
+        <Value type="2">(Command="Stat AUDIO",Desc="Stat AUDIO")</Value>
+        <Value type="2">(Command="Stat ANIM",Desc="Stat ANIM")</Value>
+        <Value type="2">(Command="Stat NET",Desc="Stat NET")</Value>
+        <Value type="2">(Command="Stat LIST",Desc="Stat LIST Groups/Sets/Group (List groups of stats, saved sets, or specific stats within a specified group)")</Value>
+        <Value type="2">(Command="ListTextures",Desc="ListTextures (Lists all loaded textures and their current memory footprint)")</Value>
+        <Value type="2">(Command="RestartLevel",Desc="RestartLevel (restarts the level)")</Value>
+        <Value type="2">(Command="ListSounds",Desc="ListSounds (Lists all the loaded sounds and their memory footprint)")</Value>
+        <Value type="2">(Command="ListWaves",Desc="ListWaves (List the WaveInstances and whether they have a source)")</Value>
+        <Value type="2">(Command="ListSoundClasses",Desc="ListSoundClasses (Lists a summary of loaded sound collated by class)")</Value>
+        <Value type="2">(Command="ListSoundModes",Desc="ListSoundModes (Lists loaded sound modes)")</Value>
+        <Value type="2">(Command="ListAudioComponents",Desc="ListAudioComponents (Dumps a detailed list of all AudioComponent objects)")</Value>
+        <Value type="2">(Command="ListSoundDurations",Desc="ListSoundDurations")</Value>
+        <Value type="2">(Command="PlaySoundCue",Desc="PlaySoundCue (Lists a summary of loaded sound collated by class)")</Value>
+        <Value type="2">(Command="PlaySoundWave",Desc="PlaySoundWave")</Value>
+        <Value type="2">(Command="SetSoundMode",Desc="SetSoundMode &lt;ModeName&gt;")</Value>
+        <Value type="2">(Command="DisableLowPassFilter",Desc="DisableLowPassFilter")</Value>
+        <Value type="2">(Command="DisableEQFilter",Desc="DisableEQFilter")</Value>
+        <Value type="2">(Command="IsolateDryAudio",Desc="IsolateDryAudio")</Value>
+        <Value type="2">(Command="IsolateReverb",Desc="IsolateReverb")</Value>
+        <Value type="2">(Command="ResetSoundState",Desc="ResetSoundState (Resets volumes to default and removes test filters)")</Value>
+        <Value type="2">(Command="ModifySoundClass",Desc="ModifySoundClass &lt;SoundClassName&gt; Vol=&lt;new volume&gt;")</Value>
+        <Value type="2">(Command="DisableAllScreenMessages",Desc="Disables all on-screen warnings/messages")</Value>
+        <Value type="2">(Command="EnableAllScreenMessages",Desc="Enables all on-screen warnings/messages")</Value>
+        <Value type="2">(Command="ToggleAllScreenMessages",Desc="Toggles display state of all on-screen warnings/messages")</Value>
+        <Value type="2">(Command="CaptureMode",Desc="Toggles display state of all on-screen warnings/messages")</Value>
+      </Property>
+      <Property name="maxscrollbacksize" type="2">1024</Property>
+      <Property name="typekey" type="2">Tab</Property>
+    </Section>
+    <Section name="engine.debugcameracontroller">
+      <Property name="bshowselectedinfo" type="2">true</Property>
+      <Property name="primarykey" type="2">LeftMouseButton</Property>
+      <Property name="secondarykey" type="2">RightMouseButton</Property>
+      <Property name="unselectkey" type="2">Escape</Property>
+    </Section>
+    <Section name="engine.debugcamerainput">
+      <Property name="bindings">
+        <Value type="2">(Name="MoveUp",Command="Axis aUp Speed=1.0")</Value>
+        <Value type="2">(Name="MoveDown",Command="Axis aUp Speed=-1.0")</Value>
+        <Value type="2">(Name="MoveForward",Command="Axis aBaseY Speed=1.0")</Value>
+        <Value type="2">(Name="MoveBackward",Command="Axis aBaseY Speed=-1.0")</Value>
+        <Value type="2">(Name="TurnLeft",Command="Axis aBaseX Speed=-200.0 AbsoluteAxis=100")</Value>
+        <Value type="2">(Name="TurnRight",Command="Axis aBaseX  Speed=+200.0 AbsoluteAxis=100")</Value>
+        <Value type="2">(Name="StrafeLeft",Command="Axis aStrafe Speed=-1.0")</Value>
+        <Value type="2">(Name="StrafeRight",Command="Axis aStrafe Speed=+1.0")</Value>
+        <Value type="2">(Name="Q",Command="MoveDown")</Value>
+        <Value type="2">(Name="E",Command="MoveUp")</Value>
+        <Value type="2">(Name="W",Command="MoveForward")</Value>
+        <Value type="2">(Name="S",Command="MoveBackward")</Value>
+        <Value type="2">(Name="A",Command="StrafeLeft")</Value>
+        <Value type="2">(Name="D",Command="StrafeRight")</Value>
+        <Value type="2">(Name="F",Command="FreezeRendering")</Value>
+        <Value type="2">(Name="MouseX",Command="Count bXAxis | Axis aMouseX")</Value>
+        <Value type="2">(Name="MouseY",Command="Count bYAxis | Axis aMouseY")</Value>
+        <Value type="2">(Name="Left",Command="TurnLeft")</Value>
+        <Value type="2">(Name="Right",Command="TurnRight")</Value>
+        <Value type="2">(Name="c",Command="ToggleDebugCamera",Control=False,Shift=False,Alt=True)</Value>
+        <Value type="2">(Name="LeftShift",Command="MoreSpeed | OnRelease NormalSpeed",Control=False,Shift=False,Alt=False)</Value>
+        <Value type="2">(Name="XboxTypeS_LeftThumbstick",Command="ToggleDebugCamera")</Value>
+        <Value type="2">(Name="XboxTypeS_LeftX",Command="Axis aStrafe Speed=1.0 DeadZone=0.3")</Value>
+        <Value type="2">(Name="XboxTypeS_LeftY",Command="Axis aBaseY Speed=1.0 DeadZone=0.3")</Value>
+        <Value type="2">(Name="XboxTypeS_RightX",Command="Axis aTurn Speed=1.0 DeadZone=0.2")</Value>
+        <Value type="2">(Name="XboxTypeS_RightY",Command="Axis aLookup Speed=0.8 DeadZone=0.2")</Value>
+        <Value type="2">(Name="XboxTypeS_LeftTrigger",Command="MoveDown")</Value>
+        <Value type="2">(Name="XboxTypeS_RightTrigger",Command="MoveUp")</Value>
+        <Value type="2">(Name="XboxTypeS_A",Command="SetFreezeRendering")</Value>
+        <Value type="2">(Name="XboxTypeS_B",Command="MoreSpeed | OnRelease NormalSpeed")</Value>
+      </Property>
+    </Section>
+    <Section name="engine.playerinput">
+      <Property name="benablemousesmoothing" type="2">true</Property>
+      <Property name="bindings">
+        <Value type="2">(Name="Escape",Command="CloseEditorViewport")</Value>
+        <Value type="2">(Name="XboxTypeS_RightShoulder",Command="GhostMoveUp 1 | OnRelease GhostMoveUp 0")</Value>
+        <Value type="2">(Name="XBoxTypeS_LeftShoulder",Command="GhostMoveDown 1 | OnRelease GhostMoveDown 0")</Value>
+        <Value type="2">(Name="Up",Command="GhostMoveUp 1 | OnRelease GhostMoveUp 0" )</Value>
+        <Value type="2">(Name="Down",Command="GhostMoveDown 1 | OnRelease GhostMoveDown 0" )</Value>
+        <Value type="2">( Name="XboxTypeS_Back", Command="ReportCustomEvent" )</Value>
+        <Value type="2">( Name="P", Command="ReportCustomEvent" )</Value>
+      </Property>
+      <Property name="doubleclicktime" type="2">0.250000</Property>
+      <Property name="lookrightscale" type="2">250</Property>
+      <Property name="lookupscale" type="2">-175</Property>
+      <Property name="mousesensitivity" type="2">1.0</Property>
+      <Property name="moveforwardspeed" type="2">1200</Property>
+      <Property name="movestrafespeed" type="2">1200</Property>
+    </Section>
+    <Section name="engine.uiinputconfiguration">
+      <Property name="axisemulationdefinitions">
+        <Value type="2">(AxisInputKey=MouseX,AdjacentAxisInputKey=MouseY,bEmulateButtonPress=False)</Value>
+        <Value type="2">(AxisInputKey=MouseY,AdjacentAxisInputKey=MouseX,bEmulateButtonPress=False)</Value>
+        <Value type="2">(AxisInputKey=XboxTypeS_LeftX,AdjacentAxisInputKey=XboxTypeS_LeftY,bEmulateButtonPress=True,InputKeyToEmulate[0]=Gamepad_LeftStick_Right,InputKeyToEmulate[1]=Gamepad_LeftStick_Left)</Value>
+        <Value type="2">(AxisInputKey=XboxTypeS_LeftY,AdjacentAxisInputKey=XboxTypeS_LeftX,bEmulateButtonPress=True,InputKeyToEmulate[0]=Gamepad_LeftStick_Up,InputKeyToEmulate[1]=Gamepad_LeftStick_Down)</Value>
+        <Value type="2">(AxisInputKey=XboxTypeS_RightX,AdjacentAxisInputKey=XboxTypeS_RightY,bEmulateButtonPress=True,InputKeyToEmulate[0]=Gamepad_RightStick_Right,InputKeyToEmulate[1]=Gamepad_RightStick_Left)</Value>
+        <Value type="2">(AxisInputKey=XboxTypeS_RightY,AdjacentAxisInputKey=XboxTypeS_RightX,bEmulateButtonPress=True,InputKeyToEmulate[0]=Gamepad_RightStick_Down,InputKeyToEmulate[1]=Gamepad_RightStick_Up)</Value>
+      </Property>
+    </Section>
+    <Section name="iniversion">
+      <Property name="0" type="2">3543241527.000000</Property>
+      <Property name="1" type="2">3967581594.000000</Property>
+      <Property name="2" type="2">2264387171.000000</Property>
+      <Property name="3" type="2">3808678901.000000</Property>
+    </Section>
+    <Section name="sfxgame.bioplayerinput">
+      <Property name="busemousedampening" type="2">true</Property>
+      <Property name="crit_level_load" type="2">(Name="Entry Menu",Command="at EntryMenu")</Property>
+      <Property name="debugmenu" type="2">(Name="Level Skip Commands &gt;",Command="showsubmenu LEVELSKIP")</Property>
+      <Property name="dev" type="2">(Name="Eric Combat Test Map",Command="AT ericCombat")</Property>
+      <Property name="guideadzone" type="2">0.4</Property>
+      <Property name="levelskip" type="2">(Name="Garrus Loyalty",Command="ce endGrL")</Property>
+      <Property name="m_fquickordertime" type="2">0.2</Property>
+    </Section>
+    <Section name="sfxgame.sfxconsole">
+      <Property name="benableui" type="2">False</Property>
+      <Property name="historybot" type="2">5</Property>
+      <Property name="historycur" type="2">4</Property>
+      <Property name="historytop" type="2">4</Property>
+      <Property name="mappathsforautocomplete">
+        <Value type="2">Content\Maps</Value>
+        <Value type="2">TestContent\Maps\EricCombat</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeaidebug">
+      <Property name="bindings">
+        <Value type="2">(Name="Up", Command="ZoomCamera" )</Value>
+        <Value type="2">(Name="Down", Command="UnzoomCamera" )</Value>
+        <Value type="2">(Name="Right", Command="NextPawn" )</Value>
+        <Value type="2">(Name="Left", Command="PrevPawn" )</Value>
+        <Value type="2">(Name="SpaceBar", Command="ToggleAIPause" )</Value>
+        <Value type="2">( Name="Zero", Command="ViewConstraint 0" )</Value>
+        <Value type="2">( Name="One", Command="ViewConstraint 1" )</Value>
+        <Value type="2">( Name="Two", Command="ViewConstraint 2" )</Value>
+        <Value type="2">( Name="Three", Command="ViewConstraint 3" )</Value>
+        <Value type="2">( Name="Four", Command="ViewConstraint 4" )</Value>
+        <Value type="2">( Name="Five", Command="ViewConstraint 5" )</Value>
+        <Value type="2">( Name="Six", Command="ViewConstraint 6" )</Value>
+        <Value type="2">( Name="Seven", Command="ViewConstraint 7" )</Value>
+        <Value type="2">( Name="Eight", Command="ViewConstraint 8" )</Value>
+        <Value type="2">( Name="Nine", Command="ViewConstraint 9" )</Value>
+        <Value type="2">( Name="R", Command="ViewCoverEval" )</Value>
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeatlas">
+      <Property name="bindings">
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_Shoot" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_Aim" )</Value>
+        <Value type="2">( Name="SpaceBar",Command="Shared_Action")</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="LeftShift", Command="PC_EnterCommandMenu" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeatlas_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="F", Command="Shared_Melee" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="X", Command="Shared_ExitAtlas" )</Value>
+        <Value type="2">( Name="Q", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="Z", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeatlas_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="F", Command="Shared_Melee" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="X", Command="Shared_ExitAtlas" )</Value>
+        <Value type="2">( Name="A", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="W", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodebase">
+      <Property name="bindings">
+        <Value type="2">( Name="Shared_Shoot", Command="SwapWeaponIfEmpty | FireWeapon | OnRelease StopFiringWeapon" )</Value>
+        <Value type="2">( Name="Shared_Aim", Command="SwapWeaponIfEmpty | TightAim | OnRelease StopTightAim" )</Value>
+        <Value type="2">( Name="Shared_Action", Command="Exclusive TryStandingJump | Exclusive Used | OnRelease StormOff | OnHold 0.2 StormOn | Exclusive PressAction | OnTap 0.3 TapAction | OnHold 0.3 HoldAction")</Value>
+        <Value type="2">( Name="Shared_Holster", Command="TryHolster" )</Value>
+        <Value type="2">( Name="Shared_Melee", Command="OnTap 0.3 TryMelee | LeaveWorld | OnHold 0.3 TryHeavyMelee" )</Value>
+        <Value type="2">( Name="Shared_SquadAttack", Command="SquadCommand_Attack" )</Value>
+        <Value type="2">( Name="Shared_SquadFollow", Command="SquadCommand_Follow" )</Value>
+        <Value type="2">( Name="Shared_SquadMove1", Command="SquadCommand_Move1" )</Value>
+        <Value type="2">( Name="Shared_SquadMove2", Command="SquadCommand_Move2" )</Value>
+        <Value type="2">( Name="Shared_Menu", Command="ShowMenu" )</Value>
+        <Value type="2">( Name="Shared_ConvSelect", Command="SelectResponse" )</Value>
+        <Value type="2">( Name="Shared_ConvSkip", Command="SkipConversation" )</Value>
+        <Value type="2">( Name="Shared_ConvIntRenegade", Command="InterruptRenegade" )</Value>
+        <Value type="2">( Name="Shared_ConvIntParagon", Command="InterruptParagon" )</Value>
+        <Value type="2">( Name="Shared_CineSkip", Command="SkipCinematic" )</Value>
+        <Value type="2">( Name="Shared_MovieSkip", Command="SkipMovie" )</Value>
+        <Value type="2">( Name="Shared_GalaxyScan", Command="StartScanning | OnRelease StopScanning" )</Value>
+        <Value type="2">( Name="Shared_GalaxySystemScan", Command="ScanSystem" )</Value>
+        <Value type="2">( Name="Shared_GalaxyProbe", Command="LaunchProbe" )</Value>
+        <Value type="2">( Name="Shared_PulseRadarDisplay", Command="PulseRadarDisplay 1.0")</Value>
+        <Value type="2">( Name="Shared_PulseObjectiveDisplay", Command="PulseObjectiveDisplay")</Value>
+        <Value type="2">( Name="Shared_GalaxyTabRight", Command="TabRight" )</Value>
+        <Value type="2">( Name="Shared_GalaxyTabLeft", Command="TabLeft" )</Value>
+        <Value type="2">( Name="Shared_POI", Command="ActivatePOI | OnRelease DeactivatePOI" )</Value>
+        <Value type="2">( Name="Shared_ExitAtlas", Command="ExitAtlas" )</Value>
+        <Value type="2">( Name="Shared_ExitMountedGun", Command="ExitVehicle" )</Value>
+        <Value type="2">( Name="Shared_AdvanceSlideshowForward", Command="SlideshowAdvance true")</Value>
+        <Value type="2">( Name="Shared_AdvanceSlideshowBackward", Command="SlideshowAdvance false")</Value>
+        <Value type="2">( Name="Shared_ExitSlideshow", Command="SlideshowExit")</Value>
+        <Value type="2">( Name="Shared_CoverTurn", Command="TryCoverTurn" )</Value>
+        <Value type="2">( Name="Vehicle_Quit", Command="LeaveWorld" )</Value>
+        <Value type="2">( Name="Vehicle_Camera", Command="Toggle bAlternateCamera" )</Value>
+        <Value type="2">( Name="Shared_CastPower0", Command="CastPower 0" )</Value>
+        <Value type="2">( Name="Shared_CastPower1", Command="CastPower 1" )</Value>
+        <Value type="2">( Name="Shared_QuickSave", Command="QuickSave" )</Value>
+        <Value type="2">( Name="Shared_ShowMap", Command="Exclusive ActivatePOI | OnRelease DeactivatePOI | OnTap 0.2 ShowAreaMap | OnHold 0.2 HoldObjectiveDisplay | OnRelease StopObjectiveDisplay ")</Value>
+        <Value type="2">( Name="Shared_HideMap", Command="HideAreaMap" )</Value>
+        <Value type="2">( Name="Shared_MPToggleReady", Command="MPToggleReady" )</Value>
+        <Value type="2">( Name="PC_StrafeLeft", Command="Axis aStrafe Speed=-1.0" )</Value>
+        <Value type="2">( Name="PC_StrafeRight", Command="Axis aStrafe Speed=+1.0" )</Value>
+        <Value type="2">( Name="PC_MoveForward", Command="Axis aBaseY Speed=1.0" )</Value>
+        <Value type="2">( Name="PC_MoveBackward", Command="Axis aBaseY Speed=-1.0" )</Value>
+        <Value type="2">( Name="PC_LookX", Command="Count bXAxis | Axis aMouseX" )</Value>
+        <Value type="2">( Name="PC_LookY", Command="Count bYAxis | Axis aMouseY" )</Value>
+        <Value type="2">( Name="PC_EnterCommandMenu", Command="EnterCommandMenu" )</Value>
+        <Value type="2">( Name="PC_ExitCommandMenu", Command="OnRelease ExitCommandMenu" )</Value>
+        <Value type="2">( Name="PC_CommandToggleCam", Command="EnableCamera | OnRelease DisableCamera" )</Value>
+        <Value type="2">( Name="PC_NextWeapon", Command="NextWeapon" )</Value>
+        <Value type="2">( Name="PC_PrevWeapon", Command="PrevWeapon" )</Value>
+        <Value type="2">( Name="PC_SwapWeapon", Command="TrySwapWeapon" )</Value>
+        <Value type="2">( Name="PC_Reload", Command="SwapWeaponIfEmpty | TryReload" )</Value>
+        <Value type="2">( Name="PC_ConvHilight", Command="HighlightDefaultResponse" )</Value>
+        <Value type="2">( Name="PC_HotKey1", Command="UseAbility 0" )</Value>
+        <Value type="2">( Name="PC_HotKey2", Command="UseAbility 1" )</Value>
+        <Value type="2">( Name="PC_HotKey3", Command="UseAbility 2" )</Value>
+        <Value type="2">( Name="PC_HotKey4", Command="UseAbility 3" )</Value>
+        <Value type="2">( Name="PC_HotKey5", Command="UseAbility 4" )</Value>
+        <Value type="2">( Name="PC_HotKey6", Command="UseAbility 5" )</Value>
+        <Value type="2">( Name="PC_HotKey7", Command="UseAbility 6" )</Value>
+        <Value type="2">( Name="PC_HotKey8", Command="UseAbility 7" )</Value>
+        <Value type="2">( Name="PC_QuickLoad", Command="QuickLoad" )</Value>
+        <Value type="2">( Name="PC_GalaxyMouseStrafe", Command="Axis aMouseX BIOGUI_EVENT_AXIS_MOUSE_X" )</Value>
+        <Value type="2">( Name="PC_GalaxyMouseMovement", Command="Axis aMouseY BIOGUI_EVENT_AXIS_MOUSE_Y" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyStrafeLeft", Command="Axis aGuiStrafe Speed=-1.0 EventID=2" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyStrafeRight", Command="Axis aGuiStrafe Speed=+1.0 EventID=2" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyMoveForward", Command="Axis aGuiBaseY Speed=+1.0 EventID=3" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyMoveBackward", Command="Axis aGuiBaseY Speed=-1 EventID=3" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyRotateLeft", Command="Repeat PlanetLeftRight 0.5" )</Value>
+        <Value type="2">( Name="PC_GalaxyKeyRotateRight", Command="Repeat PlanetLeftRight -0.5" )</Value>
+        <Value type="2">( Name="Walking", Command="EnableWalking | OnRelease DisableWalking" )</Value>
+        <Value type="2">( Name="PC_PushToTalk", Command="VoicePushToTalkStart | OnRelease VoicePushToTalkEnd" )</Value>
+        <Value type="2">( Name="F4", Command="Quit", Alt=true )</Value>
+      </Property>
+      <Property name="radarmapdisplaytime" type="2">1.0</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodecinematic">
+      <Property name="bindings">
+        <Value type="2">( Name="SpaceBar", Command="Shared_CineSkip" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_CineSkip" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodecommand">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="PC_CommandToggleCam" )</Value>
+        <Value type="2">( Name="LeftShift", Command="PC_ExitCommandMenu" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodecommand_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="Z", Command="Shared_SquadAttack" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodecommand_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="W", Command="Shared_SquadAttack" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeconversation">
+      <Property name="bindings">
+        <Value type="2">( Name="LeftMouseButton",Command="Shared_ConvSelect | Shared_ConvIntRenegade")</Value>
+        <Value type="2">( Name="RightMouseButton",Command="PC_ConvHilight | Shared_ConvIntParagon")</Value>
+        <Value type="2">( Name="SpaceBar",Command="Shared_ConvSkip")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedefault">
+      <Property name="bindings">
+        <Value type="2">( Name="LeftControl", Command="Walking" )</Value>
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_Shoot" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_Aim" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="Shared_Action" )</Value>
+        <Value type="2">( Name="MouseScrollUp", Command="PC_PrevWeapon" )</Value>
+        <Value type="2">( Name="MouseScrollDown",	Command="PC_NextWeapon" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="One", Command="PC_HotKey1" )</Value>
+        <Value type="2">( Name="Two", Command="PC_HotKey2" )</Value>
+        <Value type="2">( Name="Three", Command="PC_HotKey3" )</Value>
+        <Value type="2">( Name="Four", Command="PC_HotKey4" )</Value>
+        <Value type="2">( Name="Five", Command="PC_HotKey5" )</Value>
+        <Value type="2">( Name="Six", Command="PC_HotKey6" )</Value>
+        <Value type="2">( Name="Seven", Command="PC_HotKey7" )</Value>
+        <Value type="2">( Name="Eight", Command="PC_HotKey8" )</Value>
+        <Value type="2">( Name="F5", Command="Shared_QuickSave" )</Value>
+        <Value type="2">( Name="F9", Command="PC_QuickLoad" )</Value>
+        <Value type="2">( Name="LeftShift", Command="PC_EnterCommandMenu" )</Value>
+        <Value type="2">( Name="MiddleMouseButton", Command="Shared_CoverTurn" )</Value>
+        <Value type="2">( Name="Tab", Command="PC_PushToTalk" )</Value>
+      </Property>
+      <Property name="inputdelaystormexit" type="2">0.25</Property>
+      <Property name="inputdelaytightaimexit" type="2">0.1</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedefault_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="F", Command="Shared_Melee" )</Value>
+        <Value type="2">( Name="X", Command="PC_SwapWeapon" )</Value>
+        <Value type="2">( Name="Q", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="Z", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedefault_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="F", Command="Shared_Melee" )</Value>
+        <Value type="2">( Name="X", Command="PC_SwapWeapon" )</Value>
+        <Value type="2">( Name="A", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="W", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedreamsequence">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedreamsequence_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedreamsequence_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedying">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="ProlongLife" )</Value>
+        <Value type="2">( Name="Seven", Command="UseRevivePower" )</Value>
+        <Value type="2">( Name="Tab", Command="PC_PushToTalk" )</Value>
+      </Property>
+      <Property name="prolonglifeboost" type="2">0.250</Property>
+      <Property name="prolonglifedecay" type="2">0.003</Property>
+      <Property name="startboosttime" type="2">12.f</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedying_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodedying_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeflycam">
+      <Property name="bindings">
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="ViewNextPlayer true" )</Value>
+        <Value type="2">( Name="MouseScrollUp", Command="ViewNextPlayer true" )</Value>
+        <Value type="2">( Name="MouseScrollDown", Command="ViewPrevPlayer true" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegalaxy">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_GalaxyMouseStrafe" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_GalaxyMouseMovement" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_GalaxySystemScan" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegalaxy_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_GalaxyKeyStrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_GalaxyKeyStrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_GalaxyKeyMoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_GalaxyKeyMoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegalaxy_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_GalaxyKeyStrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_GalaxyKeyStrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_GalaxyKeyMoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_GalaxyKeyMoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegui">
+      <Property name="bindings">
+        <Value type="2">( Name="Left", Command="Shared_AdvanceSlideshowBackward" )</Value>
+        <Value type="2">( Name="Right", Command="Shared_AdvanceSlideshowForward" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_ExitSlideshow" )</Value>
+        <Value type="2">( Name="Tab", Command="PC_PushToTalk" )</Value>
+        <Value type="2">( Name="Spacebar", Command="Shared_MPToggleReady" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegui_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="V", Command="Shared_HideMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_HideMap" )</Value>
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegui_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="V", Command="Shared_HideMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_HideMap" )</Value>
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeillusivemanconflict">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_LookX | Repeat UpdateInput" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_Shoot" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeinjuredshepard">
+      <Property name="bindings">
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_Shoot" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_Aim" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="Shared_Action" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="F5", Command="Shared_QuickSave" )</Value>
+        <Value type="2">( Name="F9", Command="PC_QuickLoad" )</Value>
+      </Property>
+      <Property name="inputdelaytightaimexit" type="2">0.1</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeinjuredshepard_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeinjuredshepard_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodelobby">
+      <Property name="bindings">
+        <Value type="2">( Name="Tab", Command="PC_PushToTalk" )</Value>
+        <Value type="2">( Name="Spacebar", Command="Shared_MPToggleReady" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodelobby_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodelobby_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodemovie">
+      <Property name="bindings">
+        <Value type="2">( Name="SpaceBar", Command="Shared_MovieSkip" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_MovieSkip" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodemultiland">
+      <Property name="inputattenuation" type="2">0.05</Property>
+      <Property name="reticledegreespersecond" type="2">90.0</Property>
+      <Property name="reticlerotbottomrightclamp" type="2">(Pitch=-9100, Yaw=50500)</Property>
+      <Property name="reticlerotstart" type="2">(Pitch=639,Yaw=59569)</Property>
+      <Property name="reticlerottopleftclamp" type="2">(Pitch=9100, Yaw=68000)</Property>
+      <Property name="selectdistance" type="2">20.0</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeorbital">
+      <Property name="bindings">
+        <Value type="2">( Name="MouseX", Command="PC_GalaxyMouseStrafe" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_GalaxyMouseMovement" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_GalaxyScan" )</Value>
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_GalaxyProbe" )</Value>
+      </Property>
+      <Property name="inputattenuation" type="2">0.05</Property>
+      <Property name="planetrotationdegreespersecond" type="2">50.0</Property>
+      <Property name="reticledegreespersecond" type="2">90.0</Property>
+      <Property name="reticlerotbottomrightclamp" type="2">(Pitch=-9100, Yaw=53500)</Property>
+      <Property name="reticlerotstart" type="2">(Pitch=639,Yaw=59569)</Property>
+      <Property name="reticlerottopleftclamp" type="2">(Pitch=9100, Yaw=65000)</Property>
+      <Property name="rumblescale" type="2">0.75</Property>
+      <Property name="scanningplanetrotationdegreespersecond" type="2">25.0</Property>
+      <Property name="scanningreticledegreespersecond" type="2">35.0</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeorbital_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_GalaxyKeyRotateLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_GalaxyKeyRotateRight" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeorbital_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_GalaxyKeyRotateLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_GalaxyKeyRotateRight" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodereplicationdebug">
+      <Property name="bindings">
+        <Value type="2">( Name="Right", Command="NextPawn" )</Value>
+        <Value type="2">( Name="Left", Command="PrevPawn" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodespectator">
+      <Property name="bindings">
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="ViewNextPlayer true" )</Value>
+        <Value type="2">( Name="MouseScrollUp", Command="ViewNextPlayer true" )</Value>
+        <Value type="2">( Name="MouseScrollDown", Command="ViewPrevPlayer true" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Tab", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodespectator_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodespectator_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="T", Command="PC_Talk" )</Value>
+        <Value type="2">( Name="B", Command="PC_PushToTalk" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodevehicle">
+      <Property name="bindings">
+        <Value type="2">( Name="LeftMouseButton", Command="Shared_Shoot" )</Value>
+        <Value type="2">( Name="RightMouseButton", Command="Shared_Aim" )</Value>
+        <Value type="2">( Name="MouseX", Command="PC_LookX" )</Value>
+        <Value type="2">( Name="MouseY", Command="PC_LookY" )</Value>
+        <Value type="2">( Name="Escape", Command="Shared_Menu" )</Value>
+        <Value type="2">( Name="SpaceBar",Command="Shared_Action")</Value>
+        <Value type="2">( Name="LeftShift", Command="PC_EnterCommandMenu" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodevehicle_00000409">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="A", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="W", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="X", Command="Shared_ExitMountedGun" )</Value>
+        <Value type="2">( Name="Q", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="Z", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodevehicle_0000040c">
+      <Property name="localizedbindings">
+        <Value type="2">( Name="Q", Command="PC_StrafeLeft" )</Value>
+        <Value type="2">( Name="D", Command="PC_StrafeRight" )</Value>
+        <Value type="2">( Name="Z", Command="PC_MoveForward" )</Value>
+        <Value type="2">( Name="S", Command="PC_MoveBackward" )</Value>
+        <Value type="2">( Name="R", Command="PC_Reload" )</Value>
+        <Value type="2">( Name="X", Command="Shared_ExitMountedGun" )</Value>
+        <Value type="2">( Name="A", Command="Shared_SquadMove1" )</Value>
+        <Value type="2">( Name="E", Command="Shared_SquadMove2" )</Value>
+        <Value type="2">( Name="C", Command="Shared_SquadFollow" )</Value>
+        <Value type="2">( Name="W", Command="Shared_SquadAttack" )</Value>
+        <Value type="2">( Name="V", Command="Shared_ShowMap" )</Value>
+        <Value type="2">( Name="M", Command="Shared_ShowMap" )</Value>
+      </Property>
+    </Section>
+    <Section name="unrealed.editorviewportinput">
+      <Property name="bindings">
+        <Value type="2">(Command="MODE WIDGETMODECYCLE",Name=SpaceBar)</Value>
+        <Value type="2">(Command="MODE WIDGETCOORDSYSTEMCYCLE",Name=Tilde)</Value>
+        <Value type="2">(Command="DELETE",Name=Delete)</Value>
+        <Value type="2">(Command="SELECT BUILDERBRUSH",Name=F2)</Value>
+        <Value type="2">(Command="EDCALLBACK SELECTEDPROPS",Name=F4)</Value>
+        <Value type="2">(Command="QUIT_EDITOR",Name=F4,Alt=True)</Value>
+        <Value type="2">(Command="EDCALLBACK SURFPROPS",Name=F5)</Value>
+        <Value type="2">(Command="EDCALLBACK LEVELPROPS",Name=F6)</Value>
+        <Value type="2">(Command="ACTOR SELECT ALL",Name=A,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MATCHING BRUSH",Name=B,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ADJACENT COPLANARS",Name=C,Shift=True)</Value>
+        <Value type="2">(Command="DUPLICATE",Name=D,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR SELECT MATCHINGSTATICMESH",Name=E,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ADJACENT FLOORS",Name=F,Shift=True)</Value>
+        <Value type="2">(Command="EDCALLBACK FITTEXTURETOSURFACE",Name=F,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MATCHING GROUPS",Name=G,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MATCHING ITEMS",Name=I,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ADJACENT ALL",Name=J,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MEMORY SET",Name=M,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR LEVELCURRENT",Name=M)</Value>
+        <Value type="2">(Command="ACTOR MOVETOCURRENT",Name=M,Control=True)</Value>
+        <Value type="2">(Command="SELECT NONE",Name=N,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MEMORY INTERSECT",Name=O,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT REVERSE",Name=Q,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MEMORY RECALL",Name=R,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ALL",Name=S,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MATCHING TEXTURE",Name=T,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MEMORY UNION",Name=U,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ADJACENT WALLS",Name=W,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT MEMORY XOR",Name=X,Shift=True)</Value>
+        <Value type="2">(Command="POLY SELECT ADJACENT SLANTS",Name=Y,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR SELECT MATCHINGSTATICMESH ALLCLASSES",Name=Z,Shift=True)</Value>
+        <Value type="2">(Command="EDIT COPY",Name=C,Control=True)</Value>
+        <Value type="2">(Command="EDIT PASTE",Name=V,Control=True)</Value>
+        <Value type="2">(Command="DUPLICATE",Name=W,Control=True)</Value>
+        <Value type="2">(Command="EDIT CUT",Name=X,Control=True)</Value>
+        <Value type="2">(Command="TRANSACTION REDO",Name=Y,Control=True)</Value>
+        <Value type="2">(Command="TRANSACTION UNDO",Name=Z,Control=True)</Value>
+        <Value type="2">(Command="BRUSH ADD",Name=A,Control=True)</Value>
+        <Value type="2">(Command="BRUSH SUBTRACT",Name=S,Control=True)</Value>
+        <Value type="2">(Command="BRUSH FROM INTERSECTION",Name=I,Control=True)</Value>
+        <Value type="2">(Command="BRUSH FROM DEINTERSECTION",Name=D,Control=True)</Value>
+        <Value type="2">(Command="PREFAB SELECTACTORSINPREFABS",Name=P,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR ALIGN SNAPTOFLOOR ALIGN=0",Name=End)</Value>
+        <Value type="2">(Command="ACTOR ALIGN MOVETOGRID",Name=End,Control=True)</Value>
+        <Value type="2">(Command="CAMERA ALIGN",Name=Home)</Value>
+        <Value type="2">(Command="CAMERA ALIGN ACTIVEVIEWPORTONLY",Name=Home,Shift=True)</Value>
+        <Value type="2">(Command="MAP BRUSH GET",Name=P,Control=True)</Value>
+        <Value type="2">(Command="ACTOR FIND KISMET",Name=K,Control=True)</Value>
+        <Value type="2">(Command="ACTOR SELECT ALL FROMOBJ",Name=A,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR SYNCBROWSER",Name=B,Control=True)</Value>
+        <Value type="2">(Command="ACTOR DESELECT",Name=Escape)</Value>
+        <Value type="2">(Command="CTRLTAB SHIFTDOWN=FALSE",Name=Tab,Control=True)</Value>
+        <Value type="2">(Command="CTRLTAB SHIFTDOWN=TRUE",Name=Tab,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR LINKSELECTED",Name=L,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR UNLINKSELECTED",Name=U,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="BUILDLIGHTING",Name=Semicolon,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="ACTOR ATTACH",Name=B,Alt=True)</Value>
+      </Property>
+    </Section>
+    <Section name="unrealed.objecteditorviewportinput">
+      <Property name="bindings">
+        <Value type="2">(Command="TRANSACTION REDO",Name=Y,Control=True)</Value>
+        <Value type="2">(Command="TRANSACTION REDO",Name=Z,Control=True,Shift=True)</Value>
+        <Value type="2">(Command="TRANSACTION UNDO",Name=Z,Control=True)</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

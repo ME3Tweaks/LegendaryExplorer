@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxguidata_store_intel_advancedbioticamps">
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_INTELREWARD,
+					ItemClassName="Intel_AdvancedBioticAmps_PowerDamage",
+					PlotPurchaseID[0]=22422,
+					ChoiceEntry=(srChoiceName=650689, srChoiceDescription=683399, srActionText=325667, eDisplayType=EChoiceDisplayType_None),
+					bIsGameEffect=true,
+					CustomTokens[0]=724745,
+					LargeImage="GUI_Codex_Images.EnergyDrain_512",
+					SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_INTELREWARD,
+					ItemClassName="Intel_AdvancedBioticAmps_PowerCooldown",
+					PlotPurchaseID[0]=22422,
+					ChoiceEntry=(srChoiceName=650687, srChoiceDescription=718121, srActionText=325667, eDisplayType=EChoiceDisplayType_None),
+					bIsGameEffect=true,
+					CustomTokens[0]=724746,
+					LargeImage="GUI_Codex_Images.EnergyDrain_512",
+					SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_blackwidow">
+			<Property name="damage" type="0">(X=739.0,Y=923.8)</Property>
+			<Property name="encumbranceweight" type="0">(X=2.3f,Y=2.0f)</Property>
+			<Property name="statbardamage" type="0">(X=739.0,Y=923.8)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_incisor">
+			<Property name="damage" type="0">(X=93.3,Y=116.6)</Property>
+			<Property name="statbardamage" type="0">(X=93.3,Y=116.6)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_indra">
+			<Property name="damage" type="0">(X=72.6,Y=92.2)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.f,Y=0.7f)</Property>
+			<Property name="statbardamage" type="0">(X=72.6,Y=92.2)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_javelin">
+			<Property name="damage" type="0">(X=1236.6,Y=1545.8)</Property>
+			<Property name="encumbranceweight" type="0">(X=2.7f,Y=2.4f)</Property>
+			<Property name="maxspareammo" type="0">(X=5,Y=15)</Property>
+			<Property name="statbardamage" type="0">(X=1236.6,Y=1545.8)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_mantis">
+			<Property name="damage" type="0">(X=738.7,Y=886.4)</Property>
+			<Property name="statbardamage" type="0">(X=738.7,Y=886.4)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_raptor">
+			<Property name="damage" type="0">(X=86.0,Y=107.5)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.f,Y=0.7f)</Property>
+			<Property name="statbardamage" type="0">(X=86.0,Y=107.5)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_valiant">
+			<Property name="damage" type="0">(X=396.2,Y=515.5)</Property>
+			<Property name="maxspareammo" type="0">(X=30,Y=40)</Property>
+			<Property name="statbardamage" type="0">(X=396.2.4,Y=515.5)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_viper">
+			<Property name="damage" type="0">(X=292.1,Y=365.2)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.25f,Y=0.7f)</Property>
+			<Property name="statbardamage" type="0">(X=292.1,Y=365.2)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_sniperrifle_widow">
+			<Property name="damage" type="0">(X=997.0,Y=1246.3)</Property>
+			<Property name="statbardamage" type="0">(X=997.0,Y=1246.3)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

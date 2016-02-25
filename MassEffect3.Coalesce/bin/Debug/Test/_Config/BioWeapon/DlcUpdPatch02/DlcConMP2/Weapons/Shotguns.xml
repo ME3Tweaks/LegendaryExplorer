@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxweapon_shotgun_quarian">
+			<Property name="encumbranceweight" type="0">(X=1.75f,Y=1.25f)</Property>
+			<Property name="statbarrateoffire" type="0">(X=1000,Y=1000)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

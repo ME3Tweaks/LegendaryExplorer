@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultUI.ini</Property>
+    </Section>
+    <Section name="sfxgame.biosfhandler_newcharacter">
+      <Property name="bonustalents">
+        <Value type="3">(BonusPowerID=131072,PowerClassName="sfxgamecontentdlc_exp_pack002.SFXPowerCustomAction_BioticFlare",srChoiceName=735917,srChoiceTitle=735917,srChoiceDescription=735918,oChoiceImage=none)</Value>
+        <Value type="3">(BonusPowerID=262144,PowerClassName="sfxgamecontentdlc_exp_pack002.SFXPowerCustomAction_AriaLash",srChoiceName=765772,srChoiceTitle=765772,srChoiceDescription=765773,oChoiceImage=none)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgawassetshandler">
+      <Property name="allassets">
+        <Value type="3">(ID=700,AssetName="GAWAsset_OmegaEezoHoard",Type=GAWAssetType_Military,StartingStrength=300,GUIName=782525,GUIDescription=782526,GUICategoryID=0,bShowNotificationOnAward=true,ImagePath="GUI_OMG_Codex.galaxyAtWar.GM_Eezo_Hoard_512x256",NotificationImagePath="GUI_OMG_Codex.galaxyAtWar.GM_Eezo_Hoard_256x128")</Value>
+        <Value type="3">(ID=701,AssetName="GAWAsset_OmegaRaidingFleet",Type=GAWAssetType_Military,StartingStrength=75,GUIName=782527,GUIDescription=782528,GUICategoryID=0,bShowNotificationOnAward=true,ImagePath="GUI_OMG_Codex.galaxyAtWar.GM_Raiding_Fleet_512x256",NotificationImagePath="GUI_OMG_Codex.galaxyAtWar.GM_Raiding_Fleet_256x128")</Value>
+        <Value type="3">(ID=702,AssetName="GAWAsset_GeneralOlegPetrovsky",Type=GAWAssetType_Military,StartingStrength=30,GUIName=782529,GUIDescription=782531,GUICategoryID=0,bShowNotificationOnAward=true,ImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_512x256",NotificationImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_256x128")</Value>
+        <Value type="3">(ID=704,AssetName="GAWAsset_GeneralOlegPetrovskyDead",Type=GAWAssetType_Modifier,StartingStrength=0,GUIName=782529,GUIDescription=782530,ModTargets[0]=(TargetID=3,Value=30),GUICategoryID=0,bShowNotificationOnAward=true,ImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_512x256",NotificationImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_256x128")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxguiinteraction">
+      <Property name="movielibrary" type="3">(Tag=DLC_Docks,		ZOrder=300,	MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks",		GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Property>
+    </Section>
+    <Section name="sfxgame.sfxsfhandler_save">
+      <Property name="areadata">
+        <Value type="4">( AreaName="BioP_OmgHub", AreaStrref=315300)</Value>
+        <Value type="2">( AreaName="Biop_Omg000", AreaStrref=180769, ImageName="BIOG_GUI_SAVE_GAME_ICONS.Textures.OmgMission01")</Value>
+        <Value type="2">( AreaName="Biop_Omg001", AreaStrref=776143, ImageName="BIOG_GUI_SAVE_GAME_ICONS.Textures.OmgMission01")</Value>
+        <Value type="2">( AreaName="Biop_Omg02a", AreaStrref=776145, ImageName="BIOG_GUI_SAVE_GAME_ICONS.Textures.OmgMission02")</Value>
+        <Value type="2">( AreaName="Biop_Omg003", AreaStrref=776146, ImageName="BIOG_GUI_SAVE_GAME_ICONS.Textures.OmgMission03")</Value>
+        <Value type="2">( AreaName="Biop_Omg004", AreaStrref=776147, ImageName="BIOG_GUI_SAVE_GAME_ICONS.Textures.OmgMission04")</Value>
+        <Value type="2">( AreaName="Biop_OmgHub", AreaStrref=776144, ImageName="BIOG_GUI_SAVE_GAME_ICONS.OmgMissionHub")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweaponuidatamanager">
+      <Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_SharedSF, Resource="SFXGUI_WeaponUIDataDLC_Shared.Data")</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_bonuspowers">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_POWER,PlotUnlockConditionalID=3389,BaseCost=3000,ItemClassName="sfxgamecontentdlc_exp_pack002.SFXPowerCustomAction_BioticFlare",ChoiceEntry=(srChoiceName=735917,srChoiceDescription=735918),Priority=19,BaseCost=5000,LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_POWER,PlotUnlockConditionalID=3388,BaseCost=3000,ItemClassName="sfxgamecontentdlc_exp_pack002.SFXPowerCustomAction_AriaLash",ChoiceEntry=(srChoiceName=765772,srChoiceDescription=765773),Priority=20,BaseCost=5000,LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_normandy">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_asari",PlotUnlockConditionalID=1665,ChoiceEntry=(srChoiceName=652502,srChoiceDescription=724937),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_batarian",PlotUnlockConditionalID=1666,ChoiceEntry=(srChoiceName=652503,srChoiceDescription=724936),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_hanar",PlotUnlockConditionalID=1667,ChoiceEntry=(srChoiceName=652504,srChoiceDescription=724940),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="SFXGameContent.SFXGUIData_Store_Hospital",PlotUnlockConditionalID=1671,ChoiceEntry=(srChoiceName=661727,srChoiceDescription=724944),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_human",PlotUnlockConditionalID=1673,ChoiceEntry=(srChoiceName=652505,srChoiceDescription=724942),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_salarian",PlotUnlockConditionalID=1668,ChoiceEntry=(srChoiceName=652506,srChoiceDescription=724938),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_spectre",PlotUnlockConditionalID=1672,ChoiceEntry=(srChoiceName=693421,srChoiceDescription=724943),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_turian",PlotUnlockConditionalID=1669,ChoiceEntry=(srChoiceName=652507,srChoiceDescription=724939),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+        <Value type="3">(ItemType=TYPE_NESTEDCATEGORY,ItemClassName="sfxgamecontent.sfxguidata_store_volus",PlotUnlockConditionalID=1670,ChoiceEntry=(srChoiceName=652508,srChoiceDescription=724941),LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_talentreset">
+      <Property name="storeitemarray">
+        <Value type="1">null</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,ItemClassName="Shepard",ChoiceEntry=(srChoicename=682731,srChoiceDescription=682731),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=18,ItemClassName="hench_kaidan",ChoiceEntry=(srChoicename=682732,srChoiceDescription=682732),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=19,ItemClassName="hench_ashley",ChoiceEntry=(srChoicename=682733,srChoiceDescription=682733),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=185,ItemClassName="hench_tali",ChoiceEntry=(srChoicename=682738,srChoiceDescription=682738),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=21,ItemClassName="hench_edi",ChoiceEntry=(srChoicename=682734,srChoiceDescription=682734),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=20,ItemClassName="hench_garrus",ChoiceEntry=(srChoicename=682735,srChoiceDescription=682735),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=17,ItemClassName="hench_liara",ChoiceEntry=(srChoicename=682736,srChoiceDescription=682736),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+        <Value type="3">(ItemType=TYPE_TALENTRESET,PlotUnlockConditionalID=33,ItemClassName="hench_marine",ChoiceEntry=(srChoicename=682737,srChoiceDescription=682737),LargeImage="gui_codex_images.Store.STO_Respec_512x256",SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_mail_normandy">
+      <Property name="maillist">
+        <Value type="3">(MailTitle=746058, MailBody=746052, MailStatePlot=10781, SendConditional=2915, SmallImage="")</Value>
+        <Value type="3">(MailTitle=746060, MailBody=746053, MailStatePlot=10782, SendConditional=2916, SmallImage="")</Value>
+        <Value type="3">(MailTitle=782861, MailBody=782863, MailStatePlot=10870, SendConditional=3424, SmallImage="")</Value>
+        <Value type="3">(MailTitle=782861, MailBody=782864, MailStatePlot=10869, SendConditional=3425, SmallImage="")</Value>
+        <Value type="3">(MailTitle=782862, MailBody=782866, MailStatePlot=10868, SendConditional=3426, SmallImage="")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_asari">
+      <Property name="m_srtitle" type="0">652502</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_batarian">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen",BaseCost=4000,PlotUnlockConditionalID=3370,PlotPurchaseID[0]=23799)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage",BaseCost=4000,PlotUnlockConditionalID=3372,PlotPurchaseID[0]=23801)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen",BaseCost=4000,PlotUnlockConditionalID=3376,PlotPurchaseID[0]=23805)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope",BaseCost=4000,PlotUnlockConditionalID=3374,PlotPurchaseID[0]=23803)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee",BaseCost=4000,PlotUnlockConditionalID=3378,PlotPurchaseID[0]=23807)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_hanar">
+      <Property name="m_srtitle" type="0">652504</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_human">
+      <Property name="m_srtitle" type="0">652505</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_salarian">
+      <Property name="m_srtitle" type="0">652506</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_spectre">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_WEAPON,ItemClassName="SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie",BaseCost=7000,PlotUnlockConditionalID=3380,PlotPurchaseID[0]=23809)</Value>
+        <Value type="3">(ItemType=TYPE_WEAPON,ItemClassName="SFXGameContent.SFXWeapon_AssaultRifle_Reckoning",BaseCost=7000,PlotUnlockConditionalID=3381,PlotPurchaseID[0]=23811)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_turian">
+      <Property name="m_srtitle" type="0">652507</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_volus">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen",BaseCost=6000,PlotUnlockConditionalID=3371,PlotPurchaseID[0]=23800)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage",BaseCost=6000,PlotUnlockConditionalID=3373,PlotPurchaseID[0]=23802)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope",BaseCost=6000,PlotUnlockConditionalID=3375,PlotPurchaseID[0]=23804)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen",BaseCost=6000,PlotUnlockConditionalID=3377,PlotPurchaseID[0]=23806)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee",BaseCost=6000,PlotUnlockConditionalID=3379,PlotPurchaseID[0]=23808)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack002.sfxguidata_store_omega">
+      <Property name="defaultimage" type="0">gui_codex_images.Store.STO_Store_512x256</Property>
+      <Property name="discountpercent" type="0">0.1f</Property>
+      <Property name="discountunlockid" type="0">0</Property>
+      <Property name="discoveryid" type="0">0</Property>
+      <Property name="m_sratext" type="0">567685</Property>
+      <Property name="m_srbtext" type="0">567686</Property>
+      <Property name="m_srsubtitle" type="0">0</Property>
+      <Property name="m_srtitle" type="0">735263</Property>
+      <Property name="sroutofstock" type="0">569508</Property>
+      <Property name="srstoredescription" type="0">0</Property>
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_WEAPON,ItemClassName="SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie",BaseCost=7000,PlotUnlockConditionalID=3257,PlotPurchaseID[0]=23809)</Value>
+        <Value type="3">(ItemType=TYPE_WEAPON,ItemClassName="SFXGameContent.SFXWeapon_AssaultRifle_Reckoning",BaseCost=7000,PlotUnlockConditionalID=3259,PlotPurchaseID[0]=23811)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen",BaseCost=4000,PlotUnlockConditionalID=3247,PlotPurchaseID[0]=23799)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage",BaseCost=4000,PlotUnlockConditionalID=3249,PlotPurchaseID[0]=23801)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope",BaseCost=4000,PlotUnlockConditionalID=3251,PlotPurchaseID[0]=23803)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen",BaseCost=4000,PlotUnlockConditionalID=3253,PlotPurchaseID[0]=23805)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee",BaseCost=4000,PlotUnlockConditionalID=3255,PlotPurchaseID[0]=23807)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen",BaseCost=6000,PlotUnlockConditionalID=3248,PlotPurchaseID[0]=23800)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage",BaseCost=6000,PlotUnlockConditionalID=3250,PlotPurchaseID[0]=23802)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope",BaseCost=6000,PlotUnlockConditionalID=3252,PlotPurchaseID[0]=23804)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen",BaseCost=6000,PlotUnlockConditionalID=3254,PlotPurchaseID[0]=23806)</Value>
+        <Value type="3">(ItemType=TYPE_MOD,ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee",BaseCost=6000,PlotUnlockConditionalID=3256,PlotPurchaseID[0]=23808)</Value>
+      </Property>
+      <Property name="storename" type="0">Omega</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgui_dlc_docks">
+      <Property name="biscancelallowed" type="0">false</Property>
+      <Property name="dockbuttons">
+        <Value type="4">(ButtonID="MainDock", srLabel=746026, VisibilityConditional=13)</Value>
+        <Value type="3">(ButtonID="MainDock", srLabel=746026, srButtonLabel=174644, VisibilityConditional=13)</Value>
+        <Value type="3">(ButtonID="Biop_OMGMaster", srLabel=738938, srButtonLabel=174644, VisibilityConditional=3078)</Value>
+      </Property>
+      <Property name="srcancel" type="0">181674</Property>
+      <Property name="srselect" type="0">136217</Property>
+      <Property name="srtitle" type="0">135823</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

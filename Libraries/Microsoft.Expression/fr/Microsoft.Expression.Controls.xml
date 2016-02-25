@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Controls</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Initialize">
+            <summary>
+            Appelé avant de parcourir les polylignes en boucle.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ComputeAutoCapacity">
+            <summary>
+            Calcule la valeur utilisée lorsque LayoutPath.Capacity a la valeur Auto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ShouldBreak(System.Int32)">
+            <summary>
+            Vérifie s'il faut ou non continuer à parcourir les polylignes en boucle.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineBegin(Microsoft.Expression.Drawing.Core.PolylineData)">
+            <summary>
+            Appelé avant de pacourir une nouvelle polyligne.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineCompleted(System.Double)">
+            <summary>
+            Appelé lorsqu'une polyligne est terminée.
+            </summary>
+            <param name="remaingLength">Longueur d'arc restante dans la polyligne.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnStepCompleted(System.Double)">
+            <summary>
+            Appelé lorsqu'une étape est correctement terminée.
+            </summary>
+            <param name="actualStepDistance">Distance réelle de l'étape. Celle-ci peut être différente de Step en cas de passage à une autre polyligne.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Distribute(Microsoft.Expression.Controls.PathPanel,System.Int32,System.Int32)">
+            <summary>
+            Distribue les enfants d'un panneau de tracé le long d'un chemin de mise en page donné.
+            </summary>
+            <param name="pathPanel">Panneau de tracé.</param>
+            <param name="pathIndex">Index du tracé dans pathPanel.LayoutPaths.</param>
+            <param name="childIndex">Index du premier enfant à fixer sur ce chemin d'accès.</param>
+            <returns>Index du prochain enfant à distribuer. Si childIndex est renvoyé, cette fonction n'a rien fait.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.ChildIndex">
+            <summary>
+            Index du prochain enfant à organiser.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Span">
+            <summary>
+            Distance en longueur d'arc utilisée pour la disposition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Step">
+            <summary>
+            Distance en longueur d'arc à parcourir le long de la polyligne en cours.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Capacity">
+            <summary>
+            Nombre total d'éléments à organiser sur le LayoutPath.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.EvenDistributionStrategy">
+            <summary>
+            Distribue les enfants d'un panneau de tracé le long d'un chemin de mise en page. Une répartition égale signifie que la longueur d'arc entre les centres de tous les éléments du tracé est égale.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.ChangedPathLayoutProperties">
+            <summary>
+            Spécifie quelles propriétés du chemin de mise en page ont changé.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs">
+            <summary>
+            Fournit des données pour l'événement <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.#ctor(Microsoft.Expression.Controls.ChangedPathLayoutProperties)">
+            <summary>
+            Initialise une nouvelle instance de la classe <see cref="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs"/>.
+            </summary>
+            <param name="changedProperties">Données pour l'événement.</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.ChangedProperties">
+            <summary>
+            Obtient les propriétés ayant été modifiées dans un événement <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutData">
+            <summary>
+            Encapsule les données nécessaires pour mettre à jour un <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LayoutPathIndex">
+            <summary>
+            Obtient ou définit l'index du tracé sur lequel un élément est organisé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalIndex">
+            <summary>
+            Obtient ou définit l'index d'un élément dans une collection d'éléments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalIndex">
+            <summary>
+            Obtient ou définit l'index d'un élément sur un tracé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalOffset">
+            <summary>
+            Obtient ou définit le décalage d'un élément proportionnellement à la longueur totale d'une collection de tracés.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalOffset">
+            <summary>
+            Obtient ou définit le décalage d'un élément proportionnellement à la longueur d'un tracé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.NormalAngle">
+            <summary>
+            Obtient ou définit l'angle perpendiculaire au tracé au niveau de l'emplacement d'un élément.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.OrientationAngle">
+            <summary>
+            Obtient ou définit l'angle perpendiculaire au tracé au niveau de l'emplacement d'un élément si celui-ci est orienté vers le tracé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.IsArranged">
+            <summary>
+            Obtient ou définit une valeur indiquant si un élément est organisé sur un tracé.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IPathLayoutItem">
+            <summary>
+            Représente un élément qui est organisé par un <see cref="T:Microsoft.Expression.Controls.PathPanel"/>.
+            </summary>
+            <remarks>
+            L'implémentation de cette interface permet à <see cref="T:Microsoft.Expression.Controls.PathPanel"/> de définir ces propriétés lorsque l'élément est organisé. Cette interface n'est pas destinée à une implémentation générale.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+            Met à jour les propriétés <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> basées sur les <see cref="T:Microsoft.Expression.Controls.PathLayoutData"/> et déclenche l'événement <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>.
+            </summary>
+            <param name="data">Données nécessaires pour mettre à jour le <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/>.</param>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated">
+            <summary>
+            Se produit lorsqu'une ou plusieurs des propriétés <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> sont modifiées.
+            </summary>
+            <remarks>
+            Cet événement est déclenché chaque fois que la position de l'élément le long du tracé est mise à jour. Cela peut être dû à des modifications apportées aux propriétés sur le <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> ou à des modifications apportées à <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/>.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex">
+            <summary>
+            Obtient l'index du tracé sur lequel l'élément est organisé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex">
+            <summary>
+            Obtient l'index de l'élément dans une collection d'éléments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex">
+            <summary>
+            Obtient l'index de l'élément sur lequel le tracé est organisé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset">
+            <summary>
+            Obtient le décalage de l'élément proportionnellement à la longueur totale d'une collection de tracés.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset">
+            <summary>
+            Obtient le décalage de l'élément proportionnel à la longueur du tracé sur lequel il est organisé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle">
+            <summary>
+            Obtient l'angle perpendiculaire au tracé au niveau de l'emplacement de l'élément.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle">
+            <summary>
+            Obtient l'angle perpendiculaire au tracé au niveau de l'emplacement de l'élément si celui-ci est orienté vers le tracé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged">
+            <summary>
+            Obtient ou définit une valeur indiquant si l'élément est organisé sur un tracé.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IsArrangedToScaleConverter">
+            <summary>
+            Convertit un <see cref="T:System.Boolean"/> qui indique si un élément est organisé en valeur <see cref="T:System.Double"/> utilisée pour mettre à l'échelle l'élément.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Lève une exception <see cref="T:System.NotImplementedException"/> dans tous les cas.
+            </summary>
+            <param name="value">Données cibles passées à la source.</param>
+            <param name="targetType"><see cref="T:System.Type"/> des données attendues par l'objet source.</param>
+            <param name="parameter">Paramètre facultatif à utiliser dans la logique du convertisseur.</param>
+            <param name="culture">Culture de la conversion.</param>
+            <returns>Valeur à passer à l'objet source.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Convertit le <see cref="T:System.Boolean"/> spécifié en <see cref="T:System.Double"/>. 
+            </summary>		
+            <param name="value">Données sources passées à la cible.</param>
+            <param name="targetType"><see cref="T:System.Type"/> des données attendues par la propriété de dépendance cible.</param>
+            <param name="parameter">Paramètre facultatif à utiliser dans la logique du convertisseur.</param>
+            <param name="culture">Culture de la conversion.</param>
+            <returns>Si <see cref="T:System.Boolean"/> a la valeur True, 1 est renvoyé. Sinon, 0 est renvoyé.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Distribution">
+            <summary>
+            Spécifie la distribution d'un <see cref="T:Microsoft.Expression.Controls.LayoutPath"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Orientation">
+            <summary>
+            Spécifie l'orientation des éléments sur un <see cref="T:Microsoft.Expression.Controls.LayoutPath"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.FillBehavior">
+            <summary>
+            Spécifie la méthode de modification de la <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> sur un tracé ouvert.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LayoutPath">
+            <summary>
+            Décrit un tracé le long duquel les éléments sont organisés.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Controls.LayoutPath.transformedPolylines">
+            <summary>
+            Il est préférable de mettre en cache les courbes de Bézier avant d'aplatir, car la transformation affecte l'aplatissement. Cela demande de mettre en cache des courbes que nous ne prenons pas encore très bien en charge.  Il est donc préférable de mettre en cache les points aplatis dans une stratégie de distribution et de les transformer sur demande.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.SourceElement">
+            <summary>
+            Obtient ou définit l'élément qui définit le tracé.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Distribution">
+            <summary>
+            Obtient ou définit une valeur indiquant si les éléments sont présentés uniformément ou avec un remplissage fixe.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Capacity">
+            <summary>
+            Obtient ou définit le nombre maximal d'éléments affichés sur le <see cref="T:Microsoft.Expression.Controls.LayoutPath"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Padding">
+            <summary>
+            Obtient ou définit la distance en pixels le long de la longueur d'arc de <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> entre deux éléments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Orientation">
+            <summary>
+            Obtient ou définit l'orientation des éléments.
+            </summary>
+            <remarks>
+            Cette propriété est prise en charge sur <see cref="T:Microsoft.Expression.Controls.PathListBox"/>, mais pas sur <see cref="T:Microsoft.Expression.Controls.PathPanel"/>.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Start">
+            <summary>
+            Obtient ou définit la distance entre début du <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> et l'emplacement du premier élément.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Span">
+            <summary>
+            Obtient ou définit le pourcentage du <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> qui participe à disposition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.FillBehavior">
+            <summary>
+            Obtient ou définit la méthode permettant de modifier la <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> sur un tracé ouvert.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.ActualCapacity">
+            <summary>
+            Obtient le calcul de la Capacity.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.IsValid">
+            <summary>
+            Obtient si le <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> est valide ou non dans le contexte. Un <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> n'est pas valide s'il s'agit d'un descendant du <see cref="T:Microsoft.Expression.Controls.PathPanel"/> dans lequel il est utilisé.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PaddedDistributionStrategy">
+            <summary>
+            Distribue les enfants d'un tracé de disposition selon la taille des enfants et un écart donné entre les enfants. La distance en longueur d'arc entre les enfants est déterminée par l'écart plus la somme des rayons des rectangles englobants des enfants.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBox">
+            <summary>
+            Contient une liste d'éléments disposés le long d'un ou plusieurs tracés.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.#ctor">
+            <summary>
+            Initialise une nouvelle instance de la classe <see cref="T:Microsoft.Expression.Controls.PathListBox"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.GetContainerForItemOverride">
+            <summary>
+            Crée l'élément utilisé pour afficher un élément spécifié.
+            </summary>
+            <returns><see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/> correspondant à un élément spécifié.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.IsItemItsOwnContainerOverride(System.Object)">
+            <summary>
+            Détermine si l'élément spécifié est (ou est susceptible d'être) son propre conteneur d'éléments.
+            </summary>
+            <returns>True si l'élément est son propre conteneur d'éléments ; sinon, False.</returns>
+            <param name="item">Élément spécifié.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.ArrangeOverride(System.Windows.Size)">
+            <summary>
+            Positions des éléments enfants.
+            </summary>
+            <param name="finalSize">Taille que doit utiliser cet objet pour réorganiser ses éléments enfants.</param>
+            <returns>Taille réelle utilisée.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.LayoutPaths">
+            <summary>
+            Obtient ou définit une collection d'objets qui définit le(s) tracé(s) utilisé(s) pour la disposition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.StartItemIndex">
+            <summary>
+            Obtient ou définit l'index à utiliser dans la liste d'éléments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.WrapItems">
+            <summary>
+            Obtient ou définit si l'index de l'élément est renvoyé au début de la collection lorsque StartItemIndex est supérieur à 0.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBoxItem">
+            <summary>
+            Représente un élément dans une <see cref="T:Microsoft.Expression.Controls.PathListBox"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.#ctor">
+            <summary>
+            Initialise une nouvelle instance de la classe <see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)"/>.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.PathListBoxItem.PathLayoutUpdated">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LayoutPathIndex">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalIndex">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalIndex">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalOffset">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalOffset">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.NormalAngle">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.OrientationAngle">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.IsArranged">
+            <summary>
+            Pour obtenir la description de ce membre, voir <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathPanel">
+            <summary>
+            Organise les éléments enfants le long d'un ou plusieurs chemins.
+            </summary>
+            <remarks>
+            <see cref="T:Microsoft.Expression.Controls.PathPanel"/> peut être utilisé comme alternative à <see cref="T:Microsoft.Expression.Controls.PathListBox"/> lorsque la sélection n'est pas nécessaire. La propriété <see cref="P:Microsoft.Expression.Controls.LayoutPath.Orientation"/> n'est pas prise en charge sur <see cref="T:Microsoft.Expression.Controls.PathPanel"/>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.#ctor">
+            <summary>
+            Initialise une nouvelle instance de la classe <see cref="T:Microsoft.Expression.Controls.PathPanel"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.MeasureOverride(System.Windows.Size)">
+            <summary>
+            Mesure la taille requise pour les éléments enfants.
+            </summary>
+            <param name="availableSize">Taille disponible que l'élément peut attribuer aux éléments enfants. </param>
+            <returns>Taille déterminée comme nécessaire par l'élément pendant la disposition, selon ses calculs des tailles des éléments enfants.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeOverride(System.Windows.Size)">
+            <summary>
+            Positions des éléments enfants.
+            </summary>
+            <param name="finalSize">Taille que doit utiliser cet objet pour réorganiser ses éléments enfants.</param>
+            <returns>Taille réelle utilisée.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeChild(System.Int32,System.Int32,Microsoft.Expression.Drawing.Core.PolylineData,Microsoft.Expression.Drawing.Core.MarchLocation,System.Int32)">
+            <summary>
+            Organise l'enfant au niveau de l'index donné à un emplacement particulier sur un LayoutPath.
+            </summary>
+            <param name="indirectIndex">Index de la plage 0 à PathPanel.Count.</param>
+            <param name="pathIndex">Index du tracé de mise en page permettant d'organiser l'enfant.</param>
+            <param name="polyline">Polyligne dans le tracé de mise en page.</param>
+            <param name="location">Emplacement sur la polyligne.</param>
+            <param name="localIndex">Index de l'enfant sur le LayoutPath.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.GetChildRadius(System.Int32)">
+            <summary>
+            Calcule le rayon du cercle englobant de l'enfant au niveau de l'index donné.
+            </summary>
+            <param name="indirectIndex">Index de la plage 0 à PathPanel.Count.</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.LayoutPaths">
+            <summary>
+            Obtient ou définit une collection d'objets qui définit le(s) tracé(s) utilisé(s) pour la disposition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex">
+            <summary>
+            Obtient ou définit l'index à utiliser dans la liste d'éléments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.WrapItems">
+            <summary>
+            Obtient ou définit une valeur indiquant si l'index de l'élément est renvoyé au début de la collection lorsque <see cref="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex"/> est supérieur à 0.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.ValidPaths">
+            <summary>
+            Sous-ensemble de LayoutPaths qui sont connectés et ne sont pas réduits.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.Count">
+            <summary>
+            Valeur correspondant au nombre d'enfants que le PathPanel dispose. Si StartItemIndex &gt; 0 et WrapItems a la valeur False, celle-ci peut être inférieure à PathPanel.Children.Count.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetItemsHost(System.Windows.Controls.ItemsControl)">
+            <summary>
+            Obtient le panneau qui contient les conteneurs d'un ItemsControl.
+            </summary>
+            <param name="control">Contrôle ItemsControl.</param>
+            <returns>
+            Panneau qui contient les conteneurs d'un contrôle ItemsControl ou Null si le panneau est introuvable.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="control"/> a la valeur Null.
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.TraverseBreadthFirst``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Boolean})">
+            <summary>
+            Parcourt une arborescence en acceptant une valeur initiale et une fonction qui récupère les nœuds enfants d'un nœud.
+            </summary>
+            <typeparam name="T">Type de flux.</typeparam>
+            <param name="initialNode">Nœud initial.</param>
+            <param name="getChildNodes">Fonction qui récupère les nœuds enfants d'un nœud.</param>
+            <param name="traversePredicate">Prédicat qui évalue un nœud et renvoie une valeur indiquant si ce nœud et ses enfants doivent être parcourus.</param>
+            <returns>Flux de nœuds.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+            Obtenir les enfants de l'arborescence visuelle d'un élément.
+            </summary>
+            <param name="element">Élément.</param>
+            <returns>Enfants de l'arborescence visuelle d'un élément.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="element"/> a la valeur Null.
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildrenAndSelfIterator(System.Windows.DependencyObject)">
+            <summary>
+            Obtenir les enfants de l'arborescence visuelle d'un élément et l'élément lui-même.
+            </summary>
+            <param name="element">Élément.</param>
+            <returns>
+            Enfants de l'arborescence visuelle d'un élément et l'élément lui-même.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalChildren(System.Windows.FrameworkElement)">
+            <summary>
+            Récupère tous les enfants logiques d'un élément d'infrastructure à l'aide d'un algorithme de parcours en largeur. Pour des raisons de performances, cette méthode gère manuellement la pile au lieu d'utiliser la récursivité.
+            </summary>
+            <param name="parent">Élément d'infrastructure parent.</param>
+            <returns>Enfants logiques de l'élément d'infrastructure.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalDescendents(System.Windows.FrameworkElement)">
+            <summary>
+            Récupère tous les descendants logiques d'un élément d'infrastructure à l'aide d'un algorithme de parcours en largeur. Pour des raisons de performances, cette méthode gère manuellement la pile au lieu d'utiliser la récursivité.
+            </summary>
+            <param name="parent">Élément d'infrastructure parent.</param>
+            <returns>Enfants logiques de l’élément d’infrastructure.</returns>
+        </member>
+    </members>
+</doc>

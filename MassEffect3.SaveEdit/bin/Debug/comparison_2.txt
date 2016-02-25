@@ -1,0 +1,16 @@
+/_checksum: [VALUE] 1133268349 != 3079204540
+/_location/_X: [VALUE] -8728.324 != -8639.254
+/_location/_Y: [VALUE] 13424.8 != 13578.78
+/_player/_primaryWeapon: [VALUE] SFXGameContent.SFXWeapon_SniperRifle_Valiant != SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean
+/_player/_secondaryWeapon: [VALUE] SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean != SFXGameContent.SFXWeapon_SniperRifle_Valiant
+/_plot/_BoolVariablesWrapper/19360: [VALUE] False != True
+/_plot/_BoolVariablesWrapper/22717: [VALUE] False != True
+/_plot/_BoolVariables/19360: [VALUE] False != True
+/_plot/_BoolVariables/22717: [VALUE] False != True
+/_plot/_IntVariables/521/_Value: [VALUE] 658 != 663
+/_plot/_IntVariables/639/_Value: [VALUE] 3 != 2
+/_plot/_QuestProgress/15/_History: [COUNT] 0 != 1
+/_plot/_QuestProgress/15/_History/0: [NULL] NULL != 0
+/_rotation/_Yaw: [VALUE] 31947 != 32476
+/_secondsPlayed: [VALUE] 77476.62 != 77498.08
+/_timeStamp/_SecondsSinceMidnight: [VALUE] 82299 != 82320

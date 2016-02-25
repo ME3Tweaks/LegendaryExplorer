@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontent.sfxdamagetype_pistol_bloodpack">
+			<Property name="hitreactions" type="0">(BodyPart="Head",Reaction=Reaction_DeathHeavy,ReactionChance=0.9)</Property>
+			<Property name="wounddamage" type="0">WoundDamage_Heavy</Property>
+			<Property name="woundpct" type="0">1.0f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

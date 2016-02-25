@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TlkFile id="BIOGame" name="BIOGame_INT" source="BIOGame_INT.tlk">
+	<Includes>
+		<Include source="BIOGame_INT/BIOGame_INT0.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT1.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT2.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT3.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT4.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT5.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT6.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT7.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT8.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT9.xml" />
+		<Include source="BIOGame_INT/BIOGame_INT10.xml" />
+	</Includes>
+</TlkFile>

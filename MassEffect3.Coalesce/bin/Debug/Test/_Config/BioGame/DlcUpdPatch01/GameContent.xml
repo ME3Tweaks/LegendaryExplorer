@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontent.sfxpawn_gunner">
+			<Property name="damagescorebudget" type="0">400</Property>
+			<Property name="killbonusscore" type="0">40</Property>
+			<Property name="powercontrolassistbudget" type="0">100</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

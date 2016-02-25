@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biocredits" name="biocredits.ini" source="..\..\biogame\config\biocredits.ini">
+  <Sections>
+    <Section name="sfxgame.sfxgui_credits">
+      <Property name="dlccredits">
+        <Value type="3">(Type=Credit_Heading, Title=757804, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757941, Names=727462)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757805, Names=757810)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342763, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342765, Names=757812)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342769, Names=757813)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342770, Names=757814)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342771, Names=757815)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=362091, Names=757816)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342773, Names=757817)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342775, Names=757818)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342779, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342780, Names=757819)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757806, Names=391682)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757807, Names=723825)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=362097, Names=360228)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=391683, Names=757820)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342788, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342791, Names=757821)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342792, Names=757822)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342793, Names=727460)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342790, Names=727583)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342794, Names=757823)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342796, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342797, Names=757824)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=362107, Names=757825)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=723667, Names=757826)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342800, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=388918, Names=757827)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342806, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757808, Names=757828)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757809, Names=757829)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342809, Names=757830)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=723710, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=723711, Names=757831)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=723712, Names=757832)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=391356, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=757957, Names=757833)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=342838, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=727586, Names=757834)</Value>
+        <Value type="3">(Type=Credit_Heading, Title=757959, BreakSpace=100)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342904, Names=757811)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=723769, Names=723952)</Value>
+        <Value type="3">(Type=Credit_Scrolling, Title=342899, Names=723953)</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

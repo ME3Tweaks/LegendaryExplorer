@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweaponmod_shotgunaccuracy">
+			<Property name="gameeffects">
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.30f)</Value>
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.30f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.35f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.35f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.40f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.40f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.45f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.45f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_AccuracyBonus", EffectValue=0.50f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_CrosshairModifier", EffectValue=0.50f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="2">gui_codex_images.Weapons.MOD_barrel-choke_512x256</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.MOD_barrel-choke_256x128</Property>
+			<Property name="weaponmodcategory" type="2">WModCategory_Body</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweaponmod_shotgundamage">
+			<Property name="gameeffects">
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.15f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.175f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.20f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.225f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_DamageBonus", EffectValue=0.25f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="2">gui_codex_images.Weapons.bls_bar_a_512x256</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.bls_bar_a_256x128</Property>
+			<Property name="weaponmodcategory" type="2">WModCategory_Barrel</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweaponmod_shotgunmeleedamage">
+			<Property name="gameeffects">
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.15f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.175f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.20f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.225f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_MeleeDmgBonus", EffectValue=0.25f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="2">gui_codex_images.Weapons.bls_melee_a_512x256</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.bls_melee_a_256x128</Property>
+			<Property name="weaponmodcategory" type="2">WModCategory_Blade</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweaponmod_shotgunreloadspeed">
+			<Property name="gameeffects">
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.25f)</Value>
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.60f)</Value>
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.25f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.35f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.55f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.35f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.45f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.50f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.45f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.55f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.45f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.55f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationBonus", EffectValue=0.65f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_PenetrationDamageBonus", EffectValue=-0.40f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_ArmorPiercingBonus", EffectValue=0.65f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="2">gui_codex_images.Weapons.MOD_shredder-mod_512x256</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.MOD_shredder-mod_256x128</Property>
+			<Property name="weaponmodcategory" type="2">WModCategory_Emissive</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweaponmod_shotgunstability">
+			<Property name="gameeffects">
+				<Value type="2">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_SpareAmmoBonus", EffectValue=0.50f)</Value>
+				<Value type="2">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_SpareAmmoBonus", EffectValue=0.60f)</Value>
+				<Value type="2">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_SpareAmmoBonus", EffectValue=0.70f)</Value>
+				<Value type="2">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_SpareAmmoBonus", EffectValue=0.80f)</Value>
+				<Value type="2">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_SpareAmmoBonus", EffectValue=0.90f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="2">gui_codex_images.Weapons.MOD_ammo-capacity_512x256</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.MOD_heat-sink_256x128</Property>
+			<Property name="weaponmodcategory" type="2">WModCategory_Grip</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

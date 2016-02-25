@@ -1,0 +1,8 @@
+
+Bools:
+19615: False => True
+22357: False => True
+
+Floats:
+
+Ints:

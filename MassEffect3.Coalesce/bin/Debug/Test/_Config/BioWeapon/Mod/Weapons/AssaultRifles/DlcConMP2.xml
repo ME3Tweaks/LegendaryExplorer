@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxweapon_assaultrifle_cerberus">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxweapon_assaultrifle_prothean_mp">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

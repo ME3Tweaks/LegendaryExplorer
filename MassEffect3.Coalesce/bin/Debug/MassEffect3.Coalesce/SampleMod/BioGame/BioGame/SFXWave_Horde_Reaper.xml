@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxwave_horde_reaper1 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal")))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Husk", MinCount=1, MaxCount=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Husk", MinCount=3, MaxCount=3)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">1</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper2 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">2</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper3 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Husk", MinCount=1, MaxCount=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=3, MaxCount=3),(EnemyType="WAVE_RPR_Husk", MinCount=3, MaxCount=3)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">3</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper4 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">4</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper5 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">5</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper6 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Ravager", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=3),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2, MaxPerWave=4)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">6</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper7 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Ravager", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Ravager", MinCount=1, MaxCount=1, MaxPerWave=3),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Husk"),(EnemyType="WAVE_RPR_Marauder", MinCount=3, MaxCount=3),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">7</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper8 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2, MaxPerWave=4),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Husk"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2, MaxPerWave=6),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2, MaxPerWave=4)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Ravager", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">8</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper9 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Husk"),(EnemyType="WAVE_RPR_Marauder", MinCount=3, MaxCount=3),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2, MaxPerWave=6),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=2)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">9</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper10 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2, MaxPerWave=4),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=3),(EnemyType="WAVE_RPR_Ravager", MinCount=1, MaxCount=1, MaxPerWave=6),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2, MaxPerWave=4)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=3, MaxCount=3),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">10</Property>
+		</Section>
+		<Section name="sfxwave_horde_reaper11 sfxwave_horde_reaper">
+			<Property name="enemies">
+				<Value type="2">(Difficulty=DO_Level1,Enemies=((EnemyType="WAVE_RPR_Cannibal"),(EnemyType="WAVE_RPR_Husk", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=1, MaxCount=1, MaxPerWave=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1, MaxPerWave=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level2,Enemies=((EnemyType="WAVE_RPR_Husk"),(EnemyType="WAVE_RPR_Marauder", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Banshee", MinCount=1, MaxCount=1)))</Value>
+				<Value type="2">(Difficulty=DO_Level3,Enemies=((EnemyType="WAVE_RPR_Marauder"),(EnemyType="WAVE_RPR_Ravager", MinCount=2, MaxCount=2),(EnemyType="WAVE_RPR_Brute", MinCount=3, MaxCount=3),(EnemyType="WAVE_RPR_Banshee", MinCount=2, MaxCount=2)))</Value>
+			</Property>
+			<Property name="waveindex" type="2">11</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

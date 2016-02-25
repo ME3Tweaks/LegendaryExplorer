@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_clonedrone">
+			<Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_cloneprojectile">
+			<Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_disruptorzap">
+			<Property name="maximumrange" type="0">(BaseValue=750.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_mirvgrenade">
+			<Property name="damage" type="0">(BaseValue=0.f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="impactradius" type="0">(BaseValue=0.f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_stimpack">
+			<Property name="damagebonus" type="0">(BaseValue=0.15,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="damageimmunitylength" type="0">1.f</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=true)</Property>
+			<Property name="duration" type="0">(BaseValue=10.0f)</Property>
+			<Property name="evolve_damagebonus" type="0">0.10f</Property>
+			<Property name="evolve_duration" type="0">0.5f</Property>
+			<Property name="evolve_grenadecountbonus" type="0">1</Property>
+			<Property name="evolve_meleedamagebonus" type="0">0.30f</Property>
+			<Property name="evolve_shieldstrengthbonus" type="0">0.4f</Property>
+			<Property name="evolve_shieldstrengthbonus2" type="0">0.6f</Property>
+			<Property name="evolve_weapondamagebonus" type="0">0.15f</Property>
+			<Property name="impactradius" type="0">(BaseValue=0.0f)</Property>
+			<Property name="maxgrenadebonus" type="0">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="0">1</Property>
+			<Property name="shieldstrength" type="0">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_getminigamebasebet">
+			<Property name="minigamebasepayouts">
+				<Value type="3">(GameType=MiniGame_ClawMachine,BaseBet=250)</Value>
+				<Value type="3">(GameType=MiniGame_Roullette,BaseBet=100)</Value>
+				<Value type="3">(GameType=MiniGame_RobotFighting,BaseBet=100)</Value>
+				<Value type="3">(GameType=MiniGame_MissileDefense,BaseBet=100)</Value>
+				<Value type="3">(GameType=MiniGame_VarrenRacing,BaseBet=50)</Value>
+				<Value type="3">(GameType=MiniGame_VarrenRacing2,BaseBet=100)</Value>
+				<Value type="3">(GameType=MiniGame_VarrenRacing3,BaseBet=200)</Value>
+				<Value type="3">(GameType=MiniGame_Qasar,BaseBet=50)</Value>
+				<Value type="3">(GameType=MiniGame_Qasar2,BaseBet=100)</Value>
+				<Value type="3">(GameType=MiniGame_Qasar3,BaseBet=200)</Value>
+				<Value type="3">(GameType=MiniGame_CombatSim1,BaseBet=500)</Value>
+				<Value type="3">(GameType=MiniGame_CombatSim2,BaseBet=1000)</Value>
+				<Value type="3">(GameType=MiniGame_CombatSim3,BaseBet=2000)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_killchildcreatures">
+			<Property name="childcreatures">
+				<Value type="3">SFXPawn_Swarmer</Value>
+				<Value type="3">SFXPawn_GunnerTurret</Value>
+				<Value type="3">SFXPawn_GethPrimeTurret</Value>
+				<Value type="3">SFXPawn_GethPrimeShieldDrone</Value>
+				<Value type="3">SFXPawn_Seeker_Shared</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_enemyshields">
+			<Property name="shieldmultiplier" type="0">1.f</Property>
+			<Property name="shieldtohealthratio" type="0">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_fast">
+			<Property name="speedincrease" type="0">1.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_highdamage_enemy">
+			<Property name="damagebonus" type="0">1.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_highdamage_player">
+			<Property name="damagebonus" type="0">1.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_lowshields">
+			<Property name="shieldpenalty" type="0">0.75f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_meleemode">
+			<Property name="damagepenalty" type="0">-0.95f</Property>
+			<Property name="meleemultiplier" type="0">2.f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

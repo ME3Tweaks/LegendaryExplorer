@@ -1,0 +1,25 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ProjectData\bin\Debug\Gibbed.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ProjectData\bin\Debug\Gibbed.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ProjectData\obj\Debug\Gibbed.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ProjectData\obj\Debug\Gibbed.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\bin\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ProjectData\obj\Debug\MassEffect3.ProjectData.csprojResolveAssemblyReference.cache

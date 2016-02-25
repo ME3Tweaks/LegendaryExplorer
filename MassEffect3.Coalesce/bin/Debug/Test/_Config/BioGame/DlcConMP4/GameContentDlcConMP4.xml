@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_adept_batarian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="3">SFXPowerCustomActionMP_Lash_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_BioticGrenade</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_adept_krogan">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="3">SFXPowerCustomActionMP_Barrier_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_Shockwave</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_adept_volus">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Stasis</Value>
+				<Value type="3">SFXPowerCustomActionMP_BioticOrbs</Value>
+				<Value type="3">SFXPowerCustomActionMP_ShieldBoost</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_engineer_turian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_AIHacking</Value>
+				<Value type="3">SFXPowerCustomActionMP_HomingGrenade_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_SentryTurret</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_engineer_volus">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_ProximityMine</Value>
+				<Value type="3">SFXPowerCustomActionMP_ReconMine</Value>
+				<Value type="3">SFXPowerCustomActionMP_ShieldBoost</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_engineer_vorcha">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Incinerate</Value>
+				<Value type="3">SFXPowerCustomActionMP_Bloodlust_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_BatarianNet_Shared</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_infiltrator_asari">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Warp</Value>
+				<Value type="3">SFXPowerCustomActionMP_AsariCloak</Value>
+				<Value type="3">SFXPowerCustomActionMP_DarkChannel2_Shared</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_infiltrator_drell">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_HomingGrenade_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_Cloak</Value>
+				<Value type="3">SFXPowerCustomActionMP_ReconMine</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_n7infiltrator_turian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_StimPack</Value>
+				<Value type="3">SFXPowerCustomActionMP_Overload</Value>
+				<Value type="3">SFXPowerCustomActionMP_TurianCloak</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_n7soldier_turian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_StimPack</Value>
+				<Value type="3">SFXPowerCustomActionMP_CryoBlast</Value>
+				<Value type="3">SFXPowerCustomActionMP_JetPackCharge</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_sentinel_asari">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_AnnihilationSphere_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_TechArmor</Value>
+				<Value type="3">SFXPowerCustomActionMP_Warp</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_sentinel_volus">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Decoy_Volus</Value>
+				<Value type="3">SFXPowerCustomActionMP_CombatDrone</Value>
+				<Value type="3">SFXPowerCustomActionMP_ShieldBoost</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_soldier_geth">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Flamer</Value>
+				<Value type="3">SFXPowerCustomActionMP_Fortification</Value>
+				<Value type="3">SFXPowerCustomActionMP_Supercharge_Shared</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_soldier_mquarian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_Marksman</Value>
+				<Value type="3">SFXPowerCustomActionMP_Damping_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_AIHacking</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_vanguard_batarian">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="3">SFXPowerCustomActionMP_BatarianArmor_Shared</Value>
+				<Value type="3">SFXPowerCustomActionMP_Lash_Shared</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_vanguard_volus">
+			<Property name="mappedpowers">
+				<Value type="3">SFXPowerCustomActionMP_BioticCharge</Value>
+				<Value type="3">SFXPowerCustomActionMP_ShieldBoost</Value>
+				<Value type="3">SFXPowerCustomActionMP_BioticOrbs</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcustomaction_voluscloakescape">
+			<Property name="cloakcooldown" type="0">6.0f</Property>
+			<Property name="cloakduration" type="0">4.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcustomaction_volusduck">
+			<Property name="immunitywindow" type="0">1.0f</Property>
+			<Property name="shieldregen" type="0">0.1f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_cappeddamagereduction">
+			<Property name="updatefrequency" type="0">0.25f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_ammopower_eraser">
+			<Property name="armorreduction[0]" type="0">0.1f</Property>
+			<Property name="armorreduction[1]" type="0">0.25f</Property>
+			<Property name="armorreduction[2]" type="0">0.4f</Property>
+			<Property name="damage[0]" type="0">0.10f</Property>
+			<Property name="damage[1]" type="0">0.20f</Property>
+			<Property name="damage[2]" type="0">0.30f</Property>
+			<Property name="penetration[0]" type="0">1.f</Property>
+			<Property name="penetration[1]" type="0">1.5f</Property>
+			<Property name="penetration[2]" type="0">2.5f</Property>
+			<Property name="versioncount" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_ammopower_needler">
+			<Property name="damage[0]" type="0">0.1f</Property>
+			<Property name="damage[1]" type="0">0.2f</Property>
+			<Property name="damage[2]" type="0">0.3f</Property>
+			<Property name="explosiondamagecap[0]" type="0">50.f</Property>
+			<Property name="explosiondamagecap[1]" type="0">120.f</Property>
+			<Property name="explosiondamagecap[2]" type="0">250.f</Property>
+			<Property name="explosiondelay" type="0">1.5f</Property>
+			<Property name="explosionradius[0]" type="0">150.f</Property>
+			<Property name="explosionradius[1]" type="0">200.f</Property>
+			<Property name="explosionradius[2]" type="0">250.f</Property>
+			<Property name="maxneedlesperpawn" type="0">3</Property>
+			<Property name="maxneedlesworld" type="0">6</Property>
+			<Property name="mintimebetweengameeffectspawns" type="0">0.5f</Property>
+			<Property name="mintimebetweenneedles" type="0">0.5f</Property>
+			<Property name="versioncount" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_ammopower_phasic">
+			<Property name="damage[0]" type="0">0.05f</Property>
+			<Property name="damage[1]" type="0">0.1f</Property>
+			<Property name="damage[2]" type="0">0.15f</Property>
+			<Property name="shieldregenpenalty" type="0">1.0f</Property>
+			<Property name="shieldregenpenaltyduration" type="0">15.0f</Property>
+			<Property name="versioncount" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_ammopower_polonium">
+			<Property name="dotdamage[0]" type="0">0.2f</Property>
+			<Property name="dotdamage[1]" type="0">0.3f</Property>
+			<Property name="dotdamage[2]" type="0">0.4f</Property>
+			<Property name="dotduration[0]" type="0">10.f</Property>
+			<Property name="dotduration[1]" type="0">10.f</Property>
+			<Property name="dotduration[2]" type="0">10.f</Property>
+			<Property name="versioncount" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_cobracapacity">
+			<Property name="ammocapacity[0]" type="0">0.05f</Property>
+			<Property name="ammocapacity[1]" type="0">0.075f</Property>
+			<Property name="ammocapacity[2]" type="0">0.1f</Property>
+			<Property name="ammocapacity[3]" type="0">0.125f</Property>
+			<Property name="ammocapacity[4]" type="0">0.15f</Property>
+			<Property name="cobracapacity[0]" type="0">1</Property>
+			<Property name="cobracapacity[1]" type="0">1</Property>
+			<Property name="cobracapacity[2]" type="0">2</Property>
+			<Property name="cobracapacity[3]" type="0">2</Property>
+			<Property name="cobracapacity[4]" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_massmedigel">
+			<Property name="range[0]" type="0">1000.f</Property>
+			<Property name="range[1]" type="0">1500.f</Property>
+			<Property name="range[2]" type="0">2000.f</Property>
+			<Property name="range[3]" type="0">2500.f</Property>
+			<Property name="range[4]" type="0">3000.f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_medigelcapacity">
+			<Property name="medigelcapacity[0]" type="0">1</Property>
+			<Property name="medigelcapacity[1]" type="0">1</Property>
+			<Property name="medigelcapacity[2]" type="0">2</Property>
+			<Property name="medigelcapacity[3]" type="0">2</Property>
+			<Property name="medigelcapacity[4]" type="0">3</Property>
+			<Property name="regenspeed[0]" type="0">-0.03f</Property>
+			<Property name="regenspeed[1]" type="0">-0.05f</Property>
+			<Property name="regenspeed[2]" type="0">-0.07f</Property>
+			<Property name="regenspeed[3]" type="0">-0.085f</Property>
+			<Property name="regenspeed[4]" type="0">-0.1f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_survivalcapacity">
+			<Property name="shieldstrength[0]" type="0">0.06f</Property>
+			<Property name="shieldstrength[1]" type="0">0.1f</Property>
+			<Property name="shieldstrength[2]" type="0">0.14f</Property>
+			<Property name="shieldstrength[3]" type="0">0.17f</Property>
+			<Property name="shieldstrength[4]" type="0">0.20f</Property>
+			<Property name="survivalcapacity[0]" type="0">1</Property>
+			<Property name="survivalcapacity[1]" type="0">1</Property>
+			<Property name="survivalcapacity[2]" type="0">2</Property>
+			<Property name="survivalcapacity[3]" type="0">2</Property>
+			<Property name="survivalcapacity[4]" type="0">3</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_thermalcapacity">
+			<Property name="thermalcapacity[0]" type="0">1</Property>
+			<Property name="thermalcapacity[1]" type="0">1</Property>
+			<Property name="thermalcapacity[2]" type="0">2</Property>
+			<Property name="thermalcapacity[3]" type="0">2</Property>
+			<Property name="thermalcapacity[4]" type="0">3</Property>
+			<Property name="weapondamage[0]" type="0">0.02f</Property>
+			<Property name="weapondamage[1]" type="0">0.04f</Property>
+			<Property name="weapondamage[2]" type="0">0.06f</Property>
+			<Property name="weapondamage[3]" type="0">0.07f</Property>
+			<Property name="weapondamage[4]" type="0">0.08f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_shieldboostrestore">
+			<Property name="restorefrequency" type="0">0.25f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_abomination">
+			<Property name="damagescorebudget" type="0">200</Property>
+			<Property name="killbonusscore" type="0">20</Property>
+			<Property name="possessedwaves">
+				<Value type="3">(Difficulty=DO_Level1,Waves=(false,false,false,false,false,true,false,false,false,true,false))</Value>
+				<Value type="3">(Difficulty=DO_Level2,Waves=(false,true,false,true,false,false,false,true,false,false,true))</Value>
+				<Value type="3">(Difficulty=DO_Level3,Waves=(false,true,true,false,false,false,true,false,false,true,true))</Value>
+				<Value type="3">(Difficulty=DO_Level4,Waves=(true,false,true,true,true,true,true,true,true,true,true))</Value>
+			</Property>
+			<Property name="powercontrolassistbudget" type="0">50</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_atlas2">
+			<Property name="headshotmultiplier" type="0">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_collectorcaptain">
+			<Property name="damagescorebudget" type="0">400</Property>
+			<Property name="killbonusscore" type="0">40</Property>
+			<Property name="possessedwaves">
+				<Value type="3">(Difficulty=DO_Level1,Waves=(false,false,false,true,true,false,false,false,false,false,false))</Value>
+				<Value type="3">(Difficulty=DO_Level2,Waves=(false,false,true,true,false,false,false,false,true,true,false))</Value>
+				<Value type="3">(Difficulty=DO_Level3,Waves=(false,false,true,true,false,true,true,false,true,false,false))</Value>
+				<Value type="3">(Difficulty=DO_Level4,Waves=(true,true,true,true,true,true,true,true,true,true,true))</Value>
+			</Property>
+			<Property name="powercontrolassistbudget" type="0">100</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_collectortrooper">
+			<Property name="damagescorebudget" type="0">250</Property>
+			<Property name="killbonusscore" type="0">25</Property>
+			<Property name="possessedwaves">
+				<Value type="3">(Difficulty=DO_Level1,Waves=(false,true,true,false,false,false,true,false,true,false,true))</Value>
+				<Value type="3">(Difficulty=DO_Level2,Waves=(true,true,true,false,true,true,true,false,false,false,false))</Value>
+				<Value type="3">(Difficulty=DO_Level3,Waves=(true,true,false,false,true,true,false,true,false,false,true))</Value>
+				<Value type="3">(Difficulty=DO_Level4,Waves=(true,true,true,true,true,true,true,true,true,true,true))</Value>
+			</Property>
+			<Property name="powercontrolassistbudget" type="0">65</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_decoy_volus">
+			<Property name="decoyzoffset" type="0">-32</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_gethbomber">
+			<Property name="damagescorebudget" type="0">400</Property>
+			<Property name="killbonusscore" type="0">40</Property>
+			<Property name="powercontrolassistbudget" type="0">100</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_phoenix">
+			<Property name="damagescorebudget" type="0">500</Property>
+			<Property name="killbonusscore" type="0">50</Property>
+			<Property name="powercontrolassistbudget" type="0">125</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_playermp_adept_volus">
+			<Property name="bcannotusecover" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_playermp_engineer_volus">
+			<Property name="bcannotusecover" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_playermp_engineer_vorcha">
+			<Property name="pollfrequency" type="0">0.5</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_playermp_sentinel_volus">
+			<Property name="bcannotusecover" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_playermp_vanguard_volus">
+			<Property name="bcannotusecover" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_praetorian">
+			<Property name="damagescorebudget" type="0">1000</Property>
+			<Property name="headshotmultiplier" type="0">1.f</Property>
+			<Property name="killbonusscore" type="0">100</Property>
+			<Property name="possessedwaves">
+				<Value type="3">(Difficulty=DO_Level1,Waves=(false,false,false,false,false,false,false,false,false,true,true))</Value>
+				<Value type="3">(Difficulty=DO_Level2,Waves=(false,false,false,false,false,false,true,false,false,true,true))</Value>
+				<Value type="3">(Difficulty=DO_Level3,Waves=(false,false,false,false,true,false,false,false,true,true,false))</Value>
+				<Value type="3">(Difficulty=DO_Level4,Waves=(true,true,true,true,true,true,true,true,true,true,true))</Value>
+			</Property>
+			<Property name="powercontrolassistbudget" type="0">250</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_scion">
+			<Property name="damagescorebudget" type="0">650</Property>
+			<Property name="headshotmultiplier" type="0">0.4f</Property>
+			<Property name="killbonusscore" type="0">65</Property>
+			<Property name="possessedwaves">
+				<Value type="3">(Difficulty=DO_Level1,Waves=(false,false,false,false,false,false,false,true,false,false,false))</Value>
+				<Value type="3">(Difficulty=DO_Level2,Waves=(false,false,false,false,true,true,false,true,true,false,false))</Value>
+				<Value type="3">(Difficulty=DO_Level3,Waves=(false,false,false,true,false,false,true,true,false,true,true))</Value>
+				<Value type="3">(Difficulty=DO_Level4,Waves=(true,true,true,true,true,true,true,true,true,true,true))</Value>
+			</Property>
+			<Property name="powercontrolassistbudget" type="0">150</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_seeker">
+			<Property name="damagescorebudget" type="0">25</Property>
+			<Property name="killbonusscore" type="0">0</Property>
+			<Property name="powercontrolassistbudget" type="0">0</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpawn_trooperweb">
+			<Property name="damagescorebudget" type="0">20</Property>
+			<Property name="killbonusscore" type="0">0</Property>
+			<Property name="powercontrolassistbudget" type="0">0</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomaction_atlasdotrocket">
+			<Property name="cooldowntime" type="0">(BaseValue=0.0f)</Property>
+			<Property name="damage" type="0">(BaseValue=400.0f)</Property>
+			<Property name="dotdamagepersecond" type="0">5.f</Property>
+			<Property name="dotduration" type="0">4.f</Property>
+			<Property name="force" type="0">(BaseValue=600.0f)</Property>
+			<Property name="impactradius" type="0">(BaseValue=400.0f)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+			<Property name="minimumrange" type="0">(BaseValue=100.0f)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_asaricloak">
+			<Property name="evolve_powerdamagebonus" type="0">0.25f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_bioticorbs">
+			<Property name="cooldownperorb" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=24.0,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=250.0,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=true,ImpactFriends=false,DistancedSorted=true)</Property>
+			<Property name="evolve_cooldownbonus" type="0">0.05f</Property>
+			<Property name="evolve_damagebonus1" type="0">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="0">0.4f</Property>
+			<Property name="evolve_damagedebuff" type="0">0.15f</Property>
+			<Property name="evolve_damagedebuffduration" type="0">6.0f</Property>
+			<Property name="evolve_impactradiusbonus" type="0">1.0f</Property>
+			<Property name="evolve_maxdebuffamount" type="0">3</Property>
+			<Property name="evolve_orbincrease" type="0">1</Property>
+			<Property name="force" type="0">(BaseValue=500.0)</Property>
+			<Property name="impactradius" type="0">(BaseValue=150.0)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=3)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000)</Property>
+			<Property name="numberoforbs" type="0">(BaseValue=3,Formula=BonusIsHardValue)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=3000)</Property>
+			<Property name="spawnfourorbdelay" type="0">0.3f</Property>
+			<Property name="spawnthreeorbdelay" type="0">0.4f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_jetpackcharge">
+			<Property name="conehalfangle" type="0">(BaseValue=0.866f)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="damagereduction" type="0">(BaseValue=0.50f)</Property>
+			<Property name="damagereductionduration" type="0">(BaseValue=4.0f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,DistancedSorted=true,ImpactPlaceables=true,ConeAngle=120.0f)</Property>
+			<Property name="evolve_cooldownbonus" type="0">0.3f</Property>
+			<Property name="evolve_damageforcebonus" type="0">0.3f</Property>
+			<Property name="evolve_damageforcebonus2" type="0">0.5f</Property>
+			<Property name="evolve_impactradiusbonus" type="0">300.0f</Property>
+			<Property name="evolve_maximpacttargetsbonus" type="0">2</Property>
+			<Property name="evolve_meleedamagebonus" type="0">0.40f</Property>
+			<Property name="evolve_timedmeleedamageduration" type="0">5.0f</Property>
+			<Property name="evolve_timedweapondamagebonus" type="0">0.25f</Property>
+			<Property name="evolve_timedweapondamageduration" type="0">5.0f</Property>
+			<Property name="force" type="0">(BaseValue=600.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="frozentargetforcemult" type="0">3.0f</Property>
+			<Property name="impactradius" type="0">(BaseValue=150.f,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=1,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_n7turianmeleepassive">
+			<Property name="evolve_customspreebonus" type="0">0.30f</Property>
+			<Property name="evolve_customspreeduration" type="0">20.0f</Property>
+			<Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>
+			<Property name="heavymeleedamage" type="0">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="0">(BaseValue=600)</Property>
+			<Property name="heavymeleeimpactradius" type="0">(BaseValue=250)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=2)</Property>
+			<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="0">(BaseValue=200)</Property>
+			<Property name="meleeforce" type="0">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_n7turianpassive">
+			<Property name="evolve_headshotbonus" type="0">0.2f</Property>
+			<Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+			<Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+			<Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+			<Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+			<Property name="evolve_weaponencumbrancebonus" type="0">0.3f</Property>
+			<Property name="evolve_weaponstabilitybonus1" type="0">0.1f</Property>
+			<Property name="evolve_weaponstabilitybonus2" type="0">0.1f</Property>
+			<Property name="evolve_weightcapacitybonus" type="0">0.25f</Property>
+			<Property name="powerdamagebonus" type="0">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="weapondamagebonus" type="0">(BaseValue=0.075f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="weaponstability" type="0">(BaseValue=0.2f,Formula=BonusIsHardValue,RankBonuses[1]=0.15f)</Property>
+			<Property name="weaponweightclasses" type="3">LoadoutWeapons_AssaultRifles</Property>
+			<Property name="weightcapacitybonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_reconmine">
+			<Property name="armingdelay" type="0">3.0f</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=20.0,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=700.0,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactFriends=false,DistancedSorted=true)</Property>
+			<Property name="evolve_armordamagebonus" type="0">0.75f</Property>
+			<Property name="evolve_cooldownbonus" type="0">0.35f</Property>
+			<Property name="evolve_damagebonus1" type="0">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="0">0.4f</Property>
+			<Property name="evolve_damagedebuff" type="0">0.25f</Property>
+			<Property name="evolve_radiusbonus" type="0">0.5f</Property>
+			<Property name="evolve_speeddebuff" type="0">0.3f</Property>
+			<Property name="force" type="0">(BaseValue=1500.0)</Property>
+			<Property name="impactradius" type="0">(BaseValue=600.0)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=5)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=4000)</Property>
+			<Property name="scanradius" type="0">(BaseValue=800.0)</Property>
+			<Property name="stopglowdelay" type="0">2.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_shieldboost">
+			<Property name="cooldowntime" type="0">(BaseValue=12.0,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactFriends=true)</Property>
+			<Property name="evolve_damagereduction" type="0">0.5f</Property>
+			<Property name="evolve_damagereductionduration" type="0">6.0f</Property>
+			<Property name="evolve_impactradius" type="0">0.4f</Property>
+			<Property name="evolve_maxdamagereduction" type="0">0.9f</Property>
+			<Property name="evolve_rechargespeed" type="0">0.35f</Property>
+			<Property name="evolve_restoredurationbonus" type="0">1.0f</Property>
+			<Property name="evolve_shieldboost1" type="0">0.4f</Property>
+			<Property name="evolve_shieldboost2" type="0">0.5f</Property>
+			<Property name="evolve_shieldregen" type="0">0.2f</Property>
+			<Property name="evolve_shieldregenduration" type="0">12.0f</Property>
+			<Property name="hiddenimmunityduration" type="0">1.5f</Property>
+			<Property name="impactradius" type="0">(BaseValue=500.0)</Property>
+			<Property name="restoreduration" type="0">(BaseValue=3.0f)</Property>
+			<Property name="restorepersecond" type="0">(BaseValue=100.0,RankBonuses[2]=0.3f)</Property>
+			<Property name="shieldboost" type="0">(BaseValue=400.0,RankBonuses[2]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_stimpack">
+			<Property name="damagebonus" type="0">(BaseValue=0.15,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="damageimmunitylength" type="0">1.f</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=true)</Property>
+			<Property name="duration" type="0">(BaseValue=10.0f)</Property>
+			<Property name="evolve_damagebonus" type="0">0.10f</Property>
+			<Property name="evolve_duration" type="0">0.5f</Property>
+			<Property name="evolve_grenadecountbonus" type="0">1</Property>
+			<Property name="evolve_meleedamagebonus" type="0">0.30f</Property>
+			<Property name="evolve_shieldstrengthbonus" type="0">0.4f</Property>
+			<Property name="evolve_shieldstrengthbonus2" type="0">0.6f</Property>
+			<Property name="evolve_weapondamagebonus" type="0">0.15f</Property>
+			<Property name="impactradius" type="0">(BaseValue=0.0f)</Property>
+			<Property name="maxgrenadebonus" type="0">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="0">1</Property>
+			<Property name="shieldstrength" type="0">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_turiancloak">
+			<Property name="assaultrifleduration" type="0">20.0f</Property>
+			<Property name="evolve_assaultrifledamagebonus" type="0">0.25f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_volusmeleepassive">
+			<Property name="evolve_customspreebonus" type="0">0.3f</Property>
+			<Property name="evolve_customspreeduration" type="0">20.f</Property>
+			<Property name="evolve_healthshieldbonus1" type="0">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="0">0.3f</Property>
+			<Property name="evolve_meleedamagebonus2" type="0">0.3f</Property>
+			<Property name="evolve_meleespreebonus" type="0">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="0">30.f</Property>
+			<Property name="evolve_shieldregenbonus" type="0">0.15f</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>
+			<Property name="heavymeleedamage" type="0">(BaseValue=150)</Property>
+			<Property name="heavymeleeforce" type="0">(BaseValue=600)</Property>
+			<Property name="heavymeleeimpactradius" type="0">(BaseValue=200)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=2)</Property>
+			<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="0">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="0">(BaseValue=50)</Property>
+			<Property name="meleeimpactradius" type="0">(BaseValue=500)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_voluspassive">
+			<Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+			<Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+			<Property name="evolve_shieldboostbonus" type="0">0.30f</Property>
+			<Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+			<Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+			<Property name="evolve_weaponencumbrancebonus" type="0">0.2f</Property>
+			<Property name="evolve_weightcapacitybonus" type="0">0.2f</Property>
+			<Property name="powerdamagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.1f)</Property>
+			<Property name="weapondamagebonus" type="0">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[1]=0.025f)</Property>
+			<Property name="weaponweightclasses">
+				<Value type="3">LoadoutWeapons_AssaultRifles</Value>
+				<Value type="3">LoadoutWeapons_Shotguns</Value>
+				<Value type="3">LoadoutWeapons_SniperRifles</Value>
+				<Value type="3">LoadoutWeapons_AutoPistols</Value>
+				<Value type="3">LoadoutWeapons_HeavyPistols</Value>
+			</Property>
+			<Property name="weightcapacitybonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxprojectile_powercustomaction_bioticorbs">
+			<Property name="bclientpredictprojectile" type="0">false</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxprojectile_powercustomaction_reconmine">
+			<Property name="armingdelay" type="0">3.0f</Property>
+			<Property name="bignoremultiplayerwaveendcleanup" type="0">true</Property>
+			<Property name="updatefrequency" type="0">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxseekervolume">
+			<Property name="paininterval" type="0">0.25f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxseqact_getreactorinterval">
+			<Property name="reactorintervalscale" type="0">1.f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

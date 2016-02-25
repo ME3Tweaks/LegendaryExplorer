@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxweapon_sniperrifle_batarian">
+			<Property name="damage" type="0">(X=890.7,Y=1113.4)</Property>
+			<Property name="kishockdamagemultiplier" type="0">1.75f</Property>
+			<Property name="statbardamage" type="0">(X=1558.7,Y=1948.5)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

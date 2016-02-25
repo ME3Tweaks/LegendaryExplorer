@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgui_mpchallenges">
+			<Property name="alienchallenges">
+				<Value type="3">(AccomplishmentIndex=580,Parent=121)</Value>
+				<Value type="3">(AccomplishmentIndex=588,Parent=122)</Value>
+				<Value type="3">(AccomplishmentIndex=593,Parent=121)</Value>
+				<Value type="3">(AccomplishmentIndex=583,Parent=123)</Value>
+				<Value type="3">(AccomplishmentIndex=586,Parent=121)</Value>
+				<Value type="3">(AccomplishmentIndex=587,Parent=124)</Value>
+				<Value type="3">(AccomplishmentIndex=591,Parent=122)</Value>
+				<Value type="3">(AccomplishmentIndex=584,Parent=123)</Value>
+				<Value type="3">(AccomplishmentIndex=585,Parent=122)</Value>
+				<Value type="3">(AccomplishmentIndex=592,Parent=124)</Value>
+				<Value type="3">(AccomplishmentIndex=581,Parent=121)</Value>
+				<Value type="3">(AccomplishmentIndex=590,Parent=124)</Value>
+				<Value type="3">(AccomplishmentIndex=703, Parent=690)</Value>
+				<Value type="3">(AccomplishmentIndex=697, Parent=690)</Value>
+			</Property>
+			<Property name="generalchallenges">
+				<Value type="3">(AccomplishmentIndex=600, VisibilityStartTime=1350072000, VisibilityEndTime=1350907200)</Value>
+				<Value type="3">(AccomplishmentIndex=601,Parent=600, VisibilityStartTime=1350072000, VisibilityEndTime=1350907200)</Value>
+				<Value type="3">(AccomplishmentIndex=602,VisibilityStartTime=1350845952,VisibilityEndTime=1351537280)</Value>
+				<Value type="3">(AccomplishmentIndex=603,Parent=602,VisibilityStartTime=1350845952,VisibilityEndTime=1351537280)</Value>
+				<Value type="3">(AccomplishmentIndex=604,VisibilityStartTime=1351493888,VisibilityEndTime=1352141952)</Value>
+				<Value type="3">(AccomplishmentIndex=605,Parent=604,VisibilityStartTime=1351493888,VisibilityEndTime=1352141952)</Value>
+				<Value type="3">(AccomplishmentIndex=606, VisibilityEntitlement=1500103)</Value>
+				<Value type="3">(AccomplishmentIndex=607,Parent=606)</Value>
+				<Value type="3">(AccomplishmentIndex=608,Parent=606)</Value>
+				<Value type="3">(AccomplishmentIndex=609,Parent=606)</Value>
+				<Value type="3">(AccomplishmentIndex=615,Parent=127)</Value>
+				<Value type="3">(AccomplishmentIndex=616,Parent=127)</Value>
+				<Value type="3">(AccomplishmentIndex=617,Parent=127)</Value>
+				<Value type="3">(AccomplishmentIndex=618,VisibilityEntitlement=1500106)</Value>
+				<Value type="3">(AccomplishmentIndex=619,Parent=618)</Value>
+				<Value type="3">(AccomplishmentIndex=625,VisibilityEntitlement=1500108)</Value>
+				<Value type="3">(AccomplishmentIndex=626,Parent=625)</Value>
+				<Value type="3">(AccomplishmentIndex=724,VisibilityEntitlement=1500118)</Value>
+				<Value type="3">(AccomplishmentIndex=725,Parent=724)</Value>
+				<Value type="3">(AccomplishmentIndex=726,VisibilityEntitlement=1500119)</Value>
+				<Value type="3">(AccomplishmentIndex=727,Parent=726)</Value>
+				<Value type="3">(AccomplishmentIndex=728,Parent=726)</Value>
+				<Value type="3">(AccomplishmentIndex=733,VisibilityEntitlement=1500121)</Value>
+				<Value type="3">(AccomplishmentIndex=734,Parent=733)</Value>
+				<Value type="3">(AccomplishmentIndex=735,Parent=733)</Value>
+				<Value type="3">(AccomplishmentIndex=736,Parent=733)</Value>
+				<Value type="3">(AccomplishmentIndex=737,Parent=733)</Value>
+				<Value type="3">(AccomplishmentIndex=743, Parent=104)</Value>
+				<Value type="3">(AccomplishmentIndex=744, Parent=104)</Value>
+				<Value type="3">(AccomplishmentIndex=639,VisibilityEntitlement=1500114)</Value>
+				<Value type="3">(AccomplishmentIndex=640,Parent=639);</Value>
+				<Value type="3">(AccomplishmentIndex=641,Parent=639);</Value>
+				<Value type="3">(AccomplishmentIndex=642,Parent=639);</Value>
+				<Value type="3">(AccomplishmentIndex=643,Parent=639);</Value>
+			</Property>
+			<Property name="weaponchallenges">
+				<Value type="3">(AccomplishmentIndex=610,Parent=111)</Value>
+				<Value type="3">(AccomplishmentIndex=611,Parent=108)</Value>
+				<Value type="3">(AccomplishmentIndex=612,Parent=107)</Value>
+				<Value type="3">(AccomplishmentIndex=613,Parent=108)</Value>
+				<Value type="3">(AccomplishmentIndex=614,Parent=110)</Value>
+				<Value type="3">(AccomplishmentIndex=729, Parent=108)</Value>
+				<Value type="3">(AccomplishmentIndex=730, Parent=109)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgui_mpmatchconsumables_dlc">
+			<Property name="bliveiniforpatch4arelive" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgui_mpselectkit_dlc">
+			<Property name="kitdescriptions">
+				<Value type="4">(KitName="SoldierMQuarian",ClassString=768115,IPNameString=0,IPEntryString=727976,GameplayEntryString=771246,StatsString1=728003,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+				<Value type="3">(KitName="SoldierMQuarian",ClassString=768115,IPNameString=0,IPEntryString=727976,GameplayEntryString=771246,StatsString1=728002,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

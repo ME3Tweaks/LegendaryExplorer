@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Includes>
+		<!---->
+		<Include source="WeaponMods/AssaultRifles/Core.xml" />
+		<Include source="WeaponMods/AssaultRifles/DlcConMP5.xml" />
+		<Include source="WeaponMods/AssaultRifles/DlcExpPack003.xml" />
+		<Include source="WeaponMods/AssaultRifles/DlcShared.xml" />
+
+		<!---->
+		<Include source="WeaponMods/Pistols/Core.xml" />
+		<Include source="WeaponMods/Pistols/DlcConMP5.xml" />
+		<Include source="WeaponMods/Pistols/DlcExpPack003.xml" />
+		<Include source="WeaponMods/Pistols/DlcShared.xml" />
+
+		<!---->
+		<Include source="WeaponMods/Shotguns/Core.xml" />
+		<Include source="WeaponMods/Shotguns/DlcConMP5.xml" />
+		<Include source="WeaponMods/Shotguns/DlcExpPack003.xml" />
+		<Include source="WeaponMods/Shotguns/DlcShared.xml" />
+
+		<!---->
+		<Include source="WeaponMods/SMGs/Core.xml" />
+		<Include source="WeaponMods/SMGs/DlcConMP5.xml" />
+		<Include source="WeaponMods/SMGs/DlcExpPack003.xml" />
+		<Include source="WeaponMods/SMGs/DlcShared.xml" />
+
+		<!---->
+		<Include source="WeaponMods/SniperRifles/Core.xml" />
+		<Include source="WeaponMods/SniperRifles/DlcConMP5.xml" />
+		<Include source="WeaponMods/SniperRifles/DlcExpPack003.xml" />
+		<Include source="WeaponMods/SniperRifles/DlcShared.xml" />
+	</Includes>
+</CoalesceAsset>

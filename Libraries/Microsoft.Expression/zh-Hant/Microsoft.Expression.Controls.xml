@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Controls</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Initialize">
+            <summary>
+在聚合線條重複循環前呼叫。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ComputeAutoCapacity">
+            <summary>
+當 LayoutPath.Capacity 設為 Auto 時，計算使用的值。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.ShouldBreak(System.Int32)">
+            <summary>
+檢查聚合線條是否應繼續重複循環。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineBegin(Microsoft.Expression.Drawing.Core.PolylineData)">
+            <summary>
+在通過新的聚合線條前呼叫。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnPolylineCompleted(System.Double)">
+            <summary>
+在完成聚合線條時呼叫。
+            </summary>
+<param name="remaingLength">聚合線條中剩餘的弧線長度。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.OnStepCompleted(System.Double)">
+            <summary>
+在成功完成步驟時呼叫。
+            </summary>
+<param name="actualStepDistance">實際的步距。如果已繞回到另一個聚合線條，此步距可能與 Step 不同。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.DistributionStrategy.Distribute(Microsoft.Expression.Controls.PathPanel,System.Int32,System.Int32)">
+            <summary>
+使路徑面板的子項沿著指定的版面配置路徑分散。
+            </summary>
+<param name="pathPanel">路徑面板。</param>
+<param name="pathIndex">pathPanel.LayoutPaths 中路徑的索引。</param>
+<param name="childIndex">這個路徑上所要配置之第一個子項的索引。</param>
+<returns>下一個要散佈之子項的索引。若已傳回 childIndex，表示此函數未發生任何作用。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.ChildIndex">
+            <summary>
+下一個要排列之子項的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Span">
+            <summary>
+用於版面配置的弧線長度距離。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Step">
+            <summary>
+沿著目前聚合線條的弧線長度距離。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.DistributionStrategy.Capacity">
+            <summary>
+排列在 LayoutPath 上的元素總數。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.EvenDistributionStrategy">
+            <summary>
+使路徑面板的子項沿著版面配置路徑分散。平均分散表示路徑上所有元素中心間隔的弧線長度相等。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.ChangedPathLayoutProperties">
+            <summary>
+指定已變更的路徑版面配置屬性。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs">
+            <summary>
+提供 <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> 事件的資料。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.#ctor(Microsoft.Expression.Controls.ChangedPathLayoutProperties)">
+            <summary>
+初始化 <see cref="T:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs"/> 類別的新例項。
+            </summary>
+<param name="changedProperties">事件的資料。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutUpdatedEventArgs.ChangedProperties">
+            <summary>
+取得在 <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> 事件中變更的屬性。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathLayoutData">
+            <summary>
+封裝更新 <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> 所需的資料。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LayoutPathIndex">
+            <summary>
+取得或設定排列元素之路徑的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalIndex">
+            <summary>
+取得或設定元素集合中某個元素的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalIndex">
+            <summary>
+取得或設定路徑上某個元素的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.GlobalOffset">
+            <summary>
+取得或設定與一組路徑之總長度成比例的元素位移。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.LocalOffset">
+            <summary>
+取得或設定與路徑長度成比例的元素位移。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.NormalAngle">
+            <summary>
+取得或設定在元素位置與路徑垂直的角度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.OrientationAngle">
+            <summary>
+如果元素朝向路徑，則取得或設定在元素位置與路徑垂直的角度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathLayoutData.IsArranged">
+            <summary>
+取得或設定是否將元素排列在路徑上。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IPathLayoutItem">
+            <summary>
+代表由 <see cref="T:Microsoft.Expression.Controls.PathPanel"/> 排列的元素。
+            </summary>
+            <remarks>
+當元素已排列時，實作此介面可讓 <see cref="T:Microsoft.Expression.Controls.PathPanel"/> 設定這些屬性。此介面不適用於一般實作。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+根據指定的 <see cref="T:Microsoft.Expression.Controls.PathLayoutData"/> 更新 <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> 屬性，並引發 <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/> 事件。
+            </summary>
+<param name="data">更新 <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> 所需的資料。</param>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated">
+            <summary>
+當一或多個 <see cref="T:Microsoft.Expression.Controls.IPathLayoutItem"/> 屬性變更時便會發生。
+            </summary>
+            <remarks>
+每當沿著路徑的項目位置更新時，便會引發此事件。<see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 上的屬性變更或 <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> 的變更都會導致此事件發生。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex">
+            <summary>
+取得排列項目之路徑的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex">
+            <summary>
+取得項目集合中項目的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex">
+            <summary>
+取得項目在其排列之路徑上的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset">
+            <summary>
+取得與一組路徑之總長度成比例的項目位移。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset">
+            <summary>
+取得與項目排列之路徑長度成比例的項目位移。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle">
+            <summary>
+取得在項目位置與路徑垂直的角度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle">
+            <summary>
+如果項目朝向路徑，則取得在項目位置與路徑垂直的角度。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged">
+            <summary>
+取得或設定是否將項目排列在路徑上。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.IsArrangedToScaleConverter">
+            <summary>
+將代表是否要排列元素的 <see cref="T:System.Boolean"/> 轉換成用來縮放元素的 <see cref="T:System.Double"/> 值。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+在所有情況下擲回 <see cref="T:System.NotImplementedException"/> 例外。
+            </summary>
+<param name="value">正在傳送至來源的目標資料。</param>
+<param name="targetType">來源物件預期之資料的 <see cref="T:System.Type"/>。</param>
+<param name="parameter">在轉換器邏輯中使用的選用參數。</param>
+<param name="culture">轉換的文化特性。</param>
+<returns>要傳送至來源物件的值。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.IsArrangedToScaleConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+將指定的 <see cref="T:System.Boolean"/> 轉換為 <see cref="T:System.Double"/>。 
+            </summary>		
+<param name="value">正在傳送至目標的來源資料。</param>
+<param name="targetType">目標相依性屬性預期之資料的 <see cref="T:System.Type"/>。</param>
+<param name="parameter">在轉換器邏輯中使用的選用參數。</param>
+<param name="culture">轉換的文化特性。</param>
+<returns>如果 <see cref="T:System.Boolean"/> 為 true，則傳回 1。反之，則傳回 0。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Distribution">
+            <summary>
+指定 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 的分佈。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.Orientation">
+            <summary>
+指定 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 上元素的方向。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.FillBehavior">
+            <summary>
+指定在開放路徑上變更 <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> 的方法。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LayoutPath">
+            <summary>
+描述元素排列的路徑。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Controls.LayoutPath.transformedPolylines">
+            <summary>
+由於轉換會影響平面化，因此最理想的情況是在進行平面化之前建立貝茲曲線的快取。這項作業需要建立曲線的快取，然而我們對建立曲線快取的支援仍未盡完善。因此，我們會快取分佈策略中平面化的點，然後再視需要加以轉換。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.SourceElement">
+            <summary>
+取得或設定定義路徑的元素。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Distribution">
+            <summary>
+取得或設定項目是平均配置還是具有固定的邊框間距。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Capacity">
+            <summary>
+取得或設定 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 上顯示的項目數上限。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Padding">
+            <summary>
+取得或設定兩個項目間 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 之弧線長度的距離 (以像素為單位)。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Orientation">
+            <summary>
+取得或設定項目的方向。
+            </summary>
+            <remarks>
+<see cref="T:Microsoft.Expression.Controls.PathListBox"/> 支援此屬性，但 <see cref="T:Microsoft.Expression.Controls.PathPanel"/> 不支援。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Start">
+            <summary>
+取得或設定與放置第一個項目之 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 起始處的距離。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.Span">
+            <summary>
+取得或設定參與版面配置的 <see cref="T:Microsoft.Expression.Controls.LayoutPath"/> 百分比。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.FillBehavior">
+            <summary>
+取得或設定在開放路徑上變更 <see cref="P:Microsoft.Expression.Controls.LayoutPath.Span"/> 的方法。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.ActualCapacity">
+            <summary>
+取得計算出來的容量。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LayoutPath.IsValid">
+            <summary>
+取得內容中的 <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> 是否有效。如果 <see cref="P:Microsoft.Expression.Controls.LayoutPath.SourceElement"/> 是使用它的 <see cref="T:Microsoft.Expression.Controls.PathPanel"/> 之下階，則無效。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PaddedDistributionStrategy">
+            <summary>
+使版面配置路徑的子項按照子項大小和子項間的指定邊框間距分散。子項間的弧線長度距離取決於邊框間距加上子系之週框方塊半徑總和。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBox">
+            <summary>
+包含沿著一或多個路徑配置的項目清單。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.#ctor">
+            <summary>
+初始化 <see cref="T:Microsoft.Expression.Controls.PathListBox"/> 類別的新例項。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.GetContainerForItemOverride">
+            <summary>
+建立用來顯示指定之項目的元素。
+            </summary>
+<returns>對應於指定之項目的 <see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.IsItemItsOwnContainerOverride(System.Object)">
+            <summary>
+判斷指定之項目是否為 (或可成為) 自己的項目容器。
+            </summary>
+<returns>如果項目是自己的項目容器則為 true，否則為 false。</returns>
+<param name="item">指定的項目。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBox.ArrangeOverride(System.Windows.Size)">
+            <summary>
+調整子元素的位置。
+            </summary>
+<param name="finalSize">此物件排列其子元素時應該使用的大小。</param>
+<returns>使用的實際大小。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.LayoutPaths">
+            <summary>
+取得或設定定義版面配置所用路徑的物件集合。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.StartItemIndex">
+            <summary>
+取得或設定項目清單內使用的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBox.WrapItems">
+            <summary>
+取得或設定當 StartItemIndex 大於 0 時，項目索引是否會繞回到集合開頭。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathListBoxItem">
+            <summary>
+代表 <see cref="T:Microsoft.Expression.Controls.PathListBox"/> 中的項目。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.#ctor">
+            <summary>
+初始化 <see cref="T:Microsoft.Expression.Controls.PathListBoxItem"/> 類別的新例項。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathListBoxItem.Update(Microsoft.Expression.Controls.PathLayoutData)">
+            <summary>
+如需此成員的說明，請參閱 <see cref="M:Microsoft.Expression.Controls.IPathLayoutItem.Update(Microsoft.Expression.Controls.PathLayoutData)"/>。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.PathListBoxItem.PathLayoutUpdated">
+            <summary>
+如需此成員的說明，請參閱 <see cref="E:Microsoft.Expression.Controls.IPathLayoutItem.PathLayoutUpdated"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LayoutPathIndex">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LayoutPathIndex"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalIndex">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalIndex"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalIndex">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalIndex"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.GlobalOffset">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.GlobalOffset"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.LocalOffset">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.LocalOffset"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.NormalAngle">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.NormalAngle"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.OrientationAngle">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.OrientationAngle"/>。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathListBoxItem.IsArranged">
+            <summary>
+如需此成員的說明，請參閱 <see cref="P:Microsoft.Expression.Controls.IPathLayoutItem.IsArranged"/>。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PathPanel">
+            <summary>
+沿著一或多個路徑排列子元素。
+            </summary>
+            <remarks>
+在不需要選取時，<see cref="T:Microsoft.Expression.Controls.PathPanel"/> 可作為 <see cref="T:Microsoft.Expression.Controls.PathListBox"/> 的替代項目。<see cref="T:Microsoft.Expression.Controls.PathPanel"/> 不支援 <see cref="P:Microsoft.Expression.Controls.LayoutPath.Orientation"/> 屬性。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.#ctor">
+            <summary>
+初始化 <see cref="T:Microsoft.Expression.Controls.PathPanel"/> 類別的新例項。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.MeasureOverride(System.Windows.Size)">
+            <summary>
+測量子元素所需大小。
+            </summary>
+<param name="availableSize">此元素能提供給子元素的可用大小。 </param>
+<returns>此元素根據對子元素大小的計算結果，判斷它在版面配置期間需要的大小。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeOverride(System.Windows.Size)">
+            <summary>
+調整子元素的位置。
+            </summary>
+<param name="finalSize">此物件排列其子元素時應該使用的大小。</param>
+<returns>使用的實際大小。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.ArrangeChild(System.Int32,System.Int32,Microsoft.Expression.Drawing.Core.PolylineData,Microsoft.Expression.Drawing.Core.MarchLocation,System.Int32)">
+            <summary>
+將子項排列在 LayoutPath 上特定位置的指定索引處。
+            </summary>
+<param name="indirectIndex">範圍介於 0 到 PathPanel.Count 的索引。</param>
+<param name="pathIndex">排列子系之版面配置路徑的索引。</param>
+<param name="polyline">版面配置路徑中的聚合線條。</param>
+<param name="location">聚合線條上的位置。</param>
+<param name="localIndex">LayoutPath 上之子項的索引。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PathPanel.GetChildRadius(System.Int32)">
+            <summary>
+計算指定索引處之子項的週框圓圈半徑。
+            </summary>
+<param name="indirectIndex">範圍介於 0 到 PathPanel.Count 的索引。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.LayoutPaths">
+            <summary>
+取得或設定定義版面配置所用路徑的物件集合。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex">
+            <summary>
+取得或設定項目清單內使用的索引。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.WrapItems">
+            <summary>
+取得或設定當 <see cref="P:Microsoft.Expression.Controls.PathPanel.StartItemIndex"/> 大於 0 時，項目索引是否會繞回到集合開頭。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.ValidPaths">
+            <summary>
+已附加且未摺疊之 LayoutPaths 的子集。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PathPanel.Count">
+            <summary>
+計算 PathPanel 即將配置的子項數量。如果 StartItemIndex &gt; 0 且 WrapItems 為 false，則此數量可能小於 PathPanel.Children.Count。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetItemsHost(System.Windows.Controls.ItemsControl)">
+            <summary>
+取得包含 ItemsControl 之容器的面板。
+            </summary>
+<param name="control">ItemsControl。</param>
+            <returns>
+包含 ItemsControl 之容器的面板，如果找不到該面板則為 Null。
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+<paramref name="control"/> 為 Null。
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.TraverseBreadthFirst``1(``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Boolean})">
+            <summary>
+透過接受初始值和用來擷取節點之子節點的函數，在樹狀目錄中周遊。
+            </summary>
+<typeparam name="T">資料流的類型。</typeparam>
+<param name="initialNode">初始節點。</param>
+<param name="getChildNodes">用來擷取節點之子節點的函數。</param>
+<param name="traversePredicate">述詞，該述詞會評估節點並傳回指出是否應在該節點與其子項中周遊的值。</param>
+<returns>節點的資料流。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+取得元素的視覺化樹狀目錄子項。
+            </summary>
+<param name="element">元素。</param>
+<returns>元素的視覺化樹狀目錄子項。</returns>
+            <exception cref="T:System.ArgumentNullException">
+<paramref name="element"/> 為 Null。
+            </exception>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetVisualChildrenAndSelfIterator(System.Windows.DependencyObject)">
+            <summary>
+取得元素的視覺化樹狀目錄子項和元素本身。
+            </summary>
+<param name="element">元素。</param>
+            <returns>
+元素的視覺化樹狀目錄子項和元素本身。
+            </returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalChildren(System.Windows.FrameworkElement)">
+            <summary>
+使用橫向優先搜尋來擷取基礎架構元素的所有邏輯子項。基於效能考量，此方法會以手動方式管理堆疊，而不使用遞迴方式。
+            </summary>
+<param name="parent">父基礎架構元素。</param>
+<returns>基礎架構元素的邏輯子項。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.Utilities.GetLogicalDescendents(System.Windows.FrameworkElement)">
+            <summary>
+使用橫向優先搜尋來擷取基礎架構元素的所有邏輯下階。基於效能考量，此方法會以手動方式管理堆疊，而不使用遞迴方式。
+            </summary>
+<param name="parent">父基礎架構元素。</param>
+<returns>基礎架構元素的邏輯子項。</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,1041 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Effects</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindOrientation">
+            <summary>
+            해당 블라인드 방향을 확인합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BlindsTransitionEffect">
+            <summary>
+            비주얼 간에 전환할 경우 열리는 블라인드를 시뮬레이션하는 셰이더를 전환합니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.OrientationProperty">
+            <summary>
+            해당 블라인드 방향을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.CountProperty">
+            <summary>
+            블라인드 수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientationProperty">
+            <summary>
+            셰이더 내 Amplitude 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.DeepCopy">
+            <summary>
+            BlindsTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>BlindsTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Orientation">
+            <summary>
+            해당 블라인드 방향을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.Count">
+            <summary>
+            표시할 블라인드 수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BlindsTransitionEffect.ShaderOrientation">
+            <summary>
+            해당 블라인드 방향을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.BloomEffect">
+            <summary>
+            비주얼의 블룸 조명을 구현하는 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+            
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensityProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BloomIntensity 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensityProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BaseIntensity 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturationProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BloomSaturation 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturationProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BaseSaturation 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensityProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BloomIntensity 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturationProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BloomSaturation 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.BloomEffect.ThresholdProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 BaseSaturation 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.BloomEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Threshold">
+            <summary>
+            블룸에 사용되는 최소 농도를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseIntensity">
+            <summary>
+            기본 농도를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomIntensity">
+            <summary>
+            블룸 농도를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseSaturation">
+            <summary>
+            기본 채도를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BloomSaturation">
+            <summary>
+            블룸 채도를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomIntensity">
+            <summary>
+            셰이더 내 Base/BloomIntensity 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.BloomEffect.BaseBloomSaturation">
+            <summary>
+            셰이더 내 BaseBloomSaturation 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect">
+            <summary>
+            확장/축소되는 원을 통해 2개의 비주얼을 표시하는 전환 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmountProperty">
+            <summary>
+            픽셀 셰이더 내 Feather 양 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseProperty">
+            <summary>
+            원형 이동을 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShaderProperty">
+            <summary>
+            픽셀 셰이더 내 reverseShader 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.DeepCopy">
+            <summary>
+            CircleRevealTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>CircleRevealTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.FeatherAmount">
+            <summary>
+            셰이더 내 FuzzyAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.Reverse">
+            <summary>
+            원 표시 뒤로 재생을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CircleRevealTransitionEffect.ReverseShader">
+            <summary>
+            원 표시를 셰이더 뒤로 재생을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect">
+            <summary>
+            구름 질감을 견본 임계값으로 사용하여 2개의 비주얼을 전환하는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.CloudyTransitionEffect">
+            <summary>
+            2개의 비주얼 사이에 픽셀 값을 삽입하기 위해 견본 임계값으로 이미지를 사용하는 전환 셰이더 효과를 정의합니다. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect">
+            <summary>
+            효과를 실행할 때마다 효과에서 차이를 제공할 수 있게 해주는 임의 값을 제공하는 전환 셰이더 효과를 정의합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeedProperty">
+            <summary>
+            픽셀 셰이더 내 RandomSeed 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.#ctor">
+            <summary>
+            셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RandomizedTransitionEffect.RandomSeed">
+            <summary>
+            셰이더 내 RandomSeed 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImageProperty">
+            <summary>
+            픽셀 셰이더 내 CloudImage 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.CloudyTransitionEffect.CloudImage">
+            <summary>
+            샘플링에 사용된 셰이더 내 CloudImage 변수를 가져오거나 설정합니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.CloudRevealTransitionEffect.DeepCopy">
+            <summary>
+            CloudRevealTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>CloudRevealTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.ColorToneEffect">
+            <summary>
+            2개의 색을 샘플링으로 사용하여 비주얼의 색 톤을 수정하는 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DesaturationProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Desaturation 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmountProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Tone 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColorProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 LightColor 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColorProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 DarkColor 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.ColorToneEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Desaturation">
+            <summary>
+            셰이더 내 Desaturation 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.ToneAmount">
+            <summary>
+            셰이더 내 Tone 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.LightColor">
+            <summary>
+            셰이더 내 LightColor 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.DarkColor">
+            <summary>
+            셰이더 내 DarkColor 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.ColorToneEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.EmbossedEffect">
+            <summary>
+            비주얼에 볼록 모양을 시뮬레이션하는 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.AmountProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Amount 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.HeightProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Height 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.EmbossedEffect.ColorProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Color 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.EmbossedEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Amount">
+            <summary>
+            셰이더 내 Amount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Height">
+            <summary>
+            셰이더 내 Height 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Color">
+            <summary>
+            셰이더 내 Color 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.EmbossedEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.FadeTransitionEffect">
+            <summary>
+            하나의 비주얼에서 다른 비주얼로 점진적으로 전환하는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.FadeTransitionEffect.DeepCopy">
+            <summary>
+            FadeTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>FadeTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect">
+            <summary>
+            돋보기 렌즈를 시뮬레이션하는 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadiusProperty">
+            <summary>
+            셰이더 내 InnerRadius 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadiusProperty">
+            <summary>
+            셰이더 내 OuterRadius 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.CenterProperty">
+            <summary>
+            셰이더 내 Center 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.AmountProperty">
+            <summary>
+            셰이더 내 Amount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.InputProperty">
+            <summary>
+            셰이더에서 사용된 Input을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.generalTransform">
+            <summary>
+            이 셰이더에 사용된 변형입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.InnerRadius">
+            <summary>
+            셰이더 내 InnerRadius 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.OuterRadius">
+            <summary>
+            셰이더 내 OuterRadius 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Center">
+            <summary>
+            셰이더 내 Center 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Amount">
+            <summary>
+            ShrinkFactor를 가져오거나 설정합니다. 축소 인수가 높을수록 타원 내 콘텐츠가 더 작게 표시됩니다. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.EffectMapping">
+            <summary>
+            EffectMapping을 가져옵니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform">
+            <summary>
+            GeneralTransform은 Magnify 효과에 해당합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.biasValue">
+            <summary>
+            효과를 기반으로 점을 변형합니다.
+            </summary>
+            <param name="targetPoint">변형할 점입니다.</param>
+            <param name="result">결과입니다(사용 가능한 경우).</param>
+            <returns>성공한 경우 true를 반환합니다.</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.effect">
+            <summary>
+            효과 인스턴스입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.IsInverse">
+            <summary>
+            역 변형의 경우입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.inverseTransform">
+            <summary>
+            이 효과에 해당하는 변형입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.MagnifyEffect)">
+            <summary>
+            새 인스턴스를 만듭니다.
+            </summary>
+            <param name="fx">원본 효과입니다.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            이 특정 효과에서는 축 맞춤 선을 축을 따라 정렬하므로 사각형의 변형은 꼭지 점의 변형일뿐입니다.
+            </summary>
+            <param name="rect">입력된 사각형입니다.</param>
+            <returns>출력한 사각형입니다.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.OutToIn(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            역 셰이더의 경우 질감 입력 Pout가 역 셰이더일 경우 Pixel Ouput인 Pin을 찾아야 합니다. 그러나 역 계산시 갖고 있지 않은 변수인 center에서 픽셀 출력의 반경에 셰이더 알고리즘이 종속됩니다. PHatout = PHat_in*Scalar 방정식(여기서 PHatout = Pout - Pcenter pHatin = Pin -Pcenter)을 사용하여 수렴하려면 이등분을 해야 합니다.
+            
+            스칼라는 갖고 있지 않은 Pin의 반경에 종속됩니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.InToOut(System.Windows.Point,System.Double,System.Double,System.Windows.Point,System.Double)">
+            <summary>
+            픽셀 출력(Pin)의 경우 질감 입력(Pout)을 찾습니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.CreateInstanceCore">
+            <summary>
+            새 인스턴스를 만듭니다.
+            </summary>
+            <returns>이 항목의 새 인스턴스입니다.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.PointIsInCircle(System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+            점이 타원 내에 있는지 여부를 결정합니다.
+            </summary>
+            <param name="pt">테스트 점입니다.</param>
+            <param name="center">타원의 중점입니다.</param>
+            <param name="radius">타원 반지름입니다.</param>
+            <returns>성공한 경우 true를 반환합니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MagnifyEffect.MagnifyGeneralTransform.Inverse">
+            <summary>
+            역 변형을 가져옵니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.MonochromeEffect">
+             <summary>
+            비주얼을 단색으로 변환하는 효과입니다.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.ColorProperty">
+            <summary>
+            셰이더 내 Color 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.MonochromeEffect.InputProperty">
+            <summary>
+            셰이더의 Input을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.MonochromeEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Color">
+            <summary>
+            셰이더 내 Color 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.MonochromeEffect.Input">
+            <summary>
+            셰이더에서 사용된 Input을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateEffect">
+            <summary>
+            시각적 pixelates 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.PixelateEffect.PixelationProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Pixelation 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Pixelation">
+            <summary>
+            셰이더 내 pixelation 양을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.PixelateEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.PixelateTransitionEffect">
+            <summary>
+            2개 비주얼 사이의 pixelation을 증가/감소하는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.PixelateTransitionEffect.DeepCopy">
+            <summary>
+            PixelateTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>PixelateTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect">
+            <summary>
+            새 비주얼이 도입될 때 현재 비주얼을 방사형으로 흐리게 하는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RadialBlurTransitionEffect.DeepCopy">
+            <summary>
+            RadialBlurTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>RadialBlurTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleEffect">
+            <summary>
+            비주얼에서 잔물결을 시뮬레이션하는 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.CenterProperty">
+            <summary>
+            셰이더 내 Center 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.MagnitudeProperty">
+            <summary>
+            셰이더 내 Amplitude 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.FrequencyProperty">
+            <summary>
+            셰이더 내 Frequency 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.PhaseProperty">
+            <summary>
+            셰이더 내 Phase 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.RippleEffect.InputProperty">
+            <summary>
+            셰이더에서 사용된 Input brush를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Center">
+            <summary>
+            셰이더 내 Center 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Magnitude">
+            <summary>
+            셰이더 내 Amplitude 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Frequency">
+            <summary>
+            셰이더 내 Frequency 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Phase">
+            <summary>
+            셰이더 내 Phase 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.RippleEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.RippleTransitionEffect">
+            <summary>
+            전환 중에 잔물결을 시뮬레이션하는 전환 효과입니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.RippleTransitionEffect.DeepCopy">
+            <summary>
+            RippleTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>RippleTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SharpenEffect">
+            <summary>
+            비주얼을 더 선명하게 하는 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.AmountProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Amount 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SharpenEffect.HeightProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Width 변수에 매핑됩니다. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SharpenEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Amount">
+            <summary>
+            셰이더 내 Amount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Height">
+            <summary>
+            셰이더 내 Height 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SharpenEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideDirection">
+            <summary>
+            슬라이드 방향을 정의합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SlideInTransitionEffect">
+            <summary>
+            현재 비주얼을 밀어서 새 비주얼을 표시하는 전환 효과입니다. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirectionProperty">
+            <summary>
+            픽셀 셰이더 내 SlideAmount 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormalProperty">
+            <summary>
+            픽셀 셰이더 내 SlideAmount 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.DeepCopy">
+            <summary>
+            SlideInTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>SlideInTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideDirection">
+            <summary>
+            셰이더 내 SlideAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SlideInTransitionEffect.SlideNormal">
+            <summary>
+            셰이더 내 SlideAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect">
+             <summary>
+            새 비주얼이 도입되는 동안 현재 비주얼을 회전하는 전환 효과입니다.
+             </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmountProperty">
+            <summary>
+            픽셀 셰이더 내 TwistAmount 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCountProperty">
+            <summary>
+            픽셀이 비틀리는 셀 수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor(System.Double)">
+            <summary>
+            인스턴스를 만들고 셰이더의 twist 변수를 지정된 값으로 설정합니다.
+            </summary>
+            <param name="twist">회전 비틀림 수준입니다.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.DeepCopy">
+            <summary>
+            SmoothSwirlGridTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>SmoothSwirlGridTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.TwistAmount">
+            <summary>
+            셰이더 내 TwistAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SmoothSwirlGridTransitionEffect.CellCount">
+            <summary>
+            셰이더 내 CellCount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect">
+            <summary>
+            현재 비주얼을 회전하는 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.InputProperty">
+            <summary>
+            이 픽셀 셰이더의 명시적인 입력입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.CenterProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 Center 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmountProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 TwistAmount 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequencyProperty">
+            <summary>
+            이 속성은 픽셀 셰이더 내 AngleFrequency 변수에 매핑됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.generalTransform">
+            <summary>
+            이 효과가 적용될 때 사용된 변형입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Center">
+            <summary>
+            셰이더 내 Center 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.TwistAmount">
+            <summary>
+            셰이더 내 TwistAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.AngleFrequency">
+            <summary>
+            셰이더 내 AngleFrequency 변수를 가져오거나 설정합니다. 이 속성은 노출되지 않습니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.Input">
+            <summary>
+            입력 셰이더 견본을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.EffectMapping">
+            <summary>
+            이 효과에 대한 GeneralTransform을 가져옵니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform">
+            <summary>
+            입력 변형 및 트리 변형에 사용됩니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.theEffect">
+            <summary>
+            Effect의 인스턴스입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.thisIsInverse">
+            <summary>
+            역 변형입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.inverseTransform">
+            <summary>
+            이 GeneralTransform의 반전입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.#ctor(Microsoft.Expression.Media.Effects.SwirlEffect)">
+            <summary>
+            이 클래스의 인스턴스를 만듭니다.
+            </summary>
+            <param name="eff">효과 자체입니다.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TransformBounds(System.Windows.Rect)">
+            <summary>
+            이 작업을 위해 경계는 4개 변형 점의 경계 상자입니다. 각각을 변형한 다음, 경계선을 그어야 합니다.  이는 전진/역 모두에 true입니다.
+            </summary>
+            <param name="rect">입력된 사각형입니다.</param>
+            <returns>변형된 사각형입니다.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.TryTransform(System.Windows.Point,System.Windows.Point@)">
+            <summary>
+            회전 효과를 사용하여 inPoint 변형을 시도합니다.
+            </summary>
+            <param name="targetPoint">입력된 점입니다.</param>
+            <param name="result">회전 효과를 사용하여 변형된 후의 출력 점입니다.</param>
+            <returns>true를 반환하지만 false일 경우 발생합니다.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.CreateInstanceCore">
+            <summary>
+            이 새 인스턴스를 반환합니다.
+            </summary>
+            <returns>새 인스턴스입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.SwirlEffect.SwirlGeneralTransform.Inverse">
+            <summary>
+            현재 역 변형의 복제본을 가져옵니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WaveTransitionEffect">
+            <summary>
+            새 비주얼이 도입되는 동안 현재 비주얼을 물결화하는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.MagnitudeProperty">
+            <summary>
+            픽셀 셰이더 내 Magnitude 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.PhaseProperty">
+            <summary>
+            픽셀 셰이더 내 Phase 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WaveTransitionEffect.FrequencyProperty">
+            <summary>
+            픽셀 셰이더 내 Frequency 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.#ctor">
+            <summary>
+            셰이더의 인스턴스를 만듭니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WaveTransitionEffect.DeepCopy">
+            <summary>
+            WaveTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>WaveTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Magnitude">
+            <summary>
+            물결의 규모를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Phase">
+            <summary>
+            물결의 단계를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WaveTransitionEffect.Frequency">
+            <summary>
+            물결의 규모를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeDirection">
+            <summary>
+            닦아내기 방향을 정의합니다.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.Effects.WipeTransitionEffect">
+            <summary>
+            새 비주얼이 도입되는 동안 현재 비주얼을 닦아내는 전환 효과입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirectionProperty">
+            <summary>
+            픽셀 셰이더 내 WipeDirection 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmountProperty">
+            <summary>
+            픽셀 셰이더 내 FeatherAmount 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOriginProperty">
+            <summary>
+            픽셀 셰이더 내 LineOrigin 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormalProperty">
+            <summary>
+            픽셀 셰이더 내 LineNormal 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffsetProperty">
+            <summary>
+            픽셀 셰이더 내 LineOffset 변수를 수정하는 종속성 속성입니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.#ctor">
+            <summary>
+            인스턴스를 만들고 셰이더 변수를 기본값으로 업데이트합니다.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.Effects.WipeTransitionEffect.DeepCopy">
+            <summary>
+            WipeTransitionEffect 효과의 깊은 복사본을 만듭니다. 
+            </summary>
+            <returns>WipeTransitionEffect 효과의 현재 인스턴스 복제본입니다.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.WipeDirection">
+            <summary>
+            닦아내기 방향을 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.FeatherAmount">
+            <summary>
+            셰이더 내 FeatherAmount 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOrigin">
+            <summary>
+            셰이더 내 LineOrigin 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineNormal">
+            <summary>
+            셰이더 내 LineNormal 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.Effects.WipeTransitionEffect.LineOffset">
+            <summary>
+            셰이더 내 LineOffset 변수를 가져오거나 설정합니다.
+            </summary>
+        </member>
+    </members>
+</doc>

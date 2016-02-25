@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgame.biohintsystembase">
+			<Property name="m_ahints" type="4">(HintName="GrenadeHint", MaxDifficulty=3, DefaultText=720732, ClearEvent="UsedGrenade")</Property>
+		</Section>
+		<Section name="sfxgame.sfxgameconfig">
+			<Property name="mpplayervariablemappings">
+				<Value type="4">(ClassName="recru_asa",ID=272)</Value>
+				<Value type="4">(ClassName="recru_kro",ID=273)</Value>
+				<Value type="4">(ClassName="recru_qua",ID=274)</Value>
+				<Value type="4">(ClassName="recru_sal",ID=275)</Value>
+				<Value type="4">(ClassName="recru_tur",ID=276)</Value>
+				<Value type="4">(ClassName="recru_dre",ID=277)</Value>
+				<Value type="4">(ClassName="SFXGameChoiceGUIData_StoreData_MPAssaultRifles_InventoryLocked",ID=56)</Value>
+				<Value type="4">(ClassName="SFXGameChoiceGUIData_StoreData_MPPistols_InventoryLocked",ID=57)</Value>
+				<Value type="4">(ClassName="SFXGameChoiceGUIData_StoreData_MPShotguns_InventoryLocked",ID=58)</Value>
+				<Value type="4">(ClassName="SFXGameChoiceGUIData_StoreData_MPSMGs_InventoryLocked",ID=59)</Value>
+				<Value type="4">(ClassName="SFXGameChoiceGUIData_StoreData_MPSniperRifles_InventoryLocked",ID=60)</Value>
+				<Value type="4">(ClassName="MatchConsumable_ActiveXPBonusMultiplierIndex_1",ID=132)</Value>
+				<Value type="4">(ClassName="MatchConsumable_ActiveXPBonusMultiplierIndex_2",ID=133)</Value>
+				<Value type="4">(ClassName="MatchConsumable_ActiveXPBonusMultiplierIndex_3",ID=134)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Reckoning",ID=241)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation",ID=39)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleDamage_Display",ID=61)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy_Display",ID=62)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleStability_Display",ID=63)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleMagSize_Display",ID=64)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_AssaultRifleForce_Display",ID=65)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleDamage_Display",ID=66)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleAccuracy_Display",ID=67)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleStability_Display",ID=68)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation_Display",ID=69)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage_Display",ID=70)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_ShotgunDamage_Display",ID=71)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage_Display",ID=72)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_ShotgunStability_Display",ID=73)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_ShotgunAccuracy_Display",ID=74)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed_Display",ID=75)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_PistolDamage_Display",ID=76)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_PistolAccuracy_Display",ID=77)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_PistolStability_Display",ID=78)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_PistolMagSize_Display",ID=79)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_PistolReloadSpeed_Display",ID=80)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SMGDamage_Display",ID=81)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SMGAccuracy_Display",ID=82)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SMGStability_Display",ID=83)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SMGMagSize_Display",ID=84)</Value>
+				<Value type="4">(ClassName="SFXGameContent.SFXWeaponMod_SMGConstraintDamage_Display",ID=85)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonus_3",ID=108)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonus_4",ID=109)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonus_5",ID=110)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonusDamage_3",ID=262)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonusDamage_4",ID=263)</Value>
+				<Value type="4">(ClassName="SFXGameMPContent.SFXGameEffect_MatchConsumable_PowerBonusDamage_5",ID=264)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

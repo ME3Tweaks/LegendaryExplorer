@@ -1,0 +1,252 @@
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe.config
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.Core.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ME3LibWV.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Expression.Effects.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Composition.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Interactivity.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Mvvm.Desktop.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Mvvm.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.PubSubEvents.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.SharedInterfaces.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.UnityExtensions.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.DataGrid.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.Core.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ME3LibWV.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Composition.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Interactivity.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.Mvvm.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.SharedInterfaces.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Prism.UnityExtensions.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.xml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\de\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\es\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\fr\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\it\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ja\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ko\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ru\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hans\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hant\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ru\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MainWindow.g.cs
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\App.g.cs
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.cache
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.lref
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MainWindow.baml
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.g.resources
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.Properties.Resources.resources
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Visual Studio 2013\Projects\me3explorer-code-643\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Shared.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Microsoft.Expression.Effects.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Shared.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\de\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\es\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\fr\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\it\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ja\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ko\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ru\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\zh-Hans\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\zh-Hant\Microsoft.Expression.Effects.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MainWindow.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\App.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.lref
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MainWindow.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.g.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.Platform.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.Platform.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ME3 Explorer\MassEffect.NativesEditor\bin\Debug\System.Windows.Interactivity.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect.NativesEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.NativesEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.Platform.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.MassEffect3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.UnrealEngine3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.Windows.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.Shared.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ReactiveUI.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Splat.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Interfaces.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Linq.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.PlatformServices.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Windows.Threading.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.DataGrid.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.MassEffect3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.UnrealEngine3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Gammtek.Conduit.Windows.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.Shared.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\MassEffect.Windows.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Caliburn.Micro.Platform.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ReactiveUI.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\Splat.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Core.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Interfaces.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Linq.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.PlatformServices.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\System.Reactive.Windows.Threading.xml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ru\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\ChangeObjectIdDialog.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\FindObjectUsagesView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\NewObjectDialog.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\CodexMapView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\CopyObjectDialog.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\QuestMapView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\ShellView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\StateEventMapView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\StateTaskListsView.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\App.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor_MarkupCompile.lref
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\App.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\ChangeObjectIdDialog.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\FindObjectUsagesView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\NewObjectDialog.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\CodexMapView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Dialogs\CopyObjectDialog.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\QuestMapView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\ShellView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\StateEventMapView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\Views\StateTaskListsView.baml
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.g.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.Properties.Resources.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.NativesEditor\obj\Debug\MassEffect.NativesEditor.pdb

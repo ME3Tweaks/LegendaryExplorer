@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Includes>
+		<!-- Store_Intel -->
+		<Include source="Intel/AdvancedBioticAmps.xml" />
+		<Include source="Intel/BattleFootage.xml" />
+		<Include source="Intel/BattleOfArcturus.xml" />
+		<Include source="Intel/BioticResearchData.xml" />
+		<Include source="Intel/DestroyedMiniReaper.xml" />
+		<Include source="Intel/Feron.xml" />
+		<Include source="Intel/IntactReaperGun.xml" />
+		<Include source="Intel/IntelligenceArchives.xml" />
+		<Include source="Intel/LegionIntel1.xml" />
+		<Include source="Intel/LegionIntel2.xml" />
+		<Include source="Intel/MedicalUpgrade.xml" />
+		<Include source="Intel/PrejekPaddlefish.xml" />
+		<Include source="Intel/SamaraMission.xml" />
+		<Include source="Intel/KhansNetworkExposed.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgamecontent.sfxguidata_store_intel">
+			<Property name="intelsummary" type="0">
+				(ItemType=TYPE_INTELSUMMARY,
+				ChoiceEntry=(
+				srChoiceName=331559,
+				srChoiceDescription=174743,
+				srActionText=174743,
+				eDisplayType=EChoiceDisplayType_None))
+			</Property>
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_BattleFootage",
+					PlotUnlockConditionalID=1677,
+					ChoiceEntry=(srChoiceName=715412, srChoiceDescription=715530))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_BattleOfArcturus",
+					PlotUnlockConditionalID=1678,
+					ChoiceEntry=(srChoiceName=715437, srChoiceDescription=715555))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_BioticResearchData",
+					PlotUnlockConditionalID=1679,
+					ChoiceEntry=(srChoiceName=715482, srChoiceDescription=715600))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_DestroyedMiniReaper",
+					PlotUnlockConditionalID=1680,
+					ChoiceEntry=(srChoiceName=715442, srChoiceDescription=715560))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_IntactReaperGun",
+					PlotUnlockConditionalID=1681,
+					ChoiceEntry=(srChoiceName=715460, srChoiceDescription=715578))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_IntelligenceArchives",
+					PlotUnlockConditionalID=1682,
+					ChoiceEntry=(srChoiceName=715432, srChoiceDescription=715550))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_LegionIntel1",
+					PlotUnlockConditionalID=1683,
+					ChoiceEntry=(srChoiceName=715500, srChoiceDescription=715635))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_LegionIntel2",
+					PlotUnlockConditionalID=1684,
+					ChoiceEntry=(srChoiceName=715501, srChoiceDescription=715636))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_SamaraMission",
+					PlotUnlockConditionalID=1685,
+					ChoiceEntry=(srChoiceName=715514, srChoiceDescription=715663))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_PrejekPaddlefish",
+					PlotUnlockConditionalID=1686,
+					ChoiceEntry=(srChoiceName=715513, srChoiceDescription=715662))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_Feron",
+					PlotUnlockConditionalID=2358,
+					ChoiceEntry=(srChoiceName=720297, srChoiceDescription=720298))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_AdvancedBioticAmps",
+					PlotUnlockConditionalID=2359,
+					ChoiceEntry=(srChoiceName=715502, srChoiceDescription=715637))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Intel_MedicalUpgrade",
+					PlotUnlockConditionalID=2477,
+					ChoiceEntry=(srChoiceName=724235, srChoiceDescription=724236))
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXGUIData_Store_Intel_KhansNetworkExposed",
+					PlotUnlockConditionalID=4026,
+					ChoiceEntry=(srChoiceName=813751, srChoiceDescription=813752))
+				</Value>
+			</Property>
+			<Property name="storename" type="0">Intel</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

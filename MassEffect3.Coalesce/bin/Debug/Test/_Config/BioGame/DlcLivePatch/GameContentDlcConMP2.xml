@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_assaultdamagegrenadecap">
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.05f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_pistoldamagebioticdamage">
+			<Property name="powerdamage[0]" type="0">0.04f</Property>
+			<Property name="powerdamage[1]" type="0">0.05f</Property>
+			<Property name="powerdamage[2]" type="0">0.08f</Property>
+			<Property name="powerdamage[3]" type="0">0.1f</Property>
+			<Property name="powerdamage[4]" type="0">0.12f</Property>
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.05f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_shieldstrengthshieldregen">
+			<Property name="shieldregen[0]" type="0">-0.04f</Property>
+			<Property name="shieldregen[1]" type="0">-0.05f</Property>
+			<Property name="shieldregen[2]" type="0">-0.08f</Property>
+			<Property name="shieldregen[3]" type="0">-0.1f</Property>
+			<Property name="shieldregen[4]" type="0">-0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_shotgundamagemeleedamage">
+			<Property name="meleedamage[0]" type="0">0.04f</Property>
+			<Property name="meleedamage[1]" type="0">0.05f</Property>
+			<Property name="meleedamage[2]" type="0">0.08f</Property>
+			<Property name="meleedamage[3]" type="0">0.1f</Property>
+			<Property name="meleedamage[4]" type="0">0.12f</Property>
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.05f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_smgdamagepowercooldown">
+			<Property name="powercooldown[0]" type="0">0.04f</Property>
+			<Property name="powercooldown[1]" type="0">0.05f</Property>
+			<Property name="powercooldown[2]" type="0">0.08f</Property>
+			<Property name="powercooldown[3]" type="0">0.1f</Property>
+			<Property name="powercooldown[4]" type="0">0.12f</Property>
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.05f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_combo_sniperdamagetechdamage">
+			<Property name="powerdamage[0]" type="0">0.04f</Property>
+			<Property name="powerdamage[1]" type="0">0.05f</Property>
+			<Property name="powerdamage[2]" type="0">0.08f</Property>
+			<Property name="powerdamage[3]" type="0">0.1f</Property>
+			<Property name="powerdamage[4]" type="0">0.12f</Property>
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.05f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxgameeffect_matchconsumable_gear_meleedamage">
+			<Property name="dmgmultiplier[0]" type="0">0.100f</Property>
+			<Property name="dmgmultiplier[1]" type="0">0.125f</Property>
+			<Property name="dmgmultiplier[2]" type="0">0.150f</Property>
+			<Property name="dmgmultiplier[3]" type="0">0.175f</Property>
+			<Property name="dmgmultiplier[4]" type="0">0.200f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxobjective_retrieve_pickupobject_dlc">
+			<Property name="movementspeedoverrides">
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Adept_Krogan",MovementSpeedDecrease=0.f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_N7Infiltrator_Turian",MovementSpeedDecrease=-0.15f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_N7Soldier_Turian",MovementSpeedDecrease=-0.15f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Vanguard_Batarian",MovementSpeedDecrease=-0.10f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Engineer_Turian",MovementSpeedDecrease=-0.15f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Engineer_Vorcha",MovementSpeedDecrease=-0.35f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Adept_Batarian",MovementSpeedDecrease=-0.10f)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Infiltrator_Drell",MovementSpeedDecrease=-0.35f)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxpowercustomaction_empgrenade">
+			<Property name="damage" type="0">(BaseValue=400.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp2.sfxpowercustomaction_whipsmash">
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f))</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

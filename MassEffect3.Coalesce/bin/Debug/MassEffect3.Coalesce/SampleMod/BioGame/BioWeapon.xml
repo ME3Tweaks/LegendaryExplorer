@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini" source="..\..\biogame\config\bioweapon.ini">
+	<Includes>
+		<Include source="BioWeapon/SFXGame.xml" />
+		<Include source="BioWeapon/SFXGameContent.xml" />
+		<Include source="BioWeapon/SFXGameMPContent.xml" />
+	</Includes>
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">4534406005.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

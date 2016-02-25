@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="engine.gameinfo">
+			<Property name="defaultmapprefixes">
+				<Value type="4">(Prefix="MPLobby",bIsMultiplayer=TRUE,bUsesCommonPackage=TRUE,GameType="SFXGameMPContent.SFXGameInfoMP_Lobby",OverrideCommonPackage="BIOP_MP_COMMON",ForcedObjects=("BioGlobalResources.BioGlobalResources"))</Value>
+				<Value type="3">(Prefix="MPLobby",bIsMultiplayer=TRUE,bUsesCommonPackage=TRUE,GameType="SFXGameMPContentDLC_Shared_MP.SFXGameInfoMP_Lobby_DLC",OverrideCommonPackage="BIOP_MP_COMMON",ForcedObjects=("BioGlobalResources.BioGlobalResources"))</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

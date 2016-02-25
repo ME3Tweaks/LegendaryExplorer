@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgame.biosfhandler_newcharacter">
+			<Property name="bonustalents" type="3">(BonusPowerID=65536,PowerClassName="sfxgamecontentdlc_exp_pack001.SFXPowerCustomAction_Dominate",srChoiceName=762116,srChoiceTitle=762116,srChoiceDescription=762123,oChoiceImage=none)</Property>
+		</Section>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets">
+				<Value type="3">(ID=602,AssetName="GAWAsset_Exp1_Lev002",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=603,AssetName="GAWAsset_Exp1_Lev002_1A",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=604,AssetName="GAWAsset_Exp1_Lev002_1B",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=605,AssetName="GAWAsset_Exp1_Lev002_2A",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=606,AssetName="GAWAsset_Exp1_Lev002_2B",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=607,AssetName="GAWAsset_Exp1_Lev002_3A",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=608,AssetName="GAWAsset_Exp1_Lev002_3B",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=615,AssetName="GAWAsset_Exp1_Lev003",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=616,AssetName="GAWAsset_Exp1_Lev003_1",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=617,AssetName="GAWAsset_Exp1_Lev003_2",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=620,AssetName="GAWAsset_Exp1_Lev004",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=621,AssetName="GAWAsset_Exp1_Lev004_1",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=622,AssetName="GAWAsset_Exp1_Lev004_2",Type=GAWAssetType_Salvage,StartingStrength=0,GUIName=740127,bIsExploration=false,bShowNotificationOnAward=false)</Value>
+				<Value type="3">(ID=625,AssetName="GAWAsset_SynDiamondHeatSinks",Type=GAWAssetType_Military,StartingStrength=25,GUIName=758836,GUIDescription=758837,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=1,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_DyHeatSnk_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_DyHeatSnk_256x128")</Value>
+				<Value type="3">(ID=626,AssetName="GAWAsset_DoomedEscapeShip",Type=GAWAssetType_Salvage,StartingStrength=10000,GUIName=758838,GUIDescription=758839,bIsExploration=True,UnlockPlotStates[0]=0,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="",NotificationImagePath="")</Value>
+				<Value type="3">(ID=627,AssetName="GAWAsset_GovGrothanPazness",Type=GAWAssetType_Military,StartingStrength=20,GUIName=758840,GUIDescription=758841,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=0,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_GrothanP_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_GrothanP_256x128")</Value>
+				<Value type="3">(ID=628,AssetName="GAWAsset_VoidDevils",Type=GAWAssetType_Military,StartingStrength=30,GUIName=758842,GUIDescription=758843,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=0,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_VoidDevil_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_VoidDevil_256x128")</Value>
+				<Value type="3">(ID=629,AssetName="GAWAsset_VorchaLaborTeam",Type=GAWAssetType_Military,StartingStrength=15,GUIName=758844,GUIDescription=758845,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=0,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_VrcaLabor_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_VrcaLabor_256x128")</Value>
+				<Value type="3">(ID=630,AssetName="GAWAsset_LiquidAssets",Type=GAWAssetType_Military,StartingStrength=40,GUIName=758846,GUIDescription=758847,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=0,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_LiquidAst_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_LiquidAst_256x128")</Value>
+				<Value type="3">(ID=631,AssetName="GAWAsset_JovianDIssertation",Type=GAWAssetType_Military,StartingStrength=5,GUIName=758848,GUIDescription=758849,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=3,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_JovianDis_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_JovianDis_256x128")</Value>
+				<Value type="3">(ID=632,AssetName="GAWAsset_CrucibleShieldingSheath",Type=GAWAssetType_Military,StartingStrength=25,GUIName=758850,GUIDescription=758851,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=3,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_RadShield_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_RadShield_256x128")</Value>
+				<Value type="3">(ID=633,AssetName="GAWAsset_HuskNeuralMap",Type=GAWAssetType_Military,StartingStrength=30,GUIName=758852,GUIDescription=758853,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=2,DebugConditionalDescription="",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_NeralMap_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_NeralMap_256x128")</Value>
+				<Value type="3">(ID=634,AssetName="GAWAsset_DextroRations",Type=GAWAssetType_Military,StartingStrength=10,GUIName=758854,GUIDescription=758855,bIsExploration=True,UnlockPlotStates[0]=0,GUICategoryID=8,DebugConditionalDescription=,bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_Rations_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_Rations_256x128")</Value>
+				<Value type="3">(ID=635,AssetName="GAWAsset_DrAnnBryson",Type=GAWAssetType_Military,StartingStrength=20,GUIName=758856,GUIDescription=758857,bIsExploration=False,UnlockPlotStates[0]=0,GUICategoryID=1,DebugConditionalDescription="Ann survives Trace the Call scene",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_AnnBryson_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_AnnBryson_256x128")</Value>
+				<Value type="3">(ID=636,AssetName="GAWAsset_LeviathanEnthrallmentTeam",Type=GAWAssetType_Military,StartingStrength=400,GUIName=758858,GUIDescription=758859,bIsExploration=False,UnlockPlotStates[0]=0,GUICategoryID=0,DebugConditionalDescription="Complete LEV004",bShowNotificationOnAward=true,ImagePath="GUI_LevGAW_Images.GM_Leviathan_512x256",NotificationImagePath="GUI_LevGAW_Images.GM_Leviathan_256x128")</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgui_store">
+			<Property name="modstringsarray">
+				<Value type="3">(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee", srModName=746321, srModDescription=754702)</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight", srModName=747597, srModDescription=754707)</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadshot", srModName=747595, srModDescription=747594)</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration", srModName=746472, srModDescription=746473)</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization", srModName=746467, srModDescription=754700)</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxguiinteraction">
+			<Property name="movielibrary">
+				<Value type="3">(Tag=DLC_Docks, ZOrder=300, MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks", GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Value>
+				<Value type="3">(Tag=DivingAtlasHUD, ZOrder=34, MovieClass="SFXGameContentDLC_EXP_Pack001.SFXGUI_DivingAtlasHUD", GFxResource="GUI_SF_HUDatlasUnderwater.HUDatlasUnderwater")</Value>
+			</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxsfhandler_save">
+			<Property name="areadata">
+				<Value type="2">( AreaName="Biop_Lev001", AreaStrref=747540, ImageName="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev001")</Value>
+				<Value type="2">( AreaName="Biop_Lev002", AreaStrref=747541, ImageName="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev002")</Value>
+				<Value type="2">( AreaName="Biop_Lev003", AreaStrref=747542, ImageName="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev003")</Value>
+				<Value type="2">( AreaName="Biop_Lev004", AreaStrref=747543, ImageName="GUI_LevSaveLoad_Images.SaveLoad.LVL_Lev004")</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxweaponuidatamanager">
+			<Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_SharedSF, Resource="SFXGUI_WeaponUIDataDLC_Shared.Data")</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

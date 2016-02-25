@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioDifficulty">
+	<Includes>
+		<Include source="Multiplayer/Bronze.xml" />
+		<Include source="Multiplayer/Silver.xml" />
+		<Include source="Multiplayer/Gold.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgamempcontent.sfxdifficultyhandlermp">
+			<Property name="maxplayerlevel" type="2">20</Property>
+			<Property name="normalizeddifficulty" type="2">DO_Level1</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinecomponentblazeleaderboard">
+			<Property name="mleaderboardnames">
+				<Value type="2">(Name="N7RatingGlobal", AppendLocaleCode=false)</Value>
+				<Value type="2">(Name="N7Rating", AppendLocaleCode=true)</Value>
+			</Property>
+			<Property name="srfriendsduplicatesuffix" type="2">679061</Property>
+			<Property name="srrankcolumnheader" type="2">638070</Property>
+			<Property name="srreplacementglobalmapname" type="2">660729</Property>
+			<Property name="srusercolumnheader" type="2">638071</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinecomponentblazemessaging">
+			<Property name="machievementmsgstrref" type="2">680866</Property>
+			<Property name="mmsgtyperanknotifcount" type="2">30</Property>
+			<Property name="mmsgtyperanknotifstart" type="2">0</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinecomponentjobqueue">
+			<Property name="jobthrottlesms[0]" type="2">10000</Property>
+			<Property name="jobthrottlesms[1]" type="2">5000</Property>
+			<Property name="jobthrottlesms[2]" type="2">1000</Property>
+			<Property name="jobthrottlesms[3]" type="2">1000</Property>
+			<Property name="jobthrottlesms[4]" type="2">1000</Property>
+			<Property name="jobthrottlesms[5]" type="2">500</Property>
+			<Property name="jobthrottlesms[6]" type="2">1000</Property>
+			<Property name="skipjobprocessing" type="2">false</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinegamesettings">
+			<Property name="anychallengeimage" type="2">GUI_MPImages.MatchSettings.OptChallgRandom</Property>
+			<Property name="anyenemyimage" type="2">GUI_MPImages.MatchSettings.OptEmyRandom</Property>
+			<Property name="anymapimage" type="2">GUI_MPImages.MatchSettings.OptMapRandom</Property>
+			<Property name="availablemaps">
+				<Value type="2" />
+				<Value type="2">BioP_MPDish</Value>
+				<Value type="2">BioP_MPSlum</Value>
+				<Value type="2">BioP_MPTowr</Value>
+				<Value type="2">BioP_MPRctr</Value>
+				<Value type="2">BioP_MPCer</Value>
+				<Value type="2">BioP_MPNov</Value>
+			</Property>
+			<Property name="challengetypes">
+				<Value type="2">(ID=0,Name=683917,AllCapsName=683911,Image="GUI_MPImages.MatchSettings.OptChallgBrnz")</Value>
+				<Value type="2">(ID=1,Name=683918,AllCapsName=683912,Image="GUI_MPImages.MatchSettings.OptChallgSilver")</Value>
+				<Value type="2">(ID=2,Name=683919,AllCapsName=683913,Image="GUI_MPImages.MatchSettings.OptChallgGold")</Value>
+			</Property>
+			<Property name="enemytypes">
+				<Value type="2">(ID=0,Name=701523,AllCapsName=701523,Image="GUI_MPImages.MatchSettings.OptEmyRandom",WaveClass="")</Value>
+				<Value type="2">(ID=1,Name=683914,AllCapsName=683908,Image="GUI_MPImages.MatchSettings.OptEmyCerberus",WaveClass="SFXGameMPContent.SFXWave_Horde_Cerberus")</Value>
+				<Value type="2">(ID=2,Name=683915,AllCapsName=683909,Image="GUI_MPImages.MatchSettings.OptEmyGeth",WaveClass="SFXGameMPContent.SFXWave_Horde_Geth")</Value>
+				<Value type="2">(ID=3,Name=683916,AllCapsName=683910,Image="GUI_MPImages.MatchSettings.OptEmyReapers",WaveClass="SFXGameMPContent.SFXWave_Horde_Reaper")</Value>
+			</Property>
+			<Property name="mastermaplist">
+				<Value type="2">(ID=0, PackageName="", PrettyName=616735, Description=616738, Image="GUI_MPImages.MatchSettings.OptMapRandom")</Value>
+				<Value type="2">(ID=1, PackageName="BioP_MPCnfl", PrettyName=618040, Description=618049, Image="")</Value>
+				<Value type="2">(ID=2, PackageName="BioP_MPDish", PrettyName=618041, Description=618050, Image="GUI_MPImages.MatchSettings.OptMapDish", GalaxyAtWarMapPosition=(X=424,Y=216), GalaxyAtWarMapSubtitle=706337, MusicEventName="Set_mus_map_mpdish")</Value>
+				<Value type="2">(ID=3, PackageName="BioP_MPSlum", PrettyName=618042, Description=618051, Image="GUI_MPImages.MatchSettings.OptMapSlum", GalaxyAtWarMapPosition=(X=310,Y=403), GalaxyAtWarMapSubtitle=706335, MusicEventName="Set_mus_map_mpslum")</Value>
+				<Value type="2">(ID=4, PackageName="BioP_MPTowr", PrettyName=618043, Description=618052, Image="GUI_MPImages.MatchSettings.OptMapTowr", GalaxyAtWarMapPosition=(X=195,Y=358), GalaxyAtWarMapSubtitle=706332, MusicEventName="Set_mus_map_mptowr")</Value>
+				<Value type="2">(ID=5, PackageName="BioP_MPRctr", PrettyName=618044, Description=618053, Image="GUI_MPImages.MatchSettings.OptMapRctr", GalaxyAtWarMapPosition=(X=111,Y=333), GalaxyAtWarMapSubtitle=706336, MusicEventName="Set_mus_map_mprctr")</Value>
+				<Value type="2">(ID=7, PackageName="BioP_MPCer", PrettyName=618047, Description=618056, Image="GUI_MPImages.MatchSettings.OptMapCer", GalaxyAtWarMapPosition=(X=280,Y=97), GalaxyAtWarMapSubtitle=706333, MusicEventName="Set_mus_map_mpcer")</Value>
+				<Value type="2">(ID=8, PackageName="BioP_MPNov", PrettyName=618048, Description=618057, Image="GUI_MPImages.MatchSettings.OptMapNoveria", GalaxyAtWarMapPosition=(X=352,Y=352), GalaxyAtWarMapSubtitle=706334, MusicEventName="Set_mus_map_mpnov")</Value>
+			</Property>
+			<Property name="privacytypes">
+				<Value type="2">(ID=0,Name=686083,AllCapsName=683885,Image="GUI_MPImages.MatchSettings.OptTeamPublic")</Value>
+				<Value type="2">(ID=1,Name=686084,AllCapsName=683886,Image="GUI_MPImages.MatchSettings.OptTeamPrivate")</Value>
+			</Property>
+			<Property name="sranychallenge" type="2">722468</Property>
+			<Property name="sranyenemy" type="2">716861</Property>
+			<Property name="sranymap" type="2">716860</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejob">
+			<Property name="jobcategory" type="2">OJC_Default</Property>
+			<Property name="reschedulecount" type="2">0</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgamereporting">
+			<Property name="jobcategory" type="2">OJC_Default</Property>
+			<Property name="reportname" type="2">massEffectReport</Property>
+			<Property name="reschedulecount" type="2">5</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgawhttpgetratings">
+			<Property name="maxsecurityrating" type="2">100</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgawhttprequest">
+			<Property name="jobcategory" type="2">4</Property>
+			<Property name="reschedulecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgetauthtoken">
+			<Property name="jobcategory" type="2">5</Property>
+			<Property name="reschedulecount" type="2">3</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgetleaderboarddata">
+			<Property name="jobcategory" type="2">OJC_Leaderboards</Property>
+			<Property name="reschedulecount" type="2">3</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgetleaderboardlist">
+			<Property name="jobcategory" type="2">OJC_Leaderboards</Property>
+			<Property name="reschedulecount" type="2">3</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobgetstatsgrouplist">
+			<Property name="jobcategory" type="2">OJC_Leaderboards</Property>
+			<Property name="reschedulecount" type="2">3</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobhttprequest">
+			<Property name="jobcategory" type="2">4</Property>
+			<Property name="reschedulecount" type="2">0</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobimagerequest">
+			<Property name="jobcategory" type="2">6</Property>
+			<Property name="reschedulecount" type="2">0</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobimportfriendlisttoblaze">
+			<Property name="jobcategory" type="2">OJC_FriendList</Property>
+			<Property name="reschedulecount" type="2">3</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobpurgemessages">
+			<Property name="jobcategory" type="2">2</Property>
+			<Property name="reschedulecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobreceivemessage">
+			<Property name="jobcategory" type="2">2</Property>
+			<Property name="reschedulecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobsavesettings">
+			<Property name="jobcategory" type="2">OJC_Storage</Property>
+			<Property name="reschedulecount" type="2">5</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobsendmessage">
+			<Property name="jobcategory" type="2">2</Property>
+			<Property name="reschedulecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobsendranknotifications">
+			<Property name="jobcategory" type="2">2</Property>
+			<Property name="reschedulecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinesubsystem">
+			<Property name="fontpackagename" type="2">SFXGUI_Fonts</Property>
+			<Property name="m_isolatedmatchmakingcode" type="2">ME3</Property>
+			<Property name="onlinebotclass" type="2">SFXGame.SFXOnlineComponentMatchMakingBot</Property>
+			<Property name="onlinegameentryflowclass" type="2">SFXGame.SFXOnlineGameEntryFlow</Property>
+			<Property name="onlineuiclass" type="2">SFXGame.SFXOnlineComponentUI</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

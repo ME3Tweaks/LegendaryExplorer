@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinegamesettings">
+			<Property name="availablemaps">
+				<Value type="3">BioP_MPGeth</Value>
+				<Value type="3">BioP_MPMoon</Value>
+			</Property>
+			<Property name="mastermaplist">
+				<Value type="3">(ID=9, PackageName="BioP_MPMoon", PrettyName=727479, Description=, Image="DLC_MPImages.Map.OptMapMoon", GalaxyAtWarMapPosition=(X=170,Y=420), GalaxyAtWarMapSubtitle=506972, MusicEventName="Set_mus_map_mpslum")</Value>
+				<Value type="3">(ID=10, PackageName="BioP_MPGeth", PrettyName=728069, Description=, Image="DLC_MPImages.Map.OptMapGeth", GalaxyAtWarMapPosition=(X=435,Y=211), GalaxyAtWarMapSubtitle=326824, MusicEventName="Set_mus_map_mpdish")</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

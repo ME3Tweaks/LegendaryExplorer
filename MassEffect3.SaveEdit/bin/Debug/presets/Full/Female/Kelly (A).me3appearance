@@ -1,0 +1,87 @@
+{
+  HairMesh: "BIOG_HMF_HIR_PRO.Hair_Mom.HMF_HIR_Mom_MDL",
+  
+  Textures:
+  {
+  	Clear: true,
+  	
+    Set:
+    [
+      {Key: "HED_Frek",       Value: "BIOG_HMM_HED_PROMorph.Freckles.HMM_HED_PROBase_Face_Frk2"},
+      {Key: "HED_Addn",       Value: "BIOG_HMF_HED_PROMorph_R.Brow.HMF_HED_PRO_Add1"},
+      {Key: "HED_Diff",       Value: "BIOG_HMF_HED_PROMorph_R.Diffuse.HMF_HED_PROBase_Face_Diff"},
+      {Key: "HED_Norm",       Value: "BIOG_HMF_HED_PROMorph_R.Normal.HMF_HED_PROBase_Face_Norm"},
+      {Key: "HED_Norm_02",    Value: "BIOG_HMF_HED_PROMorph_R.PROShepard.HMF_HED_PROSheppard_Face_Norm_Stack"},
+      {Key: "HED_Lash_Diff",  Value: "BIOG_HMF_HED_PROMorph_R.Custom.HMF_HED_PROLash_Opac_M02"},
+      {Key: "HED_Scalp_Diff", Value: "BIOG_HMF_HIR_PRO.Hair_PROCustomCute.HMF_HIR_SCP_CUSTOM_Cte_Diff"},
+      {Key: "HED_Scalp_Norm", Value: "BIOG_HMF_HED_PROMorph_R.Normal.HMF_HED_PROBase_Scalp_Norm"},
+      {Key: "HAIR_Diff",      Value: "BIOG_HMF_HIR_PRO.Hair_Mom.HMF_HIR_Mom_Diff"},
+    ],
+  },
+  
+  Scalars:
+  {
+  	Clear: true,
+  	
+    Set:
+    [
+      {Key: "HED_Norm_Blend",                Value: 0.0},
+      {Key: "HED_Frek_RedChannel_Scalar",    Value: 0.0},
+      {Key: "HED_Frek_GreenChannel_Scalar",  Value: 0.0},
+      {Key: "HED_SPwr_Scalar",               Value: 4.132},
+      {Key: "HAIR_Shine_Desaturate_Scalar",  Value: 0.0},
+      {Key: "HED_Scalp_PhongSpec_Scalar",    Value: 3.0},
+      {Key: "Highlight1SpecExp_Scalar",      Value: 282.624},
+      {Key: "Highlight2SpecExp_Scalar",      Value: 349.285},
+      {Key: "Hair_Spec_Aniso_Exp_Scalar",    Value: 3.5},
+      {Key: "HAIR_Spec_Contribution_Scalar", Value: 1.25},
+      {Key: "HAIR_SPwr_Scalar",              Value: 3},
+      {Key: "HED_Addn_Colour_02_Scalar",     Value: 1.0},
+      {Key: "HED_Addn_Blowout_Scalar",       Value: 1.1095},
+      {Key: "HED_Scar_Scalar",               Value: 0.0},
+      {Key: "HED_Addn_Blend_Scalar",         Value: 0.4145024},
+      {Key: "HED_Addn_Spec_Lips_Scalar",     Value: 0.194},
+      {Key: "HED_Addn_SPwr_Lips_Scalar",     Value: 0.97},
+      {Key: "HED_Lips_Tint_Scalar",          Value: 0.6850001},
+      {Key: "HED_EyeShadow_Tint_Scalar",     Value: 0.6350001},
+      {Key: "HED_Brow_Tint_Scalar",          Value: 0.79},
+      {Key: "HED_Blush_Scalar",              Value: 0.0},
+      {Key: "HED_Scalp_Mask_Scalar",         Value: 1.0},
+      {Key: "HED_Lash_Opac_Scalar",          Value: 0.624},
+      {Key: "HED_Addn_Multiply_Scalar",      Value: 1.0},
+      {Key: "HED_Addn_Add_Scalar",           Value: 0.0},
+      {Key: "HED_Beard_Colour_Scalar",       Value: 0.0},
+      {Key: "HED_Addn_Colour_Blend_Scalar",  Value: 0.0},
+      {Key: "Hightlight1Intensity",          Value: 2.0},
+      {Key: "Hightlight2Intensity",          Value: 3.0},
+    ],
+  },
+  
+  Vectors:
+  {
+  	Clear: true,
+  	
+    Set:
+    [
+      {Key: "SkinTone",                     Value: {R: 0.7082978,  G: 0.329729,   B: 0.2047101,  A: 1.0}},
+      {Key: "EYE_White_Colour_Vector",      Value: {R: 0.8433697,  G: 0.8045591,  B: 0.7667436,  A: 1.0}},
+      {Key: "HED_Spec_Add_Vector",          Value: {R: 0.4761773,  G: 0.4995053,  B: 0.5234432,  A: 1.0}},
+      {Key: "HED_Scar_Colour_Vector",       Value: {R: 0.8045591,  G: 0.7082978,  B: 0.6523701,  A: 1.0}},
+      {Key: "HED_Teeth_Vector",             Value: {R: 0.8277258,  G: 0.3537409,  B: 0.2271365,  A: 1.0}},
+      {Key: "EYE_Iris_Colour_Vector",       Value: {R: 0.4205079,  G: 0.6940805,  B: 0.3488648,  A: 1.0}},
+      {Key: "HED_Frek_RedChannel_Vector",   Value: {R: 0.0,        G: 0.0,        B: 0.0,        A: 1.0}},
+      {Key: "HED_Frek_GreenChannel_Vector", Value: {R: 0.0,        G: 0.0,        B: 0.0,        A: 1.0}},
+      {Key: "HED_Hair_Colour_Vector",       Value: {R: 0.6387795,  G: 0.3488648,  B: 0.2233104,  A: 1.0}},
+      {Key: "HED_Addn_Colour_Vector",       Value: {R: 0.0986892,  G: 0.02654868, B: 0.0160677,  A: 1.0}},
+      {Key: "blonde",                       Value: {R: 0.0986892,  G: 0.02654868, B: 0.0160677,  A: 1.0}},
+      {Key: "HED_Lips_Tint_Vector",         Value: {R: 0.119264,   G: 0.01698805, B: 0.01698805, A: 1.0}},
+      {Key: "HED_EyeShadow_Tint_Vector",    Value: {R: 0.06003161, G: 0.02422294, B: 0.04777575, A: 1.0}},
+      {Key: "HED_Brow_Tint_Vector",         Value: {R: 0.09387587, G: 0.03287592, B: 0.01891298, A: 1.0}},
+      {Key: "HED_Blush_Vector",             Value: {R: 0.7011695,  G: 0.1332085,  B: 0.03155139, A: 1.0}},
+      {Key: "HED_Aniso_Colour01_Vector",    Value: {R: 0.6870308,  G: 0.4098257,  B: 0.3488648,  A: 1.0}},
+      {Key: "HED_Aniso_Colour02_Vector",    Value: {R: 0.7082978,  G: 0.4423229,  B: 0.3837746,  A: 1.0}},
+      {Key: "Highlight1Color",              Value: {R: 0.9913929,  G: 0.9913929,  B: 0.9913929,  A: 1.0}},
+			{Key: "Highlight2Color",              Value: {R: 0.9913929,  G: 0.9913929,  B: 0.9913929,  A: 1.0}},
+    ],
+  },
+}

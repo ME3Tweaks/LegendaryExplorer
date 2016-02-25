@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Includes>
+		<Include source="DlcExpPack003Base/Game.xml" />
+		<Include source="DlcExpPack003Base/GameContentDlcShared.xml" />
+	</Includes>
+</CoalesceAsset>

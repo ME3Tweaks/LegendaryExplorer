@@ -1,0 +1,828 @@
+﻿<catel:Window.CommandBindings>
+		<!-- Commands -->
+		<CommandBinding Command="local:Commands.Exit" CanExecute="ExitCommand_OnCanExecute" Executed="ExitCommand_OnExecuted" />
+		<CommandBinding Command="local:Commands.GoTo" CanExecute="GoToCommand_OnCanExecute" Executed="GoToCommand_OnExecuted" />
+		<CommandBinding Command="local:Commands.New" CanExecute="NewCommand_OnCanExecute" Executed="NewCommand_OnExecuted" />
+		<CommandBinding Command="local:Commands.Open" CanExecute="OpenCommand_OnCanExecute" Executed="OpenCommand_OnExecuted" />
+		<CommandBinding Command="local:Commands.Save" CanExecute="SaveCommand_OnCanExecute" Executed="SaveCommand_OnExecuted" />
+		<CommandBinding Command="local:Commands.Find" CanExecute="FindCommand_OnCanExecute" Executed="FindCommand_OnExecuted" />
+
+		<!-- Codex Map Commands -->
+		<CommandBinding Command="local:CodexMapCommands.AddCodexEntry" Executed="AddCodexEntryCommand_OnExecuted" />
+		<CommandBinding Command="local:CodexMapCommands.RemoveCodexEntry" Executed="RemoveCodexEntryCommand_OnExecuted" />
+
+		<!-- Quest Map Commands -->
+		<CommandBinding Command="local:QuestMapCommands.AddQuest" Executed="AddQuestCommand_OnExecuted" />
+		<CommandBinding Command="local:QuestMapCommands.AddQuestEntry" Executed="AddQuestEntryCommand_OnExecuted" />
+		<CommandBinding Command="local:QuestMapCommands.RemoveQuest" Executed="RemoveQuestCommand_OnExecuted" />
+		<CommandBinding Command="local:QuestMapCommands.RemoveQuestEntry" Executed="RemoveQuestEntryCommand_OnExecuted" />
+
+		<!-- State Event Map Commands -->
+		<CommandBinding Command="local:StateEventMapCommands.AddStateEvent" Executed="AddStateEventCommand_OnExecuted" />
+		<CommandBinding Command="local:StateEventMapCommands.AddStateEventElement" Executed="AddStateEventElementCommand_OnExecuted" />
+		<CommandBinding Command="local:StateEventMapCommands.RemoveStateEvent" Executed="RemoveStateEventCommand_OnExecuted" />
+		<CommandBinding Command="local:StateEventMapCommands.RemoveStateEventElement" Executed="RemoveStateEventElementCommand_OnExecuted" />
+	</catel:Window.CommandBindings>
+
+
+	private BioCodexMap _codexMap;
+		private int _codexMapDataOffset;
+		private int _codexMapIndex;
+		private string _path;
+		private PCCPackage _pccPackage;
+		private BioQuestMap _questMap;
+		private int _questMapDataOffset;
+		private int _questMapIndex;
+		private BioStateEventMap _stateEventMap;
+		private int _stateEventMapDataOffset;
+		private int _stateEventMapIndex;
+
+	public BioCodexMap CodexMap { get; set; }
+
+		public int CodexMapDataOffset { get; set; }
+
+		public int CodexMapIndex { get; set; }
+
+		public BioQuestMap QuestMap { get; set; }
+
+		public int QuestMapDataOffset { get; set; }
+
+		public int QuestMapIndex { get; set; }
+
+		public BioStateEventMap StateEventMap { get; set; }
+
+		public int StateEventMapDataOffset { get; set; }
+
+		public int StateEventMapIndex { get; set; }
+
+		private void AddCodexEntryCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var selectedItem = CodexMapComboBox.SelectedItem as ComboBoxItem;
+
+			if (selectedItem == null)
+			{
+				return;
+			}
+
+			var list = selectedItem.DataContext as IList<BioCodexPage>;
+
+			if (list != null)
+			{
+				var pages = list;
+
+				var max = pages.Any() ? pages.Max(p => p.Id) : 0;
+
+				var page = new BioCodexPage(max + 1);
+
+				pages.Add(page);
+
+				CodexMapListBox.SelectedItem = page;
+				CodexMapListBox.ScrollIntoView(page);
+			}
+			else
+			{
+				var codexSections = selectedItem.DataContext as IList<BioCodexSection>;
+
+				if (codexSections == null)
+				{
+					return;
+				}
+
+				var sections = codexSections;
+				var max = sections.Any() ? sections.Max(s => s.Id) : 0;
+
+				var section = new BioCodexSection(max + 1);
+
+				sections.Add(section);
+
+				CodexMapListBox.SelectedItem = section;
+				CodexMapListBox.ScrollIntoView(section);
+			}
+		}
+
+		private void AddQuestCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Source is FrameworkElement))
+			{
+				return;
+			}
+
+			var source = (FrameworkElement) e.Source;
+
+			if (!(source.DataContext is BioQuestMap))
+			{
+				return;
+			}
+
+			var questMap = (BioQuestMap) source.DataContext;
+			var bioQuests = e.Parameter as IList<BioQuest>;
+
+			if (bioQuests != null)
+			{
+				var quests = bioQuests;
+				var max = quests.Any() ? quests.Max(p => p.Id) : 0;
+
+				var quest = new BioQuest(max + 1);
+
+				quests.Add(quest);
+
+				QuestMapListBox.SelectedItem = quest;
+				QuestMapListBox.ScrollIntoView(quest);
+			}
+			else
+			{
+				var list = e.Parameter as IList<BioStateTaskList>;
+
+				if (list == null)
+				{
+					return;
+				}
+
+				var stateTasks = list;
+				var max = stateTasks.Any() ? stateTasks.Max(p => p.Id) : 0;
+
+				var stateTask = new BioStateTaskList(max + 1);
+
+				stateTasks.Add(stateTask);
+
+				QuestMapListBox.SelectedItem = stateTask;
+				QuestMapListBox.ScrollIntoView(stateTask);
+			}
+		}
+
+		private void AddQuestEntryCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Source is FrameworkElement))
+			{
+				return;
+			}
+
+			var source = (FrameworkElement) e.Source;
+
+			if (!(source.DataContext is BioQuest))
+			{
+				return;
+			}
+
+			var quest = (BioQuest) source.DataContext;
+
+			if (e.Parameter is IList<BioQuestGoal>)
+			{
+				AddQuestGoal(quest);
+			}
+			else if (e.Parameter is IList<BioQuestPlotItem>)
+			{
+				AddQuestPlotItem(quest);
+			}
+			else if (e.Parameter is IList<BioQuestTask>)
+			{
+				AddQuestTask(quest);
+			}
+		}
+
+		private void AddQuestGoal(BioQuest quest)
+		{
+			if (quest == null)
+			{
+				throw new ArgumentNullException("quest");
+			}
+		}
+
+		private void AddQuestPlotItem(BioQuest quest)
+		{
+			if (quest == null)
+			{
+				throw new ArgumentNullException("quest");
+			}
+		}
+
+		private void AddQuestTask(BioQuest quest)
+		{
+			if (quest == null)
+			{
+				throw new ArgumentNullException("quest");
+			}
+		}
+
+		private void AddStateEventCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Parameter is IList<BioStateEvent>))
+			{
+				return;
+			}
+
+			BioStateEventMap stateEventMap = null;
+			var element = e.Source as FrameworkElement;
+
+			if (element != null)
+			{
+				var s = element;
+				var dataContext = s.DataContext;
+
+				var map = dataContext as BioStateEventMap;
+
+				if (map != null)
+				{
+					stateEventMap = map;
+				}
+			}
+
+			if (stateEventMap == null || stateEventMap.StateEvents == null)
+			{
+				return;
+			}
+
+			if (!(stateEventMap.StateEvents is ObservableCollection<BioStateEvent>))
+			{
+				stateEventMap.StateEvents = new ObservableBioStateEvents(stateEventMap.StateEvents);
+			}
+
+			var max = stateEventMap.StateEvents.Any() ? stateEventMap.StateEvents.Max(p => p.Id) : 0;
+
+			var newStateEvent = new BioStateEvent(max + 1);
+
+			stateEventMap.StateEvents.Add(newStateEvent);
+
+			StateEventMapListBox.SelectedItem = newStateEvent;
+			StateEventMapListBox.ScrollIntoView(newStateEvent);
+		}
+
+		private void AddStateEventElementCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Parameter is BioStateEventElementType))
+			{
+				return;
+			}
+
+			BioStateEvent stateEvent = null;
+			BioStateEventElement newElement;
+
+			var element = e.Source as FrameworkElement;
+
+			if (element != null)
+			{
+				var s = element;
+				var dataContext = s.DataContext;
+
+				var @event = dataContext as BioStateEvent;
+
+				if (@event != null)
+				{
+					stateEvent = @event;
+				}
+			}
+
+			if (stateEvent == null || stateEvent.Elements == null)
+			{
+				return;
+			}
+
+			if (!(stateEvent.Elements is ObservableCollection<BioStateEventElement>))
+			{
+				stateEvent.Elements = new ObservableBioStateEventElements(stateEvent.Elements);
+			}
+
+			var type = (BioStateEventElementType) e.Parameter;
+
+			switch (type)
+			{
+				case BioStateEventElementType.Bool:
+				{
+					newElement = new BioStateEventElementBool();
+
+					break;
+				}
+				case BioStateEventElementType.Consequence:
+				{
+					newElement = new BioStateEventElementConsequence();
+
+					break;
+				}
+				case BioStateEventElementType.Float:
+				{
+					newElement = new BioStateEventElementFloat();
+
+					break;
+				}
+				case BioStateEventElementType.Function:
+				{
+					newElement = new BioStateEventElementFunction();
+
+					break;
+				}
+				case BioStateEventElementType.Int:
+				{
+					newElement = new BioStateEventElementInt();
+
+					break;
+				}
+				case BioStateEventElementType.LocalBool:
+				{
+					newElement = new BioStateEventElementLocalBool();
+
+					break;
+				}
+				case BioStateEventElementType.LocalFloat:
+				{
+					newElement = new BioStateEventElementLocalFloat();
+
+					break;
+				}
+				case BioStateEventElementType.LocalInt:
+				{
+					newElement = new BioStateEventElementLocalInt();
+
+					break;
+				}
+				case BioStateEventElementType.Substate:
+				{
+					newElement = new BioStateEventElementSubstate();
+
+					break;
+				}
+				default:
+				{
+					return;
+				}
+			}
+
+			stateEvent.Elements.Add(newElement);
+
+			StateEventElementsListBox.SelectedItem = newElement;
+			StateEventElementsListBox.ScrollIntoView(newElement);
+		}
+
+		private void ExitCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void ExitCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			Application.Current.Shutdown();
+		}
+
+		public static BioCodexMap GetCodexMap(PCCPackage pcc, out int exportIndex, out int dataOffset)
+		{
+			var codexMap = new BioCodexMap();
+			var index = pcc.FindClass("BioCodexMap");
+			var codexMapIndex = exportIndex = pcc.Exports.FindIndex(entry => entry.idxClass == index);
+
+			if (codexMapIndex < 0)
+			{
+				exportIndex = -1;
+				dataOffset = -1;
+				return null;
+			}
+
+			var codexMapData = pcc.Exports[codexMapIndex].Data;
+
+			var codexMapProperties = PropertyReader.getPropList(pcc, codexMapData);
+
+			if (codexMapProperties.Count <= 0)
+			{
+				dataOffset = -1;
+				return codexMap;
+			}
+
+			var codexMapProperty = codexMapProperties.Find(property => property.TypeVal == PropertyReader.Type.None);
+			var codexMapDataOffset = dataOffset = codexMapProperty.offend;
+
+			using (var stream = new MemoryStream(codexMapData))
+			{
+				stream.Seek(codexMapDataOffset, SeekOrigin.Begin);
+
+				codexMap = BinaryBioCodexMap.Load(stream);
+				codexMap.Pages = new ObservableBioCodexPages(codexMap.Pages.OrderBy(page => page.Id));
+				codexMap.Sections = new ObservableBioCodexSections(codexMap.Sections.OrderBy(section => section.Id));
+			}
+
+			return codexMap;
+		}
+
+		public static BioQuestMap GetQuestMap(PCCPackage pcc, out int exportIndex, out int dataOffset)
+		{
+			var questMap = new BioQuestMap();
+			var index = pcc.FindClass("BioQuestMap");
+			var questMapIndex = exportIndex = pcc.Exports.FindIndex(entry => entry.idxClass == index);
+
+			if (questMapIndex < 0)
+			{
+				exportIndex = -1;
+				dataOffset = -1;
+				return null;
+			}
+
+			var questMapData = pcc.Exports[questMapIndex].Data;
+
+			var questMapProperties = PropertyReader.getPropList(pcc, questMapData);
+
+			if (questMapProperties.Count <= 0)
+			{
+				dataOffset = -1;
+				return questMap;
+			}
+
+			var questMapProperty = questMapProperties.Find(property => property.TypeVal == PropertyReader.Type.None);
+			var questMapDataOffset = dataOffset = questMapProperty.offend;
+
+			using (var stream = new MemoryStream(questMapData))
+			{
+				stream.Seek(questMapDataOffset, SeekOrigin.Begin);
+
+				questMap = BinaryBioQuestMap.Load(stream);
+				questMap.BoolTaskEvals = new ObservableBioStateTaskLists(questMap.BoolTaskEvals.OrderBy(taskList => taskList.Id));
+				questMap.FloatTaskEvals = new ObservableBioStateTaskLists(questMap.FloatTaskEvals.OrderBy(taskList => taskList.Id));
+				questMap.IntTaskEvals = new ObservableBioStateTaskLists(questMap.IntTaskEvals.OrderBy(taskList => taskList.Id));
+				questMap.Quests = new ObservableBioQuests(questMap.Quests.OrderBy(quest => quest.Id));
+			}
+
+			return questMap;
+		}
+
+		public static BioStateEventMap GetStateEventMap(PCCPackage pcc, out int exportIndex, out int dataOffset)
+		{
+			var stateEventMap = new BioStateEventMap();
+			var index = pcc.FindClass("BioStateEventMap");
+			var stateEventMapIndex = exportIndex = pcc.Exports.FindIndex(entry => entry.idxClass == index);
+
+			if (stateEventMapIndex < 0)
+			{
+				exportIndex = -1;
+				dataOffset = -1;
+				return null;
+			}
+
+			var stateEventMapData = pcc.Exports[stateEventMapIndex].Data;
+
+			var stateEventMapProperties = PropertyReader.getPropList(pcc, stateEventMapData);
+
+			if (stateEventMapProperties.Count <= 0)
+			{
+				exportIndex = dataOffset = -1;
+				return stateEventMap;
+			}
+
+			var stateEventMapProperty = stateEventMapProperties.Find(property => property.TypeVal == PropertyReader.Type.None);
+
+			var stateEventMapDataOffset = dataOffset = stateEventMapProperty.offend;
+
+			using (var stream = new MemoryStream(stateEventMapData))
+			{
+				stream.Seek(stateEventMapDataOffset, SeekOrigin.Begin);
+
+				stateEventMap = BinaryBioStateEventMap.Load(stream);
+				stateEventMap.StateEvents = new ObservableBioStateEvents(stateEventMap.StateEvents.OrderBy(@event => @event.Id));
+			}
+
+			return stateEventMap;
+		}
+
+		private void GoToCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = (CodexMap != null) && (QuestMap != null) && (StateEventMap != null);
+		}
+
+		private void GoToCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			//
+		}
+
+		private void NewCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = false;
+		}
+
+		private void NewCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			// 
+		}
+
+		private void OpenCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void OpenCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var dlg = new OpenFileDialog
+					  {
+						  Filter = "PCC Files (*.pcc)|*.pcc|All Files (*.*)|*.*"
+					  };
+
+			if (dlg.ShowDialog() != true)
+			{
+				return;
+			}
+
+			_pccPackage = OpenPcc(dlg.FileName);
+			_path = dlg.FileName;
+		}
+
+		public PCCPackage OpenPcc(string path)
+		{
+			if (path.IsNullOrEmpty())
+			{
+				throw new ArgumentNullException("path");
+			}
+
+			var pccPackage = new PCCPackage(path, closestream: true);
+
+			int codexMapIndex;
+			int codexMapDataOffset;
+			int questMapIndex;
+			int questMapDataOffset;
+			int stateEventMapIndex;
+			int stateEventMapDataOffset;
+
+			CodexMap = GetCodexMap(pccPackage, out codexMapIndex, out codexMapDataOffset);
+			QuestMap = GetQuestMap(pccPackage, out questMapIndex, out questMapDataOffset);
+			StateEventMap = GetStateEventMap(pccPackage, out stateEventMapIndex, out stateEventMapDataOffset);
+
+			CodexMapIndex = codexMapIndex;
+			CodexMapDataOffset = codexMapDataOffset;
+			QuestMapIndex = questMapIndex;
+			QuestMapDataOffset = questMapDataOffset;
+			StateEventMapIndex = stateEventMapIndex;
+			StateEventMapDataOffset = stateEventMapDataOffset;
+
+			return pccPackage;
+		}
+
+		private void RemoveCodexEntryCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var selectedItem = CodexMapListBox.SelectedItem;
+
+			if (selectedItem == null)
+			{
+				return;
+			}
+
+			var page = selectedItem as BioCodexPage;
+
+			if (page != null)
+			{
+				var selectedPage = page;
+
+				if (CodexMap.Pages.Contains(selectedPage))
+				{
+					CodexMap.Pages.Remove(selectedPage);
+				}
+			}
+			else
+			{
+				var section = selectedItem as BioCodexSection;
+				
+				if (section == null)
+				{
+					return;
+				}
+
+				var selectedSection = section;
+
+				if (CodexMap.Sections.Contains(selectedSection))
+				{
+					CodexMap.Sections.Remove(selectedSection);
+				}
+			}
+		}
+
+		private void RemoveQuestCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var selectedComboItem = QuestMapComboBox.SelectedItem as ComboBoxItem;
+			var selectedListItem = QuestMapListBox.SelectedItem;
+
+			if (selectedComboItem == null || selectedListItem == null)
+			{
+				return;
+			}
+
+			var list = selectedComboItem.DataContext as IList<BioQuest>;
+			if (list != null && selectedListItem is BioQuest)
+			{
+				var quests = list;
+				var selectedQuest = (BioQuest) selectedListItem;
+
+				if (quests.Contains(selectedQuest))
+				{
+					quests.Remove(selectedQuest);
+				}
+			}
+			else if (selectedComboItem.DataContext is IList<BioStateTaskList> && selectedListItem is BioStateTaskList)
+			{
+				var stateTasks = selectedComboItem.DataContext as IList<BioStateTaskList>;
+				var selectedStateTask = (BioStateTaskList) selectedListItem;
+
+				if (stateTasks.Contains(selectedStateTask))
+				{
+					stateTasks.Remove(selectedStateTask);
+				}
+			}
+		}
+
+		private void RemoveQuestEntryCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			//
+		}
+
+		private void RemoveStateEventCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Parameter is BioStateEvent))
+			{
+				return;
+			}
+
+			BioStateEventMap stateEventMap = null;
+
+			var element = e.Source as FrameworkElement;
+
+			if (element != null)
+			{
+				var s = element;
+				var dataContext = s.DataContext;
+
+				var map = dataContext as BioStateEventMap;
+
+				if (map != null)
+				{
+					stateEventMap = map;
+				}
+			}
+
+			if (stateEventMap == null || stateEventMap.StateEvents == null)
+			{
+				return;
+			}
+
+			if (!(stateEventMap.StateEvents is ObservableCollection<BioStateEvent>))
+			{
+				stateEventMap.StateEvents = new ObservableBioStateEvents(stateEventMap.StateEvents);
+			}
+
+			var stateEvent = (BioStateEvent) e.Parameter;
+			var selectedIndex = StateEventMapListBox.SelectedIndex;
+
+			if (stateEventMap.StateEvents.Contains(stateEvent))
+			{
+				stateEventMap.StateEvents.Remove(stateEvent);
+			}
+
+			if (selectedIndex > 0)
+			{
+				StateEventMapListBox.SelectedIndex = selectedIndex - 1;
+			}
+		}
+
+		private void RemoveStateEventElementCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!(e.Parameter is BioStateEventElement))
+			{
+				return;
+			}
+
+			BioStateEvent stateEvent = null;
+
+			var frameworkElement = e.Source as FrameworkElement;
+
+			if (frameworkElement != null)
+			{
+				var s = frameworkElement;
+				var dataContext = s.DataContext;
+
+				var @event = dataContext as BioStateEvent;
+
+				if (@event != null)
+				{
+					stateEvent = @event;
+				}
+			}
+
+			if (stateEvent == null || stateEvent.Elements == null)
+			{
+				return;
+			}
+
+			if (!(stateEvent.Elements is ObservableCollection<BioStateEventElement>))
+			{
+				stateEvent.Elements = new ObservableBioStateEventElements(stateEvent.Elements);
+			}
+
+			var element = (BioStateEventElement) e.Parameter;
+			var selectedIndex = StateEventElementsListBox.SelectedIndex;
+
+			if (stateEvent.Elements.Contains(element))
+			{
+				stateEvent.Elements.Remove(element);
+			}
+
+			if (selectedIndex > 0)
+			{
+				StateEventElementsListBox.SelectedIndex = selectedIndex - 1;
+			}
+		}
+
+		private void SaveCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = (CodexMap != null) || (QuestMap != null) || (StateEventMap != null);
+		}
+
+		private void SaveCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var dlg = new SaveFileDialog
+					  {
+						  Filter = "PCC Files (*.pcc)|*.pcc|All Files (*.*)|*.*"
+					  };
+
+			if (!_path.IsNullOrEmpty())
+			{
+				dlg.InitialDirectory = Path.GetDirectoryName(_path);
+				dlg.FileName = Path.GetFileName(_path);
+			}
+
+			if (dlg.ShowDialog() != true)
+			{
+				return;
+			}
+
+			var fileName = dlg.FileName;
+			var codexMapData = _pccPackage.Exports[CodexMapIndex].Data;
+			var questMapData = _pccPackage.Exports[QuestMapIndex].Data;
+			var stateEventMapData = _pccPackage.Exports[StateEventMapIndex].Data;
+
+			byte[] bytes;
+
+			// CodexMap
+			using (var stream = new MemoryStream())
+			{
+				((BinaryBioCodexMap) CodexMap).Save(stream);
+
+				bytes = stream.ToArray();
+			}
+
+			Array.Resize(ref codexMapData, CodexMapDataOffset + bytes.Length);
+			bytes.CopyTo(codexMapData, CodexMapDataOffset);
+
+			var temp = _pccPackage.Exports[CodexMapIndex];
+			Array.Resize(ref temp.Data, codexMapData.Length);
+			codexMapData.CopyTo(temp.Data, 0);
+			_pccPackage.Exports[CodexMapIndex] = temp;
+
+			// QuestMap
+			using (var stream = new MemoryStream())
+			{
+				((BinaryBioQuestMap) QuestMap).Save(stream);
+
+				bytes = stream.ToArray();
+			}
+
+			Array.Resize(ref questMapData, QuestMapDataOffset + bytes.Length);
+			bytes.CopyTo(questMapData, QuestMapDataOffset);
+
+			temp = _pccPackage.Exports[QuestMapIndex];
+			Array.Resize(ref temp.Data, questMapData.Length);
+			questMapData.CopyTo(temp.Data, 0);
+			_pccPackage.Exports[QuestMapIndex] = temp;
+
+			// StateEventMap
+			using (var stream = new MemoryStream())
+			{
+				((BinaryBioStateEventMap) StateEventMap).Save(stream);
+
+				bytes = stream.ToArray();
+			}
+
+			Array.Resize(ref stateEventMapData, StateEventMapDataOffset + bytes.Length);
+			bytes.CopyTo(stateEventMapData, StateEventMapDataOffset);
+
+			temp = _pccPackage.Exports[StateEventMapIndex];
+			Array.Resize(ref temp.Data, stateEventMapData.Length);
+			stateEventMapData.CopyTo(temp.Data, 0);
+			_pccPackage.Exports[StateEventMapIndex] = temp;
+
+			//
+			_pccPackage.Save(fileName);
+		}
+		
+		private void FindCommand_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = _pccPackage != null;
+		}
+
+		private void FindCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			/*foreach (var stateEvent in StateEventMap.StateEvents)
+			{
+				foreach (var element in stateEvent.Elements)
+				{
+					if (element.ElementType == BioStateEventElementType.Bool)
+					{
+						var el = (BioStateEventElementBool) element;
+
+						if (el.GlobalBool == 23873 || el.GlobalBool == 24828 || el.GlobalBool == 24468 || el.GlobalBool == 24338)
+						{
+							MessageBox.Show(stateEvent.Id.ToString());
+						}
+					}
+				}
+			}*/
+		}

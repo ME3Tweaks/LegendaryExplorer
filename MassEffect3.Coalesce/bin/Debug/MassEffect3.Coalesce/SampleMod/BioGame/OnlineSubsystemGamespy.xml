@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="onlinesubsystemgamespy" name="onlinesubsystemgamespy.int" source="..\..\engine\localization\int\onlinesubsystemgamespy.int">
+	<Sections>
+		<Section name="onlinesubsystemgamespy">
+			<Property name="defaultstatus" type="2">Playing</Property>
+			<Property name="gameinvitemessage" type="2">Would you like to play a game?</Property>
+			<Property name="localprofilename" type="2">Player</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

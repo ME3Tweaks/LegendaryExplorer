@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioengine" name="bioengine.ini" source="..\..\biogame\config\bioengine.ini">
+  <Sections>
+    <Section name="alternatenonpackageresources">
+      <Property name="conditionalsfiles" type="3">ConditionalsDLC_Shared.cnd</Property>
+      <Property name="talktablemodules" type="3">DLC_Shared</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Config\DefaultEngine.ini</Property>
+    </Section>
+    <Section name="core.system">
+      <Property name="cookpaths">
+        <Value type="1">null</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\ScriptFinalRelease</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content\Maps\Nor\NonEnd</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content\Maps\Nor\EXP3</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content\Packages\EXP3</Value>
+      </Property>
+      <Property name="frscriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\ScriptFinalRelease</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\ScriptFinalRelease</Value>
+      </Property>
+      <Property name="paths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\TestContent</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\TestContent</Value>
+      </Property>
+      <Property name="scriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Script</Value>
+      </Property>
+      <Property name="seekfreepcpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\CookedPCConsole</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\CookedPCConsole</Value>
+      </Property>
+    </Section>
+    <Section name="engine.dlcmodules">
+      <Property name="dlc_exp_pack003_base" type="0">54</Property>
+      <Property name="dlc_shared" type="0">3</Property>
+    </Section>
+    <Section name="engine.startuppackages">
+      <Property name="dlcstartuppackage" type="3">Startup_EXP_Pack003_Base</Property>
+      <Property name="dlcstartuppackagename" type="0">Startup_EXP_Pack003_Base</Property>
+      <Property name="package" type="3">PlotManagerAutoDLC_EXP_Pack003_Base</Property>
+    </Section>
+    <Section name="sfxgame.biotiermanager">
+      <Property name="tierdetails">
+        <Value type="3">(TierName="TIER_Art3",Color=(R=0,G=255,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=9)</Value>
+        <Value type="3">(TierName="TIER_Art4",Color=(R=0,G=196,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=10)</Value>
+        <Value type="3">(TierName="TIER_Art5",Color=(R=0,G=255,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=11)</Value>
+        <Value type="3">(TierName="TIER_Art6",Color=(R=0,G=196,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=12)</Value>
+        <Value type="3">(TierName="TIER_Art7",Color=(R=0,G=255,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=13)</Value>
+        <Value type="3">(TierName="TIER_Art8",Color=(R=0,G=196,B=0),IsEnabled=TRUE,IsFloor=FALSE,IsGlobal=FALSE,IsDynamic=FALSE,Priority=14)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxengine">
+      <Property name="dynamicloadmapping">
+        <Value type="3">(ObjectName="BIOG_GesturesConfigDLC.RuntimeData",SeekFreePackageName="GesturesConfigDLC")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.asl_bar_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.asl_bar_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.asl_sco_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.asl_sco_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.bls_bar_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.bls_bar_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.omi_melee_A_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.omi_melee_A_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_G_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_G_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_H_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.pst_bar_H_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.snp_bar_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.snp_bar_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.snp_sco_F_256x128",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="DLC_SharedImages.Mods.snp_sco_F_512x256",SeekFreePackageName="SFXSharedModImages")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee",SeekFreePackageName="SFXModsMP3_AssaultRifle")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen",SeekFreePackageName="SFXModsMP3_AssaultRifle")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope",SeekFreePackageName="SFXModsMP3_AssaultRifle")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot",SeekFreePackageName="SFXModsMP3_Pistol")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage",SeekFreePackageName="SFXModsMP3_Pistol")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight",SeekFreePackageName="SFXModsMP3_Pistol")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen",SeekFreePackageName="SFXModsMP3_SniperRifle")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope",SeekFreePackageName="SFXModsMP3_SniperRifle")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen",SeekFreePackageName="SFXModsMP3_Shotgun")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee",SeekFreePackageName="SFXModsMP3_Shotgun")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration",SeekFreePackageName="SFXModsMP3_SMG")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization",SeekFreePackageName="SFXModsMP3_SMG")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight",SeekFreePackageName="SFXCitadelMods")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight",SeekFreePackageName="SFXCitadelMods")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight",SeekFreePackageName="SFXCitadelMods")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage",SeekFreePackageName="SFXCitadelMods")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage",SeekFreePackageName="SFXCitadelMods")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_WeaponMod_PowerDamage",SeekFreePackageName="SFXSharedModGameEffects")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXGameEffect_WeaponMod_ExtraWeight",SeekFreePackageName="SFXSharedModGameEffects")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXGameEffect_WeaponMod_HeadshotBonus",SeekFreePackageName="SFXSharedModGameEffects")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXGameEffect_WeaponMod_WeightBonus_Shared",SeekFreePackageName="SFXSharedModGameEffects")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Supercharge_Shared",SeekFreePackageName="SFXPower_Supercharge_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethPassive_Shared",SeekFreePackageName="SFXPower_GethPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethMeleePassive_Shared",SeekFreePackageName="SFXPower_GethMPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Damping_Shared",SeekFreePackageName="SFXPower_Damping_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Barrier_Shared",SeekFreePackageName="SFXPower_Barrier_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Lash_Shared",SeekFreePackageName="SFXPower_Lash_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_MaleQuarianPassive_Shared",SeekFreePackageName="SFXPower_MQuaPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_MaleQuarianMeleePassive_Shared",SeekFreePackageName="SFXPower_MQuaMPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianPassive_Shared",SeekFreePackageName="SFXPower_BatarPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianMeleePassive_Shared",SeekFreePackageName="SFXPower_BatarMPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_HomingGrenade_Shared",SeekFreePackageName="SFXPower_HomingGrenade_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BloodLust_Shared",SeekFreePackageName="SFXPower_BloodLust_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianNet_Shared",SeekFreePackageName="SFXPower_BatarianNet_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_VorchaPassive_Shared",SeekFreePackageName="SFXPower_VorPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_VorchaMeleePassive_Shared",SeekFreePackageName="SFXPower_VorMPassive_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_AnnihilationSphere_Shared",SeekFreePackageName="SFXPower_AnnField_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianArmor_Shared",SeekFreePackageName="SFXPower_BatArmor_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_DarkChannel2_Shared",SeekFreePackageName="SFXPower_DarkChannel_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Flamer_Shared",SeekFreePackageName="SFXPower_Flamer_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethSentryTurret_Shared",SeekFreePackageName="SFXPower_GethTurretShared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethTurretAttack_Shared",SeekFreePackageName="SFXPower_GethTurretShared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethTurretHeal_Shared",SeekFreePackageName="SFXPower_GethTurretShared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneDenial",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneDenial_Biotic",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneProjectile",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneProjectile_Warp",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneProjectile_Incinerate",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneProjectile_Carnage",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_CloneDrone",SeekFreePackageName="ClonePowers")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_WrexPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_GruntPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_JackPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_JacobPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_KasumiPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_MirandaPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_SamaraPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_ZaeedPassive",SeekFreePackageName="CitHenchPassives")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Weapons.pst_carniflexSli_512x256",SeekFreePackageName="SFXWeaponImages_EXP003")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Weapons.pst_carniflexSli_256x128",SeekFreePackageName="SFXWeaponImages_EXP003")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Weapons.asl_lancer_512x256",SeekFreePackageName="SFXWeaponImages_EXP003")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Weapons.asl_lancer_256x128",SeekFreePackageName="SFXWeaponImages_EXP003")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomAction_CollectorGrenade_Shared",SeekFreePackageName="SFXPower_ColGrenade_Shared")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_Shared.SFXPowerCustomAction_ScionCannonEffect_Shared",SeekFreePackageName="SFXPower_SciCannon_Shared")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.MOD_PwrBoost_256x128",SeekFreePackageName="CitadelModImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.MOD_PwrBoost_512x256",SeekFreePackageName="CitadelModImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.MOD_PwrBoost_SMG_256x128",SeekFreePackageName="CitadelModImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.MOD_PwrBoost_SMG_512x256",SeekFreePackageName="CitadelModImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.60_priority_target",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.61_high_society",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.62_team_player",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.63_last_resort",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.64_perfect_host",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.65_king_castle",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.66_technical_issues",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.67_simulated_hero",SeekFreePackageName="CitadelAchievementImages")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Medals.68_one_and_only",SeekFreePackageName="CitadelAchievementImages")</Value>
+      </Property>
+      <Property name="sfxuniqueids">
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Supercharge_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethPassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethMeleePassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Damping_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Barrier_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Lash_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_MaleQuarianPassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_MaleQuarianMeleePassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianPassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianMeleePassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_HomingGrenade_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BloodLust_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianNet_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_VorchaPassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_VorchaMeleePassive_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_AnnihilationSphere_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_BatarianArmor_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_DarkChannel2_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_Flamer_Shared</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXPowerCustomActionMP_GethSentryTurret_Shared</Value>
+        <Value type="3">DLC_CIT1</Value>
+        <Value type="3">DLC_CIT2</Value>
+        <Value type="3">DLC_CIT3</Value>
+        <Value type="3">DLC_CIT4</Value>
+        <Value type="3">DLC_CIT5</Value>
+        <Value type="3">DLC_CIT6</Value>
+        <Value type="3">DLC_CIT7</Value>
+        <Value type="3">DLC_CIT8</Value>
+        <Value type="3">DLC_CIT9</Value>
+      </Property>
+    </Section>
+    <Section name="unrealed.editorengine">
+      <Property name="editpackages">
+        <Value type="3">SFXGameContentDLC_Shared</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003</Value>
+      </Property>
+    </Section>
+    <Section name="wwiseaudiosettings">
+      <Property name="bundledir">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content\WwiseBundles</Value>
+        <Value type="3">..\..\BioGame\DLC\DLC_EXP_Pack003_Base\Content\WwiseBundles</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

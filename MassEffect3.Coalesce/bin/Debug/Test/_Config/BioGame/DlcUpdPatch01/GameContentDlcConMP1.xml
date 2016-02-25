@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxcharacterclassmp_sentinel_batarian">
+			<Property name="startingencumbrancecapacity" type="0">0.45f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxcharacterclassmp_vanguard_krogan">
+			<Property name="startingencumbrancecapacity" type="0">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxgameeffect_matchconsumable_headshotdamage">
+			<Property name="dmgmultiplier[0]" type="0">0.15f</Property>
+			<Property name="dmgmultiplier[1]" type="0">0.25f</Property>
+			<Property name="dmgmultiplier[2]" type="0">0.35f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxgameeffect_matchconsumable_meleedamage">
+			<Property name="dmgmultiplier[0]" type="0">0.1f</Property>
+			<Property name="dmgmultiplier[1]" type="0">0.2f</Property>
+			<Property name="dmgmultiplier[2]" type="0">0.3f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxgameeffect_matchconsumable_stabilitybonus">
+			<Property name="bonus[0]" type="0">-0.2f</Property>
+			<Property name="bonus[1]" type="0">-0.35f</Property>
+			<Property name="bonus[2]" type="0">-0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_batarianarmor">
+			<Property name="damagereduction" type="0">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="0">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_thornsdamagebonus" type="0">1.5f</Property>
+			<Property name="thornsdamage" type="0">(BaseValue=1.0f,Formula=BonusIsHardValue)</Property>
+			<Property name="thornsdamagecap" type="0">2000.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_batarianattack">
+			<Property name="coneangle" type="0">(BaseValue=90.f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_batariannet">
+			<Property name="cooldowntime" type="0">(BaseValue=8,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+			<Property name="effectduration" type="0">(BaseValue=6,RankBonuses[2]=0.2f)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=2750)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_gethsentryturret">
+			<Property name="turretshields" type="0">(BaseValue=1000.0f,RankBonuses[2]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_supercharge">
+			<Property name="damagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="evolve_visionrangebonus" type="0">0.6f</Property>
+			<Property name="visionrange" type="0">(BaseValue=1500.0f)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

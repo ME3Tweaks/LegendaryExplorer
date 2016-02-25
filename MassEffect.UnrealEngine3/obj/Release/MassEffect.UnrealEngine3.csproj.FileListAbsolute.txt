@@ -1,0 +1,5 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.UnrealEngine3\bin\Release\MassEffect.UnrealEngine3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.UnrealEngine3\bin\Release\MassEffect.UnrealEngine3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.UnrealEngine3\obj\Release\MassEffect.UnrealEngine3.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.UnrealEngine3\obj\Release\MassEffect.UnrealEngine3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.UnrealEngine3\obj\Release\MassEffect.UnrealEngine3.pdb

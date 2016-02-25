@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpawn_gethturret">
+			<Property name="m_nmaxtargettickets" type="0">2</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_gethsentryturret">
+			<!--<Property name="attackcooldown" type="0">(BaseValue=3,Formula=DivideByBonusSum)</Property>-->
+			<!--<Property name="cooldowntime" type="0">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>-->
+			<!--<Property name="damage" type="0">(BaseValue=150.0f,RankBonuses[2]=0.3f)</Property>-->
+			<!--<Property name="evolve_armordamagebonus" type="0">0.5f</Property>-->
+			<!--<Property name="evolve_damagebonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_damagebonus2" type="0">0.3f</Property>-->
+			<!--<Property name="evolve_shieldbonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_shieldfrequencybonus" type="0">0.6f</Property>-->
+			<!--<Property name="evolve_shieldradiusbonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_shieldrestorebonus" type="0">0.5f</Property>-->
+			<!--<Property name="evolve_shieldrestorebonus2" type="0">0.5f</Property>-->
+			<!--<Property name="flamethrowerdamageduration" type="0">(BaseValue=1.0f)</Property>-->
+			<!--<Property name="flamethrowerdamagepersec" type="0">(BaseValue=55.0f,RankBonuses[2]=0.3f)</Property>-->
+			<!--<Property name="healamount" type="0">(BaseValue=350.0f)</Property>-->
+			<!--<Property name="healcooldown" type="0">(BaseValue=8,Formula=DivideByBonusSum)</Property>-->
+			<!--<Property name="healradius" type="0">(BaseValue=800.0f)</Property>-->
+			<!--<Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>-->
+			<!--<Property name="projectilespeed" type="0">(BaseValue=3000.0f)</Property>-->
+			<!--<Property name="spawnzoffset" type="0">150.0f</Property>-->
+			<Property name="turretshields" type="0">(BaseValue=1000.00, RankBonuses[2]=0.30)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

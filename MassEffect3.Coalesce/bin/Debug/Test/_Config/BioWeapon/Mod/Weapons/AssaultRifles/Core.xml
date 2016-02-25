@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_argus">
+			<Property name="ai_burstfirecount" type="0">(X=3,Y=6)</Property>
+			<Property name="binfiniteammo" type="0">true</Property>
+			<Property name="lowammosoundthreshold" type="0">4</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_avenger">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_cobra">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_collector">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_falcon">
+			<Property name="binfiniteammo" type="0">true</Property>
+			<Property name="damage" type="0">(X=279.20, Y=349.00)</Property>
+			<Property name="encumbranceweight" type="0">(X=1.75, Y=1.00)</Property>
+			<Property name="lowammosoundthreshold" type="0">2</Property>
+			<Property name="magsize" type="0">(X=6, Y=6)</Property>
+			<Property name="maxspareammo" type="0">(X=18, Y=28)</Property>
+			<Property name="minrefiretime" type="0">0.65</Property>
+			<Property name="rateoffire" type="0">(X=50, Y=50)</Property>
+			<Property name="statbardamage" type="0">(X=279.20, Y=349.00)</Property>
+			<Property name="statbarrateoffire" type="0">(X=50, Y=50)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_geth">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_mattock">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_reckoning">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_revenant">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_saber">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_sentryturret">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_valkyrie">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_assaultrifle_vindicator">
+			<Property name="binfiniteammo" type="0">true</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

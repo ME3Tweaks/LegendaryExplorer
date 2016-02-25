@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_bonuspowers">
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!-- Armor Piercing Ammo -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_ArmorPiercingAmmo",
+					PlotUnlockConditionalID=1273,
+					BaseCost=5000,
+					Priority=1,
+					ChoiceEntry=(srChoiceName=93965, srChoiceDescription=155053),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Barrier -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Barrier",
+					PlotUnlockConditionalID=1275,
+					BaseCost=5000,
+					Priority=2,
+					ChoiceEntry=(srChoiceName=93973, srChoiceDescription=155065),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Carnage -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Carnage",
+					PlotUnlockConditionalID=1282,
+					BaseCost=5000,
+					Priority=4,
+					ChoiceEntry=(srChoiceName=668831, srChoiceDescription=690808),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Dark Channel -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_DarkChannel",
+					PlotUnlockConditionalID=1284,
+					BaseCost=5000,
+					Priority=5,
+					ChoiceEntry=(srChoiceName=716448, srChoiceDescription=716450),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Decoy -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Decoy",
+					PlotUnlockConditionalID=1272,
+					BaseCost=5000,
+					Priority=6,
+					ChoiceEntry=(srChoiceName=674631, srChoiceDescription=690836),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Defense Drone -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_ProtectorDrone",
+					PlotUnlockConditionalID=1270,
+					BaseCost=5000,
+					Priority=7,
+					ChoiceEntry=(srChoiceName=663224, srChoiceDescription=690854),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Defense Matrix -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_GethShieldBoost",
+					PlotUnlockConditionalID=1271,
+					BaseCost=5000,
+					Priority=8,
+					ChoiceEntry=(srChoiceName=314066, srChoiceDescription=314067),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Dominate -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContentDLC_EXP_Pack001.SFXPowerCustomAction_Dominate",
+					PlotUnlockConditionalID=3202,
+					BaseCost=5000,
+					Priority=9,
+					ChoiceEntry=(srChoiceName=762116,srChoiceDescription=762123),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Energy Drain -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_EnergyDrain",
+					PlotUnlockConditionalID=1269,
+					BaseCost=5000,
+					Priority=10,
+					ChoiceEntry=(srChoiceName=205894, srChoiceDescription=703687),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Flare -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_BioticFlare",
+					PlotUnlockConditionalID=3389,
+					BaseCost=5000,
+					Priority=3,
+					ChoiceEntry=(srChoiceName=735917,srChoiceDescription=735918),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Fortification -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Fortification",
+					PlotUnlockConditionalID=1281,
+					BaseCost=5000,
+					Priority=11,
+					ChoiceEntry=(srChoiceName=314036, srChoiceDescription=314037),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Inferno Grenade -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_InfernoGrenade",
+					PlotUnlockConditionalID=1277,
+					BaseCost=5000,
+					Priority=12,
+					ChoiceEntry=(srChoiceName=349055, srChoiceDescription=703559),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Lash -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_AriaLash",
+					PlotUnlockConditionalID=3388,
+					BaseCost=5000,
+					Priority=13,
+					ChoiceEntry=(srChoiceName=765772,srChoiceDescription=765773),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Marksman -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Marksman",
+					PlotUnlockConditionalID=1278,
+					BaseCost=5000,
+					Priority=14,
+					ChoiceEntry=(srChoiceName=572088, srChoiceDescription=703576),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Proximity Mine -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_ProximityMine",
+					PlotUnlockConditionalID=1274,
+					BaseCost=5000,
+					Priority=15,
+					ChoiceEntry=(srChoiceName=572665, srChoiceDescription=703577),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Reave -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Reave",
+					PlotUnlockConditionalID=1276,
+					BaseCost=5000,
+					Priority=16,
+					ChoiceEntry=(srChoiceName=314878, srChoiceDescription=314879),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Slam -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Slam",
+					PlotUnlockConditionalID=1283,
+					BaseCost=5000,
+					Priority=17,
+					ChoiceEntry=(srChoiceName=542178, srChoiceDescription=716449),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Stasis -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_Stasis",
+					PlotUnlockConditionalID=1280,
+					BaseCost=5000,
+					Priority=18,
+					ChoiceEntry=(srChoiceName=127059, srChoiceDescription=703654),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Stimulant Pack -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_StimPack",
+					PlotUnlockConditionalID=3691,
+					BaseCost=5000,
+					Priority=19,
+					ChoiceEntry=(srChoiceName=766365,srChoiceDescription=766366),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Warp Ammo -->
+				<Value type="3">
+					(ItemType=TYPE_POWER,
+					ItemClassName="SFXGameContent.SFXPowerCustomAction_WarpAmmo",
+					PlotUnlockConditionalID=1279,
+					BaseCost=5000,
+					Priority=20,
+					ChoiceEntry=(srChoiceName=326671, srChoiceDescription=326672),
+					LargeImage="gui_codex_images.Store.STO_BonusPower_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+			</Property>
+			<Property name="storename" type="2">BonusPowers</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

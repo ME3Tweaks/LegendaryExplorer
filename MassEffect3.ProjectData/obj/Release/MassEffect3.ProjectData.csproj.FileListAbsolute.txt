@@ -1,0 +1,4 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Release\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\bin\Release\MassEffect3.ProjectData.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Release\MassEffect3.ProjectData.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ProjectData\obj\Release\MassEffect3.ProjectData.pdb

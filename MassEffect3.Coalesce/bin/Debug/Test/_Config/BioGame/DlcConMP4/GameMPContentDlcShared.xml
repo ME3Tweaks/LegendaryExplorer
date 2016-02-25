@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear">
+			<Property name="maxlevel" type="0">5</Property>
+			<Property name="versioncount" type="0">1</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_ammocapacity">
+			<Property name="ammobonus[0]" type="0">0.1f</Property>
+			<Property name="ammobonus[1]" type="0">0.15f</Property>
+			<Property name="ammobonus[2]" type="0">0.2f</Property>
+			<Property name="ammobonus[3]" type="0">0.25f</Property>
+			<Property name="ammobonus[4]" type="0">0.3f</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_bioticdamage">
+			<Property name="effectvalues[0]" type="0">0.05f</Property>
+			<Property name="effectvalues[1]" type="0">0.075f</Property>
+			<Property name="effectvalues[2]" type="0">0.1f</Property>
+			<Property name="effectvalues[3]" type="0">0.125f</Property>
+			<Property name="effectvalues[4]" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_techdamage">
+			<Property name="effectvalues[0]" type="0">0.05f</Property>
+			<Property name="effectvalues[1]" type="0">0.075f</Property>
+			<Property name="effectvalues[2]" type="0">0.1f</Property>
+			<Property name="effectvalues[3]" type="0">0.125f</Property>
+			<Property name="effectvalues[4]" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_all">
+			<Property name="damagebonus[0]" type="0">0.04f</Property>
+			<Property name="damagebonus[1]" type="0">0.06f</Property>
+			<Property name="damagebonus[2]" type="0">0.08f</Property>
+			<Property name="damagebonus[3]" type="0">0.1f</Property>
+			<Property name="damagebonus[4]" type="0">0.12f</Property>
+			<Property name="weapontypes">
+				<Value type="3">SFXWeapon_AssaultRifle_Base</Value>
+				<Value type="3">SFXWeapon_SniperRifle_Base</Value>
+				<Value type="3">SFXWeapon_Shotgun_Base</Value>
+				<Value type="3">SFXWeapon_Pistol_Base</Value>
+				<Value type="3">SFXWeapon_SMG_Base</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_assaultrifle_shared">
+			<Property name="weapontypes" type="3">SFXWeapon_AssaultRifle_Base</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_pistol_shared">
+			<Property name="weapontypes" type="3">SFXWeapon_Pistol_Base</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_shotgun_shared">
+			<Property name="weapontypes" type="3">SFXWeapon_Shotgun_Base</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_smg_shared">
+			<Property name="weapontypes" type="3">SFXWeapon_SMG_Base</Property>
+		</Section>
+		<Section name="sfxgamempcontentdlc_shared_mp.sfxgameeffect_matchconsumable_gear_weapondamage_sniperrifle_shared">
+			<Property name="weapontypes" type="3">SFXWeapon_SniperRifle_Base</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

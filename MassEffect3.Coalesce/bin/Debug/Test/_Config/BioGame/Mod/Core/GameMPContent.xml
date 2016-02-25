@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxgamempcontent.sfxgameconfigmp">
+			<!--<Property name="dropheavyweapononholster" type="2">false</Property>-->
+			<!--<Property name="droppedweaponlifespan" type="2">90.0f</Property>-->
+			<!--<Property name="emptydroppedweaponlifespan" type="2">12.0f</Property>-->
+			<Property name="levelrewards">
+				<Value type="-1" />
+
+				<!---->
+				<Value type="2">(Level=1, ExperienceRequired=0, TalentReward=4)</Value>
+				<Value type="2">(Level=2, ExperienceRequired=12500, TalentReward=4)</Value>
+				<Value type="2">(Level=3, ExperienceRequired=37500, TalentReward=4)</Value>
+				<Value type="2">(Level=4, ExperienceRequired=62500, TalentReward=5)</Value>
+				<Value type="2">(Level=5, ExperienceRequired=100000, TalentReward=5)</Value>
+				<Value type="2">(Level=6, ExperienceRequired=150000, TalentReward=5)</Value>
+				<Value type="2">(Level=7, ExperienceRequired=200000, TalentReward=5)</Value>
+				<Value type="2">(Level=8, ExperienceRequired=250000, TalentReward=5)</Value>
+				<Value type="2">(Level=9, ExperienceRequired=312500, TalentReward=5)</Value>
+				<Value type="2">(Level=10, ExperienceRequired=375000, TalentReward=5)</Value>
+				<Value type="2">(Level=11, ExperienceRequired=437500, TalentReward=5)</Value>
+				<Value type="2">(Level=12, ExperienceRequired=500000, TalentReward=5)</Value>
+				<Value type="2">(Level=13, ExperienceRequired=625000, TalentReward=6)</Value>
+				<Value type="2">(Level=14, ExperienceRequired=750000, TalentReward=6)</Value>
+				<Value type="2">(Level=15, ExperienceRequired=875000, TalentReward=6)</Value>
+				<Value type="2">(Level=16, ExperienceRequired=1000000, TalentReward=6)</Value>
+				<Value type="2">(Level=17, ExperienceRequired=1250000, TalentReward=6)</Value>
+				<Value type="2">(Level=18, ExperienceRequired=1500000, TalentReward=6)</Value>
+				<Value type="2">(Level=19, ExperienceRequired=2000000, TalentReward=6)</Value>
+				<Value type="2">(Level=20, ExperienceRequired=2500000, TalentReward=6)</Value>
+			</Property>
+			<!--<Property name="maxplayerexperience" type="2">13000000</Property>-->
+			<!--<Property name="scoretoxpmultiplier" type="2">1.0f</Property>-->
+			<!--<Property name="showmpprogressionscreens" type="2">false</Property>-->
+		</Section>
+		<Section name="sfxgamempcontent.sfxgawreinforcementmanager">
+			<Property name="carddata">
+				<!--<Value type="4">(UniqueName="InfiltratorHumanFemaleBF3", Rarity=Rarity_Uncommon, GUIName=723371, GUIDescription=723303, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgent")</Value>-->
+
+				<Value type="3">(UniqueName="InfiltratorHumanFemaleBF3", Rarity=Rarity_Rare, VersionIdx=2, MaxCount = 1, GUIName=723371, GUIDescription=723303, GUIType="char", GUITextureRef="GUI_MPImages.Cards.KitAgent")</Value>
+			</Property>
+			<Property name="packlist">
+				<!--<Value type="3">(PackName="bf3", Quantity=1, Pools=((PoolName="bf3char2")), BackupPool="goldbackup")</Value>-->
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxobjective_extractionpoint">
+			<!--<Property name="activateobjectiveonspawn" type="2">true</Property>-->
+			<!--<Property name="benablecombatzone" type="2">true</Property>-->
+			<!--<Property name="lastnotificationtime" type="2">118.0f</Property>-->
+			<!--<Property name="musicrtpcmax" type="2">120</Property>-->
+			<!--<Property name="shuttlearrivedendofmatchdelay" type="2">5.0f</Property>-->
+			<!--<Property name="shuttlearrivestart" type="2">110.0f</Property>-->
+			<!--<Property name="shuttleclosepct" type="2">0.66f</Property>-->
+			<!--<Property name="shuttlefarawaypct" type="2">0.33f</Property>-->
+			<!--<Property name="shuttlematineeduration" type="2">5.0f</Property>-->
+			<!--<Property name="updatemusicfrequency" type="2">0.1f</Property>-->
+		</Section>
+		<Section name="sfxgamempcontent.sfxpowercustomactionmp_meleepassivebase">
+			<Property name="evolve_customspreebonus" type="0">0.25</Property>
+			<Property name="evolve_customspreeduration" type="0">20.00</Property>
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<Property name="evolve_meleedamagebonus1" type="0">0.30</Property>
+			<Property name="evolve_meleedamagebonus2" type="0">0.30</Property>
+			<Property name="evolve_meleespreebonus" type="0">0.75</Property>
+			<Property name="evolve_meleespreeduration" type="0">30.00</Property>
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<Property name="meleedamagebonus" type="0">(BaseValue=0.15, Formula=BonusIsHardValue, RankBonuses[2]=0.20)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

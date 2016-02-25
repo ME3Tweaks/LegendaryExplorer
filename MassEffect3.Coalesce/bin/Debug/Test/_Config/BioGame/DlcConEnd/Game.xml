@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<!--<Section name="biogame.movies">
+			<Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_CON_END\Movies</Property>
+		</Section>-->
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="timedplotunlocks" type="3">(PlotBool=23553,UnlockDay=0)</Property>
+		</Section>
+		<Section name="sfxgame.bioworldinfo">
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,1631 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Drawing</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Controls.Callout">
+            <summary>
+            Esegue il rendering di una forma callout che supporta diverse forme combinate con una freccia di callout.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeContentShape">
+             <summary>
+             Fornisce una classe di base per una forma composita che deriva da <see cref="T:System.Windows.Controls.ContentControl"/> e implementa <see cref="T:Microsoft.Expression.Media.IShape"/>.
+             </summary>
+             <remarks>
+             <see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> implementa l'interfaccia <see cref="T:Microsoft.Expression.Media.IShape"/> e supporta il rendering di una geometria simile all'elemento <see cref="T:System.Windows.Shapes.Shape"/>, ma il rendering della geometria può essere eseguito all'esterno dei limiti del layout.
+             
+             Un'implementazione tipica include un modello predefinito personalizzato in generic.xaml che associa mediante modelli la maggior parte delle proprietà delle forme a un elemento <see cref="T:System.Windows.Shapes.Path"/>. Dovrà inoltre estendere la proprietà <see cref="P:GeometrySource"/> per personalizzare l'aspetto dell'elemento <see cref="T:System.Windows.Shapes.Path"/>.
+            
+             Questa classe supporta inoltre la visualizzazione del contenuto con la forma.
+             </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceParameters">
+            <summary>
+            Fornisce un'interfaccia per descrivere i parametri di una forma.
+            </summary>
+            <remarks>
+            Questa interfaccia include i dati per la comunicazione tra Shape e GeometrySource. Tipicamente un'implementazione concreta di IShape implementerà questa interfaccia e la passerà a GeometrySource.UpdateGeometry(), che utilizzerà la forma come provider di dati di sola lettura.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IShape">
+            <summary>
+            Fornisce l'interfaccia necessaria per definire una forma. Le forme primitive e composite devono essere conformi a questa interfaccia, sebbene possano derivare da tipi diversi di elementi FrameworkElement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Invalida la geometria per un elemento <see cref="T:Microsoft.Expression.Media.IShape"/>. In seguito all'invalidazione, verrà ricalcolata la geometria di <see cref="T:Microsoft.Expression.Media.IShape"/> tramite un'operazione eseguita in modo asincrono.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Fill">
+            <summary>Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare l'interno della forma.</summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che descrive come disegnare l'interno della forma. L'impostazione predefinita è null.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stroke">
+            <summary>Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.StrokeThickness">
+            <summary>Recupera o imposta lo spessore del contorno del tratto dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>. </summary>
+            <returns>Lo spessore del contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/> in pixel.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stretch">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/> che descrive il modo in cui la forma riempie il relativo spazio allocato.</summary>
+            <returns>Uno dei valori dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/>. Il valore predefinito durante l'esecuzione dipende dal tipo di elemento <see cref="T:System.Windows.Shapes.Shape"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.RenderedGeometry">
+            <summary>
+            Recupera la geometria sottoposta a rendering presentata dal motore di rendering.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.GeometryMargin">
+            <summary>
+            Recupera il margine fra i limiti logici e i limiti effettivi della geometria. Può essere sia positivo (come nel caso di <see cref="T:Microsoft.Expression.Shapes.Arc"/>) che negativo (come nel caso di <see cref="T:Microsoft.Expression.Controls.Callout"/>).
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Media.IShape.RenderedGeometryChanged">
+            <summary>
+            Si verifica in seguito alla modifica di RenderedGeometry.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.CreateGeometrySource">
+            <summary>
+            Estende la modalità in cui la forma viene disegnata durante la creazione dell'origine della geometria.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Invalida la geometria per un elemento <see cref="T:Microsoft.Expression.Media.IShape"/>. In seguito all'invalidazione, verrà ricalcolata la geometria di <see cref="T:Microsoft.Expression.Media.IShape"/> tramite un'operazione eseguita in modo asincrono.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.ArrangeOverride(System.Windows.Size)">
+            <summary>Specifica il comportamento per la parte di disposizione del passaggio di layout di Silverlight. Le classi possono eseguire l'override di questo metodo per definire un comportamento per il passaggio di disposizione personalizzato.</summary>
+            <returns>La dimensione effettiva utilizzata dopo la disposizione dell'elemento.</returns>
+            <param name="finalSize">L'area finale all'interno dell'elemento padre che deve essere utilizzata dall'oggetto per la propria disposizione e per quella dei relativi elementi figlio.</param>
+            <remarks> <see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> ricalcolerà la geometria quando viene invalidata e aggiornerà RenderedGeometry e GeometryMargin.</remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.OnContentChanged(System.Object,System.Object)">
+            <summary>
+            Esegue la trasformazione del contenuto di una stringa in <see cref="T:TextBlock"/> con allineamento al centro e supporto per più righe.
+            </summary>
+            <remarks>
+            Per attivare questo metodo utilizzare l'associazione mediante modello a <see cref="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent"/> anziché <see cref="P:Content"/>.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Fill">
+            <summary>
+            Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare l'interno della forma.
+            </summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che descrive come disegnare l'interno della forma.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stroke">
+            <summary>Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeThickness">
+            <summary>Recupera o imposta lo spessore del contorno del tratto dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>. </summary>
+            <returns>Lo spessore del contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/> in pixel.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stretch">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/> che descrive il modo in cui la forma riempie il relativo spazio allocato.</summary>
+            <returns>Uno dei valori dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeStartLineCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che descrive l'elemento <see cref="T:System.Windows.Shapes.Shape"/> all'inizio di una proprietà <see cref="P:System.Windows.Shapes.Shape.Stroke"/>. </summary>
+            <returns>Un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che specifica la forma all'inizio di una proprietà <see cref="P:System.Windows.Shapes.Shape.Stroke"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeEndLineCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che descrive l'elemento <see cref="T:System.Windows.Shapes.Shape"/> all'estremità di una linea. </summary>
+            <returns>Uno dei valori dell'enumerazione per <see cref="T:System.Windows.Media.PenLineCap"/>. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeLineJoin">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineJoin"/> che specifica il tipo di giunzione utilizzato ai vertici di un elemento <see cref="T:System.Windows.Shapes.Shape"/>.</summary>
+            <returns>Un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineJoin"/> che specifica l'aspetto della giunzione. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeMiterLimit">
+            <summary>Recupera o imposta un limite per il rapporto tra la lunghezza dello smusso e la metà del valore della proprietà <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> di un elemento<see cref="T:System.Windows.Shapes.Shape"/>. </summary>
+            <returns>Il limite per il rapporto tra la lunghezza dello smusso e la proprietà <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> di un elemento <see cref="T:System.Windows.Shapes.Shape"/>. Questo valore è sempre un numero positivo maggiore o uguale a 1.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashArray">
+            <summary>Recupera o imposta un insieme di valori <see cref="T:System.Double"/> che indica la sequenza di trattini e spazi vuoti utilizzata per disegnare il contorno delle forme. </summary>
+            <returns>Un insieme di valori <see cref="T:System.Double"/> che specifica la sequenza di trattini e spazi vuoti. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che specifica la modalità di disegno delle estremità di un trattino. </summary>
+            <returns>Uno dei valori dell'enumerazione per <see cref="T:System.Windows.Media.PenLineCap"/>. L'impostazione predefinita è <see cref="F:System.Windows.Media.PenLineCap.Flat"/>. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashOffset">
+            <summary>Recupera o imposta un valore <see cref="T:System.Double"/> che specifica la distanza di inizio di un trattino nella sequenza di tratteggio.</summary>
+            <returns>Un valore <see cref="T:System.Double"/> che rappresenta la distanza di inizio di un trattino nella sequenza di tratteggio. Il valore predefinito è 0.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometry">
+            <summary>
+            Recupera la geometria sottoposta a rendering presentata dal motore di rendering.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.GeometryMargin">
+            <summary>
+            Recupera il margine fra i limiti logici e i limiti effettivi della geometria. Può essere sia positivo (come nel caso di <see cref="T:Microsoft.Expression.Shapes.Arc"/>) che negativo (come nel caso di <see cref="T:Microsoft.Expression.Controls.Callout"/>).
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent">
+            <summary>
+            Recupera o imposta il contenuto interno per la conversione da stringa in oggetto TextBlock allineato al centro e con più righe.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometryChanged">
+            <summary>
+            Si verifica in seguito alla modifica di RenderedGeometry.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.AnchorPoint">
+            <summary>
+            Recupera o imposta la posizione del callout rispetto all'angolo in alto a sinistra.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.CalloutStyle">
+            <summary>
+            Recupera o imposta lo stile del callout.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeShape">
+            <summary>
+            Fornisce una classe di base per una forma composita che deriva da <see cref="T:System.Windows.Controls.Control"/> e implementa <see cref="T:Microsoft.Expression.Media.IShape"/>.
+            </summary>
+            <remarks>
+            <see cref="T:Microsoft.Expression.Controls.CompositeShape"/> implementa l'interfaccia <see cref="T:Microsoft.Expression.Media.IShape"/> e supporta il rendering di una geometria simile all'elemento <see cref="T:System.Windows.Shapes.Shape"/>, ma il rendering della geometria può essere eseguito all'esterno dei limiti del layout.
+            
+            Un'implementazione tipica include un modello predefinito personalizzato in generic.xaml che associa mediante modelli la maggior parte delle proprietà delle forme a un elemento <see cref="T:System.Windows.Shapes.Path"/>. Dovrà inoltre estendere la proprietà <see cref="P:GeometrySource"/> per personalizzare l'aspetto dell'elemento <see cref="T:System.Windows.Shapes.Path"/>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.CreateGeometrySource">
+            <summary>
+            Estende la modalità in cui la forma viene disegnata durante la creazione dell'origine della geometria.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Invalida la geometria per un elemento <see cref="T:Microsoft.Expression.Media.IShape"/>. In seguito all'invalidazione, verrà ricalcolata la geometria di <see cref="T:Microsoft.Expression.Media.IShape"/> tramite un'operazione eseguita in modo asincrono.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.ArrangeOverride(System.Windows.Size)">
+            <summary>Specifica il comportamento per la parte di disposizione del passaggio di layout di Silverlight. Le classi possono eseguire l'override di questo metodo per definire un comportamento per il passaggio di disposizione personalizzato.</summary>
+            <returns>La dimensione effettiva utilizzata dopo la disposizione dell'elemento.</returns>
+            <param name="finalSize">L'area finale all'interno dell'elemento padre che deve essere utilizzata dall'oggetto per la propria disposizione e per quella dei relativi elementi figlio.</param>
+            <remarks> <see cref="T:Microsoft.Expression.Controls.CompositeShape"/> ricalcolerà la geometria quando viene invalidata e aggiornerà RenderedGeometry e GeometryMargin.</remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Fill">
+            <summary>
+            Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare l'interno della forma.
+            </summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che descrive come disegnare l'interno della forma.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stroke">
+            <summary>Recupera o imposta l'elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</summary>
+            <returns>Un elemento <see cref="T:System.Windows.Media.Brush"/> che specifica come disegnare il contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeThickness">
+            <summary>Recupera o imposta lo spessore del contorno del tratto dell'elemento <see cref="T:System.Windows.Shapes.Shape"/>. </summary>
+            <returns>Lo spessore del contorno dell'elemento <see cref="T:System.Windows.Shapes.Shape"/> in pixel.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stretch">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/> che descrive il modo in cui la forma riempie il relativo spazio allocato.</summary>
+            <returns>Uno dei valori dell'enumerazione <see cref="T:System.Windows.Media.Stretch"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeStartLineCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che descrive l'elemento <see cref="T:System.Windows.Shapes.Shape"/> all'inizio di una proprietà <see cref="P:System.Windows.Shapes.Shape.Stroke"/>. </summary>
+            <returns>Un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che specifica la forma all'inizio di una proprietà <see cref="P:System.Windows.Shapes.Shape.Stroke"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeEndLineCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che descrive l'elemento <see cref="T:System.Windows.Shapes.Shape"/> all'estremità di una linea. </summary>
+            <returns>Uno dei valori dell'enumerazione per <see cref="T:System.Windows.Media.PenLineCap"/>. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeLineJoin">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineJoin"/> che specifica il tipo di giunzione utilizzato ai vertici di un elemento <see cref="T:System.Windows.Shapes.Shape"/>.</summary>
+            <returns>Un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineJoin"/> che specifica l'aspetto della giunzione. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeMiterLimit">
+            <summary>Recupera o imposta un limite per il rapporto tra la lunghezza dello smusso e la metà del valore della proprietà <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> di un elemento<see cref="T:System.Windows.Shapes.Shape"/>. </summary>
+            <returns>Il limite per il rapporto tra la lunghezza dello smusso e la proprietà <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> di un elemento <see cref="T:System.Windows.Shapes.Shape"/>. Questo valore è sempre un numero positivo maggiore o uguale a 1.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashArray">
+            <summary>Recupera o imposta un insieme di valori <see cref="T:System.Double"/> che indica la sequenza di trattini e spazi vuoti utilizzata per disegnare il contorno delle forme. </summary>
+            <returns>Un insieme di valori <see cref="T:System.Double"/> che specifica la sequenza di trattini e spazi vuoti. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashCap">
+            <summary>Recupera o imposta un valore dell'enumerazione <see cref="T:System.Windows.Media.PenLineCap"/> che specifica la modalità di disegno delle estremità di un trattino. </summary>
+            <returns>Uno dei valori dell'enumerazione per <see cref="T:System.Windows.Media.PenLineCap"/>. L'impostazione predefinita è <see cref="F:System.Windows.Media.PenLineCap.Flat"/>. </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashOffset">
+            <summary>Recupera o imposta un valore <see cref="T:System.Double"/> che specifica la distanza di inizio di un trattino nella sequenza di tratteggio.</summary>
+            <returns>Un valore <see cref="T:System.Double"/> che rappresenta la distanza di inizio di un trattino nella sequenza di tratteggio. Il valore predefinito è 0.</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.RenderedGeometry">
+            <summary>
+            Recupera la geometria sottoposta a rendering presentata dal motore di rendering.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.GeometryMargin">
+            <summary>
+            Recupera il margine fra i limiti logici e i limiti effettivi della geometria. Può essere sia positivo (come nel caso di <see cref="T:Microsoft.Expression.Shapes.Arc"/>) che negativo (come nel caso di <see cref="T:Microsoft.Expression.Controls.Callout"/>).
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeShape.RenderedGeometryChanged">
+            <summary>
+            Si verifica in seguito alla modifica di RenderedGeometry.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LineArrow">
+            <summary>
+            Esegue il rendering di un segmento di linea curvo, eventualmente con una punta a ciascuna estremità.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.LineArrow.MeasureOverride(System.Windows.Size)">
+            <summary>Fornisce il comportamento per il passaggio di misurazione del layout di Silverlight. Le classi possono sostituire questo metodo e definire il loro comportamento per il passaggio di misurazione.</summary>
+            <returns>La dimensione determinata da questo oggetto come necessaria durante il layout, in base ai calcoli delle dimensioni assegnate agli oggetti figlio, o eventualmente in base ad altre considerazioni quali la dimensione fissa di un contenitore.</returns>
+            <param name="availableSize">La dimensione disponibile che questo oggetto può assegnare agli oggetti figlio. È possibile specificare Infinity (<see cref="F:System.Double.PositiveInfinity"/>) come valore per indicare che l'oggetto verrà ridimensionato in base al contenuto disponibile.</param>
+            <remarks>
+            Un valore predefinito <see cref="T:LineArrow"/> consente di eseguire il rendering con qualsiasi dimensione. La proprietà <see cref="P:RenderedGeometry"/> verrà adattata in base ai limiti del layout e, se necessario, il rendering verrà eseguito all'esterno.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.BendAmount">
+            <summary>
+            Recupera o imposta il grado di curvatura per la freccia.
+            </summary>
+            <value>Il grado di curvatura tra 0 e 1.</value>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartArrow">
+            <summary>
+            Recupera o imposta la modalità di rendering della punta della freccia all'inizio della linea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.EndArrow">
+            <summary>
+            Recupera o imposta la modalità di rendering della punta della freccia alla fine della linea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartCorner">
+            <summary>
+            Recupera o imposta l'angolo dal quale iniziare a disegnare la freccia.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.ArrowSize">
+            <summary>
+            Recupera o imposta la lunghezza della freccia in pixel.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PanningItems">
+            <summary>
+            Fornisce un controllo elementi che consente di visualizzare un elemento selezionato e di scorrere la visualizzazione tra gli elementi mediante movimenti tocco.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.#ctor">
+            <summary>
+            Il costruttore per PanningItems.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.OnApplyTemplate">
+            <summary>
+            Chiamato quando viene applicato il modello PanningItems.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.ScrollDirection">
+            <summary>
+            Recupera o imposta l'orientamento degli elementi nel controllo.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.FlickTolerance">
+            <summary>
+            Ottiene o imposta la tolleranza del gesto rapido.  Può essere un valore compreso fra 0 e 1. Rappresenta la percentuale della dimensione di PanningItems su cui deve avvenire il gesto rapido per attivare una modifica degli elementi.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.PreviousItem">
+            <summary>
+            Recupera o imposta l'elemento prima di quello selezionato.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.NextItem">
+            <summary>
+            Recupera o imposta l'elemento dopo quello selezionato.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.LoopContents">
+            <summary>
+            Recupera o imposta se il contenuto del controllo elementi eseguirà un ciclo, in modo che il primo elemento segua l'ultimo.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.SliderValue">
+            <summary>
+            Recupera o imposta il valore del dispositivo di scorrimento che controlla il movimento panoramica.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper">
+            <summary>
+            Classe helper per utilizzare PathGeometry.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+            Converte una stringa nel minilinguaggio Path in un elemento PathGeometry.
+            </summary>
+            <param name="abbreviatedGeometry">Una stringa nel minilinguaggio Path.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AsPathGeometry(System.Windows.Media.Geometry)">
+            <summary>
+            Converte la geometria specificata in un singolo elemento PathGeometry.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.SyncPolylineGeometry(System.Windows.Media.Geometry@,System.Collections.Generic.IList{System.Windows.Point},System.Boolean)">
+            <summary>
+            Aggiorna la geometria specificata come elemento PathGeometry con una polilinea corrispondente a un elenco di punti specificato.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AbbreviatedGeometryParser">
+            <summary>
+            Analizza la sintassi abbreviata della geometria.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentHelper">
+            <summary>
+            Classe helper per convertire ArcSegment in uno o più BezierSegment.
+            </summary>
+            <summary>
+            Classe helper per utilizzare PathSegment e tutte le sue varianti.
+            </summary>
+            <summary>
+            Classi di strategia per la gestione di tipi diversi di PathSegment.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierSegments(System.Windows.Media.ArcSegment,System.Windows.Point)">
+            <summary>
+            Converte un elemento ArcSegment in formato Bézier. Restituisce BezierSegment, PolyBezierSegment, LineSegment oppure null. Quando restituisce null, l'arco degenera nel suo punto iniziale.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SetIsStroked(System.Windows.Media.PathSegment,System.Boolean)">
+            <summary>
+            Consente di evitare di chiamare il costruttore a tre parametri, poiché imposta sempre un valore locale per IsStroked.
+            </summary>
+            <param name="segment"></param>
+            <param name="isStroked"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+            Aggiorna l'elemento SegmentCollection con una polilinea specificata corrispondente a un elenco di punti specificato. Tenta di ridurre al minimo le modifiche e restituisce false in assenza di modifiche.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolyBezierSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+            Aggiorna il segmento insieme[indice] con il segmento PolyBezier corrispondente a un elenco di punti specificato. Per N segmenti di Bézier, l'elenco di punti specificato deve contenere 3*N punti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.IsEmpty(System.Windows.Media.PathSegment)">
+            <summary>
+            Verifica se un segmento di tracciato specificato è vuoto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPointCount(System.Windows.Media.PathSegment)">
+            <summary>
+            Recupera il conteggio di punti in un segmento di tracciato specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetLastPoint(System.Windows.Media.PathSegment)">
+            <summary>
+            Recupera l'ultimo punto del segmento di tracciato specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPoint(System.Windows.Media.PathSegment,System.Int32)">
+            <summary>
+            Recupera il punto di un indice specificato in un segmento specificato. Se l'input è (-1), restituisce l'ultimo punto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.FlattenSegment(System.Windows.Media.PathSegment,System.Collections.Generic.IList{System.Windows.Point},System.Windows.Point,System.Double)">
+            <summary>
+            Appiattisce un segmento specificato e aggiunge i punti risultanti in un elenco di punti specificato.
+            </summary>
+            <param name="segment">Il segmento da appiattire.</param>
+            <param name="points">L'elenco di punti risultanti.</param>
+            <param name="start">Il punto iniziale del segmento.</param>
+            <param name="tolerance">La tolleranza di errore. Deve essere positiva. Può essere pari a zero. Fallback alla tolleranza predefinita.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.ArcToBezier(System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,System.Double,System.Double,System.Windows.Point[]@,System.Int32@)">
+            <summary>
+            ArcToBezier, calcola l'approssimazione di Bézier di un arco.
+            </summary>
+            <remarks>
+            Questa utilità calcola l'approssimazione di Bézier per un arco ellittico come definito nelle specifiche SVG per gli archi. L'ellisse da cui l'arco deriva è allineata all'asse in base alle proprie coordinate e definita dai relativi raggi x e y. L'angolo di rotazione definisce la modalità di rotazione degli assi dell'ellisse rispetto all'asse x. I punti iniziale e finale definisco uno dei 4 archi possibili; large-arc-flag e sweep-flag determinano quale di questi archi verrà scelto.
+            
+            Se viene restituito cPieces = 0 si ottiene una linea invece di un arco. Se viene restituito cPieces = -1 l'arco degenera in un singolo punto. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetArcAngle(System.Windows.Point,System.Windows.Point,System.Boolean,System.Boolean,System.Double@,System.Double@,System.Int32@)">
+            <summary>
+            Recupera il numero di archi di Bézier e il seno/coseno di ciascuno.
+            </summary>
+            <remarks>
+            Utilità privata utilizzata da ArcToBezier. L'arco viene suddiviso in parti che non superino i 90 gradi. I punti di input sono sulla circonferenza unitaria.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetBezierDistance(System.Double,System.Double)">
+             <summary>
+             GetBezierDistance restituisce la distanza come frazione del raggio.
+             </summary>
+            <remarks>
+                  Recupera la distanza dagli estremi di un arco circolare ai punti di controllo dell'arco di Bézier di approssimazione, come frazione del raggio dell'arco.
+            
+                  Poiché il risultato è relativo al raggio dell'arco, esso è strettamente correlato all'angolo dell'arco stesso. Si presume che l'arco sia al massimo di 90 gradi e l'angolo viene pertanto determinato dal coseno di tale angolo, derivato da rDot = prodotto scalare di due vettori del raggio. È necessario utilizzare la curva di Bézier che coincide con i punti e le tangenti dell'arco alle estremità e nel punto intermedio. Si calcola quindi la distanza tra i punti alle estremità della curva e relativi punti di controllo.
+            
+                  Poiché è necessario ottenere la distanza relativa, è possibile utilizzare la circonferenza unitaria. Posizionare il centro del cerchio in corrispondenza dell'origine e inserire l'asse X come bisettrice tra i due vettori.  Indicare con a l'angolo tra i vettori.  Le coordinate X del primo e dell'ultimo punto sono quindi cos(a/2). Indicare con x la coordinata X del secondo e terzo punto.  In corrispondenza di t=1/2 è presente un punto su (1,0). I termini del polinomio sono tutti uguali:
+            
+                            (1-t)^3 = t*(1-t)^2 = t^2*(1-t) = t^3 = 1/8
+            
+                  Dalla formula di Bézier si ottiene quindi:
+            
+                            1 = (1/8) * (cos(a/2) + 3x + 3x + cos(a/2)) 
+            
+                  Di conseguenza
+            
+                            x = (4 - cos(a/2)) / 3
+            
+                  La differenza X tra questo e il primo punto è:
+                  
+                            DX = x - cos(a/2) = 4(1 - cos(a/2)) / 3.
+            
+                  Ma DX = distanza / sin(a/2), pertanto la distanza è
+            
+                            dist = (4/3)*(1 - cos(a/2)) / sin(a/2).
+            
+                  Anziché l'angolo a, viene specificato rDot = R^2 * cos(a); si moltiplica quindi per R:
+             
+                            dist = (4/3)*(R - Rcos(a/2)) / Rsin(a/2)
+             
+                  E si ricorre a un po' di trigonometria: ________________ cos(a/2)   = \/(1 + cos(a)) / 2 ______________________ R*cos(a/2) = \/(R^2 + R^2 cos(a)) / 2 ________________ = \/(R^2 + rDot) / 2
+            
+                  A = (R^2 + rDot)/2. ____________________ R*sin(a/2) = \/R^2 - R^2 cos^2(a/2) _______ = \/R^2 - A
+            
+                  Quindi: _ 4      R - \/A dist = - * ------------ 3      _______ \/R^2 - A
+            
+              Cronologia: 29/05/2001 creato da MichKa.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.AcceptRadius(System.Double,System.Double,System.Double@)">
+            <summary>
+            Restituisce false se il raggio è troppo piccolo rispetto alla lunghezza della corda (restituisce true per NaNs). Il raggio viene modificato in base al valore accettato.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.BezierCurveFlattener">
+            <summary>
+            Classe di utilità per appiattire curve di Bézier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenCubic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+            Consente di appiattire una curva di Bézier cubica e aggiungere la polilinea risultante al terzo parametro.
+            </summary>
+            <param name="controlPoints">I 4 punti di controllo della curva di Bézier cubica.</param>
+            <param name="errorTolerance">La distanza massima tra due punti corrispondenti sulla curva vera e propria e sulla polilinea appiattita. Deve necessariamente essere positiva.</param>
+            <param name="resultPolyline">Posizione in cui aggiungere la polilinea appiattita.</param>
+            <param name="skipFirstPoint">True per ignorare il primo punto di controllo durante l'aggiunta della polilinea appiattita.
+            <param name="resultParameters">Posizione in cui aggiungere il valore del parametro della curva di Bézier associato a ciascuno dei vertici della polilinea.</param> 
+            Se il parametro <paramref name="resultPolyline"/> è vuoto, il primo punto di controllo e il relativo parametro associato vengono sempre aggiunti.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenQuadratic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+            Consente di appiattire una curva di Bézier quadratica e di aggiungere la polilinea risultante al terzo parametro. Per poter riutilizzare il codice relativo alla curva cubica, per le curve di Bézier utilizza l'elevazione di grado.
+            </summary>
+            <param name="controlPoints">I 3 punti di controllo quadratici di Bézier.</param>
+            <param name="errorTolerance">La distanza massima tra due punti corrispondenti sulla curva vera e propria e sulla polilinea appiattita. Deve necessariamente essere positiva.</param>
+            <param name="resultPolyline">Posizione in cui aggiungere la polilinea appiattita.</param>
+            <param name="skipFirstPoint">Se ignorare il primo punto di controllo durante l'aggiunta della polilinea appiattita. 
+            <param name="resultParameters">Posizione in cui aggiungere il valore del parametro della curva di Bézier associato a ciascuno dei vertici della polilinea.</param>
+            Se il parametro <paramref name="resultPolyline"/> è vuoto, il primo punto di controllo e il relativo parametro associato vengono sempre aggiunti.</param>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.CommonExtensions">
+            <summary>
+            Metodi di estensione che supportano tipi non geometrici.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach(System.Collections.IEnumerable,System.Action{System.Object})">
+            <summary>
+            Consente l'applicazione di un delegato dell'azione (spesso un lambda molto semplice) a un'intera sequenza.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Consente l'applicazione di un delegato dell'azione (spesso un lambda molto semplice) a un'intera sequenza.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IList{``0},System.Action{``0,System.Int32})">
+            <summary>
+            Consente l'applicazione di un delegato dell'azione (spesso un lambda molto semplice) a un'intera sequenza all'interno dell'indice di ciascun elemento.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCount``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+            Verifica il conteggio dell'elenco rispetto al conteggio specificato. Crea elementi in base a un valore Factory specificato o, se necessario, rimuove degli elementi. Se IList di input è un elenco, viene utilizzato AddRange o RemoveRange in assenza di Factory.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCountAtLeast``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+            Verifica che il conteggio di un elenco corrisponda almeno al conteggio specificato. Crea elementi in base a un valore Factory specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Aggiunge un intervallo di elementi alla fine di un insieme. Se l'insieme è un elenco, viene utilizzato List.AddRange.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.Last``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Recupera l'ultimo elemento di un elenco specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.RemoveLast``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Rimuove l'ultimo elemento dall'elenco specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.DeepCopy``1(``0)">
+            <summary>
+            Crea una copia dell'oggetto e di tutte le sue proprietà pubbliche, incluse tutte le proprietà di insiemi.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.SetIfDifferent(System.Windows.DependencyObject,System.Windows.DependencyProperty,System.Object)">
+            <summary>
+            Imposta il valore se diverso. Se possibile, evita di impostare un valore locale. Restituisce true se il valore è stato modificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ClearIfSet(System.Windows.DependencyObject,System.Windows.DependencyProperty)">
+            <summary>
+            Cancella la proprietà di dipendenza quando è impostata localmente sull'oggetto di dipendenza specificato. Restituisce false se la proprietà di dipendenza non è impostata localmente.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.FindVisualDesendent``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+            Trova tutti i discendenti visivi di un tipo e una condizione specificati utilizzando la ricerca in ampiezza.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+            Recupera tutti gli elementi figlio visivi in IEnumerable.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.DrawingPropertyMetadata">
+            <summary>
+            Unifica l'interfaccia di PropertyMetadata in WPF e Silverlight. Fornisce le notifiche necessarie relative al rendering, alla disposizione e alla misurazione.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.#ctor(Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Object)">
+            <summary>
+            Questo costruttore privato deve essere utilizzato solo da AttachCallback.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.AttachCallback(System.Object,Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Windows.PropertyChangedCallback)">
+            <summary>
+            Concatena InternalCallback() per associare l'instanza di DrawingPropertyMetadata al callback della proprietà. In Silverlight, i metadati della proprietà vengono eliminati dopo l'impostazione. Per memorizzarli utilizzare il callback.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.InternalCallback(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Prima di concatenare il callback originale, attiva DrawingPropertyChangedEvent.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.GeometryHelper">
+            <summary>
+            Metodi di estensione per strutture di dati correlate alla geometria (Point/Vector/dimensione/Rect).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Resize(System.Windows.Rect,System.Double)">
+            <summary>
+            Ridimensiona il rettangolo in base a una dimensione relativa, mantenendo il centro invariato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Subtract(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Recupera il vettore differenza tra due punti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Plus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            In base al membro, più per Point.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Minus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            In base al membro, meno per Point.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+            Converte una stringa di minilinguaggi in un elemento <see cref="T:PathGeometry"/>.
+            </summary>
+            <remarks>Vedere Sintassi di markup del percorso (http://msdn.microsoft.com/en-us/library/cc189041(VS.95).aspx)</remarks>
+            <param name="abbreviatedGeometry">La stringa di minilinguaggi Path per descrivere percorsi geometrici.</param>
+            <returns>Un elemento <see cref="T:PathGeometry"/> convertito dai minilinguaggi Path.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double)">
+            <summary>
+            Appiattisce un elemento <see cref="T:PathFigure"/> e aggiunge i punti risultanti a un dato parametro <paramref name="points"/>.
+            </summary>
+            <param name="figure">L'elemento <see cref="T:PathFigure"/> di input.</param>
+            <param name="points">L'elenco di punti a cui verranno aggiunti i punti risultanti.</param>
+            <param name="tolerance">Un numero positivo che specifica l'errore massimo consentito dai punti risultanti alla figura del tracciato di input. Il valore 0 consente all'algoritmo di selezionare automaticamente la tolleranza.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double)">
+            <summary>
+            Recupera l'arco normalizzato in un riquadro (0,0)(1,1). Zero gradi corrisponde a [0,5, 0] (in alto) e in senso orario.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double,System.Windows.Rect)">
+            <summary>
+            Recupera il punto dell'arco assoluto entro un limite specificato con un raggio relativo specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point)">
+            <summary>
+            Recupera l'angolo su un arco relativo al riquadro (0,0)(1,1). Zero gradi corrisponde a [0,5, 0] (in alto) e in senso orario.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point,System.Windows.Rect)">
+            <summary>
+            Recupera l'angolo su un arco da un punto assoluto specificato in relazione a un limite.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.Rect,System.Windows.Rect)">
+            <summary>
+            Calcola la trasformazione che sposta RectFrom in RectTo.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.UIElement,System.Windows.UIElement)">
+            <summary>
+            Calcola la trasformazione dallo spazio delle coordinate di un elemento <c>UIElement</c> a un altro.
+            </summary>
+            <param name="from">L'elemento di origine.</param>
+            <param name="to">L'elemento di destinazione.</param>
+            <returns>La trasformazione tra gli elementi <c>UIElement</c> o null se non può essere calcolata.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeToAbsolutePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+            Esegue il mapping di un punto relativo su un punto assoluto utilizzando il mapping da un limite specificato rispetto al riquadro (0,0)(1,1).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.AbsoluteToRelativePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+            Esegue il mapping di un punto assoluto su un punto relativo utilizzando il mapping da un riquadro (0,0)(1,1) a un limite specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetStretchBound(System.Windows.Rect,System.Windows.Media.Stretch,System.Windows.Size)">
+            <summary>
+            Calcola il limite dopo l'adattamento entro un limite logico specificato. Se Stretch è Uniform, utilizza il valore aspectRatio specificato. Se aspectRatio è vuoto, è equivalente a Fill. Se Stretch è None, è equivalente a Fill o Uniform.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Midpoint(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Restituisce il punto intermedio fra 2 punti.
+            </summary>
+            <param name="lhs">Il primo punto.</param>
+            <param name="rhs">Il secondo punto.</param>
+            <returns>Il punto intermedio tra <paramref name="lhs"/> e <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Vector,System.Windows.Vector)">
+            <summary>
+            Restituisce il prodotto scalare di due vettori.
+            </summary>
+            <param name="lhs">Il primo vettore.</param>
+            <param name="rhs">Il secondo vettore.</param>
+            <returns>Il prodotto scalare di <paramref name="lhs"/> e <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Restituisce il prodotto scalare di due punti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Distance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Restituisce la distanza tra due punti.
+            </summary>
+            <param name="lhs">Il primo punto.</param>
+            <param name="rhs">Il secondo punto.</param>
+            <returns>La distanza tra <paramref name="lhs"/> e <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.SquaredDistance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Restituisce il quadrato della distanza tra due punti.
+            </summary>
+            <param name="lhs">Il primo punto.</param>
+            <param name="rhs">Il secondo punto.</param>
+            <returns>Il quadrato della distanza tra <paramref name="lhs"/> e <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Determinant(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Determinante del prodotto incrociato. Equivale all'area della direzione.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Normal(System.Windows.Point,System.Windows.Point)">
+            <summary>
+            Calcola il vettore di direzione normale di segmenti di linea specificati.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Perpendicular(System.Windows.Vector)">
+            <summary>
+            Calcola il vettore perpendicolare, 90 gradi in senso antiorario. Un vettore perpendicolare verso destra genera come risultato un vettore verso l'alto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GeometryEquals(System.Windows.Media.Geometry,System.Windows.Media.Geometry)">
+            <summary>
+            Restituisce il valore della proprietà se le due geometrie sono identiche.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureGeometryType``1(``0@,System.Windows.Media.Geometry@,System.Func{``0})">
+            <summary>
+            Verifica che il valore sia un'istanza del tipo di risultato (T). In caso contrario, lo sostituisce con una nuova istanza del tipo (T).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureSegmentType``1(``0@,System.Collections.Generic.IList{System.Windows.Media.PathSegment},System.Int32,System.Func{``0})">
+            <summary>
+            Verifica che l'elenco[indice] sia un'istanza del tipo di risultato (T). In caso contrario, lo sostituisce con una nuova istanza del tipo (T).
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MathHelper">
+            <summary>
+            Classe helper che fornisce metodi e proprietà statiche correlati all'aritmetica a virgola mobile.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.Epsilon">
+            <summary>
+            La distanza minima in base alla quale due valori possono essere considerati uguali. Nota: la virgola mobile interna in MIL/SL è Float, non Double.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.TwoPI">
+            <summary>
+            Il valore dell'angolo di una circonferenza intera.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.PentagramInnerRadius">
+            <summary>
+            Il raggio interno della forma poligonale a pentagramma, con precisione di tre cifre in percentuale. (1 - Sin36 * Sin72 / Sin54) / (Cos36) ^ 2, corrispondente a 0,47210998990512996761913067272407
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsVerySmall(System.Double)">
+            <summary>
+            Determina se un valore <c>System.Double</c> è sufficientemente piccolo per essere considerato equivalente a zero.
+            </summary>
+            <param name="value"></param>
+            <returns><c>True</c> se il valore è minore di <c>DoubleTolerance</c>. In caso contrario, <c>False</c>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.EnsureRange(System.Double,System.Nullable{System.Double},System.Nullable{System.Double})">
+            <summary>
+            Restituisce il valore compreso nell'intervallo specificato. Un intervallo min/max specificato pari a null indica che non è previsto alcun limite.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.Hypotenuse(System.Double,System.Double)">
+            <summary>
+            Calcola la norma euclidea del vettore (x, y).
+            </summary>
+            <param name="x">Il primo componente.</param>
+            <param name="y">Il secondo componente.</param>
+            <returns>La norma euclidea del vettore (x, y).</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.DoubleFromMantissaAndExponent(System.Double,System.Int32)">
+            <summary>
+            Calcola un numero reale da mantissa ed esponente.
+            </summary>
+            <param name="x"></param>
+            <param name="exp"></param>
+            <returns>Il valore di x * 2^exp se ha esito positivo.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsFiniteDouble(System.Double)">
+            <summary>
+            Verifica un valore Double.
+            </summary>
+            <param name="x">Il valore Double da verificare.</param>
+            <returns><c>True</c> se x non è un valore NaN e non è uguale a PositiveInfinity o NegativeInfinity. In caso contrario, <c>False</c>.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathFigureHelper">
+            <summary>
+            Classe helper per utilizzare PathFigure.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double,System.Boolean)">
+            <summary>
+            Appiattisce la figura specificata e aggiunge i punti risultanti all'elenco di punti specificato.
+            </summary>
+            <param name="tolerance">La tolleranza di errore. Deve essere positiva. Può essere pari a zero. Fallback alla tolleranza predefinita.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.AllSegments(System.Windows.Media.PathFigure)">
+            <summary>
+            Esegue l'iterazione di tutti i segmenti all'interno di una figura specificata e restituisce il punto iniziale corretto di ciascun segmento.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncPolylineFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Boolean,System.Boolean)">
+            <summary>
+            Sincronizza la figura con l'elenco di punti specificato come segmento di polilinea singolo. Tenta di ridurre al minimo la modifica e restituisce false in assenza di modifiche.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncEllipseFigure(System.Windows.Media.PathFigure,System.Windows.Rect,System.Windows.Media.SweepDirection,System.Boolean)">
+            <summary>
+            Sincronizza la figura specificata affinché sia un'ellisse chiusa con due segmenti d'arco.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentData">
+            <summary>
+            Una struttura di dati tupla per PathSegment e StartPoint corrispondente.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineData">
+            <summary>
+            Rappresenta una polilinea con un elenco di punti di congiunzione. Un poligono chiuso viene rappresentato ripetendo il primo punto alla fine. Su richiesta vengono calcolate differenze, normali, angoli e lunghezze.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.#ctor(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+            Costruisce una polilinea con due o più punti.
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.Difference(System.Int32)">
+            Il vettore delle differenze in avanti della polilinea. Points[i] + Differences[i] = Points[i+1]
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.SmoothNormal(System.Int32,System.Double,System.Double)">
+            <summary>
+            Calcola il vettore normale della posizione specificata (lerp(indice, indice+1, frazione). Se la posizione rientra nell'intervallo di cornerRadius, esegue l'interpolazione della direzione normale.
+            </summary>
+            <param name="cornerRadius">L'intervallo di arrotondamento normale.  Se è zero, nessun arrotondamento e restituisce la normale esatta nell'indice.</param>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.IsClosed">
+            <summary>
+            La polilinea è chiusa quando il primo e l'ultimo punto sono punti ripetuti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Count">
+            <summary>
+            Il conteggio di punti di questa polilinea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.TotalLength">
+            <summary>
+            La lunghezza totale dell'arco di questa polilinea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Points">
+            <summary>
+            La matrice di punti di questa polilinea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Lengths">
+            <summary>
+            La lunghezza tra i segmenti della linea, da Points[i] a Points[i+1].
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Normals">
+            <summary>
+            L'elenco di vettori normali per ciascun segmento. Normals[i] è la normale del segmento da p[i] a p[i + 1]. Normals[N-1] == Normals[N-2].
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Angles">
+            <summary>
+            L'elenco di Cos(angle) tra due segmenti di linea sul punto p[i]. Nota: il valore è Cos(angle) = Dot(u, v). Non è epresso in gradi.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.AccumulatedLength">
+            <summary>
+            L'elenco di lunghezza accumulata da Points[i] a Points[0].
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MarchLocation">
+            <summary>
+            La struttura di dati per comunicare con l'algoritmo PathMarch.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetPoint(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+            Recupera la posizione interpolata di questo elemento MarchLocation in un elenco di punti specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetNormal(Microsoft.Expression.Drawing.Core.PolylineData,System.Double)">
+            <summary>
+            Recupera la direzione normale interpolata di questo elemento MarchLocation in un elenco di vettori normali specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetArcLength(System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Recupera la lunghezza dell'arco di questo elemento MarchLocation fino all'inizio della polilinea intera.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Reason">
+            <summary>
+            Il motivo per cui questa posizione viene campionata.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Index">
+            <summary>
+            L'indice del punto in un elenco di punti di polilinea.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Ratio">
+            <summary>
+            Rapporto: [0, 1], che è sempre prima / (prima + dopo).
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Before">
+            <summary>
+            Lunghezza dell'arco prima di un punto di interruzione. È un valore non negativo minore di Length[indice].
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.After">
+            <summary>
+            Lunghezza dell'arco dopo il punto di interruzione. È un valore non negativo minore di Length[indice].
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Remain">
+            <summary>
+            Lunghezza rimanente all'interno di un passaggio per toccare l'interruzione successiva. Positivo per lo spostamento in avanti. Negativo per lo spostamento indietro.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineHelper">
+            <summary>
+            Classe helper per utilizzare un elenco di punti
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.PathMarch(Microsoft.Expression.Drawing.Core.PolylineData,System.Double,System.Double,System.Func{Microsoft.Expression.Drawing.Core.MarchLocation,System.Double})">
+            <summary>
+            Segue la polilinea specificata con un intervallo specificato e genera in output ciascun punto di interruzione tramite callback.
+            </summary>
+            <param name="polyline">I punti della polilinea da seguire.</param>
+            <param name="startArcLength">La lunghezza dell'arco da seguire prima dell'interruzione al primo punto.</param>
+            <param name="cornerThreshold">L'angolo massimo tra i bordi da considerare come vertice dell'angolo.</param>
+            <param name="stopCallback">Callback quando l'algoritmo di inseguimento si interrompe in un punto. Il callback restituisce la lunghezza dell'arco per l'interruzione successiva. Se la lunghezza richiesta è negativa, inseguimento a ritroso. Se il callback restituisce NaN, l'inseguimento viene completato.</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.GetWrappedPolylines(System.Collections.Generic.IList{Microsoft.Expression.Drawing.Core.PolylineData},System.Double@)">
+            <summary>
+            Riordina l'elenco di polilinee specificato in modo che inizi con la polilinea con una lunghezza d'arco specificata. Le polilinee che precedono questa linea vengono concatenate alla fine dell'elenco, con la prima polilinea per ultima. 
+            </summary>
+            <param name="lines">Un elenco di polilinee.</param>
+            <param name="startArcLength">La lunghezza dell'arco nell'elenco completo di polilinee corrispondente alla linea iniziale. In questa variabile viene restituita la lunghezza dell'arco in tale linea.</param>
+            <returns>L'elenco riordinato e con ritorno a capo.</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.RandomEngine">
+            <summary>
+            Un generatore casuale supporta distribuzioni uniformi e gaussiane.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.RandomEngine.Gaussian">
+            <summary>
+            Generare una coppia di numeri casuali indipendenti e distribuiti gaussianamente con media nulla e varianza unitaria, utilizzando la forma polare della trasformazione di Box-Muller.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.#ctor">
+            <summary>
+            Costruttore privato. Forza l'utilizzo di metodi Factory.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point)">
+            <summary>
+             Crea un segmento di linea
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+             Crea un segmento di Bézier cubico dalla curva quadratica (3 punti di controllo)
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+             Crea un segmento di Bézier cubico con 4 punti di controllo.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.SimpleSegment.Points">
+            <summary>
+            Punti di controllo del segmento di tracciato.  La lunghezza è variabile. Il segmento di linea utilizza 2 punti, il segmento di Bézier cubico 4 punti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.TransformExtensions.TransformEquals(System.Windows.Media.Transform,System.Windows.Media.Transform)">
+            <summary>
+            Confronta due trasformazioni per cercare una corrispondenza esatta. Esegue la trasformazione con lo stesso valore ma con una struttura differente (ad esempio Translate(0,0) e Rotate(0) non sono considerati equivalenti).
+            </summary>
+            <param name="firstTransform">La prima trasformazione.</param>
+            <param name="secondTransform">La seconda trasformazione.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.UnitType">
+            <summary>
+            Specifica l'unità dello spessore.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Pixel">
+            <summary>
+            Unità in pixel.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Percent">
+            <summary>
+            Unità in percentuale rispetto al rettangolo di selezione.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometrySource`1">
+            <summary>
+            Fornisce la classe di base per l'origine di una geometria. Genera e memorizza nella cache la geometria in base ai parametri di input e ai limiti del layout.
+            </summary>
+            <remarks>
+            Un'implementazione tipica estenderà l'elemento UpdateCachedGeometry() per aggiornare questa cachedGeometry. La classe di base gestirà quindi l'invalidazione, la pipeline degli effetti geometrici e la memorizzazione nella cache rispetto ai limiti del layout. L'implementazione deve tentare di riutilizzare per quanto possibile la geometria memorizzata nella cache, al fine di evitare la ricostruzione nel thread di rendering. L'implementazione può estendere l'elemento ComputeLogicalBounds per gestire Stretch in modo diverso.
+            </remarks>
+            <typeparam name="TParameters">Il tipo di parametro dell'origine della geometria utilizzato dalla classe di base.</typeparam>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySource">
+            <summary>
+            Fornisce un'interfaccia per descrivere l'origine di una geometria.
+            </summary>
+            <remarks>
+            Questa interfaccia è concepita per esporre l'origine della geometria in modo non generico. L'implementazione tipica deve utilizzare la sottoclasse GeometrySource anziché l'implementazione diretta di questa interfaccia.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Notifica che la geometria è stata invalidata a causa di modifiche esterne.
+            </summary>
+            <remarks>
+            In genere una geometria viene invalidata quando vengono modificati i parametri. Se una geometria viene invalidata esternamente, verrà ricalcolata anche qualora vengano modificati i limiti di layout.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+            Aggiorna la geometria utilizzando i parametri specificati e i limiti del layout. Restituisce false se non sono stati apportati aggiornamenti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.Geometry">
+            <summary>
+            Recupera o imposta la geometria risultante dopo l'ultimo UpdateGeometry().
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds">
+            <summary>
+            Recupera il rettangolo di selezione a cui la geometria deve essere adattata. La geometria effettiva potrebbe essere più piccola o più grande di questa. <see cref="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds"/> deve prendere in considerazione lo spessore del tratto e l'adattamento.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds">
+            <summary>
+            Recupera i limiti effettivi dell'elemento FrameworkElement. <see cref="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds"/> include i limiti logici, l'adattamento e lo spessore del tratto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometrySource`1.cachedGeometry">
+            <summary>
+            Specifica la geometria dal precedente processo dell'effetto geometria.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Notifica che la geometria è stata invalidata a causa di modifiche esterne.
+            </summary>
+            <remarks>
+            In genere una geometria viene invalidata quando vengono modificati i parametri. Se una geometria viene invalidata esternamente, verrà ricalcolata a prescindere dalla modifica dei limiti del layout.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+            Aggiorna la geometria in base ai parametri specificati e ai limiti del layout. Restituisce false se la geometria non è stata modificata.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateCachedGeometry(`0)">
+            <summary>
+            Estende il metodo per fornire la geometria mediante l'implementazione di questa funzione. Restituisce true quando una geometria viene modificata.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+            Estende il metodo per gestire la modalità di adattamento. Il valore predefinito prevede di utilizzare sempre Stretch.Fill e il tratto centrale.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ApplyGeometryEffect(Microsoft.Expression.Media.IGeometrySourceParameters,System.Boolean)">
+            <summary>
+            Applica l'effetto geometria se modificato o forzato e aggiorna this.Geometry. In caso contrario, mantiene this.Geometry come this.cachedGeometry.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.Geometry">
+            <summary>
+            Recupera o imposta la geometria risultante dopo l'ultimo UpdateGeometry().
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds">
+            <summary>
+            Recupera il rettangolo di selezione a cui la geometria deve essere adattata. La geometria effettiva potrebbe essere più piccola o più grande di questa. <see cref="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds"/> deve prendere in considerazione lo spessore del tratto e l'adattamento.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds">
+            <summary>
+            Recupera i limiti effettivi dell'elemento FrameworkElement. <see cref="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds"/> include i limiti logici, l'adattamento e lo spessore del tratto.
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+            Lo spessore dell'arco Stretch.None è uguale a Stretch.Fill, presupponendo che le proporzioni siano pari a 1:1.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.NormalizeThickness(Microsoft.Expression.Media.IArcGeometrySourceParameters)">
+            <summary>
+            Normalizza lo spessore rispetto sia al rettangolo di selezione, sia al pixel assoluto. Spessore relativo = 0 -&gt; raggio dell'intera circonferenza o bloccato. Spessore relativo = 1 -&gt; ridotto a un punto o degenerato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.UpdateZeroAngleGeometry(System.Boolean,System.Double)">
+            <summary>
+            L'arco degenera in una linea rivolta verso il centro / normale verso l'interno.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeAngleRanges(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Calcola un elenco di coppie di angoli che definisce gli intervalli in cui si può trovare il campione di arco. Il valore restituito ha 2, 4 oppure 6 valori doppi, ogni coppia definisce un intervallo e le coppie sono nell'ordine in cui disporre gli angoli in base ad angoli di inizio e fine specificati.  Gli intervalli si interrompono in corrispondenza dell'angolo di autointersezione. Se il valore immesso di inizio/fine rientra nell'intervallo non valido compreso tra l'angolo di autointersezione, verrà spostato all'autointersezione più prossima.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.EnsureFirstQuadrant(System.Double)">
+            <summary>
+            Sposta l'angolo in un intervallo da 0 a 90.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.SyncPieceWiseInnerCurves(System.Windows.Media.PathFigure,System.Int32,System.Windows.Point@,System.Double[])">
+            <summary>
+            Calcola tutte le parti delle curve interne con ciascuna coppia di angoli di input e le collega con segmenti PolyBezier. Viene effettuato l'output dei nuovi segmenti nell'elenco figure.Segments specificato dall'indice specificato.  L'outout del punto iniziale viene effettuato separatamente.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeOneInnerCurve(System.Double,System.Double,System.Windows.Rect,System.Double)">
+            <summary>
+            Calcola una parte di curva interna con un intervallo di angoli specificato ed effettua l'output di una parte di curva uniforme sotto forma di segmenti PolyBezier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.InnerCurveSelfIntersect(System.Double,System.Double,System.Double)">
+            <summary>
+            Calcola il parametro (angolo) del punto di autointersezione per un'ellisse specificata con uno spessore specificato. Il risultato si trova sempre nel primo quadrante. Se è pari a 0 o 90 indica l'assenza di autointersezione. L'algoritmo di base prevede la ricerca binaria dell'angolo in base al quale il punto campione non si trova nel primo quadrante.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowOrientation">
+            <summary>
+            Specifica la direzione delle punte delle frecce.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Left">
+            <summary>
+            La freccia è rivolta a sinistra.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Right">
+            <summary>
+            La freccia è rivolta a destra.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Up">
+            <summary>
+            La freccia è rivolta verso l'alto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Down">
+            <summary>
+            La freccia è rivolta verso il basso.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.BlockArrowGeometrySource.ArrowBuilder">
+            <summary>
+                 L'algoritmo B /| / C--D A     | \ C--D \| B utilizza solo Width/Height presupponendo che l'angolo superiore sinistro coincida con 0,0.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CalloutStyle">
+            <summary>
+            Specifica lo stile di rendering di una forma Callout.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Rectangle">
+            <summary>
+            Un Callout di forma rettangolare.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.RoundedRectangle">
+            <summary>
+            Un Callout di forma rettangolare con angoli arrotondati.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Oval">
+            <summary>
+            Un Callout di forma ovale.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Cloud">
+            <summary>
+            Un Callout a forma di nuvola.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateEdge(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double,System.Boolean)">
+            <summary>
+            Aggiorna la linea del bordo e, se necessario, la collega al punto di ancoraggio.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdatePolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+            Aggiorna il segmento di polilinea, quindi collega i punti iniziale, di ancoraggio e finale allo stile Callout.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateLineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point)">
+            <summary>
+            Aggiorna il segmento di linea in base a un punto specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.ComputeCorners(System.Double)">
+            <summary>
+            Calcola i punti degli angoli in senso orario, con 8 punti per i 4 angoli.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateCornerArc(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point)">
+            <summary>
+            L'arco d'angolo è sempre un arco più piccolo di 90 gradi.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffect">
+            <summary>
+            Fornisce la classe di base di GeometryEffect che trasforma una geometria in un'altra geometria.
+            </summary>
+            <remarks>
+            Questa classe fornisce l'implementazione di base dell'elaborazione della geometria sottoposta a rendering di un elemento IShape prima che venga passato al rendering. Un'implementazione tipica estenderà la funzione virtuale <see cref="F:ProcessGeometry"/> per trasformare la geometria di input. <see cref="T:GeometryEffect"/> viene tipicamente associato a <see cref="T:IShape"/> come proprietà collegata e attivato quando la geometria <see cref="T:IShape"/> viene aggiornata. L'elemento <see cref="P:OutputGeometry"/> di un elemento <see cref="T:GeometryEffect"/> sostituirà la geometria sottoposta a rendering in <see cref="T:IShape"/>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.GetGeometryEffect(System.Windows.DependencyObject)">
+            <summary>
+            Recupera l'effetto geometria come proprietà associata a un oggetto di dipendenza specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.SetGeometryEffect(System.Windows.DependencyObject,Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+            Imposta l'effetto geometria come proprietà associata a un oggetto di dipendenza specificato.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CloneCurrentValue">
+            <summary>
+            Esegue una copia completa dell'effetto <see cref="T:GeometryEffect"/> utilizzandone i valori correnti.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto geometria. Implementa CloneCurrentValue in Silverlight.
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto geometria.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+            Verifica se l'effetto geometria specificato equivale all'istanza corrente.
+            </summary>
+            <param name="geometryEffect">Un effetto geometria con cui effettuare un confronto.</param>
+            <returns>Restituisce true quando il rendering di due effetti genera lo stesso aspetto.</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffect.cachedGeometry">
+            <summary>
+            Specifica la geometria dal precedente processo dell'effetto geometria.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Invalida l'effetto geometria senza calcolare effettivamente la geometria. Notifica tutte le forme o tutti gli effetti padre da invalidare di conseguenza.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.ProcessGeometry(System.Windows.Media.Geometry)">
+            <summary>
+            Esegue l'elaborazione dell'effetto geometria su una geometria di input specificata. Il risultato viene memorizzato in GeometryEffect.OutputGeometry.
+            </summary>
+            <returns>Restituisce false se non sono state apportate modifiche.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+            Estende la modalità di aggiornamento di cachedGeometry in base alla geometria di input specificata.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Detach">
+            <summary>
+            Notifica quando il collegamento con un elemento padre viene interrotto.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Attach(System.Windows.DependencyObject)">
+            <summary>
+            Notifica quando viene stabilito il collegamento con l'elemento padre.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateParent(System.Windows.DependencyObject)">
+            <summary>
+            Invalida la geometria su un oggetto di dipendenza specificato quando l'oggetto è un tipo di elemento padre valido (IShape o GeometryEffect).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CreateInstanceCore">
+            <summary>
+            Implementa il Freezable in WPF.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.DefaultGeometryEffect">
+            <summary>
+            L'effetto geometria predefinito che si limita a passare la geometria di input.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.OutputGeometry">
+            <summary>
+            Recupera la geometria di output di questo effetto geometria.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.Parent">
+            <summary>
+            L'elemento padre può essere IShape o GeometryEffectGroup.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffectConverter">
+            <summary>
+            Fornisce la conversione tra stringa ed effetti di geometria.
+            </summary>
+            <remarks>
+            Questa classe consente la sintassi breve in xaml del tipo <code>GeometryEffect="Sketch"</code>. Crea un clone dell'istanza dell'effetto geometria in modo che possa essere utilizzato come risorsa.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffectConverter.registeredEffects">
+            <summary>
+            Genera un elenco predefinito di effetti geometria supportati.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Un effetto GeometryEffect che può essere convertito da un tipo stringa.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Un effetto GeometryEffect che può essere convertito in un tipo stringa.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Converte una stringa in un effetto geometria. Il valore fallback è null.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+            Converte un effetto geometria in una stringa.  Il valore fallback è null.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.InvalidateGeometryReasons">
+            <summary>
+            Specifica la ragione per la quale <see cref="M:Microsoft.Expression.Media.InvalidateGeometry"/> viene chiamato.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.PropertyChanged">
+            <summary>
+            La geometria è stata invalidata a causa della modifica di una proprietà.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.IsAnimated">
+            <summary>
+            La geometria è stata invalidata a causa dell'animazione di una proprietà.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ChildInvalidated">
+            <summary>
+            La geometria è stata invalidata perché un elemento figlio è stato invalidato.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ParentInvalidated">
+            <summary>
+            La geometria è stata invalidata perché un elemento padre è stato invalidato.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.TemplateChanged">
+            <summary>
+            La geometria è stata invalidata perché è stato applicato un nuovo modello.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceExtensions">
+            <summary>
+            Fornisce metodi di estensione helper da utilizzare con IGeometrySource e parametri.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowType">
+            <summary>
+            Specifica il tipo di punta della freccia.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.NoArrow">
+            <summary>
+            Nessuna punta della freccia.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.Arrow">
+            <summary>
+            Una punta della freccia a triangolo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.StealthArrow">
+            <summary>
+            Una punta della freccia 3 a triangolo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OpenArrow">
+            <summary>
+            Una punta della freccia a triangolo aperto.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OvalArrow">
+            <summary>
+            Una punta della freccia ovale.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CornerType">
+            <summary>
+            Specifica la posizione dell'angolo.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopLeft">
+            <summary>
+            Nell'angolo superiore sinistro del rettangolo di selezione.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopRight">
+            <summary>
+            Nell'angolo superiore destro del rettangolo di selezione.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomRight">
+            <summary>
+            Nell'angolo inferiore destro del rettangolo di selezione.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomLeft">
+            <summary>
+            Nell'angolo inferiore sinistro del rettangolo di selezione.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.PolygonGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+            Il poligono riconosce Stretch.None come uguale a Stretch.Fill.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.SketchGeometryEffect">
+            <summary>
+            Un effetto geometria per trasformare una geometria in uno stile Sketch come in SketchFlow.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.DeepCopy">
+            <summary>
+            Esegue una copia completa dell'effetto geometria.
+            </summary>
+            <returns>Un clone dell'istanza corrente dell'effetto geometria.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+            Verifica se l'effetto geometria specificato equivale all'istanza corrente.
+            </summary>
+            <param name="geometryEffect">Un effetto geometria con cui effettuare un confronto.</param>
+            <returns>Restituisce true quando il rendering di due effetti genera lo stesso aspetto.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+            Aggiornamento di cachedGeometry in base a una geometria di input specificata.
+            </summary>
+            <param name="input">Una geometria di input</param>
+            <returns>Restituisce true quando un elemento di cachedGeometry è stato aggiornato.</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.SketchGeometryEffect.randomSeed">
+            <summary>
+            Utilizza lo stesso valore di inizializzazione casuale durante la creazione per mantenere minimo lo sfarfallio visivo.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.GetEffectiveSegments(System.Windows.Media.PathFigure)">
+            <summary>
+            Esegue l'iterazione di tutti i segmenti semplici nella figura del tracciato specificata inclusa la corda di chiusura.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.Arc">
+            <summary>
+            Esegue il rendering di una forma arco che supporta la modalità Arc, Ring e Pie controllata da ArcThickness.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.PrimitiveShape">
+            <summary>
+            Implementazione di Shape non associata ad alcuna piattaforma derivante da WPF:Shape o SL:Path.
+            </summary>
+            <summary>
+            Fornisce l'implementazione in WPF di Shape che deriva dalla piattaforma Shape.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.CreateGeometrySource">
+            <summary>
+            Estende la modalità in cui la forma viene disegnata durante la creazione dell'origine della geometria.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+            Invalida la geometria per un elemento <see cref="T:Microsoft.Expression.Media.IShape"/>. In seguito all'invalidazione, verrà ricalcolata la geometria di <see cref="T:Microsoft.Expression.Media.IShape"/> tramite un'operazione eseguita in modo asincrono.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.MeasureOverride(System.Windows.Size)">
+            <summary>Fornisce il comportamento per la parte di misurazione del passaggio di layout di Silverlight. Le classi possono sostituire questo metodo e definire il loro comportamento per il passaggio di misurazione.</summary>
+            <returns>La dimensione determinata da questo oggetto come necessaria durante il layout, in base ai calcoli delle dimensioni assegnate agli oggetti figlio, o eventualmente in base ad altre considerazioni quali la dimensione fissa di un contenitore.</returns>
+            <param name="availableSize">La dimensione disponibile che questo oggetto può fornire agli oggetti figlio. È possibile specificare Infinity (<see cref="F:System.Double.PositiveInfinity"/>) come valore per indicare che l'oggetto verrà ridimensionato in base al contenuto disponibile.</param>
+            <remarks>
+            In WPF, l'override della misura utilizza Shape.DefiningGeometry che non dà sempre i risultati previsti. Per informazioni vedere il bug 99497 in cui WPF non ha la misura corretta per impostazione predefinita.
+            
+            In Silverlight, l'override della misura su Path non funziona come la forma primitiva.
+            
+            È necessario restituire la dimensione minima per il rendering corretto di questa forma senza ritaglio. Per impostazione predefinita, il rendering più piccolo di una forma può essere un punto e restituisce quindi StrokeThickness.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.ArrangeOverride(System.Windows.Size)">
+            <summary>Fornisce il comportamento per la parte di disposizione del passaggio di layout di Silverlight. Le classi possono eseguire l'override di questo metodo per definire un comportamento per il passaggio di disposizione personalizzato.</summary>
+            <returns>La dimensione effettiva utilizzata dopo la disposizione dell'elemento.</returns>
+            <param name="finalSize">L'area finale all'interno dell'elemento padre che deve essere utilizzata dall'oggetto per la propria disposizione e per quella dei relativi elementi figlio.</param>
+            <remarks> <see cref="T:Microsoft.Expression.Shapes.PrimitiveShape"/> ricalcolerà la geometria quando viene invalidata e aggiornerà RenderedGeometry e GeometryMargin.</remarks>
+        </member>
+        <member name="E:Microsoft.Expression.Shapes.PrimitiveShape.RenderedGeometryChanged">
+            <summary>
+            Si verifica in seguito alla modifica di RenderedGeometry.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.PrimitiveShape.GeometryMargin">
+            <summary>
+            Recupera il margine fra i limiti logici e i limiti effettivi della geometria. Può essere sia positivo (come nel caso di <see cref="T:Microsoft.Expression.Shapes.Arc"/>) che negativo (come nel caso di <see cref="T:Microsoft.Expression.Controls.Callout"/>).
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.StartAngle">
+            <summary>
+            Recupera o imposta l'angolo iniziale.
+            </summary>
+            <value>L'angolo iniziale in gradi. 0 gradi è rivolto verso l'alto.</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.EndAngle">
+            <summary>
+            Recupera o imposta l'angolo finale.
+            </summary>
+            <value>L'angolo finale in gradi. 0 gradi è rivolto verso l'alto.</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThickness">
+            <summary>
+            Recupera o imposta lo spessore dell'arco.
+            </summary>
+            <value>Lo spessore dell'arco espresso in pixel o percentuale in base a "ArcThicknessUnit".</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThicknessUnit">
+            <summary>
+            Recupera o imposta l'unità dello spessore dell'arco.
+            </summary>
+            <value>L'unità dello spessore dell'arco, in pixel o percentuale.</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.BlockArrow">
+            <summary>
+            Esegue il rendering di una forma freccia a blocco che supporta punta e corpo ridimensionabili.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.Orientation">
+            <summary>
+            Recupera o imposta l'orientamento.
+            </summary>
+            <value>La direzione verso cui la freccia è rivolta.</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowheadAngle">
+            <summary>
+            Recupera o imposta l'angolo della punta della freccia.
+            </summary>
+            <value>L'angolo della punta della freccia in gradi.</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowBodySize">
+            <summary>
+            Recupera o imposta la dimensione del corpo della freccia.
+            </summary>
+            <value>La dimensione del corpo della freccia in pixel.</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.RegularPolygon">
+            <summary>
+            Esegue il rendering di una forma poligono regolare o della corrispondente forma stella con un numero variabile di punti.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.PointCount">
+            <summary>
+            Recupera o imposta il numero di punti dell'elemento <see cref="T:Microsoft.Expression.Shapes.RegularPolygon"/>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.InnerRadius">
+            <summary>
+            Recupera o imposta la distanza tra il centro e il punto più interno.
+            </summary>
+            <value>La distanza tra il centro e il punto più interno.</value>
+        </member>
+    </members>
+</doc>

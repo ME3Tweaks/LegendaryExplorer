@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxweapon_shotgun_assault">
+			<Property name="damage" type="0">(X=61.7,Y=77.1)</Property>
+			<Property name="magsize" type="0">(X=6,Y=6)</Property>
+			<Property name="statbardamage" type="0">(X=493.6f,Y=616.8f)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

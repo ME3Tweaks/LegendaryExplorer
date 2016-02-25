@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_talentreset">
+			<!--<Property name="defaultimage" type="2">gui_codex_images.Store.STO_Respec_512x256</Property>-->
+			<!--<Property name="discoveryid" type="2">-1</Property>-->
+			<!--<Property name="m_eoptionalpaneresourcetype" type="2">INV_RESOURCE_CREDITS</Property>-->
+			<!--<Property name="m_showoptionalpane" type="2">true</Property>-->
+			<!--<Property name="m_sratext" type="2">567685</Property>-->
+			<!--<Property name="m_srbtext" type="2">567686</Property>-->
+			<!--<Property name="m_sroptionalpaneitemvalueprefixtext" type="2">567688</Property>-->
+			<!--<Property name="m_sroptionalpanetitletext" type="2">567687</Property>-->
+			<!--<Property name="m_srsubtitle" type="2">0</Property>-->
+			<!--<Property name="m_srtitle" type="2">708504</Property>-->
+			<!--<Property name="sroutofstock" type="2">569508</Property>-->
+			<!--<Property name="srstoredescription" type="2">576301</Property>-->
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!-- Ashley -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=19,
+					ItemClassName="Hench_Ashley",
+					ChoiceEntry=(
+					srChoicename=682733,
+					srChoiceDescription=682733),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- EDI -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=21,
+					ItemClassName="Hench_EDI",
+					ChoiceEntry=(
+					srChoicename=682734,
+					srChoiceDescription=682734),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Garrus -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=20,
+					ItemClassName="Hench_Garrus",
+					ChoiceEntry=(
+					srChoicename=682735,
+					srChoiceDescription=682735),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- James -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=33,
+					ItemClassName="Hench_Marine",
+					ChoiceEntry=(
+					srChoicename=682737,
+					srChoiceDescription=682737),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Javik-->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=22,
+					ItemClassName="Hench_Prothean",
+					ChoiceEntry=(
+					srChoicename=10000100,
+					srChoiceDescription=10000100),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Kaidan -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=18,
+					ItemClassName="Hench_Kaidan",
+					ChoiceEntry=(
+					srChoicename=682732,
+					srChoiceDescription=682732),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Liara -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=17,
+					ItemClassName="Hench_Liara",
+					ChoiceEntry=(
+					srChoicename=682736,
+					srChoiceDescription=682736),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Shepard -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					ItemClassName="Shepard",
+					ChoiceEntry=(
+					srChoicename=682731,
+					srChoiceDescription=682731),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+
+				<!-- Tali -->
+				<Value type="2">
+					(ItemType=TYPE_TALENTRESET,
+					PlotUnlockConditionalID=185,
+					ItemClassName="Hench_Tali",
+					ChoiceEntry=(
+					srChoicename=682738,
+					srChoiceDescription=682738),
+					LargeImage="gui_codex_images.Store.STO_Respec_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Store_256x1286")
+				</Value>
+			</Property>
+			<Property name="storename" type="2">TalentReset</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

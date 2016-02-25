@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpawn_gethturret_mp5">
+			<Property name="m_nmaxtargettickets" type="0">2</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_fembotmeleepassive">
+			<!--<Property name="defensivedamagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="defensivedamagetaken" type="0">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="defensivemovementspeed" type="0">(BaseValue=0.20f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="evolve_defensivedamagetaken" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_defensivedamagetaken2" type="0">0.15f</Property>-->
+			<!--<Property name="evolve_defensivemovementspeed" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_defensiveshieldregenbonus" type="0">0.15f</Property>-->
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<!--<Property name="evolve_meleedamagebonus1" type="0">0.15f</Property>-->
+			<!--<Property name="evolve_meleedamagebonus2" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_offensivedamagebonus" type="0">0.05f</Property>-->
+			<!--<Property name="evolve_offensivedamagebonus2" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_offensivedamagetaken" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_offensivemovementspeed" type="0">0.05f</Property>-->
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=750)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=450)</Property>-->
+			<!--<Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleedamage" type="0">(BaseValue=400)</Property>-->
+			<!--<Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>-->
+			<!--<Property name="meleeforce" type="0">(BaseValue=550)</Property>-->
+			<!--<Property name="offensivedamagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="offensivedamagetaken" type="0">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="offensivemovementspeed" type="0">(BaseValue=0.20f,Formula=BonusIsHardValue)</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_femturianmeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>-->
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=700)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="heavymeleeimpactradius" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleedamage" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="meleeforce" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="meleeimpactradius" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="poisondamage" type="0">0.3f</Property>-->
+			<!--<Property name="poisondamageduration" type="0">5.0f</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_gethdestroyermeleepassive">
+			<!--<Property name="checkforalliesfrequency" type="0">0.33f</Property>-->
+			<!--<Property name="evolve_allydamagebonus" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_allydamagebonusrange" type="0">400.0f</Property>-->
+			<!--<Property name="evolve_damagepenalty" type="0">0.15f</Property>-->
+			<Property name="evolve_healthshieldbonus1" type="0">0.20</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.75</Property>
+			<!--<Property name="evolve_meleedamagebonus1" type="0">0.30f</Property>-->
+			<!--<Property name="evolve_meleedamagebonus3" type="0">0.30f</Property>-->
+			<!--<Property name="evolve_movespeedbonus" type="0">0.15f</Property>-->
+			<!--<Property name="evolve_movespeedduration" type="0">10.0f</Property>-->
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<!--<Property name="evolve_shieldrestorebonus1" type="0">0.2f</Property>-->
+			<!--<Property name="evolve_shieldrestorebonus2" type="0">0.5f</Property>-->
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleeconeangle" type="0">(BaseValue=90.0f)</Property>-->
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=300)</Property>-->
+			<!--<Property name="heavymeleedamagereduction" type="0">(BaseValue=0.5f)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=300)</Property>-->
+			<!--<Property name="heavymeleehealpersecond" type="0">(BaseValue=500,RankBonuses[1]=0.15f)</Property>-->
+			<!--<Property name="heavymeleeimpactradius" type="0">(BaseValue=125)</Property>-->
+			<!--<Property name="initialcheckforalliesdelay" type="0">1.00f</Property>-->
+			<!--<Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleeconeangle" type="0">(BaseValue=360.0f)</Property>-->
+			<!--<Property name="meleedamage" type="0">(BaseValue=250)</Property>-->
+			<!--<Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>-->
+			<!--<Property name="meleeforce" type="0">(BaseValue=800)</Property>-->
+			<!--<Property name="meleeimpactradius" type="0">(BaseValue=300)</Property>-->
+			<!--<Property name="meleestompmaxragdolltargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleestompmaxtargets" type="0">(BaseValue=3)</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_gethsentryturret_mp5">
+			<!--<Property name="attackcooldown" type="0">(BaseValue=3,Formula=DivideByBonusSum)</Property>-->
+			<!--<Property name="cooldowntime" type="0">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>-->
+			<!--<Property name="damage" type="0">(BaseValue=150.0f,RankBonuses[2]=0.3f)</Property>-->
+			<!--<Property name="evolve_armordamagebonus" type="0">0.5f</Property>-->
+			<!--<Property name="evolve_damagebonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_damagebonus2" type="0">0.3f</Property>-->
+			<!--<Property name="evolve_shieldbonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_shieldfrequencybonus" type="0">0.6f</Property>-->
+			<!--<Property name="evolve_shieldradiusbonus" type="0">0.4f</Property>-->
+			<!--<Property name="evolve_shieldrestorebonus" type="0">0.5f</Property>-->
+			<!--<Property name="evolve_shieldrestorebonus2" type="0">0.5f</Property>-->
+			<!--<Property name="flamethrowerdamageduration" type="0">(BaseValue=1.0f)</Property>-->
+			<!--<Property name="flamethrowerdamagepersec" type="0">(BaseValue=55.0f,RankBonuses[2]=0.3f)</Property>-->
+			<!--<Property name="healamount" type="0">(BaseValue=350.0f)</Property>-->
+			<!--<Property name="healcooldown" type="0">(BaseValue=8,Formula=DivideByBonusSum)</Property>-->
+			<!--<Property name="healradius" type="0">(BaseValue=800.0f)</Property>-->
+			<!--<Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>-->
+			<!--<Property name="projectilespeed" type="0">(BaseValue=3000.0f)</Property>-->
+			<!--<Property name="spawnzoffset" type="0">150.0f</Property>-->
+			<Property name="turretshields" type="0">(BaseValue=1000.00, RankBonuses[2]=0.30)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_mercmeleepassive">
+			<!--<Property name="arrowspershot" type="0">(BaseValue=3,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="coneangle" type="0">25.0f</Property>-->
+			<!--<Property name="delaybetweenarrows" type="0">0.03f</Property>-->
+			<!--<Property name="evolve_bowspreebonus" type="0">0.5f</Property>-->
+			<!--<Property name="evolve_bowspreeduration" type="0">8.0f</Property>-->
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<!--<Property name="evolve_meleedamagebonus1" type="0">0.3f</Property>-->
+			<!--<Property name="evolve_meleedamagebonus2" type="0">0.4f</Property>-->
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<!--<Property name="fullychargedspeedbonus" type="0">2000.0f</Property>-->
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=150.0f)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=150.0f)</Property>-->
+			<!--<Property name="impactradius" type="0">(BaseValue=0.0f)</Property>-->
+			<!--<Property name="maximumrange" type="0">(BaseValue=6000)</Property>-->
+			<!--<Property name="meleedamagebonus" type="0">(BaseValue=0.10f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>-->
+			<!--<Property name="projectilespeed" type="0">(BaseValue=3000.0f)</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_protheanmeleepassive">
+			<!--<Property name="ascensionduration" type="0">30.0f</Property>-->
+			<!--<Property name="cooldownbonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="damagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="damagetaken" type="0">(BaseValue=0.2f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="evolve_damagebonus" type="0">0.05f</Property>-->
+			<!--<Property name="evolve_damagebonus2" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_damagetaken2" type="0">0.20f</Property>-->
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<!--<Property name="evolve_meleedamagebonus1" type="0">0</Property>-->
+			<!--<Property name="evolve_meleedamagebonus2" type="0">0</Property>-->
+			<!--<Property name="evolve_powerrechargebonus" type="0">0.1f</Property>-->
+			<!--<Property name="evolve_powerrechargebonus2" type="0">0.1f</Property>-->
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>-->
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=200)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=500)</Property>-->
+			<!--<Property name="heavymeleeimpactradius" type="0">(BaseValue=200)</Property>-->
+			<!--<Property name="maximumimpacttargets" type="0">(BaseValue=3)</Property>-->
+			<!--<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleeconeangle" type="0">(BaseValue=180.0f)</Property>-->
+			<!--<Property name="meleedamage" type="0">(BaseValue=450)</Property>-->
+			<!--<Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>-->
+			<!--<Property name="meleeforce" type="0">(BaseValue=650)</Property>-->
+			<!--<Property name="meleeimpactradius" type="0">(BaseValue=750)</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxpowercustomactionmp_warlordmeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="0">0.25</Property>
+			<Property name="evolve_healthshieldbonus2" type="0">0.40</Property>
+			<!--<Property name="evolve_ragedamagereductionbonus1" type="0">0.05f</Property>-->
+			<!--<Property name="evolve_ragedamagereductionbonus2" type="0">0.05f</Property>-->
+			<Property name="evolve_ragehealthregen" type="0">0.40</Property>
+			<Property name="evolve_ragehealthregen2" type="0">0.60</Property>
+			<!--<Property name="evolve_ragemeleedamagebonus" type="0">0.30f</Property>-->
+			<!--<Property name="evolve_ragenumenemies" type="0">1</Property>-->
+			<Property name="evolve_shieldregenbonus" type="0">0.25</Property>
+			<Property name="healthregen" type="0">(BaseValue=75.00)</Property>
+			<Property name="healthshieldbonus" type="0">(BaseValue=0.20, Formula=BonusIsHardValue, RankBonuses[1]=0.15)</Property>
+			<!--<Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>-->
+			<!--<Property name="heavymeleedamage" type="0">(BaseValue=750)</Property>-->
+			<!--<Property name="heavymeleeforce" type="0">(BaseValue=650)</Property>-->
+			<!--<Property name="heavymeleeimpactradius" type="0">(BaseValue=150)</Property>-->
+			<!--<Property name="maximumimpacttargets" type="0">(BaseValue=2)</Property>-->
+			<!--<Property name="maximumragdolltargets" type="0">(BaseValue=1)</Property>-->
+			<!--<Property name="meleedamage" type="0">(BaseValue=400)</Property>-->
+			<!--<Property name="meleeforce" type="0">(BaseValue=500)</Property>-->
+			<!--<Property name="meleeimpactradius" type="0">(BaseValue=150)</Property>-->
+			<!--<Property name="ragedamagereduction" type="0">(BaseValue=0.2f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="rageduration" type="0">45.0f</Property>-->
+			<Property name="ragehealthregen" type="0">(BaseValue=100.00)</Property>
+			<!--<Property name="ragekillwindow" type="0">45.0f</Property>-->
+			<!--<Property name="ragemeleedamagebonus" type="0">(BaseValue=0.50f,Formula=BonusIsHardValue)</Property>-->
+			<!--<Property name="ragenumenemies" type="0">2</Property>-->
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini" source="..\..\biogame\config\biogame.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultGame.ini</Property>
+    </Section>
+    <Section name="sfxgame.sfxgestures">
+      <Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+    </Section>
+    <Section name="sfxonlinefoundation.sfxonlinecomponentcommerce">
+      <Property name="adlcentitlementinfo" type="3">(BWEntitlement=(ID=(nID=4000111), sTokens[0]=(sKey="playervar", sName="SFXGameContent.SFXWeapon_SniperRifle_Valiant", sValue="1"),sTokens[1]=(sKey="plotbool", sName="22632", sValue="1"),sTokens[2]=(sKey="playervar", sName="SFXGameContent.SFXWeapon_Shotgun_Crusader", sValue="1"),sTokens[3]=(sKey="plotbool", sName="22633", sValue="1"),sTokens[4]=(sKey="playervar", sName="SFXGameContent.SFXWeapon_SMG_Hurricane", sValue="1"),sTokens[5]=(sKey="plotbool", sName="22634", sValue="1"),sTokens[6]=(sKey="playervar", sName="SFXGameContent.SFXWeapon_Pistol_Eagle", sValue="1"),sTokens[7]=(sKey="plotbool", sName="22635", sValue="1"),sTokens[8]=(sKey="plotbool", sName="21187", sValue="1"),sTokens[9]=(sKey="plotbool", sName="22590", sValue="1")))</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

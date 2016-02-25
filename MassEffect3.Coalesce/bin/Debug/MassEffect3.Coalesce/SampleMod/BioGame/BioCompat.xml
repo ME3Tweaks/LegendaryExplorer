@@ -1,0 +1,926 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biocompat" name="biocompat.ini" source="..\..\biogame\config\biocompat.ini">
+	<Sections>
+		<Section name="appcompat">
+			<Property name="cpuhyperthreadmult" type="2">1.15</Property>
+			<Property name="cpumemory1" type="2">0.5</Property>
+			<Property name="cpumemory2" type="2">1.0</Property>
+			<Property name="cpumemory3" type="2">1.0</Property>
+			<Property name="cpumemory4" type="2">2.0</Property>
+			<Property name="cpumemory5" type="2">3.0</Property>
+			<Property name="cpumulticoremult" type="2">1.75</Property>
+			<Property name="cpuscore1" type="2">1000</Property>
+			<Property name="cpuscore2" type="2">720</Property>
+			<Property name="cpuscore3" type="2">630</Property>
+			<Property name="cpuscore4" type="2">500</Property>
+			<Property name="cpuscore5" type="2">275</Property>
+			<Property name="cpuspeed1" type="2">1.8</Property>
+			<Property name="cpuspeed2" type="2">2.4</Property>
+			<Property name="cpuspeed3" type="2">3.0</Property>
+			<Property name="cpuspeed4" type="2">3.5</Property>
+			<Property name="cpuspeed5" type="2">4.0</Property>
+			<Property name="gpumemory1" type="2">256</Property>
+			<Property name="gpumemory2" type="2">256</Property>
+			<Property name="gpumemory3" type="2">256</Property>
+			<Property name="gpumemory4" type="2">512</Property>
+			<Property name="gpumemory5" type="2">512</Property>
+			<Property name="gpushader1" type="2">3</Property>
+			<Property name="gpushader2" type="2">3</Property>
+			<Property name="gpushader3" type="2">3</Property>
+			<Property name="gpushader4" type="2">3</Property>
+			<Property name="gpushader5" type="2">3</Property>
+		</Section>
+		<Section name="appcompatbucket1">
+			<Property name="ballowpostprocessaa" type="2">False</Property>
+			<Property name="dynamicshadows" type="2">False</Property>
+			<Property name="maxanisotropy" type="2">0</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">False</Property>
+			<Property name="resx" type="2">800</Property>
+			<Property name="resy" type="2">600</Property>
+			<Property name="shsecondarylighting" type="2">False</Property>
+		</Section>
+		<Section name="appcompatbucket2">
+			<Property name="ballowpostprocessaa" type="2">False</Property>
+			<Property name="dynamicshadows" type="2">False</Property>
+			<Property name="maxanisotropy" type="2">0</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">False</Property>
+			<Property name="resx" type="2">800</Property>
+			<Property name="resy" type="2">600</Property>
+			<Property name="shsecondarylighting" type="2">True</Property>
+		</Section>
+		<Section name="appcompatbucket3">
+			<Property name="ballowpostprocessaa" type="2">True</Property>
+			<Property name="dynamicshadows" type="2">True</Property>
+			<Property name="maxanisotropy" type="2">2</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">True</Property>
+			<Property name="resx" type="2">1280</Property>
+			<Property name="resy" type="2">720</Property>
+			<Property name="shsecondarylighting" type="2">True</Property>
+		</Section>
+		<Section name="appcompatbucket4">
+			<Property name="ballowpostprocessaa" type="2">True</Property>
+			<Property name="dynamicshadows" type="2">True</Property>
+			<Property name="maxanisotropy" type="2">4</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">True</Property>
+			<Property name="resx" type="2">1280</Property>
+			<Property name="resy" type="2">720</Property>
+			<Property name="shsecondarylighting" type="2">True</Property>
+		</Section>
+		<Section name="appcompatbucket5">
+			<Property name="ballowpostprocessaa" type="2">True</Property>
+			<Property name="dynamicshadows" type="2">True</Property>
+			<Property name="maxanisotropy" type="2">8</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">True</Property>
+			<Property name="resx" type="2">1280</Property>
+			<Property name="resy" type="2">720</Property>
+			<Property name="shsecondarylighting" type="2">True</Property>
+		</Section>
+		<Section name="appcompatbucket6">
+			<Property name="ballowpostprocessaa" type="2">True</Property>
+			<Property name="dynamicshadows" type="2">True</Property>
+			<Property name="maxanisotropy" type="2">8</Property>
+			<Property name="maxcharactercinematiclightingpasses" type="2">3</Property>
+			<Property name="motionblur" type="2">True</Property>
+			<Property name="resx" type="2">auto_assigned_from_desktop</Property>
+			<Property name="resy" type="2">auto_assigned_from_desktop</Property>
+			<Property name="shsecondarylighting" type="2">True</Property>
+		</Section>
+		<Section name="appcompatgpu-0x1002">
+			<Property name="0x3150" type="2">0,ATI MOBILITY RADEON</Property>
+			<Property name="0x3151" type="2">-1,ATI FireMV 2400</Property>
+			<Property name="0x3152" type="2">0,ATI MOBILITY RADEON X300</Property>
+			<Property name="0x3154" type="2">-1,ATI MOBILITY FireGL V3200</Property>
+			<Property name="0x3171" type="2">-1,ATI FireMV 2400 Secondary</Property>
+			<Property name="0x3e50" type="2">0,Radeon X600/X550 Series</Property>
+			<Property name="0x3e54" type="2">-1,ATI FireGL V3200</Property>
+			<Property name="0x3e70" type="2">0,Radeon X600/X550 Series Secondary</Property>
+			<Property name="0x3e74" type="2">-1,ATI FireGL V3200 Secondary</Property>
+			<Property name="0x4144" type="2">0,Radeon 9500</Property>
+			<Property name="0x4146" type="2">0,Radeon 9600TX</Property>
+			<Property name="0x4147" type="2">-1,ATI FireGL Z1</Property>
+			<Property name="0x4148" type="2">0,Radeon 9800 SE</Property>
+			<Property name="0x4149" type="2">0,Radeon 9500</Property>
+			<Property name="0x4150" type="2">0,ATI RADEON 9600 Series</Property>
+			<Property name="0x4151" type="2">0,ATI RADEON 9600 Series</Property>
+			<Property name="0x4152" type="2">0,ATI RADEON 9600 Series</Property>
+			<Property name="0x4153" type="2">0,ATI Radeon 9550/X1050 Series</Property>
+			<Property name="0x4154" type="2">-1,ATI FireGL T2</Property>
+			<Property name="0x4155" type="2">0,ATI RADEON 9600 Series</Property>
+			<Property name="0x4164" type="2">0,Radeon 9500 Secondary</Property>
+			<Property name="0x4166" type="2">0,Radeon 9600TX Secondary</Property>
+			<Property name="0x4167" type="2">-1,ATI FireGL Z1 Secondary</Property>
+			<Property name="0x4168" type="2">0,Radeon 9800 SE Secondary</Property>
+			<Property name="0x4169" type="2">0,Radeon 9500 Secondary</Property>
+			<Property name="0x4170" type="2">0,ATI RADEON 9600 Series Secondary</Property>
+			<Property name="0x4171" type="2">0,ATI RADEON 9600 Series Secondary</Property>
+			<Property name="0x4172" type="2">0,ATI RADEON 9600 Series Secondary</Property>
+			<Property name="0x4173" type="2">0,ATI Radeon 9550/X1050 Series Secondary</Property>
+			<Property name="0x4174" type="2">-1,ATI FireGL T2 Secondary</Property>
+			<Property name="0x4175" type="2">0,ATI RADEON 9600 Series Secondary</Property>
+			<Property name="0x4a48" type="2">0,Radeon X800 Series</Property>
+			<Property name="0x4a49" type="2">0,Radeon X800 PRO</Property>
+			<Property name="0x4a4a" type="2">0,Radeon X800 Series</Property>
+			<Property name="0x4a4b" type="2">0,Radeon X800 XT</Property>
+			<Property name="0x4a4c" type="2">0,Radeon X800 Series</Property>
+			<Property name="0x4a4d" type="2">-1,ATI FireGL X3-256</Property>
+			<Property name="0x4a4e" type="2">-1,ATI MOBILITY RADEON 9800</Property>
+			<Property name="0x4a4f" type="2">0,Radeon X800 SE</Property>
+			<Property name="0x4a50" type="2">0,Radeon X800 XT Platinum Edition</Property>
+			<Property name="0x4a54" type="2">0,Radeon X800 VE</Property>
+			<Property name="0x4a68" type="2">0,Radeon X800 Series Secondary</Property>
+			<Property name="0x4a69" type="2">0,Radeon X800 PRO Secondary</Property>
+			<Property name="0x4a6a" type="2">0,Radeon X800 Series Secondary</Property>
+			<Property name="0x4a6b" type="2">0,Radeon X800 XT Secondary</Property>
+			<Property name="0x4a6c" type="2">0,Radeon X800 Series Secondary</Property>
+			<Property name="0x4a6d" type="2">-1,ATI FireGL X3-256 Secondary</Property>
+			<Property name="0x4a6f" type="2">0,Radeon X800 SE Secondary</Property>
+			<Property name="0x4a70" type="2">0,Radeon X800 XT Platinum Edition Secondary</Property>
+			<Property name="0x4a74" type="2">0,Radeon X800 VE Secondary</Property>
+			<Property name="0x4b48" type="2">-1,ATI Radeon x850 Consumer</Property>
+			<Property name="0x4b49" type="2">0,ATI RADEON X850 XT</Property>
+			<Property name="0x4b4a" type="2">0,ATI RADEON X850 SE</Property>
+			<Property name="0x4b4b" type="2">0,ATI RADEON X850 PRO</Property>
+			<Property name="0x4b4c" type="2">0,ATI RADEON X850 XT Platinum Edition</Property>
+			<Property name="0x4b68" type="2">-1,ATI Radeon x850 Consumer Secondary</Property>
+			<Property name="0x4b69" type="2">0,ATI RADEON X850 XT Secondary</Property>
+			<Property name="0x4b6a" type="2">0,ATI RADEON X850 SE Secondary</Property>
+			<Property name="0x4b6b" type="2">0,ATI RADEON X850 PRO Secondary</Property>
+			<Property name="0x4b6c" type="2">0,ATI RADEON X850 XT Platinum Edition Secondary</Property>
+			<Property name="0x4c57" type="2">-1,ATI MOBILITY RADEON 7500</Property>
+			<Property name="0x4c58" type="2">-1,ATI MOBILITY FIRE GL 7800</Property>
+			<Property name="0x4c59" type="2">-1,ATI MOBILITY RADEON</Property>
+			<Property name="0x4e44" type="2">0,Radeon 9700 PRO</Property>
+			<Property name="0x4e45" type="2">0,Radeon 9500 PRO / 9700</Property>
+			<Property name="0x4e46" type="2">0,Radeon 9600 TX</Property>
+			<Property name="0x4e47" type="2">-1,ATI FireGL X1</Property>
+			<Property name="0x4e48" type="2">0,Radeon 9800 PRO</Property>
+			<Property name="0x4e49" type="2">0,Radeon 9800</Property>
+			<Property name="0x4e4a" type="2">0,Radeon 9800 XT</Property>
+			<Property name="0x4e4b" type="2">-1,ATI FireGL X2-256/X2-256t</Property>
+			<Property name="0x4e50" type="2">-1,ATI MOBILITY RADEON 9600/9700 Series</Property>
+			<Property name="0x4e51" type="2">0,ATI RADEON 9600 Series</Property>
+			<Property name="0x4e52" type="2">-1,ATI MOBILITY RADEON 9500</Property>
+			<Property name="0x4e54" type="2">-1,ATI MOBILITY FIRE GL T2/T2e</Property>
+			<Property name="0x4e56" type="2">-1,ATI MOBILITY RADEON 9550</Property>
+			<Property name="0x4e64" type="2">0,Radeon 9700 PRO Secondary</Property>
+			<Property name="0x4e65" type="2">0,Radeon 9500 PRO / 9700 Secondary</Property>
+			<Property name="0x4e66" type="2">0,Radeon 9600 TX Secondary</Property>
+			<Property name="0x4e67" type="2">-1,ATI FireGL X1 Secondary</Property>
+			<Property name="0x4e68" type="2">0,Radeon 9800 PRO Secondary</Property>
+			<Property name="0x4e69" type="2">0,Radeon 9800 Secondary</Property>
+			<Property name="0x4e6a" type="2">0,Radeon 9800 XT Secondary</Property>
+			<Property name="0x4e6b" type="2">-1,ATI FireGL X2-256/X2-256t Secondary</Property>
+			<Property name="0x4e71" type="2">0,ATI RADEON 9600 Series Secondary</Property>
+			<Property name="0x5460" type="2">0,ATI MOBILITY RADEON X300</Property>
+			<Property name="0x5461" type="2">0,ATI MOBILITY RADEON X300</Property>
+			<Property name="0x5462" type="2">0,ATI MOBILITY RADEON X600 SE</Property>
+			<Property name="0x5464" type="2">-1,ATI MOBILITY FireGL V3100</Property>
+			<Property name="0x5548" type="2">0,Radeon X800 Series</Property>
+			<Property name="0x5549" type="2">0,Radeon X800 GTO</Property>
+			<Property name="0x554a" type="2">0,Radeon X800 XT Platinum Edition</Property>
+			<Property name="0x554b" type="2">0,Radeon X800 GT</Property>
+			<Property name="0x554d">
+				<Value type="2">3,Radeon X800 CrossFire Edition</Value>
+				<Value type="2">0,ATI RADEON X800 XL</Value>
+			</Property>
+			<Property name="0x554e" type="2">0,ATI RADEON X800 GT</Property>
+			<Property name="0x554f" type="2">0,Radeon X800 GTO</Property>
+			<Property name="0x5550" type="2">-1,ATI FireGL V7100</Property>
+			<Property name="0x5551" type="2">-1,ATI FireGL V5100</Property>
+			<Property name="0x5568" type="2">0,Radeon X800 Series Secondary</Property>
+			<Property name="0x5569" type="2">0,Radeon X800 GTO Secondary</Property>
+			<Property name="0x556a" type="2">0,Radeon X800 XT Platinum Edition Secondary</Property>
+			<Property name="0x556b" type="2">0,Radeon X800 GT Secondary</Property>
+			<Property name="0x556d">
+				<Value type="2">3,Radeon X800 CrossFire Edition Secondary</Value>
+				<Value type="2">0,ATI RADEON X800 XL Secondary</Value>
+			</Property>
+			<Property name="0x556e" type="2">0,ATI RADEON X800 GT Secondary</Property>
+			<Property name="0x556f" type="2">0,Radeon X800 GTO Secondary</Property>
+			<Property name="0x5570" type="2">-1,ATI FireGL V7100 Secondary</Property>
+			<Property name="0x5571" type="2">-1,ATI FireGL V5100 Secondary</Property>
+			<Property name="0x564a" type="2">-1,ATI MOBILITY FireGL V5000</Property>
+			<Property name="0x564b" type="2">-1,ATI MOBILITY FireGL V5000</Property>
+			<Property name="0x564f" type="2">0,Radeon X550/X700 Series</Property>
+			<Property name="0x5652" type="2">0,ATI MOBILITY RADEON X700</Property>
+			<Property name="0x5653">
+				<Value type="2">1,ATI MOBILITY/RADEON X700</Value>
+				<Value type="2">0,ATI MOBILITY RADEON X700</Value>
+			</Property>
+			<Property name="0x5657" type="2">0,Radeon X550/X700 Series</Property>
+			<Property name="0x5673" type="2">0,ATI MOBILITY RADEON X700 Secondary</Property>
+			<Property name="0x5677" type="2">0,Radeon X550/X700 Series Secondary</Property>
+			<Property name="0x5854" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5874" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5954" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5955" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5974" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5975" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a41" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a42" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a43" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a61" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a62" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5a63" type="2">-1,ATI Radeon Xpress Series</Property>
+			<Property name="0x5b60" type="2">0,Radeon X300/X550/X1050 Series</Property>
+			<Property name="0x5b62" type="2">0,Radeon X600 Series</Property>
+			<Property name="0x5b63" type="2">0,Radeon X300/X550/X1050 Series</Property>
+			<Property name="0x5b64" type="2">-1,ATI FireGL V3100</Property>
+			<Property name="0x5b65" type="2">-1,ATI FireMV 2200</Property>
+			<Property name="0x5b70" type="2">0,Radeon X300/X550/X1050 Series Secondary</Property>
+			<Property name="0x5b72" type="2">0,Radeon X600 Series Secondary</Property>
+			<Property name="0x5b73" type="2">0,Radeon X300/X550/X1050 Series Secondary</Property>
+			<Property name="0x5b74" type="2">-1,ATI FireGL V3100 Secondary</Property>
+			<Property name="0x5b75" type="2">-1,ATI FireMV 2200 Secondary</Property>
+			<Property name="0x5d48" type="2">0,ATI MOBILITY RADEON X800 XT</Property>
+			<Property name="0x5d49" type="2">-1,ATI MOBILITY FireGL V5100</Property>
+			<Property name="0x5d4a" type="2">0,ATI MOBILITY RADEON X800</Property>
+			<Property name="0x5d4d" type="2">0,Radeon X850 XT Platinum Edition</Property>
+			<Property name="0x5d4f" type="2">0,Radeon X800 GTO</Property>
+			<Property name="0x5d50" type="2">-1,ATI FireGL V7200</Property>
+			<Property name="0x5d52">
+				<Value type="2">3,Radeon X850 CrossFire Edition</Value>
+				<Value type="2">0,Radeon X850 XT</Value>
+			</Property>
+			<Property name="0x5d57" type="2">0,Radeon X800 XT</Property>
+			<Property name="0x5d6d" type="2">0,Radeon X850 XT Platinum Edition Secondary</Property>
+			<Property name="0x5d6f" type="2">0,Radeon X800 GTO Secondary</Property>
+			<Property name="0x5d70" type="2">-1,ATI FireGL V7200 Secondary</Property>
+			<Property name="0x5d72">
+				<Value type="2">3,Radeon X850 CrossFire Edition Secondary</Value>
+				<Value type="2">0,Radeon X850 XT Secondary</Value>
+			</Property>
+			<Property name="0x5d77" type="2">0,Radeon X800 XT Secondary</Property>
+			<Property name="0x5e48" type="2">-1,ATI FireGL V5000</Property>
+			<Property name="0x5e4a" type="2">0,Radeon X700 XT</Property>
+			<Property name="0x5e4b" type="2">0,Radeon X700 PRO</Property>
+			<Property name="0x5e4c" type="2">0,Radeon X700 SE</Property>
+			<Property name="0x5e4d" type="2">0,Radeon X700</Property>
+			<Property name="0x5e4f" type="2">0,Radeon X700/X550 Series</Property>
+			<Property name="0x5e68" type="2">-1,ATI FireGL V5000 Secondary</Property>
+			<Property name="0x5e6a" type="2">0,Radeon X700 XT Secondary</Property>
+			<Property name="0x5e6b" type="2">0,Radeon X700 PRO Secondary</Property>
+			<Property name="0x5e6c" type="2">0,Radeon X700 SE Secondary</Property>
+			<Property name="0x5e6d" type="2">0,Radeon X700 Secondary</Property>
+			<Property name="0x5e6f" type="2">0,Radeon X700/X550 Series Secondary</Property>
+			<Property name="0x6718" type="2">6,AMD Radeon HD 6900 Series</Property>
+			<Property name="0x6719" type="2">6,AMD Radeon HD 6900 Series</Property>
+			<Property name="0x6738" type="2">6,AMD Radeon HD 6800 Series</Property>
+			<Property name="0x6739" type="2">-1,AMD Radeon HD 6800 Series</Property>
+			<Property name="0x673e" type="2">6,Radeon HD 6790</Property>
+			<Property name="0x6779" type="2">2,ATI Radeon HD 6450</Property>
+			<Property name="0x688d" type="2">-1,AMD FireStream 9350</Property>
+			<Property name="0x6898" type="2">6,ATI Radeon HD 5800 Series</Property>
+			<Property name="0x6899" type="2">6,ATI Radeon HD 5800 Series</Property>
+			<Property name="0x689c" type="2">6,ATI Radeon HD 5900 Series</Property>
+			<Property name="0x689e" type="2">-1,ATI Radeon HD 5800 Series</Property>
+			<Property name="0x68b8" type="2">6,AMD Radeon HD 6700 Series</Property>
+			<Property name="0x68b9" type="2">-1,ATI Radeon HD 5600/5700</Property>
+			<Property name="0x68be" type="2">6,AMD Radeon HD 5750</Property>
+			<Property name="0x68d8" type="2">-1,ATI Radeon HD 5690</Property>
+			<Property name="0x68d9" type="2">4,ATI Radeon HD 5630</Property>
+			<Property name="0x68da" type="2">-1,ATI Radeon HD 5630</Property>
+			<Property name="0x68f9" type="2">1,ATI Radeon HD 5470</Property>
+			<Property name="0x7100" type="2">1,Radeon X1800 Series</Property>
+			<Property name="0x7101" type="2">-1,ATI Mobility Radeon X1800 XT</Property>
+			<Property name="0x7102" type="2">-1,ATI Mobility Radeon X1800</Property>
+			<Property name="0x7103" type="2">-1,ATI MOBILITY FireGL V7200</Property>
+			<Property name="0x7104" type="2">-1,ATI FireGL V7200</Property>
+			<Property name="0x7105" type="2">-1,ATI FireGL V5300</Property>
+			<Property name="0x7106" type="2">-1,ATI MOBILITY FireGL V7100</Property>
+			<Property name="0x7108" type="2">1,Radeon X1800 Series</Property>
+			<Property name="0x7109" type="2">1,Radeon X1800 Series</Property>
+			<Property name="0x710a" type="2">1,Radeon X1800 Series</Property>
+			<Property name="0x710b" type="2">1,Radeon X1800 Series</Property>
+			<Property name="0x710c" type="2">3,Radeon X1800 Series</Property>
+			<Property name="0x710e" type="2">-1,ATI FireGL V7300</Property>
+			<Property name="0x710f" type="2">-1,ATI FireGL V7350</Property>
+			<Property name="0x7120" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x7124" type="2">-1,ATI FireGL V7200 Secondary</Property>
+			<Property name="0x7125" type="2">-1,ATI FireGL V5300 Secondary</Property>
+			<Property name="0x7128" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x7129" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x712a" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x712b" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x712c" type="2">3,Radeon X1800 Series Secondary</Property>
+			<Property name="0x712e" type="2">-1,ATI FireGL V7300 Secondary</Property>
+			<Property name="0x712f" type="2">-1,ATI FireGL V7350 Secondary</Property>
+			<Property name="0x7140" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x7142" type="2">0,Radeon X1300/X1550 Series</Property>
+			<Property name="0x7143" type="2">0,Radeon X1550 Series</Property>
+			<Property name="0x7145" type="2">-1,ATI Mobility Radeon X1400</Property>
+			<Property name="0x7146" type="2">0,Radeon X1300 / X1550 Series</Property>
+			<Property name="0x7147" type="2">0,Radeon X1550 64-bit</Property>
+			<Property name="0x7149" type="2">-1,ATI Mobility Radeon X1300</Property>
+			<Property name="0x714a" type="2">-1,ATI Mobility Radeon X1300</Property>
+			<Property name="0x714b" type="2">-1,ATI Mobility Radeon X1300</Property>
+			<Property name="0x714c" type="2">-1,ATI Mobility Radeon X1300</Property>
+			<Property name="0x714d" type="2">0,Radeon X1300 Series</Property>
+			<Property name="0x714e" type="2">0,Radeon X1300 Series</Property>
+			<Property name="0x7152" type="2">-1,ATI FireGL V3300</Property>
+			<Property name="0x7153" type="2">-1,ATI FireGL V3350</Property>
+			<Property name="0x715e" type="2">0,Radeon X1300 Series</Property>
+			<Property name="0x715f" type="2">0,Radeon X1550 64-bit</Property>
+			<Property name="0x7160" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x7162" type="2">0,Radeon X1300/X1550 Series Secondary</Property>
+			<Property name="0x7163" type="2">0,Radeon X1550 Series Secondary</Property>
+			<Property name="0x7166" type="2">0,Radeon X1300 / X1550 Series Secondary</Property>
+			<Property name="0x7167" type="2">0,Radeon X1550 64-bit Secondary</Property>
+			<Property name="0x716d" type="2">0,Radeon X1300 Series Secondary</Property>
+			<Property name="0x716e" type="2">0,Radeon X1300 Series Secondary</Property>
+			<Property name="0x7172" type="2">-1,ATI FireGL V3300 Secondary</Property>
+			<Property name="0x7173" type="2">-1,ATI FireGL V3350 Secondary</Property>
+			<Property name="0x717e" type="2">0,Radeon X1300 Series Secondary</Property>
+			<Property name="0x717f" type="2">0,Radeon X1550 64-bit Secondary</Property>
+			<Property name="0x7180" type="2">0,Radeon X1300/X1550 Series</Property>
+			<Property name="0x7181" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x7183" type="2">0,Radeon X1300/X1550 Series</Property>
+			<Property name="0x7186" type="2">-1,ATI Mobility Radeon X1450</Property>
+			<Property name="0x7187" type="2">0,Radeon X1300/X1550 Series</Property>
+			<Property name="0x7188" type="2">-1,ATI Mobility Radeon X2300</Property>
+			<Property name="0x718a" type="2">-1,ATI Mobility Radeon X2300</Property>
+			<Property name="0x718b" type="2">-1,ATI Mobility Radeon X1350</Property>
+			<Property name="0x718c" type="2">-1,ATI Mobility Radeon X1350</Property>
+			<Property name="0x718d" type="2">-1,ATI Mobility Radeon X1450</Property>
+			<Property name="0x718f" type="2">0,Radeon X1300 Series</Property>
+			<Property name="0x7193" type="2">0,Radeon X1550 Series</Property>
+			<Property name="0x7196" type="2">-1,ATI Mobility Radeon X1350</Property>
+			<Property name="0x719b" type="2">-1,ATI FireMV 2250</Property>
+			<Property name="0x719f" type="2">0,Radeon X1550 64-bit</Property>
+			<Property name="0x71a0" type="2">0,Radeon X1300/X1550 Series Secondary</Property>
+			<Property name="0x71a1" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x71a3" type="2">0,Radeon X1300/X1550 Series Secondary</Property>
+			<Property name="0x71a7" type="2">0,Radeon X1300/X1550 Series Secondary</Property>
+			<Property name="0x71af" type="2">0,Radeon X1300 Series Secondary</Property>
+			<Property name="0x71b3" type="2">0,Radeon X1550 Series Secondary</Property>
+			<Property name="0x71bb" type="2">-1,ATI FireMV 2250 Secondary</Property>
+			<Property name="0x71bf" type="2">-1,ATI Radeon x1550 64-bit Secondary</Property>
+			<Property name="0x71c0" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x71c1" type="2">0,Radeon X1650 Series</Property>
+			<Property name="0x71c2" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x71c3" type="2">0,Radeon X1300 Series</Property>
+			<Property name="0x71c4" type="2">-1,ATI MOBILITY FireGL V5200</Property>
+			<Property name="0x71c5" type="2">-1,ATI Mobility Radeon X1600</Property>
+			<Property name="0x71c6" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x71c7" type="2">0,Radeon X1650 Series</Property>
+			<Property name="0x71cd" type="2">0,Radeon X1600 Series</Property>
+			<Property name="0x71ce" type="2">0,Radeon X1600 Pro / Radeon X1300 XT</Property>
+			<Property name="0x71d2" type="2">-1,ATI FireGL V3400</Property>
+			<Property name="0x71d4" type="2">-1,ATI MOBILITY FireGL V5250</Property>
+			<Property name="0x71d5" type="2">-1,ATI Mobility Radeon X1700</Property>
+			<Property name="0x71d6" type="2">-1,ATI Mobility Radeon X1700 XT</Property>
+			<Property name="0x71da" type="2">-1,ATI FireGL V5200</Property>
+			<Property name="0x71de" type="2">-1,ATI Mobility Radeon X1700</Property>
+			<Property name="0x71e0" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x71e1" type="2">0,Radeon X1650 Series Secondary</Property>
+			<Property name="0x71e2" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x71e3" type="2">0,Radeon X1300 Series Secondary</Property>
+			<Property name="0x71e6" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x71e7" type="2">0,Radeon X1650 Series Secondary</Property>
+			<Property name="0x71ed" type="2">0,Radeon X1600 Series Secondary</Property>
+			<Property name="0x71ee" type="2">0,Radeon X1600 Pro / Radeon X1300 XT Secondary</Property>
+			<Property name="0x71f2" type="2">-1,ATI FireGL V3400 Secondary</Property>
+			<Property name="0x71fa" type="2">-1,ATI FireGL V5200 Secondary</Property>
+			<Property name="0x7210" type="2">-1,ATI Mobility Radeon HD 2300</Property>
+			<Property name="0x7211" type="2">-1,ATI Mobility Radeon HD 2300</Property>
+			<Property name="0x7240" type="2">5,Radeon X1950 Series</Property>
+			<Property name="0x7243" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x7244" type="2">5,Radeon X1950 Series</Property>
+			<Property name="0x7245" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x7246" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x7247" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x7248">
+				<Value type="2">5,Radeon X1950 XTX Uber - Limited Edition</Value>
+				<Value type="2">4,Radeon X1900 Series</Value>
+			</Property>
+			<Property name="0x7249" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x724a" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x724b" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x724c" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x724d" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x724e" type="2">-1,ATI FireStream 2U</Property>
+			<Property name="0x724f" type="2">4,Radeon X1900 Series</Property>
+			<Property name="0x7260" type="2">5,Radeon X1950 Series Secondary</Property>
+			<Property name="0x7263" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x7264" type="2">5,Radeon X1950 Series Secondary</Property>
+			<Property name="0x7265" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x7266" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x7267" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x7268">
+				<Value type="2">5,Radeon X1950 XTX Uber - Limited Edition Secondary</Value>
+				<Value type="2">4,Radeon X1900 Series Secondary</Value>
+			</Property>
+			<Property name="0x7269" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x726a" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x726b" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x726c" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x726d" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x726e" type="2">-1,ATI FireStream 2U Secondary</Property>
+			<Property name="0x726f" type="2">4,Radeon X1900 Series Secondary</Property>
+			<Property name="0x7280" type="2">5,Radeon X1950 Series</Property>
+			<Property name="0x7284" type="2">-1,ATI Mobility Radeon X1900</Property>
+			<Property name="0x7288" type="2">5,ATI Radeon X1950 GT</Property>
+			<Property name="0x7291" type="2">0,Radeon X1650 Series</Property>
+			<Property name="0x7293" type="2">0,Radeon X1650 Series</Property>
+			<Property name="0x72a0" type="2">5,Radeon X1950 Series Secondary</Property>
+			<Property name="0x72a8" type="2">5,ATI Radeon X1950 GT Secondary</Property>
+			<Property name="0x72b1" type="2">0,Radeon X1650 Series Secondary</Property>
+			<Property name="0x72b3" type="2">0,Radeon X1650 Series Secondary</Property>
+			<Property name="0x791e" type="2">-1,ATI Radeon X1200 Series</Property>
+			<Property name="0x791f" type="2">-1,ATI Radeon X1200 Series</Property>
+			<Property name="0x793f" type="2">-1,ATI Radeon Xpress 1200 Series</Property>
+			<Property name="0x7941" type="2">-1,ATI Radeon Xpress 1200 Series</Property>
+			<Property name="0x7942" type="2">-1,ATI Radeon Xpress 1200 Series</Property>
+			<Property name="0x796e" type="2">-1,ATI Radeon 2100</Property>
+			<Property name="0x9400" type="2">6,ATI Radeon HD 2900 XT</Property>
+			<Property name="0x9401" type="2">6,ATI Radeon HD 2900 XT</Property>
+			<Property name="0x9402" type="2">6,ATI Radeon HD 2900 XT</Property>
+			<Property name="0x9403" type="2">6,ATI Radeon HD 2900 XT</Property>
+			<Property name="0x9405" type="2">5,ATI Radeon HD 2900 GT</Property>
+			<Property name="0x9440" type="2">6,ATI Radeon HD 4870</Property>
+			<Property name="0x9441" type="2">6,ATI Radeon HD 4870 X2</Property>
+			<Property name="0x9442" type="2">6,ATI Radeon HD 4850</Property>
+			<Property name="0x9443" type="2">6,ATI Radeon HD 4850 X2</Property>
+			<Property name="0x944a" type="2">-1,ATI Radeon HD 4800 Series</Property>
+			<Property name="0x944c" type="2">6,ATI Radeon HD 4830</Property>
+			<Property name="0x944e" type="2">-1,ATI Radeon HD 4810 Series</Property>
+			<Property name="0x9450" type="2">-1,AMD FireStream 9270</Property>
+			<Property name="0x9452" type="2">-1,AMD FireStream 9250</Property>
+			<Property name="0x9460" type="2">4,ATI Radeon HD 4800 Series</Property>
+			<Property name="0x9462" type="2">-1,ATI Radeon HD 4800 Series</Property>
+			<Property name="0x9490" type="2">5,ATI Radeon HD 4670</Property>
+			<Property name="0x9498" type="2">3,ATI Radeon HD 4650</Property>
+			<Property name="0x94b3" type="2">5,ATI Radeon HD 4770</Property>
+			<Property name="0x94b4" type="2">-1,ATI Radeon HD 4700</Property>
+			<Property name="0x94b5" type="2">-1,ATI Radeon HD 4770</Property>
+			<Property name="0x94c1" type="2">0,ATI Radeon HD 2400 XT</Property>
+			<Property name="0x94c3" type="2">0,ATI Radeon HD 2400</Property>
+			<Property name="0x94c4" type="2">-1,ATI Radeon HD 2400 PRO AGP</Property>
+			<Property name="0x94c5" type="2">-1,ATI Radeon HD 2400 LE</Property>
+			<Property name="0x94c7" type="2">-1,ATI Radeon HD 2350</Property>
+			<Property name="0x94c8" type="2">-1,ATI Mobility Radeon HD 2400 XT</Property>
+			<Property name="0x94c9" type="2">-1,ATI Mobility Radeon HD 2400</Property>
+			<Property name="0x94cc" type="2">0,ATI Radeon HD 2400 Series</Property>
+			<Property name="0x9501" type="2">5,ATI Radeon HD 3870</Property>
+			<Property name="0x9505" type="2">5,ATI Radeon HD 3850</Property>
+			<Property name="0x9507" type="2">5,ATI Radeon HD 3830</Property>
+			<Property name="0x950f" type="2">5,ATI Radeon HD 3870 X2</Property>
+			<Property name="0x9513" type="2">5,ATI Radeon HD 3850 X2</Property>
+			<Property name="0x9515" type="2">-1,ATI Radeon HD 3850 AGP</Property>
+			<Property name="0x9519" type="2">-1,AMD FireStream 9170</Property>
+			<Property name="0x9540" type="2">2,ATI Radeon HD 4550</Property>
+			<Property name="0x954f" type="2">0,ATI Radeon HD 4350</Property>
+			<Property name="0x9552" type="2">-1,ATI Radeon HD 4300/4500 Series</Property>
+			<Property name="0x9553" type="2">-1,ATI Radeon HD 4300/4500 Series</Property>
+			<Property name="0x9555" type="2">-1,ATI Radeon HD 4550</Property>
+			<Property name="0x9581" type="2">-1,ATI Mobility Radeon HD 2600</Property>
+			<Property name="0x9583" type="2">-1,ATI Mobility Radeon HD 2600 XT</Property>
+			<Property name="0x9586" type="2">-1,ATI Radeon HD 2600 XT AGP</Property>
+			<Property name="0x9587" type="2">-1,ATI Radeon HD 2600 Pro AGP</Property>
+			<Property name="0x9588" type="2">3,ATI Radeon HD 2600 XT</Property>
+			<Property name="0x9589" type="2">2,ATI Radeon HD 2600 PRO</Property>
+			<Property name="0x958a" type="2">3,ATI Radeon HD 2600 X2 Series</Property>
+			<Property name="0x958e" type="2">-1,ATI Radeon HD 2600 LE</Property>
+			<Property name="0x9590" type="2">-1,ATI Radeon HD 3600 Series</Property>
+			<Property name="0x9591" type="2">-1,ATI Radeon HD 3600 Series</Property>
+			<Property name="0x9596" type="2">-1,ATI Radeon HD 3650 AGP</Property>
+			<Property name="0x9597" type="2">-1,ATI Radeon HD 3600 Series</Property>
+			<Property name="0x9598" type="2">3,ATI Radeon HD 3600 series</Property>
+			<Property name="0x9599" type="2">-1,ATI Radeon HD 3600 Series</Property>
+			<Property name="0x95c0" type="2">2,ATI Radeon HD 3470</Property>
+			<Property name="0x95c5" type="2">0,ATI Radeon HD 3450</Property>
+			<Property name="0x95c6" type="2">-1,ATI Radeon HD 3450</Property>
+			<Property name="0x95c7" type="2">-1,ATI Radeon HD 3430</Property>
+			<Property name="0x9610" type="2">0,ATI Radeon HD 3200 Graphics</Property>
+			<Property name="0x9611" type="2">-1,ATI Radeon 3100 Graphics</Property>
+			<Property name="0x9612" type="2">0,ATI Radeon HD 3200 Graphics</Property>
+			<Property name="0x9613" type="2">-1,ATI Radeon 3100 Graphics</Property>
+			<Property name="0x9614" type="2">0,ATI Radeon HD 3300 Graphics</Property>
+			<Property name="0x9616" type="2">-1,AMD 760G</Property>
+			<Property name="0x9710" type="2">-1,ATI Radeon HD 4200</Property>
+			<Property name="0x9714" type="2">-1,ATI Radeon HD 4290</Property>
+			<Property name="0x9715" type="2">-1,ATI Radeon HD 4250</Property>
+			<Property name="0x9802" type="2">-1,AMD Radeon HD 6310 Graphics</Property>
+			<Property name="0x9803" type="2">-1,AMD Radeon HD 6310 Graphics</Property>
+			<Property name="0x9804" type="2">-1,AMD Radeon HD 6350 Graphics</Property>
+			<Property name="0x9805" type="2">-1,AMD Radeon HD 6250 Graphics</Property>
+			<Property name="vendormobiletag" type="2">Mobility</Property>
+			<Property name="vendorname" type="2">ATI</Property>
+		</Section>
+		<Section name="appcompatgpu-0x10de">
+			<Property name="0x0040" type="2">0,GeForce 6800 Ultra</Property>
+			<Property name="0x0041" type="2">0,GeForce 6800</Property>
+			<Property name="0x0042" type="2">0,GeForce 6800 LE</Property>
+			<Property name="0x0043" type="2">0,GeForce 6800 XE</Property>
+			<Property name="0x0044" type="2">0,GeForce 6800 XT</Property>
+			<Property name="0x0045" type="2">0,GeForce 6800 GT AGP</Property>
+			<Property name="0x0046" type="2">0,GeForce 6800 GT</Property>
+			<Property name="0x0047" type="2">0,GeForce 6800 GS</Property>
+			<Property name="0x0048" type="2">0,GeForce 6800 XT</Property>
+			<Property name="0x004d" type="2">-1,Quadro FX 3400</Property>
+			<Property name="0x004e" type="2">-1,Quadro FX 4000</Property>
+			<Property name="0x0090" type="2">0,GeForce 7800 GTX</Property>
+			<Property name="0x0091" type="2">0,GeForce 7800 GTX</Property>
+			<Property name="0x0092" type="2">0,GeForce 7800 GT</Property>
+			<Property name="0x0093" type="2">0,GeForce 7800 GS</Property>
+			<Property name="0x0095" type="2">0,GeForce 7800 SLI</Property>
+			<Property name="0x0098" type="2">0,GeForce Go 7800</Property>
+			<Property name="0x0099" type="2">0,GeForce Go 7800 GTX</Property>
+			<Property name="0x009d" type="2">-1,Quadro FX 4500</Property>
+			<Property name="0x00c0" type="2">0,GeForce 6800 GS</Property>
+			<Property name="0x00c1" type="2">0,GeForce 6800</Property>
+			<Property name="0x00c2" type="2">0,GeForce 6800 LE</Property>
+			<Property name="0x00c3" type="2">0,GeForce 6800 XT</Property>
+			<Property name="0x00c8" type="2">0,GeForce Go 6800</Property>
+			<Property name="0x00c9" type="2">0,GeForce Go 6800 Ultra</Property>
+			<Property name="0x00cc" type="2">-1,Quadro FX Go1400</Property>
+			<Property name="0x00cd">
+				<Value type="2">1,Quadro FX 3450/4000 SDI</Value>
+				<Value type="2">-1,Quadro FX 3450/4000 SDI</Value>
+			</Property>
+			<Property name="0x00ce" type="2">-1,Quadro FX 1400</Property>
+			<Property name="0x00f1" type="2">0,GeForce 6600 GT</Property>
+			<Property name="0x00f2" type="2">0,GeForce 6600</Property>
+			<Property name="0x00f3" type="2">0,GeForce 6200</Property>
+			<Property name="0x00f4" type="2">0,GeForce 6600 LE</Property>
+			<Property name="0x00f5" type="2">0,GeForce 7800 GS</Property>
+			<Property name="0x00f6" type="2">0,GeForce 6800 GS/XT</Property>
+			<Property name="0x00f8">
+				<Value type="2">1,Quadro FX 3400/224400</Value>
+				<Value type="2">-1,Quadro FX 3400/224400</Value>
+			</Property>
+			<Property name="0x00f9" type="2">0,GeForce 6800 Series GPU PCI</Property>
+			<Property name="0x00fa" type="2">0,GeForce PCX 5750</Property>
+			<Property name="0x00fb" type="2">0,GeForce PCX 5900</Property>
+			<Property name="0x00fd">
+				<Value type="2">1,Quadro PCI-E Series</Value>
+				<Value type="2">-1,Quadro PCI-E Series</Value>
+			</Property>
+			<Property name="0x00fe" type="2">-1,Quadro FX 1300</Property>
+			<Property name="0x0110">
+				<Value type="2">0,GeForce2 MX/MX 400</Value>
+				<Value type="2">0,GeForce2 MX/MX 400</Value>
+			</Property>
+			<Property name="0x0111" type="2">0,GeForce2 MX200</Property>
+			<Property name="0x0113" type="2">-1,Quadro2 MXR/EX</Property>
+			<Property name="0x0140" type="2">0,GeForce 6600 GT</Property>
+			<Property name="0x0141" type="2">0,GeForce 6600</Property>
+			<Property name="0x0142" type="2">0,GeForce 6600 LE</Property>
+			<Property name="0x0143" type="2">0,GeForce 6600 VE</Property>
+			<Property name="0x0145" type="2">0,GeForce 6610 XL</Property>
+			<Property name="0x0147" type="2">0,GeForce 6700 XL</Property>
+			<Property name="0x0148" type="2">0,GeForce Go 6600</Property>
+			<Property name="0x014a" type="2">-1,Quadro NVS 440</Property>
+			<Property name="0x014c" type="2">-1,Quadro FX 540 MXM</Property>
+			<Property name="0x014d" type="2">-1,Quadro FX 550</Property>
+			<Property name="0x014e" type="2">-1,Quadro FX 540</Property>
+			<Property name="0x014f" type="2">0,GeForce 6200</Property>
+			<Property name="0x0160" type="2">0,GeForce 6500</Property>
+			<Property name="0x0161" type="2">0,GeForce 6200 TurboCache(TM)</Property>
+			<Property name="0x0162" type="2">0,GeForce 6200SE TurboCache(TM)</Property>
+			<Property name="0x0163" type="2">0,GeForce 6200 LE</Property>
+			<Property name="0x0165" type="2">-1,Quadro NVS 285</Property>
+			<Property name="0x0167" type="2">0,GeForce Go 6200/6400</Property>
+			<Property name="0x0168" type="2">0,GeForce Go 6200/6400</Property>
+			<Property name="0x0169" type="2">0,GeForce 6250</Property>
+			<Property name="0x016a" type="2">0,GeForce 7100 GS</Property>
+			<Property name="0x0170" type="2">0,GeForce4 MX 460</Property>
+			<Property name="0x0171" type="2">0,GeForce4 MX 440</Property>
+			<Property name="0x0172" type="2">0,GeForce4 MX 420</Property>
+			<Property name="0x0173" type="2">0,GeForce4 MX 440-SE</Property>
+			<Property name="0x0178" type="2">-1,Quadro4 550 XGL</Property>
+			<Property name="0x017a">
+				<Value type="2">1,Quadro NVS</Value>
+				<Value type="2">-1,Quadro NVS</Value>
+			</Property>
+			<Property name="0x0181" type="2">0,GeForce4 MX 440 with AGP8X</Property>
+			<Property name="0x0185" type="2">0,GeForce MX 4000</Property>
+			<Property name="0x0188" type="2">-1,Quadro4 580 XGL</Property>
+			<Property name="0x018a">
+				<Value type="2">1,Quadro NVS with AGP8X</Value>
+				<Value type="2">-1,Quadro NVS with AGP8X</Value>
+			</Property>
+			<Property name="0x018b" type="2">-1,Quadro4 380 XGL</Property>
+			<Property name="0x0191" type="2">4,GeForce 8800 GTX</Property>
+			<Property name="0x0193" type="2">4,GeForce 8800 GTS</Property>
+			<Property name="0x0194" type="2">4,GeForce 8800 Ultra</Property>
+			<Property name="0x0197" type="2">-1,Tesla C870</Property>
+			<Property name="0x019d" type="2">-1,Quadro FX 5600</Property>
+			<Property name="0x019e" type="2">-1,Quadro FX 4600</Property>
+			<Property name="0x01d0" type="2">0,GeForce 7350 LE</Property>
+			<Property name="0x01d1" type="2">0,GeForce 7300 LE</Property>
+			<Property name="0x01d2" type="2">0,GeForce 7550 LE</Property>
+			<Property name="0x01d3" type="2">0,GeForce 7300 SE/7200 GS</Property>
+			<Property name="0x01db" type="2">-1,Quadro NVS 120M</Property>
+			<Property name="0x01dd" type="2">0,GeForce 7500 LE</Property>
+			<Property name="0x01de" type="2">-1,Quadro FX 350</Property>
+			<Property name="0x01df" type="2">0,GeForce 7300 GS</Property>
+			<Property name="0x0200" type="2">0,GeForce3</Property>
+			<Property name="0x0201" type="2">0,GeForce3 Ti200</Property>
+			<Property name="0x0202" type="2">0,GeForce3 Ti500</Property>
+			<Property name="0x0203" type="2">0,Quadro DCC</Property>
+			<Property name="0x0211" type="2">0,GeForce 6800</Property>
+			<Property name="0x0212" type="2">0,GeForce 6800 LE</Property>
+			<Property name="0x0215" type="2">0,GeForce 6800 GT</Property>
+			<Property name="0x0218" type="2">0,GeForce 6800 XT</Property>
+			<Property name="0x0221" type="2">0,GeForce 6200</Property>
+			<Property name="0x0222" type="2">0,GeForce 6200 A-LE</Property>
+			<Property name="0x0240" type="2">0,GeForce 6150</Property>
+			<Property name="0x0241" type="2">0,NVIDIA GeForce 6150 LE</Property>
+			<Property name="0x0242" type="2">0,NVIDIA GeForce 6100</Property>
+			<Property name="0x0245" type="2">-1,NVIDIA Quadro NVS 210S / NVIDIA GeForce 6150LE</Property>
+			<Property name="0x0250" type="2">0,GeForce4 Ti 4600</Property>
+			<Property name="0x0251" type="2">0,GeForce4 Ti 4400</Property>
+			<Property name="0x0253" type="2">0,GeForce4 Ti 4200</Property>
+			<Property name="0x0258" type="2">-1,Quadro4 900 XGL</Property>
+			<Property name="0x0259" type="2">-1,Quadro4 750 XGL</Property>
+			<Property name="0x025b" type="2">-1,Quadro4 700 XGL</Property>
+			<Property name="0x0280" type="2">0,GeForce4 Ti 4800</Property>
+			<Property name="0x0281" type="2">0,GeForce4 Ti 4200 with AGP8X</Property>
+			<Property name="0x0282" type="2">0,GeForce4 Ti 4800SE</Property>
+			<Property name="0x0288" type="2">-1,Quadro4 980 XGL</Property>
+			<Property name="0x028c" type="2">-1,Quadro4 Go700</Property>
+			<Property name="0x0290" type="2">1,GeForce 7900 GTX</Property>
+			<Property name="0x0291" type="2">1,GeForce 7900 GT/GTO</Property>
+			<Property name="0x0292" type="2">1,GeForce 7900 GS</Property>
+			<Property name="0x0293" type="2">1,GeForce 7950 GX2</Property>
+			<Property name="0x0294" type="2">1,GeForce 7950 GX2</Property>
+			<Property name="0x0295" type="2">1,GeForce 7950 GT</Property>
+			<Property name="0x0298" type="2">1,GeForce Go 7900 GS</Property>
+			<Property name="0x0299" type="2">1,GeForce Go 7900 GTX</Property>
+			<Property name="0x029c" type="2">-1,NVIDIA Quadro FX 5500</Property>
+			<Property name="0x029d" type="2">-1,Quadro FX 3500</Property>
+			<Property name="0x029e" type="2">-1,Quadro FX 1500</Property>
+			<Property name="0x029f" type="2">-1,Quadro FX 4500 X2</Property>
+			<Property name="0x02e0" type="2">0,GeForce 7600 GT</Property>
+			<Property name="0x02e1" type="2">0,GeForce 7600 GS</Property>
+			<Property name="0x02e2" type="2">0,GeForce 7300 GT</Property>
+			<Property name="0x02e3" type="2">1,GeForce 7900 GS</Property>
+			<Property name="0x02e4" type="2">1,GeForce 7950 GT</Property>
+			<Property name="0x0301" type="2">0,GeForce FX 5800 Ultra</Property>
+			<Property name="0x0302" type="2">0,GeForce FX 5800</Property>
+			<Property name="0x0308" type="2">-1,Quadro FX 2000</Property>
+			<Property name="0x0309" type="2">-1,Quadro FX 1000</Property>
+			<Property name="0x0311" type="2">0,GeForce FX 5600 Ultra</Property>
+			<Property name="0x0312" type="2">0,GeForce FX 5600</Property>
+			<Property name="0x0314" type="2">0,GeForce FX 5600XT</Property>
+			<Property name="0x031a" type="2">0,GeForce FX Go5600</Property>
+			<Property name="0x031c" type="2">-1,Quadro FX Go700</Property>
+			<Property name="0x0321" type="2">0,GeForce FX 5200 Ultra</Property>
+			<Property name="0x0322" type="2">0,GeForce FX 5200</Property>
+			<Property name="0x0323" type="2">0,GeForce FX 5200LE</Property>
+			<Property name="0x0324" type="2">0,GeForce FX Go5200 64M</Property>
+			<Property name="0x0326" type="2">0,GeForce FX 5500</Property>
+			<Property name="0x032a" type="2">-1,Quadro NVS 280 PCI</Property>
+			<Property name="0x032b">
+				<Value type="2">1,Quadro FX 500/FX 600</Value>
+				<Value type="2">-1,Quadro FX 500/FX 600</Value>
+			</Property>
+			<Property name="0x0330" type="2">0,GeForce FX 5900 Ultra</Property>
+			<Property name="0x0331" type="2">0,GeForce FX 5900</Property>
+			<Property name="0x0333" type="2">0,GeForce FX 5950 Ultra</Property>
+			<Property name="0x0338" type="2">-1,Quadro FX 3000</Property>
+			<Property name="0x033f" type="2">-1,Quadro FX 700</Property>
+			<Property name="0x0341" type="2">0,GeForce FX 5700 Ultra</Property>
+			<Property name="0x0342" type="2">0,GeForce FX 5700</Property>
+			<Property name="0x0343" type="2">0,GeForce FX 5700LE</Property>
+			<Property name="0x0344" type="2">0,GeForce FX 5700VE</Property>
+			<Property name="0x0347" type="2">0,GeForce FX Go5700</Property>
+			<Property name="0x034c" type="2">-1,Quadro FX Go1000</Property>
+			<Property name="0x034e" type="2">-1,Quadro FX 1100</Property>
+			<Property name="0x038b" type="2">-1,GeForce 7650 GS</Property>
+			<Property name="0x0390" type="2">0,GeForce 7650 GS</Property>
+			<Property name="0x0391" type="2">0,GeForce 7600 GT</Property>
+			<Property name="0x0392" type="2">0,GeForce 7600 GS</Property>
+			<Property name="0x0393" type="2">0,GeForce 7300 GT</Property>
+			<Property name="0x0394" type="2">0,GeForce 7600 LE</Property>
+			<Property name="0x0395" type="2">0,GeForce 7300 GT</Property>
+			<Property name="0x039e" type="2">-1,Quadro FX 560</Property>
+			<Property name="0x03d0" type="2">0,NVIDIA GeForce 6150SE nForce 430</Property>
+			<Property name="0x03d1" type="2">0,NVIDIA GeForce 6100 nForce 405</Property>
+			<Property name="0x03d2" type="2">0,NVIDIA GeForce 6100 nForce 400</Property>
+			<Property name="0x03d5" type="2">0,GeForce 6100 nForce 420</Property>
+			<Property name="0x03d6" type="2">-1,GeForce 7025 / nForce 630a</Property>
+			<Property name="0x0400" type="2">3,NVIDIA GeForce 8600 GTS</Property>
+			<Property name="0x0401" type="2">3,GeForce 8600 GT</Property>
+			<Property name="0x0402" type="2">3,NVIDIA GeForce 8600 GT</Property>
+			<Property name="0x0403" type="2">3,GeForce 8600GS</Property>
+			<Property name="0x0404" type="2">0,GeForce 8400 GS</Property>
+			<Property name="0x0406" type="2">0,GeForce 8300 GS</Property>
+			<Property name="0x040a" type="2">-1,Quadro FX 370</Property>
+			<Property name="0x040e" type="2">-1,Quadro FX 570</Property>
+			<Property name="0x040f" type="2">-1,Quadro FX 1700</Property>
+			<Property name="0x0410" type="2">-1,GeForce GT 330</Property>
+			<Property name="0x0420" type="2">0,GeForce 8400 SE</Property>
+			<Property name="0x0421" type="2">0,NVIDIA GeForce 8500 GT</Property>
+			<Property name="0x0422" type="2">0,GeForce 8400 GS</Property>
+			<Property name="0x0423" type="2">0,GeForce 8300 GS</Property>
+			<Property name="0x0424" type="2">0,GeForce 8400 GS</Property>
+			<Property name="0x042c" type="2">2,GeForce 9400 GT</Property>
+			<Property name="0x042f" type="2">-1,Quadro NVS 290</Property>
+			<Property name="0x053a" type="2">0,GeForce 7050 PV / NVIDIA nForce 630a</Property>
+			<Property name="0x053b" type="2">0,GeForce 7050 PV / NVIDIA nForce 630a</Property>
+			<Property name="0x053e" type="2">0,GeForce 7025 / NVIDIA nForce 630a</Property>
+			<Property name="0x05e0" type="2">-1,GeForce GTX 295</Property>
+			<Property name="0x05e1" type="2">6,GeForce GTX 280</Property>
+			<Property name="0x05e2" type="2">6,GeForce GTX 260</Property>
+			<Property name="0x05e3" type="2">4,GeForce GTX 285</Property>
+			<Property name="0x05e6" type="2">6,GeForce GTX 275</Property>
+			<Property name="0x05e7" type="2">-1,Tesla C1060</Property>
+			<Property name="0x05ea" type="2">-1,GeForce GTX 260</Property>
+			<Property name="0x05eb" type="2">6,GeForce GTX 295</Property>
+			<Property name="0x05ed" type="2">-1,Quadroplex 2200 D2</Property>
+			<Property name="0x05f8" type="2">-1,Quadroplex 2200 S4</Property>
+			<Property name="0x05f9" type="2">-1,Quadro CX</Property>
+			<Property name="0x05fd" type="2">-1,Quadro FX 5800</Property>
+			<Property name="0x05fe" type="2">-1,Quadro FX 4800</Property>
+			<Property name="0x05ff" type="2">-1,Quadro FX 3800</Property>
+			<Property name="0x0600" type="2">4,GeForce 8800 GTS 512</Property>
+			<Property name="0x0601" type="2">6,GeForce 9800 GT</Property>
+			<Property name="0x0602" type="2">4,GeForce 8800 GT</Property>
+			<Property name="0x0603" type="2">-1,GeForce GT 230</Property>
+			<Property name="0x0604" type="2">5,GeForce 9800 GX2</Property>
+			<Property name="0x0605" type="2">6,GeForce 9800 GT</Property>
+			<Property name="0x0606" type="2">4,GeForce 8800 GS</Property>
+			<Property name="0x0607" type="2">-1,GeForce GTS 240</Property>
+			<Property name="0x060d" type="2">-1,GeForce 8800 GS</Property>
+			<Property name="0x0610" type="2">5,GeForce 9600 GSO</Property>
+			<Property name="0x0611" type="2">4,GeForce 8800 GT</Property>
+			<Property name="0x0612" type="2">6,GeForce 9800 GTX/9800 GTX+</Property>
+			<Property name="0x0613" type="2">6,GeForce 9800 GTX+</Property>
+			<Property name="0x0614" type="2">6,GeForce 9800 GT</Property>
+			<Property name="0x0615" type="2">5,GeForce GTS 250</Property>
+			<Property name="0x0619" type="2">-1,Quadro FX 4700 X2</Property>
+			<Property name="0x061a" type="2">-1,Quadro FX 3700</Property>
+			<Property name="0x061b" type="2">-1,Quadro VX 200</Property>
+			<Property name="0x0622" type="2">5,GeForce 9600 GT</Property>
+			<Property name="0x0623" type="2">5,GeForce 9600 GS</Property>
+			<Property name="0x0625" type="2">-1,GeForce 9600 GSO 512</Property>
+			<Property name="0x0626" type="2">-1,GeForce GT 130</Property>
+			<Property name="0x0627" type="2">-1,GeForce GT 140</Property>
+			<Property name="0x062d" type="2">-1,GeForce 9600 GT</Property>
+			<Property name="0x062e" type="2">-1,GeForce 9600 GT</Property>
+			<Property name="0x0635" type="2">-1,GeForce 9600 GSO</Property>
+			<Property name="0x0637" type="2">-1,GeForce 9600 GT</Property>
+			<Property name="0x0638" type="2">-1,Quadro FX 1800</Property>
+			<Property name="0x0640" type="2">5,GeForce 9500 GT</Property>
+			<Property name="0x0641" type="2">2,GeForce 9400 GT</Property>
+			<Property name="0x0643" type="2">5,GeForce 9500 GT</Property>
+			<Property name="0x0644" type="2">4,GeForce 9500 GS</Property>
+			<Property name="0x0645" type="2">4,GeForce 9500 GS</Property>
+			<Property name="0x0646" type="2">-1,GeForce GT 120</Property>
+			<Property name="0x0658" type="2">-1,Quadro FX 380</Property>
+			<Property name="0x0659" type="2">-1,Quadro FX 580</Property>
+			<Property name="0x065b" type="2">-1,GeForce 9400 GT</Property>
+			<Property name="0x065f" type="2">-1,GeForce G210</Property>
+			<Property name="0x06c0" type="2">6,GeForce GTX 480</Property>
+			<Property name="0x06cd" type="2">6,GeForce GTX 470/480</Property>
+			<Property name="0x06e0" type="2">0,GeForce 9300 GE</Property>
+			<Property name="0x06e1" type="2">0,GeForce 9300 GS</Property>
+			<Property name="0x06e2" type="2">0,GeForce 8400</Property>
+			<Property name="0x06e3" type="2">0,GeForce 8400 SE</Property>
+			<Property name="0x06e4" type="2">0,GeForce 8400 GS</Property>
+			<Property name="0x06e6" type="2">-1,GeForce G100</Property>
+			<Property name="0x06e7" type="2">-1,GeForce 9300 SE</Property>
+			<Property name="0x06e9" type="2">-1,GeForce 9300M GS</Property>
+			<Property name="0x06f8" type="2">-1,Quadros NVS 420</Property>
+			<Property name="0x06f9" type="2">-1,Quadro FX 370 LP</Property>
+			<Property name="0x06fa" type="2">-1,Quadros NVS 450</Property>
+			<Property name="0x06fd" type="2">-1,Quadros NVS 295</Property>
+			<Property name="0x06ff" type="2">-1,HICx16 + Graphics</Property>
+			<Property name="0x07e0" type="2">0,GeForce 7150 / NVIDIA nForce 630i</Property>
+			<Property name="0x07e1" type="2">0,GeForce 7100 / NVIDIA nForce 630i</Property>
+			<Property name="0x07e2" type="2">0,GeForce 7050 / NVIDIA nForce 630i</Property>
+			<Property name="0x07e3" type="2">0,GeForce 7050 / NVIDIA nForce 610i</Property>
+			<Property name="0x07e5" type="2">0,GeForce 7050 / NVIDIA nForce 620i</Property>
+			<Property name="0x0846" type="2">-1,GeForce 9200</Property>
+			<Property name="0x0847" type="2">-1,GeForce 9100</Property>
+			<Property name="0x0848" type="2">0,GeForce 8300</Property>
+			<Property name="0x0849" type="2">0,GeForce 8200</Property>
+			<Property name="0x084a" type="2">-1,nForce 730a</Property>
+			<Property name="0x084b" type="2">0,GeForce 8200</Property>
+			<Property name="0x084c" type="2">-1,nForce 780a SLI</Property>
+			<Property name="0x084d" type="2">-1,nForce 750a SLI</Property>
+			<Property name="0x084f" type="2">0,GeForce 8100 / nForce 720a</Property>
+			<Property name="0x0860" type="2">-1,GeForce 9400</Property>
+			<Property name="0x0861" type="2">1,GeForce 9400</Property>
+			<Property name="0x0863" type="2">1,GeForce 9400</Property>
+			<Property name="0x0864" type="2">-1,GeForce 9300</Property>
+			<Property name="0x0865" type="2">-1,ION</Property>
+			<Property name="0x0868" type="2">-1,nForce 760i SLI</Property>
+			<Property name="0x086a" type="2">1,GeForce 9400</Property>
+			<Property name="0x086c" type="2">-1,GeForce 9300 / nForce 730i</Property>
+			<Property name="0x086d" type="2">-1,GeForce 9200</Property>
+			<Property name="0x0871" type="2">-1,GeForce 9200</Property>
+			<Property name="0x0874" type="2">-1,ION</Property>
+			<Property name="0x0876" type="2">-1,ION</Property>
+			<Property name="0x087a" type="2">-1,GeForce 9400</Property>
+			<Property name="0x087d" type="2">-1,ION</Property>
+			<Property name="0x087e" type="2">-1,ION</Property>
+			<Property name="0x087f" type="2">-1,ION</Property>
+			<Property name="0x0a20" type="2">4,GeForce GT 220</Property>
+			<Property name="0x0a23" type="2">-1,GeForce 210</Property>
+			<Property name="0x0a60" type="2">-1,GeForce G210</Property>
+			<Property name="0x0a62" type="2">-1,GeForce 205</Property>
+			<Property name="0x0a64" type="2">-1,ION</Property>
+			<Property name="0x0a65" type="2">1,GeForce 210</Property>
+			<Property name="0x0a78" type="2">-1,Quadro FX 380 LP</Property>
+			<Property name="0x0ca0" type="2">-1,GeForce GT 330</Property>
+			<Property name="0x0ca2" type="2">-1,GeForce GT 320</Property>
+			<Property name="0x0ca3" type="2">5,GeForce GT 240</Property>
+			<Property name="0x0ca4" type="2">-1,GeForce GT 340</Property>
+			<Property name="0x0ca7" type="2">-1,GeForce GT 330</Property>
+			<Property name="0x0dc4" type="2">6,GeForce GTS 450</Property>
+			<Property name="0x0de1" type="2">4,GeForce GT 430</Property>
+			<Property name="0x0e22" type="2">6,GeForce GTX 460</Property>
+			<Property name="0x1080" type="2">6,GeForce GTX 580</Property>
+			<Property name="0x1200" type="2">6,GeForce GTX 560 Ti</Property>
+			<Property name="0x1244" type="2">6,GeForce GTX 550 Ti</Property>
+			<Property name="vendormobiletag" type="2">Go</Property>
+			<Property name="vendorname" type="2">NVIDIA</Property>
+		</Section>
+		<Section name="appcompatgpu-0x5333">
+			<Property name="0x09045" type="2">0,S3 Chrome 440 GTX</Property>
+			<Property name="vendorname" type="2">S3 chrome</Property>
+		</Section>
+		<Section name="appcompatgpu-0x8086">
+			<Property name="0x0042" type="2">0,Intel HD Graphics</Property>
+			<Property name="0x0046" type="2">0,Intel HD Graphics</Property>
+			<Property name="0x0090" type="2">-1,DT Haswell</Property>
+			<Property name="0x0094" type="2">-1,Notebook Haswell</Property>
+			<Property name="0x0102" type="2">2,DT Sandy Bridge GT1</Property>
+			<Property name="0x0106" type="2">-1,Mobile Sandy Bridge GT1</Property>
+			<Property name="0x010a" type="2">-1,Sandy Bridge Server/Worksation</Property>
+			<Property name="0x010e" type="2">-1,Sandy Bridge Reserved</Property>
+			<Property name="0x0112" type="2">-1,DT Sandy Bridge GT2</Property>
+			<Property name="0x0116" type="2">3,Mobile Sandy Bridge GT2</Property>
+			<Property name="0x0122" type="2">-1,DT Sandy Bridge GT2+</Property>
+			<Property name="0x0126" type="2">1,Mobile Sandy Brdige GT2+</Property>
+			<Property name="0x0152" type="2">-1,DT Ivy Bridge GT1</Property>
+			<Property name="0x0156" type="2">-1,Notebook Ivy Bridge GT1</Property>
+			<Property name="0x015a" type="2">-1,Server Ivy Bridge GT1</Property>
+			<Property name="0x0162" type="2">-1,DT Ivy Bridge GT2</Property>
+			<Property name="0x0166" type="2">3,Notebook Ivy Bridge GT2</Property>
+			<Property name="0x016a" type="2">-1,Workstation Ivy Bridge GT2</Property>
+			<Property name="0x1132" type="2">0,Intel 82815 Graphics Controller</Property>
+			<Property name="0x2562" type="2">0,Intel Extreme Graphics</Property>
+			<Property name="0x2572" type="2">0,Intel 82865G Graphics Controller</Property>
+			<Property name="0x2582" type="2">0,Intel Graphics Media Accelerator 900</Property>
+			<Property name="0x2592" type="2">0,Mobile Intel 82915GM/GMS, 910GML Express Chipset Family</Property>
+			<Property name="0x2772" type="2">0,Intel Graphics Media Accelerator 950</Property>
+			<Property name="0x2776" type="2">0,Intel 82945G Express Chipset Family</Property>
+			<Property name="0x2782" type="2">0,Intel 82915G/GV/910GL Express Chipset Family</Property>
+			<Property name="0x2792" type="2">0,Mobile Intel 82915GM/GMS, 910GML Express Chipset Family</Property>
+			<Property name="0x27a2" type="2">0,Mobile Intel 945GM Express Chipset Family</Property>
+			<Property name="0x27a6" type="2">0,Mobile Intel 945GM Express Chipset Family</Property>
+			<Property name="0x2972" type="2">0,Intel Graphics Media Accelerator 3000</Property>
+			<Property name="0x2973" type="2">0,Intel Graphics Media Accelerator 3000</Property>
+			<Property name="0x2982" type="2">0,Intel Graphics Media Accelerator X3500</Property>
+			<Property name="0x2983" type="2">0,Intel Graphics Media Accelerator X3500</Property>
+			<Property name="0x2992" type="2">0,Intel Graphics Media Accelerator 3000</Property>
+			<Property name="0x2993" type="2">0,Intel Graphics Media Accelerator 3000</Property>
+			<Property name="0x29a2" type="2">0,Intel Graphics Media Accelerator X3000</Property>
+			<Property name="0x29a3" type="2">0,Intel Graphics Media Accelerator X3000</Property>
+			<Property name="0x29b2" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x29b3" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x29c2" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x29c3" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x29d2" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x29d3" type="2">0,Intel Graphics Media Accelerator 3100</Property>
+			<Property name="0x2a02" type="2">0,Intel Graphics Media Accelerator X3100</Property>
+			<Property name="0x2a03" type="2">0,Intel Graphics Media Accelerator X3100</Property>
+			<Property name="0x2a12" type="2">0,Intel Graphics Media Accelerator X3100</Property>
+			<Property name="0x2a13" type="2">0,Intel Graphics Media Accelerator X3100</Property>
+			<Property name="0x2a42" type="2">0,Mobile Intel Graphics Media Accelerator 4500HD</Property>
+			<Property name="0x2a43" type="2">0,Mobile Intel Graphics Media Accelerator 4500HD</Property>
+			<Property name="0x2e02" type="2">0,Intel Graphics Media Accelerator X4500HD</Property>
+			<Property name="0x2e03" type="2">0,Intel Graphics Media Accelerator X4500HD</Property>
+			<Property name="0x2e12" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e13" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e22" type="2">0,Intel Graphics Media Accelerator X4500</Property>
+			<Property name="0x2e23" type="2">0,Intel Graphics Media Accelerator X4500</Property>
+			<Property name="0x2e32" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e33" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e42" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e43" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e92" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x2e93" type="2">0,Intel Graphics Media Accelerator 4500</Property>
+			<Property name="0x3577" type="2">0,Intel 82830M Graphics Controller-1</Property>
+			<Property name="0x3582" type="2">0,Intel 82852/82855 GM/GME Graphics Controller-1</Property>
+			<Property name="0x7121" type="2">0,Intel 82810 Graphics Controller</Property>
+			<Property name="0x7123" type="2">0,Intel 82810-DC100 Graphics Controller</Property>
+			<Property name="0x7125" type="2">0,Intel 82810E Graphics Controller</Property>
+			<Property name="0x7800" type="2">0,Intel740</Property>
+			<Property name="vendorname" type="2">Intel</Property>
+		</Section>
+		<Section name="iniversion">
+			<Property name="0" type="2">3988170579.000000</Property>
+			<Property name="1" type="2">3682916188.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

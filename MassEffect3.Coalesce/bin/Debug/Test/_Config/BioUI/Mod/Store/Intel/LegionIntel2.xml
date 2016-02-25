@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxguidata_store_intel_legionintel2">
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">
+					(ItemType=TYPE_INTELREWARD,
+					ItemClassName="Intel_LegionIntel2_ShieldRegen",
+					PlotPurchaseID[0]=21546,
+					ChoiceEntry=(srChoiceName=314070, srChoiceDescription=683401, srActionText=325667, eDisplayType=EChoiceDisplayType_None),
+					bIsGameEffect=true,
+					CustomTokens[0]=724739,
+					LargeImage="GUI_Codex_Images.EnergyDrain_512",
+					SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_INTELREWARD,
+					ItemClassName="Intel_LegionIntel2_PowerCooldown",
+					PlotPurchaseID[0]=21546,
+					ChoiceEntry=(srChoiceName=650687, srChoiceDescription=718121, srActionText=325667, eDisplayType=EChoiceDisplayType_None),
+					bIsGameEffect=true,
+					CustomTokens[0]=724740,
+					LargeImage="GUI_Codex_Images.EnergyDrain_512",
+					SmallImage="GUI_Icons.Notifications.NT_Intel_256x128")
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

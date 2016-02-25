@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxweapon_assaultrifle_adas_mp">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<!--<Property name="damage" type="0">(X=129.5,Y=161.9)</Property>-->
+			<!--<Property name="rateoffire" type="0">(X=350,Y=350)</Property>-->
+			<!--<Property name="statbardamage" type="0">(X=129.5,Y=161.9)</Property>-->
+			<!--<Property name="statbarrateoffire" type="0">(X=350,Y=350)</Property>-->
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxweapon_assaultrifle_lancer_mp">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxweapon_assaultrifle_spitfire">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<Property name="movementspeedoverrides">
+				<Value type="-1" />
+
+				<!---->
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Soldier_GethDestroyer", MovementSpeedDecrease=0.00)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Sentinel_KroganWarlord", MovementSpeedDecrease=0.00)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Soldier_Krogan", MovementSpeedDecrease=0.00)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Vanguard_Krogan", MovementSpeedDecrease=0.00)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Soldier_N7", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Adept_Krogan", MovementSpeedDecrease=0.00)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_N7Infiltrator_Turian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_N7Soldier_Turian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Soldier_Turian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Sentinel_Turian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Vanguard_Batarian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Engineer_Turian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Adept_Batarian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Soldier_Batarian", MovementSpeedDecrease=-0.25)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClassMP_Sentinel_Batarian", MovementSpeedDecrease=-0.25)</Value>
+
+				<!-- Singleplayer -->
+				<Value type="3">(CharacterClass="SFXCharacterClass_Adept", MovementSpeedDecrease=-0.10)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClass_Engineer", MovementSpeedDecrease=-0.10)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClass_Infiltrator", MovementSpeedDecrease=-0.10)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClass_Sentinel", MovementSpeedDecrease=-0.10)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClass_Soldier", MovementSpeedDecrease=-0.10)</Value>
+				<Value type="3">(CharacterClass="SFXCharacterClass_Vanguard", MovementSpeedDecrease=-0.10)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Includes>
+		<Include source="WaveHorde/Cerberus.xml" />
+		<Include source="WaveHorde/Geth.xml" />
+		<Include source="WaveHorde/Reapers.xml" />
+	</Includes>
+</CoalesceAsset>

@@ -1,0 +1,1631 @@
+﻿<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Expression.Drawing</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Expression.Controls.Callout">
+            <summary>
+複数の図形と吹き出し矢印の組み合わせをサポートする、吹き出し図形をレンダリングします。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeContentShape">
+             <summary>
+<see cref="T:System.Windows.Controls.ContentControl"/> から派生し、<see cref="T:Microsoft.Expression.Media.IShape"/> を実装する複合図形の基本クラスを提供します。
+             </summary>
+             <remarks>
+<see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> は <see cref="T:Microsoft.Expression.Media.IShape"/> インターフェイスを実装し、<see cref="T:System.Windows.Shapes.Shape"/> に類似するジオメトリのレンダリングをサポートしますが、レイアウト境界の外側にジオメトリをレンダリングすることも可能です。
+             
+標準的な実装では、大半の図形のプロパティを <see cref="T:System.Windows.Shapes.Path"/> にテンプレート バインドする generic.xaml に、カスタマイズした既定のテンプレートが格納されます。また、<see cref="T:System.Windows.Shapes.Path"/> の外観をカスタマイズするために、<see cref="P:GeometrySource"/> プロパティを拡張します。
+            
+このクラスは、図形に伴うコンテンツの表示もサポートします。
+             </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceParameters">
+            <summary>
+図形のパラメーターを記述するインターフェイスを提供します。
+            </summary>
+            <remarks>
+このインターフェイスが、Shape と GeometrySource でやり取りするデータとなります。通常、IShape の具体的な実装では、このインターフェイスを実装して GeometrySource.UpdateGeometry() に渡し、それにより、図形が読み取り専用データ プロバイダーとして使用されます。
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IShape">
+            <summary>
+Shape の定義に必要なインターフェイスを提供します。プリミティブ図形と複合図形は、異なる型の FrameworkElement から派生したものでも使用できますが、両方ともこのインターフェイスに一致する必要があります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+<see cref="T:Microsoft.Expression.Media.IShape"/> のジオメトリを無効にします。無効化の後、<see cref="T:Microsoft.Expression.Media.IShape"/> が非同期的にジオメトリを再計算します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Fill">
+<summary>図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。</summary>
+<returns>図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。既定値は null です。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stroke">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.StrokeThickness">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> のストロークの輪郭の幅を取得または設定します。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の幅 (ピクセル単位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.Stretch">
+<summary>図形がその割り当て領域を塗りつぶす方法を指定する <see cref="T:System.Windows.Media.Stretch"/> 列挙値を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Media.Stretch"/> の列挙値の 1 つ。実行時の既定値は、<see cref="T:System.Windows.Shapes.Shape"/> の型によって異なります。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.RenderedGeometry">
+            <summary>
+レンダリング エンジンにより表示されるレンダリング後のジオメトリを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IShape.GeometryMargin">
+            <summary>
+論理境界と実際のジオメトリの境界の間の余白を取得します。これは正 (<see cref="T:Microsoft.Expression.Shapes.Arc"/>) または負 (<see cref="T:Microsoft.Expression.Controls.Callout"/>) のいずれかになります。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Media.IShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry が変更されると発生します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.CreateGeometrySource">
+            <summary>
+ジオメトリ ソースを作成して図形の描画方法を拡張します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+<see cref="T:Microsoft.Expression.Media.IShape"/> のジオメトリを無効にします。無効化の後、<see cref="T:Microsoft.Expression.Media.IShape"/> がジオメトリを再計算します。これは、非同期的に行われます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.ArrangeOverride(System.Windows.Size)">
+<summary>Silverlight レイアウト パスの Arrange 部分のビヘイビアーを提供します。このメソッドをクラスで上書きして、専用の Arrange パス ビヘイビアーを定義することができます。</summary>
+<returns>要素がレイアウト内に配置されると、実際のサイズが使用されます。</returns>
+<param name="finalSize">このオブジェクトとその子の配置に使用すべき親オブジェクト内の最終的な面積。</param>
+<remarks> <see cref="T:Microsoft.Expression.Controls.CompositeContentShape"/> は、Geometry が無効化されると再計算を行い、RenderedGeometry と GeometryMargin を更新します。</remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeContentShape.OnContentChanged(System.Object,System.Object)">
+            <summary>
+文字列のコンテンツを、中央揃えと複数行に対応する <see cref="T:TextBlock"/> に変換します。
+            </summary>
+            <remarks>
+<see cref="P:Content"/> ではなく <see cref="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent"/> にテンプレート バインドを適用し、このメソッドを有効にします。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Fill">
+            <summary>
+図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。
+            </summary>
+<returns>図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stroke">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeThickness">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> のストロークの輪郭の幅を取得または設定します。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の幅 (ピクセル単位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.Stretch">
+<summary>図形がその割り当て領域を塗りつぶす方法を指定する <see cref="T:System.Windows.Media.Stretch"/> 列挙値を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Media.Stretch"/> の列挙値の 1 つ。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeStartLineCap">
+<summary><see cref="P:System.Windows.Shapes.Shape.Stroke"/> の始点の <see cref="T:System.Windows.Shapes.Shape"/> を指定する<see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します。 </summary>
+<returns><see cref="P:System.Windows.Shapes.Shape.Stroke"/> の始点の図形を指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeEndLineCap">
+<summary>線の終点の <see cref="T:System.Windows.Shapes.Shape"/> を指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列挙値の 1 つ。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeLineJoin">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> の頂点で使用される結合の種類を指定する <see cref="T:System.Windows.Media.PenLineJoin"/> 列挙値を取得または設定します。</summary>
+<returns>結合の外観を指定する <see cref="T:System.Windows.Media.PenLineJoin"/> 列挙値。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeMiterLimit">
+<summary>マイター長の、<see cref="T:System.Windows.Shapes.Shape"/> の <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> の半分に対する比率について、その上限を取得または設定します。 </summary>
+<returns>マイター長の、<see cref="T:System.Windows.Shapes.Shape"/> の <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> の半分に対する比率について、その上限を取得または設定します。この値は、常に 1 以上の正数です。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashArray">
+<summary>図形の輪郭を描画するときに使用される破線と間隔のパターンを示す <see cref="T:System.Double"/> 値のコレクションを取得または設定します。 </summary>
+<returns>破線と間隔のパターンを指定する <see cref="T:System.Double"/> 値のコレクション。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashCap">
+<summary>破線の終端がどのように描画されるかを指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します。 </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列挙値の 1 つ。既定値は <see cref="F:System.Windows.Media.PenLineCap.Flat"/> です。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.StrokeDashOffset">
+<summary>破線パターン内の破線が始まる距離を指定する <see cref="T:System.Double"/> を取得または設定します。</summary>
+<returns>破線パターン内の破線が始まる距離を示す <see cref="T:System.Double"/>。既定値は 0 です。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometry">
+            <summary>
+レンダリング エンジンにより表示されるレンダリング後のジオメトリを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.GeometryMargin">
+            <summary>
+論理境界と実際のジオメトリの境界の間の余白を取得します。これは正 (<see cref="T:Microsoft.Expression.Shapes.Arc"/>) または負 (<see cref="T:Microsoft.Expression.Controls.Callout"/>) のいずれかになります。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeContentShape.InternalContent">
+            <summary>
+中央揃えと複数行に対応する TextBlock に文字列を変換する内部コンテンツを取得または設定します。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeContentShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry が変更されると発生します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.AnchorPoint">
+            <summary>
+吹き出しの左上隅に対する位置を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.Callout.CalloutStyle">
+            <summary>
+吹き出しのスタイルを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.CompositeShape">
+            <summary>
+<see cref="T:System.Windows.Controls.Control"/> から派生し、<see cref="T:Microsoft.Expression.Media.IShape"/> を実装する複合図形の基本クラスを提供します。
+            </summary>
+            <remarks>
+<see cref="T:Microsoft.Expression.Controls.CompositeShape"/> は <see cref="T:Microsoft.Expression.Media.IShape"/> インターフェイスを実装し、<see cref="T:System.Windows.Shapes.Shape"/> に類似するジオメトリのレンダリングをサポートしますが、レイアウト境界の外側にジオメトリをレンダリングすることも可能です。
+            
+標準的な実装では、大半の図形のプロパティを <see cref="T:System.Windows.Shapes.Path"/> にテンプレート バインドする generic.xaml に、カスタマイズした既定のテンプレートが格納されます。また、<see cref="T:System.Windows.Shapes.Path"/> の外観をカスタマイズするために、<see cref="P:GeometrySource"/> プロパティを拡張します。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.CreateGeometrySource">
+            <summary>
+ジオメトリ ソースを作成して図形の描画方法を拡張します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+<see cref="T:Microsoft.Expression.Media.IShape"/> のジオメトリを無効にします。無効化の後、<see cref="T:Microsoft.Expression.Media.IShape"/> がジオメトリを再計算します。これは、非同期的に行われます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.CompositeShape.ArrangeOverride(System.Windows.Size)">
+<summary>Silverlight レイアウト パスの Arrange 部分のビヘイビアーを提供します。このメソッドをクラスで上書きして、専用の Arrange パス ビヘイビアーを定義することができます。</summary>
+<returns>要素がレイアウト内に配置されると、実際のサイズが使用されます。</returns>
+<param name="finalSize">このオブジェクトとその子の配置に使用すべき親オブジェクト内の最終的な面積。</param>
+<remarks> <see cref="T:Microsoft.Expression.Controls.CompositeShape"/> は、Geometry が無効化されると再計算を行い、RenderedGeometry と GeometryMargin を更新します。</remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Fill">
+            <summary>
+図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。
+            </summary>
+<returns>図形の内側の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stroke">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/> を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の描画方法を指定する <see cref="T:System.Windows.Media.Brush"/>。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeThickness">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> のストロークの輪郭の幅を取得または設定します。 </summary>
+<returns><see cref="T:System.Windows.Shapes.Shape"/> の輪郭の幅 (ピクセル単位)。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.Stretch">
+<summary>図形がその割り当て領域を塗りつぶす方法を指定する <see cref="T:System.Windows.Media.Stretch"/> 列挙値を取得または設定します。</summary>
+<returns><see cref="T:System.Windows.Media.Stretch"/> の列挙値の 1 つ。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeStartLineCap">
+<summary><see cref="P:System.Windows.Shapes.Shape.Stroke"/> の始点の <see cref="T:System.Windows.Shapes.Shape"/> を指定する<see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します。 </summary>
+<returns><see cref="P:System.Windows.Shapes.Shape.Stroke"/> の始点の図形を指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeEndLineCap">
+<summary>線の終点の <see cref="T:System.Windows.Shapes.Shape"/> を指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列挙値の 1 つ。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeLineJoin">
+<summary><see cref="T:System.Windows.Shapes.Shape"/> の頂点で使用される結合の種類を指定する <see cref="T:System.Windows.Media.PenLineJoin"/> 列挙値を取得または設定します。</summary>
+<returns>結合の外観を指定する <see cref="T:System.Windows.Media.PenLineJoin"/> 列挙値。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeMiterLimit">
+<summary>マイター長の、<see cref="T:System.Windows.Shapes.Shape"/> の <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> の半分に対する比率について、その上限を取得または設定します。 </summary>
+<returns>マイター長の、<see cref="T:System.Windows.Shapes.Shape"/> の <see cref="P:System.Windows.Shapes.Shape.StrokeThickness"/> の半分に対する比率について、その上限を取得または設定します。この値は、常に 1 以上の正数です。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashArray">
+<summary>図形の輪郭を描画するときに使用される破線と間隔のパターンを示す <see cref="T:System.Double"/> 値のコレクションを取得または設定します。 </summary>
+<returns>破線と間隔のパターンを指定する <see cref="T:System.Double"/> 値のコレクション。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashCap">
+<summary>破線の終端がどのように描画されるかを指定する <see cref="T:System.Windows.Media.PenLineCap"/> 列挙値を取得または設定します。 </summary>
+<returns><see cref="T:System.Windows.Media.PenLineCap"/> 列挙値の 1 つ。既定値は <see cref="F:System.Windows.Media.PenLineCap.Flat"/> です。 </returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.StrokeDashOffset">
+<summary>破線パターン内の破線が始まる距離を指定する <see cref="T:System.Double"/> を取得または設定します。</summary>
+<returns>破線パターン内の破線が始まる距離を示す <see cref="T:System.Double"/>。既定値は 0 です。</returns>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.RenderedGeometry">
+            <summary>
+レンダリング エンジンにより表示されるレンダリング後のジオメトリを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.CompositeShape.GeometryMargin">
+            <summary>
+論理境界と実際のジオメトリの境界の間の余白を取得します。これは正 (<see cref="T:Microsoft.Expression.Shapes.Arc"/>) または負 (<see cref="T:Microsoft.Expression.Controls.Callout"/>) のいずれかになります。
+            </summary>
+        </member>
+        <member name="E:Microsoft.Expression.Controls.CompositeShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry が変更されると発生します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.LineArrow">
+            <summary>
+両端に任意の矢じりを伴う、屈曲した線セグメントをレンダリングします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.LineArrow.MeasureOverride(System.Windows.Size)">
+<summary>Silverlight レイアウトの Measure パスのビヘイビアーを提供します。このメソッドをクラスで上書きして、専用の Measure パス ビヘイビアーを定義することができます。</summary>
+<returns>子オブジェクトに割り当てられたサイズ計算、または、固定コンテナー サイズなどその他の事項も考慮して、レイアウト過程でこのオブジェクトが必要だと判断するサイズ。</returns>
+<param name="availableSize">このオブジェクトが子オブジェクトに割り当てることのできる使用可能サイズ。Infinity (<see cref="F:System.Double.PositiveInfinity"/>) を値として指定して、使用可能なコンテンツに合わせてオブジェクトのサイズを設定することもできます。</param>
+            <remarks>
+既定値の <see cref="T:LineArrow"/> の場合、どのサイズでもレンダリングできます。<see cref="P:RenderedGeometry"/> は、レイアウト境界まで引き伸ばされ、必要な場合はその外側にもレンダリングされます。
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.BendAmount">
+            <summary>
+矢印の屈曲量を取得または設定します。
+            </summary>
+<value>屈曲量は 0 ～ 1 の間です。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartArrow">
+            <summary>
+線の始点で矢じりがどのように描かれるかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.EndArrow">
+            <summary>
+線の終点で矢じりがどのように描かれるかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.StartCorner">
+            <summary>
+どの角から矢印を描き始めるかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.LineArrow.ArrowSize">
+            <summary>
+矢印のピクセル単位の長さを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Controls.PanningItems">
+            <summary>
+選択されたアイテムを 1 つ表示するアイテム コントロールを提供し、タッチ ジェスチャーによるアイテム間の移動を可能にします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.#ctor">
+            <summary>
+PanningItems のコンストラクター。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Controls.PanningItems.OnApplyTemplate">
+            <summary>
+PanningItems テンプレートが適用されると呼び出されます。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.ScrollDirection">
+            <summary>
+コントロールのアイテムの方向を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.FlickTolerance">
+            <summary>
+フリックの許容範囲を取得または設定します。0 ～ 1 の間の値を指定できます。これは、アイテムの変更をトリガーするフリック ジェスチャーでカバーされる必要のある PanningItems のサイズの比率を示します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.PreviousItem">
+            <summary>
+選択したアイテムの前のアイテムを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.NextItem">
+            <summary>
+選択したアイテムの後のアイテムを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.LoopContents">
+            <summary>
+アイテム コントロールの最初のアイテムが最後のアイテムの後に続くように、コンテンツをループするかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Controls.PanningItems.SliderValue">
+            <summary>
+パン モーションを制御するスライダーの値を取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper">
+            <summary>
+PathGeometry に使用するヘルパー クラス。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+パスのミニ言語の文字列を PathGeometry に変換します。
+            </summary>
+<param name="abbreviatedGeometry">パスのミニ言語の文字列。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AsPathGeometry(System.Windows.Media.Geometry)">
+            <summary>
+任意のジオメトリを単一の PathGeometry に変換します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathGeometryHelper.SyncPolylineGeometry(System.Windows.Media.Geometry@,System.Collections.Generic.IList{System.Windows.Point},System.Boolean)">
+            <summary>
+任意のジオメトリを、一定の点群リストに一致するポリラインを持つ PathGeometry として更新します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathGeometryHelper.AbbreviatedGeometryParser">
+            <summary>
+ジオメトリの省略構文を解析します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentHelper">
+            <summary>
+ArcSegment を BezierSegment(s) に変換するヘルパー クラス。
+            </summary>
+            <summary>
+PathSegment とすべてのバリエーションに使用するヘルパー クラス。
+            </summary>
+            <summary>
+複数の型の PathSegment に対応するための Strategy クラス。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierSegments(System.Windows.Media.ArcSegment,System.Windows.Point)">
+            <summary>
+弧セグメントをベジエ形式に変換しますBezierSegment、PolyBezierSegment、LineSegment、または null を返します。null を返す場合、弧は始点に退化されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SetIsStroked(System.Windows.Media.PathSegment,System.Boolean)">
+            <summary>
+3 つのパラメーターを持つコンストラクターは、ローカル値を常に IsStroked に設定するため、呼び出さないようにします。
+            </summary>
+            <param name="segment"></param>
+            <param name="isStroked"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+SegmentCollection を、一定の点群リストに一致するポリラインで更新します。変更を最小限に抑えるようにします。何も変更がない場合は、false を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.SyncPolyBezierSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Collections.Generic.IList{System.Windows.Point},System.Int32,System.Int32)">
+            <summary>
+collection[index] セグメントを、一定の点群リストに一致する複数のベジエ曲線セグメントで更新します。点群リストは 3*N 個のセグメントを含む必要があります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.IsEmpty(System.Windows.Media.PathSegment)">
+            <summary>
+任意のパス セグメントが空かどうかテストします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPointCount(System.Windows.Media.PathSegment)">
+            <summary>
+パス セグメントの点の数を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetLastPoint(System.Windows.Media.PathSegment)">
+            <summary>
+パス セグメントの終点を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.GetPoint(System.Windows.Media.PathSegment,System.Int32)">
+            <summary>
+任意のセグメントにおける特定のインデックス点を取得します。入力値が (-1) の場合、終点を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.FlattenSegment(System.Windows.Media.PathSegment,System.Collections.Generic.IList{System.Windows.Point},System.Windows.Point,System.Double)">
+            <summary>
+任意のセグメントを平面化し、結果の点を点群リストに追加します。
+            </summary>
+<param name="segment">平面化するセグメント。</param>
+<param name="points">結果の点群リスト。</param>
+<param name="start">セグメントの始点。</param>
+<param name="tolerance">許容誤差。正の値でなければなりません。ゼロも可能。既定の許容誤差にフォールバックします。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.ArcToBezier(System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,System.Double,System.Double,System.Windows.Point[]@,System.Int32@)">
+            <summary>
+ArcToBezier、ベジエ曲線から弧の近似計算を行います。
+            </summary>
+            <remarks>
+このユーティリティは、SVG 円弧仕様の定義に従って、ベジエ曲線と楕円弧の近似計算を行います。弧の描画元の楕円は、各座標内の軸に配置され、x と y の半径で定義されます。回転角度は、楕円の軸が x 軸に対してどのように回転するかを定義します。始点と終点は、描画可能な 4 つの弧の 1 つを定義します。sweep フラグと large-arc フラグで、描画する弧を指定します。
+            
+cPieces = 0 が返される場合は弧ではなく直線を意味し、cPieces = -1 は弧の点への退化を示します。 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetArcAngle(System.Windows.Point,System.Windows.Point,System.Boolean,System.Boolean,System.Double@,System.Double@,System.Int32@)">
+            <summary>
+ベジエ曲線の弧の数を取得し、それぞれのサイン/コサインを取得します。
+            </summary>
+            <remarks>
+これは ArcToBezier と呼ばれるプライベート ユーティリティです。弧を複数に分割し、どの部分も 90 度を超えて広がらないようにします。入力点は単位円上にあります。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.GetBezierDistance(System.Double,System.Double)">
+             <summary>
+GetBezierDistance は、距離を半径の割合として返します。
+             </summary>
+            <remarks>
+円弧の終点から、それに近似するベジエ曲線の弧の制御点までの距離を、弧の半径に対する割合として取得します。
+            
+結果は弧の半径に相対的な値となるため、厳密に弧の角度に依存します。弧は 90 度以下と仮定され、角度はその角度のコサイン値で決定されます。これは "rDot = 2 つの半径ベクトルのドット積" で求められます。ベジエ曲線が、中点と終端で弧の各点と接線に一致する必要があります。次に、曲線の終点から制御点までの距離を計算します。
+            
+相対的な距離を求めるため、単位円を使用できます。円の中心を原点に合わせ、X 軸を 2 つのベクトルの二等分線となるように配置します。a をベクトル間の角度とします。その場合、最初と最後の点の X 座標は (a/2) です。x を 2 番目と 3 番目の点の X 座標とします。t=1/2 のときの点の位置は (1,0) となります。ただし、多項式の項はすべて等しくなります。
+            
+(1-t)^3 = t*(1-t)^2 = t^2*(1-t) = t^3 = 1/8
+            
+ベジエ式からの計算結果:
+            
+1 = (1/8) * (cos(a/2) + 3x + 3x + cos(a/2)) 
+            
+結果:
+            
+x = (4 - cos(a/2)) / 3
+            
+それと最初の点の差分 X:
+                  
+DX = x - cos(a/2) = 4(1 - cos(a/2)) / 3
+            
+ただし DX = distance / sin(a/2) なので、距離は次のようになります:
+            
+距離 = (4/3)*(1 - cos(a/2)) / sin(a/2).
+            
+角度 a の代わりに、rDot = R^2 * cos(a) を使用するので、分母と分子に R を掛けます:
+             
+距離 = (4/3)*(R - Rcos(a/2)) / Rsin(a/2)
+             
+ここで三角関数を使用します: ________________ cos(a/2)   = \/(1 + cos(a)) / 2 ______________________ R*cos(a/2) = \/(R^2 + R^2 cos(a)) / 2 ________________ = \/(R^2 + rDot) / 2
+            
+ここで、A = (R^2 + rDot)/2. ____________________ R*sin(a/2) = \/R^2 - R^2 cos^2(a/2) _______ = \/R^2 - A
+            
+結果: _ 4      R - \/A dist = - * ------------ 3      _______ \/R^2 - A
+            
+履歴: 5/29/2001 MichKa により作成。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathSegmentHelper.ArcToBezierHelper.AcceptRadius(System.Double,System.Double,System.Double@)">
+            <summary>
+半径が弦長に比べて短すぎる場合は、false を返します (NaN の場合は true を返します)。半径は許容可能値に変更されます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.BezierCurveFlattener">
+            <summary>
+ベジエ曲線を平面化するユーティリティ クラス。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenCubic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+3 次ベジエ曲線を平面化して、結果のポリラインを 3 番目のパラメーターに追加します。
+            </summary>
+<param name="controlPoints">3 次ベジエ曲線の 4 つの制御点。</param>
+<param name="errorTolerance">実際の曲線上の平面化されたポリライン上の相応する 2 点間の最大距離。厳密な正の値でなければなりません。</param>
+<param name="resultPolyline">平面化したポリラインの追加位置。</param>
+<param name="skipFirstPoint">平面化されたポリラインを追加するときに、最初の制御点をスキップする場合は True。
+<param name="resultParameters">各ポリラインの頂点に関連付けられたベジエ曲線のパラメーター値を追加する位置。</param> 
+条件: <paramref name="resultPolyline"/> 空の場合は、最初の制御点とそれに関連付けられたパラメーターは常に追加されます。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.BezierCurveFlattener.FlattenQuadratic(System.Windows.Point[],System.Double,System.Collections.Generic.ICollection{System.Windows.Point},System.Boolean,System.Collections.Generic.ICollection{System.Double})">
+            <summary>
+2 次ベジエ曲線を平面化して、結果のポリラインを 3 番目のパラメーターに追加します。ベジエ曲線では、次数上げを使用して、3 次曲線のコードを再利用します。
+            </summary>
+<param name="controlPoints">2 次ベジエ曲線の 3 つの制御点。</param>
+<param name="errorTolerance">実際の曲線上の平面化されたポリライン上の相応する 2 点間の最大距離。厳密な正の値でなければなりません。</param>
+<param name="resultPolyline">平面化したポリラインの追加位置。</param>
+<param name="skipFirstPoint">平面化されたポリラインを追加するときに、最初の制御点をスキップするかどうか。 
+<param name="resultParameters">各ポリラインの頂点に関連付けられたベジエ曲線のパラメーター値を追加する位置。</param>
+条件: <paramref name="resultPolyline"/> 空の場合は、最初の制御点とそれに関連付けられたパラメーターは常に追加されます。</param>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.CommonExtensions">
+            <summary>
+非ジオメトリ型をサポートする拡張メソッド。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach(System.Collections.IEnumerable,System.Action{System.Object})">
+            <summary>
+シーケンス全体を対象に 1 つのアクション デリゲート (通常は、極めて単純なラムダ式) を適用することを許可します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+シーケンス全体を対象に 1 つのアクション デリゲート (通常は、極めて単純なラムダ式) を適用することを許可します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ForEach``1(System.Collections.Generic.IList{``0},System.Action{``0,System.Int32})">
+            <summary>
+各アイテムのインデックス付きのシーケンス全体を対象に 1 つのアクション デリゲート (通常は、極めて単純なラムダ式) を適用することを許可します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCount``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+リストの数が特定のカウント値となるようにします。任意の factory を使って作成するか、必要に応じてアイテムを削除します。入力 IList がリストの場合、factory がなければ AddRange または RemoveRange が使用されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.EnsureListCountAtLeast``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
+            <summary>
+リストの数が特定のカウント値以上になるようにします。任意の factory で作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+コレクションの最後に、アイテムの範囲を追加します。コレクションがリストの場合、List.AddRange が使用されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.Last``1(System.Collections.Generic.IList{``0})">
+            <summary>
+任意のリストの最後のアイテムを取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.RemoveLast``1(System.Collections.Generic.IList{``0})">
+            <summary>
+任意のリストから最後のアイテムを削除します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.DeepCopy``1(``0)">
+            <summary>
+すべてのコレクション プロパティも含め、obj とそのパブリック プロパティすべてのコピーを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.SetIfDifferent(System.Windows.DependencyObject,System.Windows.DependencyProperty,System.Object)">
+            <summary>
+異なる場合は値を設定します。可能であればローカル値は設定しないようにします。値が変更されている場合は、true を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.ClearIfSet(System.Windows.DependencyObject,System.Windows.DependencyProperty)">
+            <summary>
+任意の依存関係オブジェクトに依存関係プロパティがローカル設定された場合、依存関係プロパティをクリアします。依存関係プロパティがローカル設定されていない場合は、false を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.FindVisualDesendent``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+幅優先検索を使用して、特定の型と条件のビジュアル子孫をすべて見つけます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.CommonExtensions.GetVisualChildren(System.Windows.DependencyObject)">
+            <summary>
+IEnumerable のビジュアルな子をすべて取得します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.DrawingPropertyMetadata">
+            <summary>
+WPF と Silverlight の PropertyMetadata のインターフェイスを統一します。レンダリング、配置、測定サイズに関して必要な通知を行います。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.#ctor(Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Object)">
+            <summary>
+このプライベート Ctor は、AttachCallback でのみ使用します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.AttachCallback(System.Object,Microsoft.Expression.Media.DrawingPropertyMetadataOptions,System.Windows.PropertyChangedCallback)">
+            <summary>
+InternalCallback() をチェーンして、DrawingPropertyMetadata のインスタンスをプロパティ コールバックにアタッチします。Silverlight では、プロパティのメタデータは設定後に破棄されます。callback を使ってこれを記憶します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.DrawingPropertyMetadata.InternalCallback(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+元のコールバックをチェーンする前に、DrawingPropertyChangedEvent をトリガーします。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.GeometryHelper">
+            <summary>
+ジオメトリに関連するデータ構造の拡張メソッド (Point/Vector/Size/Rect)。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Resize(System.Windows.Rect,System.Double)">
+            <summary>
+中心を変えずに四角形を相対サイズに変更します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Subtract(System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 点間の差分ベクトルを取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Plus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+点のメンバーワイズの追加。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Minus(System.Windows.Point,System.Windows.Point)">
+            <summary>
+点のメンバーワイズの減算。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.ConvertToPathGeometry(System.String)">
+            <summary>
+ミニ言語の文字列を <see cref="T:PathGeometry"/> に変換します。
+            </summary>
+<remarks>「Path Markup Syntax (パス マークアップ構文)」(http://msdn.microsoft.com/en-us/library/cc189041(VS.95).aspx) を参照してください。</remarks>
+<param name="abbreviatedGeometry">ジオメトリック パスを記述するパスのミニ言語の文字列。</param>
+<returns>パスのミニ言語から変換された <see cref="T:PathGeometry"/>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double)">
+            <summary>
+<see cref="T:PathFigure"/> を平面化して結果の点を次に追加します: <paramref name="points"/>.
+            </summary>
+<param name="figure">入力の <see cref="T:PathFigure"/>。</param>
+<param name="points">結果の点が追加される点群リスト。</param>
+<param name="tolerance">結果の点から入力パス形状の間の最大許容誤差を指定する正数。この値が 0 の場合、アルゴリズムが自動的に許容誤差を設定します。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double)">
+            <summary>
+(0,0)(1,1) の枠内で正規化された弧を取得します。0 度は [0.5, 0] (up) にマップされます (時計回り)。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcPoint(System.Double,System.Windows.Rect)">
+            <summary>
+任意の相対的半径の境界内の弧の絶対的な点を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point)">
+            <summary>
+(0,0)(1,1) の枠に対して相対的な弧の角度を取得します。0 度は [0.5, 0] (up) にマップされます (時計回り)。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetArcAngle(System.Windows.Point,System.Windows.Rect)">
+            <summary>
+境界に相対的な位置にある絶対的な点から弧への角度を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.Rect,System.Windows.Rect)">
+            <summary>
+"Rect from" から "Rect to" への変換を計算します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeTransform(System.Windows.UIElement,System.Windows.UIElement)">
+            <summary>
+<c>UIElement</c> 間の座標空間の変換を計算します。
+            </summary>
+<param name="from">変換元の要素。</param>
+<param name="to">変換先の要素。</param>
+<returns><c>UIElement</c> 間の変換。計算できない場合は null。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.RelativeToAbsolutePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+任意の境界から (0,0)(1,1) 枠へのマッピングを使用して、相対的な点を絶対的な点にマップします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.AbsoluteToRelativePoint(System.Windows.Rect,System.Windows.Point)">
+            <summary>
+(0,0)(1,1) 枠から任意の境界へのマッピングを使用して、絶対的な点を相対的な点にマップします。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GetStretchBound(System.Windows.Rect,System.Windows.Media.Stretch,System.Windows.Size)">
+            <summary>
+任意の論理境界内でストレッチを行った後の境界を計算します。stretch を uniform に指定した場合は、特定の aspectRatio を使用します。aspectRatio が空の場合、Fill と同等になります。ストレッチを None に指定する場合は、Fill または Uniform と同等になります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Midpoint(System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 点間の中点を返します。
+            </summary>
+<param name="lhs">1 つめの点。</param>
+<param name="rhs">2 つめの点。</param>
+<returns>次の 2 点の中点:<paramref name="lhs"/> および <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Vector,System.Windows.Vector)">
+            <summary>
+2 つのベクトルのドット積を返します。
+            </summary>
+<param name="lhs">1 つめのベクトル。</param>
+<param name="rhs">2 つめのベクトル。</param>
+<returns>次の 2 つのベクトルのドット積:<paramref name="lhs"/> および <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Dot(System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 点のドット積を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Distance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 点間の距離を返します。
+            </summary>
+<param name="lhs">1 つめの点。</param>
+<param name="rhs">2 つめの点。</param>
+<returns>次の 2 点間の距離:<paramref name="lhs"/> および <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.SquaredDistance(System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 点間の平方距離を返します。
+            </summary>
+<param name="lhs">1 つめの点。</param>
+<param name="rhs">2 つめの点。</param>
+<returns>次の 2 点の間の平方距離:<paramref name="lhs"/> および <paramref name="rhs"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Determinant(System.Windows.Point,System.Windows.Point)">
+            <summary>
+クロス積の行列式。方向領域と同等です。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Normal(System.Windows.Point,System.Windows.Point)">
+            <summary>
+任意の線セグメントの正常方向のベクトルを計算します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.Perpendicular(System.Windows.Vector)">
+            <summary>
+90 度の反時計回りで、垂直ベクトルを計算します。ベクトルの垂直を右に指定するとベクトルが上向きになります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.GeometryEquals(System.Windows.Media.Geometry,System.Windows.Media.Geometry)">
+            <summary>
+2 つのジオメトリが同一であるかどうかを返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureGeometryType``1(``0@,System.Windows.Media.Geometry@,System.Func{``0})">
+            <summary>
+値が結果型 (T) のインスタンスであることを確認します。そうでない場合は、新しいタイプ (T) インスタンスに置き換えます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.GeometryHelper.EnsureSegmentType``1(``0@,System.Collections.Generic.IList{System.Windows.Media.PathSegment},System.Int32,System.Func{``0})">
+            <summary>
+list[index] が結果型 (T) のインスタンスであることを確認します。そうでない場合は、新しいタイプ (T) インスタンスに置き換えます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MathHelper">
+            <summary>
+浮動小数点演算に関連する静的プロパティとメソッドを提供するヘルパー クラス。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.Epsilon">
+            <summary>
+2 つの値が同じと判断する条件となる最小距離。注意: MIL/SL 内部の浮動小数点形式は float で double ではありません。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.TwoPI">
+            <summary>
+全円の角度の値。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Drawing.Core.MathHelper.PentagramInnerRadius">
+            <summary>
+五芒星形の図形の内縁半径 (精度は 3 桁のパーセント)。(1 - Sin36 * Sin72 / Sin54) / (Cos36) ^ 2、この値は 0.47210998990512996761913067272407 となります。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsVerySmall(System.Double)">
+            <summary>
+<c>System.Double</c> 値が、ゼロと等価と判断される範囲内にあるかどうかを決定します。
+            </summary>
+            <param name="value"></param>
+<returns>値が <c>DoubleTolerance</c> 未満の場合は <c>True</c>、それ以外は <c>False</c>。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.EnsureRange(System.Double,System.Nullable{System.Double},System.Nullable{System.Double})">
+            <summary>
+任意の範囲内の値を返します。任意の min/max が null の場合は、制限なしと同じです。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.Hypotenuse(System.Double,System.Double)">
+            <summary>
+ベクトル (x, y) のユークリッド ノルムを計算します。
+            </summary>
+<param name="x">1 つめのコンポーネント。</param>
+<param name="y">2 つめのコンポーネント。</param>
+<returns>ベクトル (x, y) のユークリッド ノルム。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.DoubleFromMantissaAndExponent(System.Double,System.Int32)">
+            <summary>
+仮数と指数から実数を計算します。
+            </summary>
+            <param name="x"></param>
+            <param name="exp"></param>
+<returns>成功の場合は x * 2^exp の値。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MathHelper.IsFiniteDouble(System.Double)">
+            <summary>
+double をテストします。
+            </summary>
+<param name="x">テストする double。</param>
+<returns>x が NaN ではなく、正または負の infinity に等しくない場合は <c>True</c>、それ以外は <c>False</c>。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathFigureHelper">
+            <summary>
+PathFigure に使用するヘルパー クラス
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.FlattenFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Double,System.Boolean)">
+            <summary>
+任意の形状を平面化し、結果の点を点群リストに追加します。
+            </summary>
+<param name="tolerance">許容誤差。正の値でなければなりません。ゼロも可能。既定の許容誤差にフォールバックします。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.AllSegments(System.Windows.Media.PathFigure)">
+            <summary>
+任意の形状内のセグメントをすべて繰り返して、各セグメントの正しい始点を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncPolylineFigure(System.Windows.Media.PathFigure,System.Collections.Generic.IList{System.Windows.Point},System.Boolean,System.Boolean)">
+            <summary>
+形状を単一のポリライン セグメントとして、任意の点群リストに同期します。変更を最小限に抑えるようにします。何も変更がない場合は、false を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PathFigureHelper.SyncEllipseFigure(System.Windows.Media.PathFigure,System.Windows.Rect,System.Windows.Media.SweepDirection,System.Boolean)">
+            <summary>
+任意の形状を、2 つの弧セグメントを持つ閉じた楕円に同期します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PathSegmentData">
+            <summary>
+PathSegment と対応する StartPoint のタプル データ構造。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineData">
+            <summary>
+接続された点群のリストからなるポリラインを表します。閉じた多角形は、最後に始点を繰り返すことで示されます。要求に応じて差分、法線、角度、長さが計算されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.#ctor(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+複数の点でポリラインを構築します。
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.Difference(System.Int32)">
+ポリラインの前方差分のベクトル。Points[i] + Differences[i] = Points[i+1]
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineData.SmoothNormal(System.Int32,System.Double,System.Double)">
+            <summary>
+任意の位置での法線ベクトルを計算します (lerp(index, index+1, fraction)。cornerRadius の範囲内の位置の場合は、正常方向に補間されます。
+            </summary>
+<param name="cornerRadius">法線の円滑化の行われない範囲。ゼロを指定すると円滑化は行われず、インデックス上の法線が返されます。</param>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.IsClosed">
+            <summary>
+始点と終点が繰り返されると、ポリラインは閉じます。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Count">
+            <summary>
+このポリライン内の点の数。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.TotalLength">
+            <summary>
+このポリラインの弧長の合計。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Points">
+            <summary>
+このポリラインの点の配列。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Lengths">
+            <summary>
+線セグメント間の長さ、Points[i] + Differences[i] = Points[i+1]。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Normals">
+            <summary>
+各セグメントの法線ベクトルのリスト。Normals[i] は、セグメント p[i] から p[i + 1] までの法線です。Normals[N-1] == Normals[N-2].
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.Angles">
+            <summary>
+p[i] の点にある 2 つの線セグメント間の Cos(angle) リスト。注意： 値は cos(angle) = Dot(u, v) です。度数ではありません。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.PolylineData.AccumulatedLength">
+            <summary>
+points[i] から points[0] までの長さの累計リスト。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.MarchLocation">
+            <summary>
+PathMarch アルゴリズムと通信するためのデータ構造。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetPoint(System.Collections.Generic.IList{System.Windows.Point})">
+            <summary>
+任意の点リストにおけるこの MarchLocation の補間位置を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetNormal(Microsoft.Expression.Drawing.Core.PolylineData,System.Double)">
+            <summary>
+任意の法線ベクトル リストにおけるこの MarchLocation の正常補間方向を取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.MarchLocation.GetArcLength(System.Collections.Generic.IList{System.Double})">
+            <summary>
+ポリライン全体の始点に対するこの MarchLocation の弧長を取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Reason">
+            <summary>
+この位置が抽出された理由。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Index">
+            <summary>
+ポリラインの点群リスト上の点のインデックス。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Ratio">
+            <summary>
+比率: [0, 1]、常に before / (before + after)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Before">
+            <summary>
+停止点の前の弧の長さ。非不数で、Length[index] 未満。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.After">
+            <summary>
+停止点の後の弧の長さ。非不数で、Length[index] 未満。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.MarchLocation.Remain">
+            <summary>
+次の停止位置までの、ステップ内の残りの長さ。正数の場合は、前方に進みます。負数の場合は、後方に進みます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.PolylineHelper">
+            <summary>
+点群リストに使用するヘルパー クラス
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.PathMarch(Microsoft.Expression.Drawing.Core.PolylineData,System.Double,System.Double,System.Func{Microsoft.Expression.Drawing.Core.MarchLocation,System.Double})">
+            <summary>
+任意の間隔でポリラインをマーチし、コールバックまでの各停止点を出力します。
+            </summary>
+<param name="polyline">マーチするポリラインの点。</param>
+<param name="startArcLength">最初の点で停止するまでマーチする弧の長さ。</param>
+<param name="cornerThreshold">頂点と判断される 2 つの接線の内角の最大角度。</param>
+<param name="stopCallback">マーチング アルゴリズムの点での停止時にコールバックします。コールバックにより、次の停止点までの弧の長さが返されます。負数の場合、後方にマーチします。コールバックにより NaN が返されると、マーチングを終了します。</param>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.PolylineHelper.GetWrappedPolylines(System.Collections.Generic.IList{Microsoft.Expression.Drawing.Core.PolylineData},System.Double@)">
+            <summary>
+ポリラインのリストを並べ替えて、一定の弧長のポリラインがリストの初めになるようにします。この位置の前にあるポリラインはリストの最後に連結され、最初のポリラインが一番最後に連結されます。 
+            </summary>
+<param name="lines">ポリラインのリスト。</param>
+<param name="startArcLength">開始ラインを識別するために使用される、ポリラインの全リストを対象とした弧長。その位置までの弧長が、この変数で返されます。</param>
+<returns>並べ替えてラップされたリスト。</returns>
+        </member>
+        <member name="T:Microsoft.Expression.Drawing.Core.RandomEngine">
+            <summary>
+一様分布およびガウス分布をサポートする乱数ジェネレーター。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.RandomEngine.Gaussian">
+            <summary>
+ボックス ミューラー法の極形式を使って、個別の標準正規分布を持つ乱数のペア、ゼロの期待値、単位分散を生成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.#ctor">
+            <summary>
+プライベート コンストラクターfactory メソッドの使用を強制します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point)">
+            <summary>
+線セグメントを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+2 次曲線 (3 つの制御点) から 3 次ベジエ曲線セグメントを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.SimpleSegment.Create(System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Windows.Point)">
+            <summary>
+4 つの制御点で 3 次ベジエ曲線セグメントを作成します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Drawing.Core.SimpleSegment.Points">
+            <summary>
+パス セグメントの制御点。長さはバリアントです。線セグメントは 2 点、3 次ベジエ曲線は 4 点の制御点を持ちます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Drawing.Core.TransformExtensions.TransformEquals(System.Windows.Media.Transform,System.Windows.Media.Transform)">
+            <summary>
+2 つの変換を比較して完全一致を見つけます。値は同じでも構造が異なる変換は同一とは見なされません (Translate(0,0) と Rotate(0) など)。
+            </summary>
+<param name="firstTransform">1 つめの変換。</param>
+<param name="secondTransform">2 つめの変換。</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Expression.Media.UnitType">
+            <summary>
+太さの単位を指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Pixel">
+            <summary>
+ピクセル単位。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.UnitType.Percent">
+            <summary>
+境界ボックスに対する相対パーセント単位。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometrySource`1">
+            <summary>
+ジオメトリのソースの基本クラスを提供します。入力パラメーターとレイアウト境界を基にジオメトリを生成してキャッシュします。
+            </summary>
+            <remarks>
+標準的な実装では、UpdateCachedGeometry() を拡張してこの cachedGeometry を更新します。その後、この基本クラスは、レイアウト境界に相対的に、無効化とジオメトリ効果のパイプライン化を行ってから、ジオメトリをキャッシュします。できるだけキャッシュされたジオメトリを再利用し、レンダリング スレッドにおける再構築を回避するように実装すべきです。ComputeLogicalBounds を拡張して、Stretch をさまざまな方法で処理できます。
+            </remarks>
+<typeparam name="TParameters">基本クラスの対象のジオメトリ ソース パラメーターの種類。</typeparam>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySource">
+            <summary>
+ジオメトリ ソースを記述するインターフェイスを提供します。
+            </summary>
+            <remarks>
+ジオメトリ ソースを非汎用的な方法で公開するようにこのインターフェイスは設計されています。標準的な実装では、このインターフェイスを直接実装せずに、GeometrySource をサブクラス化すべきです。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+外部変更のためジオメトリが無効化されたことを通知します。
+            </summary>
+            <remarks>
+パラメーターが変更されると通常ジオメトリが無効化されます。ジオメトリが外部で無効化された場合は、境界が変更される場合もジオメトリが再計算されます。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.IGeometrySource.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+任意のパラメーターとレイアウト境界を使用して、ジオメトリを更新します。何も更新されていない場合は、false を返します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.Geometry">
+            <summary>
+最新の UpdateGeometry() 後の結果のジオメトリを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds">
+            <summary>
+ジオメトリを引き伸ばす境界ボックスを取得します。実際のジオメトリは、これより小さな場合も大きな場合もあります。<see cref="P:Microsoft.Expression.Media.IGeometrySource.LogicalBounds"/> は、ストロークの太さとストレッチを考慮済みです。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds">
+            <summary>
+FrameworkElement の実際の境界を取得します。
+<see cref="P:Microsoft.Expression.Media.IGeometrySource.LayoutBounds"/> には、論理境界、ストレッチ、ストロークの太さが含まれます。            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometrySource`1.cachedGeometry">
+            <summary>
+前のジオメトリ効果のプロセスからジオメトリを指定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+外部変更のためジオメトリが無効化されたことを通知します。
+            </summary>
+            <remarks>
+パラメーターが変更されると通常ジオメトリが無効化されます。ジオメトリが外部で無効化された場合は、境界が変更される場合もジオメトリが再計算されます。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateGeometry(Microsoft.Expression.Media.IGeometrySourceParameters,System.Windows.Rect)">
+            <summary>
+任意のパラメーターと layoutBounds を基に、ジオメトリを更新します。ジオメトリが変更されていない場合は、false を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.UpdateCachedGeometry(`0)">
+            <summary>
+この関数を実装して、ジオメトリを提供する方法を拡張します。ジオメトリが変更されている場合は、true を返します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+ストレッチ モードの処理方法を拡張します。既定では、常に Stretch.Fill とセンター ストロークが使用されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometrySource`1.ApplyGeometryEffect(Microsoft.Expression.Media.IGeometrySourceParameters,System.Boolean)">
+            <summary>
+dirty または forced の場合はジオメトリ効果を適用し、この Geometry を更新します。それ以外の場合は、この Geometry を cachedGeometry として保持します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.Geometry">
+            <summary>
+最新の UpdateGeometry() 後の結果のジオメトリを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds">
+            <summary>
+ジオメトリを引き伸ばす境界ボックスを取得します。実際のジオメトリは、これより小さな場合も大きな場合もあります。<see cref="P:Microsoft.Expression.Media.GeometrySource`1.LogicalBounds"/> は、ストロークの太さとストレッチを考慮済みです。
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds">
+            <summary>
+FrameworkElement の実際の境界を取得します。<see cref="P:Microsoft.Expression.Media.GeometrySource`1.LayoutBounds"/> には、論理境界、ストレッチ、ストロークの太さが含まれます。
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+弧は、縦横比 1:1 と仮定し、Stretch.None は Stretch.Fill と同じと判断します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.NormalizeThickness(Microsoft.Expression.Media.IArcGeometrySourceParameters)">
+            <summary>
+境界ボックスに対する相対値、および、絶対的なピクセル値で、太さを正規化します。相対的な太さ = 0 の場合は全幅の円半径または固定幅となり、相対的な太さ = 1 の場合はドットに縮小されるか退化されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.UpdateZeroAngleGeometry(System.Boolean,System.Double)">
+            <summary>
+弧が中心/正常な内方向を差す線に退化されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeAngleRanges(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+弧のサンプルの位置範囲を定義する角度のペアのリストを計算します。戻り値は、2、4、または 6 つの double 値で、それぞれのペアが範囲を定義し、任意の開始角度から終了角度の順序で並べられます。範囲は、自己交差角度で分割されます。入力の開始と終了角度が自己交差角度内の無効な範囲内の場合は、隣の自己交差位置に移されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.EnsureFirstQuadrant(System.Double)">
+            <summary>
+角度を 0 ～ 90 の範囲に移動します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.SyncPieceWiseInnerCurves(System.Windows.Media.PathFigure,System.Int32,System.Windows.Point@,System.Double[])">
+            <summary>
+入力角度の各ペアを使って内部曲線の全セグメントを計算し、複数のベジエ曲線セグメントに結合します。新しいセグメントが figure.Segments リストに任意のインデックスから出力されます。始点は個別に出力されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.ComputeOneInnerCurve(System.Double,System.Double,System.Windows.Rect,System.Double)">
+            <summary>
+任意の角度範囲で 1 つの内部曲線セグメントを計算し、複数のベジエ曲線セグメント形式で示される 1 つの円滑な曲線セグメントとして出力します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.ArcGeometrySource.InnerCurveSelfIntersect(System.Double,System.Double,System.Double)">
+            <summary>
+一定幅の任意の楕円の自己交差点のパラメーターを (角度) を計算します。結果は常に最初の四分円の範囲内で、0 または 90 の場合は自己交差のないことを示します。基本アルゴリズムでは、バイナリ サーチで、サンプル点が最初の四分円内にない角度が検索されます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowOrientation">
+            <summary>
+矢印の方向を指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Left">
+            <summary>
+矢印は左向きになります。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Right">
+            <summary>
+矢印は右向きになります。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Up">
+            <summary>
+矢印は上向きになります。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowOrientation.Down">
+            <summary>
+矢印は下向きになります。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.BlockArrowGeometrySource.ArrowBuilder">
+            <summary>
+B /| / C--D A     | \ C--D \| B アルゴリズムは、top-left は 0,0 と仮定し、Width/Height のみを使用します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CalloutStyle">
+            <summary>
+吹き出し図形のレンダリング スタイルを指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Rectangle">
+            <summary>
+四角形の吹き出し。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.RoundedRectangle">
+            <summary>
+角の丸い四角形の吹き出し。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Oval">
+            <summary>
+長円形の吹き出し。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CalloutStyle.Cloud">
+            <summary>
+雲形の吹き出し。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateEdge(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double,System.Boolean)">
+            <summary>
+縁線を更新し、その後必要に応じてアンカー ポイントに結合します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdatePolylineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point,System.Windows.Point,System.Double)">
+            <summary>
+吹き出しスタイルを使用して、ポリライン セグメントを更新してから、始点、アンカー ポイント、終点を結合します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateLineSegment(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point)">
+            <summary>
+任意の点に合わせて線セグメントを更新します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.ComputeCorners(System.Double)">
+            <summary>
+頂点を時計回りに計算します。角が 4 つの場合は 8 点を使用します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.CalloutGeometrySource.UpdateCornerArc(System.Windows.Media.PathSegmentCollection,System.Int32,System.Windows.Point,System.Windows.Point)">
+            <summary>
+角の弧は常に、90 度の弧よりも小さくなります。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffect">
+            <summary>
+ジオメトリを別のジオメトリに変換する GeometryEffect の基本クラスを提供します。
+            </summary>
+            <remarks>
+このクラスは、レンダリングに渡す前の、IShape の表示ジオメトリの処理の基本実装を提供します。標準的な実装では、仮想関数 <see cref="F:ProcessGeometry"/> を拡張して、入力ジオメトリを変換します。通常、<see cref="T:GeometryEffect"/> は添付プロパティとして <see cref="T:IShape"/> にアタッチされ、<see cref="T:IShape"/> ジオメトリが更新されるとアクティブになります。<see cref="T:GeometryEffect"/> の <see cref="P:OutputGeometry"/> で、<see cref="T:IShape"/> の描画後のジオメトリを置き換えます。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.GetGeometryEffect(System.Windows.DependencyObject)">
+            <summary>
+ジオメトリ効果を任意の依存関係オブジェクトの添付プロパティとして取得します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.SetGeometryEffect(System.Windows.DependencyObject,Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+ジオメトリ効果を任意の依存関係オブジェクトの添付プロパティとして設定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CloneCurrentValue">
+            <summary>
+現在値を使用して <see cref="T:GeometryEffect"/> 効果のディープ コピーを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.DeepCopy">
+            <summary>
+ジオメトリ効果のディープ コピーを作成します。Silverlight で CloneCurrentValue を実装します。
+            </summary>
+<returns>ジオメトリ効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+任意のジオメトリ効果が、現在のインスタンスと同等かどうかをテストします。
+            </summary>
+<param name="geometryEffect">比較するジオメトリ効果。</param>
+<returns>2 つの効果が同じ外観をレンダリングする場合は true を返します。</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffect.cachedGeometry">
+            <summary>
+前のジオメトリ効果のプロセスからジオメトリを指定します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+ジオメトリを実際に計算せずに、ジオメトリ効果を無効化します。すべての親の図形または効果に適宜無効化するように通知します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.ProcessGeometry(System.Windows.Media.Geometry)">
+            <summary>
+任意の入力ジオメトリに対してジオメトリ効果を処理します。結果を GeometryEffect.OutputGeometry に保存します。
+            </summary>
+<returns>何も変更されていない場合は、false を返します。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+任意の入力ジオメトリを基に cachedGeometry の更新方法を拡張します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Detach">
+            <summary>
+親チェーンから切断されると通知されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.Attach(System.Windows.DependencyObject)">
+            <summary>
+親チェーンにアタッチされると通知されます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.InvalidateParent(System.Windows.DependencyObject)">
+            <summary>
+依存関係オブジェクトが有効な親の型 (IShape または GeometryEffect) の場合に、そのジオメトリを無効化します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffect.CreateInstanceCore">
+            <summary>
+WPF で Freezable を実装します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.DefaultGeometryEffect">
+            <summary>
+入力ジオメトリを渡すだけの既定のジオメトリ効果。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.OutputGeometry">
+            <summary>
+このジオメトリ効果の出力ジオメトリを取得します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Media.GeometryEffect.Parent">
+            <summary>
+IShape または GeometryEffectGroup のいずれかを親にすることができます。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.GeometryEffectConverter">
+            <summary>
+文字列とジオメトリ効果の間の変換を提供します。
+            </summary>
+            <remarks>
+このクラスは、次の xaml のような形式の簡潔な構文を使用できるようにします。<code>GeometryEffect="Sketch"</code>. ジオメトリ効果のインスタンスのクローンを作成し、リソースとして使用できるようにします。
+            </remarks>
+        </member>
+        <member name="F:Microsoft.Expression.Media.GeometryEffectConverter.registeredEffects">
+            <summary>
+サポートされるジオメトリ効果のプリセット リストを作成します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+文字列型から変換可能な GeometryEffect。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+文字列型に変換可能な GeometryEffect。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+文字列をジオメトリ効果に変換します。フォールバック値は null です。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.GeometryEffectConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+ジオメトリ効果を文字列に変換します。フォールバック値は null です。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.InvalidateGeometryReasons">
+            <summary>
+<see cref="M:Microsoft.Expression.Media.InvalidateGeometry"/> の呼び出し理由を指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.PropertyChanged">
+            <summary>
+プロパティが変更されたためジオメトリが無効化されました。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.IsAnimated">
+            <summary>
+プロパティがアニメーション化されているためジオメトリが無効化されました。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ChildInvalidated">
+            <summary>
+子が無効化されたためジオメトリが無効化されました。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.ParentInvalidated">
+            <summary>
+親が無効化されたためジオメトリが無効化されました。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.InvalidateGeometryReasons.TemplateChanged">
+            <summary>
+新しいテンプレートが適用されたためジオメトリが無効化されました。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.IGeometrySourceExtensions">
+            <summary>
+IGeometrySource とパラメーターに使用できるヘルパー拡張メソッドを提供します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.ArrowType">
+            <summary>
+矢じりの種類を指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.NoArrow">
+            <summary>
+矢じりなし。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.Arrow">
+            <summary>
+三角形の矢じり。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.StealthArrow">
+            <summary>
+ステルス三角形の矢じり。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OpenArrow">
+            <summary>
+開いた三角形の矢じり。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.ArrowType.OvalArrow">
+            <summary>
+長円形の矢じり。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.CornerType">
+            <summary>
+角の位置を指定します。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopLeft">
+            <summary>
+境界ボックスの左上。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.TopRight">
+            <summary>
+境界ボックスの右上。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomRight">
+            <summary>
+境界ボックスの右下。
+            </summary>
+        </member>
+        <member name="F:Microsoft.Expression.Media.CornerType.BottomLeft">
+            <summary>
+境界ボックスの左下。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.PolygonGeometrySource.ComputeLogicalBounds(System.Windows.Rect,Microsoft.Expression.Media.IGeometrySourceParameters)">
+            <summary>
+多角形が Stretch.None は Stretch.Fill と同じであると認識します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Media.SketchGeometryEffect">
+            <summary>
+SketchFlow と同様に、どのようなジオメトリでも Sketch スタイルに変換するジオメトリ効果。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.DeepCopy">
+            <summary>
+ジオメトリ効果のディープ コピーを作成します。
+            </summary>
+<returns>ジオメトリ効果の現在のインスタンスのクローン。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.Equals(Microsoft.Expression.Media.GeometryEffect)">
+            <summary>
+任意のジオメトリ効果が、現在のインスタンスと同等かどうかをテストします。
+            </summary>
+<param name="geometryEffect">比較するジオメトリ効果。</param>
+<returns>2 つの効果が同じ外観をレンダリングする場合は true を返します。</returns>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.UpdateCachedGeometry(System.Windows.Media.Geometry)">
+            <summary>
+任意の入力ジオメトリを基に cachedGeometry を更新します。
+            </summary>
+<param name="input">入力ジオメトリ。</param>
+<returns>cachedGeometry が更新されている場合は true を返します。</returns>
+        </member>
+        <member name="F:Microsoft.Expression.Media.SketchGeometryEffect.randomSeed">
+            <summary>
+視覚的なちらつきを最小限に抑えるため、作成時に同じランダム シードを使用します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Media.SketchGeometryEffect.GetEffectiveSegments(System.Windows.Media.PathFigure)">
+            <summary>
+任意のパス形状内の、閉弦も含めてすべてのシンプル セグメントを繰り返します。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.Arc">
+            <summary>
+ArcThickness で制御される Arc、Ring、および Pie モードをサポートする弧の図形をレンダリングします。
+            </summary>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.PrimitiveShape">
+            <summary>
+WPF:Shape または SL:Path から派生するプラットフォームに中立な Shape の実装。
+            </summary>
+            <summary>
+プラットフォームの Shape から派生する Shape の WPF 実装を提供します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.CreateGeometrySource">
+            <summary>
+ジオメトリ ソースを作成して図形の描画方法を拡張します。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.InvalidateGeometry(Microsoft.Expression.Media.InvalidateGeometryReasons)">
+            <summary>
+<see cref="T:Microsoft.Expression.Media.IShape"/> のジオメトリを無効にします。無効化の後、<see cref="T:Microsoft.Expression.Media.IShape"/> がジオメトリを再計算します。これは、非同期的に行われます。
+            </summary>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.MeasureOverride(System.Windows.Size)">
+<summary>Silverlight レイアウトの Measure 部分のビヘイビアーを提供します。このメソッドをクラスで上書きして、専用の Measure パス ビヘイビアーを定義することができます。</summary>
+<returns>子オブジェクトに割り当てられたサイズ計算、または、固定コンテナー サイズなどその他の考慮事項に基づいて、レイアウト過程でこのオブジェクトが必要だと判断するサイズ。</returns>
+<param name="availableSize">このオブジェクトが子オブジェクトに割り当てることのできる使用可能サイズ。Infinity (<see cref="F:System.Double.PositiveInfinity"/>) を値として指定して、使用可能なコンテンツに合わせてオブジェクトのサイズを設定することもできます。</param>
+            <remarks>
+WPF で、測定サイズのオーバーライドは Shape.DefiningGeometry から実行されますが、これは常に正しく動作しないこともあります。詳細についてはバグ 99497 を参照してください。WPF は規定で正確な測定サイズを備えていません。
+            
+Silverlight では、パスの測定サイズのオーバーライドは、プリミティブ図形と同様には機能しません。
+            
+クリッピングせずに正しくレンダリングできるこの図形の最小サイズを返す必要があります。既定では、ドット サイズ程度の小さな図形をレンダリングできるため、strokethickness を返します。
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Expression.Shapes.PrimitiveShape.ArrangeOverride(System.Windows.Size)">
+<summary>Silverlight レイアウトの Arrange 部分のビヘイビアーを提供します。このメソッドをクラスで上書きして、専用の Arrange パス ビヘイビアーを定義することができます。</summary>
+<returns>要素がレイアウト内に配置されると、実際のサイズが使用されます。</returns>
+<param name="finalSize">このオブジェクトとその子の配置に使用すべき親オブジェクト内の最終的な面積。</param>
+<remarks> <see cref="T:Microsoft.Expression.Shapes.PrimitiveShape"/> は、Geometry が無効化されると再計算を行い、RenderedGeometry と GeometryMargin を更新します。</remarks>
+        </member>
+        <member name="E:Microsoft.Expression.Shapes.PrimitiveShape.RenderedGeometryChanged">
+            <summary>
+RenderedGeometry が変更されると発生します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.PrimitiveShape.GeometryMargin">
+            <summary>
+論理境界と実際のジオメトリの境界の間の余白を取得します。これは正 (<see cref="T:Microsoft.Expression.Shapes.Arc"/>) または負 (<see cref="T:Microsoft.Expression.Controls.Callout"/>) のいずれかになります。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.StartAngle">
+            <summary>
+開始角度を取得または設定します。
+            </summary>
+<value>開始角度の度数。0 度は上向きです。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.EndAngle">
+            <summary>
+終了角度を取得または設定します。
+            </summary>
+<value>終了角度の度数。0 度は上向きです。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThickness">
+            <summary>
+弧の太さを取得または設定します。
+            </summary>
+<value>弧の太さは、""ArcThicknessUnit" によってピクセル単位かパーセント単位で示されます。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.Arc.ArcThicknessUnit">
+            <summary>
+弧の太さの単位を取得または設定します。
+            </summary>
+<value>弧の太さの単位は、ピクセルかパーセントのどちらかです。</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.BlockArrow">
+            <summary>
+サイズ変更可能な矢じりと矢印本体をサポートするブロック矢印図形をレンダリングします。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.Orientation">
+            <summary>
+方向を取得または設定します。
+            </summary>
+<value>矢印の向きを示す方向。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowheadAngle">
+            <summary>
+矢じりの角度を取得または設定します。
+            </summary>
+<value>矢じりの角度の度数。</value>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.BlockArrow.ArrowBodySize">
+            <summary>
+矢印本体のサイズを取得または設定します。
+            </summary>
+<value>矢印本体のピクセル単位のサイズ。</value>
+        </member>
+        <member name="T:Microsoft.Expression.Shapes.RegularPolygon">
+            <summary>
+可変個の点を持つ標準的な多角形の図形または星形図形をレンダリングします。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.PointCount">
+            <summary>
+<see cref="T:Microsoft.Expression.Shapes.RegularPolygon"/> の点の数を取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Microsoft.Expression.Shapes.RegularPolygon.InnerRadius">
+            <summary>
+図形の中心から最も近い点までの距離を取得または設定します。
+            </summary>
+<value>図形の中心から最も近い点までの距離。</value>
+        </member>
+    </members>
+</doc>

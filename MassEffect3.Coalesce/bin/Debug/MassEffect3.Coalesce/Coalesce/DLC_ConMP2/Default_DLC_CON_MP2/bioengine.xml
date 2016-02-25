@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioengine" name="bioengine.ini" source="..\..\biogame\config\bioengine.ini">
+  <Sections>
+    <Section name="alternatenonpackageresources">
+      <Property name="talktablemodules" type="3">DLC_Shared</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_CON_MP2\Config\DefaultEngine.ini</Property>
+    </Section>
+    <Section name="core.system">
+      <Property name="cookpaths">
+        <Value type="1">null</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\Content\Maps\Lobby</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\ScriptFinalRelease</Value>
+      </Property>
+      <Property name="frscriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\ScriptFinalRelease</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\ScriptFinalRelease</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\ScriptFinalRelease</Value>
+      </Property>
+      <Property name="paths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\TestContent</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\TestContent</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\Content\Maps\Lobby</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\__Trashcan</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\Content</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\TestContent</Value>
+      </Property>
+      <Property name="scriptpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\Script</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\Script</Value>
+      </Property>
+      <Property name="seekfreepcpaths">
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared\CookedPCConsole</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_Shared_MP\CookedPCConsole</Value>
+        <Value type="3">..\..\BIOGame\DLC\DLC_CON_MP2\CookedPCConsole</Value>
+      </Property>
+    </Section>
+    <Section name="engine.dlcmodules">
+      <Property name="dlc_con_mp2" type="0">35</Property>
+      <Property name="dlc_shared" type="0">3</Property>
+    </Section>
+    <Section name="engine.startuppackages">
+      <Property name="dlcstartuppackage">
+        <Value type="3">GuidCache_DLC_CON_MP2</Value>
+        <Value type="3">Startup_DLC_CON_MP2</Value>
+      </Property>
+      <Property name="dlcstartuppackagename" type="3">Startup_DLC_CON_MP2</Property>
+      <Property name="package" type="3">SFXGameContentDLC_CON_MP2_Retrieve</Property>
+    </Section>
+    <Section name="sfxgame.sfxengine">
+      <Property name="dynamicloadmapping">
+        <Value type="3">(ObjectName="BIOG_GesturesConfigDLC.RuntimeData",SeekFreePackageName="GesturesConfigDLC")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.Maps.MPjngl",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.asl_cerberus_256x128",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.asl_cerberus_512x256",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.bls_quarian_256x128",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.bls_quarian_512x256",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.snp_turian_256x128",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.snp_turian_512x256",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Cards.DLC_Headshot",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Cards.DLC_MeleeDamage",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Cards.DLC_ShieldRegen",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="DLC_MPImages.Cards.DLC_Stability",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_PickupObject_DLC",SeekFreePackageName="SFXEngagement_RetrieveDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_DropOffLocation_DLC",SeekFreePackageName="SFXEngagement_RetrieveDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Prothean_MP",SeekFreePackageName="SFXWeapon_AssaultRifle_ProtheanDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Cerberus",SeekFreePackageName="SFXWeapon_AssaultRifle_CerberusDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian",SeekFreePackageName="SFXWeapon_Shotgun_QuarianDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian",SeekFreePackageName="SFXWeapon_SniperRifle_TurianDLC", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="GUI_PR_Images.asl_prothean_256x128",SeekFreePackageName="SFX_GUI_PR_Images_1")</Value>
+        <Value type="3">(ObjectName="GUI_PR_Images.asl_prothean_512x256",SeekFreePackageName="SFX_GUI_PR_Images_1")</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.VorchaMale_Soldier",SeekFreePackageName="Vorcha_Soldier_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.VorchaMale_Sentinel",SeekFreePackageName="Vorcha_Sentinel_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.QuarianMale_Engineer",SeekFreePackageName="QuarianMale_Engineer_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.QuarianMale_Infiltrator",SeekFreePackageName="QuarianMale_Infiltrator_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.CerberusMale_Adept",SeekFreePackageName="Cerberus_Adept_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioChar_DLC_MP2_MPPlayers.Archetypes.CerberusMale_Vanguard",SeekFreePackageName="Cerberus_Vanguard_MP", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Flamer",SeekFreePackageName="SFXPower_Flamer")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Bloodlust",SeekFreePackageName="SFXPower_Bloodlust")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Lash",SeekFreePackageName="SFXPower_Lash")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomAction_WhipSmash",SeekFreePackageName="SFXPower_WhipSmash")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManPassive",SeekFreePackageName="SFXPower_WhipManPassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManMeleePassive",SeekFreePackageName="SFXPower_WhipManMPassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomAction_EMPGrenade",SeekFreePackageName="SFXPower_EMP")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Damping",SeekFreePackageName="SFXPower_Damping")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianPassive",SeekFreePackageName="SFXPower_MQPassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianMeleePassive",SeekFreePackageName="SFXPower_MQMPassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaPassive",SeekFreePackageName="SFXPower_VorchaPassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaMeleePassive",SeekFreePackageName="SFXPower_VorchaMeleePassive")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_MeleeDamage",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_HeadshotDamage",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_PowerBonus_Damage",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_PowerBonus_Cooldown",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_ShieldStrength",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_ShieldRegen",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponStability",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_AssaultRifle",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_SniperRifle",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_Shotgun",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_Pistol",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_SMG",SeekFreePackageName="SFXMP2Gear1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_GrenadeCapacity",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_AssaultDamageGrenadeCap",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_PistolDamageBioticDamage",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_ShieldStrengthShieldRegen",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_ShotgunDamageMeleeDamage",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_SMGDamagePowerCooldown",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_SniperDamageTechDamage",SeekFreePackageName="SFXMP2Gear2")</Value>
+        <Value type="3">(ObjectName="BioDpl_Multiplayer.DisarmBomb",SeekFreePackageName="SFXMPObjectiveRetrieve", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioApl_Cbt_GethMine01.GethMine01",SeekFreePackageName="SFXMPObjectiveRetrieve", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="BioApl_Cra_Crate02_M.Crate02_M",SeekFreePackageName="SFXMPObjectiveRetrieve", bReplicate=true)</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.GrenadeAdd",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboRifleGenade",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboPistolBio",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboShieldStgRegen",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboShotgunMelee",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboSMGCooldwn",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.CmboSniperTech",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageAlliance",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageCerberus",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageGeth",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageKrogan",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageQuarian",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.WpnDamageTurian",SeekFreePackageName="SFXMP2GearImages1")</Value>
+        <Value type="3">(ObjectName="SFXGameContentDLC_CON_MP2_Retrieve.SFXEngagement_Retrieve_DLC",SeekFreePackageName="Startup_DLC_CON_MP2")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.OptMapJade",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.OptMapGoddess",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.KitQuarianM",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.KitVorcha",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.KitXCerberus",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.MP_Cerberus",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.MP_QuarianMale0",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_MPImages_MP2.MP_Vorcha",SeekFreePackageName="MP2Images")</Value>
+        <Value type="3">(ObjectName="GUI_SF_DLC2_PowerIcons.DLC2_PowerIcons",SeekFreePackageName="MP2PowerIcons")</Value>
+      </Property>
+      <Property name="sfxuniqueids">
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Prothean_MP</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Cerberus</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Bloodlust</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Flamer</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Lash</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomAction_WhipSmash</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManPassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_WhipManMeleePassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomAction_EMPGrenade</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_Damping</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianPassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_MaleQuarianMeleePassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaPassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXPowerCustomActionMP_VorchaMeleePassive</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_MeleeDamage</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_HeadshotDamage</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_PowerBonus_Damage</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_PowerBonus_Cooldown</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_ShieldStrength</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_ShieldRegen</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Stability</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_AssaultRifle</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_SniperRifle</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_Shotgun</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_Pistol</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_WeaponDamage_SMG</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_GrenadeCapacity</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_AssaultDamageGrenadeCap</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_PistolDamageBioticDamage</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_ShieldStrengthShieldRegen</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_ShotgunDamageMeleeDamage</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_SMGDamagePowerCooldown</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2.SFXGameEffect_MatchConsumable_Gear_Combo_SniperDamageTechDamage</Value>
+        <Value type="3">SoldierVorcha</Value>
+        <Value type="3">SentinelVorcha</Value>
+        <Value type="3">EngineerQuarianMale</Value>
+        <Value type="3">InfiltratorQuarianMale</Value>
+        <Value type="3">AdeptHumanMaleCerberus</Value>
+        <Value type="3">VanguardHumanMaleCerberus</Value>
+        <Value type="3">RetrievePickupDLC1</Value>
+        <Value type="3">RetrievePickupDLC2</Value>
+        <Value type="3">RetrieveDropOffDLC</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation1</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation2</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation3</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation4</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation5</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation6</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation7</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation8</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation9</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation10</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation11</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation12</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation13</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation14</Value>
+        <Value type="3">SFXOperation_ObjectiveData_Retrieve_Variation15</Value>
+      </Property>
+    </Section>
+    <Section name="unrealed.editorengine">
+      <Property name="editpackages">
+        <Value type="3">SFXGameContentDLC_Shared</Value>
+        <Value type="3">SFXGameMPContentDLC_Shared_MP</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP2_Retrieve</Value>
+      </Property>
+    </Section>
+    <Section name="wwiseaudiosettings">
+      <Property name="bundledir" type="3">..\..\BIOGame\DLC\DLC_CON_MP2\Content\WwiseBundles</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

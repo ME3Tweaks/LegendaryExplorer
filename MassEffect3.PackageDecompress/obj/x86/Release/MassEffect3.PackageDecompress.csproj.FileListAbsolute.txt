@@ -1,0 +1,6 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageDecompress\obj\x86\Release\MassEffect3.PackageDecompress.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageDecompress.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageDecompress.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageDecompress.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageDecompress\obj\x86\Release\MassEffect3.PackageDecompress.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageDecompress\obj\x86\Release\MassEffect3.PackageDecompress.pdb

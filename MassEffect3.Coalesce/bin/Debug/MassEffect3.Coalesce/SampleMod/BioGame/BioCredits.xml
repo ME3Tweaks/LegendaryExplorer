@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biocredits" name="biocredits.ini" source="..\..\biogame\config\biocredits.ini">
+	<Includes>
+		<Include source="BioCredits/SFXGame.xml" />
+	</Includes>
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">4279442828.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

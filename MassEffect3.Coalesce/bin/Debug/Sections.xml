@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BioGame>
+  <iniversion>
+    <__0__ />
+  </iniversion>
+  <sfxgame>
+    <bioaicontroller>
+      <bailogging />
+      <bailogtowindow />
+      <bdebug_ai />
+      <bdebug_aienemylist />
+      <bdebug_airange />
+      <buseiterativepathfinding />
+      <interpenemylocspeed />
+      <response_minenemyheartime />
+      <response_minenemyseentime />
+    </bioaicontroller>
+    <sfxai_core>
+      <ai_acc_base />
+      <ai_acc_instabilitydecayrate />
+      <ai_acc_target />
+      <ai_accmod_briefacquire />
+      <ai_accmod_briefvisibility />
+      <ai_accmod_longrange />
+      <ai_accmod_mediumrange />
+      <ai_accmod_move />
+      <ai_accmod_shortrange />
+      <ai_accmod_targmove />
+      <buseticketing />
+      <maxnumaggressive />
+    </sfxai_core>
+    <sfxai_henchman>
+      <henchmanattackbonus />
+      <henchmanattackduration />
+      <henchmandefensebonus />
+      <henchmandefenseduration />
+      <m_ballowinstantpowerwhilevisible />
+    </sfxai_henchman>
+  </sfxgame>
+  <sfxgamecontent>
+    <sfxai_atlas>
+      <ai_burststofire />
+    </sfxai_atlas>
+    <sfxai_cannibal>
+      <ai_burststofire />
+    </sfxai_cannibal>
+    <sfxai_centurion>
+      <ai_burststofire />
+    </sfxai_centurion>
+    <sfxai_gethhunter>
+      <ai_burststofire />
+    </sfxai_gethhunter>
+    <sfxai_gethpyro>
+      <ai_burststofire />
+    </sfxai_gethpyro>
+    <sfxai_gethrockettrooper>
+      <ai_burststofire />
+    </sfxai_gethrockettrooper>
+    <sfxai_gethtrooper>
+      <ai_burststofire />
+    </sfxai_gethtrooper>
+    <sfxai_guardian>
+      <ai_burststofire />
+    </sfxai_guardian>
+    <sfxai_gunner>
+      <ai_burststofire />
+    </sfxai_gunner>
+    <sfxai_gunnerturret>
+      <ai_burststofire />
+    </sfxai_gunnerturret>
+    <sfxai_harvester>
+      <ai_burststofire />
+    </sfxai_harvester>
+    <sfxai_kaileng>
+      <ai_burststofire />
+    </sfxai_kaileng>
+    <sfxai_marauder>
+      <ai_burststofire />
+    </sfxai_marauder>
+    <sfxai_nemesis>
+      <ai_burststofire />
+    </sfxai_nemesis>
+    <sfxai_phantom>
+      <ai_burststofire />
+    </sfxai_phantom>
+    <sfxai_ravager>
+      <ai_burststofire />
+      <interpenemylocspeed />
+    </sfxai_ravager>
+    <sfxai_trooper>
+      <ai_burststofire />
+    </sfxai_trooper>
+    <sfxdamagetype_ai_shotgun>
+      <hitreactions />
+    </sfxdamagetype_ai_shotgun>
+    <sfxdamagetype_ai_sniperrifle>
+      <hitreactions />
+    </sfxdamagetype_ai_sniperrifle>
+    <sfxdamagetype_atlasweapon>
+      <hitreactions />
+    </sfxdamagetype_atlasweapon>
+    <sfxdamagetype_flamethrower>
+      <hitreactions />
+    </sfxdamagetype_flamethrower>
+    <sfxweapon_ai_cannibalrifle>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <magsize />
+      <maxspareammo />
+      <rateoffire />
+      <rateoffireai />
+      <tracerspawnoffset />
+    </sfxweapon_ai_cannibalrifle>
+    <sfxweapon_ai_cobra>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_cobra>
+    <sfxweapon_ai_gethassaultrifle>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_gethassaultrifle>
+    <sfxweapon_ai_gethflamethrower>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <beaminterpspeed />
+      <beaminterptime />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+      <tracerange />
+    </sfxweapon_ai_gethflamethrower>
+    <sfxweapon_ai_gethprimerifle>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_gethprimerifle>
+    <sfxweapon_ai_gethrocketlauncher>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_gethrocketlauncher>
+    <sfxweapon_ai_gethshotgun>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <firsthitdamage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <instantfiredamage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+      <secondhitdamage />
+      <thirdhitdamage />
+    </sfxweapon_ai_gethshotgun>
+    <sfxweapon_ai_gunshipminigun>
+      <damage />
+    </sfxweapon_ai_gunshipminigun>
+    <sfxweapon_ai_harvester>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_harvester>
+    <sfxweapon_ai_hornet>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_hornet>
+    <sfxweapon_ai_kaileng>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <meleerange />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_kaileng>
+    <sfxweapon_ai_mattock>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_mattock>
+    <sfxweapon_ai_phalanx>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_phalanx>
+    <sfxweapon_ai_phantom>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_phantom>
+    <sfxweapon_ai_promarturretminigun>
+      <damage />
+    </sfxweapon_ai_promarturretminigun>
+    <sfxweapon_ai_raptor>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_raptor>
+    <sfxweapon_ai_ravager>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_ravager>
+    <sfxweapon_ai_talon>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <damage />
+      <idealmaxrange />
+      <idealminrange />
+      <idealtargetdistance />
+      <rateoffire />
+      <rateoffireai />
+    </sfxweapon_ai_talon>
+    <sfxweapon_ai_turretminigun>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <ammopershot />
+      <damage />
+      <impactrelevancedistance />
+      <magsize />
+      <rateoffire />
+      <rateoffireai />
+      <tracerange />
+    </sfxweapon_ai_turretminigun>
+    <sfxweapon_smg_shuriken>
+      <ai_acccone_max />
+      <ai_acccone_min />
+      <ai_aimdelay />
+      <ai_burstfirecount />
+      <ai_burstfiredelay />
+      <rateoffireai />
+    </sfxweapon_smg_shuriken>
+  </sfxgamecontent>
+</BioGame>

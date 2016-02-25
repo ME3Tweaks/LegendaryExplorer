@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<!--<Section name="biogame.movies">
+			<Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_EXP_Pack001\Movies</Property>
+		</Section>-->
+		<Section name="sfxgame.biocheatmanagernonnative">
+			<Property name="setupmissionarray">
+				<Value type="3">(Mission=Lev001,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(19290,19286),PlotInts=((ID=10185,V=0),(ID=10202,V=0),(ID=10203,V=0),(ID=10161,V=10100)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev001_p1,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10784,V=2)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev002,LoadMapName=BioP_Nor,PlotIDSet=(23078),PlotIDClear=(),PlotInts=((ID=10161,V=240200)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev001_p2,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10772,V=21),(ID=10161,V=10100)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev003,LoadMapName=BioP_Nor,PlotIDSet=(22988),PlotIDClear=(),PlotInts=((ID=10161,V=250400)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev001_p3,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10773,V=22),(ID=10161,V=10100)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev004,LoadMapName=BioP_Nor,PlotIDSet=(23094),PlotIDClear=(),PlotInts=((ID=10161,V=230500)),PlotCond=())</Value>
+				<Value type="3">(Mission=Lev004_post,LoadMapName=BioP_Nor,PlotIDSet=(23342),PlotIDClear=(),PlotInts=((ID=10774,V=23)),PlotCond=())</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="timedplotunlocks" type="3">(PlotBool=22876,UnlockDay=0)</Property>
+		</Section>
+		<Section name="sfxgame.bioworldinfo">
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxaccomplishmentmanager">
+			<Property name="accomplishmentdata">
+				<Value type="3">(Index=53,Name=DLC_LEV1,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_3,XboxAchievementID=157,XboxAvatarAwardID=,PS3TrophyID=53,Title=761052,Incomplete=761053,Complete=761053,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_LevNotifi.Achievements.53_no_stone_unturned",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=54,Name=DLC_LEV2,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_4,XboxAchievementID=160,XboxAvatarAwardID=,PS3TrophyID=54,Title=761054,Incomplete=761055,Complete=761055,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_LevNotifi.Achievements.54_family_matters",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=55,Name=DLC_LEV3,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_5,XboxAchievementID=158,XboxAvatarAwardID=,PS3TrophyID=55,Title=761056,Incomplete=761057,Complete=761057,NotificationText=,MPNotificationText=,PointValue=50,Icon="GUI_LevNotifi.Achievements.55_under_pressure",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=56,Name=DLC_LEV4,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_6,XboxAchievementID=159,XboxAvatarAwardID=,PS3TrophyID=56,Title=761058,Incomplete=761059,Complete=761059,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_LevNotifi.Achievements.56_conspiracy_theorist",IsMultiplayerOnly=FALSE)</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxprofilesettings">
+			<Property name="bonuspowerunlockdataarray" type="3">(srTitle = 762116, BonusPowerID = 65536, PowerClassName = "SFXGameContentDLC_EXP_Pack001.SFXPowerCustomAction_Dominate", PlotConditionalID=3202, PlotStateID=23718)</Property>
+		</Section>
+		<Section name="sfxgame.sfxtreasuredata">
+			<Property name="leveltreasure">
+				<Value type="3">(Level="BioP_Lev001", LevelEnum=ME3Level_DLC1, PlotId=10771, XP=2000, Credits=12500, AllianceCredits=12500, Treasure=("SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization", "sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleMelee", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolUltraLight", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolHeadShot", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGPenetration", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGStabilization"))</Value>
+				<Value type="3">(Level="BioP_Lev002", LevelEnum=ME3Level_DLC2, PlotId=10772, XP=2000, Credits=12500, AllianceCredits=12500, Treasure=("SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolUltraLight", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolHeadShot", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGPenetration", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGStabilization"))</Value>
+				<Value type="3">(Level="BioP_Lev003", LevelEnum=ME3Level_DLC3, PlotId=10773, XP=2000, Credits=12500, AllianceCredits=12500, Treasure=("SFXGameContent.SFXWeapon_Shotgun_Raider", "SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration", "SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization", "sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleMelee", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGPenetration", "sfxgamecontentdlc_shared.SFXWeaponMod_SMGStabilization"))</Value>
+				<Value type="3">(Level="BioP_Lev004", LevelEnum=ME3Level_DLC4, PlotId=10774, XP=3000, Credits=15000, AllianceCredits=15000, Treasure=("SFXGameContent.SFXWeapon_AssaultRifle_Argus", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight", "SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolHeadShot", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolUltraLight", "sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleMelee"))</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

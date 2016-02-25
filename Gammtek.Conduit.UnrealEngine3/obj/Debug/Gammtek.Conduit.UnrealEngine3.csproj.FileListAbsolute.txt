@@ -1,0 +1,9 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.UnrealEngine3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.UnrealEngine3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.UnrealEngine.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\bin\Debug\Gammtek.Conduit.UnrealEngine.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\obj\Debug\Gammtek.Conduit.UnrealEngine3.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\obj\Debug\Gammtek.Conduit.UnrealEngine3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine3\obj\Debug\Gammtek.Conduit.UnrealEngine3.pdb

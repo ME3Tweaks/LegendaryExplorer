@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="gfxui" name="gfxui.int" source="..\..\engine\localization\int\gfxui.int">
+  <Sections>
+    <Section name="fontlib">
+      <Property name="fontlib">
+        <Value type="2">GUI_SF_Fonts.AeroLightFont</Value>
+        <Value type="2">GUI_SF_Fonts.BioMassFont</Value>
+      </Property>
+    </Section>
+    <Section name="fonts">
+      <Property name="aerolight shared" type="2">HelvLight</Property>
+      <Property name="biomass shared" type="2">Biomass</Property>
+    </Section>
+    <Section name="global">
+      <Property name="no trigger" type="2">No Trigger!</Property>
+    </Section>
+    <Section name="ime">
+      <Property name="moviepath" type="2">GFxIME.IME</Property>
+    </Section>
+    <Section name="translation">
+      <Property name="enable" type="2">1</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

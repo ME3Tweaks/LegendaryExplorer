@@ -1,0 +1,1645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets">
+				<!--  -->
+				<Value type="2">
+					(ID=7,
+					AssetName="GAWAsset_BloodPackFlotilla",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715522,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=6, Value=50),-->
+					ModTargets[0]=(TargetID=6, Value=100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Aria Blood Pack Plot",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AlienFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=8,
+					AssetName="GAWAsset_BlueSunsFlotilla",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715523,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=6, Value=50),-->
+					ModTargets[0]=(TargetID=6, Value=100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Aria Blue Suns Plot",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AlienFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=9,
+					AssetName="GAWAsset_EclipseFlotilla",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715524,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=6, Value=50),-->
+					ModTargets[0]=(TargetID=6, Value=100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Aria Eclipse Sub Plot",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AlienFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=16,
+					AssetName="GAWAsset_AllianceFrigateAgrincourt",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=717977,
+					GUIDescription=720111,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=3, Value=15),-->
+					ModTargets[0]=(TargetID=3, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Modifies",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Frigate_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Frigate_256x128")
+				</Value>
+				<Value type="2">
+					(ID=17,
+					AssetName="GAWAsset_AllianceSpecOpsTeamEcho",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=718000,
+					GUIDescription=715527,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=1, Value=20),-->
+					ModTargets[0]=(TargetID=1, Value=40),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_HumansArmor_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_HumansArmor_256x128")
+				</Value>
+				<Value type="2">
+					(ID=37,
+					AssetName="GAWAsset_AllianceCruiserLondon",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=718034,
+					GUIDescription=720112,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=4, Value=25),-->
+					ModTargets[0]=(TargetID=4, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AllianceCruiser_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AllianceCruiser_256x128")
+				</Value>
+				<Value type="2">
+					(ID=108,
+					AssetName="GAWAsset_AllianceFrigateHongKong",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=617487,
+					GUIDescription=720113,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=173, Value=15),-->
+					ModTargets[0]=(TargetID=173, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Frigate_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Frigate_256x128")
+				</Value>
+				<Value type="2">
+					(ID=110,
+					AssetName="GAWAsset_AllianceFrigateLeipzig",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=617576,
+					GUIDescription=720114,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=3, Value=15),-->
+					ModTargets[0]=(TargetID=3, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Frigate_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Frigate_256x128")
+				</Value>
+				<Value type="2">
+					(ID=126,
+					AssetName="GAWAsset_AllianceMarineRecon",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=719918,
+					GUIDescription=715601,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=1, Value=25),-->
+					ModTargets[0]=(TargetID=1, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_HumansArmor_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_HumansArmor_256x128")
+				</Value>
+				<Value type="2">
+					(ID=127,
+					AssetName="GAWAsset_AllianceFrigateTrafalger",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=719919,
+					GUIDescription=720115,
+					bIsExploration=True,
+					<!--ModTargets[0]=(TargetID=4, Value=15),-->
+					ModTargets[0]=(TargetID=4, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Frigate_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Frigate_256x128")
+				</Value>
+				<Value type="2">
+					(ID=138,
+					AssetName="GAWAsset_BioticSupport",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715610,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=1, Value=50),-->
+					ModTargets[0]=(TargetID=1, Value=100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Choose support in Jack",
+					bShowNotificationOnAward=false,
+					ImagePath="",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=139,
+					AssetName="GAWAsset_SavedTheCouncilInME1",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715629,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=2, Value=-25),-->
+					<!--ModTargets[1]=(TargetID=3, Value=-25),-->
+					<!--ModTargets[2]=(TargetID=4, Value=-25),-->
+					<!--ModTargets[3]=(TargetID=173, Value=-25),-->
+					ModTargets[0]=(TargetID=2, Value=-50),
+					ModTargets[1]=(TargetID=3, Value=-50),
+					ModTargets[2]=(TargetID=4, Value=-50),
+					ModTargets[3]=(TargetID=173, Value=-50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Saved the Council in ME1",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.Codex.CDX_Council_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=140,
+					AssetName="GAWAsset_ArrivalNotCompleted",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720124,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=1, Value=-50),-->
+					ModTargets[0]=(TargetID=1, Value=-100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Arrival Was not Completed",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.Codex.CDX_Reapers_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=142,
+					AssetName="GAWAsset_ClanTurmoil",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715612,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=141, Value=-50),-->
+					ModTargets[0]=(TargetID=141, Value=-100),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Eve Dies",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Krogan_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=143,
+					AssetName="GAWAsset_MassiveExplosion",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=678158,
+					GUIDescription=715613,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=141, Value=-250),-->
+					ModTargets[0]=(TargetID=141, Value=-500),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Turian Bomb Goes off",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Krogan_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Krogan_256x128")
+				</Value>
+				<Value type="2">
+					(ID=145,
+					AssetName="GAWAsset_UrdnotBetrayal",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715630,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=47, Value=-30),-->
+					<!--ModTargets[1]=(TargetID=144, Value=-300),-->
+					ModTargets[0]=(TargetID=47, Value=-60),
+					ModTargets[1]=(TargetID=144, Value=-600),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Disable Cure w/ Wrex",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Krogan_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=148,
+					AssetName="GAWAsset_GruntAlive",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715617,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=49, Value=25),-->
+					ModTargets[0]=(TargetID=49, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Grunt is alive",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Grunt_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=149,
+					AssetName="GAWAsset_GruntLoyal",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715618,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=49, Value=25),-->
+					ModTargets[0]=(TargetID=49, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Grunt is Loyal",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Grunt_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=150,
+					AssetName="GAWAsset_SaveQueen",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715619,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=49, Value=-25),-->
+					ModTargets[0]=(TargetID=49, Value=-50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Saved the Queen",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Rachni_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=151,
+					AssetName="GAWAsset_KirraheSavesSalarianCaptain",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=0,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=24, Value=-20),-->
+					ModTargets[0]=(TargetID=24, Value=-40),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=7,
+					DebugConditionalDescription="Kirrahe saves the salarian councilor",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Kirrahe_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=154,
+					AssetName="GAWAsset_AdmiralDies",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715622,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=105, Value=-75),-->
+					ModTargets[0]=(TargetID=105, Value=-150),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="You don’t rescue downed Admiral",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_QFleet_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=155,
+					AssetName="GAWAsset_GethFighters",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715623,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=105, Value=-25),-->
+					ModTargets[0]=(TargetID=105, Value=-50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Do not do Legion",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_GFleet_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=156,
+					AssetName="GAWAsset_SupportRaanAgainstHanJorel",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715624,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=106, Value=-10),-->
+					ModTargets[0]=(TargetID=106, Value=-20),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Suppored Raan against Han Jorel",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Raan_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Raan_256x128")
+				</Value>
+				<Value type="2">
+					(ID=157,
+					AssetName="GAWAsset_SupportHanJorelAgainstRaan",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715625,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=106, Value=25),-->
+					ModTargets[0]=(TargetID=106, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Suppored Han against Ran",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Gerrel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Gerrel_256x128")
+				</Value>
+				<Value type="2">
+					(ID=158,
+					AssetName="GAWAsset_KillXen",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715626,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=82, Value=-25),-->
+					ModTargets[0]=(TargetID=82, Value=-50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Killed Xen",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Xen_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Xen_256x128")
+				</Value>
+				<Value type="2">
+					(ID=163,
+					AssetName="GAWAsset_BreederQueenBetrayal",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=678053,
+					GUIDescription=715628,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=0, Value=-100),-->
+					ModTargets[0]=(TargetID=0, Value=-200),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Choose to save the breeder queen",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Rachni_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Rachni_256x128")
+				</Value>
+				<Value type="2">
+					(ID=167,
+					AssetName="GAWAsset_MassiveExplosionA",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=378158,
+					GUIDescription=715613,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=144, Value=-250),-->
+					ModTargets[0]=(TargetID=144, Value=-500),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Turian Bomb Goes off w/ Wreav",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Krogan_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Krogan_256x128")
+				</Value>
+				<Value type="2">
+					(ID=175,
+					AssetName="GAWAsset_KeepXenAlive",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715634,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=82, Value=25),-->
+					ModTargets[0]=(TargetID=82, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Choose to Keep Xen Alive",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Xen_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Xen_256x128")
+				</Value>
+				<Value type="2">
+					(ID=184,
+					AssetName="GAWAsset_DarkEnergyDissertationUpgrade",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715643,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=183, Value=4),-->
+					ModTargets[0]=(TargetID=183, Value=8),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Shepard gives extra info from ME1",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=188,
+					AssetName="GAWAsset_UpgradedThanix",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715647,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=187, Value=15),-->
+					ModTargets[0]=(TargetID=187, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Upgraded cannon ME2",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.Codex.CDX_Normandy02_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=190,
+					AssetName="GAWAsset_CerberusAttack",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715649,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=12, Value=-10),-->
+					ModTargets[0]=(TargetID=12, Value=-20),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Side with Ambassador or ignore plot",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Cerberus_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Cerberus_256x128")
+				</Value>
+				<Value type="2">
+					(ID=191,
+					AssetName="GAWAsset_TurianMedigel",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715650,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=43, Value=5),-->
+					ModTargets[0]=(TargetID=43, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=8,
+					DebugConditionalDescription="Finish Citadel Medigel Plot",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=192,
+					AssetName="GAWAsset_AsariCommandos",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715651,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=78, Value=25),-->
+					ModTargets[0]=(TargetID=78, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=2,
+					DebugConditionalDescription="Tell Liara to talk to her father",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AsariArmor_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AsariArmor_256x128")
+				</Value>
+				<Value type="2">
+					(ID=194,
+					AssetName="GAWAsset_SabotagedAllianceShips",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715653,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=4, Value=-10),-->
+					ModTargets[0]=(TargetID=4, Value=-20),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Balak survived Bring down the sky",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_HFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_HFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=195,
+					AssetName="GAWAsset_CommanderKahairalBalak",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715654,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=193, Value=15),-->
+					ModTargets[0]=(TargetID=193, Value=30),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Convince Balak to work with you",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Balak_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Balak_256x128")
+				</Value>
+				<Value type="2">
+					(ID=199,
+					AssetName="GAWAsset_UpgradedHeavyShipArmor",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715657,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=187, Value=25),-->
+					ModTargets[0]=(TargetID=187, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Upgraded armor ME2",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.Codex.CDX_Normandy02_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=200,
+					AssetName="GAWAsset_UpgradedShield",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715658,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=187, Value=25),-->
+					ModTargets[0]=(TargetID=187, Value=50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Upgraded shield ME2",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.Codex.CDX_Normandy02_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=201,
+					AssetName="GAWAsset_TechStudentsRescued",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715659,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=28, Value=5),-->
+					ModTargets[0]=(TargetID=28, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Help optional students in jack",
+					bShowNotificationOnAward=false,
+					ImagePath="",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=202,
+					AssetName="GAWAsset_SandersArcherUpgrade",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=715660,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=28, Value=10),-->
+					ModTargets[0]=(TargetID=28, Value=20),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Played Overlord and saved David",
+					bShowNotificationOnAward=false,
+					ImagePath="",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=266,
+					AssetName="GAWAsset_NeverPunchedReporter",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720088,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=215, Value=5),-->
+					ModTargets[0]=(TargetID=215, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Never Punched her in ME1 ME2 or ME3",
+					bShowNotificationOnAward=true,
+					ImagePath="",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=210,
+					AssetName="GAWAsset_GethHereticsSaved",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720109,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=105, Value=-50),-->
+					<!--ModTargets[1]=(TargetID=106, Value=-50),-->
+					<!--ModTargets[2]=(TargetID=107, Value=-50),-->
+					<!--ModTargets[3]=(TargetID=103, Value=150),-->
+					ModTargets[0]=(TargetID=105, Value=-100),
+					ModTargets[1]=(TargetID=106, Value=-100),
+					ModTargets[2]=(TargetID=107, Value=-100),
+					ModTargets[3]=(TargetID=103, Value=300),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Saved the Geth in ME2 ",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_GFleet_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=216,
+					AssetName="GAWAsset_GethHereticsDestroyed",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720110,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=105, Value=50),-->
+					<!--ModTargets[1]=(TargetID=106, Value=50),-->
+					<!--ModTargets[2]=(TargetID=107, Value=50),-->
+					<!--ModTargets[3]=(TargetID=103, Value=-150),-->
+					ModTargets[0]=(TargetID=105, Value=100),
+					ModTargets[1]=(TargetID=106, Value=100),
+					ModTargets[2]=(TargetID=107, Value=100),
+					ModTargets[3]=(TargetID=103, Value=-300),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Destroyed the Geth in ME2",
+					bShowNotificationOnAward=false,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_GFleet_512x256",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=217,
+					AssetName="GAWAsset_ProKroganInterview",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720116,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=141, Value=5),-->
+					ModTargets[0]=(TargetID=141, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Krogan interviewed Positively",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=218,
+					AssetName="GAWAsset_ProKroganInterviewNeedTurians",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720117,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=43, Value=5),-->
+					ModTargets[0]=(TargetID=43, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=8,
+					DebugConditionalDescription="Krogans need the Turians",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=219,
+					AssetName="GAWAsset_ProSecurityInterview",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720118,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=173, Value=5),-->
+					ModTargets[0]=(TargetID=173, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Security Stressed in interview",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=220,
+					AssetName="GAWAsset_AntiCerberusInterview",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720119,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=1, Value=5),-->
+					ModTargets[0]=(TargetID=1, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Stressed anti cerberus sentiment",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=221,
+					AssetName="GAWAsset_GethInterviewCooperation",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720120,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=103, Value=5),-->
+					ModTargets[0]=(TargetID=103, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Stressed Human Geth Cooperation",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=222,
+					AssetName="GAWAsset_GethInterviewGethKickAss",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720121,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=102, Value=5),-->
+					ModTargets[0]=(TargetID=102, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Stressed Geth are amazing",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=223,
+					AssetName="GAWAsset_QuarianInterviewReadiness",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720122,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=105, Value=5),-->
+					ModTargets[0]=(TargetID=105, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Stressed Quarian Readiness",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=224,
+					AssetName="GAWAsset_QuarianInterviewMilitary",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720123,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=106, Value=5),-->
+					ModTargets[0]=(TargetID=106, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Stressed Quarian Military",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Allers_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Allers_256x128")
+				</Value>
+				<Value type="2">
+					(ID=225,
+					AssetName="GAWAsset_SupportedCitadelRefugees",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720125,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=-2),-->
+					ModTargets[0]=(TargetID=207, Value=-4),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Supported Citadel Refugees",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=226,
+					AssetName="GAWAsset_CivilianMedicalVolunteers",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720126,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=5),-->
+					ModTargets[0]=(TargetID=207, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Told Volunteers to report to Medical",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=227,
+					AssetName="GAWAsset_ReassuredArguingCouple",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720127,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=0),-->
+					ModTargets[0]=(TargetID=207, Value=0),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Reassured an arguing couple",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=228,
+					AssetName="GAWAsset_AsariPatientSuicide",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720128,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=-4),-->
+					ModTargets[0]=(TargetID=207, Value=-8),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Asari Patient Suicide",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=229,
+					AssetName="GAWAsset_ImproveCivilianMorale",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720129,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=8),-->
+					ModTargets[0]=(TargetID=207, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Restore Active Duty pay to spouses",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=230,
+					AssetName="GAWAsset_AllianceFleetLosses",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720130,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=4, Value=-4),-->
+					ModTargets[0]=(TargetID=4, Value=-8),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Transfer the engy",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_HFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_HFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=231,
+					AssetName="GAWAsset_LoweredCrime",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720131,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=7),-->
+					ModTargets[0]=(TargetID=207, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Removed a con artist from the citadel",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=232,
+					AssetName="GAWAsset_FewerRefugees",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720132,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=7),-->
+					ModTargets[0]=(TargetID=207, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Got refugees to leave the citadel",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=233,
+					AssetName="GAWAsset_SmugglerContacts",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720133,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=173, Value=7),-->
+					ModTargets[0]=(TargetID=173, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Helped smugglers",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=234,
+					AssetName="GAWAsset_MedicalSuppliesReleased",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720134,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=7),-->
+					ModTargets[0]=(TargetID=207, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Medical Supplies Released",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=235,
+					AssetName="GAWAsset_IncreasedSurveillance",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720135,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=7),-->
+					ModTargets[0]=(TargetID=207, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Gave Csec permission to spy",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=236,
+					AssetName="GAWAsset_CivilianMilitia",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720136,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=7),-->
+					ModTargets[0]=(TargetID=207, Value=14),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Csec can create a militia",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=237,
+					AssetName="GAWAsset_IncreasedCrimeRate",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720137,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=-4),-->
+					ModTargets[0]=(TargetID=207, Value=-8),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Csec is ignoring weapon sales",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=238,
+					AssetName="GAWAsset_GrissomStudentHousing",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720138,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=5),-->
+					ModTargets[0]=(TargetID=207, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Housing given to grissom students",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=239,
+					AssetName="GAWAsset_ImprovedTargetingVIs",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720139,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=173, Value=5),-->
+					ModTargets[0]=(TargetID=173, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Imporved Targeting Vis",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_HFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_HFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=240,
+					AssetName="GAWAsset_EnforceEveryLaw",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720140,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=-2),-->
+					ModTargets[0]=(TargetID=207, Value=-4),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Enforce Every Law",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=241,
+					AssetName="GAWAsset_CrackDownOnTerror",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720141,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=5),-->
+					ModTargets[0]=(TargetID=207, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Crack down on terror",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=242,
+					AssetName="GAWAsset_CivilianDonations",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720142,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=5),-->
+					ModTargets[0]=(TargetID=207, Value=10),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Reassure that money critical to war",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=243,
+					AssetName="GAWAsset_CuredTurianGeneral",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720143,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=12, Value=8),-->
+					ModTargets[0]=(TargetID=12, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=8,
+					DebugConditionalDescription="Cured Turian General",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AlienFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=244,
+					AssetName="GAWAsset_ReaperCodeFragment",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720089,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=78, Value=8),-->
+					ModTargets[0]=(TargetID=78, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=2,
+					DebugConditionalDescription="Give Reaper Fragment to Asari Command",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=245,
+					AssetName="GAWAsset_GethJammingFrequencies",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720090,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=8),-->
+					ModTargets[0]=(TargetID=207, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Have Geth upgrade jamming frequencies",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_GFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_GFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=246,
+					AssetName="GAWAsset_CerberusTurretSchematics",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720091,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=8),-->
+					ModTargets[0]=(TargetID=207, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Give Csec turret schematics ",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Cerberus_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Cerberus_256x128")
+				</Value>
+				<Value type="2">
+					(ID=247,
+					AssetName="GAWAsset_ImprovedAsariAmps",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720092,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=8),-->
+					ModTargets[0]=(TargetID=207, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Get Asari Commandos amp schematics",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AsariArmor_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AsariArmor_256x128")
+				</Value>
+				<Value type="2">
+					(ID=248,
+					AssetName="GAWAsset_ImprovedHanarMedicalTech",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720093,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=185, Value=8),-->
+					ModTargets[0]=(TargetID=185, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Hanar get medigel",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=249,
+					AssetName="GAWAsset_CerberusCiphers",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720094,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=173, Value=8),-->
+					ModTargets[0]=(TargetID=173, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Get Cerberus Encryption Codes",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Cerberus_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Cerberus_256x128")
+				</Value>
+				<Value type="2">
+					(ID=250,
+					AssetName="GAWAsset_SalarianColonySupport",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720095,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=171, Value=8),-->
+					ModTargets[0]=(TargetID=171, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=7,
+					DebugConditionalDescription="Save Salarian Egg Clutches",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_AlienFleet_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_AFleet_256x128")
+				</Value>
+				<Value type="2">
+					(ID=251,
+					AssetName="GAWAsset_ChemicalBurnTreatments",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720096,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=3, Value=8),-->
+					ModTargets[0]=(TargetID=3, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="improved treatment for chem burns",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.Codex.CDX_Citadel_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_CitSpace_256x128")
+				</Value>
+				<Value type="2">
+					(ID=252,
+					AssetName="GAWAsset_KroganPowerGrids",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720097,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=173, Value=8),-->
+					ModTargets[0]=(TargetID=173, Value=16),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Krogan Power Grids",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Krogan_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Krogan_256x128")
+				</Value>
+				<Value type="2">
+					(ID=253,
+					AssetName="GAWAsset_Bannerofthe1stRegimentBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720098,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=43, Value=40),-->
+					ModTargets[0]=(TargetID=43, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=8,
+					DebugConditionalDescription="Banner of the 1st Regiment Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=254,
+					AssetName="GAWAsset_PillarsOfStrengthBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720099,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=193, Value=40),-->
+					ModTargets[0]=(TargetID=193, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Pillars of Strength Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=255,
+					AssetName="GAWAsset_BookOfPlenixBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720100,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=40),-->
+					ModTargets[0]=(TargetID=207, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Book of Plenix Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=256,
+					AssetName="GAWAsset_ImprovedHuntressTraining",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720101,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=79, Value=40),-->
+					ModTargets[0]=(TargetID=79, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=2,
+					DebugConditionalDescription="Library of Asha Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=257,
+					AssetName="GAWAsset_ProtheanDataDrivesBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720102,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=0, Value=40),-->
+					ModTargets[0]=(TargetID=0, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Prothean Data Drives Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=258,
+					AssetName="GAWAsset_KaklisaurSkull",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720103,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=141, Value=40),-->
+					ModTargets[0]=(TargetID=141, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=5,
+					DebugConditionalDescription="Fossilized Kaklisaur Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=259,
+					AssetName="GAWAsset_ObeliskOfKarzaBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720104,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=0, Value=40),-->
+					ModTargets[0]=(TargetID=0, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="The Obelisk of Karza Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=260,
+					AssetName="GAWAsset_ProtheanSphereBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720105,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=0, Value=40),-->
+					ModTargets[0]=(TargetID=0, Value=80),
+					UnlockPlotStates[0]=0,
+					DebugConditionalDescription="Prothean Sphere turned in",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=261,
+					AssetName="GAWAsset_CodeOfTheAncientsBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720106,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=40),-->
+					ModTargets[0]=(TargetID=207, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Code of the Ancients Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=262,
+					AssetName="GAWAsset_RingsOfAluneBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720107,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=207, Value=40),-->
+					ModTargets[0]=(TargetID=207, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=0,
+					DebugConditionalDescription="Rings of Alune turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=263,
+					AssetName="GAWAsset_HesperiaPeriodStatueBonus",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=720108,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=0, Value=40),-->
+					ModTargets[0]=(TargetID=0, Value=80),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=1,
+					DebugConditionalDescription="Hesperia Era Statue Turned In",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+				<Value type="2">
+					(ID=268,
+					AssetName="GAWAsset_DestroyTheGeth",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=0,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=104, Value=-60),-->
+					ModTargets[0]=(TargetID=104, Value=-120),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=6,
+					DebugConditionalDescription="Choose to Destroy the Geth",
+					bShowNotificationOnAward=false,
+					ImagePath="",
+					NotificationImagePath="")
+				</Value>
+				<Value type="2">
+					(ID=269,
+					AssetName="GAWAsset_DestroyTheQuarians",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=0,
+					GUIDescription=0,
+					bIsExploration=False,
+					<!--ModTargets[0]=(TargetID=101, Value=-25),-->
+					ModTargets[0]=(TargetID=101, Value=-50),
+					UnlockPlotStates[0]=0,
+					GUICategoryID=9,
+					DebugConditionalDescription="Choose to Destroy the Quarians",
+					bShowNotificationOnAward=false,
+					ImagePath="",
+					NotificationImagePath="")
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ID=704,
+					AssetName="GAWAsset_GeneralOlegPetrovskyDead",
+					Type=GAWAssetType_Modifier,
+					StartingStrength=0,
+					GUIName=782529,
+					GUIDescription=782530,
+					<!--ModTargets[0]=(TargetID=3, Value=30),-->
+					ModTargets[0]=(TargetID=3, Value=60),
+					GUICategoryID=0,
+					bShowNotificationOnAward=true,
+					ImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_512x256",
+					NotificationImagePath="GUI_OMG_Codex.galaxyAtWar.GM_General_256x128")
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ID=800,
+					AssetName="GAWAsset_NormandyRepairs",
+					Type=GAWAssetType_Modifier,
+					GUIName=813562,
+					GUIDescription=813563,
+					<!--ModTargets[0]=(TargetID=187, Value=35),-->
+					ModTargets[0]=(TargetID=187, Value=70),
+					GUICategoryID=0,
+					bShowNotificationOnAward=true)
+				</Value>
+				<Value type="2">
+					(ID=801,
+					AssetName="GAWAsset_TeamSpirit",
+					Type=GAWAssetType_Modifier,
+					GUIName=813564,
+					GUIDescription=813565,
+					<!--ModTargets[0]=(TargetID=187, Value=35),-->
+					ModTargets[0]=(TargetID=187, Value=70),
+					GUICategoryID=0,
+					bShowNotificationOnAward=true)
+				</Value>
+
+				<!--  -->
+				<Value type="2">
+					(ID=501,
+					AssetName="GAWAsset_EdenPrimeSupport_Mod1",
+					Type=GAWAssetType_Modifier,
+					GUIDescription=727488,
+					<!--ModTargets[0]=(TargetID=500, Value=25),-->
+					ModTargets[0]=(TargetID=500, Value=50),
+					bShowNotificationOnAward=true)
+				</Value>
+				<Value type="2">
+					(ID=502,
+					AssetName="GAWAsset_EdenPrimeSupport_Mod2",
+					Type=GAWAssetType_Modifier,
+					GUIDescription=727489,
+					<!--ModTargets[0]=(TargetID=500, Value=25),-->
+					ModTargets[0]=(TargetID=500, Value=50),
+					bShowNotificationOnAward=true)
+				</Value>
+				<Value type="2">
+					(ID=503,
+					AssetName="GAWAsset_EdenPrimeSupport_Mod3",
+					Type=GAWAssetType_Modifier,
+					GUIDescription=727490,
+					<!--ModTargets[0]=(TargetID=500, Value=25),-->
+					ModTargets[0]=(TargetID=500, Value=50),
+					bShowNotificationOnAward=true)
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

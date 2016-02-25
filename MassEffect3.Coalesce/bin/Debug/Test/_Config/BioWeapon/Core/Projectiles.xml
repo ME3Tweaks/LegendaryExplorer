@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgame.sfxprojectile">
+			<Property name="bclientpredictprojectile" type="2">false;</Property>
+			<Property name="predictionaccelerationrate" type="2">1.01</Property>
+			<Property name="predictioninitialspeedgain" type="2">0.4</Property>
+			<Property name="predictionmaxspeedgain" type="2">0.8</Property>
+			<Property name="predictionspeedinterpolationspeed" type="2">28</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_gethshotgun">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_graal">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_scorpion">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+			<Property name="predictionaccelerationrate" type="2">1.002</Property>
+			<Property name="predictioninitialspeedgain" type="2">0.3</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxprojectile_consumablerocket">
+			<Property name="gibrange" type="2">200.0f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

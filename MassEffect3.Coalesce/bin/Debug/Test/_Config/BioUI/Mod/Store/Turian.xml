@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxguidata_store_turian">
+			<Property name="discoveryid" type="0">20259</Property>
+			<Property name="m_srtitle" type="0">652507</Property>
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!-- Weapons: Assault Rifles -->
+				<Value type="2">
+					(ItemType=TYPE_WEAPON,
+					ItemClassName="SFXGameContent.SFXWeapon_AssaultRifle_Cobra",
+					BaseCost=10000,
+					PlotUnlockConditionalID=1461,
+					PlotPurchaseID[0]=21225)
+				</Value>
+
+				<!-- Weapons: Pistols -->
+
+				<!-- Weapons: Shotguns -->
+				<Value type="2">
+					(ItemType=TYPE_WEAPON,
+					ItemClassName="SFXGameContent.SFXWeapon_Shotgun_Claymore",
+					BaseCost=10000,
+					PlotUnlockConditionalID=1474,
+					PlotPurchaseID[0]=21238)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_WEAPON,
+					ItemClassName="SFXGameContent.SFXWeapon_Shotgun_Graal",
+					BaseCost=10000,
+					PlotUnlockConditionalID=1478,
+					PlotPurchaseID[0]=21242)
+				</Value>
+
+				<!-- Weapons: SMG's -->
+
+				<!-- Weapons: Sniper Rifles -->
+
+				<!-- Weapon Mods: Assault Rifles -->
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy",
+					BaseCost=2500,
+					PlotUnlockConditionalID=1491,
+					PlotPurchaseID[0]=21259)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_AssaultRifleDamage",
+					BaseCost=2500,
+					PlotUnlockConditionalID=1493,
+					PlotPurchaseID[0]=21261)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_AssaultRifleStability",
+					BaseCost=5000,
+					PlotUnlockConditionalID=1500,
+					PlotPurchaseID[0]=21268)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee",
+					BaseCost=5000,
+					PlotUnlockConditionalID=3000,
+					PlotPurchaseID[0]=23419)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope",
+					BaseCost=2500,
+					PlotUnlockConditionalID=4162,
+					PlotPurchaseID[0]=24956)
+				</Value>
+
+				<!-- Weapon Mods: Pistols -->
+				<!-- Weapon Mods: Shotguns -->
+				<!-- Weapon Mods: SMG's -->
+				<!-- Weapon Mods: Sniper Rifles -->
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_SniperRifleAccuracy",
+					BaseCost=5000,
+					PlotUnlockConditionalID=1502,
+					PlotPurchaseID[0]=21270)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage",
+					BaseCost=2500,
+					PlotUnlockConditionalID=1503,
+					PlotPurchaseID[0]=21271)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_SniperRifleDamage",
+					BaseCost=2500,
+					PlotUnlockConditionalID=1505,
+					PlotPurchaseID[0]=21273)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed",
+					BaseCost=5000,
+					PlotUnlockConditionalID=1508,
+					PlotPurchaseID[0]=21276)
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_MOD,
+					ItemClassName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen",
+					BaseCost=2500,
+					PlotUnlockConditionalID=4166,
+					PlotPurchaseID[0]=24960)
+				</Value>
+
+				<!-- Armor: Arms -->
+				<!-- Armor: Full -->
+				<!-- Armor: Helmet -->
+				<Value type="2">
+					(ItemType=TYPE_HELMET,
+					ArmorID=3,
+					BaseCost=5000,
+					PlotUnlockConditionalID=2245,
+					PlotPurchaseID[0]=18995,
+					ChoiceEntry=(srChoiceName=335474, srChoiceDescription=335475),
+					LargeImage="gui_codex_images.Store.CD_ARMDeath_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_HELMET,
+					ArmorID=5,
+					BaseCost=5000,
+					PlotUnlockConditionalID=2250,
+					PlotPurchaseID[0]=19007,
+					ChoiceEntry=(srChoiceName=349690, srChoiceDescription=349689),
+					LargeImage="gui_codex_images.Store.CD_ARMSentry_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+
+				<!-- Armor: Legs -->
+				<Value type="2">
+					(ItemType=TYPE_LEGS,
+					ArmorID=4,
+					BaseCost=5000,
+					PlotUnlockConditionalID=2267,
+					PlotPurchaseID[0]=20917,
+					ChoiceEntry=(srChoiceName=710941, srChoiceDescription=711021),
+					LargeImage="gui_codex_images.Store.CD_ARMSHPgLegs_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+
+				<!-- Armor: Shoulders -->
+				<Value type="2">
+					(ItemType=TYPE_SHOULDERS,
+					ArmorID=1,
+					BaseCost=5000,
+					PlotUnlockConditionalID=1775,
+					PlotPurchaseID[0]=19456,
+					ChoiceEntry=(srChoiceName=710923, srChoiceDescription=711003),
+					LargeImage="gui_codex_images.Store.CD_ARMSHPbShoulders_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+				<Value type="2">
+					(ItemType=TYPE_SHOULDERS,
+					ArmorID=4,
+					BaseCost=5000,
+					PlotUnlockConditionalID=2265,
+					PlotPurchaseID[0]=20915,
+					ChoiceEntry=(srChoiceName=710927, srChoiceDescription=711007),
+					LargeImage="gui_codex_images.Store.CD_ARMSHPgShoulders_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+
+				<!-- Armor: Torso -->
+				<Value type="2">
+					(ItemType=TYPE_TORSO,
+					ArmorID=6,
+					BaseCost=5000,
+					PlotUnlockConditionalID=2262,
+					PlotPurchaseID[0]=21399,
+					ChoiceEntry=(srChoiceName=710919, srChoiceDescription=710999),
+					LargeImage="gui_codex_images.Store.CD_ARMSHPfTorso_512x256",
+					SmallImage="GUI_Icons.Notifications.NT_Armor_256x128")
+				</Value>
+			</Property>
+			<Property name="storename" type="0">Turian</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

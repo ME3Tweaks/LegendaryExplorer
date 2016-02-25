@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_hen_pr.sfxdamagetype_prothean">
+			<Property name="hitreactions" type="0">(BodyPart="RightLeg",Reaction=Reaction_Light,ReactionChance=0.08)</Property>
+			<Property name="wounddamage" type="0">WoundDamage_Light</Property>
+			<Property name="woundpct" type="0">0.1f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

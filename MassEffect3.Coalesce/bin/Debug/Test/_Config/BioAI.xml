@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioAI" name="bioai.ini" source="..\..\biogame\config\bioai.ini">
+	<Includes>
+		<Include source="BioAI/Core.xml" />
+		<Include source="BioAI/DlcConMP4.xml" />
+		<Include source="BioAI/DlcExpPack002.xml" />
+		<Include source="BioAI/DlcExpPack003.xml" />
+		<Include source="BioAI/DlcShared.xml" />
+		<Include source="BioAI/DlcUpdPatch02.xml" />
+		<Include source="BioAI/DlcLivePatch.xml" />
+		<Include source="BioAI/Mod.xml" />
+	</Includes>
+</CoalesceAsset>

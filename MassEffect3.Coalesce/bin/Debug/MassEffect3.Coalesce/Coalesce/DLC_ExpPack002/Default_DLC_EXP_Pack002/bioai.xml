@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioai" name="bioai.ini" source="..\..\biogame\config\bioai.ini">
+  <Sections>
+    <Section name="sfxgamecontentdlc_exp_pack002.sfxai_rampart">
+      <Property name="ai_burststofire" type="0">(X=1,Y=2)</Property>
+      <Property name="maxnumaggressive" type="0">1</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack002.sfxweapon_ai_katana">
+      <Property name="ai_acccone_max" type="0">(X=2.5f,Y=2.5f)</Property>
+      <Property name="ai_acccone_min" type="0">(X=1.5f,Y=1.5f)</Property>
+      <Property name="ai_aimdelay" type="0">(X=0.0f,Y=0.0f)</Property>
+      <Property name="ai_burstfirecount" type="0">(X=1,Y=1)</Property>
+      <Property name="ai_burstfiredelay" type="0">(X=0.9f,Y=1.5f)</Property>
+      <Property name="damage" type="0">(X=40.0,Y=40.0)</Property>
+      <Property name="idealmaxrange" type="0">1200.f</Property>
+      <Property name="idealminrange" type="0">250.f</Property>
+      <Property name="idealtargetdistance" type="0">700.f</Property>
+      <Property name="magsize" type="0">(X=6,Y=6)</Property>
+      <Property name="rateoffire" type="0">(X=150,Y=150)</Property>
+      <Property name="rateoffireai" type="0">1.0f</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

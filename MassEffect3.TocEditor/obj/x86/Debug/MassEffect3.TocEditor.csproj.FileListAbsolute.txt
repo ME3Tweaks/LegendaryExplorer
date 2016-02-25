@@ -1,0 +1,43 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.TocFileEditor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.WindowProgressForm.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.TocFileEditor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.WindowProgressForm.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.TocEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.TocFileEditor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.WindowProgressForm.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.TocEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\MassEffect3.TocEditor.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\MassEffect3.TocEditor.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\Gammtek.Conduit.MassEffect3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\bin\Debug\Gammtek.Conduit.MassEffect3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.TocFileEditor.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.WindowProgressForm.resources
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.csproj.GenerateResource.Cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.TocEditor\obj\x86\Debug\MassEffect3.TocEditor.pdb

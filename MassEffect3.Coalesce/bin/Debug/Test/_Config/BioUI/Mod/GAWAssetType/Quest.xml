@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgame.sfxgawassetshandler">
+			<Property name="allassets">
+				<!--  -->
+				<Value type="2">
+					(ID=267,
+					AssetName="GAWAsset_BlackMarketArtifacts",
+					Type=GAWAssetType_Quest,
+					StartingStrength=0,
+					GUIName=723497,
+					GUIDescription=0,
+					bIsExploration=False,
+					UnlockPlotStates[0]=22573,
+					DebugConditionalDescription="None",
+					bShowNotificationOnAward=true,
+					ImagePath="gui_codex_images.galaxyAtWar.GM_Artifact_512x256",
+					NotificationImagePath="GUI_Icons.Notifications.GM_Artifact_256x128")
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

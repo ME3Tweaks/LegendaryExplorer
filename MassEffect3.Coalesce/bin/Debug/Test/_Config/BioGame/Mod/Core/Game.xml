@@ -1,0 +1,1072 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Includes>
+		<Include source="Game/TreasureData.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="newgameplusplotstopersist">
+				<Value type="2">(nIndex=20254, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20255, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20256, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20493, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20257, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20258, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=21313, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20259, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20260, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22635, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22633, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22634, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22632, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=21187, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22590, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22629, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23743, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22628, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23809, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20988, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22630, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23741, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22636, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23811, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=20989, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23702, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23705, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23701, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23704, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23700, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=23703, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=22631, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24050, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24048, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24047, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24053, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24049, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24052, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24051, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24499, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24500, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24501, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24502, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24503, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24504, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24505, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24506, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24507, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24508, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24509, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24510, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24828, nType=SFXPlotType_Boolean)</Value>
+
+				<!--
+				Miscellaneous Citadel DLC Items
+			-->
+				<!-- Bools -->
+				<Value type="2">(nIndex=24939, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24940, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24941, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24942, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24943, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24944, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24945, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24946, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24935, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24936, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24938, nType=SFXPlotType_Boolean)</Value>
+				<Value type="2">(nIndex=24937, nType=SFXPlotType_Boolean)</Value>
+
+				<!-- Ints -->
+				<!--<Value type="2">(nIndex=11206, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11207, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11208, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11205, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11197, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11198, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11199, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11200, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11201, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11202, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11196, nType=SFXPlotType_Integer)</Value>-->
+				<!--<Value type="2">(nIndex=11203, nType=SFXPlotType_Integer)</Value>-->
+
+				<!-- Spectre War Asset Items (Menu, unlocked through dialogs) -->
+				<!--<Value type="2">(nIndex=21731, nType=SFXPlotType_Boolean)</Value>-->
+				<!--<Value type="2">(nIndex=21737, nType=SFXPlotType_Boolean)</Value>-->
+				<!--<Value type="2">(nIndex=21861, nType=SFXPlotType_Boolean)</Value>-->
+			</Property>
+		</Section>
+		<Section name="sfxgame.biohud">
+			<!--<Property name="bdesignerhud" type="2">true</Property>-->
+			<!--<Property name="m_busegenerateditemnames" type="2">true</Property>-->
+			<Property name="safearearatiox" type="2">0.10</Property>
+			<Property name="safearearatioy" type="2">0.10</Property>
+		</Section>
+		<Section name="sfxgame.bioplanet">
+			<Property name="eezomineralsbase" type="2">1500</Property>
+			<Property name="m_fscandetectionrange" type="2">300.00</Property>
+			<Property name="placedmineralspool" type="2">25000</Property>
+			<Property name="randommineralsbase" type="2">350</Property>
+			<Property name="scanbarmaxmineralsize" type="2">1500</Property>
+		</Section>
+		<Section name="sfxgame.bioplayerselection">
+			<Property name="maxhighlightrange" type="2">10000</Property>
+			<Property name="selectioncloseangle" type="2">12</Property>
+			<Property name="selectioncloserange" type="2">1500</Property>
+			<Property name="selectionfarangle" type="2">2</Property>
+			<Property name="selectionfarrange" type="2">3000</Property>
+			<Property name="selectionmaxrange" type="2">4000</Property>
+		</Section>
+		<Section name="sfxgame.sfxcharacterclass">
+			<Property name="encumbrancemaxcooldown" type="2">2.00</Property>
+			<Property name="encumbrancemincooldown" type="2">-2.00</Property>
+			<Property name="startingencumbrancecapacity" type="2">1.00</Property>
+		</Section>
+		<Section name="sfxgame.sfxgame">
+			<Property name="newgameplusplayervariables">
+				<Value type="-1" />
+
+				<!-- Assault Rifles -->
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Avenger</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Cobra</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Collector</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Falcon</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Geth</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Mattock</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Revenant</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Saber</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Vindicator</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Argus</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Reckoning</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_AssaultRifle_Krogan</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Prothean_MP</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Cerberus</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_AssaultRifle_LMG</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Lancer_MP</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Adas_MP</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Spitfire</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer</Value>
+				<Value type="3">SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean</Value>
+
+				<!-- Pistols -->
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Carnifex</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Ivory</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Phalanx</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Predator</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Scorpion</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Talon</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Thor</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Eagle</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_Pistol_Asari</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Silencer_MP</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Bloodpack_MP</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer_Cit001</Value>
+
+				<!-- Shotguns -->
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Claymore</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Disciple</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Eviscerator</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Geth</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Graal</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Katana</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Scimitar</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Striker</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Crusader</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Raider</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_Shotgun_Assault</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Shotgun_Salarian_MP</Value>
+
+				<!-- SMG's -->
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Hornet</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Locust</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Shuriken</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Tempest</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Hurricane</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_SMG_Geth</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP4.SFXWeapon_SMG_Collector</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_SMG_Bloodpack_MP</Value>
+
+				<!-- Sniper Rifles -->
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_BlackWidow</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Incisor</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Javelin</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Mantis</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Raptor</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Viper</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Widow</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Indra</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Valiant</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_SniperRifle_Batarian_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_SniperRifle_Batarian</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP4.SFXWeapon_SniperRifle_Collector</Value>
+
+				<!-- Assault Rifle Weapon Mods -->
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleForce</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleMagSize</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleStability</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolAccuracy</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolMagSize</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolReloadSpeed</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolStability</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadshot</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunAccuracy</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunStability</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGAccuracy</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGConstraintDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGMagSize</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGStability</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleAccuracy</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleDamage</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope</Value>
+
+				<!-- Assault Rifles -->
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Avenger.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Cobra.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Collector.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Falcon.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Geth.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Mattock.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Revenant.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Saber.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Vindicator.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Argus.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Reckoning.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_AssaultRifle_Krogan.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Prothean_MP.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Cerberus.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_AssaultRifle_LMG.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Lancer_MP.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Adas_MP.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Spitfire.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer.Flags</Value>
+				<Value type="3">SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean.Flags</Value>
+
+				<!-- Pistols -->
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Carnifex.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Ivory.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Phalanx.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Predator.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Scorpion.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Talon.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Thor.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Pistol_Eagle.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_Pistol_Asari.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Silencer_MP.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Bloodpack_MP.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer_Cit001.Flags</Value>
+
+				<!-- Shotguns -->
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Claymore.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Disciple.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Eviscerator.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Geth.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Graal.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Katana.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Scimitar.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Striker.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Crusader.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_Shotgun_Raider.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP3.SFXWeapon_Shotgun_Assault.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_Shotgun_Salarian_MP.Flags</Value>
+
+				<!-- SMG's -->
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Hornet.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Locust.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Shuriken.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Tempest.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SMG_Hurricane.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_SMG_Geth.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP4.SFXWeapon_SMG_Collector.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_SMG_Bloodpack_MP.Flags</Value>
+
+				<!-- Sniper Rifles -->
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_BlackWidow.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Incisor.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Javelin.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Mantis.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Raptor.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Viper.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Widow.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Indra.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Valiant.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_SniperRifle_Batarian_GUN02.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_SniperRifle_Batarian.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian.Flags</Value>
+				<Value type="3">SFXGameContentDLC_CON_MP4.SFXWeapon_SniperRifle_Collector.Flags</Value>
+
+				<!-- Assault Rifle Weapon Mod Flags -->
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleAccuracy.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleForce.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleMagSize.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_AssaultRifleStability.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolAccuracy.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolMagSize.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolReloadSpeed.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_PistolStability.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadshot.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunAccuracy.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunMeleeDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunReloadSpeed.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_ShotgunStability.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGAccuracy.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGConstraintDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGMagSize.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SMGStability.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleAccuracy.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleConstraintDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleDamage.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleReloadSpeed.Flags</Value>
+				<Value type="3">SFXGameContent.SFXWeaponMod_SniperRifleTimeDilation.Flags</Value>
+				<Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen.Flags</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope.Flags</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgameconfig">
+			<Property name="levelrewards">
+				<!---->
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(Level=1, ExperienceRequired=0, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 1000 -->
+				<Value type="2">(Level=2, ExperienceRequired=1000, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=3, ExperienceRequired=2000, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=4, ExperienceRequired=3000, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=5, ExperienceRequired=4000, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=6, ExperienceRequired=5000, TalentReward=2, HenchmanTalentReward=1)</Value>
+
+				<!-- X + 1125 -->
+				<Value type="2">(Level=7, ExperienceRequired=6125, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=8, ExperienceRequired=7250, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=9, ExperienceRequired=8375, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=10, ExperienceRequired=9500, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=11, ExperienceRequired=10625, TalentReward=2, HenchmanTalentReward=1)</Value>
+
+				<!-- X + 1250 -->
+				<Value type="2">(Level=12, ExperienceRequired=11875, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=13, ExperienceRequired=13125, TalentReward=2, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=14, ExperienceRequired=14375, TalentReward=3, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=15, ExperienceRequired=15625, TalentReward=3, HenchmanTalentReward=1)</Value>
+				<Value type="2">(Level=16, ExperienceRequired=16875, TalentReward=3, HenchmanTalentReward=1)</Value>
+
+				<!-- X + 1375 -->
+				<Value type="2">(Level=17, ExperienceRequired=18250, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=18, ExperienceRequired=19625, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=19, ExperienceRequired=21000, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=20, ExperienceRequired=22375, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=21, ExperienceRequired=23750, TalentReward=3, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 1500 -->
+				<Value type="2">(Level=22, ExperienceRequired=25250, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=23, ExperienceRequired=26750, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=24, ExperienceRequired=28250, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=25, ExperienceRequired=29750, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=26, ExperienceRequired=31250, TalentReward=3, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 1625 -->
+				<Value type="2">(Level=27, ExperienceRequired=32875, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=28, ExperienceRequired=34500, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=29, ExperienceRequired=36125, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=30, ExperienceRequired=37750, TalentReward=3, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 1875 -->
+				<Value type="2">(Level=31, ExperienceRequired=39625, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=32, ExperienceRequired=41500, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=33, ExperienceRequired=43375, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=34, ExperienceRequired=45250, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=35, ExperienceRequired=47125, TalentReward=3, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 2125 -->
+				<Value type="2">(Level=36, ExperienceRequired=49250, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=37, ExperienceRequired=51375, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=38, ExperienceRequired=53500, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=39, ExperienceRequired=55625, TalentReward=3, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=40, ExperienceRequired=57750, TalentReward=3, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 2375 -->
+				<Value type="2">(Level=41, ExperienceRequired=60125, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=42, ExperienceRequired=62500, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=43, ExperienceRequired=64875, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=44, ExperienceRequired=67250, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 2625 -->
+				<Value type="2">(Level=45, ExperienceRequired=69875, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=46, ExperienceRequired=72500, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=47, ExperienceRequired=75125, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=48, ExperienceRequired=77750, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 2875 -->
+				<Value type="2">(Level=49, ExperienceRequired=80625, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=50, ExperienceRequired=83500, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 3250 -->
+				<Value type="2">(Level=51, ExperienceRequired=86750, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=52, ExperienceRequired=90000, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 3625 -->
+				<Value type="2">(Level=53, ExperienceRequired=93625, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=54, ExperienceRequired=97250, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 4000 -->
+				<Value type="2">(Level=55, ExperienceRequired=101250, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=56, ExperienceRequired=105250, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 4500 -->
+				<Value type="2">(Level=57, ExperienceRequired=109750, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=58, ExperienceRequired=114250, TalentReward=4, HenchmanTalentReward=2)</Value>
+
+				<!-- X + 5000 -->
+				<Value type="2">(Level=59, ExperienceRequired=119250, TalentReward=4, HenchmanTalentReward=2)</Value>
+				<Value type="2">(Level=60, ExperienceRequired=124250, TalentReward=4, HenchmanTalentReward=2)</Value>
+			</Property>
+			<Property name="maxplayerexperience" type="2">124250</Property>
+			<Property name="mpplayervariablemappings">
+				<Value type="3">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Reckoning",ID=1241)</Value>
+				<Value type="3">(ClassName="InfiltratorHumanFemaleBF3",ID=1268)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxpawn_player">
+			<Property name="armoreffectdescriptions">
+				<Value type="-1" />
+
+				<!-- Core -->
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_AmmoCapacityBonus",
+					EffectDescription[0]=718122,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ConstraintDamageBonus",
+					EffectDescription[0]=683403,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_HealthBonus",
+					EffectDescription[0]=683396,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_MeleeDamageBonus",
+					EffectDescription[0]=683400,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_PowerCooldownBonus",
+					EffectDescription[0]=718121,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_PowerDamageBonus",
+					EffectDescription[0]=683399,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ShieldBonus",
+					EffectDescription[0]=683395,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ShieldRegenBonus",
+					EffectDescription[0]=683401,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_WeaponDamageBonus",
+					EffectDescription[0]=683402,
+					EffectToken[0]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_AmmoCapacityBonus_Weak",
+					EffectDescription[0]=718122,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ConstraintDamageBonus_Weak",
+					EffectDescription[0]=683403,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_HealthBonus_Weak",
+					EffectDescription[0]=683396,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_MeleeDamageBonus_Weak",
+					EffectDescription[0]=683400,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_PowerCooldownBonus_Weak",
+					EffectDescription[0]=718121,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_PowerDamageBonus_Weak",
+					EffectDescription[0]=683399,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ShieldBonus_Weak",
+					EffectDescription[0]=683395,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_ShieldRegenBonus_Weak",
+					EffectDescription[0]=683401,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_PartBasedArmor_WeaponDamageBonus_Weak",
+					EffectDescription[0]=683402,
+					EffectToken[0]="5")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_BloodDragon",
+					EffectDescription[0]=683395,
+					EffectToken[0]="20",
+					EffectDescription[1]=683399,
+					EffectToken[1]="30",
+					EffectDescription[2]=718121,
+					EffectToken[2]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Cerberus",
+					EffectDescription[0]=683396,
+					EffectToken[0]="20",
+					EffectDescription[1]=683395,
+					EffectToken[1]="10",
+					EffectDescription[2]=683402,
+					EffectToken[2]="20",
+					EffectDescription[3]=718122,
+					EffectToken[3]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Collector",
+					EffectDescription[0]=683396,
+					EffectToken[0]="20",
+					EffectDescription[1]=683395,
+					EffectToken[1]="20",
+					EffectDescription[2]=683401,
+					EffectToken[2]="20")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Inferno",
+					EffectDescription[0]=683399,
+					EffectToken[0]="30",
+					EffectDescription[1]=718121,
+					EffectToken[1]="30")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Reckoning",
+					EffectDescription[0]=683396,
+					EffectToken[0]="10",
+					EffectDescription[1]=683395,
+					EffectToken[1]="10",
+					EffectDescription[2]=683402,
+					EffectToken[2]="10",
+					EffectDescription[3]=683400,
+					EffectToken[3]="20")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Tank",
+					EffectDescription[0]=683396,
+					EffectToken[0]="10",
+					EffectDescription[1]=683395,
+					EffectToken[1]="10",
+					EffectDescription[2]=683402,
+					EffectToken[2]="10",
+					EffectDescription[3]=718122,
+					EffectToken[3]="20")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContent.SFXGameEffect_UniqueArmor_Terminus",
+					EffectDescription[0]=683395,
+					EffectToken[0]="30",
+					EffectDescription[1]=718122,
+					EffectToken[1]="15",
+					EffectDescription[2]=683400,
+					EffectToken[2]="15")
+				</Value>
+
+				<!-- DlcConApp01 -->
+				<Value type="2">
+					(ArmorEffect="SFXGameContentDLC_CON_APP01.SFXGameEffect_UniqueArmor_CerberusHeavy",
+					EffectDescription[0]=683395,
+					EffectToken[0]="25",
+					EffectDescription[1]=683401,
+					EffectToken[1]="10",
+					EffectDescription[2]=683399,
+					EffectToken[2]="10",
+					EffectDescription[3]=683402,
+					EffectToken[3]="10",
+					EffectDescription[4]=718122,
+					EffectToken[4]="25")
+				</Value>
+
+				<!-- DlcExpPack003 -->
+				<Value type="2">
+					(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom",
+					EffectDescription[0]=683395,
+					EffectToken[0]="20",
+					EffectDescription[1]=683401,
+					EffectToken[1]="20",
+					EffectDescription[2]=683399,
+					EffectToken[2]="10",
+					EffectDescription[3]=683402,
+					EffectToken[3]="10",
+					EffectDescription[4]=718122,
+					EffectToken[4]="10",
+					EffectDescription[5]=683400,
+					EffectToken[5]="10")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Weapons",
+					EffectDescription[0]=683395,
+					EffectToken[0]="10",
+					EffectDescription[1]=683401,
+					EffectToken[1]="10",
+					EffectDescription[2]=683402,
+					EffectToken[2]="20",
+					EffectDescription[3]=683403,
+					EffectToken[3]="20",
+					EffectDescription[4]=718122,
+					EffectToken[4]="20")
+				</Value>
+				<Value type="2">
+					(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Powers",
+					EffectDescription[0]=683395,
+					EffectToken[0]="10",
+					EffectDescription[1]=683401,
+					EffectToken[1]="10",
+					EffectDescription[2]=683399,
+					EffectToken[2]="30",
+					EffectDescription[3]=718121,
+					EffectToken[3]="30")
+				</Value>
+			</Property>
+			<!--<Property name="fullparagonscarbiasvalue" type="2">180</Property>-->
+			<!--<Property name="maxtotalreputation" type="2">1055</Property>-->
+			<!--<Property name="noparagonscarbiasvalue" type="2">600</Property>-->
+			<!--<Property name="outofammoswapthreshold" type="2">0.4f</Property>-->
+			<!--<Property name="paragonscarbias" type="2">1.0f</Property>-->
+			<Property name="permanentgameeffects">
+				<Value type="-1" />
+
+				<!-- Core -->
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_AdvancedBioticAmps_PowerDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",
+					UniqueName="Intel_AdvancedBioticAmps_PowerCooldown",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PassiveMaxAmmoBonus",
+					UniqueName="Intel_Feron_AmmoCapacity",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_ShieldPercentBonus",
+					UniqueName="Intel_Feron_Shields",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_ShieldPercentBonus",
+					UniqueName="Intel_LegionIntel1_Shields",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_LegionIntel1_PowerDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_ShieldRegenBonus",
+					UniqueName="Intel_LegionIntel2_ShieldRegen",
+					Value=-0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",
+					UniqueName="Intel_LegionIntel2_PowerCooldown",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_WeaponDamageBonus",
+					UniqueName="Intel_PrejekPaddlefish_WeaponDamage",
+					Value=0.20,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_PrejekPaddlefish_PowerDamage",
+					Value=0.20,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_SamaraMission_PowerDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_IntelligenceArchives_PowerDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_HealthPercentBonus",
+					UniqueName="Intel_IntelligenceArchives_Health",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_WeaponDamageBonus",
+					UniqueName="Intel_IntactReaperGun_WeaponDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PassiveMaxAmmoBonus",
+					UniqueName="Intel_IntactReaperGun_AmmoCapacity",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",
+					UniqueName="Intel_DestroyedMiniReaper_PowerCooldown",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",
+					UniqueName="Intel_BioticResearchData_PowerCooldown",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Damage",
+					UniqueName="Intel_BioticResearchData_PowerDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_WeaponDamageBonus",
+					UniqueName="Intel_BattleOfArcturus_WeaponDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_ShieldPercentBonus",
+					UniqueName="Intel_BattleOfArcturus_Shields",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PassiveMaxAmmoBonus",
+					UniqueName="Intel_BattleFootage_AmmoCapacity",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_WeaponDamageBonus",
+					UniqueName="Intel_BattleFootage_WeaponDamage",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_HealthPercentBonus",
+					UniqueName="Intel_MedicalUpgrade_Health",
+					Value=0.10,
+					Type=PermanentGEType_Player)
+				</Value>
+
+				<!-- DlcExpPack003 -->
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PassiveMaxAmmoBonus",
+					UniqueName="Intel_KhansNetworkExposed_AmmoCapacity",
+					Value=0.20,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGame.SFXGameEffect_ShieldRegenBonus",
+					UniqueName="Intel_KhansNetworkExposed_ShieldRegen",
+					Value=0.20,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",
+					UniqueName="Intel_KhansNetworkExposed_PowerCooldown",
+					Value=0.20,
+					Type=PermanentGEType_Player)
+				</Value>
+				<Value type="2">
+					(ClassName="SFXGameContent.SFXGameEffect_MaxGrenadeBonus",
+					UniqueName="Intel_KhansNetworkExposed_GrenadeBonus",
+					Value=2.00,
+					Type=PermanentGEType_Player)
+				</Value>
+			</Property>
+			<!--<Property name="popupdamagemultiplier" type="2">(X=-0.80f,Y=-0.20f)</Property>-->
+			<!--<Property name="popupdamagemultiplierduration" type="2">1.5f</Property>-->
+		</Section>
+		<Section name="sfxgame.sfxplayersquadloadoutdata">
+			<Property name="assaultrifles">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Avenger")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Argus")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Cobra")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Collector")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Falcon")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Geth")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Mattock")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Reckoning")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Revenant")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Saber")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_AssaultRifle_Vindicator")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP1.SFXWeapon_AssaultRifle_Krogan")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Prothean_MP")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP2.SFXWeapon_AssaultRifle_Cerberus")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP3.SFXWeapon_AssaultRifle_LMG")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Lancer_MP")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Adas_MP")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Spitfire")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean")</Value>
+			</Property>
+			<Property name="autopistols">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SMG_Shuriken")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SMG_Hornet")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SMG_Hurricane")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SMG_Locust")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SMG_Tempest")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP1.SFXWeapon_SMG_Geth")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP4.SFXWeapon_SMG_Collector")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_SMG_Bloodpack_MP")</Value>
+			</Property>
+			<Property name="heavypistols">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Predator")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Carnifex")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Eagle")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Ivory")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Phalanx")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Scorpion")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Talon")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Pistol_Thor")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP3.SFXWeapon_Pistol_Asari")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Silencer_MP")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_Pistol_Bloodpack_MP")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer_Cit001")</Value>
+			</Property>
+			<Property name="heavyweapons">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_ArcProjector")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_Avalanche")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_Blackstorm")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_Cain")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_FlameThrower_Player")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_Geth02LaserTarget")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_GrenadeLauncher")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_LegionDisinfectionWeapon")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_LegionInfectionLauncher")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_LegionInfectionLauncher_Inaccurate")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_MiniGun")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_MissileLauncher")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_ParticleBeam")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_RocketLauncher")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Heavy_TitanMissileLauncher")</Value>
+				<Value type="2">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Heavy_Spitfire_Cit001</Value>
+			</Property>
+			<Property name="henchloadoutinfo">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName=SFXPawn_Garrus, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_SniperRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Grunt, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Jack, WeaponClasses=(LoadoutWeapons_HeavyPistols, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Jacob, WeaponClasses=(LoadoutWeapons_HeavyPistols, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Legion, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_SniperRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Miranda, WeaponClasses=(LoadoutWeapons_HeavyPistols, LoadoutWeapons_AutoPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Mordin, WeaponClasses=(LoadoutWeapons_HeavyPistols, LoadoutWeapons_AutoPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Samara, WeaponClasses=(LoadoutWeapons_AutoPistols, LoadoutWeapons_AssaultRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Tali, WeaponClasses=(LoadoutWeapons_HeavyPistols, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Thane, WeaponClasses=(LoadoutWeapons_AutoPistols, LoadoutWeapons_SniperRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Kasumi, WeaponClasses=(LoadoutWeapons_AutoPistols, LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Zaeed, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_SniperRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Liara, WeaponClasses=(LoadoutWeapons_AutoPistols, LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Ashley, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_SniperRifles))</Value>
+				<Value type="2">(ClassName=SFXPawn_Kaidan, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_EDI, WeaponClasses=(LoadoutWeapons_AutoPistols, LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Prothean, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Marine, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_Shotguns))</Value>
+				<Value type="2">(ClassName=SFXPawn_Anderson, WeaponClasses=(LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="3">(ClassName=SFXPawn_Aria, WeaponClasses=(LoadoutWeapons_Shotguns, LoadoutWeapons_AutoPistols))</Value>
+				<Value type="3">(ClassName=SFXPawn_Nyreen, WeaponClasses=(LoadoutWeapons_AssaultRifles, LoadoutWeapons_HeavyPistols))</Value>
+				<Value type="2">(ClassName=SFXPawn_Wrex, WeaponClasses=(LoadoutWeapons_Shotguns, LoadoutWeapons_AssaultRifles))</Value>
+			</Property>
+			<Property name="playerloadoutinfo">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Adept",StartingWeaponClasses=(LoadoutWeapons_HeavyPistols,LoadoutWeapons_AutoPistols),NumOptionalSlots=3)</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Engineer",StartingWeaponClasses=(LoadoutWeapons_AutoPistols,LoadoutWeapons_HeavyPistols),NumOptionalSlots=3)</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Infiltrator",StartingWeaponClasses=(LoadoutWeapons_SniperRifles,LoadoutWeapons_HeavyPistols),NumOptionalSlots=3)</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Sentinel",StartingWeaponClasses=(LoadoutWeapons_Shotguns,LoadoutWeapons_HeavyPistols),NumOptionalSlots=3)</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Soldier",StartingWeaponClasses=(LoadoutWeapons_AssaultRifles,LoadoutWeapons_Shotguns,LoadoutWeapons_HeavyPistols),NumOptionalSlots=4)</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXCharacterClass_Vanguard",StartingWeaponClasses=(LoadoutWeapons_Shotguns,LoadoutWeapons_HeavyPistols),NumOptionalSlots=3)</Value>
+			</Property>
+			<Property name="shotguns">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Katana")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Claymore")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Crusader")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Disciple")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Eviscerator")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Geth")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Graal")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Raider")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Scimitar")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_Shotgun_Striker")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP2.SFXWeapon_Shotgun_Quarian")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP3.SFXWeapon_Shotgun_Assault")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP5.SFXWeapon_Shotgun_Salarian_MP")</Value>
+			</Property>
+			<Property name="sniperrifles">
+				<Value type="-1" />
+
+				<!--  -->
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Mantis")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_BlackWidow")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Incisor")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Indra")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Javelin")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Raptor")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Valiant")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Viper")</Value>
+				<Value type="2">(ClassName="SFXGameContent.SFXWeapon_SniperRifle_Widow")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Sniperrifle_Batarian_GUN02")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP1.SFXWeapon_SniperRifle_Batarian")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP2.SFXWeapon_SniperRifle_Turian")</Value>
+				<Value type="2">(ClassName="SFXGameContentDLC_CON_MP4.SFXWeapon_SniperRifle_Collector")</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxsavemanagermp">
+			<Property name="mpkits">
+				<Value type="3">(KitName="InfiltratorHumanFemaleBF3",BaseMPClassName="Infiltrator",srDisplayName=723304,bLockedByDefault=true,bHideIfLocked=false,ArchetypeRef="BioChar_MPPlayers.Archetypes.Infiltrator.HumanFemale_InfiltratorBF3",KitTextureRef="GUI_MPImages.Kits.MP_BF_HFM0",SmallKitTextureRef="",LockedKitTextureRef="GUI_MPImages.Kits.InfiltratorHumanFemale",srDefaultName=634918,PowerIconResource="GUI_SF_PowerIcons.PowerIcons",PowerIconIndex1=88,PowerIconIndex2=60,PowerIconIndex3=78,srPowerName1=658546,srPowerName2=325479,srPowerName3=536448, bUsePrimaryColor=false, bUseSecondaryColor=false, bUsePattern=false, bUsePatternColor=false, bUsePhong=false, bUseEmissive=false, bUseSkinTone=false, MaxNewUnlockLevel=4)</Value>
+				<!--<Value type="3">(KitName="bf3",BaseMPClassName="Infiltrator",srDisplayName=723304,bLockedByDefault=true,bHideIfLocked=false,ArchetypeRef="BioChar_MPPlayers.Archetypes.Infiltrator.HumanFemale_InfiltratorBF3",KitTextureRef="GUI_MPImages.Kits.MP_BF_HFM0",SmallKitTextureRef="",LockedKitTextureRef="GUI_MPImages.Kits.InfiltratorHumanFemale",srDefaultName=634918,PowerIconResource="GUI_SF_PowerIcons.PowerIcons",PowerIconIndex1=88,PowerIconIndex2=60,PowerIconIndex3=78,srPowerName1=658546,srPowerName2=325479,srPowerName3=536448, bUsePrimaryColor=false, bUseSecondaryColor=false, bUsePattern=false, bUsePatternColor=false, bUsePhong=false, bUseEmissive=false, bUseSkinTone=false, MaxNewUnlockLevel=4)</Value>-->
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

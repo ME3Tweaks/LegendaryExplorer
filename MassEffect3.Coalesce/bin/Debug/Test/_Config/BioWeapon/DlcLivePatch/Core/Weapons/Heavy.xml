@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweapon_heavy_atlas">
+			<Property name="ai_burstfirecount" type="0">(X=4,Y=4)</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxweapon_heavy_consumablerocketlauncher">
+			<Property name="maxchargetime" type="0">0.0</Property>
+			<Property name="minchargetime" type="0">0.0</Property>
+			<Property name="rateoffire" type="0">(X=50,Y=50)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

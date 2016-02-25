@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Includes>
+		<Include source="DlcExpPack003Base/Game.xml" />
+		<Include source="DlcExpPack003Base/GameContentDlcExpPack003.xml" />
+		<Include source="DlcExpPack003Base/GameContentDlcShared.xml" />
+		<Include source="DlcExpPack003Base/GameContentLiveKismet.xml" />
+		<Include source="DlcExpPack003Base/GameMPContent.xml" />
+	</Includes>
+</CoalesceAsset>

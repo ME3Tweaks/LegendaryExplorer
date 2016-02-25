@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Includes>
+		<!--<Include source="DlcConMP5/Engine.xml" />-->
+		<Include source="DlcConMP5/Game.xml" />
+		<Include source="DlcConMP5/GameContentDlcConMP1.xml" />
+		<Include source="DlcConMP5/GameContentDlcConMP2.xml" />
+		<Include source="DlcConMP5/GameContentDlcConMP5.xml" />
+		<Include source="DlcConMP5/GameContentDlcExpPack003.xml" />
+		<Include source="DlcConMP5/GameContentDlcShared.xml" />
+		<Include source="DlcConMP5/GameContentLiveKismet.xml" />
+		<Include source="DlcConMP5/GameMPContent.xml" />
+		<Include source="DlcConMP5/GameMPContentDlcShared.xml" />
+	</Includes>
+</CoalesceAsset>

@@ -1,0 +1,21 @@
+{
+  HairMesh: "BIOG_HMF_HIR_PRO.Hair_PonyTail.HMF_HIR_Ptl_MDL",
+  Textures:
+  {
+    Set:
+    [
+      {Key: "HAIR_Diff",            Value: "BIOG_HMF_HIR_PRO.Hair_Mom.HMF_HIR_Mom_Diff"},
+      {Key: "HAIR_Norm",            Value: "None"},
+      {Key: "HAIR_Mask",            Value: "None"},
+      {Key: "HAIR_Tang",            Value: "None"},
+      {Key: "HAIR_SpecShift",       Value: "None"},
+      {Key: "HAIR_SpecShift2",      Value: "None"},
+      {Key: "HED_Scalp_Diff",       Value: "BIOG_HMF_HIR_PRO.Hair_PROCustomCute.HMF_HIR_SCP_CUSTOM_Cte_Diff"},
+      {Key: "HED_Scalp_Norm",       Value: "BIOG_HMF_HED_PROMorph_R.Normal.HMF_HED_PROBase_Scalp_Norm"},
+      {Key: "HED_Scalp_Mask",       Value: "None"},
+      {Key: "HED_Scalp_Tang",       Value: "None"},
+      {Key: "HED_Scalp_SpecShift",  Value: "None"},
+      {Key: "HED_Scalp_SpecShift2", Value: "None"},
+    ],
+  },
+}

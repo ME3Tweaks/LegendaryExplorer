@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared_MP\Config\DefaultUI.ini</Property>
+    </Section>
+    <Section name="sfxgame.sfxguiinteraction">
+      <Property name="movielibrary">
+        <Value type="3">(Tag=DLC_Docks,		ZOrder=300,	MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks",		GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Value>
+        <Value type="4">(Tag=MPSelectKit,			ZOrder=32,	MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit",			GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+        <Value type="4">(Tag=MPSelectKit,			ZOrder=32,	Platform=CONSOLE_Xbox360,	MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit",		GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+        <Value type="4">(Tag=MPSelectKit,			ZOrder=32,	Platform=CONSOLE_PS3,	MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit",			GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+        <Value type="4">(Tag=MPMatchConsumables,	ZOrder=32, MovieClass="SFXGameMPContent.SFXGUI_MPMatchConsumables",	GFxResource="GUI_SF_MPMatchConsumables.MPMatchConsumables")</Value>
+        <Value type="4">(Tag=MPNewLobby,		ZOrder=32,	MovieClass="SFXGameMPContent.SFXGUI_MPLobby",				GFxResource="GUI_SF_MPNewLobby.MPNewLobby")</Value>
+        <Value type="4">(Tag=MPReinforcementsReveal,		ZOrder=367,	MovieClass="SFXGameMPContent.SFXGUI_MPReinforcementsReveal",		GFxResource="GUI_SF_MPReinforcementsReveal.MPReinforcementsReveal")</Value>
+        <Value type="4">(Tag=MPStore,		ZOrder=32,	MovieClass="SFXGameMPContent.SFXGUI_MPStore",		GFxResource="GUI_SF_MPStore.MPStore");</Value>
+        <Value type="3">(Tag=MPSelectKit,			ZOrder=32,  MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC",	GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+        <Value type="3">(Tag=MPSelectKit,			ZOrder=32,	Platform=CONSOLE_PS3,		MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC",	GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+        <Value type="3">(Tag=MPSelectKit,			ZOrder=32,	Platform=CONSOLE_Xbox360,	MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC",	GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+        <Value type="3">(Tag=MPMatchConsumables,	ZOrder=32, MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPMatchConsumables_DLC",	GFxResource="GUI_SF_MPMatchConsum_DLC.MPMatchConsumables")</Value>
+        <Value type="3">(Tag=MPNewLobby,		ZOrder=32,	MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPLobby_DLC",				GFxResource="GUI_SF_MPNewLobby_DLC.MPNewLobby")</Value>
+        <Value type="3">(Tag=MPReinforcementsReveal,		ZOrder=367,	MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPReinforcementsReveal_DLC",		GFxResource="GUI_SF_MPReinforcements_DLC.MPReinforcementsReveal")</Value>
+        <Value type="3">(Tag=MPStore,		ZOrder=32,	MovieClass="SFXGameMPContent.SFXGUI_MPStore",		GFxResource="GUI_SF_MPStore_DLC.MPStore");</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxweaponuidatamanager">
+      <Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_CON_GUN01SF, Resource="SFXGUI_WeaponUIDataDLC_CON_GUN01.Data")</Property>
+    </Section>
+    <Section name="sfxgamecontent.sfxguidata_store_weaponupgrades">
+      <Property name="storeitemarray">
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+        <Value type="3">(ItemType=TYPE_WEAPONUPGRADE,ItemClassName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack",ItemConditionals[0]=0,Value=3,ChoiceEntry=(srChoiceDescription=701612))</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgui_dlc_docks">
+      <Property name="biscancelallowed" type="0">false</Property>
+      <Property name="dockbuttons" type="3">(ButtonID="MainDock", srLabel=746026, VisibilityConditional=13)</Property>
+      <Property name="srcancel" type="0">181674</Property>
+      <Property name="srselect" type="0">136217</Property>
+      <Property name="srtitle" type="0">135823</Property>
+    </Section>
+    <Section name="sfxgamempcontent.sfxgui_mpstore">
+      <Property name="srexpiresindaystext" type="0">751310</Property>
+    </Section>
+    <Section name="sfxgamempcontentdlc_shared_mp.sfxgui_mpselectkit_dlc">
+      <Property name="kitdescriptions">
+        <Value type="3">(KitName="SoldierHumanMale",ClassString=727964,IPNameString=0,IPEntryString=727970,GameplayEntryString=727979,StatsString1=728002,StatsString2=728011,StatsString3=728024,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SentinelHumanMale",ClassString=727965,IPNameString=0,IPEntryString=727970,GameplayEntryString=727980,StatsString1=728002,StatsString2=728011,StatsString3=728015,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="EngineerHumanMale",ClassString=727966,IPNameString=0,IPEntryString=727970,GameplayEntryString=727981,StatsString1=728002,StatsString2=728011,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="InfiltratorHumanMale",ClassString=727967,IPNameString=0,IPEntryString=727970,GameplayEntryString=727982,StatsString1=728002,StatsString2=728011,StatsString3=728014,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="VanguardHumanMale",ClassString=727968,IPNameString=0,IPEntryString=727970,GameplayEntryString=727983,StatsString1=728002,StatsString2=728011,StatsString3=728009,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="AdeptHumanMale",ClassString=727969,IPNameString=0,IPEntryString=727970,GameplayEntryString=727984,StatsString1=728002,StatsString2=728011,StatsString3=728007,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SoldierHumanFemale",ClassString=727964,IPNameString=0,IPEntryString=727970,GameplayEntryString=727979,StatsString1=728002,StatsString2=728011,StatsString3=728024,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SentinelHumanFemale",ClassString=727965,IPNameString=0,IPEntryString=727970,GameplayEntryString=727980,StatsString1=728002,StatsString2=728011,StatsString3=728015,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="EngineerHumanFemale",ClassString=727966,IPNameString=0,IPEntryString=727970,GameplayEntryString=727981,StatsString1=728002,StatsString2=728011,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="InfiltratorHumanFemale",ClassString=727967,IPNameString=0,IPEntryString=727970,GameplayEntryString=727982,StatsString1=728002,StatsString2=728011,StatsString3=728014,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="VanguardHumanFemale",ClassString=727968,IPNameString=0,IPEntryString=727970,GameplayEntryString=727983,StatsString1=728002,StatsString2=728011,StatsString3=728009,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="AdeptHumanFemale",ClassString=727969,IPNameString=0,IPEntryString=727970,GameplayEntryString=727984,StatsString1=728002,StatsString2=728011,StatsString3=728007,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="AdeptAsari",ClassString=711376,IPNameString=0,IPEntryString=727971,GameplayEntryString=727985,StatsString1=728001,StatsString2=728008,StatsString3=728018,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="AdeptDrell",ClassString=711377,IPNameString=0,IPEntryString=727974,GameplayEntryString=727990,StatsString1=728000,StatsString2=728006,StatsString3=728023,StatsString4=728020,StatsString5=0)</Value>
+        <Value type="3">(KitName="EngineerQuarian",ClassString=711378,IPNameString=0,IPEntryString=727976,GameplayEntryString=727994,StatsString1=728003,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="EngineerSalarian",ClassString=711379,IPNameString=0,IPEntryString=727975,GameplayEntryString=727992,StatsString1=728003,StatsString2=728010,StatsString3=728019,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="InfiltratorSalarian",ClassString=711380,IPNameString=0,IPEntryString=727975,GameplayEntryString=727991,StatsString1=728003,StatsString2=728010,StatsString3=728014,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="InfiltratorQuarian",ClassString=711381,IPNameString=0,IPEntryString=727976,GameplayEntryString=727993,StatsString1=728003,StatsString2=728010,StatsString3=728014,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SentinelTurian",ClassString=711382,IPNameString=0,IPEntryString=727972,GameplayEntryString=727987,StatsString1=728004,StatsString2=728015,StatsString3=728028,StatsString4=728026,StatsString5=728012)</Value>
+        <Value type="3">(KitName="SentinelKrogan",ClassString=711383,IPNameString=0,IPEntryString=727973,GameplayEntryString=727988,StatsString1=728005,StatsString2=728021,StatsString3=728022,StatsString4=728027,StatsString5=728012)</Value>
+        <Value type="3">(KitName="SoldierKrogan",ClassString=711384,IPNameString=0,IPEntryString=727973,GameplayEntryString=727988,StatsString1=728005,StatsString2=728021,StatsString3=728022,StatsString4=728027,StatsString5=728012)</Value>
+        <Value type="3">(KitName="SoldierTurian",ClassString=711385,IPNameString=0,IPEntryString=727972,GameplayEntryString=727987,StatsString1=728004,StatsString2=728015,StatsString3=728028,StatsString4=728026,StatsString5=728012)</Value>
+        <Value type="3">(KitName="VanguardDrell",ClassString=711386,IPNameString=0,IPEntryString=727974,GameplayEntryString=727990,StatsString1=728000,StatsString2=728006,StatsString3=728023,StatsString4=728020,StatsString5=0)</Value>
+        <Value type="3">(KitName="VanguardAsari",ClassString=711387,IPNameString=0,IPEntryString=727971,GameplayEntryString=727986,StatsString1=728001,StatsString2=728008,StatsString3=728018,StatsString4=0,StatsString5=0)</Value>
+        <Value type="3">(KitName="SoldierHumanMaleBF3",ClassString=727964,IPNameString=0,IPEntryString=727970,GameplayEntryString=727979,StatsString1=728002,StatsString2=728011,StatsString3=728024,StatsString4=0,StatsString5=0)</Value>
+      </Property>
+      <Property name="srcharacterinfo" type="0">728029</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<!--<Section name="biogame.movies">
+			<Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_EXP_Pack002\Movies</Property>
+		</Section>-->
+		<Section name="sfxgame.biocheatmanagernonnative">
+			<Property name="setupmissionarray">
+				<Value type="3">(Mission=Omg000,LoadMapName=BioP_Omg000,PlotIDSet=(23155),PlotIDClear=(19290,19286),PlotInts=((ID=10185,V=0),(ID=10202,V=0),(ID=10203,V=0),(ID=10161,V=10100)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omg001,LoadMapName=BioP_Omg001,PlotIDSet=(22967,22968,22969),PlotIDClear=(),PlotInts=((ID=10756,v=1)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omghub_phA,LoadMapName=BioP_OmgHub,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10747,V=33),(ID=10756,v=6)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omg02a,LoadMapName=BioP_Omg02a,PlotIDSet=(22819,22824),PlotIDClear=(),PlotInts=((ID=10756,v=2)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omghub_phB,LoadMapName=BioP_OmgHub,PlotIDSet=(23204,23207),PlotIDClear=(),PlotInts=((ID=10748,V=33),(ID=10756,v=6),(ID=10760,v=1)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omg02b,LoadMapName=BioP_Omg02b,PlotIDSet=(22821),PlotIDClear=(),PlotInts=((ID=10756,v=3)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omghub_phc,LoadMapName=BioP_OmgHub,PlotIDSet=(23205),PlotIDClear=(),PlotInts=((ID=10749,V=33),(ID=10756,v=6),(ID=10761,v=2),(ID=10787,v=5)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omg003,LoadMapName=BioP_Omg003,PlotIDSet=(22843),PlotIDClear=(),PlotInts=((ID=10756,v=4)),PlotCond=())</Value>
+				<Value type="3">(Mission=Omg004,LoadMapName=BioP_Omg004,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10750,V=33),(ID=10756,v=5)),PlotCond=())</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="newgameplusplotstopersist">
+				<Value type="3">(nIndex=23799, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23800, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23801, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23802, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23803, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23804, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23805, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23806, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23807, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23808, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23809, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23810, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23811, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=23812, nType=SFXPlotType_Boolean)</Value>
+			</Property>
+			<Property name="timedplotunlocks" type="3">(PlotBool=22982,UnlockDay=0)</Property>
+		</Section>
+		<Section name="sfxgame.bioworldinfo">
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+				<Value type="3">omg001_cerberus_combat_a_dlg</Value>
+				<Value type="3">omg001_dss_cerberus_a_dlg</Value>
+				<Value type="3">omg001_hangar_cerberus_a_dlg</Value>
+				<Value type="3">omg001_trek2_cerberus_a_dlg</Value>
+				<Value type="3">omg003_mine_cerb_a_dlg</Value>
+				<Value type="3">omg003_mine_cerb_radio_a_dlg</Value>
+				<Value type="3">Omg003_mine_aria_b_dlg</Value>
+				<Value type="3">omg02a_approach_process_a_dlg</Value>
+				<Value type="3">omg02a_base_certalcombat_a_dlg</Value>
+				<Value type="3">omg02a_standoff_a_dlg</Value>
+				<Value type="3">omg004_area1_cerberus_a_dlg</Value>
+				<Value type="3">omg004_area3_cerberus_a_dlg</Value>
+				<Value type="3">omg004_area3_lablog_a _dlg</Value>
+				<Value type="3">omg004_area6_cerberus_a _dlg</Value>
+				<Value type="3">Omghub_ambs_hangmed_a_dlg</Value>
+				<Value type="3">Omghub_ambs_hangmed2_a_dlg</Value>
+				<Value type="3">Omghub_ambs_squad2_a_dlg</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxaccomplishmentmanager">
+			<Property name="accomplishmentdata">
+				<Value type="3">(Index=57,Name=DLC_OMEGA1,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_7,XboxAchievementID=161,XboxAvatarAwardID=,PS3TrophyID=57,Title=766887,Incomplete=766888,Complete=766888,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_OMG_Medals.58_Savior",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=58,Name=DLC_OMEGA2,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_8,XboxAchievementID=162,XboxAvatarAwardID=,PS3TrophyID=58,Title=766889,Incomplete=766890,Complete=766890,NotificationText=,MPNotificationText=,PointValue=50,Icon="GUI_OMG_Medals.59_Talon",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=59,Name=DLC_OMEGA3,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_9,XboxAchievementID=163,XboxAvatarAwardID=,PS3TrophyID=59,Title=766891,Incomplete=766892,Complete=766892,NotificationText=,MPNotificationText=,PointValue=50,Icon="GUI_OMG_Medals.57_Meticulous",IsMultiplayerOnly=FALSE)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgame">
+			<Property name="newgameplusplayervariables">
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen</Value>
+				<Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxpawn_henchman">
+			<Property name="henchmeninfo">
+				<Value type="3">(ClassName=SFXPawn_Aria,Tag=hench_aria,PrettyName=206252)</Value>
+				<Value type="3">(ClassName=SFXPawn_Nyreen,Tag=hench_nyreen,PrettyName=732828)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxplayersquadloadoutdata">
+			<Property name="henchloadoutinfo">
+				<Value type="3">(ClassName=SFXPawn_Aria,WeaponClasses=(LoadoutWeapons_Shotguns, LoadoutWeapons_AutoPistols))</Value>
+				<Value type="3">(ClassName=SFXPawn_Nyreen,WeaponClasses=(LoadoutWeapons_AssaultRifles,LoadoutWeapons_HeavyPistols))</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxprofilesettings">
+			<Property name="bonuspowerunlockdataarray">
+				<Value type="3">(srTitle = 735917, BonusPowerID = 131072, PowerClassName = "SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_BioticFlare", PlotConditionalID=3389, PlotStateID=23923)</Value>
+				<Value type="3">(srTitle = 765772, BonusPowerID = 262144, PowerClassName = "SFXGameContentDLC_EXP_Pack002.SFXPowerCustomAction_AriaLash", PlotConditionalID=3388, PlotStateID=23922)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxtreasuredata">
+			<Property name="leveltreasure">
+				<Value type="3">(Level="BioP_OMG001",LevelEnum=ME3Level_DLC5,PlotId=10747,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("SFXGameContent.SFXWeapon_AssaultRifle_Valkyrie", "sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperPen", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolSuperDamage", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunDamageAndPen", "SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen"))</Value>
+				<Value type="3">(Level="BioP_OMG02a",LevelEnum=ME3Level_DLC6,PlotId=10748,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperPen", "sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleSuperScope", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunDamageAndPen", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunSuperMelee", "SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen", "SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee", "SFXGameContent.SFXWeapon_AssaultRifle_Cobra"))</Value>
+				<Value type="3">(Level="BioP_OMG003",LevelEnum=ME3Level_DLC8,PlotId=10750,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("SFXGameContent.SFXWeapon_AssaultRifle_Reckoning", "sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperPen", "sfxgamecontentdlc_shared.SFXWeaponMod_PistolSuperDamage", "sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleSuperScope", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunSuperMelee", "SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage", "SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee"))</Value>
+				<Value type="3">(Level="BioP_OMG004",LevelEnum=ME3Level_DLC9,PlotId=10751,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("sfxgamecontentdlc_shared.SFXWeaponMod_PistolSuperDamage", "sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleSuperScope", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunDamageAndPen", "sfxgamecontentdlc_shared.SFXWeaponMod_ShotgunSuperMelee", "SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage", "SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen", "SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee"))</Value>
+				<Value type="3">(Level="BioP_OMGHub",LevelEnum=ME3Level_DLC10,PlotId=10746,XP=1500,Credits=10000,AllianceCredits=0,Treasure=(""))</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

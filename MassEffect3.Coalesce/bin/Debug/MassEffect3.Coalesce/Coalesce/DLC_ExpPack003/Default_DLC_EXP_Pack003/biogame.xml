@@ -1,0 +1,825 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini" source="..\..\biogame\config\biogame.ini">
+  <Sections>
+    <Section name="biogame.movies">
+      <Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003\Movies</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultGame.ini</Property>
+    </Section>
+    <Section name="sfxgame.biocheatmanagernonnative">
+      <Property name="setupmissionarray">
+        <Value type="3">(Mission=Cit001,LoadMapName=BioP_Nor,PlotIDSet=(19535),PlotIDClear=(19290,19286),PlotInts=((ID=10185,V=0),(ID=10202,V=0),(ID=10203,V=0),(ID=10161,V=10100)),PlotCond=())</Value>
+        <Value type="3">(Mission=Cit001_p1,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(),PlotInts=((ID=10814,V=2)),PlotCond=())</Value>
+        <Value type="3">(Mission=Cit002,LoadMapName=BioP_CitHot,PlotIDSet=(24338),PlotIDClear=(),PlotInts=((ID=10809,V=24),(ID=10817,V=2)),PlotCond=())</Value>
+        <Value type="3">(Mission=Cit003,LoadMapName=BioP_CitHot,PlotIDSet=(23855),PlotIDClear=(),PlotInts=((ID=10810,V=25),(ID=10817,V=0),(ID=10817,V=3)),PlotCond=())</Value>
+        <Value type="3">(Mission=Cit004,LoadMapName=BioP_Cit003,PlotIDSet=(17807,23873,24098),PlotIDClear=(),PlotInts=((ID=10811,V=26)),PlotCond=())</Value>
+        <Value type="3">(Mission=Cit004_post,LoadMapName=BioP_Nor,PlotIDSet=(),PlotIDClear=(17807),PlotInts=((ID=10812,V=27)),PlotCond=())</Value>
+        <Value type="3">(Mission=CitApt_PreParty,LoadMapName=BioP_CitHot,PlotIDSet=(20688,20687,22578,22242,22082,21879,18714,21028,20565,22581,20646,22424,21060,21839),PlotIDClear=(24638),PlotInts=((ID=10817,V=4),(ID=10296,V=1),(ID=10360,V=1),(ID=10379,V=1),(ID=10411,V=1)),PlotCond=())</Value>
+        <Value type="3">(Mission=CitHot_PreParty,LoadMapName=BioP_CitHot,PlotIDSet=(),PlotIDClear=(),PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Mission=CitApt_Party,LoadMapName=BioP_CitHot,PlotIDSet=(24638,24565,23902),PlotIDClear=(24250),PlotInts=((ID=10817,V=4)),PlotCond=())</Value>
+        <Value type="3">(Mission=CitHot_Party,LoadMapName=BioP_CitHot,PlotIDSet=(),PlotIDClear=(),PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Mission=CitApt_PostParty,LoadMapName=BioP_CitHot,PlotIDSet=(24250,24636),PlotIDClear=(),PlotInts=((ID=10817,V=4)),PlotCond=())</Value>
+        <Value type="3">(Mission=CitHot_PostParty,LoadMapName=BioP_CitHot,PlotIDSet=(),PlotIDClear=(),PlotInts=(),PlotCond=())</Value>
+      </Property>
+      <Property name="setupmodifierarray">
+        <Value type="3">(Modifier=UnlockArmour, PlotIDSet=(19455,19456,19457,19458,19459,19460,19461,19462,19467,19468,19469,19470,21399,21400,21401,21402,20914,20915,20916,20917,20918,20919,20920,20921,18988,18995,18999,19000,19005,19006,19007,19008,22339,22340,22341,20984,20985,20986,20987,20988,20989,21417,22590), PlotIDClear=(),  PlotInts=(), PlotCond=())</Value>
+        <Value type="3">(Modifier=UnlockIntel, PlotIDSet=(21531,21533,21535,21537,21539,21541,21543,21545,21547,21549,22419,22421), PlotIDClear=(),  PlotInts=(), PlotCond=())</Value>
+        <Value type="3">(Modifier=UnlockMedigel, PlotIDSet=(21555,21556,21557,21558,21559), PlotIDClear=(),  PlotInts=(), PlotCond=())</Value>
+        <Value type="3">(Modifier=JackTrueLove,   PlotIDSet=(5208,19846),PlotIDClear=(19847,19722,19727,19724,19723,19726,19725,19835,19838,21750),  PlotInts=((ID=213,V=5)),PlotCond=((C=236,T=778),(C=232,T=776)))</Value>
+        <Value type="3">(Modifier=MirandaTrueLove,PlotIDSet=(5209,21750),PlotIDClear=(21751,19722,19727,19724,19723,19726,19725,19835,19838,19846),  PlotInts=((ID=266,V=5)),PlotCond=((C=235,T=777),(C=236,T=778)))</Value>
+        <Value type="4">(Modifier=LiaraTrueLove, PlotIDSet=(19722),PlotIDClear=(19727,19724,19723,19726,19725,19835,19838),  PlotInts=(),PlotCond=())</Value>
+        <Value type="4">(Modifier=AshleyTrueLove, PlotIDSet=(19724),PlotIDClear=(19729,19722,19723,19726,19725,19835,19838),  PlotInts=(),PlotCond=())</Value>
+        <Value type="4">(Modifier=KaidanTrueLove, PlotIDSet=(19723),PlotIDClear=(19728,19722,19724,19726,19725,19835,19838),  PlotInts=(),PlotCond=())</Value>
+        <Value type="4">(Modifier=TaliTrueLove, PlotIDSet=(19726),PlotIDClear=(19731,19722,19724,19723,19725,19835,19838),  PlotInts=((ID=272,V=5)),PlotCond=())</Value>
+        <Value type="4">(Modifier=GarrusTrueLove, PlotIDSet=(19725),PlotIDClear=(19730,19722,19724,19723,19726,19835,19838),  PlotInts=((ID=270,V=5)),PlotCond=())</Value>
+        <Value type="4">(Modifier=AllersTrueLove, PlotIDSet=(19835),PlotIDClear=(19836,19722,19724,19723,19726,19725,19838),  PlotInts=(),PlotCond=())</Value>
+        <Value type="4">(Modifier=CortezTrueLove, PlotIDSet=(19838),PlotIDClear=(19839,19722,19724,19723,19726,19725,19835),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=LiaraTrueLove, PlotIDSet=(19722),PlotIDClear=(19727,19724,19723,19726,19725,19835,19838,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=AshleyTrueLove, PlotIDSet=(19724),PlotIDClear=(19729,19722,19723,19726,19725,19835,19838,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=KaidanTrueLove, PlotIDSet=(19723),PlotIDClear=(19728,19722,19724,19726,19725,19835,19838,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=TaliTrueLove, PlotIDSet=(19726),PlotIDClear=(19731,19722,19724,19723,19725,19835,19838,19846,21750),  PlotInts=((ID=272,V=5)),PlotCond=())</Value>
+        <Value type="3">(Modifier=GarrusTrueLove, PlotIDSet=(19725),PlotIDClear=(19730,19722,19724,19723,19726,19835,19838,19846,21750),  PlotInts=((ID=270,V=5)),PlotCond=())</Value>
+        <Value type="3">(Modifier=AllersTrueLove, PlotIDSet=(19835),PlotIDClear=(19836,19722,19724,19723,19726,19725,19838,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=CortezTrueLove, PlotIDSet=(19838),PlotIDClear=(19839,19722,19724,19723,19726,19725,19835,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=TraynorTrueLove, PlotIDSet=(19835),PlotIDClear=(19836,19722,19724,19723,19726,19725,19838,19846,21750),  PlotInts=(),PlotCond=())</Value>
+        <Value type="3">(Modifier=JacobTrueLove,  PlotIDSet=(3892),PlotIDClear=(),  PlotInts=((ID=267,V=5)),PlotCond=((C=234,T=781),(C=233,T=780)))</Value>
+        <Value type="3">(Modifier=ThaneTrueLove,  PlotIDSet=(5206),PlotIDClear=(),  PlotInts=((ID=271,V=5)),PlotCond=((C=234,T=781),(C=231,T=779)))</Value>
+        <Value type="3">(Modifier=WrexInParty,  PlotIDSet=(13942,18926),PlotIDClear=(13028,13029,15543,23902),PlotInts=((ID=10809,V=99)),PlotCond=())</Value>
+        <Value type="3">(Modifier=EnableCharMoments,  PlotIDSet=(20688,20687,22578,22242,22082,21879,18714,21028,20565,22581,20646,22424,21060,21839),PlotIDClear=(),PlotInts=((ID=10296,V=1),(ID=10360,V=1),(ID=10379,V=1),(ID=10411,V=1)),PlotCond=())</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.bioglobalvariabletable">
+      <Property name="newgameplusplotstopersist">
+        <Value type="3">(nIndex=24956, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24957, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24958, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24959, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24960, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24961, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24962, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24963, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24964, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24965, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24966, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24967, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24968, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24969, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=24947, nType=SFXPlotType_Boolean)</Value>
+      </Property>
+      <Property name="timedplotunlocks" type="3">(PlotBool=23778,UnlockDay=0)</Property>
+    </Section>
+    <Section name="sfxgame.bioworldinfo">
+      <Property name="m_acullfxconvlist">
+        <Value type="3">cit002_office_doorhack_a_dlg</Value>
+        <Value type="3">cit002_office_failure_a_dlg</Value>
+        <Value type="3">cit002_office_int_again_a_dlg</Value>
+        <Value type="3">cit002_office_turnaway_a_dlg</Value>
+        <Value type="3">cit002_wrong_guard_a_dlg</Value>
+        <Value type="3">citcas_ambs_adverts_a_dlg</Value>
+        <Value type="3">citcas_ambs_waterfall_dlg</Value>
+        <Value type="3">citcas_ambs_casino_pa_dlg</Value>
+        <Value type="3">citcas_ambs_arcadegames_a_dlg</Value>
+        <Value type="3">citcas_ambs_arcadegames2_a_dlg</Value>
+        <Value type="3">ss_simnarr_dlg</Value>
+        <Value type="3">citpar_barks_ashley_a_dlg</Value>
+        <Value type="3">citpar_barks_cortez_a_dlg</Value>
+        <Value type="3">citpar_barks_garrus_a_dlg</Value>
+        <Value type="3">citpar_barks_grunt_a_dlg</Value>
+        <Value type="3">citpar_barks_jack_a_dlg</Value>
+        <Value type="3">citpar_barks_jacob_a_dlg</Value>
+        <Value type="3">citpar_barks_james_a_dlg</Value>
+        <Value type="3">citpar_barks_javik_a_dlg</Value>
+        <Value type="3">citpar_barks_joker_a_dlg</Value>
+        <Value type="3">citpar_barks_kaidan_a_dlg</Value>
+        <Value type="3">citpar_barks_liara_a_dlg</Value>
+        <Value type="3">citpar_barks_samara_a_dlg</Value>
+        <Value type="3">citpar_barks_tali_a_dlg</Value>
+        <Value type="3">citpar_barks_traynor_a_dlg</Value>
+        <Value type="3">citpar_barks_wrex_a_dlg</Value>
+        <Value type="3">citpar_barks_zaeed_a_dlg</Value>
+      </Property>
+      <Property name="m_aps3rubbermouthconvlist">
+        <Value type="3">norhen_ash_lev002_a_dlg</Value>
+        <Value type="3">norhen_ash_lev003_a_dlg</Value>
+        <Value type="3">norhen_ash_lev004_a_dlg</Value>
+        <Value type="3">norhen_garr_lev002_a_dlg</Value>
+        <Value type="3">norhen_garr_lev003_a_dlg</Value>
+        <Value type="3">norhen_garr_lev004_a_dlg</Value>
+        <Value type="3">norhen_jms_lev002_a_dlg</Value>
+        <Value type="3">norhen_jms_lev003_a_dlg</Value>
+        <Value type="3">norhen_jms_lev004_a_dlg</Value>
+        <Value type="3">norhen_kaid_lev002_a_dlg</Value>
+        <Value type="3">norhen_kaid_lev003_a_dlg</Value>
+        <Value type="3">norhen_kaid_lev004_a_dlg</Value>
+        <Value type="3">norhen_lia_lev002_a_dlg</Value>
+        <Value type="3">norhen_lia_lev003_a_dlg</Value>
+        <Value type="3">norhen_lia_lev004_a_dlg</Value>
+        <Value type="3">norhen_proth_lev002_a_dlg</Value>
+        <Value type="3">norhen_proth_lev003_a_dlg</Value>
+        <Value type="3">norhen_proth_lev004_a_dlg</Value>
+        <Value type="3">norhen_tali_lev002_a_dlg</Value>
+        <Value type="3">norhen_tali_lev003_a_dlg</Value>
+        <Value type="3">norhen_tali_lev004_a_dlg</Value>
+        <Value type="3">norhen_edi_lev002_a_dlg</Value>
+        <Value type="3">norhen_edi_lev003_a_dlg</Value>
+        <Value type="3">norhen_edi_lev004_a_dlg</Value>
+        <Value type="3">nor_pilot_lev002_a_dlg</Value>
+        <Value type="3">nor_pilot_lev003_a_dlg</Value>
+        <Value type="3">nor_pilot_lev004_a_dlg</Value>
+        <Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+        <Value type="3">citcas_simlobby_vi_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby1_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby2_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby2b_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby2c_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby2d_a_dlg</Value>
+        <Value type="3">citcas_ambs_lobby3_a_dlg</Value>
+        <Value type="3">citcas_ambs_tickets_a_dlg</Value>
+        <Value type="3">citcas_ambs_tickets1_a_dlg</Value>
+        <Value type="3">citcas_ambs_tickets2_a_dlg</Value>
+        <Value type="3">citcas_ambs_tickets3_a_dlg</Value>
+        <Value type="3">citcas_3card_monty_a_dlg</Value>
+        <Value type="3">citcas_ambs_parking_a_dlg</Value>
+        <Value type="3">citcas_ambs_strategy_a_dlg</Value>
+        <Value type="3">citcas_ambs_phone_a_dlg</Value>
+        <Value type="3">citcas_ambs_asari_a_dlg</Value>
+        <Value type="3">citcas_ambs_hamlet_a_dlg</Value>
+        <Value type="3">citcas_ambs_procurement_a_dlg</Value>
+        <Value type="3">citcas_ambs_macbeth_a_dlg</Value>
+        <Value type="3">citcas_ambs_casino_doorman_dlg</Value>
+        <Value type="3">citcas_ambs_casinogames_a_dlg</Value>
+        <Value type="3">citcas_ambs_varren_race_a_dlg</Value>
+        <Value type="3">citcas_ambs_krogan_a_dlg</Value>
+        <Value type="3">citcas_ambs_roulette_a_dlg</Value>
+        <Value type="3">citcas_ambs_vault_guards_dlg</Value>
+        <Value type="3">citcas_ambs_quasar_a_dlg</Value>
+        <Value type="3">citcas_ambs_bartender_a_dlg</Value>
+        <Value type="3">citcas_ambs_bar_a_dlg</Value>
+        <Value type="3">citcas_ambs_arcade_clerk_a_dlg</Value>
+        <Value type="3">citcas_ambs_arcade_a_dlg</Value>
+        <Value type="3">citcas_ambs_hanoi_a_dlg</Value>
+        <Value type="3">citcas_ambs_tech_a_dlg</Value>
+        <Value type="3">citcas_ambs_space_chess_a_dlg</Value>
+        <Value type="3">citpar_shepard_buttons_a_dlg</Value>
+        <Value type="3">citpar_bbm5_a_dlg</Value>
+        <Value type="3">citpar_bbm5_i_dlg</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxaccomplishmentmanager">
+      <Property name="accomplishmentdata">
+        <Value type="3">(Index=60,Name=DLC_CIT1,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_10,XboxAchievementID=164,XboxAvatarAwardID=,PS3TrophyID=60,Title=813081,Incomplete=813082,Complete=813082,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.60_priority_target",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=61,Name=DLC_CIT2,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_11,XboxAchievementID=165,XboxAvatarAwardID=,PS3TrophyID=61,Title=813083,Incomplete=813084,Complete=813084,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.61_high_society",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=62,Name=DLC_CIT3,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_12,XboxAchievementID=166,XboxAvatarAwardID=,PS3TrophyID=62,Title=813085,Incomplete=813086,Complete=813086,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.62_team_player",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=63,Name=DLC_CIT4,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_13,XboxAchievementID=167,XboxAvatarAwardID=,PS3TrophyID=63,Title=813087,Incomplete=813088,Complete=813088,NotificationText=,MPNotificationText=,PointValue=50,Icon="DLC_MPImages.Medals.63_last_resort",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=64,Name=DLC_CIT5,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_14,XboxAchievementID=168,XboxAvatarAwardID=,PS3TrophyID=64,Title=813089,Incomplete=813090,Complete=813090,NotificationText=,MPNotificationText=,PointValue=10,Icon="DLC_MPImages.Medals.64_perfect_host",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=65,Name=DLC_CIT6,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_15,XboxAchievementID=169,XboxAvatarAwardID=,PS3TrophyID=65,Title=813091,Incomplete=813092,Complete=813092,NotificationText=,MPNotificationText=,PointValue=15,Icon="DLC_MPImages.Medals.65_king_castle",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=66,Name=DLC_CIT7,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_16,XboxAchievementID=170,XboxAvatarAwardID=,PS3TrophyID=66,Title=813093,Incomplete=813094,Complete=813094,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.66_technical_issues",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=67,Name=DLC_CIT8,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_17,XboxAchievementID=171,XboxAvatarAwardID=,PS3TrophyID=67,Title=813095,Incomplete=813096,Complete=813096,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.67_simulated_hero",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=68,Name=DLC_CIT9,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_18,XboxAchievementID=172,XboxAvatarAwardID=,PS3TrophyID=68,Title=814351,Incomplete=814352,Complete=814352,NotificationText=,MPNotificationText=,PointValue=50,Icon="DLC_MPImages.Medals.68_one_and_only",IsMultiplayerOnly=FALSE)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgame">
+      <Property name="newgameplusplayervariables">
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage</Value>
+        <Value type="3">SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope</Value>
+        <Value type="3">SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgestures">
+      <Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+      <Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+      <Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+    </Section>
+    <Section name="sfxgame.sfxpawn_henchman">
+      <Property name="henchmeninfo">
+        <Value type="3">(ClassName=SFXPawn_Grunt,Tag=hench_grunt,PrettyName=156662)</Value>
+        <Value type="3">(ClassName=SFXPawn_Jack,Tag=hench_jack,PrettyName=156665)</Value>
+        <Value type="3">(ClassName=SFXPawn_Jacob,Tag=hench_jacob,PrettyName=156659)</Value>
+        <Value type="3">(ClassName=SFXPawn_Kasumi,Tag=hench_kasumi,PrettyName=178204)</Value>
+        <Value type="3">(ClassName=SFXPawn_Miranda,Tag=hench_miranda,PrettyName=156660)</Value>
+        <Value type="3">(ClassName=SFXPawn_Samara,Tag=hench_samara,PrettyName=156661)</Value>
+        <Value type="3">(ClassName=SFXPawn_Wrex,Tag=hench_wrex,PrettyName=214249)</Value>
+        <Value type="3">(ClassName=SFXPawn_Zaeed,Tag=hench_zaeed,PrettyName=178205)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxpawn_player">
+      <Property name="armoreffectdescriptions">
+        <Value type="3">(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom",EffectDescription[0]=683395,EffectToken[0]="20",EffectDescription[1]=683401,EffectToken[1]="20",EffectDescription[2]=683399,EffectToken[2]="10",EffectDescription[3]=683402,EffectToken[3]="10",EffectDescription[4]=718122,EffectToken[4]="10",EffectDescription[5]=683400,EffectToken[5]="10")</Value>
+        <Value type="3">(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Weapons",EffectDescription[0]=683395,EffectToken[0]="10",EffectDescription[1]=683401,EffectToken[1]="10",EffectDescription[2]=683402,EffectToken[2]="20",EffectDescription[3]=683403,EffectToken[3]="20",EffectDescription[4]=718122,EffectToken[4]="20")</Value>
+        <Value type="3">(ArmorEffect="SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Powers",EffectDescription[0]=683395,EffectToken[0]="10",EffectDescription[1]=683401,EffectToken[1]="10",EffectDescription[2]=683399,EffectToken[2]="30",EffectDescription[3]=718121,EffectToken[3]="30")</Value>
+      </Property>
+      <Property name="permanentgameeffects">
+        <Value type="3">(ClassName="SFXGameContent.SFXGameEffect_PassiveMaxAmmoBonus",UniqueName="Intel_KhansNetworkExposed_AmmoCapacity",Value=0.1f,Type=PermanentGEType_Player)</Value>
+        <Value type="3">(ClassName="SFXGame.SFXGameEffect_ShieldRegenBonus",UniqueName="Intel_KhansNetworkExposed_ShieldRegen",Value=0.1f,Type=PermanentGEType_Player)</Value>
+        <Value type="3">(ClassName="SFXGameContent.SFXGameEffect_PowerBonus_Cooldown",UniqueName="Intel_KhansNetworkExposed_PowerCooldown",Value=0.1f,Type=PermanentGEType_Player)</Value>
+        <Value type="3">(ClassName="SFXGameContent.SFXGameEffect_MaxGrenadeBonus",UniqueName="Intel_KhansNetworkExposed_GrenadeBonus",Value=1.f,Type=PermanentGEType_Player)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxplayercustomization">
+      <Property name="casualappearances" type="3">(Mesh=(Male="BIOG_HMM_FRM_SHP_R.SHP.BIOG_HMM_FRM_MDL",MaleMaterialOverride="BIOG_HMM_FRM_SHP_R.SHP.HMM_ARM_FRM_SHP_MAT1a",Female="BIOG_HMF_FRM_SHP_R.SHP.HMF_ARM_CTHl_MDL",FemaleMaterialOverride="BIOG_HMF_FRM_SHP_R.SHP.Materials.HMF_ARM_CTHL_MAT_1a'"),Id=100,PlotFlag=21752,Type=CustomizableType_Torso)</Property>
+      <Property name="fullbodyappearances">
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom"),Id=110,PlotFlag=21752,Type=CustomizableType_Torso,Name=813578,Description=813579)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_NH_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_NH_MDL"),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom"),Id=111,PlotFlag=24819,Type=CustomizableType_Torso,Name=813578,Description=813579)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Weapons"),Id=112,PlotFlag=21752,Type=CustomizableType_Torso,Name=813580,Description=813581)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_NH_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_NH_MDL"),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Weapons"),Id=113,PlotFlag=24820,Type=CustomizableType_Torso,Name=813580,Description=813581)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Powers"),Id=114,PlotFlag=21752,Type=CustomizableType_Torso,Name=813582,Description=813583)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_SHP_FBDj_NH_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_SHP_FBDj_NH_MDL"),GameEffects=("SFXGameContentDLC_EXP_Pack003.SFXGameEffect_UniqueArmor_Phantom_Powers"),Id=115,PlotFlag=24821,Type=CustomizableType_Torso,Name=813582,Description=813583)</Value>
+      </Property>
+      <Property name="fullbodyhelmetappearances">
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_HGR_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_HGR_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),Id=111,Type=CustomizableType_Helmet)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_HGR_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_HGR_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),Id=113,Type=CustomizableType_Helmet)</Value>
+        <Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R_DLC.FBDj.HMM_HGR_FBDj_MDL",Female="BIOG_HMF_SHP_FBD_R_DLC.FBDj.HMF_HGR_FBDj_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),Id=115,Type=CustomizableType_Helmet)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxplayersquadloadoutdata">
+      <Property name="assaultrifles" type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer")</Property>
+      <Property name="heavypistols">
+        <Value type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer")</Value>
+        <Value type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer_Cit001")</Value>
+      </Property>
+      <Property name="henchloadoutinfo" type="3">(ClassName=SFXPawn_Wrex,WeaponClasses=(LoadoutWeapons_Shotguns, LoadoutWeapons_HeavyPistols))</Property>
+    </Section>
+    <Section name="sfxgame.sfxprofilesettings">
+      <Property name="bonuspowerunlockdataarray" type="3">(srTitle = 766365, BonusPowerID = 524288, PowerClassName = "SFXGameContentDLC_EXP_Pack003.SFXPowerCustomAction_StimPack", PlotConditionalID=3691, PlotStateID=24468)</Property>
+    </Section>
+    <Section name="sfxgame.sfxseqvar_hench">
+      <Property name="henchsizeorder">
+        <Value type="1">null</Value>
+        <Value type="3">hench_wrex</Value>
+        <Value type="3">hench_garrus</Value>
+        <Value type="3">hench_marine</Value>
+        <Value type="3">hench_prothean</Value>
+        <Value type="3">hench_kaidan</Value>
+        <Value type="3">hench_tali</Value>
+        <Value type="3">hench_ashley</Value>
+        <Value type="3">hench_liara</Value>
+        <Value type="3">hench_edi</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxtelemetry">
+      <Property name="blacklistplotsbool">
+        <Value type="3">24760</Value>
+        <Value type="3">24761</Value>
+        <Value type="3">24762</Value>
+        <Value type="3">24763</Value>
+        <Value type="3">24764</Value>
+        <Value type="3">24766</Value>
+        <Value type="3">24768</Value>
+      </Property>
+      <Property name="blacklistplotsint">
+        <Value type="3">10825</Value>
+        <Value type="3">10826</Value>
+        <Value type="3">10827</Value>
+        <Value type="3">10828</Value>
+        <Value type="3">10829</Value>
+        <Value type="3">10830</Value>
+        <Value type="3">10831</Value>
+        <Value type="3">10832</Value>
+        <Value type="3">10836</Value>
+        <Value type="3">10849</Value>
+        <Value type="3">10871</Value>
+        <Value type="3">10873</Value>
+        <Value type="3">10874</Value>
+        <Value type="3">10875</Value>
+        <Value type="3">10876</Value>
+        <Value type="3">10877</Value>
+        <Value type="3">10878</Value>
+        <Value type="3">10879</Value>
+        <Value type="3">10889</Value>
+        <Value type="3">10839</Value>
+        <Value type="3">10840</Value>
+        <Value type="3">10841</Value>
+        <Value type="3">10843</Value>
+        <Value type="3">10844</Value>
+        <Value type="3">10845</Value>
+        <Value type="3">10846</Value>
+        <Value type="3">10847</Value>
+        <Value type="3">10848</Value>
+        <Value type="3">10850</Value>
+        <Value type="3">10872</Value>
+        <Value type="3">10881</Value>
+        <Value type="3">10882</Value>
+        <Value type="3">10883</Value>
+        <Value type="3">10884</Value>
+        <Value type="3">10885</Value>
+        <Value type="3">10886</Value>
+        <Value type="3">10887</Value>
+        <Value type="3">10890</Value>
+        <Value type="3">11099</Value>
+        <Value type="3">11100</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxtreasuredata">
+      <Property name="leveltreasure">
+        <Value type="3">(Level="BioP_Cit001",LevelEnum=ME3Level_DLC11,PlotId=10747,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("sfxgamecontentdlc_exp_pack003.SFXWeapon_Pistol_Silencer","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_AssaultRifleUltraLight","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_PistolPowerDamage","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SniperRifleUltraLight","SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight"))</Value>
+        <Value type="3">(Level="BioP_Cit002",LevelEnum=ME3Level_DLC12,PlotId=10747,XP=3000,Credits=15000,AllianceCredits=15000,ConditionalGAWAssets=("GAWAsset_KhansNetworkExposed"))</Value>
+        <Value type="3">(Level="BioP_Cit003",LevelEnum=ME3Level_DLC13,PlotId=10747,XP=3000,Credits=15000,AllianceCredits=15000,Treasure=("sfxgamecontentdlc_exp_pack003.SFXWeapon_AssaultRifle_Lancer","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_AssaultRifleUltraLight","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SniperRifleUltraLight","sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleDamageAndPen","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SMGPowerDamage","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_ShotgunUltraLight", "SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight","SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight"))</Value>
+        <Value type="3">(Level="BioP_Cit004",LevelEnum=ME3Level_DLC14,PlotId=10747,XP=3000,Credits=15003,AllianceCredits=15000,Treasure=("sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SniperRifleUltraLight","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_ShotgunUltraLight","sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperScope", "SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SniperRifleUltraLight","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight","SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope"))</Value>
+        <Value type="3">(Level="BioP_CitCas",LevelEnum=ME3Level_DLC15,PlotId=10747,XP=3000,Credits=15000,Treasure=("sfxgamecontentdlc_exp_pack003.SFXWeaponMod_AssaultRifleUltraLight","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_PistolPowerDamage","sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleDamageAndPen","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SMGPowerDamage","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_ShotgunUltraLight","sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperScope", "SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_AssaultRifleUltraLight","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage","SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_ShotgunUltraLight","SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope"))</Value>
+        <Value type="3">(Level="BioP_CitSim",LevelEnum=ME3Level_DLC16,PlotId=10747,XP=3000,Credits=25000,Treasure=("sfxgamecontentdlc_exp_pack003.SFXWeaponMod_PistolPowerDamage","sfxgamecontentdlc_shared.SFXWeaponMod_SniperRifleDamageAndPen","sfxgamecontentdlc_exp_pack003.SFXWeaponMod_SMGPowerDamage","sfxgamecontentdlc_shared.SFXWeaponMod_AssaultRifleSuperScope", "SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_PistolPowerDamage","SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen","SFXGameContentDLC_EXP_Pack003.SFXWeaponMod_SMGPowerDamage","SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope"))</Value>
+        <Value type="3">(Level="BioP_CitApt",LevelEnum=ME3Level_DLC17,PlotId=10747,XP=0,Credits=0,Treasure=("GAWAsset_NormandyRepairs", "GAWAsset_TeamSpirit"))</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_clonedrone">
+      <Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_cloneprojectile">
+      <Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_disruptorzap">
+      <Property name="maximumrange" type="0">(BaseValue=750.0f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_mirvgrenade">
+      <Property name="damage" type="0">(BaseValue=0.f)</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+      <Property name="impactradius" type="0">(BaseValue=0.f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxpowercustomaction_stimpack">
+      <Property name="damagebonus" type="0">(BaseValue=0.15,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+      <Property name="damageimmunitylength" type="0">1.f</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=true)</Property>
+      <Property name="duration" type="0">(BaseValue=10.0f)</Property>
+      <Property name="evolve_damagebonus" type="0">0.10f</Property>
+      <Property name="evolve_duration" type="0">0.5f</Property>
+      <Property name="evolve_grenadecountbonus" type="0">1</Property>
+      <Property name="evolve_meleedamagebonus" type="0">0.30f</Property>
+      <Property name="evolve_shieldstrengthbonus" type="0">0.4f</Property>
+      <Property name="evolve_shieldstrengthbonus2" type="0">0.6f</Property>
+      <Property name="evolve_weapondamagebonus" type="0">0.15f</Property>
+      <Property name="impactradius" type="0">(BaseValue=0.0f)</Property>
+      <Property name="maxgrenadebonus" type="0">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+      <Property name="rank2grenadeupgrade" type="0">1</Property>
+      <Property name="shieldstrength" type="0">(BaseValue=2000.0f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_getminigamebasebet">
+      <Property name="minigamebasepayouts">
+        <Value type="3">(GameType=MiniGame_ClawMachine,BaseBet=250)</Value>
+        <Value type="3">(GameType=MiniGame_Roullette,BaseBet=100)</Value>
+        <Value type="3">(GameType=MiniGame_RobotFighting,BaseBet=100)</Value>
+        <Value type="3">(GameType=MiniGame_MissileDefense,BaseBet=100)</Value>
+        <Value type="3">(GameType=MiniGame_VarrenRacing,BaseBet=50)</Value>
+        <Value type="3">(GameType=MiniGame_VarrenRacing2,BaseBet=100)</Value>
+        <Value type="3">(GameType=MiniGame_VarrenRacing3,BaseBet=200)</Value>
+        <Value type="3">(GameType=MiniGame_Qasar,BaseBet=50)</Value>
+        <Value type="3">(GameType=MiniGame_Qasar2,BaseBet=100)</Value>
+        <Value type="3">(GameType=MiniGame_Qasar3,BaseBet=200)</Value>
+        <Value type="3">(GameType=MiniGame_CombatSim1,BaseBet=500)</Value>
+        <Value type="3">(GameType=MiniGame_CombatSim2,BaseBet=1000)</Value>
+        <Value type="3">(GameType=MiniGame_CombatSim3,BaseBet=2000)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_killchildcreatures">
+      <Property name="childcreatures">
+        <Value type="3">SFXPawn_Swarmer</Value>
+        <Value type="3">SFXPawn_GunnerTurret</Value>
+        <Value type="3">SFXPawn_GethPrimeTurret</Value>
+        <Value type="3">SFXPawn_GethPrimeShieldDrone</Value>
+        <Value type="3">SFXPawn_Seeker_Shared</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_enemyshields">
+      <Property name="shieldmultiplier" type="0">1.f</Property>
+      <Property name="shieldtohealthratio" type="0">0.5f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_fast">
+      <Property name="speedincrease" type="0">1.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_highdamage_enemy">
+      <Property name="damagebonus" type="0">1.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_highdamage_player">
+      <Property name="damagebonus" type="0">1.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_lowshields">
+      <Property name="shieldpenalty" type="0">0.75f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_skull_meleemode">
+      <Property name="damagepenalty" type="0">-0.95f</Property>
+      <Property name="meleemultiplier" type="0">2.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxcustomaction_vorchaevadebackwards_shared">
+      <Property name="gravitycompensationforextremedistance" type="0">5.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxcustomaction_vorchaevadeforward_shared">
+      <Property name="gravitycompensationforextremedistance" type="0">6.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxcustomaction_vorchaevadeleft_shared">
+      <Property name="gravitycompensationforextremedistance" type="0">5.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxcustomaction_vorchaevaderight_shared">
+      <Property name="gravitycompensationforextremedistance" type="0">5.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxgameeffect_lashlift_shared">
+      <Property name="direction" type="0">(Z=1.0f)</Property>
+      <Property name="force" type="0">100.0f</Property>
+      <Property name="minimumvelocity" type="0">50.0f</Property>
+      <Property name="minimumvelocityforcemult" type="0">0.1f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_annihilationsphere_shared">
+      <Property name="blastdamage" type="0">(BaseValue=700.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="blastforce" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="blastmaxragdoll" type="0">2</Property>
+      <Property name="blastmaxtargets" type="0">3</Property>
+      <Property name="blastparameters" type="0">(BlockedByObjects=false,DistancedSorted=true,ImpactPlaceables=true)</Property>
+      <Property name="blastradius" type="0">(BaseValue=300.0f,RankBonuses[1]=0.3f)</Property>
+      <Property name="cooldowntime" type="0">(BaseValue=6,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+      <Property name="damage" type="0">(BaseValue=150.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="effectduration" type="0">(BaseValue=45.f)</Property>
+      <Property name="evolve_damagebonus" type="0">0.3f</Property>
+      <Property name="evolve_damagebonus2" type="0">0.5f</Property>
+      <Property name="evolve_damagetakenbonus" type="0">0.15f</Property>
+      <Property name="evolve_durationbonus" type="0">1.0f</Property>
+      <Property name="evolve_impactradiusbonus" type="0">0.3f</Property>
+      <Property name="evolve_movementspeedbonus" type="0">0.2f</Property>
+      <Property name="force" type="0">(BaseValue=500.0f)</Property>
+      <Property name="impactradius" type="0">(BaseValue=400.f)</Property>
+      <Property name="maxburntargets" type="0">2</Property>
+      <Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+      <Property name="shielddrainconversion" type="0">1.0f</Property>
+      <Property name="updatefrequency" type="0">0.5f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_barrier_shared">
+      <Property name="excludedmaps" type="3">MPLobby</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batarianarmor_shared">
+      <Property name="cooldowntime" type="0">(BaseValue=3,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+      <Property name="damagereduction" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+      <Property name="damagetoforcemultiplier" type="0">2.0f</Property>
+      <Property name="encumbrancepenalty" type="0">(BaseValue=0.8f,Formula=BonusIsHardValue)</Property>
+      <Property name="evolve_damagereductionbonus" type="0">0.05f</Property>
+      <Property name="evolve_damagereductionbonus2" type="0">0.10f</Property>
+      <Property name="evolve_encumbrancebonus" type="0">0.30f</Property>
+      <Property name="evolve_meleedamagebonus" type="0">0.15f</Property>
+      <Property name="evolve_shieldregenbonus" type="0">0.15f</Property>
+      <Property name="evolve_thornsdamagebonus" type="0">0.75f</Property>
+      <Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.10f)</Property>
+      <Property name="thornsdamage" type="0">(BaseValue=0.75f,Formula=BonusIsHardValue)</Property>
+      <Property name="thornsdamagecap" type="0">1000.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batarianmeleepassive_shared">
+      <Property name="heavymeleedamage" type="0">(BaseValue=1000)</Property>
+      <Property name="heavymeleeforce" type="0">(BaseValue=650)</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>
+      <Property name="meleedamage" type="0">(BaseValue=190)</Property>
+      <Property name="meleeforce" type="0">(BaseValue=350)</Property>
+      <Property name="meleeimpactradius" type="0">(BaseValue=200)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batariannet_shared">
+      <Property name="cooldowntime" type="0">(BaseValue=12,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+      <Property name="dotdamage" type="0">(BaseValue=350.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="effectduration" type="0">(BaseValue=4,RankBonuses[2]=0.2f)</Property>
+      <Property name="evolve_aoepulsedamage" type="0">(BaseValue=100.0f)</Property>
+      <Property name="evolve_aoepulsefrequency" type="0">1.5f</Property>
+      <Property name="evolve_aoepulserange" type="0">600.0f</Property>
+      <Property name="evolve_damagebonus" type="0">0.3f</Property>
+      <Property name="evolve_damagebonus2" type="0">0.3f</Property>
+      <Property name="evolve_incapacitatebonus" type="0">1.0f</Property>
+      <Property name="evolve_rechargespeedbonus" type="0">0.35f</Property>
+      <Property name="evolve_shielddamagebonus" type="0">0.5f</Property>
+      <Property name="evolve_slowtargetamount" type="0">0.3f</Property>
+      <Property name="evolve_slowtargetduration" type="0">(BaseValue=10.0f)</Property>
+      <Property name="incapacitateduration" type="0">(BaseValue=4,RankBonuses[2]=0.2f)</Property>
+      <Property name="incapacitateresistthreshold" type="0">0.8f</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=6000)</Property>
+      <Property name="projectilespeed" type="0">(BaseValue=2250)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batarianpassive_shared">
+      <Property name="evolve_headshotbonus" type="0">0.2f</Property>
+      <Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+      <Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+      <Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+      <Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+      <Property name="evolve_weaponencumbrancebonus" type="0">0.25f</Property>
+      <Property name="evolve_weaponspareammo1" type="0">0.05f</Property>
+      <Property name="evolve_weaponspareammo2" type="0">0.1f</Property>
+      <Property name="evolve_weightcapacitybonus" type="0">0.25f</Property>
+      <Property name="powerdamagebonus" type="0">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+      <Property name="weapondamagebonus" type="0">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+      <Property name="weaponspareammobonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+      <Property name="weaponweightclasses">
+        <Value type="3">LoadoutWeapons_Shotguns</Value>
+        <Value type="3">LoadoutWeapons_SniperRifles</Value>
+      </Property>
+      <Property name="weightcapacitybonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_bloodlust_shared">
+      <Property name="chancetogrowl1" type="0">0.05</Property>
+      <Property name="chancetogrowl2" type="0">0.20</Property>
+      <Property name="chancetogrowl3" type="0">0.50</Property>
+      <Property name="cooldowntime" type="0">(BaseValue=4.f,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+      <Property name="effectduration" type="0">(BaseValue=15.0f)</Property>
+      <Property name="encumbrancepenalty" type="0">(BaseValue=0.6f,Formula=BonusIsHardValue)</Property>
+      <Property name="evolve_healthregenerationbonus1" type="0">0.5f</Property>
+      <Property name="evolve_healthregenerationbonus2" type="0">1.0f</Property>
+      <Property name="evolve_meleedamagebonus" type="0">0.1f</Property>
+      <Property name="evolve_meleedamagecombobonus" type="0">0.1f</Property>
+      <Property name="evolve_movementcombobonus" type="0">0.05f</Property>
+      <Property name="evolve_powerdamagebonus" type="0">0.05f</Property>
+      <Property name="evolve_weapondamagebonus" type="0">0.05f</Property>
+      <Property name="healthregenerationbonus" type="0">(BaseValue=50.f,RankBonuses[2]=0.3f)</Property>
+      <Property name="maxcharges" type="0">3</Property>
+      <Property name="meleedamagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+      <Property name="movementspeedbonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_damping_shared">
+      <Property name="additionaldamagetaken" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+      <Property name="attachmeshdelay" type="0">0.1f</Property>
+      <Property name="cooldowntime" type="0">(BaseValue=4.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.5f)</Property>
+      <Property name="dampingeyeheights" type="3">(PawnType="sfxpawn_scion",EyeHeight=100.f)</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=false)</Property>
+      <Property name="effectduration" type="0">(BaseValue=20.0f,RankBonuses[2]=0.3f)</Property>
+      <Property name="enemysizerange" type="0">(X=130.0f,Y=40.0f)</Property>
+      <Property name="evolve_areascanduration" type="0">3.0f</Property>
+      <Property name="evolve_areascanradius" type="0">2000.0f</Property>
+      <Property name="evolve_damagetakenbonus" type="0">0.1f</Property>
+      <Property name="evolve_durationbonus" type="0">1.0f</Property>
+      <Property name="evolve_headshotbonus" type="0">0.25f</Property>
+      <Property name="evolve_movementspeedbonus" type="0">0.15f</Property>
+      <Property name="evolve_powerdamagebonus" type="0">0.075f</Property>
+      <Property name="evolve_weapondamagebonus" type="0">0.075f</Property>
+      <Property name="highlightsizerange" type="0">(X=1.8f,Y=0.45f)</Property>
+      <Property name="holohealthbarsize" type="0">0.1f</Property>
+      <Property name="holohighlightsize" type="0">0.7f</Property>
+      <Property name="holomeshscalerange" type="0">(X=0.035f,Y=0.11f)</Property>
+      <Property name="instantkillenemies">
+        <Value type="3">SFXPawn_GethPrimeTurret</Value>
+        <Value type="3">SFXPawn_GethPrimeShieldDrone</Value>
+      </Property>
+      <Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+      <Property name="movementspeedmodifier" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+      <Property name="showdistancemeterdelay" type="0">0.5f</Property>
+      <Property name="shutoffomnitooldelay" type="0">2.0f</Property>
+      <Property name="updatepawnfrequency" type="0">0.3f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_darkchannel2_shared">
+      <Property name="cooldowntime" type="0">(BaseValue=6,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+      <Property name="damage" type="0">(BaseValue=125.0f,RankBonuses[2]=0.2f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_flamer_shared">
+      <Property name="cooldowntime" type="0">(BaseValue=8.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+      <Property name="damage" type="0">(BaseValue=200.f,RankBonuses[2]=0.2f)</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=true,ImpactPlaceables=true,ConeAngle=45)</Property>
+      <Property name="dotduration" type="0">5.f</Property>
+      <Property name="dotpercent" type="0">0.25f</Property>
+      <Property name="effectduration" type="0">(BaseValue=5.f)</Property>
+      <Property name="evolve_armormultiplier" type="0">0.5f</Property>
+      <Property name="evolve_damage1" type="0">0.3f</Property>
+      <Property name="evolve_damage2" type="0">0.4f</Property>
+      <Property name="evolve_duration" type="0">0.6f</Property>
+      <Property name="evolve_range" type="0">0.5f</Property>
+      <Property name="evolve_shieldmultiplier" type="0">0.5f</Property>
+      <Property name="impactradius" type="0">(BaseValue=500.f)</Property>
+      <Property name="maxcombospercast" type="0">3</Property>
+      <Property name="maximumrange" type="0">(BaseValue=6000.f)</Property>
+      <Property name="minimumcooldown" type="0">1.f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_gethmeleepassive_shared">
+      <Property name="evolve_customspreebonus" type="0">0.30f</Property>
+      <Property name="evolve_customspreeduration" type="0">20.0f</Property>
+      <Property name="heavymeleeconeangle" type="0">(BaseValue=360.0f)</Property>
+      <Property name="heavymeleedamage" type="0">(BaseValue=375)</Property>
+      <Property name="heavymeleeforce" type="0">(BaseValue=600)</Property>
+      <Property name="heavymeleeimpactradius" type="0">(BaseValue=500)</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=3)</Property>
+      <Property name="meleedamage" type="0">(BaseValue=200)</Property>
+      <Property name="meleeforce" type="0">(BaseValue=350)</Property>
+      <Property name="shieldregenbonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_gethpassive_shared">
+      <Property name="evolve_gethweapondamage" type="0">0.05f</Property>
+      <Property name="evolve_headshotbonus" type="0">0.2f</Property>
+      <Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+      <Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+      <Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+      <Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+      <Property name="evolve_weaponencumbrancebonus" type="0">0.25f</Property>
+      <Property name="evolve_weightcapacitybonus" type="0">0.2f</Property>
+      <Property name="gethweapondamage" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue)</Property>
+      <Property name="powerdamagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.1f)</Property>
+      <Property name="registeredgethweapons">
+        <Value type="3">SFXGameContent.SFXWeapon_Shotgun_Geth</Value>
+        <Value type="3">SFXGameContent.SFXWeapon_AssaultRifle_Geth</Value>
+        <Value type="3">SFXGameContent.SFXWeapon_SniperRifle_Javelin</Value>
+        <Value type="3">SFXGameContentDLC_CON_MP1.SFXWeapon_SMG_Geth</Value>
+      </Property>
+      <Property name="weapondamagebonus" type="0">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[1]=0.025f)</Property>
+      <Property name="weaponweightclasses">
+        <Value type="3">LoadoutWeapons_AssaultRifles</Value>
+        <Value type="3">LoadoutWeapons_SniperRifles</Value>
+      </Property>
+      <Property name="weightcapacitybonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_gethsentryturret_shared">
+      <Property name="attackcooldown" type="0">(BaseValue=3,Formula=DivideByBonusSum)</Property>
+      <Property name="cooldowntime" type="0">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+      <Property name="damage" type="0">(BaseValue=150.0f,RankBonuses[2]=0.3f)</Property>
+      <Property name="evolve_armordamagebonus" type="0">0.5f</Property>
+      <Property name="evolve_damagebonus" type="0">0.4f</Property>
+      <Property name="evolve_damagebonus2" type="0">0.3f</Property>
+      <Property name="evolve_shieldbonus" type="0">0.4f</Property>
+      <Property name="evolve_shieldfrequencybonus" type="0">0.6f</Property>
+      <Property name="evolve_shieldradiusbonus" type="0">0.4f</Property>
+      <Property name="evolve_shieldrestorebonus" type="0">0.5f</Property>
+      <Property name="evolve_shieldrestorebonus2" type="0">0.5f</Property>
+      <Property name="flamethrowerdamageduration" type="0">(BaseValue=1.0f)</Property>
+      <Property name="flamethrowerdamagepersec" type="0">(BaseValue=55.0f,RankBonuses[2]=0.3f)</Property>
+      <Property name="healamount" type="0">(BaseValue=350.0f)</Property>
+      <Property name="healcooldown" type="0">(BaseValue=8,Formula=DivideByBonusSum)</Property>
+      <Property name="healradius" type="0">(BaseValue=800.0f)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+      <Property name="projectilespeed" type="0">(BaseValue=3000.0f)</Property>
+      <Property name="spawnzoffset" type="0">150.0f</Property>
+      <Property name="turretshields" type="0">(BaseValue=500.0f,RankBonuses[2]=0.3f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_gethturretattack_shared">
+      <Property name="force" type="0">(BaseValue=500.0f)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+      <Property name="projectilespeed" type="0">(BaseValue=3000.0f)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_gethturretheal_shared">
+      <Property name="healthreshold" type="0">0.5f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_hominggrenade_shared">
+      <Property name="castconehalfangledeg" type="0">60.0f</Property>
+      <Property name="damage" type="0">(BaseValue=700.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=true)</Property>
+      <Property name="evolve_armordamagebonus" type="0">0.6f</Property>
+      <Property name="evolve_armordebuffduration" type="0">8.0f</Property>
+      <Property name="evolve_armordebuffpercent" type="0">0.5f</Property>
+      <Property name="evolve_damagebonus" type="0">0.3f</Property>
+      <Property name="evolve_dotdamage" type="0">0.5f</Property>
+      <Property name="evolve_dotduration" type="0">6.0f</Property>
+      <Property name="evolve_grenadecountbonus" type="0">1</Property>
+      <Property name="evolve_impactradiusbonus" type="0">0.5f</Property>
+      <Property name="evolve_splitdamage" type="0">0.6f</Property>
+      <Property name="force" type="0">(BaseValue=1000.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="impactradius" type="0">(BaseValue=200.0f)</Property>
+      <Property name="maxgrenadebonus" type="0">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=6000.0f)</Property>
+      <Property name="projectilespeed" type="0">(BaseValue=500.0f)</Property>
+      <Property name="secondprojectiledelay" type="0">0.25f</Property>
+      <Property name="secondprojectilemaxrange" type="0">800</Property>
+      <Property name="secondtargetparams" type="0">(DistancedSorted=true,ImpactPlaceables=true)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_lash_shared">
+      <Property name="antigravityamount" type="0">0.0f</Property>
+      <Property name="cooldowntime" type="0">(BaseValue=6.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+      <Property name="damage" type="0">(BaseValue=150.0f,RankBonuses[2]=0.2f)</Property>
+      <Property name="detonationparameters" type="0">(BlockedByObjects=false,ImpactPlaceables=false,DistancedSorted=true)</Property>
+      <Property name="evolve_combodurationbonus" type="0">1.0f</Property>
+      <Property name="evolve_damagebonus" type="0">0.3f</Property>
+      <Property name="evolve_dotduration" type="0">10.0f</Property>
+      <Property name="evolve_dotpercent" type="0">1.0f</Property>
+      <Property name="evolve_nocooldownchance" type="0">0.35f</Property>
+      <Property name="evolve_powercombobonus" type="0">0.5f</Property>
+      <Property name="evolve_rechargebonus" type="0">0.35f</Property>
+      <Property name="force" type="0">(BaseValue=800.0f)</Property>
+      <Property name="forcemultipliers">
+        <Value type="3">(PawnType="SFXPawn_Centurion",ForceMultiplier=1.4f)</Value>
+        <Value type="3">(PawnType="SFXPawn_Guardian",ForceMultiplier=1.2f)</Value>
+      </Property>
+      <Property name="guardianshieldforcemodifier" type="0">0.02f</Property>
+      <Property name="impactradius" type="0">(BaseValue=150.0f,Formula=BonusIsHardValue)</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>
+      <Property name="maximumrange" type="0">(BaseValue=4000.0f)</Property>
+      <Property name="powercomboduration" type="0">(BaseValue=3.0f)</Property>
+      <Property name="projectilespeed" type="0">(BaseValue=4000.0f)</Property>
+      <Property name="pullforce" type="0">(BaseValue=1200.0f)</Property>
+      <Property name="resistanceforcemultiplier" type="0">0.5f</Property>
+      <Property name="towardcasterscale" type="0">0.25f</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_malequarianmeleepassive_shared">
+      <Property name="evolve_customspreebonus" type="0">0.3f</Property>
+      <Property name="evolve_customspreeduration" type="0">20.0f</Property>
+      <Property name="evolve_healthshieldbonus1" type="0">0.20f</Property>
+      <Property name="evolve_healthshieldbonus2" type="0">0.25f</Property>
+      <Property name="healthshieldbonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.15f)</Property>
+      <Property name="heavymeleedamage" type="0">(BaseValue=600)</Property>
+      <Property name="heavymeleeforce" type="0">(BaseValue=0)</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>
+      <Property name="meleedamage" type="0">(BaseValue=150)</Property>
+      <Property name="meleedamagebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+      <Property name="meleeforce" type="0">(BaseValue=350)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_malequarianpassive_shared">
+      <Property name="evolve_headshotbonus" type="0">0.2f</Property>
+      <Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+      <Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+      <Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+      <Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+      <Property name="evolve_weaponencumbrancebonus" type="0">0.2f</Property>
+      <Property name="evolve_weightcapacitybonus" type="0">0.2f</Property>
+      <Property name="powerdamagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.1f)</Property>
+      <Property name="weapondamagebonus" type="0">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[1]=0.025f)</Property>
+      <Property name="weaponweightclasses">
+        <Value type="3">LoadoutWeapons_AssaultRifles</Value>
+        <Value type="3">LoadoutWeapons_Shotguns</Value>
+        <Value type="3">LoadoutWeapons_SniperRifles</Value>
+        <Value type="3">LoadoutWeapons_AutoPistols</Value>
+        <Value type="3">LoadoutWeapons_HeavyPistols</Value>
+      </Property>
+      <Property name="weightcapacitybonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_supercharge_shared">
+      <Property name="cooldowntime" type="0">(BaseValue=3.0f,Formula=DivideByBonusSum)</Property>
+      <Property name="damagebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+      <Property name="evolve_damagebonus" type="0">0.1f</Property>
+      <Property name="evolve_movementspeedbonus" type="0">0.1f</Property>
+      <Property name="evolve_powerdamagebonus" type="0">0.15f</Property>
+      <Property name="evolve_powerrechargebonus" type="0">0.2f</Property>
+      <Property name="evolve_visionrangebonus" type="0">0.5f</Property>
+      <Property name="evolve_weaponaccuracybonus" type="0">0.15f</Property>
+      <Property name="evolve_weaponrofbonus" type="0">0.15f</Property>
+      <Property name="glowculldistanceoffset" type="0">500.0f</Property>
+      <Property name="movementspeedbonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+      <Property name="shieldpercentpenalty" type="0">0.5f</Property>
+      <Property name="visionrange" type="0">(BaseValue=2000.0f)</Property>
+      <Property name="weaponaccuracybonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_vorchameleepassive_shared">
+      <Property name="evolve_customspreebonus" type="0">0.3f</Property>
+      <Property name="evolve_customspreeduration" type="0">20.0f</Property>
+      <Property name="evolve_healthshieldbonus1" type="0">0.20f</Property>
+      <Property name="evolve_healthshieldbonus2" type="0">0.25f</Property>
+      <Property name="healthshieldbonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.15f)</Property>
+      <Property name="heavymeleedamage" type="0">(BaseValue=600)</Property>
+      <Property name="heavymeleeforce" type="0">(BaseValue=850)</Property>
+      <Property name="maximumimpacttargets" type="0">(BaseValue=1.0f)</Property>
+      <Property name="meleedamage" type="0">(BaseValue=250)</Property>
+      <Property name="meleeforce" type="0">(BaseValue=350)</Property>
+      <Property name="movementspeedbonus" type="0">(BaseValue=0.10f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_vorchapassive_shared">
+      <Property name="evolve_headshotbonus" type="0">0.2f</Property>
+      <Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+      <Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+      <Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+      <Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+      <Property name="evolve_weaponencumbrancebonus" type="0">0.25f</Property>
+      <Property name="evolve_weightcapacitybonus" type="0">0.2f</Property>
+      <Property name="powerdamagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+      <Property name="weapondamagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+      <Property name="weaponweightclasses">
+        <Value type="3">LoadoutWeapons_Shotguns</Value>
+        <Value type="3">LoadoutWeapons_AssaultRifles</Value>
+      </Property>
+      <Property name="weightcapacitybonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+    </Section>
+    <Section name="sfxgamecontentdlc_shared.sfxprojectile_powercustomaction_batariannet_shared">
+      <Property name="proximityradius" type="0">150.0f</Property>
+      <Property name="trapduration" type="0">20.0f</Property>
+    </Section>
+    <Section name="sfxgamecontentlivekismet.sfxseqact_leavemission">
+      <Property name="leavemissionarray">
+        <Value type="3">(CurrentMap=BioP_Cit001,NextMap=BioP_CitHot,NextStart=,EndGmAct=0,EndGmX=0.0,EndGmY=0.0)</Value>
+        <Value type="3">(CurrentMap=BioP_CitHot,NextMap=BioP_Cit003,NextStart=,EndGmAct=0,EndGmX=0.0,EndGmY=0.0)</Value>
+        <Value type="3">(CurrentMap=BioP_Cit003,NextMap=BioP_Cit004,NextStart=,EndGmAct=0,EndGmX=0.0,EndGmY=0.0)</Value>
+        <Value type="3">(CurrentMap=BioP_Cit004,NextMap=BioP_CitHot,NextStart=,EndGmAct=0,EndGmX=0.0,EndGmY=0.0)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamecontentlivekismet.sfxseqact_missionidtoname">
+      <Property name="mapiddataarray">
+        <Value type="3">(MapID=33, MapName="BioP_Omg000")</Value>
+        <Value type="3">(MapID=34, MapName="BioP_Lev001")</Value>
+        <Value type="3">(MapID=35, MapName="BioP_Lev002")</Value>
+        <Value type="3">(MapID=36, MapName="BioP_Lev003")</Value>
+        <Value type="3">(MapID=37, MapName="BioP_Lev004")</Value>
+        <Value type="3">(MapID=38, MapName="BioP_Omg001")</Value>
+        <Value type="3">(MapID=40, MapName="BioP_Omg02a")</Value>
+        <Value type="3">(MapID=41, MapName="BioP_Omg003")</Value>
+        <Value type="3">(MapID=42, MapName="BioP_Omg004")</Value>
+        <Value type="3">(MapID=43, MapName="BioP_OmgHub")</Value>
+        <Value type="3">(MapID=44, MapName="BioP_Cit001")</Value>
+        <Value type="3">(MapID=45, MapName="BioP_Cit002")</Value>
+        <Value type="3">(MapID=46, MapName="BioP_Cit003")</Value>
+        <Value type="3">(MapID=47, MapName="BioP_Cit004")</Value>
+        <Value type="3">(MapID=48, MapName="BioP_CitHot")</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgamempcontent.sfxgawreinforcementmanager">
+      <Property name="carddata">
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleMelee", MaxCount = 5, Rarity=Rarity_Rare, GUIName=746321, GUIDescription=754702, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="DLC_SharedImages.Mods.omi_melee_A_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperPen", MaxCount = 5, Rarity=Rarity_Rare, GUIName=746486, GUIDescription=754703, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="DLC_SharedImages.Mods.asl_bar_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_AssaultRifleSuperScope", MaxCount = 5, Rarity=Rarity_Rare, GUIName=746481, GUIDescription=754753, GUICategory=EReinforcementGUICategory_Mod, GUIType="assaultmod", GUITextureRef="DLC_SharedImages.Mods.asl_sco_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleDamageAndPen", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747588, GUIDescription=754703, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="DLC_SharedImages.Mods.snp_bar_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_SniperRifleSuperScope", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747583, GUIDescription=754753, GUICategory=EReinforcementGUICategory_Mod, GUIType="snipermod", GUITextureRef="DLC_SharedImages.Mods.snp_sco_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunDamageAndPen", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747578, GUIDescription=754703, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="DLC_SharedImages.Mods.bls_bar_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_ShotgunSuperMelee", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747574, GUIDescription=754704, GUICategory=EReinforcementGUICategory_Mod, GUIType="shotgunmod", GUITextureRef="DLC_SharedImages.Mods.omi_melee_A_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolHeadShot", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747595, GUIDescription=754706, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="DLC_SharedImages.Mods.pst_bar_H_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolSuperDamage", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747591, GUIDescription=754705, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="DLC_SharedImages.Mods.pst_bar_G_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_PistolUltraLight", MaxCount = 5, Rarity=Rarity_Rare, GUIName=747597, GUIDescription=754707, GUICategory=EReinforcementGUICategory_Mod, GUIType="pistolmod", GUITextureRef="GUI_Icons.Weapons.MOD_ultralight-material_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGPenetration", MaxCount = 5, Rarity=Rarity_Rare, GUIName=746472, GUIDescription=754701, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="DLC_SharedImages.Mods.pst_bar_F_256x128")</Value>
+        <Value type="3">(UniqueName="SFXGameContentDLC_Shared.SFXWeaponMod_SMGStabilization", MaxCount = 5, Rarity=Rarity_Rare, GUIName=746467, GUIDescription=754700, GUICategory=EReinforcementGUICategory_Mod, GUIType="smgmod", GUITextureRef="GUI_Icons.Weapons.MOD_stability-damper_256x128")</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxgamecontentdlc_exp_pack002.sfxgameeffect_arialashlift">
+			<Property name="direction" type="0">(Z=1.00)</Property>
+			<Property name="force" type="0">100.00</Property>
+			<Property name="minimumvelocity" type="0">50.00</Property>
+			<Property name="minimumvelocityforcemult" type="0">0.10</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack002.sfxpawn_adjutant">
+			<Property name="headshotmultiplier" type="0">0.40</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack002.sfxpowercustomaction_arialash">
+			<Property name="antigravityamount" type="0">0.00</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=6.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="damage" type="0">(BaseValue=150.00, RankBonuses[2]=0.20)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false, ImpactPlaceables=false, DistancedSorted=true)</Property>
+			<Property name="evolve_combodurationbonus" type="0">1.00</Property>
+			<Property name="evolve_damagebonus" type="0">0.30</Property>
+			<Property name="evolve_dotduration" type="0">10.00</Property>
+			<Property name="evolve_dotpercent" type="0">1.00</Property>
+			<Property name="evolve_nocooldownchance" type="0">0.35</Property>
+			<Property name="evolve_powercombobonus" type="0">0.50</Property>
+			<Property name="evolve_rechargebonus" type="0">0.35</Property>
+			<Property name="force" type="0">(BaseValue=800.00)</Property>
+			<!--<Property name="forcemultipliers">
+				<Value type="3">(PawnType="SFXPawn_Centurion",ForceMultiplier=1.4f)</Value>
+				<Value type="3">(PawnType="SFXPawn_Guardian",ForceMultiplier=1.2f)</Value>
+			</Property>-->
+			<Property name="guardianshieldforcemodifier" type="0">0.02</Property>
+			<Property name="henchmancooldowntime" type="0">(BaseValue=12.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="impactradius" type="0">(BaseValue=150.00, Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="0">(BaseValue=1)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=4000.00)</Property>
+			<Property name="powercomboduration" type="0">(BaseValue=3.00)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=4000.00)</Property>
+			<Property name="pullforce" type="0">(BaseValue=1200.00)</Property>
+			<Property name="resistanceforcemultiplier" type="0">0.50</Property>
+			<Property name="towardcasterscale" type="0">0.25</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack002.sfxpowercustomaction_bioticflare">
+			<Property name="cooldowntime" type="0">(BaseValue=20.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="damage" type="0">(BaseValue=400.00, RankBonuses[2]=0.20)</Property>
+			<Property name="detonationparameters" type="0">(BlockedByObjects=false, DistancedSorted=true, ImpactPlaceables=true)</Property>
+			<Property name="effectduration" type="0">(BaseValue=1.00)</Property>
+			<Property name="evolve_damageforcebonus" type="0">0.30</Property>
+			<Property name="evolve_improveddamage" type="0">0.75</Property>
+			<Property name="evolve_powercombobonus" type="0">0.50</Property>
+			<Property name="evolve_radius" type="0">0.30</Property>
+			<Property name="evolve_radius2" type="0">0.50</Property>
+			<Property name="evolve_rechargebonus1" type="0">0.30</Property>
+			<Property name="force" type="0">(BaseValue=200.00, RankBonuses[2]=0.20)</Property>
+			<Property name="henchmancooldowntime" type="0">(BaseValue=30.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="impactradius" type="0">(BaseValue=600.00)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000.00)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=3000.00)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_exp_pack002.sfxpowercustomaction_nyreenbubbleshield">
+			<Property name="blastforce" type="0">500.00</Property>
+			<Property name="blastmaxtargets" type="0">4</Property>
+			<Property name="blastparameters" type="0">(BlockedByObjects=true, DistancedSorted=true, ImpactPlaceables=true)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=5.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="damage" type="0">(BaseValue=50.00)</Property>
+			<Property name="effectduration" type="0">(BaseValue=4.00, RankBonuses[2]=0.25)</Property>
+			<Property name="evolve_blastdamage" type="0">300.00</Property>
+			<Property name="evolve_blastradius" type="0">300.00</Property>
+			<Property name="evolve_damagereductionduration" type="0">10.00</Property>
+			<Property name="evolve_damagereductionpct" type="0">0.50</Property>
+			<Property name="evolve_duration" type="0">0.30</Property>
+			<Property name="evolve_nocooldownchance" type="0">0.50</Property>
+			<Property name="evolve_rechargespeed" type="0">0.30</Property>
+			<Property name="evolve_weapondamagebonusduration" type="0">10.00</Property>
+			<Property name="evolve_weapondamagebonuspct" type="0">0.50</Property>
+			<Property name="force" type="0">(BaseValue=1500.00)</Property>
+			<Property name="henchmancooldowntime" type="0">(BaseValue=10.00, Formula=DivideByBonusSum, RankBonuses[1]=0.25)</Property>
+			<Property name="impactradius" type="0">(BaseValue=100.00)</Property>
+			<Property name="maximumrange" type="0">(BaseValue=6000.00)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

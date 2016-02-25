@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="descriptions" name="descriptions.int" source="..\..\engine\localization\int\descriptions.int">
+	<Sections>
+		<Section name="objects">
+			<Property name="bioconvnodetrackdebug" type="2">Bio Debug Track</Property>
+			<Property name="bioevtsystrackdof" type="2">Bio Depth of Field Track</Property>
+			<Property name="bioevtsystrackgesture" type="2">Bio Gesture Track</Property>
+			<Property name="bioevtsystrackinterrupt" type="2">Bio Interrupt Track</Property>
+			<Property name="bioevtsystracklighting" type="2">Conversation Lighting</Property>
+			<Property name="bioevtsystracklookat" type="2">Bio Look At Track</Property>
+			<Property name="bioevtsystrackprop" type="2">Bio Prop Track</Property>
+			<Property name="bioevtsystracksetfacing" type="2">Bio Pawn Facing Track</Property>
+			<Property name="bioevtsystracksubtitles" type="2">Bio Subtitles Track</Property>
+			<Property name="bioevtsystrackswitchcamera" type="2">Bio Switch Camera Track</Property>
+			<Property name="bioevtsystrackvoelements" type="2">Bio VO Elements Track</Property>
+			<Property name="biointerptrackmove" type="2">Bio Movement Track</Property>
+			<Property name="biointerptrackrotationmode" type="2">Bio Rotation Mode Track</Property>
+			<Property name="biointerptracktoggleconvinterrupt" type="2">Bio Toggle Interrupt Track</Property>
+			<Property name="bioparticlemodulebase" type="2">BioWare</Property>
+			<Property name="bioparticlemoduleemitterspeedbase" type="2">Modify by Emitter Speed</Property>
+			<Property name="bioparticlemodulelocationattachedmesh" type="2">Emit from Parent Mesh</Property>
+			<Property name="bioparticlemodulemultiplybyemitterspeed" type="2">Multiply by Speed</Property>
+			<Property name="bioparticlemodulevelocityworldspace" type="2">Initial Velocity in WorldSpace</Property>
+			<Property name="bioscalarparametertrack" type="2">Scalar Parameter</Property>
+			<Property name="biosoundnodeapactivity" type="2">AP Activity</Property>
+			<Property name="biosoundnodeapstate" type="2">AP State</Property>
+			<Property name="biosoundnodeaptransition" type="2">AP Transition</Property>
+			<Property name="biovectorparametertrack" type="2">Bio Vector Param Track</Property>
+			<Property name="biovisualeffecttrack" type="2">VFX Track</Property>
+			<Property name="interptrackanimcontrol" type="2">Anim Control Track</Property>
+			<Property name="interptrackaudiomaster" type="2">Audio Master Track</Property>
+			<Property name="interptrackbluralpha" type="2">Bloom Alpha Track</Property>
+			<Property name="interptrackcolorprop" type="2">Color Property Track</Property>
+			<Property name="interptrackcolorscale" type="2">Color Scale Track</Property>
+			<Property name="interptrackdirector" type="2">Director Track</Property>
+			<Property name="interptrackevent" type="2">Event Track</Property>
+			<Property name="interptrackfacefx" type="2">FaceFX Track</Property>
+			<Property name="interptrackfade" type="2">Fade Track</Property>
+			<Property name="interptrackfloatmaterialparam" type="2">Float Material Param Track</Property>
+			<Property name="interptrackfloatparticleparam" type="2">Float Particle Param Track</Property>
+			<Property name="interptrackfloatprop" type="2">Float Property Track</Property>
+			<Property name="interptracklinearcolorprop" type="2">LinearColor Property Track</Property>
+			<Property name="interptrackmorphweight" type="2">Morph Weight</Property>
+			<Property name="interptrackmove" type="2">Movement Track</Property>
+			<Property name="interptrackparticlereplay" type="2">Particle Replay Track</Property>
+			<Property name="interptrackskelcontrolscale" type="2">SkelControl Scale Track</Property>
+			<Property name="interptrackslomo" type="2">Slomo Track</Property>
+			<Property name="interptracksound" type="2">Sound Track</Property>
+			<Property name="interptracktoggle" type="2">Toggle Track</Property>
+			<Property name="interptrackvectormaterialparam" type="2">Vector Material Param Track</Property>
+			<Property name="interptrackvectorprop" type="2">Vector Property Track</Property>
+			<Property name="interptrackvisibility" type="2">Visibility Track</Property>
+			<Property name="interptrackwwiseevent" type="2">Wwise Event Track</Property>
+			<Property name="interptrackwwisertpc" type="2">Wwise RTPC Track</Property>
+			<Property name="interptrackwwisesoundeffect" type="2">Wwise Sound Effect Track</Property>
+			<Property name="particlemoduleacceleration" type="2">Acceleration</Property>
+			<Property name="particlemoduleaccelerationbase" type="2">Acceleration</Property>
+			<Property name="particlemoduleaccelerationoverlifetime" type="2">Acceleration/Life</Property>
+			<Property name="particlemoduleattractorbase" type="2">Attraction</Property>
+			<Property name="particlemoduleattractorline" type="2">Line Attractor</Property>
+			<Property name="particlemoduleattractorparticle" type="2">Particle Attractor</Property>
+			<Property name="particlemoduleattractorpoint" type="2">Point Attractor</Property>
+			<Property name="particlemodulebeambase" type="2">Beam</Property>
+			<Property name="particlemodulebeammodifier" type="2">Beam Modifier</Property>
+			<Property name="particlemodulebeammultitarget" type="2">MultiTarget</Property>
+			<Property name="particlemodulebeamnoise" type="2">Noise</Property>
+			<Property name="particlemodulebeamsource" type="2">Source</Property>
+			<Property name="particlemodulebeamtarget" type="2">Target</Property>
+			<Property name="particlemodulecollision" type="2">Collision</Property>
+			<Property name="particlemodulecollisionbase" type="2">Collision</Property>
+			<Property name="particlemodulecolor" type="2">Initial Color</Property>
+			<Property name="particlemodulecolorbase" type="2">Color</Property>
+			<Property name="particlemodulecolorbyparameter" type="2">Parameter Color</Property>
+			<Property name="particlemodulecoloroverlife" type="2">Color Over Life</Property>
+			<Property name="particlemodulecolorscaleoverlife" type="2">Scale Color/Life</Property>
+			<Property name="particlemoduleeventbase" type="2">Event</Property>
+			<Property name="particlemoduleeventgenerator" type="2">Event Generator</Property>
+			<Property name="particlemoduleeventreceiverkillparticles" type="2">EventRcvr KillAll</Property>
+			<Property name="particlemoduleeventreceiverspawn" type="2">EventRcvr Spawn</Property>
+			<Property name="particlemodulekillbase" type="2">Kill</Property>
+			<Property name="particlemodulekillbox" type="2">Kill Box</Property>
+			<Property name="particlemodulekillheight" type="2">Kill Height</Property>
+			<Property name="particlemodulelifetime" type="2">Lifetime</Property>
+			<Property name="particlemodulelifetimebase" type="2">Lifetime</Property>
+			<Property name="particlemodulelocation" type="2">Initial Location</Property>
+			<Property name="particlemodulelocationactor" type="2">Actor</Property>
+			<Property name="particlemodulelocationbase" type="2">Location</Property>
+			<Property name="particlemodulelocationdirect" type="2">Direct Location</Property>
+			<Property name="particlemodulelocationemitter" type="2">Emitter InitLoc</Property>
+			<Property name="particlemodulelocationemitterdirect" type="2">Emitter DirectLoc</Property>
+			<Property name="particlemodulelocationprimitivecylinder" type="2">Cylinder</Property>
+			<Property name="particlemodulelocationprimitivesphere" type="2">Sphere</Property>
+			<Property name="particlemodulematerialbase" type="2">Material</Property>
+			<Property name="particlemodulematerialbyparameter" type="2">Parameter Material</Property>
+			<Property name="particlemodulemeshmaterial" type="2">Mesh Material</Property>
+			<Property name="particlemodulemeshmaterialbyparameter" type="2">Parameter Mesh Material</Property>
+			<Property name="particlemodulemeshrotation" type="2">Init Mesh Rotation</Property>
+			<Property name="particlemodulemeshrotationrate" type="2">Init Mesh RotRate</Property>
+			<Property name="particlemodulemeshrotationratemultiplylife" type="2">Mesh RotRate/Life</Property>
+			<Property name="particlemoduleorbit" type="2">Orbit</Property>
+			<Property name="particlemoduleorbitbase" type="2">Orbit</Property>
+			<Property name="particlemoduleorbitoffset" type="2">Orbit Offset</Property>
+			<Property name="particlemoduleorbitrotation" type="2">Orbit Rotate</Property>
+			<Property name="particlemoduleorbitrotationrate" type="2">Orbit RotationRate</Property>
+			<Property name="particlemoduleorientationaxislock" type="2">Lock Axis</Property>
+			<Property name="particlemoduleorientationbase" type="2">Orientation</Property>
+			<Property name="particlemoduleparameterbase" type="2">Parameter</Property>
+			<Property name="particlemoduleparameterdynamic" type="2">Dynamic</Property>
+			<Property name="particlemoduleparameterinitialcolor" type="2">Init Color (param)</Property>
+			<Property name="particlemodulerequired" type="2">Required</Property>
+			<Property name="particlemodulerotation" type="2">Initial Rotation</Property>
+			<Property name="particlemodulerotationbase" type="2">Rotation</Property>
+			<Property name="particlemodulerotationoverlifetime" type="2">Rotation/Life</Property>
+			<Property name="particlemodulerotationrate" type="2">Initial RotRate</Property>
+			<Property name="particlemodulerotationratebase" type="2">RotationRate</Property>
+			<Property name="particlemodulerotationratemultiplylife" type="2">RotRate/Life</Property>
+			<Property name="particlemodulesize" type="2">Initial Size</Property>
+			<Property name="particlemodulesizebase" type="2">Size</Property>
+			<Property name="particlemodulesizemultiplylife" type="2">Size By Life</Property>
+			<Property name="particlemodulesizemultiplyvelocity" type="2">Size By Velocity</Property>
+			<Property name="particlemodulesizescale" type="2">Size Scale</Property>
+			<Property name="particlemodulesizescalebytime" type="2">Size Scale By Time</Property>
+			<Property name="particlemodulesourcemovement" type="2">Source Movement</Property>
+			<Property name="particlemodulespawn" type="2">Spawn</Property>
+			<Property name="particlemodulespawnbase" type="2">Spawn</Property>
+			<Property name="particlemodulespawnperunit" type="2">Spawn PerUnit</Property>
+			<Property name="particlemodulestorespawntime" type="2">Store Spawn Time</Property>
+			<Property name="particlemodulestorespawntimebase" type="2">Store Spawn Time</Property>
+			<Property name="particlemodulesubuv" type="2">SubImage Index</Property>
+			<Property name="particlemodulesubuvbase" type="2">SubUV</Property>
+			<Property name="particlemodulesubuvdirect" type="2">SubUV Direct</Property>
+			<Property name="particlemodulesubuvmovie" type="2">SubUV Movie</Property>
+			<Property name="particlemodulesubuvselect" type="2">SubUV Select</Property>
+			<Property name="particlemoduletrailbase" type="2">Trail</Property>
+			<Property name="particlemoduletrailsource" type="2">Source</Property>
+			<Property name="particlemoduletrailspawn" type="2">Spawn</Property>
+			<Property name="particlemoduletrailtaper" type="2">Taper</Property>
+			<Property name="particlemoduletypedataanimtrail" type="2">AnimTrail Data</Property>
+			<Property name="particlemoduletypedatabeam" type="2">Beam Data</Property>
+			<Property name="particlemoduletypedatabeam2" type="2">Beam Data</Property>
+			<Property name="particlemoduletypedataflamethrower" type="2">Flame Thrower</Property>
+			<Property name="particlemoduletypedatamesh" type="2">Mesh Data</Property>
+			<Property name="particlemoduletypedatameshphysx" type="2">PhysX Mesh Data</Property>
+			<Property name="particlemoduletypedataphysx" type="2">PhysX Sprite Data</Property>
+			<Property name="particlemoduletypedataribbon" type="2">Ribbon Data</Property>
+			<Property name="particlemoduletypedatasubuv" type="2">SubUV Data</Property>
+			<Property name="particlemoduletypedatatrail" type="2">Trail Data</Property>
+			<Property name="particlemoduletypedatatrail2" type="2">Trail Data</Property>
+			<Property name="particlemoduleuberbase" type="2">Uber</Property>
+			<Property name="particlemoduleuberltisivcl" type="2">UberLTISIVCL</Property>
+			<Property name="particlemoduleuberltisivclil" type="2">UberLTISIVCLIL</Property>
+			<Property name="particlemoduleuberltisivclilirssblirr" type="2">UberLTISIVCLILIRSSBLIRR</Property>
+			<Property name="particlemodulevelocity" type="2">Initial Velocity</Property>
+			<Property name="particlemodulevelocitybase" type="2">Velocity</Property>
+			<Property name="particlemodulevelocityinheritparent" type="2">Inherit Parent Vel.</Property>
+			<Property name="particlemodulevelocityoverlifetime" type="2">Velocity/Life</Property>
+			<Property name="pbrulenodealternate" type="2">Alternate</Property>
+			<Property name="pbrulenodecomment" type="2">Comment</Property>
+			<Property name="pbrulenodecorner" type="2">Corner</Property>
+			<Property name="pbrulenodeedgeangle" type="2">EdgeAngle</Property>
+			<Property name="pbrulenodeedgemesh" type="2">Edge Mesh</Property>
+			<Property name="pbrulenodeextracttopbottom" type="2">Top/Bottom</Property>
+			<Property name="pbrulenodelodquad" type="2">LODQuad</Property>
+			<Property name="pbrulenodemesh" type="2">Mesh</Property>
+			<Property name="pbrulenodeocclusion" type="2">Occlusion</Property>
+			<Property name="pbrulenodequad" type="2">Quad</Property>
+			<Property name="pbrulenoderandom" type="2">Random</Property>
+			<Property name="pbrulenoderepeat" type="2">Repeat</Property>
+			<Property name="pbrulenodesize" type="2">Size</Property>
+			<Property name="pbrulenodesplit" type="2">Split</Property>
+			<Property name="pbrulenodesubruleset" type="2">SubRuleset</Property>
+			<Property name="pbrulenodetransform" type="2">Transform</Property>
+			<Property name="pbrulenodevariation" type="2">Variation</Property>
+			<Property name="pbrulenodewindowwall" type="2">WindowWall</Property>
+			<Property name="rvrceffectmodulecamerashake" type="2">Camera Shake</Property>
+			<Property name="rvrceffectmoduleeffectsmaterial" type="2">Effects Material</Property>
+			<Property name="rvrceffectmoduleemitter" type="2">Emitter</Property>
+			<Property name="rvrceffectmoduleframebuffer" type="2">Framebuffer</Property>
+			<Property name="rvrceffectmodulelensflare" type="2">Lens Flare</Property>
+			<Property name="rvrceffectmodulelifetime" type="2">Lifetime</Property>
+			<Property name="rvrceffectmodulelight" type="2">Light</Property>
+			<Property name="rvrceffectmodulelocation" type="2">Location</Property>
+			<Property name="rvrceffectmodulemeta" type="2">Meta</Property>
+			<Property name="rvrceffectmoduleparameters" type="2">Parameters</Property>
+			<Property name="rvrceffectmoduleradialblur" type="2">Radial Blur</Property>
+			<Property name="rvrceffectmoduleskelmesh" type="2">Skeletal Mesh</Property>
+			<Property name="rvrceffectmodulesound" type="2">Sound</Property>
+			<Property name="rvrceffectmodulespawnactor" type="2">Spawn Actor</Property>
+			<Property name="rvrclienteffect" type="2">Client Effect</Property>
+			<Property name="rvrclienteffectbyimpactmaterial" type="2">Client Effect by Impact Material</Property>
+			<Property name="rvrclienteffectinstanceconstant" type="2">Client Effect Instance</Property>
+			<Property name="rvrclienteffectinterface" type="2">Client Effect</Property>
+			<Property name="rvrclienteffectmulti" type="2">Multi Client Effect</Property>
+			<Property name="rvrclienteffecttrigger" type="2">Client Effect Trigger</Property>
+			<Property name="sfxgameinterptrackprocfoley" type="2">Procedural Foley Track</Property>
+			<Property name="sfxgameinterptrackwwisemiclock" type="2">Wwise Mic Lock Track</Property>
+			<Property name="sfxinterptrack_moveto" type="2">SFX Move-To Track</Property>
+			<Property name="sfxinterptrackattachcrusteffect" type="2">SFX Crust Effect Track DEPRECATED</Property>
+			<Property name="sfxinterptrackattachtoactor" type="2">SFX Attach To Actor Track</Property>
+			<Property name="sfxinterptrackattachvfxtoobject" type="2">SFX Attach VFX Track DEPRECATED</Property>
+			<Property name="sfxinterptrackblackscreen" type="2">SFX Black Screen Track</Property>
+			<Property name="sfxinterptrackclienteffect" type="2">SFX Client Effect Track</Property>
+			<Property name="sfxinterptrackdestroy" type="2">SFX Destory Track</Property>
+			<Property name="sfxinterptrackforcelightenvupdate" type="2">SFX Force Light Env Update Track</Property>
+			<Property name="sfxinterptracklightenvquality" type="2">SFX Light Env Quality Track</Property>
+			<Property name="sfxinterptrackmoviebink" type="2">SFX Bink Track</Property>
+			<Property name="sfxinterptrackmovietexture" type="2">SFX Movie Texture Track</Property>
+			<Property name="sfxinterptrackplayfaceonlyvo" type="2">SFX Play FOVO Track</Property>
+			<Property name="sfxinterptracksetenveffectintensity" type="2">SFX Set Effect Intensity Track</Property>
+			<Property name="sfxinterptracksetplayernearclipplane" type="2">SFX Set Player Near Clip Track</Property>
+			<Property name="sfxinterptracksetweaponinstant" type="2">SFX Set Weapon (Instant) Track</Property>
+			<Property name="sfxinterptracktoggleaffectedbyhiteffects" type="2">SFX Toggle Hit Effects Track</Property>
+			<Property name="sfxinterptracktogglehidden" type="2">SFX Toggle Hidden Track</Property>
+			<Property name="sfxinterptracktogglelightenvironment" type="2">SFX Toggle Light Env Track</Property>
+			<Property name="soundnodeattenuation" type="2">Attenuation</Property>
+			<Property name="soundnodeconcatenator" type="2">Concatenator</Property>
+			<Property name="soundnodedelay" type="2">Delay</Property>
+			<Property name="soundnodedistancecrossfade" type="2">Distance CrossFade</Property>
+			<Property name="soundnodelooping" type="2">Looping</Property>
+			<Property name="soundnodemature" type="2">Sound Node Mature</Property>
+			<Property name="soundnodemixer" type="2">Mixer</Property>
+			<Property name="soundnodemodulator" type="2">Modulator</Property>
+			<Property name="soundnodemodulatorcontinuous" type="2">Continuous Modulator</Property>
+			<Property name="soundnodeoscillator" type="2">Oscillator</Property>
+			<Property name="soundnoderandom" type="2">Random</Property>
+			<Property name="uibutton" type="2">Button [[Standard]]</Property>
+			<Property name="uicalloutbuttonpanel" type="2">Panel [Button Panel]</Property>
+			<Property name="uicheckbox" type="2">Checkbox</Property>
+			<Property name="uicombobox" type="2">Combobox</Property>
+			<Property name="uicomp_autoalignment" type="2">Generic Alignment</Property>
+			<Property name="uicomp_drawimage" type="2">Image Component</Property>
+			<Property name="uicomp_drawstring" type="2">Text Component</Property>
+			<Property name="uicomp_listelementsorter" type="2">Generic Sort Component (Alpha)</Property>
+			<Property name="uicomp_listpresenter" type="2">Report View</Property>
+			<Property name="uicomp_listpresentertree" type="2">Tree View (not implemented)</Property>
+			<Property name="uieditbox" type="2">Editbox [[Standard]]</Property>
+			<Property name="uiimage" type="2">Image</Property>
+			<Property name="uilabel" type="2">Label [[Standard]]</Property>
+			<Property name="uilabelbutton" type="2">Label [Button]</Property>
+			<Property name="uilist" type="2">List [[Standard]]</Property>
+			<Property name="uimeshwidget" type="2">Panel [3D-Mesh Container]</Property>
+			<Property name="uimessagebox" type="2">Generic Message Box</Property>
+			<Property name="uinavigationlist" type="2">List [Navigation]</Property>
+			<Property name="uinumericeditbox" type="2">Editbox [Numeric]</Property>
+			<Property name="uinumericoptionlist" type="2">List [Cycle Numeric Value]</Property>
+			<Property name="uiobjectlist" type="2">List [Widget Collection]</Property>
+			<Property name="uioptionlist" type="2">List [Cycle Value]</Property>
+			<Property name="uipanel" type="2">Panel [[Standard]]</Property>
+			<Property name="uiprogressbar" type="2">Progress Bar</Property>
+			<Property name="uisaferegionpanel" type="2">Panel [Safe-Region]</Property>
+			<Property name="uiscene" type="2">Generic UIScene</Property>
+			<Property name="uiscrollframe" type="2">Panel [Scrolling Panel]</Property>
+			<Property name="uislider" type="2">Slider</Property>
+			<Property name="uistate_active" type="2">Active</Property>
+			<Property name="uistate_disabled" type="2">Disabled</Property>
+			<Property name="uistate_enabled" type="2">Enabled</Property>
+			<Property name="uistate_focused" type="2">Focused</Property>
+			<Property name="uistate_pressed" type="2">Pressed</Property>
+			<Property name="uistate_targetedtab" type="2">Targeted TabButton</Property>
+			<Property name="uistyle_combo" type="2">Combo</Property>
+			<Property name="uistyle_image" type="2">Image</Property>
+			<Property name="uistyle_text" type="2">Text</Property>
+			<Property name="uitabcontrol" type="2">Tab Control</Property>
+			<Property name="uitabpage" type="2">Tab Page</Property>
+			<Property name="uitogglebutton" type="2">Button [Toggle]</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

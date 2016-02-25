@@ -1,0 +1,30 @@
+{
+	"name": "Weapon Mods",
+	"categories": [
+		{
+			"name": "Assault Rifles",
+			"bools": [],
+			"variables" : []
+		},
+		{
+			"name": "Pistols",
+			"bools": [],
+			"variables": []
+		},
+		{
+			"name": "Shotguns",
+			"bools": [],
+			"variables": []
+		},
+		{
+			"name": "SMG's",
+			"bools": [],
+			"variables": []
+		},
+		{
+			"name": "Sniper Rifles",
+			"bools": [],
+			"variables": []
+		}
+	]
+}

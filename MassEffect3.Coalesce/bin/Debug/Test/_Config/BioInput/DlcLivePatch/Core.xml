@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioInput">
+	<Sections>
+		<Section name="sfxgame.sfxgamemodebase">
+			<Property name="bindings" type="4">( Name="PC_Talk", Command="BioTalk" );</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

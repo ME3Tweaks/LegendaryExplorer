@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioDifficulty">
+	<Includes>
+		<Include source="SinglePlayer/Narrative.xml" />
+		<Include source="SinglePlayer/Easy.xml" />
+		<Include source="SinglePlayer/Normal.xml" />
+		<Include source="SinglePlayer/Hardcore.xml" />
+		<Include source="SinglePlayer/Insanity.xml" />
+	</Includes>
+</CoalesceAsset>

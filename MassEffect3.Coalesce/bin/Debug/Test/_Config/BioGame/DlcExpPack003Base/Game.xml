@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<!--<Section name="biogame.movies">
+			<Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_EXP_Pack003_Base\Movies</Property>
+		</Section>-->
+		<Section name="sfxgame.biocheatmanagernonnative">
+			<Property name="setupmodifierarray">
+				<Value type="3">(Modifier=UnlockArmour, PlotIDSet=(19455,19456,19457,19458,19459,19460,19461,19462,19467,19468,19469,19470,21399,21400,21401,21402,20914,20915,20916,20917,20918,20919,20920,20921,18988,18995,18999,19000,19005,19006,19007,19008,22339,22340,22341,20984,20985,20986,20987,20988,20989,21417,22590), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+				<Value type="3">(Modifier=UnlockIntel, PlotIDSet=(21531,21533,21535,21537,21539,21541,21543,21545,21547,21549,22419,22421), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+				<Value type="3">(Modifier=UnlockMedigel, PlotIDSet=(21555,21556,21557,21558,21559), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="timedplotunlocks" type="3">(PlotBool=24582,UnlockDay=0)</Property>
+		</Section>
+		<Section name="sfxgame.bioworldinfo">
+			<Property name="m_acullfxconvlist">
+				<Value type="3">cit001_area_lockdown_a_dlg</Value>
+				<Value type="3">cit001_market_sounds_a_dlg</Value>
+				<Value type="3">cit001_car_lot_announce_a_dlg</Value>
+				<Value type="3">cit003_alarms_a_dlg</Value>
+				<Value type="3">cit003_announcements_a_dlg</Value>
+				<Value type="3">cit003_ff_trap_lure_a_dlg</Value>
+				<Value type="3">cit003_locked_door_a_dlg</Value>
+				<Value type="3">cit003_mech_event_merc_a_dlg</Value>
+				<Value type="3">cit003_mercs_building2_a_dlg</Value>
+				<Value type="3">cit003_mercs_finalpush_a_dlg</Value>
+				<Value type="3">cit003_mercs_tubes1_a_dlg</Value>
+				<Value type="3">cit003_platformride_b_dlg</Value>
+				<Value type="3">cit003_rr_sovereign_a_dlg</Value>
+				<Value type="3">cit003_rr_sovereign2_a_dlg</Value>
+				<Value type="3">cit003_rr_shepdossier_a_dlg</Value>
+				<Value type="3">cit003_rr_malfunction_a_dlg</Value>
+				<Value type="3">cit003_rr_kredak_a_dlg</Value>
+				<Value type="3">cit003_rr_genophage_a_dlg</Value>
+				<Value type="3">cit003_rr_first_spectres_a_dlg</Value>
+				<Value type="3">cit003_rr_first_contact_a_dlg</Value>
+				<Value type="3">cit003_rr_covenant_a_dlg</Value>
+				<Value type="3">cit003_rr_citdiscovery_a_dlg</Value>
+				<Value type="3">cit003_rr_ai_outlawed_a_dlg</Value>
+				<Value type="3">cit004_dock_pa_a_dlg</Value>
+			</Property>
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+				<Value type="3">cit001_sushi_patron1_a_dlg</Value>
+				<Value type="3">cit001_sushi_bartender_a_dlg</Value>
+				<Value type="3">cit001_sushi_host_dlg</Value>
+				<Value type="3">cit001_repair_workers_a_dlg</Value>
+				<Value type="3">cit001_bossfight1_a_dlg</Value>
+				<Value type="3">cit001_pre_safehouse_a_dlg</Value>
+				<Value type="3">cit001_after_fall_b_dlg</Value>
+				<Value type="3">cit001_prebridge_loveint_b_dlg</Value>
+				<Value type="3">cit001_follower_radio_in_a_dlg</Value>
+				<Value type="3">cit001_postbridge1_b_dlg</Value>
+				<Value type="3">cit001_mrc_alarm_found_a_dlg</Value>
+				<Value type="3">cit001_mrc_alert_search_a_dlg</Value>
+				<Value type="3">cit001_mrc_man_down_a_dlg</Value>
+				<Value type="3">cit001_sushi_fight2_a_dlg</Value>
+				<Value type="3">cit001_sushi_fight_merc2_a_dlg</Value>
+				<Value type="3">cit001_mrc_temp_hq_a_dlg</Value>
+				<Value type="3">cit001_market_citizens_a_dlg</Value>
+				<Value type="3">cit001_prebridge_merc2_a_dlg</Value>
+				<Value type="3">cit001_lockedout_citizens_a_dlg</Value>
+				<Value type="3">cit001_mrc_call_backup_a_dlg</Value>
+				<Value type="3">cit001_postbridge_lovei_b_dlg</Value>
+				<Value type="3">cit001_postbridge_merc1_a_dlg</Value>
+				<Value type="3">cit001_spectre_code_a_dlg</Value>
+				<Value type="3">cit001_csecfight_ff_b_dlg</Value>
+				<Value type="3">cit001_sushi_fight1_a_dlg</Value>
+				<Value type="3">cit003_after_chand_fall_b_dlg</Value>
+				<Value type="3">cit003_all_clear_b_dlg</Value>
+				<Value type="3">cit003_first_fight_b_dlg</Value>
+				<Value type="3">cit003_glyph_a_dlg</Value>
+				<Value type="3">cit003_inside_first_vault_b_dlg</Value>
+				<Value type="3">cit003_lobby_planning_b_dlg</Value>
+				<Value type="3">cit003_mech_event_b_dlg</Value>
+				<Value type="3">cit003_mercs_atrium_a_dlg</Value>
+				<Value type="3">cit003_mercs_building1_a_dlg</Value>
+				<Value type="3">cit003_outside_researchb_b_dlg</Value>
+				<Value type="3">cit003_research_a_combat_b_dlg</Value>
+				<Value type="3">cit003_research_b_combat_b_dlg</Value>
+				<Value type="3">cit003_reveal_archive_b_dlg</Value>
+				<Value type="3">cit003_tubes1_b_dlg</Value>
+				<Value type="3">cit003_wrex_shouts_b_dlg</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxaccomplishmentmanager">
+			<Property name="accomplishmentdata">
+				<Value type="3">(Index=60,Name=DLC_CIT1,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_10,XboxAchievementID=164,XboxAvatarAwardID=,PS3TrophyID=60,Title=813081,Incomplete=813082,Complete=813082,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.60_priority_target",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=61,Name=DLC_CIT2,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_11,XboxAchievementID=165,XboxAvatarAwardID=,PS3TrophyID=61,Title=813083,Incomplete=813084,Complete=813084,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.61_high_society",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=62,Name=DLC_CIT3,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_12,XboxAchievementID=166,XboxAvatarAwardID=,PS3TrophyID=62,Title=813085,Incomplete=813086,Complete=813086,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.62_team_player",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=63,Name=DLC_CIT4,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_13,XboxAchievementID=167,XboxAvatarAwardID=,PS3TrophyID=63,Title=813087,Incomplete=813088,Complete=813088,NotificationText=,MPNotificationText=,PointValue=50,Icon="DLC_MPImages.Medals.63_last_resort",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=64,Name=DLC_CIT5,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_14,XboxAchievementID=168,XboxAvatarAwardID=,PS3TrophyID=64,Title=813089,Incomplete=813090,Complete=813090,NotificationText=,MPNotificationText=,PointValue=10,Icon="DLC_MPImages.Medals.64_perfect_host",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=65,Name=DLC_CIT6,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_15,XboxAchievementID=169,XboxAvatarAwardID=,PS3TrophyID=65,Title=813091,Incomplete=813092,Complete=813092,NotificationText=,MPNotificationText=,PointValue=15,Icon="DLC_MPImages.Medals.65_king_castle",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=66,Name=DLC_CIT7,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_16,XboxAchievementID=170,XboxAvatarAwardID=,PS3TrophyID=66,Title=813093,Incomplete=813094,Complete=813094,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.66_technical_issues",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=67,Name=DLC_CIT8,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_17,XboxAchievementID=171,XboxAvatarAwardID=,PS3TrophyID=67,Title=813095,Incomplete=813096,Complete=813096,NotificationText=,MPNotificationText=,PointValue=25,Icon="DLC_MPImages.Medals.67_simulated_hero",IsMultiplayerOnly=FALSE)</Value>
+				<Value type="3">(Index=68,Name=DLC_CIT9,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_18,XboxAchievementID=172,XboxAvatarAwardID=,PS3TrophyID=68,Title=814351,Incomplete=814352,Complete=814352,NotificationText=,MPNotificationText=,PointValue=50,Icon="DLC_MPImages.Medals.68_one_and_only",IsMultiplayerOnly=FALSE)</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxplayersquadloadoutdata">
+			<Property name="assaultrifles" type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_AssaultRifle_Lancer")</Property>
+			<Property name="heavypistols">
+				<Value type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer")</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_EXP_Pack003.SFXWeapon_Pistol_Silencer_Cit001")</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

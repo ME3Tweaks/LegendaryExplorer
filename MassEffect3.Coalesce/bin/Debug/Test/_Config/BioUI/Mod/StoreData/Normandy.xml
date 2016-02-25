@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxgamechoiceguidata_storedata_normandy">
+			<Property name="markuppercent" type="0">0.10</Property>
+			<Property name="storeitemarray">
+				<Value type="-1" />
+
+				<!-- Aegohr Munitions -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Salarian",
+					PlotUnlockConditionalID=1668,
+					ChoiceEntry=(srChoiceName=652506, srChoiceDescription=724938),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Batarian State Arms -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Batarian",
+					PlotUnlockConditionalID=1666,
+					ChoiceEntry=(srChoiceName=652503, srChoiceDescription=724936),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Cipritine Armory -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Turian",
+					PlotUnlockConditionalID=1669,
+					ChoiceEntry=(srChoiceName=652507, srChoiceDescription=724939),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Elkoss Combine Arsenal Supplies -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Volus",
+					PlotUnlockConditionalID=1670,
+					ChoiceEntry=(srChoiceName=652508, srChoiceDescription=724941),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Kanala Exports -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Hanar",
+					PlotUnlockConditionalID=1667,
+					ChoiceEntry=(srChoiceName=652504, srChoiceDescription=724940),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Kassa Fabrication -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Human",
+					PlotUnlockConditionalID=1673,
+					ChoiceEntry=(srChoiceName=652505, srChoiceDescription=724942),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Nos Astra Sporting Goods -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Asari",
+					PlotUnlockConditionalID=1665,
+					ChoiceEntry=(srChoiceName=652502, srChoiceDescription=724937),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Omega -->
+				<!--<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContentDLC_EXP_Pack002.SFXGUIData_Store_Omega",
+					PlotUnlockConditionalID=1670,
+					ChoiceEntry=(srChoiceName=735263, srChoiceDescription=724941),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>-->
+
+				<!-- Sirta Supplies -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Hospital",
+					PlotUnlockConditionalID=1671,
+					ChoiceEntry=(srChoiceName=661727, srChoiceDescription=724944),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+
+				<!-- Spectre Requisitions -->
+				<Value type="2">
+					(ItemType=TYPE_NESTEDCATEGORY,
+					ItemClassName="SFXGameContent.SFXGUIData_Store_Spectre",
+					PlotUnlockConditionalID=1672,
+					ChoiceEntry=(srChoiceName=693421, srChoiceDescription=724943),
+					LargeImage="gui_codex_images.Codex.CDX_Alliance_512x256")
+				</Value>
+			</Property>
+			<Property name="storename" type="2">Normandy</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceFile id="Config2" name="Config2.bin">
+  <Assets>
+    <Asset source="BioAI.xml" />
+    <Asset source="BioCompat.xml" />
+    <Asset source="BioCredits.xml" />
+    <Asset source="BioDifficulty.xml" />
+    <Asset source="BioEngine.xml" />
+    <Asset source="BioGame.xml" />
+    <Asset source="BioInput.xml" />
+    <Asset source="BioLightmass.xml" />
+    <Asset source="BioTest.xml" />
+    <Asset source="BioUI.xml" />
+    <Asset source="BioWeapon.xml" />
+  </Assets>
+</CoalesceFile>

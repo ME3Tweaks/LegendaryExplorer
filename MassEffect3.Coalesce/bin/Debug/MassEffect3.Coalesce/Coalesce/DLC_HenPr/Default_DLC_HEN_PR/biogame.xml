@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini" source="..\..\biogame\config\biogame.ini">
+  <Sections>
+    <Section name="biogame.movies">
+      <Property name="moviepaths" type="3">..\..\BIOGame\DLC\DLC_HEN_PR\Movies</Property>
+    </Section>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\DLC_Shared\Config\DefaultGame.ini</Property>
+    </Section>
+    <Section name="sfxgame.bioglobalvariabletable">
+      <Property name="newgameplusplotstopersist">
+        <Value type="3">(nIndex=22746, nType=SFXPlotType_Boolean)</Value>
+        <Value type="3">(nIndex=22747, nType=SFXPlotType_Boolean)</Value>
+      </Property>
+      <Property name="timedplotunlocks" type="3">(PlotBool=20236,UnlockDay=0)</Property>
+    </Section>
+    <Section name="sfxgame.sfxaccomplishmentmanager">
+      <Property name="accomplishmentdata">
+        <Value type="3">(Index=51,Name=DLC_PROTHEAN1,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_1,XboxAchievementID=155,XboxAvatarAwardID=,PS3TrophyID=51,Title=722110,Incomplete=722111,Complete=722111,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_Achievement_Images.51_freedom-fighter",IsMultiplayerOnly=FALSE)</Value>
+        <Value type="3">(Index=52,Name=DLC_PROTHEAN2,Parent=none,LinkedAchievementID=ACHIEVEMENT_DLC_2,XboxAchievementID=156,XboxAvatarAwardID=,PS3TrophyID=52,Title=722112,Incomplete=722113,Complete=722113,NotificationText=,MPNotificationText=,PointValue=25,Icon="GUI_Achievement_Images.52_prothean-expert",IsMultiplayerOnly=FALSE)</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgame">
+      <Property name="newgameplusplayervariables" type="3">SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean</Property>
+    </Section>
+    <Section name="sfxgame.sfxgestures">
+      <Property name="gesturespackagename" type="0">BIOG_GesturesConfigDLC</Property>
+      <Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+    </Section>
+    <Section name="sfxgame.sfxplayersquadloadoutdata">
+      <Property name="assaultrifles" type="3">(ClassName="SFXGameContentDLC_HEN_PR.SFXWeapon_AssaultRifle_Prothean")</Property>
+      <Property name="henchloadoutinfo">
+        <Value type="4">(ClassName=SFXPawn_Prothean,WeaponClasses=(LoadoutWeapons_HeavyPistols,LoadoutWeapons_Shotguns))</Value>
+        <Value type="3">(ClassName=SFXPawn_Prothean,WeaponClasses=(LoadoutWeapons_HeavyPistols,LoadoutWeapons_AssaultRifles))</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxtreasuredata">
+      <Property name="leveltreasure" type="3">(Level="BioP_Cat001",LevelEnum=ME3Level_Cat001,PlotId=10183,XP=2000,Credits=15000,Treasure=("GAWAsset_EdenPrimeSupport"),ConditionalGAWAssets=("GAWAsset_EdenPrimeSupport_Mod1","GAWAsset_EdenPrimeSupport_Mod2","GAWAsset_EdenPrimeSupport_Mod3"))</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

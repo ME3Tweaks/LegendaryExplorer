@@ -1,0 +1,30 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.Tlk.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\MassEffect3.Tlk.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.CommandLine.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.MassEffect3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.CommandLine.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\bin\Debug\Gammtek.Conduit.MassEffect3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.Tlk\obj\Debug\MassEffect3.Tlk.pdb

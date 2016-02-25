@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxobjdata_annexhack sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Annex_DefendZone_Hack</Property>
+			<Property name="meshassets">
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_AnnexHack_Variation1",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer01.Computer01",GameName=669276,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_AnnexHack_Variation2",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=669277,TipText=11)</Value>
+			</Property>
+			<Property name="objectivetype" type="2">AnnexZoneHack</Property>
+			<Property name="requiredspawntags" type="2">Annex</Property>
+		</Section>
+		<Section name="sfxobjdata_annexupload sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Annex_DefendZone_Upload</Property>
+			<Property name="meshassets">
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_AnnexUpload_Variation1",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer01.Computer01",GameName=669276,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_AnnexUpload_Variation2",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=669277,TipText=11)</Value>
+			</Property>
+			<Property name="objectivetype" type="2">AnnexZoneUpload</Property>
+			<Property name="requiredspawntags" type="2">Annex</Property>
+		</Section>
+		<Section name="sfxobjdata_assassination sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Assassination</Property>
+			<Property name="objectivetype" type="2">AssassinationObjective</Property>
+			<Property name="requiredspawntags" type="2">ExtractionPoint</Property>
+		</Section>
+		<Section name="sfxobjdata_disarm_disable sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Disarm_Disable</Property>
+			<Property name="meshassets">
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation1",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.ReaperIndocDevice",GameName=669279,MeshVOLine=0,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation2",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Beacon02.Beacon02",GameName=669280,MeshVOLine=1,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation3",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Beacon02.Beacon02",GameName=670718,MeshVOLine=2,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation4",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Ind_EnginePart01.EnginePart01",GameName=670719,MeshVOLine=3,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation5",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer01.Computer01",GameName=670720,MeshVOLine=4,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation6",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.TechScanner",GameName=670721,MeshVOLine=5,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation7",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=670722,MeshVOLine=6,TipText=10)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmDisable_Variation8",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Ind_ReaperProto.ReaperProto",GameName=670723,MeshVOLine=7,TipText=10)</Value>
+			</Property>
+			<Property name="objectivetype" type="2">DisarmDisable</Property>
+			<Property name="requiredspawntags" type="2">Disarm</Property>
+		</Section>
+		<Section name="sfxobjdata_disarm_enable sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Disarm_Enable</Property>
+			<Property name="meshassets">
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation1",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.TechScanner",GameName=669281,MeshVOLine=0,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation2",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Beacon02.Beacon02",GameName=669282,MeshVOLine=1,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation3",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Beacon02.Beacon02",GameName=670706,MeshVOLine=2,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation4",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Ind_EnginePart01.EnginePart01",GameName=670707,MeshVOLine=3,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation5",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer01.Computer01",GameName=670708,MeshVOLine=4,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation6",SpawnLocation=EObjectiveLocation_Table,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=670711,MeshVOLine=5,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation7",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cbt_Bomb02.Bomb02",GameName=670712,MeshVOLine=6,TipText=11)</Value>
+				<Value type="2">(UniqueString="SFXOperation_ObjectiveData_DisarmEnable_Variation8",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.TechScanner",GameName=670713,MeshVOLine=7,TipText=11)</Value>
+			</Property>
+			<Property name="objectivetype" type="2">DisarmEnable</Property>
+			<Property name="requiredspawntags" type="2">Disarm</Property>
+		</Section>
+		<Section name="sfxobjdata_extraction sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_ExtractionPoint</Property>
+			<Property name="objectivetype" type="2">ExtractionPoint</Property>
+			<Property name="requiredspawntags" type="2">ExtractionPoint</Property>
+		</Section>
+		<Section name="sfxobjdata_retrieve_dropoff sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Retrieve_DropOffLocation</Property>
+			<Property name="objectivetype" type="2">RetrieveDropOff</Property>
+			<Property name="requiredspawntags" type="2">Retrieve_DropOff</Property>
+		</Section>
+		<Section name="sfxobjdata_retrieve_pickup sfxoperation_objectivedata">
+			<Property name="assetpath" type="2">SFXGameMPContent.SFXObjective_Retrieve_PickupObject</Property>
+			<Property name="meshassets"
+			          type="2">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation1",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.ProtheanObject",Translation=(Z=-50),GameName=596862)
+			</Property>
+			<Property name="objectivetype" type="2">RetrievePickup</Property>
+			<Property name="requiredspawntags" type="2">Retrieve_Pickup</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

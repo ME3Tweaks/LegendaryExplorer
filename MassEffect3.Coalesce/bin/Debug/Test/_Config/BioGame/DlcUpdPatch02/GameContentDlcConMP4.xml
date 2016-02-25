@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_adept_volus">
+			<Property name="startingencumbrancecapacity" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_engineer_volus">
+			<Property name="startingencumbrancecapacity" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_sentinel_volus">
+			<Property name="startingencumbrancecapacity" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxcharacterclassmp_vanguard_volus">
+			<Property name="startingencumbrancecapacity" type="0">0.15f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxgameeffect_matchconsumable_gear_medigelcapacity">
+			<Property name="regenspeed[0]" type="0">-0.04f</Property>
+			<Property name="regenspeed[1]" type="0">-0.06f</Property>
+			<Property name="regenspeed[2]" type="0">-0.08f</Property>
+			<Property name="regenspeed[3]" type="0">-0.1f</Property>
+			<Property name="regenspeed[4]" type="0">-0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_jetpackcharge">
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=600.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_n7turianpassive">
+			<Property name="evolve_headshotbonus" type="0">0.2f</Property>
+			<Property name="evolve_powerdamagebonus1" type="0">0.1f</Property>
+			<Property name="evolve_powerdamagebonus2" type="0">0.15f</Property>
+			<Property name="evolve_weapondamagebonus1" type="0">0.075f</Property>
+			<Property name="evolve_weapondamagebonus2" type="0">0.1f</Property>
+			<Property name="weapondamagebonus" type="0">(BaseValue=0.075f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_stimpack">
+			<Property name="damagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="duration" type="0">(BaseValue=6.0f)</Property>
+			<Property name="evolve_damagebonus" type="0">0.05f</Property>
+			<Property name="evolve_meleedamagebonus" type="0">0.25f</Property>
+			<Property name="evolve_weapondamagebonus" type="0">0.08f</Property>
+			<Property name="shieldstrength" type="0">(BaseValue=1200.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp4.sfxpowercustomactionmp_turiancloak">
+			<Property name="assaultrifleduration" type="0">10.0f</Property>
+			<Property name="evolve_assaultrifledamagebonus" type="0">0.20f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

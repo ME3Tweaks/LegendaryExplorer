@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxweapon_pistol_asari_gun02">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<Property name="damage" type="0">(X=378.0f,Y=441.0f)</Property>
+			<!--<Property name="maxchargetime" type="0">0.0f</Property>-->
+			<!--<Property name="minchargetime" type="0">0.0f</Property>-->
+			<!--<Property name="minrefiretime" type="0">1.0f</Property>-->
+			<!--<Property name="rateoffire" type="0">(X=40.0f,Y=40.0f)</Property>-->
+			<Property name="statbardamage" type="0">(X=378.0f,Y=441.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxweapon_pistol_bloodpack">
+			<Property name="binfiniteammo" type="2">true</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

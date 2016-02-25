@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgame.bioglobalvariabletable">
+			<Property name="newgameplusplotstopersist">
+				<Value type="3">(nIndex=24087, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24088, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24089, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24090, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24091, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24092, nType=SFXPlotType_Boolean)</Value>
+				<Value type="3">(nIndex=24093, nType=SFXPlotType_Boolean)</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.bioworldinfo">
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgame.sfxgame">
+			<Property name="newgameplusplayervariables">
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02</Value>
+				<Value type="3">SFXGameContentDLC_CON_GUN02.SFXWeapon_SniperRifle_Batarian_GUN02</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxplayersquadloadoutdata">
+			<Property name="assaultrifles">
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_LMG_GUN02")</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_AssaultRifle_Krogan_GUN02")</Value>
+			</Property>
+			<Property name="heavypistols">
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack")</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Asari_GUN02")</Value>
+			</Property>
+			<Property name="shotguns">
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian")</Value>
+				<Value type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Assault_GUN02")</Value>
+			</Property>
+			<Property name="sniperrifles" type="3">(ClassName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Sniperrifle_Batarian_GUN02")</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

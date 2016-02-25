@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_exp_pack003.sfxseqact_killchildcreatures">
+			<Property name="childcreatures">
+				<Value type="3">SFXPawn_Swarmer</Value>
+				<Value type="3">SFXPawn_GunnerTurret</Value>
+				<Value type="3">SFXPawn_GethPrimeTurret</Value>
+				<Value type="3">SFXPawn_GethPrimeShieldDrone</Value>
+				<Value type="3">SFXPawn_Seeker_Shared</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

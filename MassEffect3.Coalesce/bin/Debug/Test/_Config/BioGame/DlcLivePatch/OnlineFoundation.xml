@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxonlinefoundation.sfxonlinegamesettings">
+			<Property name="privacytypes" type="4">(ID=2,Name=758480,AllCapsName=758481,Image="GUI_MPImages_MP4.OptTeamFriends")</Property>
+		</Section>
+		<Section name="sfxonlinefoundation.sfxonlinejobsavesettings">
+			<Property name="m_save_rpc_timeout" type="0">20000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

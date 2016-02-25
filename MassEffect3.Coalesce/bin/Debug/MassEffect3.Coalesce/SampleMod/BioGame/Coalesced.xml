@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceFile id="BioGame" name="Coalesced.bin" source="BioGame/CookedPCConsole/Coalesced.bin">
+	<Assets>
+		<Asset source="BioAI.xml" />
+		<Asset source="BioCompat.xml" />
+		<Asset source="BioCredits.xml" />
+		<Asset source="BioDifficulty.xml" />
+		<Asset source="BioEngine.xml" />
+		<Asset source="BioGame.xml" />
+		<Asset source="BioInput.xml" />
+		<Asset source="BioLightmass.xml" />
+		<Asset source="BioTest.xml" />
+		<Asset source="BioUI.xml" />
+		<Asset source="BioWeapon.xml" />
+		<Asset source="Core.xml" />
+		<Asset source="Descriptions.xml" />
+		<Asset source="EditorTips.xml" />
+		<Asset source="Engine.xml" />
+		<Asset source="GFxUI.xml" />
+		<Asset source="IpDrv.xml" />
+		<Asset source="Launch.xml" />
+		<Asset source="OnlineSubsystemGamespy.xml" />
+		<Asset source="Startup.xml" />
+		<Asset source="Subtitles.xml" />
+		<Asset source="UnrealEd.xml" />
+		<Asset source="WinDrv.xml" />
+		<Asset source="XWindow.xml" />
+	</Assets>
+	<Settings>
+		<Setting name="ForceValueType" value="true" />
+		<Setting name="ForcedValueType" value="2" />
+	</Settings>
+</CoalesceFile>

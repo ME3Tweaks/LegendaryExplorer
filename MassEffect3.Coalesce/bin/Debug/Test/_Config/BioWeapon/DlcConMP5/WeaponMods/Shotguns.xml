@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxweaponmod_shotgunultralight_mp5">
+			<Property name="gameeffects">
+				<Value type="3">(Level=1, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus", EffectValue=-0.08f)</Value>
+				<Value type="3">(Level=2, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus", EffectValue=-0.10f)</Value>
+				<Value type="3">(Level=3, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus", EffectValue=-0.12f)</Value>
+				<Value type="3">(Level=4, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus", EffectValue=-0.14f)</Value>
+				<Value type="3">(Level=5, EffectClassName="SFXGameEffect_WeaponMod_WeightBonus", EffectValue=-0.15f)</Value>
+			</Property>
+			<Property name="largenotificationimage" type="0">DLC_MPImages_MP5.MOD_MP5_UltraLight_512x256</Property>
+			<Property name="notificationimage" type="0">DLC_MPImages_MP5.MOD_MP5_UltraLight_256x128</Property>
+			<Property name="weaponmodcategory" type="0">WModCategory_Body</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

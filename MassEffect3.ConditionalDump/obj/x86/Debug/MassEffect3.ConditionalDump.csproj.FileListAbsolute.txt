@@ -1,0 +1,45 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.IO.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.MassEffect3.FileFormats.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.IO.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\Gibbed.MassEffect3.FileFormats.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\bin\Debug\NDesk.Options.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\obj\x86\Debug\Gibbed.MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\MassEffect3.ConditionalDump\obj\x86\Debug\Gibbed.MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\bin\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Mass Effect 3\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\bin\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\Shared\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\bin\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.csprojResolveAssemblyReference.cache
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\MassEffect3.ConditionalDump.exe.config
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\MassEffect3.ConditionalDump.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\Gammtek.Conduit.Core.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\Gammtek.Conduit.MassEffect3.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\MassEffect3.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\Gammtek.Conduit.Core.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\Gammtek.Conduit.MassEffect3.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\bin\Debug\MassEffect3.Options.pdb
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.exe
+C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect3.ConditionalDump\obj\x86\Debug\MassEffect3.ConditionalDump.pdb

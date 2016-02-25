@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Includes>
+		<Include source="BeyondInsanity/Cerberus.xml" />
+		<Include source="BeyondInsanity/Collectors.xml" />
+		<Include source="BeyondInsanity/CollectorsShared.xml" />
+		<Include source="BeyondInsanity/DlcExpPack002.xml" />
+		<Include source="BeyondInsanity/DlcExpPack003.xml" />
+		<Include source="BeyondInsanity/Geth.xml" />
+		<Include source="BeyondInsanity/GethShared.xml" />
+		<Include source="BeyondInsanity/Reapers.xml" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgame.sfxdifficultyhandler">
+			<Property name="level6difficultydata">
+				<!-- Globals -->
+				<Value type="2">
+					(Category="CollectorGlobal", CategoryData=(
+					(StatName="PossessionInterval", StatRange=(X=15.00, Y=15.00)),
+					(StatName="MaxPossessed", StatRange=(X=3.00, Y=3.00))
+					))
+				</Value>
+				<Value type="2">
+					(Category="Global", CategoryData=(
+					(StatName="OutAIDamageScale", StatRange=(X=1.75, Y=2.00)),
+					(StatName="OutHenchDamageScale", StatRange=(X=0.00, Y=0.00)),
+					(StatName="HenchDamageTaken", StatRange=(X=-0.75, Y=-0.75)),
+					(StatName="AmmoDropPct", StatRange=(X=0.00, Y=0.00)),
+					(StatName="AmmoPct", StatRange=(X=0.25, Y=0.25)),
+					(StatName="GrenadesPerDrop", StatRange=(X=1.00, Y=1.00)),
+					(StatName="AIEnergyShieldGatePct", StatRange=(X=0.75, Y=0.75)),
+					(StatName="AIArmorDamageReduction", StatRange=(X=50.00, Y=50.00)),
+					(StatName="PlayerShieldRegenPct", StatRange=(X=0.20, Y=0.20)),
+					(StatName="PlayerShieldRegenDelayFromDestroyed", StatRange=(X=4.50, Y=4.50)),
+					(StatName="PlayerShieldRegenDelayFromPartial", StatRange=(X=3.50, Y=3.50)),
+					(StatName="ReviveHealthReturn", StatRange=(X=0.10, Y=0.10)),
+					(StatName="StoppingPowerScalar", StatRange=(X=9.50, Y=9.50)),
+					(StatName="CoverDamageReduction", StatRange=(X=0.90, Y=0.90)),
+					(StatName="GlobalEnemyGrenadeCooldown", StatRange=(X=5.00, Y=5.00)),
+					(StatName="NoCoverDamageBonus", StatRange=(X=0.40, Y=0.40)),
+					(StatName="ReviveDamageReductionLength", StatRange=(X=2.50, Y=2.50)),
+					(StatName="ReviveDamageReductionAmount", StatRange=(X=0.10, Y=0.10)),
+					(StatName="PlayerShieldGateDuration", StatRange=(X=0.01, Y=0.01)),
+					(StatName="PlayerHealthGateDuration", StatRange=(X=0.01, Y=0.01))
+					))
+				</Value>
+				<!--<Value type="2">
+					(Category="MP4Global", CategoryData=(
+						(StatName="PossessionInterval", StatRange=(X=15.00, Y=15.00)),
+						(StatName="MaxPossessed", StatRange=(X=3.00, Y=3.00))
+					))
+				</Value>-->
+				<Value type="2">
+					(Category="SPGlobal", CategoryData=(
+					<!-- X=(1000.00 * 1.80 * 1.25), Y=(X) -->
+					(StatName="Cerberus_KineticBarrier_Health", StatRange=(X=2250.00, Y=2250.00)),
+
+					<!-- X=(400.00 * 1.80 * 1.25), Y=(X) -->
+					(StatName="Cerberus_Pylon_ShieldStrength", StatRange=(X=900.00, Y=900.00)),
+
+					<!-- X=(400.00 * 1.80 * 1.25), Y=(X) -->
+					(StatName="Reaper_IndoctrinationDevice_ShieldStrength", StatRange=(X=900.00, Y=900.00)),
+
+					<!-- X=(150.00 - 50.00), Y=(X) -->
+					(StatName="XPForExcessMedigel", StatRange=(X=100.00, Y=100.00)),
+
+					<!-- Other -->
+					(StatName="MedigelHealAmount", StatRange=(X=0.40, Y=0.40)),
+					(StatName="Cerberus_Pylon_RegenStrength", StatRange=(X=25.00, Y=25.00)),
+					(StatName="Cerberus_Pylon_PlaceableRegenStrength", StatRange=(X=4.00, Y=4.00)),
+					(StatName="Cerberus_Generator_BlastDamage", StatRange=(X=500.00, Y=500.00)),
+					(StatName="Reaper_RachniiEgg_RottenBlastDamage", StatRange=(X=500.00, Y=500.00)),
+					(StatName="Reaper_IndoctrinationDevice_BeamCooldown", StatRange=(X=8.00, Y=8.00)),
+					(StatName="Reaper_GethTripMine_ZapDamage", StatRange=(X=200.00, Y=200.00))
+					))
+				</Value>
+
+				<!-- Single Player Only -->
+				<Value type="2">
+					(Category="Harvester", CategoryData=(
+					<!-- X=(18000.00 * 1.80 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=40500.00, Y=48600.00)),
+
+					<!-- Other -->
+					(StatName="PowerThreshold_Standard", StatRange=(X=1100.00, Y=1100.00)),
+					(StatName="PowerThreshold_Stagger", StatRange=(X=1400.00, Y=1400.00)),
+					(StatName="PowerThreshold_Knockback", StatRange=(X=1900.00, Y=1900.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=1.00, Y=1.00))
+					))
+				</Value>
+				<Value type="2">
+					(Category="KaiLeng", CategoryData=(
+					<!-- X=(2400.00 * 1.80 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=5400.00, Y=6480.00)),
+
+					<!-- X=(16875.00 * 1.80 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxShields", StatRange=(X=37968.80, Y=45562.50)),
+
+					<!-- Other -->
+					(StatName="AggressiveFrequency", StatRange=(X=10.00, Y=10.00)),
+					(StatName="MeleeAttackInterval", StatRange=(X=0.10, Y=0.10)),
+					(StatName="SyncMeleeAttackInterval", StatRange=(X=0.10, Y=0.10)),
+					(StatName="KnockbackFrequency", StatRange=(X=7.20, Y=7.20)),
+					(StatName="RollFrequency", StatRange=(X=1.00, Y=1.00)),
+					(StatName="DamageThreshold", StatRange=(X=350.00, Y=450.00)),
+					(StatName="PowerSlashInterval", StatRange=(X=15.00, Y=15.00)),
+					(StatName="BreachFrequency", StatRange=(X=10.00, Y=10.00)),
+					(StatName="BreachDamageResetDuration", StatRange=(X=10.00, Y=10.00)),
+					(StatName="BreachDamageThreshold", StatRange=(X=1750.00, Y=2000.00)),
+					(StatName="HitReactionChanceMultiplier", StatRange=(X=0.30, Y=0.30))
+					))
+				</Value>
+				<Value type="2">
+					(Category="TutorialCannibal", CategoryData=(
+					<!-- X=(1200.00 * 1.80 * 1.25), Y=(X * 1.20) -->
+					(StatName="MaxHealth", StatRange=(X=2700.00, Y=3240.00))
+					))
+				</Value>
+				<Value type="2">
+					(Category="TutorialHusk", CategoryData=(
+					<!-- X=(100.00 * 1.80 * 1.25), Y=(X) -->
+					(StatName="MaxHealth", StatRange=(X=225.00, Y=225.00))
+					))
+				</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

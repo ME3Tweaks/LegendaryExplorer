@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<!--<Section name="sfxgame.sfxguiinteraction">
+			<Property name="movielibrary" type="3">(Tag=DLC_Docks, ZOrder=300, MovieClass="SFXGameContentDLC_Shared.SFXGUI_DLC_Docks", GFxResource="GUI_SF_DLC_Docks.DLC_Docks")</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

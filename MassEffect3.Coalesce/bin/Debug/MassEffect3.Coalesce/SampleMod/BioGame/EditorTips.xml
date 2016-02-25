@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="editortips" name="editortips.int" source="..\..\engine\localization\int\editortips.int">
+	<Sections>
+		<Section name="tips">
+			<Property name="tip_00001" type="2">First time using the Unreal Engine?
+				Go to http://udn.epicgames.com for tips on getting started.
+			</Property>
+			<Property name="tip_00002"
+			          type="2">Content Browser has a powerful search tool that can find assets from just about any package file in your game. Aside from asset names, you can type object types, paths or tag names to instantly find matching assets.
+			</Property>
+			<Property name="tip_00003"
+			          type="2">To place a new actor such as a light or player start, right click in a level viewport and select Add Actor. You can also select specific types of actors in the Actor Classes browser, then place the actor using the level viewport right click menu.
+			</Property>
+			<Property name="tip_00004"
+			          type="2">You can fly around in perspective viewports by holding down the right mouse button and using the W/A/S/D keys (or arrow keys) to move. With the mouse button held down, you can use the mouse-wheel to change your movement speed.
+			</Property>
+			<Property name="tip_00005"
+			          type="2">You can press "Ctrl+Shift+F" to jump straight to the Content Browser's search field from anywhere in the editor.
+			</Property>
+			<Property name="tip_00006"
+			          type="2">You can place assets into your level by dragging and dropping them straight from the Content Browser's thumbnail view.
+			</Property>
+			<Property name="tip_00007"
+			          type="2">Want to center your viewports on a selected object? Hit the "Home" key to focus on a selected actor or actors.
+			</Property>
+			<Property name="tip_00008"
+			          type="2">While navigating by holding down the right mouse button, you can move up and down using the E/Q keys. Also, you can quickly zoom the camera in and out using the Z/C keys.
+			</Property>
+			<Property name="tip_00009"
+			          type="2">You can hold "Ctrl" and scroll the mouse wheel in the Content Browser's thumbnail view to zoom in and out.
+			</Property>
+			<Property name="tip_00010" type="2">Press "Ctrl+Tab" to cycle through open windows in Unreal Editor.</Property>
+			<Property name="tip_00011"
+			          type="2">Box select objects by holding Ctrl+Alt when you left-drag your mouse, do the same with the right mouse button to box deselect and area.
+			</Property>
+			<Property name="tip_00012" type="2">Moving, Rotating, and Scaling actors often with the widget? Use the spacebar to cycle between modes.</Property>
+			<Property name="tip_00013"
+			          type="2">Don't forget you can change your camera's movement speed with the three blue icons in the main toolbar. This makes navigating large maps much easier
+			</Property>
+			<Property name="tip_00014"
+			          type="2">Want to warp around your environment quickly? Place bookmarks. In the tradition of many RTS games, you can hold Ctrl+ any number key to place a bookmark at that location. Now just hit the number key again and the camera will return to the position stored. Drop bookmarks in your major areas and save yourself a load of repetitive dragging.
+			</Property>
+			<Property name="tip_00015"
+			          type="2">Not a fan of the widget? Move an actor using Ctrl+LeftMouseDrag. Rotate an actor with Ctrl+RightMouseDrag. The widget can be hidden with the "Show/Use the widget" icon in the main toolbar.
+			</Property>
+			<Property name="tip_00016"
+			          type="2">When searching for assets using the Content Browser, you can enter a minus symbol before a string to omit assets that match that query from the search results.
+			</Property>
+			<Property name="tip_00017"
+			          type="2">Adjusting a radius? Skip the properties window and use the "scale" widget to adjust the radius visually. If it's an object like a trigger, a quick "C" toggle will show its collision for a more precise scaling operation.
+			</Property>
+			<Property name="tip_00018"
+			          type="2">Need a quick measurement? Just drag with your middle mouse button in a viewport to pull up the in-editor ruler.
+			</Property>
+			<Property name="tip_00019"
+			          type="2">Need to place lots of a specific actor type? In the "Actor Classes" browser, select an object such as "PathNode". Now hold the "A" key while clicking on surfaces in your preview window, this will drop an actor of the selected type with every mouse click.
+			</Property>
+			<Property name="tip_00020"
+			          type="2">Making rows of duplicate objects? Select an actor and hold "Alt" before dragging the object to modify the object and leave a duplicate behind (release Alt between clones).
+			</Property>
+			<Property name="tip_00021"
+			          type="2">Wish you knew all the hotkeys for hiding and showing different types of actors? Above each viewport is a pulldown menu labeled "Toggle Show Flags". Within that pulldown is a list of letters and what they correspond to in the viewport.
+			</Property>
+			<Property name="tip_00022"
+			          type="2">Got a floating object you want on the ground? Select it and press the "end" key to drop that object to the surface beneath it.
+			</Property>
+			<Property name="tip_00023"
+			          type="2">What package is this asset in? Right click on an actor such as a mesh and select "Find in Content Browser" to see that asset in the Content Browser window.
+			</Property>
+			<Property name="tip_00024"
+			          type="2">In many numeric property fields you can input simple equations. Enter "512+1280-32" into a light's radius property for example.
+			</Property>
+			<Property name="tip_00025"
+			          type="2">UnrealEd now has spinners to edit values. In most numeric property fields you can select the field, and spinner controls will appear next to the number, allowing you to adjust the value by clicking and dragging.
+			</Property>
+			<Property name="tip_00026"
+			          type="2">The Mesh Paint tool can be used to paint vertex colors directly on static mesh instances in your level. Use this in conjunction with the VertexColor material expression to create impressive-looking surfaces.
+			</Property>
+			<Property name="tip_00027"
+			          type="2">You can use the Mesh Simplification tool to optimize static meshes on a per-level basis by reducing their polygon count quickly and easily.
+			</Property>
+			<Property name="tip_00028"
+			          type="2">Did you know that you can paint Static Meshes and BSP surfaces with a material by dragging and dropping a material from the Content Browser's thumbnail view straight on top of the asset in the level viewport?
+			</Property>
+			<Property name="tip_00029" type="2">Quickly add and subtract the builder brush from your level's BSP by using "Ctrl+A" and "Ctrl+S".</Property>
+			<Property name="tip_00030"
+			          type="2">Need a specific sized builder brush? Right click on a brush icon such as the cube to enter numeric values.
+			</Property>
+			<Property name="tip_00031" type="2">Want a brush already in your level to become your builder brush? Select the brush and hit "Ctrl+P".</Property>
+			<Property name="tip_00032"
+			          type="2">Want to select a brush itself, and not just the surface? Hold "Ctrl+Shift" when you click the brush's surface.
+			</Property>
+			<Property name="tip_00033"
+			          type="2">Wish your builder brush or volume was a solid instead of wireframe? The red icon in the top tool paned labeled "Toggle Brush Polys" will display the selected geometry filled with translucent polygons, allowing you better visualization of where your volume exists in the gamespace.
+			</Property>
+			<Property name="tip_00034"
+			          type="2">Want to see only your core BSP in a level? Use "H" to toggle visibility of everything except brushwork in a viewport.
+			</Property>
+			<Property name="tip_00035"
+			          type="2">Want to see what your level will look like as you play? Use "G" to toggle visibility of all non-game actors.
+			</Property>
+			<Property name="tip_00036"
+			          type="2">You can launch the game right inside of an editor window by clicking the 'Play in Viewport' button on the toolbar above any viewport. The game will start with the player positioned at the editor camera's location.
+			</Property>
+			<Property name="tip_00037"
+			          type="2">Don't forget to "Check map for errors" periodically under the editor's "Tool" menu. This will show you all kinds of useful information. Double click on a warning entry to zoom to that actor's location for a quick fix.
+			</Property>
+			<Property name="tip_00038"
+			          type="2">Lots of streaming submaps in your level? Right click on any actor and hit "M" to make the level containing that actor "current".
+			</Property>
+			<Property name="tip_00039"
+			          type="2">If you have multiple monitors, you can make use of the extra screen real-estate by tearing off floating viewport windows! You can do this by clicking on the 'Tear Off Floating Copy' button above any level viewport window.
+			</Property>
+			<Property name="tip_00040"
+			          type="2">Always swapping between browser tabs? Float it! Select a frequently used browser tab such as "Level Manager" and under the "Docking" menu select "Floating" to remove it from the main browser window. This is great for resizing that window to better accommodate that type of data.
+			</Property>
+			<Property name="tip_00041"
+			          type="2">Want to rearrange a workspace such as kismet? Many workspaces now feature docking, allowing you to better customize your working area. In Kismet, as one example, you can click on the title of a field such as "properties" and drag it around within the Kismet window. It will lock to the sides of windows, and can even be completely removed from the original workspace.
+			</Property>
+			<Property name="tip_00042"
+			          type="2">Is that actor important to scripting? Hit "K" to toggle "Kismet References" in a viewport. Any actor that is referenced in Kismet will have a green box or brackets around it (depending on if it belongs to the current level). Right click on one any of those actors and you have the option to "Find Actor in Kismet" to see how it's being used.
+			</Property>
+			<Property name="tip_00043"
+			          type="2">Want a quick radiosity type bounce light? Hold "Ctrl+L" and click on a surface in the preview window. A dim light will be created at that location, with the color preset to match the surface you clicked on.
+			</Property>
+			<Property name="tip_00044"
+			          type="2">Organize large sets of actors into groups. Open the group browser, create a new group, name it, and everything you currently have selected will be part of that group. You can add actors to it, take them away, and most importantly hide them easily. A duplicated object will have the same group properties as the object it was created from.
+			</Property>
+			<Property name="tip_00045"
+			          type="2">Use 'Current map' display filter in the Task browser to see a list of bugs for the currently loaded level.
+			</Property>
+			<Property name="tip_00046"
+			          type="2">I wish this actor lived in another sublevel! Just select the actor(s) in question, right click on one, and select "Move Selected Actors To Current Level" to relocate the actors out of their previous sublevels and into the current sublevel. Ctrl+M is the shortcut for this.
+			</Property>
+			<Property name="tip_00047"
+			          type="2">Want to sort your sublevels in the level browser? Select a level and use the Up and Down keys to reorganize them. This works is several other list-type browsers as well.
+			</Property>
+			<Property name="tip_00048"
+			          type="2">Convert a mesh's simplified collision to a builder brush by right clicking on it, and under the "Convert" options you'll find the "Convert Collision Model To Brush" action.
+			</Property>
+			<Property name="tip_00049"
+			          type="2">Speed up your in editor navigation performance by toggling the "Unlit Movement" icon on your preview window. When moving your camera, the view will be in the faster unlit mode. When you stop moving, the view will revert to full lighting.
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

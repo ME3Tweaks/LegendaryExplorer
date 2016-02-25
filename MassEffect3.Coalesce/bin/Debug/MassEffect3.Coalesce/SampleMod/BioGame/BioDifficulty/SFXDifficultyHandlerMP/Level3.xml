@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biodifficulty" name="biodifficulty.ini">
+	<Includes>
+		<Include source="Level3/Cerberus.xml" target="PostSections" />
+		<Include source="Level3/Geth.xml" target="PostSections" />
+		<Include source="Level3/Reapers.xml" target="PostSections" />
+	</Includes>
+	<Sections>
+		<Section name="sfxgamempcontent.sfxdifficultyhandlermp">
+			<Property name="level3difficultydata">
+				<Value type="2">(Category="Global", CategoryData=((StatName="OutAIDamageScale",StatRange=(X=1.25f,Y=1.5f)),(StatName="OutHenchDamageScale",StatRange=(X=0.0f,Y=0.0f)),(StatName="HenchDamageTaken",StatRange=(X=-0.75f,Y=-0.75f)),(StatName="AmmoDropPct",StatRange=(X=0.0f,Y=0.0f)),(StatName="AmmoPct",StatRange=(X=0.5f,Y=0.5f)),(StatName="GrenadesPerDrop",StatRange=(X=1.0f,Y=1.0f)),(StatName="AIEnergyShieldGatePct",StatRange=(X=1.0f,Y=1.0f)),(StatName="AIArmorDamageReduction",StatRange=(X=50.0f,Y=50.0f)),(StatName="PlayerShieldRegenPct",StatRange=(X=0.25f,Y=0.25f)),(StatName="PlayerShieldRegenDelayFromDestroyed",StatRange=(X=4.0f,Y=4.0f)),(StatName="PlayerShieldRegenDelayFromPartial",StatRange=(X=3.0f,Y=3.0f)),(StatName="ReviveHealthReturn",StatRange=(X=0.25f,Y=0.25f)),(StatName="StoppingPowerScalar",StatRange=(X=8.0f,Y=8.0f)),(StatName="CoverDamageReduction",StatRange=(X=0.9f,Y=0.9f)),(StatName="GlobalEnemyGrenadeCooldown",StatRange=(X=10.0f,Y=10.0f)),(StatName="NoCoverDamageBonus",StatRange=(X=0.4f,Y=0.4f)),(StatName="ReviveDamageReductionLength",StatRange=(X=2.5f,Y=2.5f)),(StatName="ReviveDamageReductionAmount",StatRange=(X=0.25f,Y=0.25f)),(StatName="PlayerShieldGateDuration",StatRange=(X=0.1f,Y=0.1f)),(StatName="PlayerHealthGateDuration",StatRange=(X=0.1f,Y=0.1f))))</Value>
+				<Value type="2">(Category="MPGlobal", CategoryData=((StatName="AmmoRefillOnWaveEnd",StatRange=(X=0.1f,Y=0.1f)),(StatName="ObjectiveCreditsReward",StatRange=(X=45000.0f,Y=45000.0f)),(StatName="ReviveHealthReturn",StatRange=(X=0.25f,Y=0.25f)),(StatName="EndWaveHealthReturn",StatRange=(X=0.25f,Y=0.25f)),(StatName="SupplyDropStartIndex",StatRange=(X=6.0f,Y=6.0f)),(StatName="DownedPlayersCheckFrequency",StatRange=(X=5.0f,Y=5.0f)),(StatName="DistanceFromDownedPlayer",StatRange=(X=4000.0f,Y=4000.0f)),(StatName="AllowExecutionTime",StatRange=(X=0.0f,Y=0.0f)),(StatName="DelayBeforeExecution",StatRange=(X=0.0f,Y=0.0f)),(StatName="GlobalGameSpeed",StatRange=(X=1.075f,Y=1.075f))))</Value>
+				<Value type="2">(Category="Harvester", CategoryData=((StatName="MaxHealth",StatRange=(X=12000.0f,Y=18000.0f)),(StatName="PowerThreshold_Standard",StatRange=(X=1100.0f,Y=1100.0f)),(StatName="PowerThreshold_Stagger",StatRange=(X=1400.0f,Y=1400.0f)),(StatName="PowerThreshold_Knockback",StatRange=(X=1900.0f,Y=1900.0f)),(StatName="HitReactionChanceMultiplier",StatRange=(X=1.0f,Y=1.0f))))</Value>
+				<Value type="2">(Category="KaiLeng", CategoryData=((StatName="AggressiveFrequency",StatRange=(X=10.0f,Y=10.0f)),(StatName="MaxHealth",StatRange=(X=1600.0f,Y=2400.0f)),(StatName="MaxShields",StatRange=(X=6100.0f,Y=7100.0f)),(StatName="MeleeAttackInterval",StatRange=(X=0.1f,Y=0.1f)),(StatName="SyncMeleeAttackInterval",StatRange=(X=0.1f,Y=0.1f)),(StatName="KnockbackFrequency",StatRange=(X=7.2f,Y=7.2f)),(StatName="RollFrequency",StatRange=(X=1.0f,Y=1.0f)),(StatName="DamageThreshold",StatRange=(X=350.0f,Y=450.0f)),(StatName="PowerSlashInterval",StatRange=(X=15.0f,Y=15.0f)),(StatName="BreachFrequency",StatRange=(X=10.0f,Y=10.0f)),(StatName="BreachDamageResetDuration",StatRange=(X=10.0f,Y=10.0f)),(StatName="BreachDamageThreshold",StatRange=(X=1750.0f,Y=2000.0f)),(StatName="HitReactionChanceMultiplier",StatRange=(X=0.3f,Y=0.3f))))</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

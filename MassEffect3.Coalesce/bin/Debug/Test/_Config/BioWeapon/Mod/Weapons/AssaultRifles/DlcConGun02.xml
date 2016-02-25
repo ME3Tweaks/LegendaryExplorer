@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxweapon_assaultrifle_krogan_gun02">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<Property name="maxspareammo" type="0">(X=60,Y=72)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_gun02.sfxweapon_assaultrifle_lmg_gun02">
+			<Property name="binfiniteammo" type="2">true</Property>
+			<Property name="damagemultiplier" type="0">1.5f</Property>
+			<Property name="distancepenetrated" type="0">25</Property>
+			<Property name="recoil" type="0">(X=0.11,Y=0.11)</Property>
+			<Property name="zoomrecoil" type="0">(X=0.21,y=0.21)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

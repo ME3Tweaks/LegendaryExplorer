@@ -1,0 +1,27 @@
+{
+  Textures:
+  {
+    Set:
+    [
+      {Key: "EYE_Diff",      Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Diff"},
+      {Key: "EYE_Mask",      Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Spec"},
+      {Key: "EYE_Iris_Norm", Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Iris_Norm"},
+      {Key: "EYE_Lens_Norm", Value: "BIOG_HMM_HED_PROMorph.Eye.EYE_Lens_Norm"},
+    ],
+  },
+  Scalars:
+  {
+    Set:
+    [
+      {Key: "Emis_Scalar",                 Value: 0.0},
+    ],
+  },
+  Vectors:
+  {
+    Set:
+    [
+      {Key: "EYE_White_Colour_Vector", Value: {R: 0.8406593, G: 0.7573149, B: 0.7436602, A: 0.0}},
+      {Key: "EYE_Iris_Colour_Vector", Value:  {R: 0.227137,  G: 0.368591,  B: 0.238828,  A: 1.0}},
+    ]
+  },
+}

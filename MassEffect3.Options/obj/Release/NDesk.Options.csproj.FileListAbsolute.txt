@@ -1,0 +1,3 @@
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\bin\Release\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\obj\Release\NDesk.Options.dll
+C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\NDesk.Options\obj\Release\NDesk.Options.csprojResolveAssemblyReference.cache

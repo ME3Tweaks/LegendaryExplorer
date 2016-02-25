@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Catel.Extensions.DynamicObjects</name>
+    </assembly>
+    <members>
+        <member name="T:Catel.Data.DynamicModelBase">
+            <summary>
+            Dynamic model base implementing the <see cref="T:System.Dynamic.IDynamicMetaObjectProvider"/>.
+            </summary>
+        </member>
+        <member name="F:Catel.Data.DynamicModelBase.Log">
+            <summary>
+            The log.
+            </summary>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBase.RegisterDynamicProperty(System.String,System.Type)">
+            <summary>
+            Registers a simple property, which means only the name and type are required.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="type">The type.</param>
+            <returns>The <see cref="T:Catel.Data.PropertyData"/>.</returns>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBase.GetMetaObject(System.Linq.Expressions.Expression)">
+            <summary>
+            Returns the <see cref="T:System.Dynamic.DynamicMetaObject" /> responsible for binding operations performed on this object.
+            </summary>
+            <param name="parameter">The expression tree representation of the runtime value.</param>
+            <returns>The <see cref="T:System.Dynamic.DynamicMetaObject" /> to bind this object.</returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="T:Catel.Data.DynamicModelBaseMetaObject">
+            <summary>
+            Class containing metadata for the <see cref="T:Catel.Data.DynamicModelBase"/>.
+            </summary>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBaseMetaObject.#cctor">
+            <summary>
+            Initializes static members of the <see cref="T:Catel.Data.DynamicModelBaseMetaObject"/> class.
+            </summary>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBaseMetaObject.#ctor(System.Linq.Expressions.Expression,Catel.Data.DynamicModelBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Catel.Data.DynamicModelBaseMetaObject"/> class.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="model">The model.</param>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBaseMetaObject.BindSetMember(System.Dynamic.SetMemberBinder,System.Dynamic.DynamicMetaObject)">
+            <summary>
+            Performs the binding of the dynamic set member operation.
+            </summary>
+            <param name="binder">An instance of the <see cref="T:System.Dynamic.SetMemberBinder" /> that represents the details of the dynamic operation.</param>
+            <param name="value">The <see cref="T:System.Dynamic.DynamicMetaObject" /> representing the value for the set member operation.</param>
+            <returns>The new <see cref="T:System.Dynamic.DynamicMetaObject" /> representing the result of the binding.</returns>
+        </member>
+        <member name="M:Catel.Data.DynamicModelBaseMetaObject.BindGetMember(System.Dynamic.GetMemberBinder)">
+            <summary>
+            Performs the binding of the dynamic get member operation.
+            </summary>
+            <param name="binder">An instance of the <see cref="T:System.Dynamic.GetMemberBinder" /> that represents the details of the dynamic operation.</param>
+            <returns>The new <see cref="T:System.Dynamic.DynamicMetaObject" /> representing the result of the binding.</returns>
+        </member>
+        <member name="T:Catel.ExtensionsDynamicObjectsModule">
+            <summary>
+            Extensions.DynamicObjects module which allows the registration of default services in the service locator.
+            </summary>
+        </member>
+        <member name="M:Catel.ExtensionsDynamicObjectsModule.Initialize(Catel.IoC.IServiceLocator)">
+            <summary>
+            Initializes the specified service locator.
+            </summary>
+            <param name="serviceLocator">The service locator.</param>
+        </member>
+        <member name="T:Catel.Extensions.DynamicObjects.ModuleInitializer">
+            <summary>
+            Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.
+            </summary>
+        </member>
+        <member name="M:Catel.Extensions.DynamicObjects.ModuleInitializer.Initialize">
+            <summary>
+            Initializes the module.
+            </summary>
+        </member>
+    </members>
+</doc>

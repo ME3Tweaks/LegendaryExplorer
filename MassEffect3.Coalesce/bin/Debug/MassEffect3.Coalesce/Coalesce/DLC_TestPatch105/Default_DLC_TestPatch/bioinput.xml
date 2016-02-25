@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioinput" name="bioinput.ini" source="..\..\biogame\config\bioinput.ini">
+  <Sections>
+    <Section name="configuration">
+      <Property name="basedon" type="0">..\..\BIOGame\DLC\Test\DLC_TestPatch\Config\CommonInput.ini</Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodebase">
+      <Property name="bindings">
+        <Value type="2">( Name="Shared_ViewPrevPlayer", Command="viewprevplayer true")</Value>
+        <Value type="2">( Name="Shared_ViewNextPlayer", Command="viewnextplayer true")</Value>
+        <Value type="4">( Name="PC_GalaxyKeyStrafeLeft", Command="Axis aGuiStrafe Speed=-1.0 EventID=2" )</Value>
+        <Value type="4">( Name="PC_GalaxyKeyStrafeRight", Command="Axis aGuiStrafe Speed=+1.0 EventID=2" )</Value>
+        <Value type="4">( Name="PC_GalaxyKeyMoveForward", Command="Axis aGuiBaseY Speed=+1.0 EventID=3" )</Value>
+        <Value type="4">( Name="PC_GalaxyKeyMoveBackward", Command="Axis aGuiBaseY Speed=-1 EventID=3" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodeflycam">
+      <Property name="bindings">
+        <Value type="4">( Name="SpaceBar", Command="ViewNextPlayer true" )</Value>
+        <Value type="4">( Name="MouseScrollUp", Command="ViewNextPlayer true" )</Value>
+        <Value type="4">( Name="MouseScrollDown", Command="ViewPrevPlayer true" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="Shared_ViewNextPlayer" )</Value>
+        <Value type="2">( Name="MouseScrollUp", Command="Shared_ViewNextPlayer" )</Value>
+        <Value type="2">( Name="MouseScrollDown", Command="Shared_ViewPrevPlayer" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegalaxy_00000409">
+      <Property name="localizedbindings">
+        <Value type="4">( Name="A", Command="PC_GalaxyKeyStrafeLeft" )</Value>
+        <Value type="4">( Name="D", Command="PC_GalaxyKeyStrafeRight" )</Value>
+        <Value type="4">( Name="W", Command="PC_GalaxyKeyMoveForward" )</Value>
+        <Value type="4">( Name="S", Command="PC_GalaxyKeyMoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodegalaxy_0000040c">
+      <Property name="localizedbindings">
+        <Value type="4">( Name="Q", Command="PC_GalaxyKeyStrafeLeft" )</Value>
+        <Value type="4">( Name="D", Command="PC_GalaxyKeyStrafeRight" )</Value>
+        <Value type="4">( Name="Z", Command="PC_GalaxyKeyMoveForward" )</Value>
+        <Value type="4">( Name="S", Command="PC_GalaxyKeyMoveBackward" )</Value>
+      </Property>
+    </Section>
+    <Section name="sfxgame.sfxgamemodespectator">
+      <Property name="bindings">
+        <Value type="4">( Name="SpaceBar", Command="ViewNextPlayer true" )</Value>
+        <Value type="4">( Name="MouseScrollUp", Command="ViewNextPlayer true" )</Value>
+        <Value type="4">( Name="MouseScrollDown", Command="ViewPrevPlayer true" )</Value>
+        <Value type="2">( Name="SpaceBar", Command="Shared_ViewNextPlayer" )</Value>
+        <Value type="2">( Name="MouseScrollUp", Command="Shared_ViewNextPlayer" )</Value>
+        <Value type="2">( Name="MouseScrollDown", Command="Shared_ViewPrevPlayer" )</Value>
+      </Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

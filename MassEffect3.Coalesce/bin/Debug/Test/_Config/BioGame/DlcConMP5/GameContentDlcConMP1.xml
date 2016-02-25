@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp1.sfxpowercustomactionmp_gethpassive">
+			<Property name="registeredgethweapons" type="3">SFXGameContentDLC_CON_MP5.SFXWeapon_AssaultRifle_Spitfire</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

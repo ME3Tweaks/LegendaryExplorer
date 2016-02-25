@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgame.biocheatmanagernonnative">
+			<Property name="setupmodifierarray">
+				<Value type="3">(Modifier=UnlockArmour, PlotIDSet=(19455,19456,19457,19458,19459,19460,19461,19462,19467,19468,19469,19470,21399,21400,21401,21402,20914,20915,20916,20917,20918,20919,20920,20921,18988,18995,18999,19000,19005,19006,19007,19008,22339,22340,22341,20984,20985,20986,20987,20988,20989,21417,22590), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+				<Value type="3">(Modifier=UnlockIntel, PlotIDSet=(21531,21533,21535,21537,21539,21541,21543,21545,21547,21549,22419,22421), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+				<Value type="3">(Modifier=UnlockMedigel, PlotIDSet=(21555,21556,21557,21558,21559), PlotIDClear=(), PlotInts=(), PlotCond=())</Value>
+			</Property>
+		</Section>
+		<!--<Section name="sfxgame.bioworldinfo">
+			<Property name="m_aps3rubbermouthconvlist">
+				<Value type="3">norhen_ash_lev002_a_dlg</Value>
+				<Value type="3">norhen_ash_lev003_a_dlg</Value>
+				<Value type="3">norhen_ash_lev004_a_dlg</Value>
+				<Value type="3">norhen_garr_lev002_a_dlg</Value>
+				<Value type="3">norhen_garr_lev003_a_dlg</Value>
+				<Value type="3">norhen_garr_lev004_a_dlg</Value>
+				<Value type="3">norhen_jms_lev002_a_dlg</Value>
+				<Value type="3">norhen_jms_lev003_a_dlg</Value>
+				<Value type="3">norhen_jms_lev004_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev002_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev003_a_dlg</Value>
+				<Value type="3">norhen_kaid_lev004_a_dlg</Value>
+				<Value type="3">norhen_lia_lev002_a_dlg</Value>
+				<Value type="3">norhen_lia_lev003_a_dlg</Value>
+				<Value type="3">norhen_lia_lev004_a_dlg</Value>
+				<Value type="3">norhen_proth_lev002_a_dlg</Value>
+				<Value type="3">norhen_proth_lev003_a_dlg</Value>
+				<Value type="3">norhen_proth_lev004_a_dlg</Value>
+				<Value type="3">norhen_tali_lev002_a_dlg</Value>
+				<Value type="3">norhen_tali_lev003_a_dlg</Value>
+				<Value type="3">norhen_tali_lev004_a_dlg</Value>
+				<Value type="3">norhen_edi_lev002_a_dlg</Value>
+				<Value type="3">norhen_edi_lev003_a_dlg</Value>
+				<Value type="3">norhen_edi_lev004_a_dlg</Value>
+				<Value type="3">nor_pilot_lev002_a_dlg</Value>
+				<Value type="3">nor_pilot_lev003_a_dlg</Value>
+				<Value type="3">nor_pilot_lev004_a_dlg</Value>
+				<Value type="3">expak1_nor_galaxymap_a_dlg</Value>
+			</Property>
+		</Section>-->
+		<!--<Section name="sfxgame.sfxgestures">
+			<Property name="gesturespackagenameeditor" type="0">BIOG_GesturesConfigDLC</Property>
+			<Property name="m_bonlyallowdlcperfediting" type="0">TRUE</Property>
+		</Section>-->
+		<Section name="sfxgame.sfxpawn_player">
+			<Property name="armoreffectdescriptions" type="3">(ArmorEffect="SFXGameContentDLC_CON_APP01.SFXGameEffect_UniqueArmor_CerberusHeavy",EffectDescription[0]=683395,EffectToken[0]="25",EffectDescription[1]=683401,EffectToken[1]="10",EffectDescription[2]=683399,EffectToken[2]="10",EffectDescription[3]=683402,EffectToken[3]="10",EffectDescription[4]=718122,EffectToken[4]="25")</Property>
+		</Section>
+		<Section name="sfxgame.sfxplayercustomization">
+			<Property name="fullbodyappearances">
+				<Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R.FBDi.HMM_SHP_FBDi_MDL",Female="BIOG_HMF_SHP_FBD_R.FBDi.HMF_SHP_FBDi_MDL",bHideHead=True,bHideHair=True),GameEffects=("SFXGameContentDLC_CON_APP01.SFXGameEffect_UniqueArmor_CerberusHeavy"),Id=100,PlotFlag=21752,Name=803158,Name=803158,Description=803924,Type=CustomizableType_Torso)</Value>
+				<Value type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R.FBDi.HMM_SHP_FBDi_NH_MDL",Female="BIOG_HMF_SHP_FBD_R.FBDi.HMF_SHP_FBDi_NH_MDL"),GameEffects=("SFXGameContentDLC_CON_APP01.SFXGameEffect_UniqueArmor_CerberusHeavy"),Id=101,Name=803158,Description=803924,Type=CustomizableType_Torso)</Value>
+			</Property>
+			<Property name="fullbodyhelmetappearances" type="3">(Mesh=(Male="BIOG_HMM_SHP_FBD_R.FBDi.HMM_HGR_FBDi_MDL",Female="BIOG_HMF_SHP_FBD_R.FBDi.HMF_HGR_FBDi_MDL",bHasBreather=True,bHideHead=True,bHideHair=True),Id=101,Type=CustomizableType_Helmet)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

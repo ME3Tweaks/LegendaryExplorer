@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_annihilationsphere_shared">
+			<Property name="blastdamage" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=100.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="evolve_damagebonus2" type="0">0.65f</Property>
+			<Property name="force" type="0">(BaseValue=0.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_barrier_shared">
+			<Property name="blastdamage" type="0">(BaseValue=500.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="cooldowntime" type="0">(BaseValue=6.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagereduction" type="0">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="0">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_powerdamagebonus" type="0">0.30f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batarianarmor_shared">
+			<Property name="damagereduction" type="0">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="0">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_thornsdamagebonus" type="0">1.5f</Property>
+			<Property name="thornsdamage" type="0">(BaseValue=1.0f,Formula=BonusIsHardValue)</Property>
+			<Property name="thornsdamagecap" type="0">2000.0f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batariannet_shared">
+			<Property name="cooldowntime" type="0">(BaseValue=6,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+			<Property name="dotdamage" type="0">(BaseValue=600.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="effectduration" type="0">(BaseValue=6,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_aoepulsedamage" type="0">(BaseValue=150.0f)</Property>
+			<Property name="evolve_aoepulsefrequency" type="0">1.0f</Property>
+			<Property name="evolve_damagebonus" type="0">0.4f</Property>
+			<Property name="evolve_damagebonus2" type="0">0.4f</Property>
+			<Property name="evolve_rechargespeedbonus" type="0">0.45f</Property>
+			<Property name="incapacitateduration" type="0">(BaseValue=4,RankBonuses[2]=0.3f)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=2750)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_batarianpassive_shared">
+			<Property name="powerdamagebonus" type="0">(BaseValue=0.075f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_darkchannel2_shared">
+			<Property name="cooldowntime" type="0">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="0">(BaseValue=75.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_flamer_shared">
+			<Property name="impactradius" type="0">(BaseValue=1000.f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_hominggrenade_shared">
+			<Property name="damage" type="0">(BaseValue=800.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="projectilespeed" type="0">(BaseValue=1000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_malequarianpassive_shared">
+			<Property name="evolve_weapondamagebonus2" type="0">0.125f</Property>
+			<Property name="weapondamagebonus" type="0">(BaseValue=0.075f,Formula=BonusIsHardValue,RankBonuses[1]=0.025f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_shared.sfxpowercustomactionmp_supercharge_shared">
+			<Property name="damagebonus" type="0">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="evolve_visionrangebonus" type="0">0.6f</Property>
+			<Property name="visionrange" type="0">(BaseValue=1500.0f)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

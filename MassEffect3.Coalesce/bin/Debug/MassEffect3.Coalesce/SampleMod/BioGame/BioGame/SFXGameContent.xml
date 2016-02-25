@@ -1,0 +1,1382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="biogame" name="biogame.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxcharacterclass_adept">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_Singularity</Value>
+				<Value type="2">SFXPowerCustomAction_Warp</Value>
+				<Value type="2">SFXPowerCustomAction_Throw</Value>
+				<Value type="2">SFXPowerCustomAction_Pull</Value>
+				<Value type="2">SFXPowerCustomAction_Shockwave</Value>
+				<Value type="2">SFXPowerCustomAction_Overpower</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxcharacterclass_engineer">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_CombatDrone</Value>
+				<Value type="2">SFXPowerCustomAction_Overload</Value>
+				<Value type="2">SFXPowerCustomAction_Incinerate</Value>
+				<Value type="2">SFXPowerCustomAction_CryoBlast</Value>
+				<Value type="2">SFXPowerCustomAction_AIHacking</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxcharacterclass_infiltrator">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_Cloak</Value>
+				<Value type="2">SFXPowerCustomAction_DisruptorAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_Incinerate</Value>
+				<Value type="2">SFXPowerCustomAction_AIHacking</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxcharacterclass_sentinel">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_TechArmor</Value>
+				<Value type="2">SFXPowerCustomAction_Throw</Value>
+				<Value type="2">SFXPowerCustomAction_Warp</Value>
+				<Value type="2">SFXPowerCustomAction_Overload</Value>
+				<Value type="2">SFXPowerCustomAction_CryoBlast</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxcharacterclass_soldier">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_AdrenalineRush</Value>
+				<Value type="2">SFXPowerCustomAction_ConcussiveShot</Value>
+				<Value type="2">SFXPowerCustomAction_FragGrenade</Value>
+				<Value type="2">SFXPowerCustomAction_IncendiaryAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_DisruptorAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_CryoAmmo</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxcharacterclass_vanguard">
+			<Property name="mappedpowers">
+				<Value type="2">SFXPowerCustomAction_BioticCharge</Value>
+				<Value type="2">SFXPowerCustomAction_IncendiaryAmmo</Value>
+				<Value type="2">SFXPowerCustomAction_Pull</Value>
+				<Value type="2">SFXPowerCustomAction_Shockwave</Value>
+				<Value type="2">SFXPowerCustomAction_CryoAmmo</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgalaxymapreaper">
+			<Property name="acceleration" type="2">5.0</Property>
+			<Property name="m_fscandetectionrange" type="2">300;</Property>
+			<Property name="maxspeed" type="2">67.5</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_cryoammo">
+			<Property name="delayedfreezerandduration" type="2">0.2f</Property>
+			<Property name="delayedfreezestaticduration" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_darkchannel">
+			<Property name="jumpradius" type="2">800.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_powercombo_biotic">
+			<Property name="combodamage" type="2">(X=100.0f,Y=250.0f)</Property>
+			<Property name="comboforce" type="2">(X=500.0f,Y=1000.0f)</Property>
+			<Property name="comboradius" type="2">(X=300.0f,Y=500.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="effectsremovedoncombo">
+				<Value type="2">SFXGameEffect_PowerCombo_Biotic</Value>
+				<Value type="2">SFXGameEffect_Singularity</Value>
+				<Value type="2">SFXGameEffect_Pull</Value>
+				<Value type="2">SFXGameEffect_AntiGravity</Value>
+				<Value type="2">SFXGameEffect_Ragdoll</Value>
+				<Value type="2">SFXGameEffect_Stasis</Value>
+			</Property>
+			<Property name="maximumragdolltargets" type="2">2</Property>
+			<Property name="maximumragdolltargetsmp" type="2">1</Property>
+			<Property name="maxtargets" type="2">4</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_powercombo_cryo">
+			<Property name="bonlyondeath" type="2">true</Property>
+			<Property name="combodamage" type="2">(X=50.0f,Y=125.0f)</Property>
+			<Property name="comboforce" type="2">(X=200.0f,Y=450.0f)</Property>
+			<Property name="comboradius" type="2">(X=300.0f,Y=500.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="effectsremovedoncombo" type="2">SFXGameEffect_PowerCombo_Cryo</Property>
+			<Property name="freezeduration" type="2">(X=2.0f,Y=5.0f)</Property>
+			<Property name="maximumragdolltargets" type="2">2</Property>
+			<Property name="maximumragdolltargetsmp" type="2">1</Property>
+			<Property name="maxtargets" type="2">4</Property>
+			<Property name="resistancedurationmultiplier" type="2">3.0f</Property>
+			<Property name="speedreduction" type="2">0.3f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_powercombo_electric">
+			<Property name="beamduration" type="2">2.0f</Property>
+			<Property name="combodamage" type="2">(X=75.0f,Y=200.0f)</Property>
+			<Property name="comboforce" type="2">(X=200.0f,Y=450.0f)</Property>
+			<Property name="comboradius" type="2">(X=450.0f,Y=750.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="effectsremovedoncombo" type="2">SFXGameEffect_PowerCombo_Electric</Property>
+			<Property name="maxtargets" type="2">4</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxgameeffect_powercombo_fire">
+			<Property name="bonlyondeath" type="2">true</Property>
+			<Property name="combodamage" type="2">(X=100.0f,Y=250.0f)</Property>
+			<Property name="comboforce" type="2">(X=300.0f,Y=600.0f)</Property>
+			<Property name="comboradius" type="2">(X=300.0f,Y=600.0f)</Property>
+			<Property name="damagepersecond" type="2">(X=20.0f,Y=50.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="dotduration" type="2">(X=3.0f,Y=3.0f)</Property>
+			<Property name="effectsremovedoncombo" type="2">SFXGameEffect_PowerCombo_Fire</Property>
+			<Property name="maxtargets" type="2">4</Property>
+			<Property name="numflameeffects" type="2">3</Property>
+			<Property name="numflameeffectsmp" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_atlas">
+			<Property name="damagescorebudget" type="2">1000</Property>
+			<Property name="killbonusscore" type="2">100</Property>
+			<Property name="powercontrolassistbudget" type="2">250</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_banshee">
+			<Property name="damagescorebudget" type="2">1000</Property>
+			<Property name="killbonusscore" type="2">100</Property>
+			<Property name="powercontrolassistbudget" type="2">250</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_brute">
+			<Property name="damagescorebudget" type="2">700</Property>
+			<Property name="killbonusscore" type="2">70</Property>
+			<Property name="powercontrolassistbudget" type="2">175</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_cannibal">
+			<Property name="damagescorebudget" type="2">250</Property>
+			<Property name="killbonusscore" type="2">25</Property>
+			<Property name="powercontrolassistbudget" type="2">65</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_centurion">
+			<Property name="damagescorebudget" type="2">300</Property>
+			<Property name="killbonusscore" type="2">30</Property>
+			<Property name="powercontrolassistbudget" type="2">75</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethhunter">
+			<Property name="damagescorebudget" type="2">400</Property>
+			<Property name="killbonusscore" type="2">40</Property>
+			<Property name="powercontrolassistbudget" type="2">100</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethprime">
+			<Property name="damagescorebudget" type="2">1000</Property>
+			<Property name="killbonusscore" type="2">100</Property>
+			<Property name="powercontrolassistbudget" type="2">250</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethprimeshielddrone">
+			<Property name="damagescorebudget" type="2">50</Property>
+			<Property name="killbonusscore" type="2">5</Property>
+			<Property name="powercontrolassistbudget" type="2">10</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethprimeturret">
+			<Property name="damagescorebudget" type="2">50</Property>
+			<Property name="killbonusscore" type="2">5</Property>
+			<Property name="powercontrolassistbudget" type="2">10</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethpyro">
+			<Property name="damagescorebudget" type="2">400</Property>
+			<Property name="killbonusscore" type="2">40</Property>
+			<Property name="powercontrolassistbudget" type="2">100</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethrockettrooper">
+			<Property name="damagescorebudget" type="2">400</Property>
+			<Property name="killbonusscore" type="2">40</Property>
+			<Property name="powercontrolassistbudget" type="2">100</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gethtrooper">
+			<Property name="damagescorebudget" type="2">250</Property>
+			<Property name="killbonusscore" type="2">25</Property>
+			<Property name="powercontrolassistbudget" type="2">65</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_guardian">
+			<Property name="damagescorebudget" type="2">400</Property>
+			<Property name="killbonusscore" type="2">40</Property>
+			<Property name="powercontrolassistbudget" type="2">100</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_gunnerturret">
+			<Property name="damagescorebudget" type="2">100</Property>
+			<Property name="killbonusscore" type="2">10</Property>
+			<Property name="powercontrolassistbudget" type="2">25</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_husk">
+			<Property name="damagescorebudget" type="2">100</Property>
+			<Property name="killbonusscore" type="2">10</Property>
+			<Property name="powercontrolassistbudget" type="2">25</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_marauder">
+			<Property name="damagescorebudget" type="2">350</Property>
+			<Property name="killbonusscore" type="2">35</Property>
+			<Property name="powercontrolassistbudget" type="2">90</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_nemesis">
+			<Property name="damagescorebudget" type="2">400</Property>
+			<Property name="killbonusscore" type="2">40</Property>
+			<Property name="powercontrolassistbudget" type="2">100</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_phantom">
+			<Property name="damagescorebudget" type="2">800</Property>
+			<Property name="killbonusscore" type="2">80</Property>
+			<Property name="powercontrolassistbudget" type="2">200</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_ravager">
+			<Property name="damagescorebudget" type="2">600</Property>
+			<Property name="killbonusscore" type="2">60</Property>
+			<Property name="powercontrolassistbudget" type="2">150</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_swarmer">
+			<Property name="damagescorebudget" type="2">20</Property>
+			<Property name="dotdamage" type="2">100.f</Property>
+			<Property name="dotduration" type="2">5.f</Property>
+			<Property name="explodedamage" type="2">25.f</Property>
+			<Property name="killbonusscore" type="2">0</Property>
+			<Property name="powercontrolassistbudget" type="2">0</Property>
+			<Property name="timetolive" type="2">60.f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpawn_trooper">
+			<Property name="damagescorebudget" type="2">200</Property>
+			<Property name="killbonusscore" type="2">20</Property>
+			<Property name="powercontrolassistbudget" type="2">50</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_adeptmeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_powerspreebonus" type="2">0.30f</Property>
+			<Property name="evolve_powerspreeduration" type="2">20.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleeconeangle" type="2">(BaseValue=240.0f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=250)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=900)</Property>
+			<Property name="heavymeleeimpactradius" type="2">(BaseValue=450)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_adeptpassive">
+			<Property name="evolve_combobonusduration" type="2">30.0f</Property>
+			<Property name="evolve_combocooldownbonus" type="2">0.4f</Property>
+			<Property name="evolve_damageandforcebonus" type="2">0.15f</Property>
+			<Property name="evolve_damageandforcebonus2" type="2">0.1f</Property>
+			<Property name="evolve_damageforcedurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_henchmanpowerbonus" type="2">0.3f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.2f</Property>
+			<Property name="powerdamage" type="2">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.1f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[1]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_adrenalinerush">
+			<Property name="cooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=4.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_damagebonusincrease" type="2">0.25f</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_healthshielddamagetaken" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_numfreepowers" type="2">1</Property>
+			<Property name="evolve_shieldincrease" type="2">0.5f</Property>
+			<Property name="evolve_timedilationincrease" type="2">0.15f</Property>
+			<Property name="timedilation" type="2">(BaseValue=0.3f,Formula=BonusIsHardValue)</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_aihacking">
+			<Property name="cooldowntime" type="2">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="detonationparameters" type="2">(ImpactPlaceables=true,BlockedByObjects=true,DistancedSorted=true)</Property>
+			<Property name="effectduration" type="2">(BaseValue=12.0f)</Property>
+			<Property name="evolve_berserkdamagebonus" type="2">1.0f</Property>
+			<Property name="evolve_berserkmovespeedbonus" type="2">0.2f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.25f</Property>
+			<Property name="evolve_durationbonus" type="2">0.5f</Property>
+			<Property name="evolve_techpowerdamagebonus" type="2">1.0f</Property>
+			<Property name="evolve_techpowerduration" type="2">10.0f</Property>
+			<Property name="evolve_weaponexplosiondamagebonus" type="2">0.3f</Property>
+			<Property name="explosiondamage" type="2">(BaseValue=350.0f)</Property>
+			<Property name="explosionforce" type="2">(BaseValue=500.0f)</Property>
+			<Property name="explosionparameters" type="2">(ImpactPlaceables=true,BlockedByObjects=true)</Property>
+			<Property name="explosionradius" type="2">(BaseValue=400.0f)</Property>
+			<Property name="force" type="2">(BaseValue=50.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=30,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=250.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="maxhackedrobots" type="2">2</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="timehackedrobotignored" type="2">(BaseValue=2.0f,RankBonuses[2]=0.4f)</Property>
+			<Property name="unaffectedpawns">
+				<Value type="2">SFXPawn_Husk</Value>
+				<Value type="2">SFXPawn_Ravager</Value>
+				<Value type="2">SFXPawn_Brute</Value>
+				<Value type="2">SFXPawn_Banshee</Value>
+			</Property>
+			<Property name="weaponexplosiondamage" type="2">(BaseValue=150.0f)</Property>
+			<Property name="weaponhackduration" type="2">2.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_armorpiercingammo">
+			<Property name="armorreduction" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="damage" type="2">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.04f)</Property>
+			<Property name="evolve_ammocapacitybonus" type="2">0.3f</Property>
+			<Property name="evolve_armorreductionbonus" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus1" type="2">0.06f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.10f</Property>
+			<Property name="evolve_headshotdamagebonus" type="2">0.25f</Property>
+			<Property name="evolve_piercingbonus" type="2">0.60f</Property>
+			<Property name="piercingdamage" type="2">(BaseValue=0.5f)</Property>
+			<Property name="piercingrange" type="2">(BaseValue=0.5f,RankBonuses[1]=0.4f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_barrier">
+			<Property name="blastdamage" type="2">(BaseValue=90.0f,RankBonuses[1]=0.3f,RankBonuses[2]=0.2f)</Property>
+			<Property name="blastforce" type="2">(BaseValue=500.0f,RankBonuses[1]=0.3f,RankBonuses[2]=0.2f)</Property>
+			<Property name="blastliftduration" type="2">(BaseValue=3.0f)</Property>
+			<Property name="blastmaxtargets" type="2">4</Property>
+			<Property name="blastparameters" type="2">(BlockedByObjects=true,DistancedSorted=true,ImpactPlaceables=true)</Property>
+			<Property name="blastradius" type="2">(BaseValue=300.0f,RankBonuses[1]=0.3f,RankBonuses[2]=0.2f)</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="2">(BaseValue=0.6f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_blastdamagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagereductionbonus1" type="2">0.05f</Property>
+			<Property name="evolve_damagereductionbonus2" type="2">0.1f</Property>
+			<Property name="evolve_encumbrancebonus" type="2">0.3f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.25f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_bioticcharge">
+			<Property name="conehalfangle" type="2">(BaseValue=0.866f)</Property>
+			<Property name="cooldownbonusfrommelee" type="2">1.0f</Property>
+			<Property name="cooldowndurationfrommelee" type="2">30.0f</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=250.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.50f)</Property>
+			<Property name="damagereductionduration" type="2">(BaseValue=4.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,DistancedSorted=true,ImpactPlaceables=true,ConeAngle=120.0f)</Property>
+			<Property name="evolve_damageforcebonus" type="2">0.3f</Property>
+			<Property name="evolve_impactradiusbonus" type="2">200.0f</Property>
+			<Property name="evolve_maximpacttargetsbonus" type="2">2</Property>
+			<Property name="evolve_nocooldownchance" type="2">0.25f</Property>
+			<Property name="evolve_shieldrestoredbonus" type="2">0.5f</Property>
+			<Property name="evolve_timedpowerdamagebonus" type="2">0.25f</Property>
+			<Property name="evolve_timedpowerdamageduration" type="2">15.0f</Property>
+			<Property name="evolve_timedweapondamagebonus" type="2">0.15f</Property>
+			<Property name="evolve_timedweapondamageduration" type="2">3.0f</Property>
+			<Property name="force" type="2">(BaseValue=500.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="frozentargetforcemult" type="2">3.0f</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=200.f,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="shieldsrestored" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="stingerduration" type="2">1.0f</Property>
+			<Property name="stingerslowpct" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_bioticgrenade">
+			<Property name="additionalchildpieces" type="2">2</Property>
+			<Property name="damage" type="2">(BaseValue=350.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="evolve_armordamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_bioticweaknessdamagebonus" type="2">1.0f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.5f</Property>
+			<Property name="evolve_dotdamage" type="2">0.4f</Property>
+			<Property name="evolve_dotduration" type="2">10.0f</Property>
+			<Property name="evolve_forcebonus" type="2">0.3f</Property>
+			<Property name="evolve_forcebonus2" type="2">0.5f</Property>
+			<Property name="evolve_grenadecountbonus" type="2">2</Property>
+			<Property name="evolve_radiusbonus" type="2">0.35f</Property>
+			<Property name="evolve_shielddamagebonus" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=1000.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=400.0f)</Property>
+			<Property name="maxgrenadebonus" type="2">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="numchildpieces" type="2">2</Property>
+			<Property name="rank2grenadeupgrade" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_carnage">
+			<Property name="cooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=315.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="dotdamagepercent" type="2">0.25f</Property>
+			<Property name="dotduration" type="2">2.0f</Property>
+			<Property name="effectduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="evolve_armordamagepct" type="2">0.65f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.5f</Property>
+			<Property name="evolve_impactradiusbonus" type="2">0.5f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.35f</Property>
+			<Property name="force" type="2">(BaseValue=300.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=150.0f)</Property>
+			<Property name="instantdamagepercent" type="2">0.75f</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_cloak">
+			<Property name="bonusremovaldelay" type="2">1.5f</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagebonus" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+			<Property name="effectduration" type="2">(BaseValue=8.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_damagebonus" type="2">0.4f</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_meleedamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.3f</Property>
+			<Property name="evolve_sniperdamagebonus" type="2">0.4f</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="minimumcloakcooldown" type="2">3.0f</Property>
+			<Property name="mintimebeforecancel" type="2">1.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_combatdrone">
+			<Property name="cooldowntime" type="2">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="dronedamage" type="2">(BaseValue=40.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="droneshields" type="2">(BaseValue=500.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="dronezapcooldown" type="2">(BaseValue=3)</Property>
+			<Property name="evolve_damagebonus" type="2">0.4f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.5f</Property>
+			<Property name="evolve_numextratargets" type="2">3</Property>
+			<Property name="evolve_shieldbonus" type="2">0.4f</Property>
+			<Property name="evolve_shieldbonus2" type="2">0.5f</Property>
+			<Property name="evolve_shielddamagebonus" type="2">1.0f</Property>
+			<Property name="explosiondamage" type="2">(BaseValue=120.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="explosionforce" type="2">(BaseValue=400.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="explosionparameters" type="2">(ImpactPlaceables=true,BlockedByObjects=true)</Property>
+			<Property name="explosionradius" type="2">(BaseValue=500.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="noncombattimeout_length" type="2">5.f</Property>
+			<Property name="noncombattimeout_updatefrequency" type="2">1.f</Property>
+			<Property name="rocketcooldown" type="2">(BaseValue=4.0f)</Property>
+			<Property name="rocketdamage" type="2">(BaseValue=150.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="rocketforce" type="2">(BaseValue=300.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="rocketradius" type="2">(BaseValue=150.0f)</Property>
+			<Property name="shockcooldown" type="2">(BaseValue=5.0f)</Property>
+			<Property name="shockdamage" type="2">(BaseValue=100.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="shockforce" type="2">(BaseValue=450.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="shockradius" type="2">(BaseValue=250.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_combatdronerocket">
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="minimumrange" type="2">(BaseValue=400.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_combatdroneshock">
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=190.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_combatdronezap">
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,DistancedSorted=false)</Property>
+			<Property name="force" type="2">(BaseValue=175.0f)</Property>
+			<Property name="jumpdelay" type="2">0.5f</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="maxjumpdistance" type="2">1000.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_concussiveshot">
+			<Property name="cooldowntime" type="2">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=100.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.35f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_dotdamage" type="2">1.0f</Property>
+			<Property name="evolve_dotduration" type="2">10.0f</Property>
+			<Property name="evolve_forcebonus" type="2">0.5f</Property>
+			<Property name="evolve_freezecombobonus" type="2">1.0f</Property>
+			<Property name="evolve_radiusbonus" type="2">150.0f</Property>
+			<Property name="force" type="2">(BaseValue=300.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=0.0f,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=1)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_cryoammo">
+			<Property name="armorweakness" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.0f,RankBonuses[2]=0.4f)</Property>
+			<Property name="evolve_ammoincrease" type="2">0.3f</Property>
+			<Property name="evolve_armorweaknessbonus" type="2">0.25f</Property>
+			<Property name="evolve_freezechancebonus" type="2">0.5f</Property>
+			<Property name="evolve_freezedurationbonus" type="2">0.4f</Property>
+			<Property name="evolve_frozendamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_headshotbonus" type="2">0.35f</Property>
+			<Property name="evolve_speedreductionbonus" type="2">0.2f</Property>
+			<Property name="freezechance" type="2">(BaseValue=1.0f,RankBonuses[1]=0.3f)</Property>
+			<Property name="speedreduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="speedreductiondurationmult" type="2">2.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_cryoblast">
+			<Property name="armorweakness" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=6.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagetakenbonus" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=false)</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.0f,RankBonuses[2]=0.4f)</Property>
+			<Property name="evolve_armorweaknessbonus" type="2">0.25f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.5f</Property>
+			<Property name="evolve_damagetakenbonus" type="2">0.10f</Property>
+			<Property name="evolve_durationbonus" type="2">0.6f</Property>
+			<Property name="evolve_freezeexplodedurationmultiplier" type="2">0.5f</Property>
+			<Property name="evolve_frozendamagebonus" type="2">0.15f</Property>
+			<Property name="evolve_radiusbonus" type="2">200.0f</Property>
+			<Property name="evolve_speedreductionbonus" type="2">0.2f</Property>
+			<Property name="force" type="2">(BaseValue=150.0f)</Property>
+			<Property name="freezeexploderadius" type="2">(BaseValue=300.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=12,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.0f)</Property>
+			<Property name="speedreduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="speedreductiondurationmult" type="2">2.0f</Property>
+			<Property name="timedilationmax" type="2">0.7f</Property>
+			<Property name="timedilationmin" type="2">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_darkchannel">
+			<Property name="cooldowntime" type="2">(BaseValue=10,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=20.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=30.0f)</Property>
+			<Property name="evolve_armorbarrierdamage" type="2">0.75f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.5f</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_movespeedpenalty" type="2">0.3f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.35f</Property>
+			<Property name="force" type="2">(BaseValue=50.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_decoy">
+			<Property name="cooldowntime" type="2">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="decoydamageprotection" type="2">(BaseValue=0.5f)</Property>
+			<Property name="decoyshields" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="decoyspawnoffset" type="2">500.0f</Property>
+			<Property name="effectduration" type="2">(BaseValue=15.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_durationbonus2" type="2">0.5f</Property>
+			<Property name="evolve_explosionradius" type="2">300.0f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.35f</Property>
+			<Property name="evolve_shieldbonus" type="2">0.4f</Property>
+			<Property name="evolve_shieldbonus2" type="2">0.5f</Property>
+			<Property name="evolve_shockradius" type="2">250.0f</Property>
+			<Property name="explosiondamage" type="2">(BaseValue=300.0f)</Property>
+			<Property name="explosionforce" type="2">(BaseValue=500.0f)</Property>
+			<Property name="explosionparameters" type="2">(ImpactPlaceables=true,BlockedByObjects=true)</Property>
+			<Property name="explosionradius" type="2">(BaseValue=400.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="shockcooldown" type="2">5.0f</Property>
+			<Property name="shockdamage" type="2">(BaseValue=100.0f)</Property>
+			<Property name="shockforce" type="2">(BaseValue=450.0f)</Property>
+			<Property name="shockparameters" type="2">(ImpactPlaceables=true,BlockedByObjects=true)</Property>
+			<Property name="shockradius" type="2">(BaseValue=250.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_discharge">
+			<Property name="cooldowntime" type="2">(BaseValue=0,Formula=DivideByBonusSum)</Property>
+			<Property name="damage" type="2">(BaseValue=350.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="damageimmunityduration" type="2">1.5f</Property>
+			<Property name="detonationparameters" type="2">(DistancedSorted=true,BlockedByObjects=false,HitDirectionOffset=(Pitch=5000))</Property>
+			<Property name="evolve_barrierusereduction" type="2">0.5f</Property>
+			<Property name="evolve_chancefornocooldown" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus" type="2">0.4f</Property>
+			<Property name="evolve_damagereduction" type="2">0.4f</Property>
+			<Property name="evolve_damagetypepctincrease" type="2">1.0f</Property>
+			<Property name="evolve_impactradiusbonus" type="2">0.4f</Property>
+			<Property name="evolve_powerrechargespeedbonus" type="2">0.25f</Property>
+			<Property name="evolve_powerrechargespeedbonusduration" type="2">15.0f</Property>
+			<Property name="force" type="2">(BaseValue=450.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=0,Formula=DivideByBonusSum)</Property>
+			<Property name="impactradius" type="2">(BaseValue=400.0f,RankBonuses[1]=0.25f)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=590.0f,RankBonuses[1]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_disruptorammo">
+			<Property name="damage" type="2">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.02f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.5f)</Property>
+			<Property name="evolve_ammoincrease" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus" type="2">0.03f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.05f</Property>
+			<Property name="evolve_headshotdamage" type="2">0.25f</Property>
+			<Property name="evolve_shielddamagebonus" type="2">0.12f</Property>
+			<Property name="evolve_shielddamagebonus2" type="2">0.2f</Property>
+			<Property name="evolve_stunchancebonus" type="2">0.25f</Property>
+			<Property name="shielddamage" type="2">(BaseValue=0.20f,Formula=BonusIsHardValue,RankBonuses[2]=0.08f)</Property>
+			<Property name="shieldregenpenalty" type="2">1.0f</Property>
+			<Property name="shieldregenpenaltyduration" type="2">8.0f</Property>
+			<Property name="stunchance" type="2">(BaseValue=1.0f,Formula=BonusIsHardValue,RankBonuses[1]=0.15f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_enemygrenade">
+			<Property name="damage" type="2">(BaseValue=500.0f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="force" type="2">(BaseValue=400.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=450.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=2000.0f)</Property>
+			<Property name="minimumrange" type="2">(BaseValue=250.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_energydrain">
+			<Property name="cooldowntime" type="2">(BaseValue=8.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=220.0f,RankBonuses[2]=0.2)</Property>
+			<Property name="effectduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="electriccomboduration" type="2">3.0f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus1" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.4f</Property>
+			<Property name="evolve_damagereductionamount" type="2">0.15f</Property>
+			<Property name="evolve_damagereductionduration" type="2">(BaseValue=10.0f)</Property>
+			<Property name="evolve_radiusbonus" type="2">1.0f</Property>
+			<Property name="evolve_shieldsrestoredbonus" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=200.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=150.0f)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="organicdamagemultiplier" type="2">0.5f</Property>
+			<Property name="shieldregenpenalty" type="2">1.0f</Property>
+			<Property name="shieldregenpenaltyduration" type="2">8.0f</Property>
+			<Property name="shieldsrestored" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_engineermeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_powerspreebonus" type="2">0.30f</Property>
+			<Property name="evolve_powerspreeduration" type="2">20.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_engineerpassive">
+			<Property name="evolve_damagedurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_dronedamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_droneshieldbonus" type="2">1.0f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.15f</Property>
+			<Property name="evolve_powerdamagebonus2" type="2">0.1f</Property>
+			<Property name="evolve_powerdurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_squadpowerdamagebonus" type="2">0.3f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.2f</Property>
+			<Property name="powerdamage" type="2">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[2]=0.1f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.1f,Formula=BonusIsHardValue,RankBonuses[1]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_fortification">
+			<Property name="cooldowntime" type="2">(BaseValue=5.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="2">(BaseValue=0.6f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_damagereductionbonus1" type="2">0.05f</Property>
+			<Property name="evolve_damagereductionbonus2" type="2">0.1f</Property>
+			<Property name="evolve_encumbrancebonus" type="2">0.3f</Property>
+			<Property name="evolve_meleedamagebonus" type="2">0.3f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.2f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue,RankBonuses[2]=0.2f)</Property>
+			<Property name="meleedamagebonusduration" type="2">(BaseValue=20.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_fraggrenade">
+			<Property name="damage" type="2">(BaseValue=600.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=true,ImpactPlaceables=true)</Property>
+			<Property name="evolve_armordamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_dotdamage" type="2">0.4f</Property>
+			<Property name="evolve_dotduration" type="2">10.0f</Property>
+			<Property name="evolve_grenadecountbonus" type="2">2</Property>
+			<Property name="evolve_radiusbonus" type="2">0.3f</Property>
+			<Property name="evolve_shielddamagebonus" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=1500.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=650.0f)</Property>
+			<Property name="maxgrenadebonus" type="2">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_gethprimedronerocket">
+			<Property name="cooldowntime" type="2">(BaseValue=4.0f)</Property>
+			<Property name="damage" type="2">(BaseValue=80.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="force" type="2">(BaseValue=150.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=250.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_gethprimeshielddrone">
+			<Property name="effectduration" type="2">(BaseValue=30.0f)</Property>
+			<Property name="maxdronecount" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_gethprimeturret">
+			<Property name="effectduration" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=3000.0f)</Property>
+			<Property name="maxturretcount" type="2">3</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_gethshieldboost">
+			<Property name="cooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="effectduration" type="2">(BaseValue=2.0f)</Property>
+			<Property name="encumbrancepenalty" type="2">(BaseValue=0.6f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_damagereductionbonus1" type="2">0.05f</Property>
+			<Property name="evolve_damagereductionbonus2" type="2">0.1f</Property>
+			<Property name="evolve_encumbrancebonus" type="2">0.3f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.25f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="evolve_shieldrestorebonus" type="2">0.3f</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="shieldsrestored" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_grenadebase">
+			<Property name="projectilespeed" type="2">(BaseValue=3000)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_incendiaryammo">
+			<Property name="aoeparams" type="2">(BlockedByObjects=true, ImpactPlaceables=true)</Property>
+			<Property name="areaexplosionchance" type="2">(BaseValue=0.5f)</Property>
+			<Property name="areaexplosiondamage" type="2">(BaseValue=100.0f)</Property>
+			<Property name="areaexplosionradius" type="2">(BaseValue=250.0f)</Property>
+			<Property name="areaexplosionvfxscale" type="2">1.7f</Property>
+			<Property name="damage" type="2">(BaseValue=0.10f,Formula=BonusIsHardValue,RankBonuses[2]=0.04f)</Property>
+			<Property name="dotdamage" type="2">100.0f</Property>
+			<Property name="dotduration" type="2">3.0f</Property>
+			<Property name="evolve_ammoincrease" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus" type="2">0.06f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.1f</Property>
+			<Property name="evolve_headshotdamage" type="2">0.25f</Property>
+			<Property name="panicchanceincrease" type="2">0.15f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_incinerate">
+			<Property name="cooldowntime" type="2">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=300.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="dotduration" type="2">3.0f</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.0f)</Property>
+			<Property name="evolve_armordamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_dotdamagepercent" type="2">0.4f</Property>
+			<Property name="evolve_dotduration" type="2">8.0f</Property>
+			<Property name="evolve_frozendamagebonus" type="2">1.0f</Property>
+			<Property name="evolve_radiusbonus" type="2">200.0f</Property>
+			<Property name="force" type="2">(BaseValue=150.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="instantdamagepercent" type="2">0.75f</Property>
+			<Property name="largeflamecount" type="2">3</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_infernogrenade">
+			<Property name="childprojimpactradius" type="2">(BaseValue=250.f)</Property>
+			<Property name="childprojmaxspeed" type="2">900.f</Property>
+			<Property name="concussiveimpact" type="2">(BaseValue=200.0f)</Property>
+			<Property name="damage" type="2">(BaseValue=100.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false)</Property>
+			<Property name="effectduration" type="2">(BaseValue=8.f)</Property>
+			<Property name="evolve_armordamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.4f</Property>
+			<Property name="evolve_grenadecountbonus" type="2">2.0f</Property>
+			<Property name="evolve_numfragmentsincrease" type="2">1.0f</Property>
+			<Property name="evolve_radiusbonus" type="2">0.3f</Property>
+			<Property name="evolve_radiusbonus2" type="2">0.4f</Property>
+			<Property name="impactradius" type="2">(BaseValue=500.f)</Property>
+			<Property name="maxdotsperpawn" type="2">1</Property>
+			<Property name="maxgrenadebonus" type="2">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="numchildprojectiles" type="2">(BaseValue=3,Formula=BonusIsHardValue)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=2000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_infiltratormeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="evolve_weaponspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_weaponspreeduration" type="2">20.0f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_infiltratorpassive">
+			<Property name="evolve_headshotdamage" type="2">0.15f</Property>
+			<Property name="evolve_henchmenpowerdamage" type="2">0.15f</Property>
+			<Property name="evolve_henchmenweapondamage" type="2">0.1f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdamage" type="2">0.1f</Property>
+			<Property name="evolve_powerdamagedurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_powerduration" type="2">0.25f</Property>
+			<Property name="evolve_sniperdamage" type="2">0.15f</Property>
+			<Property name="evolve_weapondamage" type="2">0.05f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.35f</Property>
+			<Property name="sniperzoomdilation" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue,RankBonuses[2]=0.10f)</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.20f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_kailengslash">
+			<Property name="damage" type="2">(BaseValue=500.0f)</Property>
+			<Property name="detonationparameters" type="2">(DistancedSorted=false,ImpactPlaceables=true,ImpactFriends=false,ImpactDeadPawns=true)</Property>
+			<Property name="effectduration" type="2">(BaseValue=3.0f)</Property>
+			<Property name="force" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=200.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=2000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=1500)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_liftgrenade">
+			<Property name="damage" type="2">(BaseValue=450.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,DistancedSorted=false,ImpactPlaceables=true)</Property>
+			<Property name="effectduration" type="2">(BaseValue=4.0f)</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.3f</Property>
+			<Property name="evolve_durationbonus" type="2">0.5f</Property>
+			<Property name="evolve_grenadecountbonus" type="2">2</Property>
+			<Property name="evolve_radiusbonus" type="2">0.3f</Property>
+			<Property name="evolve_radiusbonus2" type="2">0.3f</Property>
+			<Property name="force" type="2">(BaseValue=300.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=500.0f)</Property>
+			<Property name="initialforce" type="2">(BaseValue=600.0f)</Property>
+			<Property name="maxgrenadebonus" type="2">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=3)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="2">1</Property>
+			<Property name="slamforce" type="2">(BaseValue=750.0f)</Property>
+			<Property name="slamragdollduration" type="2">(BaseValue=3.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_marksman">
+			<Property name="accuracyincrease" type="2">(BaseValue=0.3f, Formula=BonusIsHardValue)</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=10.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=6.f, RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_accuracyandrofbonus" type="2">0.2f</Property>
+			<Property name="evolve_accuracybonus" type="2">0.3f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.4f</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_headshotdamagebonus" type="2">0.25f</Property>
+			<Property name="evolve_rateoffirebonus" type="2">0.2f</Property>
+			<Property name="headshotdamageincrease" type="2">(BaseValue=0.25f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20.0f, Formula=DivideByBonusSum, RankBonuses[1]=0.25f)</Property>
+			<Property name="rateoffireincrease" type="2">(BaseValue=0.3f, Formula=BonusIsHardValue)</Property>
+			<Property name="squadbonuseffectiveness" type="2">(BaseValue=0.5f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_multiprojectile">
+			<Property name="castconehalfangledeg" type="2">60.0f</Property>
+			<Property name="secondprojectiledelay" type="2">0.0f</Property>
+			<Property name="secondprojectilemaxrange" type="2">800</Property>
+			<Property name="secondprojectilespeedpercent" type="2">1.0f</Property>
+			<Property name="secondtargetparams" type="2">(DistancedSorted=true,ImpactPlaceables=true)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_overload">
+			<Property name="cooldowntime" type="2">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=220.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="damagelossperhit" type="2">0.6f</Property>
+			<Property name="effectduration" type="2">(BaseValue=5.0f)</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus1" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.15f</Property>
+			<Property name="evolve_numchargebonus1" type="2">1</Property>
+			<Property name="evolve_numchargebonus2" type="2">1</Property>
+			<Property name="evolve_shielddamagebonus" type="2">1.0f</Property>
+			<Property name="force" type="2">(BaseValue=200.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="jumpdelay" type="2">0.5f</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="maxjumpdistance" type="2">(BaseValue=800.0f)</Property>
+			<Property name="numcharges" type="2">(BaseValue=1,Formula=BonusIsHardValue)</Property>
+			<Property name="organicdamagemultiplier" type="2">0.5f</Property>
+			<Property name="shieldregenpenalty" type="2">1.0f</Property>
+			<Property name="shieldregenpenaltyduration" type="2">8.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_protectordrone">
+			<Property name="cooldowntime" type="2">(BaseValue=6,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="dronedamage" type="2">(BaseValue=25.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=45.0f)</Property>
+			<Property name="evolve_damagebonus" type="2">1.0f</Property>
+			<Property name="evolve_durationbonus" type="2">1.0f</Property>
+			<Property name="evolve_frequencybonus" type="2">0.5f</Property>
+			<Property name="evolve_impactradiusbonus" type="2">0.4f</Property>
+			<Property name="evolve_impactradiusbonus2" type="2">0.6f</Property>
+			<Property name="evolve_incapacitatechance" type="2">0.3f</Property>
+			<Property name="evolve_numextratargets" type="2">2</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=12,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=500.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="noncombattimeout_length" type="2">5.f</Property>
+			<Property name="noncombattimeout_updatefrequency" type="2">1.f</Property>
+			<Property name="zapcooldown" type="2">2.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_proximitymine">
+			<Property name="cooldowntime" type="2">(BaseValue=10.f, Formula=DivideByBonusSum, RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=400.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,DistancedSorted=true,ImpactPlaceables=true)</Property>
+			<Property name="effectduration" type="2">(BaseValue=30.f)</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.40f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagetakendebuffstrength" type="2">(BaseValue=0.25f)</Property>
+			<Property name="evolve_debuffduration" type="2">(BaseValue=8.f)</Property>
+			<Property name="evolve_radiusbonus" type="2">0.5f</Property>
+			<Property name="evolve_seconddamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_slowdebuffstrength" type="2">(BaseValue=0.3f)</Property>
+			<Property name="force" type="2">(BaseValue=300.f,RankBonuses[2]=0.2f);</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20.f, Formula=DivideByBonusSum, RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=200.f)</Property>
+			<Property name="maxactivemines" type="2">3</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=4000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_pull">
+			<Property name="cooldowntime"
+			          type="2">(BaseValue=4,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="damage" type="2">(BaseValue=50.0f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=4.0f,RankBonuses[0]=0,RankBonuses[1]=0.0f,RankBonuses[2]=0.4f)</Property>
+			<Property name="effectstoremove" type="2">SFXGameEffect_Stasis</Property>
+			<Property name="evolve_dotdamagepersec" type="2">(BaseValue=20)</Property>
+			<Property name="evolve_durationbonus" type="2">0.5f</Property>
+			<Property name="evolve_extradamage" type="2">0.25f</Property>
+			<Property name="evolve_radiusbonus" type="2">200f</Property>
+			<Property name="evolve_rechargebonus" type="2">0.60f</Property>
+			<Property name="force" type="2">(BaseValue=200.0f)</Property>
+			<Property name="henchmancooldowntime"
+			          type="2">(BaseValue=8,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="minimumvelocity" type="2">130.0f</Property>
+			<Property name="minimumvelocityforcemult" type="2">0.1f</Property>
+			<Property name="physicstodamagemultiplier" type="2">0.15f</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.0f)</Property>
+			<Property name="secondprojectiledelay" type="2">0.1f</Property>
+			<Property name="secondprojectilemaxrange" type="2">800</Property>
+			<Property name="secondprojectilespeedpercent" type="2">0.8f</Property>
+			<Property name="vfxintensity" type="2">(BaseValue=1.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_reave">
+			<Property name="cooldowntime" type="2">(BaseValue=8.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=70.0f)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue)</Property>
+			<Property name="effectduration" type="2">(BaseValue=4.0f, RankBonuses[2]=0.35f)</Property>
+			<Property name="evolve_armorbarrierbonus" type="2">0.75f</Property>
+			<Property name="evolve_damagebonus" type="2">0.30f</Property>
+			<Property name="evolve_damagereductionbonus" type="2">0.10f</Property>
+			<Property name="evolve_damagereductionbonus2" type="2">0.15f</Property>
+			<Property name="evolve_durationbonus" type="2">0.4f</Property>
+			<Property name="evolve_durationbonus2" type="2">0.30f</Property>
+			<Property name="evolve_radius" type="2">300.0f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.35f</Property>
+			<Property name="force" type="2">(BaseValue=150.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_sentinelmeleepassive">
+			<Property name="evolve_damagereductionbonus" type="2">0.20f</Property>
+			<Property name="evolve_damagereductionduration" type="2">30.0f</Property>
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_henchmenhealthshieldbonus" type="2">0.3f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_sentinelpassive">
+			<Property name="evolve_chancefornocooldown" type="2">0.15f</Property>
+			<Property name="evolve_damageandforcebonus" type="2">0.15f</Property>
+			<Property name="evolve_damageforcedurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_henchmenpowerbonus" type="2">0.15f</Property>
+			<Property name="evolve_henchmenweaponbonus" type="2">0.1f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.35f</Property>
+			<Property name="powerdamage" type="2">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.20f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_sentryturret">
+			<Property name="cooldowntime" type="2">(BaseValue=5,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=25.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_armorpiercingdamage" type="2">1.0f</Property>
+			<Property name="evolve_cryofreezechance" type="2">1.0f</Property>
+			<Property name="evolve_damagebonus" type="2">0.4f</Property>
+			<Property name="evolve_shieldbonus" type="2">0.4f</Property>
+			<Property name="flamethrowerdamageduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="flamethrowerdamagepersec" type="2">(BaseValue=55.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="freezeduration" type="2">(BaseValue=3.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="noncombattimeout_length" type="2">5.f</Property>
+			<Property name="noncombattimeout_updatefrequency" type="2">1.f</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.0f)</Property>
+			<Property name="rocketcooldown" type="2">(BaseValue=4.0f)</Property>
+			<Property name="rocketdamage" type="2">(BaseValue=150.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="rocketforce" type="2">(BaseValue=300.0f)</Property>
+			<Property name="rocketradius" type="2">(BaseValue=150.0f)</Property>
+			<Property name="shockcooldown" type="2">(BaseValue=5.0f)</Property>
+			<Property name="shockdamage" type="2">(BaseValue=100.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="shockforce" type="2">(BaseValue=450.0f)</Property>
+			<Property name="shockradius" type="2">(BaseValue=250.0f)</Property>
+			<Property name="spawnzoffset" type="2">150.0f</Property>
+			<Property name="turretshields" type="2">(BaseValue=500.0f,RankBonuses[2]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_sentryturretrocket">
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="minimumrange" type="2">(BaseValue=1000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_sentryturretshock">
+			<Property name="maximumrange" type="2">(BaseValue=190.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_shielddronebuff">
+			<Property name="cooldowntime" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="detonationparameters" type="2">(ImpactFriends=true,DistancedSorted=false)</Property>
+			<Property name="impactradius" type="2">(BaseValue=300.0f)</Property>
+			<Property name="shieldbonus" type="2">300.0f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_shockwave">
+			<Property name="cooldowntime" type="2">(BaseValue=8,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+			<Property name="damage" type="2">(BaseValue=200.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,DistancedSorted=true,ImpactPlaceables=true,ConeAngle=90)</Property>
+			<Property name="effectduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="evolve_bioticcombomult" type="2">0.5f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.40f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_numshockwavesbonus" type="2">0.5f</Property>
+			<Property name="evolve_radiusbonus" type="2">0.3f</Property>
+			<Property name="force" type="2">(BaseValue=600.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="gravityduration" type="2">(BaseValue=1.0f)</Property>
+			<Property name="gravitylevel" type="2">(BaseValue=0.6f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=20,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+			<Property name="impactradius" type="2">(BaseValue=200.0f)</Property>
+			<Property name="liftduration" type="2">(BaseValue=2.5f)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="numshockwaveimpacts" type="2">(BaseValue=6)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=1000)</Property>
+			<Property name="range" type="2">(BaseValue=1000.0f)</Property>
+			<Property name="timebetweenimpacts" type="2">(BaseValue=0.18f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_singularity">
+			<Property name="cooldowntime" type="2">(BaseValue=4.5f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=20.0f)</Property>
+			<Property name="detonatedamage" type="2">(BaseValue=300)</Property>
+			<Property name="detonateforce" type="2">(BaseValue=600)</Property>
+			<Property name="detonatemaxragdollcount" type="2">2</Property>
+			<Property name="detonateradius" type="2">(BaseValue=500)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,DistancedSorted=false,ImpactFriends=true)</Property>
+			<Property name="effectduration" type="2">(BaseValue=4.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="evolve_additionalcharges" type="2">2.0f</Property>
+			<Property name="evolve_dotdamage" type="2">(BaseValue = 20)</Property>
+			<Property name="evolve_durationbonus" type="2">0.3f</Property>
+			<Property name="evolve_expandamount" type="2">0.35f</Property>
+			<Property name="evolve_expandduration" type="2">10f</Property>
+			<Property name="evolve_radiusbonus" type="2">0.25f</Property>
+			<Property name="evolve_rechargespeed" type="2">0.30f</Property>
+			<Property name="explodeparam" type="2">(BlockedByObjects=false,DistancedSorted=false,ImpactFriends=false)</Property>
+			<Property name="force" type="2">(BaseValue=100.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=9,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=150.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="m_fhitplayerminduration" type="2">1.5f</Property>
+			<Property name="m_flookupactorinterval" type="2">0.75f</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="numcharges" type="2">(BaseValue=4.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000)</Property>
+			<Property name="pushawayforce" type="2">(BaseValue=500.0f)</Property>
+			<Property name="singularityduration" type="2">(BaseValue=15.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_slam">
+			<Property name="cooldowntime"
+			          type="2">(BaseValue=4,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="damage" type="2">(BaseValue=50.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=1.5)</Property>
+			<Property name="evolve_bioticcombomult" type="2">0.5f</Property>
+			<Property name="evolve_forcebonus" type="2">0.4f</Property>
+			<Property name="evolve_forcebonus2" type="2">0.5f</Property>
+			<Property name="evolve_impactradius" type="2">200.0f</Property>
+			<Property name="evolve_ragdollduration" type="2">5.0f</Property>
+			<Property name="evolve_rechargespeedbonus" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=900.0,RankBonuses[2]=0.3f)</Property>
+			<Property name="henchmancooldowntime"
+			          type="2">(BaseValue=8,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="initialforce" type="2">(BaseValue=600.0f)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=0)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_soldiermeleepassive">
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.30f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.30f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="evolve_weaponspreebonus" type="2">0.25f</Property>
+			<Property name="evolve_weaponspreeduration" type="2">20.0f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=600)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=0)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.20f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_soldierpassive">
+			<Property name="evolve_ammopowerbonus" type="2">0.4f</Property>
+			<Property name="evolve_headshotdamage" type="2">0.2f</Property>
+			<Property name="evolve_henchweaponbonus" type="2">0.2f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.1f</Property>
+			<Property name="evolve_powerdurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_weapondamagebonus" type="2">0.05f</Property>
+			<Property name="evolve_weapondamagebonus2" type="2">0.1f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.5f</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.2f,Formula=BonusIsHardValue,RankBonuses[2]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_stasis">
+			<Property name="cooldowntime" type="2">(BaseValue=8,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=25)</Property>
+			<Property name="effectduration" type="2">(BaseValue=6,RankBonuses[2]=0.3f)</Property>
+			<Property name="effectstoremove">
+				<Value type="2">SFXGameEffect_Singularity</Value>
+				<Value type="2">SFXGameEffect_Pull</Value>
+				<Value type="2">SFXGameEffect_AntiGravity</Value>
+			</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.35f</Property>
+			<Property name="evolve_damagetakenbonus" type="2">0.35f</Property>
+			<Property name="evolve_durationbonus" type="2">0.40f</Property>
+			<Property name="evolve_healththresholdpct" type="2">1.5f</Property>
+			<Property name="evolve_nocooldownchance" type="2">0.3f</Property>
+			<Property name="evolve_vulnerabledamagebonus" type="2">0.5f</Property>
+			<Property name="healthdamagethreshold" type="2">(BaseValue=150.0f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=12,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+			<Property name="lookforactorsinterval" type="2">0.5f</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1)</Property>
+			<Property name="maximumragdolltargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="pushawayforce" type="2">(BaseValue=300.0f)</Property>
+			<Property name="stasisbubbleparameters" type="2">(BlockedByObjects=false,DistancedSorted=false)</Property>
+			<Property name="stasisbubbleradius" type="2">(BaseValue=150.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_stickygrenade">
+			<Property name="damage" type="2">(BaseValue=750.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="detonationparameters" type="2">(BlockedByObjects=false,ImpactPlaceables=true)</Property>
+			<Property name="evolve_armordamagebonus" type="2">0.5f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.4f</Property>
+			<Property name="evolve_grenadecountbonus" type="2">2</Property>
+			<Property name="evolve_proximityduration" type="2">15.0f</Property>
+			<Property name="evolve_radiusbonus" type="2">0.3f</Property>
+			<Property name="evolve_radiusbonus2" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=1500.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=200.0f)</Property>
+			<Property name="maxgrenadebonus" type="2">(BaseValue=0,Formula=BonusIsHardValue,RankBonuses[1]=1)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.0f)</Property>
+			<Property name="rank2grenadeupgrade" type="2">1</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_techarmor">
+			<Property name="cooldowntime" type="2">(BaseValue=12,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,Formula=DivideByBonusSum)</Property>
+			<Property name="damagereduction" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="encumbrancepenalty" type="2">(BaseValue=0.8f,Formula=BonusIsHardValue)</Property>
+			<Property name="evolve_damagereductionbonus1" type="2">0.05f</Property>
+			<Property name="evolve_damagereductionbonus2" type="2">0.10f</Property>
+			<Property name="evolve_encumbrancebonus" type="2">0.3f</Property>
+			<Property name="evolve_explosiondamagebonus1" type="2">0.3f</Property>
+			<Property name="evolve_explosionradiusbonus1" type="2">0.3f</Property>
+			<Property name="evolve_meleedamagebonus" type="2">0.3f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.2f</Property>
+			<Property name="explosiondamage" type="2">(BaseValue=200.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="explosionforce" type="2">(BaseValue=750.0f,RankBonuses[2]=0.2f)</Property>
+			<Property name="explosionradius" type="2">(BaseValue=300.0f,RankBonuses[2]=0.2f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_throw">
+			<Property name="cooldowntime"
+			          type="2">(BaseValue=4,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="damage" type="2">(BaseValue=50.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=1)</Property>
+			<Property name="evolve_bioticcombomult" type="2">0.5f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.60f</Property>
+			<Property name="evolve_forcebonus" type="2">0.40f</Property>
+			<Property name="evolve_radiusbonus" type="2">200.0f</Property>
+			<Property name="force" type="2">(BaseValue=600.0,RankBonuses[2]=0.3f)</Property>
+			<Property name="frozenforcebonus" type="2">1.0f</Property>
+			<Property name="henchmancooldowntime"
+			          type="2">(BaseValue=8,RankBonuses[0]=0.0f,RankBonuses[1]=0.25f,RankBonuses[2]=0.0f,Formula=DivideByBonusSum)
+			</Property>
+			<Property name="impactradius" type="2">(BaseValue=0,Formula=BonusIsHardValue)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=2)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000)</Property>
+			<Property name="secondprojectiledelay" type="2">0.1f</Property>
+			<Property name="secondprojectilemaxrange" type="2">800</Property>
+			<Property name="secondprojectilespeedpercent" type="2">0.8f</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_titanrocket">
+			<Property name="cooldowntime" type="2">(BaseValue=0.0f)</Property>
+			<Property name="damage" type="2">(BaseValue=400.0f)</Property>
+			<Property name="force" type="2">(BaseValue=600.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=400.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="minimumrange" type="2">(BaseValue=100.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=2000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_titanrocket_player">
+			<Property name="cooldowntime" type="2">(BaseValue=5.0f)</Property>
+			<Property name="damage" type="2">(BaseValue=1500.0f)</Property>
+			<Property name="force" type="2">(BaseValue=600.0f)</Property>
+			<Property name="impactradius" type="2">(BaseValue=400.0f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=4000.0f)</Property>
+			<Property name="minimumrange" type="2">(BaseValue=100.0f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=4000.0f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_unity">
+			<Property name="effectduration" type="2">(BaseValue=1.75f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_vanguardmeleepassive">
+			<Property name="evolve_chargerechargespeedbonus" type="2">2.0f</Property>
+			<Property name="evolve_healthshieldbonus1" type="2">0.15f</Property>
+			<Property name="evolve_healthshieldbonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus1" type="2">0.25f</Property>
+			<Property name="evolve_meleedamagebonus2" type="2">0.25f</Property>
+			<Property name="evolve_meleespreebonus" type="2">0.75f</Property>
+			<Property name="evolve_meleespreeduration" type="2">30.0f</Property>
+			<Property name="evolve_shieldregenbonus" type="2">0.15f</Property>
+			<Property name="healthshieldbonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.10f)</Property>
+			<Property name="heavymeleedamage" type="2">(BaseValue=500)</Property>
+			<Property name="heavymeleeforce" type="2">(BaseValue=900)</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1.0f)</Property>
+			<Property name="meleedamage" type="2">(BaseValue=150)</Property>
+			<Property name="meleedamagebonus" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.15f)</Property>
+			<Property name="meleeforce" type="2">(BaseValue=350)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_vanguardpassive">
+			<Property name="evolve_damageforcedurationbonus" type="2">0.25f</Property>
+			<Property name="evolve_henchmanpowerbonus" type="2">0.15f</Property>
+			<Property name="evolve_henchmanweaponbonus" type="2">0.1f</Property>
+			<Property name="evolve_paragonrenegadebonus" type="2">0.08f</Property>
+			<Property name="evolve_powerdamagebonus" type="2">0.1f</Property>
+			<Property name="evolve_powerforcebonus" type="2">0.3f</Property>
+			<Property name="evolve_shotgundamagebonus" type="2">0.15f</Property>
+			<Property name="evolve_weapondamagebonus" type="2">0.05f</Property>
+			<Property name="evolve_weightcapacitybonus" type="2">0.35f</Property>
+			<Property name="powerdamage" type="2">(BaseValue=0.05f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="weapondamagebonus" type="2">(BaseValue=0.025f,Formula=BonusIsHardValue,RankBonuses[2]=0.025f)</Property>
+			<Property name="weightcapacity" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.20f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_warp">
+			<Property name="armorweakness" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="bioticexplosionparameters" type="2">(BlockedByObjects=false,DistancedSorted=false,ImpactPlaceables=true)</Property>
+			<Property name="cooldowntime" type="2">(BaseValue=8.f,Formula=DivideByBonusSum, RankBonuses[1]=0.25f)</Property>
+			<Property name="damage" type="2">(BaseValue=250.f,RankBonuses[2]=0.2f)</Property>
+			<Property name="effectduration" type="2">(BaseValue=10.0f)</Property>
+			<Property name="evolve_armorweaknessbonus" type="2">0.25f</Property>
+			<Property name="evolve_combodamage" type="2">0.5f</Property>
+			<Property name="evolve_comboforce" type="2">0.5f</Property>
+			<Property name="evolve_comboradius" type="2">0.5f</Property>
+			<Property name="evolve_cooldownbonus" type="2">0.35f</Property>
+			<Property name="evolve_damagebonus" type="2">0.3f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.4f</Property>
+			<Property name="evolve_debuffbioticdamagetakenstrength" type="2">0.15f</Property>
+			<Property name="evolve_debuffdamagetakenduration" type="2">(BaseValue=10.f)</Property>
+			<Property name="evolve_debuffweapondamagetakenstrength" type="2">0.15f</Property>
+			<Property name="evolve_dotduration" type="2">0.6f</Property>
+			<Property name="evolve_shielddamagebonus" type="2">0.5f</Property>
+			<Property name="force" type="2">(BaseValue=250.f)</Property>
+			<Property name="henchmancooldowntime" type="2">(BaseValue=16.f,Formula=DivideByBonusSum, RankBonuses[1]=0.25f)</Property>
+			<Property name="instantdamagepercent" type="2">0.75f</Property>
+			<Property name="maximumimpacttargets" type="2">(BaseValue=1.f)</Property>
+			<Property name="maximumrange" type="2">(BaseValue=6000.f)</Property>
+			<Property name="projectilespeed" type="2">(BaseValue=3000.f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxpowercustomaction_warpammo">
+			<Property name="armorweakness" type="2">(BaseValue=0.25f,Formula=BonusIsHardValue)</Property>
+			<Property name="armorweaknessduration" type="2">(BaseValue=4.0f)</Property>
+			<Property name="barrierdamage" type="2">(BaseValue=0.30f,Formula=BonusIsHardValue,RankBonuses[2]=0.10f)</Property>
+			<Property name="damage" type="2">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[2]=0.05f)</Property>
+			<Property name="evolve_ammoincrease" type="2">0.3f</Property>
+			<Property name="evolve_armorweaknessbonus" type="2">0.25f</Property>
+			<Property name="evolve_barrierdamagebonus1" type="2">0.15f</Property>
+			<Property name="evolve_barrierdamagebonus2" type="2">0.25f</Property>
+			<Property name="evolve_damagebonus1" type="2">0.075f</Property>
+			<Property name="evolve_damagebonus2" type="2">0.125f</Property>
+			<Property name="evolve_headshotdamage" type="2">0.25f</Property>
+			<Property name="evolve_lifteddamagebonus" type="2">0.5f</Property>
+			<Property name="lifteddamagebonus" type="2">(BaseValue=0.5f,Formula=BonusIsHardValue,RankBonuses[1]=0.25f)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_powercustomaction_proximitymine">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+			<Property name="predictionaccelerationrate" type="2">1.001</Property>
+			<Property name="predictioninitialspeedgain" type="2">0.2</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_powercustomaction_seeking">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxprojectile_powercustomaction_shockwave">
+			<Property name="bclientpredictprojectile" type="2">true</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxseqact_showsaveindicatormessage">
+			<Property name="bskipdisplay" type="2">false</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxseqact_systemstestbuddy">
+			<Property name="levels">
+				<Value type="2">(Id="biop_bchlml",Nm="Jacob Loyalty",Pn="Aeia - Hugo Gernsback Crash Site")</Value>
+				<Value type="2">(Id="biop_blbgtl",Nm="Legion Loyalty",Pn="Heretic Station")</Value>
+				<Value type="2">(Id="biop_citasl",Nm="Thane Loyalty",Pn="Citadel - 800 Blocks")</Value>
+				<Value type="2">(Id="biop_citgrl",Nm="Garrus Loyalty", Pn="Citadel - Factory District")</Value>
+				<Value type="2">(Id="biop_cithub",Nm="Citadel Hub", Pn="Citadel - Zakera Ward")</Value>
+				<Value type="2">(Id="biop_horcr1",Nm="Horizon Colony", Pn="Horizon")</Value>
+				<Value type="2">(Id="biop_jnkkga",Nm="Grunt Acquisition", Pn="Korlus - Blue Suns Facility")</Value>
+				<Value type="2">(Id="biop_juncvl",Nm="Jack Loyalty", Pn="Pragia - Teltin Facility")</Value>
+				<Value type="2">(Id="biop_krohub",Nm="Tuchanka Hub", Pn="Tuchanka - Urdnot Camp")</Value>
+				<Value type="2">(Id="biop_krokgl",Nm="Grunt Loyalty", Pn="Tuchanka - Urdnot Ruins")</Value>
+				<Value type="2">(Id="biop_kroprl",Nm="Mordin Loyalty", Pn="Tuchanka - Weyrloc Facility")</Value>
+				<Value type="2">(Id="biop_n7bldinv1",Nm="N7: Blood Pack 1", Pn="Tarith - Blood Pack Comm Relay")</Value>
+				<Value type="2">(Id="biop_n7bldinv2",Nm="N7: Blood Pack 2", Pn="Zada Ban - Blood Pack Base")</Value>
+				<Value type="2">(Id="biop_n7crsh",Nm="N7: Crash", Pn="Zanethu - MSV Estevanico Crash Site")</Value>
+				<Value type="2">(Id="biop_n7geth2",Nm="N7: Geth 2", Pn="Canalus")</Value>
+				<Value type="2">(Id="biop_n7mine",Nm="N7: Mine", Pn="Helyme - Eldfell-Ashland Facility")</Value>
+				<Value type="2">(Id="biop_n7mmnt10",Nm="N7: Moment 10", Pn="Aequitas - Mining Facility")</Value>
+				<Value type="2">(Id="biop_n7mmnt1",Nm="N7: Moment 1", Pn="Daratar - Eclipse Cache")</Value>
+				<Value type="2">(Id="biop_n7mmnt2",Nm="N7: Moment 2", Pn="Gei Hinnom - Quarian Crash Site")</Value>
+				<Value type="2">(Id="biop_n7mmnt3",Nm="N7: Moment 3", Pn="Taitus")</Value>
+				<Value type="2">(Id="biop_n7mmnt4",Nm="N7: Moment 4", Pn="MSV Broken Arrow")</Value>
+				<Value type="2">(Id="biop_n7mmnt5",Nm="N7: Moment 5", Pn="Lorek - Eclipse Base")</Value>
+				<Value type="2">(Id="biop_n7mmnt6",Nm="N7: Moment 6", Pn="Sinmara - Magnetic Shield Generator")</Value>
+				<Value type="2">(Id="biop_n7mmnt7",Nm="N7: Moment 7", Pn="Franklin's Moon - Javelin Mk.II Silo")</Value>
+				<Value type="2">(Id="biop_n7spdr1",Nm="N7: Spider 1", Pn="Joab - Dig Site")</Value>
+				<Value type="2">(Id="biop_n7spdr2",Nm="N7: Spider 2", Pn="MSV Strontium Mule")</Value>
+				<Value type="2">(Id="biop_n7spdr3",Nm="N7: Spider 3", Pn="Sanctum - Blue Suns Base")</Value>
+				<Value type="2">(Id="biop_n7viq1",Nm="N7: VIQ 1", Pn="Neith - MSV Corsica Crash Site")</Value>
+				<Value type="2">(Id="biop_n7viq2",Nm="N7: VIQ 2", Pn="Jarrahe Station")</Value>
+				<Value type="2">(Id="biop_n7viq3",Nm="N7: VIQ 3", Pn="Capek - Hahne-Kedar Facility")</Value>
+				<Value type="2">(Id="biop_nor",Nm="Research Project", Pn="Normandy SR-2")</Value>
+				<Value type="2">(Id="biop_omggra",Nm="Garrus Acquisition", Pn="Omega - Archangel's Base")</Value>
+				<Value type="2">(Id="biop_omghub",Nm="Omega Hub", Pn="Omega - Merchant District")</Value>
+				<Value type="2">(Id="biop_omgmwl",Nm="Samara Loyalty", Pn="Omega - Morinth's Apartment")</Value>
+				<Value type="2">(Id="biop_omgpra",Nm="Mordin Acquisition", Pn="Omega - Slums District")</Value>
+				<Value type="2">(Id="biop_procer",Nm="Cerberus Research Center", Pn="Lazarus Research Station")</Value>
+				<Value type="2">(Id="biop_profre",Nm="Freedom's Progress", Pn="Freedom's Progress")</Value>
+				<Value type="2">(Id="biop_prscva",Nm="Jack Acquisition", Pn="Prison Ship Purgatory")</Value>
+				<Value type="2">(Id="biop_quatll",Nm="Tali Loyalty", Pn="Migrant Fleet")</Value>
+				<Value type="2">(Id="biop_rprgta",Nm="Legion Acquisition", Pn="Derelict Reaper")</Value>
+				<Value type="2">(Id="biop_shpcr2",Nm="Collector Ship", Pn="Disabled Collector Vessel")</Value>
+				<Value type="2">(Id="biop_suntla",Nm="Tali Acquisition", Pn="Haestrom - Quarian Landing Zone")</Value>
+				<Value type="2">(Id="biop_twrasa",Nm="Thane Acquisition", Pn="Illium - Dantius Towers")</Value>
+				<Value type="2">(Id="biop_twrhub",Nm="Illium Hub", Pn="Illium - Nos Astra")</Value>
+				<Value type="2">(Id="biop_twrmwa",Nm="Samara Acquisition", Pn="Illium - Commercial Spaceport")</Value>
+				<Value type="2">(Id="biop_twrvxl",Nm="Miranda Loyalty", Pn="Illium - Transport Station")</Value>
+				<Value type="2">(Id="research",Nm="Research Project", Pn="Normandy Lab")</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

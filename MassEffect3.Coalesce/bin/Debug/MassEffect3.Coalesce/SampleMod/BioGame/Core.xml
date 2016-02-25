@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="core" name="core.int" source="..\..\engine\localization\int\core.int">
+	<Sections>
+		<Section name="errors">
+			<Property name="aborted" type="2">Aborted</Property>
+			<Property name="abstract" type="2">Can't create object `~: class `~ is abstract</Property>
+			<Property name="assert" type="2">Assertion failed: `~ [File:`~] [Line: `~]</Property>
+			<Property name="badproperty" type="2">'`~': Bad or missing property '`~'</Property>
+			<Property name="binaryformat" type="2">The file '`~' contains unrecognizable data</Property>
+			<Property name="cannotsaveconformincompatibility" type="2">Cannot save conformed package '`~' as it is incompatible with the original</Property>
+			<Property name="cannotsavepartiallyloaded" type="2">Cannot save package '`~' as it has only been partially loaded</Property>
+			<Property name="cannotsavewitholderversion"
+			          type="2">Cannot save package '`~' as current engine version is older than version the package was originally saved with.
+			</Property>
+			<Property name="confignotfound" type="2">Can't find '`~' in configuration file section=`~ key=`~</Property>
+			<Property name="cookedpackagedversionolderthanenginepackagefilecookedcontentversion"
+			          type="2">Unable to run as package was cooked with an older version of the engine. Please recook: (`~) CurrEngineVersion: `~ VersionSavedWith: `~
+			</Property>
+			<Property name="debug" type="2">Debug assertion failed: `~ [File:`~] [Line: `~]</Property>
+			<Property name="emptypackagename" type="2">Attempted to create a package with an empty package name.</Property>
+			<Property name="error_actorcomponentdestroyedwithoutremoval" type="2">Actor component (`~) destroyed without removal from scene</Property>
+			<Property name="error_filenameistoolongforcooking"
+			          type="2">Filename '`~' is too long; this may interfere with cooking for consoles. Unreal filenames should be no longer than `~ characters.
+			</Property>
+			<Property name="exec" type="2">Unrecognized command</Property>
+			<Property name="exportindex" type="2">Bad export index `~/`~</Property>
+			<Property name="exportopen" type="2">Error exporting `~: couldn't open file '`~'</Property>
+			<Property name="exportwrite" type="2">Error exporting `~: couldn't write file '`~'</Property>
+			<Property name="failedcreate" type="2">`~ `~ not found for creation</Property>
+			<Property name="failedimport" type="2">Can't find `~ in file '`~'</Property>
+			<Property name="failedimportprivate" type="2">Can't import private object `~ `~</Property>
+			<Property name="failedload" type="2">Failed to load '`~': `~</Property>
+			<Property name="failedloadobject" type="2">Failed to load '`~ `~.`~': `~</Property>
+			<Property name="failedloadpackage" type="2">Failed loading package: `~</Property>
+			<Property name="failedsavefile" type="2">Error saving file '`~': `~</Property>
+			<Property name="failedsaveothermappackage" type="2">Can't save `~: Graph is linked to object `~ in external map package</Property>
+			<Property name="failedsaveprivate" type="2">Can't save `~: Graph is linked to external private object `~</Property>
+			<Property name="filenametopackage" type="2">Can't convert filename '`~' to package name</Property>
+			<Property name="filenotfound" type="2">Can't find file '`~'</Property>
+			<Property name="fileversiondump"
+			          type="2">Unable to load package (`~) PackageVersion `4~, MaxExpected `4~ : LicenseePackageVersion `4~, MaxExpected `4~.
+			</Property>
+			<Property name="history" type="2">History</Property>
+			<Property name="importindex" type="2">Bad import index `~/`~</Property>
+			<Property name="inireadonly" type="2">The file `~ is write protected; settings cannot be saved</Property>
+			<Property name="linkedtoobjectsinothermap_findculpritq"
+			          type="2">Can't save `~: Graph is linked to object in external map package. Try to find the chain of references to that object (may take some time)?
+			</Property>
+			<Property name="linkedtoprivateobjects_findculpritq"
+			          type="2">Can't save `~: Graph is linked to external private object. Try to find the chain of references to that object (may take some time)?
+			</Property>
+			<Property name="linkerexists" type="2">Linker for '`~' already exists</Property>
+			<Property name="loadclassmismatch" type="2">`~ is not a child class of `~</Property>
+			<Property name="loadeddeprecatedclassinstance" type="2">`~: class `~ has been deprecated.</Property>
+			<Property name="loadingtransientinstance"
+			          type="2">Attempting to load an instance of a transient class from disk - Package:'`~' Object:'`~' Class:'`~'
+			</Property>
+			<Property name="misingini" type="2">Missing .ini file: `~</Property>
+			<Property name="missingexeconfigfileerror"
+			          type="2">Loading the editor with managed code requires the existance of the '`~' file which was not found. This file is necessary in order for the managed runtime to locate dependent assembly files. The application will now exit.
+			</Property>
+			<Property name="nativerebuildrequired"
+			          type="2">Unable to create object of type '`~': native class layout differs from script layout. Please build C++ before continuing to avoid data corruption.
+			</Property>
+			<Property name="nofindimport" type="2">Can't find file '`~' for import</Property>
+			<Property name="noreplace" type="2">Can't replace `~ with `~</Property>
+			<Property name="notdll" type="2">'`~' is not a DLL package; can't find export '`~'</Property>
+			<Property name="notindll" type="2">Can't find '`~' in '`~.lib'</Property>
+			<Property name="notpackaged" type="2">Object is not packaged: `~ `~</Property>
+			<Property name="notwithin" type="2">Object `~ `~ created in `~ instead of `~</Property>
+			<Property name="objectnotfound" type="2">Failed to find object '`~ `~.`~'</Property>
+			<Property name="oldversionfile" type="2">The file `~ was saved by a previous version which is not backwards compatible with this one.</Property>
+			<Property name="openfailed" type="2">Error opening file '`~' (`~).</Property>
+			<Property name="operationdisallowedoncookedcontent" type="2">The requested operation cannot be performed on a cooked package.</Property>
+			<Property name="outofmemory"
+			          type="2">Ran out of virtual memory. To prevent this condition, you must free up more space on your primary hard disk.
+			</Property>
+			<Property name="packagebiggerthansoftlimit"
+			          type="2">Package `~ was successfully saved and is `~ MByte in size. This exceeds the recommended package size. Please split it up to be less than `~ MByte.
+			</Property>
+			<Property name="packagenamednone" type="2">Attempted to create a package named 'None'</Property>
+			<Property name="packagenotfound" type="2">Can't find file for package '`~' while loading `~</Property>
+			<Property name="packageresolvefailed" type="2">Can't resolve package name</Property>
+			<Property name="packageversion" type="2">Package '`~' version mismatch</Property>
+			<Property name="password" type="2">Password not recognized</Property>
+			<Property name="ps3supportnotloaded"
+			          type="2">The PS3 tools are not installed; objects may have been saved uncooked! Please install the latest PS3 SDK!
+			</Property>
+			<Property name="question" type="2">Question</Property>
+			<Property name="readeof" type="2">Read beyond end of file</Property>
+			<Property name="readfilefailed" type="2">Failed to read file '`~' for import</Property>
+			<Property name="replacenopostload_f" type="2">Can't replace objects which need to be post-loaded while still de-serializing objects: `~</Property>
+			<Property name="replacenotfullyloaded_f" type="2">Attempting to replace an object that hasn't been fully loaded: `~</Property>
+			<Property name="sandbox" type="2">Package '`~' is not accessible in this sandbox</Property>
+			<Property name="savedwithnewerversion"
+			          type="2">Package '`~' has been saved with engine version newer than current and therefore won't be possible to save. CurrEngineVersion: `~ VersionSavedWith: `~
+			</Property>
+			<Property name="savewarning" type="2">Error saving '`~'</Property>
+			<Property name="seekfailed" type="2">Error seeking file</Property>
+			<Property name="serialsize" type="2">`~: Serial size mismatch: Got `~, Expected `~</Property>
+			<Property name="transientimport" type="2">Transient object imported: `~</Property>
+			<Property name="unknown" type="2">Unknown Error</Property>
+			<Property name="urlfailed" type="2">Failed launching URL</Property>
+			<Property name="warning" type="2">Warning</Property>
+			<Property name="writefailed" type="2">Error writing to file</Property>
+			<Property name="xbox360supportnotloaded"
+			          type="2">The Xbox360 tools are not installed; objects may have been saved uncooked! Please the install the latest XDK!
+			</Property>
+		</Section>
+		<Section name="general">
+			<Property name="copyright" type="2">Copyright 1998-2010 Epic Games, Inc. All Rights Reserved.</Property>
+			<Property name="engine" type="2">Unreal Engine</Property>
+			<Property name="false" type="2">False</Property>
+			<Property name="no" type="2">No</Property>
+			<Property name="none" type="2">None</Property>
+			<Property name="product" type="2">Unreal</Property>
+			<Property name="true" type="2">True</Property>
+			<Property name="yes" type="2">Yes</Property>
+		</Section>
+		<Section name="helpcommandlet">
+			<Property name="helpdescription" type="2">This commandlet displays help information on other commandlets</Property>
+			<Property name="helpparamdescriptions[0]" type="2">Lists all commandlets that are available</Property>
+			<Property name="helpparamdescriptions[1]" type="2">Displays help information for the specified commandlet</Property>
+			<Property name="helpparamdescriptions[2]" type="2">Launches a browser with the URL of the web page that documents the commandlet</Property>
+			<Property name="helpparamnames[0]" type="2">list</Property>
+			<Property name="helpparamnames[1]" type="2">commandlet name</Property>
+			<Property name="helpparamnames[2]" type="2">webhelp</Property>
+			<Property name="helpusage" type="2">gamename.exe help &lt;list | commandletname | webhelp commandletname&gt;</Property>
+			<Property name="helpweblink" type="2">https://udn.epicgames.com/bin/view/Three/HelpCommandlet</Property>
+		</Section>
+		<Section name="language">
+			<Property name="langid" type="2">9</Property>
+			<Property name="language" type="2">English (International)</Property>
+			<Property name="sublangid" type="2">1</Property>
+		</Section>
+		<Section name="progress">
+			<Property name="finalizing" type="2">Finalizing: `~...</Property>
+			<Property name="loading" type="2">Loading file: `~...</Property>
+			<Property name="saving" type="2">Saving file: `~...</Property>
+		</Section>
+		<Section name="public">
+			<Property name="object" type="2">(Name=Core.HelloWorldCommandlet,Class=Class,MetaClass=Core.Commandlet)</Property>
+		</Section>
+		<Section name="query">
+			<Property name="checkoutperforce" type="2">'`~' is marked read-only. Should I try to check it out of Perforce?</Property>
+			<Property name="name" type="2">Name:</Property>
+			<Property name="oldversion"
+			          type="2">The file `~ was saved by a previous version which is not backwards compatible with this one. Reading it will likely fail, and may cause a crash. Do you want to try anyway?
+			</Property>
+			<Property name="overwrite" type="2">The file '`~' needs to be updated. Do you want to overwrite the existing version?</Property>
+			<Property name="overwritemultiple" type="2">These files need to be updated: `~
+				Do you want to overwrite the existing versions?
+			</Property>
+			<Property name="overwritereadonly" type="2">'`~' is marked read-only. Would you like to try to force overwriting it?</Property>
+			<Property name="packagefailedtoopen"
+			          type="2">The package '`~' failed to open. Should this commandlet continue operation, ignoring further load errors? Continuing may have adverse effects (object references may be lost).
+			</Property>
+			<Property name="passdlg" type="2">Identity Check</Property>
+			<Property name="passprompt" type="2">Enter your name and password:</Property>
+			<Property name="password" type="2">Password:</Property>
+			<Property name="removenativeclass"
+			          type="2">Native class with no script detected: '`~'. Should this class be removed from static initialization? (If you haven't recently removed a native script class, make sure that the class declaration includes CLASS_Intrinsic.)
+			</Property>
+			<Property name="warning_forcedelete" type="2">Deleting `~.
+
+				Forcing delete on a referenced object is potentially dangerous and could cause data corruption. The following objects may have invalid references if you proceed:
+				`~.
+
+				Do you wish to delete this referenced object?
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioCredits" name="biocredits.ini" source="..\..\biogame\config\biocredits.ini">
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">4279442828.000000</Property>
+		</Section>
+		<Section name="sfxgame.sfxgui_credits">
+			<Property name="breakspace" type="2">30</Property>
+			<Property name="columnpadding" type="2">30</Property>
+			<Property name="confirmexitmessage" type="2">343062</Property>
+			<Property name="credits">
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=342757, Names=342910, StartTime=1.5\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=342758, Names=342911, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=723655, Names=391353, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=342760, Names=342913, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=342761, Names=342914, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=386331, Names=386332, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Flashing,\tTitle=723656, Names=723808, DelayTime=.35\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342763,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342770,\tNames=723809,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342764,\tNames=723810,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342765,\tNames=723811\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342769,\tNames=723812\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342771,\tNames=723819\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723657,\tNames=723820,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=362091,\tNames=723821\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723658,\tNames=723822\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342775,\tNames=723823\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=391714,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723659,\tNames=723824,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342781,\tNames=342939\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723660,\tNames=723825\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342785,\tNames=342943\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=362097,\tNames=360228\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342784,\tNames=342942\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723661,\tNames=723829\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723662,\tNames=723830\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723663,\tNames=723831\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342788,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342789,\tNames=723832,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342790,\tNames=723833,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342791,\tNames=723834,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342792,\tNames=723835,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342793,\tNames=723836\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342794,\tNames=723837\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342796,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723664,\tNames=723838\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723665,\tNames=723839\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342798,\tNames=723840,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342797,\tNames=723841\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723667,\tNames=723842\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=391697,\tNames=723843\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342800,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723668,\tNames=723844\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342802,\tNames=723845,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342803,\tNames=723846\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342804,\tNames=723847,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342806,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723669,\tNames=723848\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723670,\tNames=723849\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723671,\tNames=723850\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723672,\tNames=723851\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723673,\tNames=723852,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723674,\tNames=723853\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723675,\tNames=723854,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723677,\tNames=723855\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723678,\tNames=723856,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723679,\tNames=723857,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723680,\tNames=723858,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723681,\tNames=723859\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723682,\tNames=723860\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342838,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343003,\tNames=722542\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=172370,\tNames=172352\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=687343,\tNames=722543\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=722544,\tNames=342848\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=722545,\tNames=342846\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723246,\tNames=723247\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343009,\tNames=342845\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=156662,\tNames=342854\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=172364,\tNames=172346\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343005,\tNames=342841\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=156665,\tNames=342861\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343021,\tNames=342857\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=373060,\tNames=342856\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343006,\tNames=342842\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=178198,\tNames=342855\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343023,\tNames=342859\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343007,\tNames=342843\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=722546,\tNames=342847\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=388371,\tNames=722547\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=724433,\tNames=724434\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=705982,\tNames=722548\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=374492,\tNames=342862\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=206252,\tNames=342844\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723248,\tNames=723249\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=172365,\tNames=172347\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343022,\tNames=342858\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=722549,\tNames=722550\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=172360,\tNames=172342\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=617293,\tNames=722551\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342877,\tNames=722552,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342891,\tNames=723950\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=725172,\tFontScale=0.8,\tBreakSpace=40\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=724627,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=724637,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=724638,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=724639,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=724640,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342811,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723683,\tNames=723861\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723687,\tNames=723865\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723684,\tNames=723862\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723685,\tNames=723863\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723686,\tNames=723864\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723689,\tNames=723867\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723688,\tNames=723866\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723690,\tNames=723868\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342812,\tNames=723869\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723691,\tNames=723870\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723692,\tNames=723871\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723693,\tNames=723872\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723694,\tNames=723873,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723695,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723696,\tNames=342969\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723697,\tNames=723874\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723698,\tNames=342944\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723699,\tNames=342996\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342777,\tNames=723875\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342825,\tNames=723876\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342828,\tNames=723877\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723700,\tNames=723878\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723701,\tNames=723879\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723702,\tNames=723880\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723703,\tNames=723881\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723704,\tNames=723882\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723705,\tNames=723883\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723706,\tNames=723884\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342823,\tNames=342990\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342831,\tNames=723885,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723707,\tNames=723886\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342827,\tNames=723887\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723708,\tNames=723888\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723709,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342832,\tNames=723889\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342833,\tNames=723890\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342835,\tNames=723891\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342834,\tNames=723892\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723710,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723711,\tNames=723893\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723712,\tNames=723894\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723713,\tNames=723895\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723714,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723715,\tNames=342915\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723716,\tNames=342937\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723717,\tNames=723896\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723724,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723725\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723726,\tNames=723898\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723727,\tNames=723899\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723728,\tNames=343328\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723729,\tNames=343324\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723730,\tNames=342991\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723731,\tNames=723900\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723732,\tNames=723901\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723733,\tNames=723902\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342823,\tNames=723903\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723734,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343306,\tNames=343307\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343308,\tNames=723904\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343310,\tNames=343311\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723735,\tNames=723905\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723736,\tNames=723906\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723737,\tNames=343315\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723738,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343291,\tNames=343292\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723739,\tNames=343296\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723740,\tNames=343298\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723741,\tNames=343300\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723742,\tNames=343302\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723743,\tNames=343304\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723744,\tNames=723906\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342904,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=389505,\tNames=723909\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=389503,\tNames=723910,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342906,\tNames=723911\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342905,\tNames=723912,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342796,\tNames=723913\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723745,\tNames=723914\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723746,\tNames=723915,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342889,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342796,\tNames=723916,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723747,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723748,\tNames=723917,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342835,\tNames=723918,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723749,\tNames=723919\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342806,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342762,\tNames=723920\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=348666,\tNames=723921\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723751,\tNames=389262\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342882,\tNames=723922,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342809,\tNames=723923,\tColumns=3\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723752,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=348666,\tNames=723925\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723753,\tNames=723926\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=389268,\tNames=723927\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342882,\tNames=723928,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342883,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723929\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343291,\tNames=723930\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723754,\tNames=723931\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723755,\tNames=723932\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723756,\tNames=723933\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723757,\tNames=723934\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723758,\tNames=723935\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723936,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=343291,\tNames=723937\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723759,\tNames=723938\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723760,\tNames=723939\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723761,\tNames=723940\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342760,\tNames=723941\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723762,\tNames=723942\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723763,\tNames=723943\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342763,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342887,\tNames=723944\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723764,\tNames=723945\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723765,\tNames=723946\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723766,\tNames=723947\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723767,\tNames=723948\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=727499,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=723768,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342890,\tNames=723949\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342909,\tNames=723951,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723769,\tNames=723952\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342899,\tNames=723953,\tColumns=2\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342800,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723770,\tNames=723954\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723771,\tNames=723955\t)</Value>
+				<Value type="2">(Type=CREDIT_Heading,\tTitle=342806,\tBreakSpace=100\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723772,\tNames=723956\t)</Value>
+			</Property>
+			<Property name="endcredits">
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=725172, Names=,\tFontScale=0.8,\tBreakSpace=150\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=,\tNames=723795,\tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723796, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723798, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723799, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723800, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723801, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723802, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723803, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723804, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=723805, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling, \tTitle=, Names=345665, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=, Names=723797, \tFontScale=0.8, \tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=699498,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=699522,\tFontScale=0.8,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=725172,\tFontScale=0.8,\tBreakSpace=50\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=342836,\tNames=723897,\tFontScale=1.0,\tBreakSpace=20\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=,\tNames=725172,\tFontScale=0.8,\tBreakSpace=50\t)</Value>
+				<Value type="2">(Type=CREDIT_Scrolling,\tTitle=723723,\tNames=,\tFontScale=1.5,\tBreakSpace=20\t)</Value>
+			</Property>
+			<Property name="exitno" type="2">343064</Property>
+			<Property name="exityes" type="2">343063</Property>
+			<Property name="fadeintime" type="2">0.5</Property>
+			<Property name="fadeouttime" type="2">0.5</Property>
+			<Property name="holdtime" type="2">3.5</Property>
+			<Property name="scrollingcreditstarttime" type="2">35.5</Property>
+			<Property name="totalrunningtime" type="2">431</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

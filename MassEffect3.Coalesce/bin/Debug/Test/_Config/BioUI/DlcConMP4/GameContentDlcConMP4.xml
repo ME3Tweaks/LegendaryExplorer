@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp4_horde.sfxgui_collectorhudoverlay">
+			<Property name="dronefrequency" type="0">15</Property>
+			<Property name="flashfrequency" type="0">15</Property>
+			<Property name="mphudiconoffset" type="0">(X=8,Y=-10)</Property>
+			<Property name="mphudiconscale" type="0">100</Property>
+			<Property name="numdrones" type="0">3</Property>
+			<Property name="numflashes" type="0">3</Property>
+			<Property name="numsweeps" type="0">0</Property>
+			<Property name="pcquickslotoffset" type="0">(X=18,Y=24)</Property>
+			<Property name="pcquickslotscale" type="0">65</Property>
+			<Property name="positionpowericonoverlaysperiod" type="0">0.1</Property>
+			<Property name="swarmfrequency" type="0">5</Property>
+			<Property name="sweepfrequency" type="0">15</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

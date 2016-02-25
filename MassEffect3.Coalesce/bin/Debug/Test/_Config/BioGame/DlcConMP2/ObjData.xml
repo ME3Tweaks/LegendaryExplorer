@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxobjdata_retrieve_dropoff_dlc sfxoperation_objectivedata">
+			<Property name="assetpath" type="0">SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_DropOffLocation_DLC</Property>
+			<Property name="objectivetype" type="0">RetrieveDropOffDLC</Property>
+			<Property name="requiredspawntags" type="0">ExtractionPoint</Property>
+		</Section>
+		<Section name="sfxobjdata_retrieve_pickup_dlc1 sfxoperation_objectivedata">
+			<Property name="assetpath" type="0">SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_PickupObject_DLC</Property>
+			<Property name="meshassets">
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation1",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Canister02.Canister02",GameName=733484,Scale=1.5f,MeshVOLine=0,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation2",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_Canister02.Canister02",GameName=733484,Scale=1.5f,MeshVOLine=1,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation4",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=733608,MeshVOLine=3,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation5",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=733608,MeshVOLine=4,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation7",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioDpl_Multiplayer.DisarmBomb",Scale=0.5f,GameName=733609,MeshVOLine=6,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation8",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cra_Crate02_M.Crate02_M",GameName=733610,Scale=0.75f,MeshVOLine=7,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation9",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cra_Crate02_M.Crate02_M",GameName=733610,Scale=0.75f,MeshVOLine=8,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation11",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cra_Crate02_M.Crate02_M",GameName=733611,Scale=0.75f,MeshVOLine=10,TipText=6)</Value>
+			</Property>
+			<Property name="objectivetype" type="0">RetrievePickupDLC1</Property>
+			<Property name="requiredspawntags" type="0">Disarm</Property>
+		</Section>
+		<Section name="sfxobjdata_retrieve_pickup_dlc2 sfxoperation_objectivedata">
+			<Property name="assetpath" type="0">SFXGameContentDLC_CON_MP2.SFXObjective_Retrieve_PickupObject_DLC</Property>
+			<Property name="meshassets">
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation3",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Uti_Computer02.Computer02",GameName=733612,MeshVOLine=2,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation6",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cra_Crate02_M.Crate02_M",GameName=733613,Scale=0.75f,MeshVOLine=5,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation10",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cra_Crate02_M.Crate02_M",GameName=733614,Scale=0.75f,MeshVOLine=9,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation12",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cbt_GethMine01.GethMine01",GameName=733615,MeshVOLine=11,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation13",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Cbt_GethMine01.GethMine01",GameName=733615,MeshVOLine=12,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation14",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_ReaperProto.ReaperProto",GameName=733607,MeshVOLine=13,TipText=6)</Value>
+				<Value type="3">(UniqueString="SFXOperation_ObjectiveData_Retrieve_Variation15",SpawnLocation=EObjectiveLocation_Floor,MeshPath="BioApl_Ind_ReaperProto.ReaperProto",GameName=733607,MeshVOLine=14,TipText=6)</Value>
+			</Property>
+			<Property name="objectivetype" type="0">RetrievePickupDLC2</Property>
+			<Property name="requiredspawntags" type="0">Disarm</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

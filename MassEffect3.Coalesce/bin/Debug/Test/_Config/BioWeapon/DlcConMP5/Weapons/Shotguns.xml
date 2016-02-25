@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioWeapon">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp5.sfxweapon_shotgun_salarian_mp">
+			<Property name="accfireinterpspeed" type="0">(X=420.0f,Y=420.0f)</Property>
+			<Property name="accfirepenalty" type="0">(X=320.0f,Y=320.0f)</Property>
+			<Property name="ai_acccone_max" type="0">(X=1.8,Y=1.8)</Property>
+			<Property name="ai_acccone_min" type="0">(X=1.1,Y=1.1)</Property>
+			<Property name="ai_burstfirecount" type="0">(X=1,Y=1)</Property>
+			<Property name="ai_burstfiredelay" type="0">(X=0.65f,Y=2.3)</Property>
+			<Property name="allowableweaponmods" type="0">SFXGameContent.SFXWeaponMod_ShotgunStability</Property>
+			<Property name="bfrictionenabled" type="0">true</Property>
+			<Property name="binfiniteammo" type="0">false</Property>
+			<Property name="bzoomsnapenabled" type="0">True</Property>
+			<Property name="chargeddamagemultiplier" type="0">0.3667f</Property>
+			<Property name="damage" type="0">(X=636.0,Y=795.0)</Property>
+			<Property name="ejectshellcasingtimeratio" type="0">0.405f</Property>
+			<Property name="encumbranceweight" type="0">(X=2.0f,Y=1.4f)</Property>
+			<Property name="generaldescription" type="0">788085</Property>
+			<Property name="guiimage" type="0">DLC_MPImages_MP5.WPN_MP5_Salarian_512x256</Property>
+			<Property name="iconref" type="0">2</Property>
+			<Property name="lazyrateoffire" type="0">0.01</Property>
+			<Property name="lowammosoundthreshold" type="0">1</Property>
+			<Property name="magneticcorrectionthresholdangle" type="0">0</Property>
+			<Property name="magsize" type="0">(X=4,Y=4)</Property>
+			<Property name="maxaimerror" type="0">(X=5.0,Y=5.0)</Property>
+			<Property name="maxchargetime" type="0">1.f</Property>
+			<Property name="maxmagneticcorrectionangle" type="0">0</Property>
+			<Property name="maxspareammo" type="0">(X=12,Y=22)</Property>
+			<Property name="maxzoomaimerror" type="0">(X=2.5,Y=2.5)</Property>
+			<Property name="maxzoomcrosshairrange" type="0">(X=42,Y=42)</Property>
+			<Property name="maxzoomsnapdistance" type="0">1000</Property>
+			<Property name="minaimerror" type="0">(X=2.5,Y=2.5)</Property>
+			<Property name="minchargetime" type="0">0.f</Property>
+			<Property name="minzoomaimerror" type="0">(X=0.75f,Y=0.75f)</Property>
+			<Property name="minzoomcrosshairrange" type="0">(X=32,Y=32)</Property>
+			<Property name="minzoomsnapdistance" type="0">250</Property>
+			<Property name="noammofiresounddelay" type="0">0.9</Property>
+			<Property name="notificationimage" type="0">DLC_MPImages_MP5.WPN_MP5_Salarian_256x128</Property>
+			<Property name="prettyname" type="0">788084</Property>
+			<Property name="rateoffire" type="0">(X=80,Y=80)</Property>
+			<Property name="rateoffireai" type="0">1.0f</Property>
+			<Property name="recoil" type="0">(X=0.275f,Y=0.275f)</Property>
+			<Property name="recoilyawscale" type="0">0.25f</Property>
+			<Property name="reloadduration" type="0">(X=2.57f,Y=2.57f)</Property>
+			<Property name="shardprojectiledamage" type="0">0.f</Property>
+			<Property name="shortdescription" type="0">788542</Property>
+			<Property name="shortprettyname" type="0">788084</Property>
+			<Property name="statbaraccuracy" type="0">(X=50.0f,Y=50.f)</Property>
+			<Property name="statbardamage" type="0">(X=636.0,Y=795.0)</Property>
+			<Property name="statbarrateoffire" type="0">(X=80,Y=80)</Property>
+			<Property name="weaponmodbodycolours" type="0">(R=0.01f,G=0.01f,B=0.01f,A=0.0f)</Property>
+			<Property name="zoomaccfireinterpspeed" type="0">(X=38.0f,Y=38.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="0">(X=40.0f,Y=40.0f)</Property>
+			<Property name="zoomrecoil" type="0">(X=0.75,Y=0.75)</Property>
+			<Property name="zoomsnaplist" type="0">( AimNode=AimNode_Head, OuterSnapAngle=0, InnerSnapAngle=0.0, SnapOffsetMag=0 )</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

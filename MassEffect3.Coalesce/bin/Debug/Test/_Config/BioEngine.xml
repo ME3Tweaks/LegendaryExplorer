@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioEngine" name="bioengine.ini" source="..\..\biogame\config\bioengine.ini">
+	<Includes>
+		<Include source="BioEngine/Core.xml" />
+		<!--<Include source="BioEngine/LivePatch.xml" />-->
+		<Include source="BioEngine/Mod.xml" />
+	</Includes>
+</CoalesceAsset>

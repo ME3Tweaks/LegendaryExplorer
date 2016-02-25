@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<Section name="sfxgamempcontent.sfxgui_mpstore">
+			<Property name="srexpiresindaystext" type="0">751310</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

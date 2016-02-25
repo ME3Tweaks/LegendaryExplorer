@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioui" name="bioui.ini">
+	<Sections>
+		<Section name="engine.gameuisceneclient">
+			<Property name="bcaptureunprocessedinput" type="2">True</Property>
+			<Property name="bdisplayfullpaths" type="2">true</Property>
+			<Property name="benabledebuginput" type="2">true</Property>
+			<Property name="binteractivemode" type="2">false</Property>
+			<Property name="brenderactivecontrolinfo" type="2">true</Property>
+			<Property name="brenderdebuginfo" type="2">false</Property>
+			<Property name="brenderdebuginfoattop" type="2">true</Property>
+			<Property name="brenderfocusedcontrolinfo" type="2">true</Property>
+			<Property name="brendertargetcontrolinfo" type="2">true</Property>
+			<Property name="brestrictactivecontroltofocusedscene" type="2">true</Property>
+			<Property name="bselectvisibletargetsonly" type="2">true</Property>
+			<Property name="bshowcurrentstate" type="2">true</Property>
+			<Property name="bshowmousepos" type="2">true</Property>
+			<Property name="bshowrenderbounds" type="2">true</Property>
+			<Property name="bshowwidgetpath" type="2">true</Property>
+			<Property name="overlayscenealphamodulation" type="2">0.45</Property>
+		</Section>
+		<Section name="engine.uiaction_getnattype">
+			<Property name="balwaysopen" type="2">False</Property>
+		</Section>
+		<Section name="engine.uicalloutbutton">
+			<Property name="defaultmarkupstringtemplate" type="2">&lt;ButtonCallouts:`InputAliasTag`&gt;</Property>
+		</Section>
+		<Section name="engine.uicomp_drawstringeditbox">
+			<Property name="selectionbackgroundcolor" type="2">(R=0.0,G=0.0,B=1.0,A=0.6)</Property>
+			<Property name="selectiontextcolor" type="2">(R=1.0,G=1.0,B=1.0,A=1.0)</Property>
+		</Section>
+		<Section name="engine.uiinteraction">
+			<Property name="axisrepeatdelay" type="2">0.2</Property>
+			<Property name="doubleclickpixeltolerance" type="2">1</Property>
+			<Property name="doubleclicktriggerseconds" type="2">0.5</Property>
+			<Property name="mousebuttonrepeatdelay" type="2">0.15</Property>
+			<Property name="tooltipexpirationseconds" type="2">5.0</Property>
+			<Property name="tooltipinitialdelayseconds" type="2">0.25</Property>
+			<Property name="uiaxismultiplier" type="2">1.0</Property>
+			<Property name="uijoystickdeadzone" type="2">0.9</Property>
+			<Property name="uiskinname" type="2">DefaultUISkin.DefaultSkin</Property>
+			<Property name="uisoundcuenames">
+				<Value type="2">GenericError</Value>
+				<Value type="2">MouseEnter</Value>
+				<Value type="2">MouseExit</Value>
+				<Value type="2">Clicked</Value>
+				<Value type="2">Focused</Value>
+				<Value type="2">SceneOpened</Value>
+				<Value type="2">SceneClosed</Value>
+				<Value type="2">ListSubmit</Value>
+				<Value type="2">ListUp</Value>
+				<Value type="2">ListDown</Value>
+				<Value type="2">SliderIncrement</Value>
+				<Value type="2">SliderDecrement</Value>
+				<Value type="2">NavigateUp</Value>
+				<Value type="2">NavigateDown</Value>
+				<Value type="2">NavigateLeft</Value>
+				<Value type="2">NavigateRight</Value>
+				<Value type="2">CheckboxChecked</Value>
+				<Value type="2">CheckboxUnchecked</Value>
+			</Property>
+		</Section>
+		<Section name="engine.uiscreenobject">
+			<Property name="animationdebugmultiplier" type="2">1.0</Property>
+		</Section>
+		<Section name="engine.uitabcontrol">
+			<Property name="ballowpagepreviews" type="2">true</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

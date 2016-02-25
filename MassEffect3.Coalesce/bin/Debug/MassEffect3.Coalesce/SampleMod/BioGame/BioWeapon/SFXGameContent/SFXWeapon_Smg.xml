@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="bioweapon" name="bioweapon.ini">
+	<Sections>
+		<Section name="sfxgamecontent.sfxweapon_smg_hornet">
+			<Property name="accfireinterpspeed" type="2">(X=20.0f,Y=20.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=20.8f,Y=20.8f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=1.6,Y=1.6)</Property>
+			<Property name="ai_acccone_min" type="2">(X=1.2,Y=1.2)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=3,Y=6)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.8f,Y=1.5f)</Property>
+			<Property name="damage" type="2">(X=56.2,Y=70.2)</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.563f</Property>
+			<Property name="encumbranceweight" type="2">(X=1.0f,Y=0.5f)</Property>
+			<Property name="generaldescription" type="2">551029</Property>
+			<Property name="guiimage" type="2">gui_codex_images.Weapons.smg_hornet_512x256</Property>
+			<Property name="iconref" type="2">34</Property>
+			<Property name="lowammosoundthreshold" type="2">9</Property>
+			<Property name="magsize" type="2">(X=24,Y=24)</Property>
+			<Property name="maxaimerror" type="2">(X=2.5,Y=2.5)</Property>
+			<Property name="maxspareammo" type="2">(X=144,Y=180)</Property>
+			<Property name="maxzoomaimerror" type="2">(X=1.65,Y=1.65)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=60,Y=60)</Property>
+			<Property name="minaimerror" type="2">(X=1.25,Y=1.25)</Property>
+			<Property name="minrefiretime" type="2">0.15f</Property>
+			<Property name="minzoomaimerror" type="2">(X=0.85,Y=0.85)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=25,Y=25)</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.smg_hornet_256x128</Property>
+			<Property name="prettyname" type="2">551028</Property>
+			<Property name="rateoffire" type="2">(X=1000,Y=1000)</Property>
+			<Property name="rateoffireai" type="2">0.5f</Property>
+			<Property name="recoil" type="2">(X=0.575,Y=0.575)</Property>
+			<Property name="recoilyawfrequency" type="2">0.5f</Property>
+			<Property name="recoilyawnoise" type="2">0.0f</Property>
+			<Property name="recoilyawscale" type="2">0.15f</Property>
+			<Property name="reloadduration" type="2">(X=0.7f,Y=0.7f)</Property>
+			<Property name="roundsperburst" type="2">3</Property>
+			<Property name="shortdescription" type="2">551030</Property>
+			<Property name="shortprettyname" type="2">685046</Property>
+			<Property name="statbaraccuracy" type="2">(X=30.0f,Y=30.f)</Property>
+			<Property name="statbardamage" type="2">(X=56.2,Y=70.2)</Property>
+			<Property name="statbarrateoffire" type="2">(X=900,Y=900)</Property>
+			<Property name="tracerspawnoffset" type="2">2.0</Property>
+			<Property name="weaponacquiredid" type="2">21252</Property>
+			<Property name="weaponacquiredid_ngp" type="2">21591</Property>
+			<Property name="weaponmodbodycolours">
+				<Value type="2">(R=0.37f,G=0.35f,B=0.29f,A=0.0f)</Value>
+				<Value type="2">(R=0.71f,G=0.65f,B=0.43f,A=0.0f)</Value>
+				<Value type="2">(R=0.22f,G=0.25f,B=0.18f,A=0.0f)</Value>
+				<Value type="2">(R=0.27f,G=0.31f,B=0.31f,A=0.0f)</Value>
+				<Value type="2">(R=0.00f,G=0.00f,B=0.00f,A=0.0f)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=25.0f,Y=25.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=27.f,Y=27.f)</Property>
+			<Property name="zoomrecoil" type="2">(X=0.85,Y=0.85)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_smg_hurricane">
+			<Property name="accfireinterpspeed" type="2">(X=5.0f,Y=5.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=6.5f,Y=6.5f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=2.9,Y=2.9)</Property>
+			<Property name="ai_acccone_min" type="2">(X=1.4,Y=1.4)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=15.f,Y=25.f)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.65f,Y=2.3f)</Property>
+			<Property name="ammopershot" type="2">2</Property>
+			<Property name="binfiniteammo" type="2">false</Property>
+			<Property name="damage" type="2">(X=60.4,Y=75.5)</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.558f</Property>
+			<Property name="encumbranceweight" type="2">(X=1.0f,Y=0.5f)</Property>
+			<Property name="generaldescription" type="2">573085</Property>
+			<Property name="guiimage" type="2">gui_codex_images.Weapons.smg_hurricane_512x256</Property>
+			<Property name="iconref" type="2">54</Property>
+			<Property name="lazyrateoffire" type="2">150</Property>
+			<Property name="lowammosoundthreshold" type="2">10</Property>
+			<Property name="magsize" type="2">(X=40,Y=40)</Property>
+			<Property name="maxaimerror" type="2">(X=4.1,Y=4.1)</Property>
+			<Property name="maxspareammo" type="2">(X=240,Y=300)</Property>
+			<Property name="maxzoomaimerror" type="2">(X=3.6,Y=3.6)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=100,Y=100)</Property>
+			<Property name="minaimerror" type="2">(X=2.75,Y=2.75)</Property>
+			<Property name="minrefiretime" type="2">0.15f</Property>
+			<Property name="minzoomaimerror" type="2">(X=1.6,Y=1.6)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=25,Y=25)</Property>
+			<Property name="noammofiresounddelay" type="2">0.5</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.smg_hurricane_256x128</Property>
+			<Property name="prettyname" type="2">573100</Property>
+			<Property name="rateoffire" type="2">(X=600,Y=600)</Property>
+			<Property name="rateoffireai" type="2">1.0f</Property>
+			<Property name="recoil" type="2">(X=0.95,Y=0.95)</Property>
+			<Property name="recoilyawfrequency" type="2">4.0f</Property>
+			<Property name="recoilyawscale" type="2">0.2f</Property>
+			<Property name="reloadduration" type="2">(X=1.5f,Y=1.5f)</Property>
+			<Property name="roundsperburst" type="2">1</Property>
+			<Property name="shortdescription" type="2">573118</Property>
+			<Property name="shortprettyname" type="2">573100</Property>
+			<Property name="statbaraccuracy" type="2">(X=15.f,Y=15.f)</Property>
+			<Property name="statbardamage" type="2">(X=60.4,Y=75.5)</Property>
+			<Property name="statbarrateoffire" type="2">(X=1200,Y=1200)</Property>
+			<Property name="steamsoundthreshold" type="2">1</Property>
+			<Property name="tracerspawnoffset" type="2">3.0</Property>
+			<Property name="weaponmodbodycolours">
+				<Value type="2">(R=0.36f,G=0.26f,B=0.10f,A=0.0f)</Value>
+				<Value type="2">(R=1.00f,G=0.89f,B=0.51f,A=0.0f)</Value>
+				<Value type="2">(R=0.24f,G=0.29f,B=0.11f,A=0.0f)</Value>
+				<Value type="2">(R=0.36f,G=0.42f,B=0.56f,A=0.0f)</Value>
+				<Value type="2">(R=0.05f,G=0.05f,B=0.05f,A=0.0f)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=15.0f,Y=15.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=12.5f,Y=12.5f)</Property>
+			<Property name="zoomrecoil" type="2">(X=1.25,y=1.25)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_smg_locust">
+			<Property name="accfireinterpspeed" type="2">(X=18.0f,Y=18.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=19.0f,Y=19.0f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=1.6,Y=1.6)</Property>
+			<Property name="ai_acccone_min" type="2">(X=1.2,Y=1.2)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=10,Y=15)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.65f,Y=2.3f)</Property>
+			<Property name="damage" type="2">(X=26.2,Y=32.8)</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.563f</Property>
+			<Property name="encumbranceweight" type="2">(X=0.75f,Y=0.35f)</Property>
+			<Property name="generaldescription" type="2">621128</Property>
+			<Property name="guiimage" type="2">GUI_Codex_Images.Weapons.smg_locust_512x256</Property>
+			<Property name="iconref" type="2">25</Property>
+			<Property name="idealmaxrange" type="2">3000.f</Property>
+			<Property name="idealminrange" type="2">300.f</Property>
+			<Property name="idealtargetdistance" type="2">1200.f</Property>
+			<Property name="lowammosoundthreshold" type="2">5</Property>
+			<Property name="magsize" type="2">(X=20,Y=20)</Property>
+			<Property name="maxaimerror" type="2">(X=3.5,Y=3.5)</Property>
+			<Property name="maxspareammo" type="2">(X=240,Y=300)</Property>
+			<Property name="maxzoomaimerror" type="2">(X=1.2,Y=1.2)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=40,Y=40)</Property>
+			<Property name="minaimerror" type="2">(X=1.5,Y=1.5)</Property>
+			<Property name="minzoomaimerror" type="2">(X=0.3f,Y=0.3f)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=25,Y=25)</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.smg_locust_256x128</Property>
+			<Property name="prettyname" type="2">546170</Property>
+			<Property name="rateoffire" type="2">(X=550,Y=550)</Property>
+			<Property name="rateoffireai" type="2">1.0f</Property>
+			<Property name="recoil" type="2">(X=0.1,Y=0.1)</Property>
+			<Property name="recoilyawfrequency" type="2">4.0f</Property>
+			<Property name="recoilyawscale" type="2">0.2f</Property>
+			<Property name="reloadduration" type="2">(X=0.7f,Y=0.7f)</Property>
+			<Property name="roundsperburst" type="2">1</Property>
+			<Property name="shortdescription" type="2">619711</Property>
+			<Property name="shortprettyname" type="2">546170</Property>
+			<Property name="statbaraccuracy" type="2">(X=60.0f,Y=60.f)</Property>
+			<Property name="statbardamage" type="2">(X=26.2,Y=32.8)</Property>
+			<Property name="statbarrateoffire" type="2">(X=550,Y=550)</Property>
+			<Property name="tracerspawnoffset" type="2">3.0</Property>
+			<Property name="weaponacquiredid" type="2">21254</Property>
+			<Property name="weaponacquiredid_ngp" type="2">21592</Property>
+			<Property name="weaponmodbodycolours">
+				<Value type="2">(R=0.74f,G=0.45f,B=0.31f,A=0.0f)</Value>
+				<Value type="2">(R=1.00f,G=0.93f,B=0.70f,A=0.0f)</Value>
+				<Value type="2">(R=0.25f,G=0.29f,B=0.10f,A=0.0f)</Value>
+				<Value type="2">(R=0.11f,G=0.16f,B=0.24f,A=0.0f)</Value>
+				<Value type="2">(R=0.04f,G=0.04f,B=0.04f,A=0.0f)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=35.0f,Y=35.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=37.0f,Y=37.0f)</Property>
+			<Property name="zoomrecoil" type="2">(X=0.131,y=0.131)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_smg_shuriken">
+			<Property name="accfireinterpspeed" type="2">(X=7.0f,Y=7.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=8.0f,Y=8.0f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=2.4,Y=2.4)</Property>
+			<Property name="ai_acccone_min" type="2">(X=1.8,Y=1.8)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=6,Y=12)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.65f,Y=1.8f)</Property>
+			<Property name="binfiniteammo" type="2">false</Property>
+			<Property name="damage" type="2">(X=29.3,Y=36.6)</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.563f</Property>
+			<Property name="encumbranceweight" type="2">(X=0.5f,Y=0.2f)</Property>
+			<Property name="generaldescription" type="2">338214</Property>
+			<Property name="guiimage" type="2">GUI_Codex_Images.Weapons.smg_shuriken_512x256</Property>
+			<Property name="iconref" type="2">3</Property>
+			<Property name="lazyrateoffire" type="2">0.01</Property>
+			<Property name="lowammosoundthreshold" type="2">6</Property>
+			<Property name="magsize" type="2">(X=36,Y=36)</Property>
+			<Property name="maxaimerror" type="2">(X=4.5,Y=4.5)</Property>
+			<Property name="maxspareammo" type="2">(X=324,Y=405)</Property>
+			<Property name="maxzoomaimerror" type="2">(X=1.3,Y=1.3)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=72,Y=72)</Property>
+			<Property name="minaimerror" type="2">(X=2.0,Y=2.0)</Property>
+			<Property name="minrefiretime" type="2">0.5f</Property>
+			<Property name="minzoomaimerror" type="2">(X=0.75,Y=0.75)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=28,Y=28)</Property>
+			<Property name="noammofiresounddelay" type="2">0.5</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.smg_shuriken_256x128</Property>
+			<Property name="prettyname" type="2">209730</Property>
+			<Property name="rateoffire" type="2">(X=1100,Y=1100)</Property>
+			<Property name="rateoffireai" type="2">1.0f</Property>
+			<Property name="recoil" type="2">(X=0.175,Y=0.175)</Property>
+			<Property name="recoilyawfrequency" type="2">1.8f</Property>
+			<Property name="recoilyawnoise" type="2">0.0f</Property>
+			<Property name="recoilyawscale" type="2">0.1f</Property>
+			<Property name="reloadduration" type="2">(X=0.7f,Y=0.7f)</Property>
+			<Property name="roundsperburst" type="2">6</Property>
+			<Property name="shortdescription" type="2">339296</Property>
+			<Property name="shortprettyname" type="2">209730</Property>
+			<Property name="statbaraccuracy" type="2">(X=15.0f,Y=15.f)</Property>
+			<Property name="statbardamage" type="2">(X=29.3,Y=36.6)</Property>
+			<Property name="statbarrateoffire" type="2">(X=800,Y=800)</Property>
+			<Property name="steamsoundthreshold" type="2">1</Property>
+			<Property name="tracerspawnoffset" type="2">3.0</Property>
+			<Property name="weaponacquiredid" type="2">21255</Property>
+			<Property name="weaponacquiredid_ngp" type="2">21593</Property>
+			<Property name="weaponmodbodycolours">
+				<Value type="2">(R=1.00f,G=0.21f,B=0.05f,A=0.0f)</Value>
+				<Value type="2">(R=1.00f,G=0.63f,B=0.27f,A=0.0f)</Value>
+				<Value type="2">(R=0.53f,G=0.58f,B=0.44f,A=0.0f)</Value>
+				<Value type="2">(R=0.27f,G=0.29f,B=0.50f,A=0.0f)</Value>
+				<Value type="2">(R=0.05f,G=0.05f,B=0.05f,A=0.0f)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=5.0f,Y=5.0f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=6.0f,Y=6.0f)</Property>
+			<Property name="zoomrecoil" type="2">(X=0.262,Y=0.262)</Property>
+		</Section>
+		<Section name="sfxgamecontent.sfxweapon_smg_tempest">
+			<Property name="accfireinterpspeed" type="2">(X=5.0f,Y=5.0f)</Property>
+			<Property name="accfirepenalty" type="2">(X=6.5f,Y=6.5f)</Property>
+			<Property name="ai_acccone_max" type="2">(X=2.9,Y=2.9)</Property>
+			<Property name="ai_acccone_min" type="2">(X=1.4,Y=1.4)</Property>
+			<Property name="ai_burstfirecount" type="2">(X=15.f,Y=25.f)</Property>
+			<Property name="ai_burstfiredelay" type="2">(X=0.65f,Y=2.3f)</Property>
+			<Property name="binfiniteammo" type="2">false</Property>
+			<Property name="damage" type="2">(X=35.7,Y=44.6)</Property>
+			<Property name="ejectshellcasingtimeratio" type="2">0.558f</Property>
+			<Property name="encumbranceweight" type="2">(X=0.75f,Y=0.35f)</Property>
+			<Property name="generaldescription" type="2">338215</Property>
+			<Property name="guiimage" type="2">gui_codex_images.Weapons.smg_tempest_512x256</Property>
+			<Property name="iconref" type="2">7</Property>
+			<Property name="lazyrateoffire" type="2">0.01</Property>
+			<Property name="lowammosoundthreshold" type="2">12</Property>
+			<Property name="magsize" type="2">(X=50,Y=50)</Property>
+			<Property name="maxaimerror" type="2">(X=5.0,Y=5.0)</Property>
+			<Property name="maxspareammo" type="2">(X=350,Y=440)</Property>
+			<Property name="maxzoomaimerror" type="2">(X=3.5,Y=3.5)</Property>
+			<Property name="maxzoomcrosshairrange" type="2">(X=75,Y=75)</Property>
+			<Property name="minaimerror" type="2">(X=2.9,Y=2.9)</Property>
+			<Property name="minrefiretime" type="2">0.1f</Property>
+			<Property name="minzoomaimerror" type="2">(X=0.6,Y=0.6)</Property>
+			<Property name="minzoomcrosshairrange" type="2">(X=25,Y=25)</Property>
+			<Property name="noammofiresounddelay" type="2">0.5</Property>
+			<Property name="notificationimage" type="2">GUI_Icons.Weapons.smg_tempest_256x128</Property>
+			<Property name="prettyname" type="2">209731</Property>
+			<Property name="rateoffire" type="2">(X=650,Y=650)</Property>
+			<Property name="rateoffireai" type="2">1.0f</Property>
+			<Property name="recoil" type="2">(X=0.35,Y=0.35)</Property>
+			<Property name="recoilyawfrequency" type="2">4.0f</Property>
+			<Property name="recoilyawscale" type="2">0.2f</Property>
+			<Property name="reloadduration" type="2">(X=1.5f,Y=1.5f)</Property>
+			<Property name="roundsperburst" type="2">1</Property>
+			<Property name="shortdescription" type="2">339299</Property>
+			<Property name="shortprettyname" type="2">209731</Property>
+			<Property name="statbaraccuracy" type="2">(X=35.0f,Y=35.f)</Property>
+			<Property name="statbardamage" type="2">(X=35.7,Y=44.6)</Property>
+			<Property name="statbarrateoffire" type="2">(X=650,Y=650)</Property>
+			<Property name="steamsoundthreshold" type="2">1</Property>
+			<Property name="tracerspawnoffset" type="2">3.0</Property>
+			<Property name="weaponacquiredid" type="2">21256</Property>
+			<Property name="weaponacquiredid_ngp" type="2">21594</Property>
+			<Property name="weaponmodbodycolours">
+				<Value type="2">(R=0.45f,G=0.12f,B=0.03f,A=0.0f)</Value>
+				<Value type="2">(R=0.66f,G=0.32f,B=0.04f,A=0.0f)</Value>
+				<Value type="2">(R=0.21f,G=0.25f,B=0.12f,A=0.0f)</Value>
+				<Value type="2">(R=0.25f,G=0.26f,B=0.32f,A=0.0f)</Value>
+				<Value type="2">(R=0.03f,G=0.03f,B=0.03f,A=0.0f)</Value>
+			</Property>
+			<Property name="zoomaccfireinterpspeed" type="2">(X=12.5f,Y=12.5f)</Property>
+			<Property name="zoomaccfirepenalty" type="2">(X=12.f,Y=12.f)</Property>
+			<Property name="zoomrecoil" type="2">(X=0.5,y=0.5)</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

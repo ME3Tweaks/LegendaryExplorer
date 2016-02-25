@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_assaultrifledamagepistoldamage">
+			<Property name="assaultrifledamage[0]" type="0">0.04f</Property>
+			<Property name="assaultrifledamage[1]" type="0">0.06f</Property>
+			<Property name="assaultrifledamage[2]" type="0">0.08f</Property>
+			<Property name="assaultrifledamage[3]" type="0">0.1f</Property>
+			<Property name="assaultrifledamage[4]" type="0">0.12f</Property>
+			<Property name="pistoldamage[0]" type="0">0.04f</Property>
+			<Property name="pistoldamage[1]" type="0">0.06f</Property>
+			<Property name="pistoldamage[2]" type="0">0.08f</Property>
+			<Property name="pistoldamage[3]" type="0">0.1f</Property>
+			<Property name="pistoldamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_meleedamagebioticdamage">
+			<Property name="meleedamage[0]" type="0">0.04f</Property>
+			<Property name="meleedamage[1]" type="0">0.06f</Property>
+			<Property name="meleedamage[2]" type="0">0.08f</Property>
+			<Property name="meleedamage[3]" type="0">0.1f</Property>
+			<Property name="meleedamage[4]" type="0">0.12f</Property>
+			<Property name="powerdamage[0]" type="0">0.04f</Property>
+			<Property name="powerdamage[1]" type="0">0.06f</Property>
+			<Property name="powerdamage[2]" type="0">0.08f</Property>
+			<Property name="powerdamage[3]" type="0">0.1f</Property>
+			<Property name="powerdamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_shieldstrengthmeleedamage">
+			<Property name="meleedamage[0]" type="0">0.04f</Property>
+			<Property name="meleedamage[1]" type="0">0.06f</Property>
+			<Property name="meleedamage[2]" type="0">0.08f</Property>
+			<Property name="meleedamage[3]" type="0">0.1f</Property>
+			<Property name="meleedamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_shotgundamagegrenadecap">
+			<Property name="weapondamage[0]" type="0">0.04f</Property>
+			<Property name="weapondamage[1]" type="0">0.06f</Property>
+			<Property name="weapondamage[2]" type="0">0.08f</Property>
+			<Property name="weapondamage[3]" type="0">0.1f</Property>
+			<Property name="weapondamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_sniperdamagesmgdamage">
+			<Property name="smgdamage[0]" type="0">0.04f</Property>
+			<Property name="smgdamage[1]" type="0">0.06f</Property>
+			<Property name="smgdamage[2]" type="0">0.08f</Property>
+			<Property name="smgdamage[3]" type="0">0.1f</Property>
+			<Property name="smgdamage[4]" type="0">0.12f</Property>
+			<Property name="sniperdamage[0]" type="0">0.04f</Property>
+			<Property name="sniperdamage[1]" type="0">0.06f</Property>
+			<Property name="sniperdamage[2]" type="0">0.08f</Property>
+			<Property name="sniperdamage[3]" type="0">0.1f</Property>
+			<Property name="sniperdamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxgameeffect_matchconsumable_gear_combo_techdamagepowercooldown">
+			<Property name="powercooldown[0]" type="0">0.04f</Property>
+			<Property name="powercooldown[1]" type="0">0.06f</Property>
+			<Property name="powercooldown[2]" type="0">0.08f</Property>
+			<Property name="powercooldown[3]" type="0">0.1f</Property>
+			<Property name="powercooldown[4]" type="0">0.12f</Property>
+			<Property name="powerdamage[0]" type="0">0.04f</Property>
+			<Property name="powerdamage[1]" type="0">0.06f</Property>
+			<Property name="powerdamage[2]" type="0">0.08f</Property>
+			<Property name="powerdamage[3]" type="0">0.1f</Property>
+			<Property name="powerdamage[4]" type="0">0.12f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomaction_devestatormode">
+			<Property name="evolve_magsizebonus" type="0">0.15f</Property>
+			<Property name="evolve_weaponrofbonus" type="0">0.15f</Property>
+			<Property name="magsizebonus" type="0">(BaseValue=0.15f,Formula=BonusIsHardValue,RankBonuses[1]=0.05f)</Property>
+			<Property name="rateoffirebonus" type="0">(BaseValue=0.1f,Formula=BonusIsHardValue)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomaction_missilelauncher">
+			<Property name="damage" type="0">(BaseValue=200.0f,RankBonuses[2]=0.3f)</Property>
+			<Property name="evolve_damagebonus" type="0">0.4f</Property>
+			<Property name="evolve_damagebonus2" type="0">1.5f</Property>
+			<Property name="evolve_damagereduction" type="0">0.25f</Property>
+			<Property name="evolve_shieldpercentincrease" type="0">0.40f</Property>
+			<Property name="evolve_updatefrequency" type="0">0.35f</Property>
+			<Property name="force" type="0">(BaseValue=200.0f,RankBonuses[2]=0.3f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_annihilationsphere">
+			<Property name="evolve_damagebonus2" type="0">0.65f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_electricslash">
+			<Property name="cooldowntime" type="0">(BaseValue=8.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_palmblaster">
+			<Property name="barrierdrained" type="0">(BaseValue=0.4f)</Property>
+			<Property name="evolve_barrierreductionbonus" type="0">0.5f</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_sonicslash">
+			<Property name="cooldowntime" type="0">(BaseValue=8.0f,Formula=DivideByBonusSum,RankBonuses[1]=0.25f)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxpowercustomactionmp_supplyturret">
+			<Property name="ammogrenadeduration" type="0">17.5f</Property>
+			<Property name="evolve_powerdamagebonus" type="0">0.10f</Property>
+			<Property name="evolve_weapondamagebonus" type="0">0.10f</Property>
+			<Property name="timebetweenammoresupply" type="0">(BaseValue=17.5f,RankBonuses[2]=0.15f,Formula=DivideByBonusSum)</Property>
+			<Property name="timebetweengrenaderesupply" type="0">(BaseValue=24.0f,RankBonuses[2]=0.15f,Formula=DivideByBonusSum)</Property>
+		</Section>
+		<Section name="sfxgamecontentdlc_con_mp3.sfxsupplyzone">
+			<Property name="ammogrenadeduration" type="0">17.5f</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

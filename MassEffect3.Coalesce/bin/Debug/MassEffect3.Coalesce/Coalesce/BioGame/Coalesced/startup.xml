@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="startup" name="startup.int" source="..\..\engine\localization\int\startup.int">
+  <Sections>
+    <Section name="general">
+      <Property name="detecting" type="2">Detecting 3D video devices, please wait...</Property>
+      <Property name="firsttime" type="2">Unreal Engine First-Time Configuration</Property>
+      <Property name="recoverymode" type="2">Unreal Engine Recovery Mode</Property>
+      <Property name="run" type="2">Run!</Property>
+      <Property name="safemode" type="2">Unreal Engine Safe Mode</Property>
+      <Property name="webpage" type="2">http://unreal.epicgames.com/versions.htm</Property>
+    </Section>
+    <Section name="iddialog_configpagedetail">
+      <Property name="idc_configpagedetail" type="2"></Property>
+      <Property name="idc_detailnote" type="2">You may change these options from the game's "Preferences" window later, if you wish.</Property>
+      <Property name="idc_detailprompt" type="2">Based on your computer's speed, memory, and video card, the Unreal Engine has selected the following detail options in order to optimize performance.</Property>
+    </Section>
+    <Section name="iddialog_configpagefirsttime">
+      <Property name="idc_configpagefirsttime" type="2"></Property>
+      <Property name="idc_prompt" type="2">The Unreal Engine is starting up for the first time.  If you experience any problems, please read the release notes in the "Programs / Unreal Tournament" section of the Windows "Start" menu.</Property>
+    </Section>
+    <Section name="iddialog_configpagesafemode">
+      <Property name="idc_configpagesafemode" type="2"></Property>
+      <Property name="idc_run" type="2">Run Unreal Engine</Property>
+      <Property name="idc_safemode" type="2">Run Unreal Engine in safe mode - for troubleshooting</Property>
+      <Property name="idc_safemodeprompt" type="2">The previous time the Unreal Engine was run, it was not shut down properly.  In case the shut down was caused by a problem, you may use the options below for recovery.</Property>
+      <Property name="idc_safemodeprompt2" type="2">Unreal Engine safe mode options: If you are experiencing problems, you may use the options below for recovery.</Property>
+      <Property name="idc_web" type="2">Visit our Web site for troubleshooting tips</Property>
+    </Section>
+    <Section name="iddialog_configpagesafeoptions">
+      <Property name="idc_configpagesafeoptions" type="2"></Property>
+      <Property name="idc_nojoy" type="2">Disable joystick support</Property>
+      <Property name="idc_noprocessor" type="2">Disable Pentium III/3DNow processor extensions</Property>
+      <Property name="idc_nosound" type="2">Disable all sound</Property>
+      <Property name="idc_res" type="2">Run in standard 640x480 resolution</Property>
+      <Property name="idc_resetconfig" type="2">Reset all configuration options to defaults</Property>
+      <Property name="idc_safeoptions" type="2">Safe mode options, for diagnosing problems</Property>
+    </Section>
+  </Sections>
+</CoalesceAsset>

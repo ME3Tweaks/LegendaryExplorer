@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI">
+	<Sections>
+		<!--<Section name="sfxgame.sfxguiinteraction">
+			<Property name="movielibrary">
+				<Value type="4">(Tag=MPSelectKit, ZOrder=32, MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit", GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+				<Value type="4">(Tag=MPSelectKit, ZOrder=32, Platform=CONSOLE_Xbox360, MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit", GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+				<Value type="4">(Tag=MPSelectKit, ZOrder=32, Platform=CONSOLE_PS3, MovieClass="SFXGameMPContent.SFXGUI_MPSelectKit", GFxResource="GUI_SF_MPSelectKit.MPSelectKit")</Value>
+				<Value type="3">(Tag=MPSelectKit, ZOrder=32, MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC", GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+				<Value type="3">(Tag=MPSelectKit, ZOrder=32, Platform=CONSOLE_PS3, MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC", GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+				<Value type="3">(Tag=MPSelectKit, ZOrder=32, Platform=CONSOLE_Xbox360, MovieClass="SFXGameMPContentDLC_Shared_MP.SFXGUI_MPSelectKit_DLC", GFxResource="GUI_SF_MPSelectKit_DLC.MPSelectKit")</Value>
+			</Property>
+		</Section>-->
+		<!--<Section name="sfxgame.sfxweaponuidatamanager">
+			<Property name="weaponuidataresources" type="3">(Package=SFXGUI_WeaponUIDataDLC_CON_MP1SF, Resource="SFXGUI_WeaponUIDataDLC_CON_MP1.Data")</Property>
+		</Section>-->
+	</Sections>
+</CoalesceAsset>

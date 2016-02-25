@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioInput" name="bioinput.ini" source="..\..\biogame\config\bioinput.ini">
+	<Includes>
+		<!--<Include source="BioInput/Core.xml" />-->
+		<!--<Include source="BioInput/DlcConMP5.xml" />-->
+		<!--<Include source="BioInput/DlcTestPatch.xml" />-->
+		<!--<Include source="BioInput/DlcLivePatch.xml" />-->
+		<Include source="BioInput/Mod.xml" />
+	</Includes>
+	<Sections>
+		<Section name="iniversion">
+			<Property name="0" type="2">3543241527.000000</Property>
+			<Property name="1" type="2">3967581594.000000</Property>
+			<Property name="2" type="2">2264387171.000000</Property>
+			<Property name="3" type="2">3808678901.000000</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

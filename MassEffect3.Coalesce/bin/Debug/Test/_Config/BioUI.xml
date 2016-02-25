@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioUI" name="bioui.ini" source="..\..\biogame\config\bioui.ini">
+	<Includes>
+		<Include source="BioUI/Core.xml" />
+		<Include source="BioUI/DlcOnlinePassHidCE.xml" />
+		<Include source="BioUI/DlcHenPr.xml" />
+		<Include source="BioUI/DlcConApp01.xml" />
+		<Include source="BioUI/DlcConGun01.xml" />
+		<Include source="BioUI/DlcConGun02.xml" />
+		<Include source="BioUI/DlcConMP1.xml" />
+		<Include source="BioUI/DlcConMP2.xml" />
+		<Include source="BioUI/DlcConMP3.xml" />
+		<Include source="BioUI/DlcConMP4.xml" />
+		<Include source="BioUI/DlcConMP5.xml" />
+		<Include source="BioUI/DlcExpPack001.xml" />
+		<Include source="BioUI/DlcExpPack002.xml" />
+		<Include source="BioUI/DlcExpPack003.xml" />
+		<Include source="BioUI/DlcTestPatch.xml" />
+		<Include source="BioUI/DlcUpdPatch02.xml" />
+		<Include source="BioUI/DlcLivePatch.xml" />
+		<!--<Include source="BioUI/Patches.xml" />-->
+		<Include source="BioUI/Mod.xml" />
+	</Includes>
+</CoalesceAsset>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioDifficulty">
+	<Includes>
+		<Include source="DlcConMP4/SinglePlayer.xml" />
+		<Include source="DlcConMP4/Multiplayer.xml" />
+	</Includes>
+</CoalesceAsset>

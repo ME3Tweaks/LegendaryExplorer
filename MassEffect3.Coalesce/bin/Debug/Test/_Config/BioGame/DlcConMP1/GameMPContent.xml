@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioGame">
+	<Sections>
+		<Section name="sfxgamempcontent.sfxgawreinforcementmanager">
+			<Property name="carddata">
+				<Value type="3">(UniqueName="EngineerGeth", Rarity=Rarity_Rare, VersionIdx=2, GUIName=727591, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitGethEngineer")</Value>
+				<Value type="3">(UniqueName="InfiltratorGeth", Rarity=Rarity_Rare, VersionIdx=2, GUIName=727592, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitGethInfiltrator")</Value>
+				<Value type="3">(UniqueName="SoldierBatarian", Rarity=Rarity_Rare, VersionIdx=2, GUIName=728174, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitBatarian")</Value>
+				<Value type="3">(UniqueName="SentinelBatarian", Rarity=Rarity_Rare, VersionIdx=2, GUIName=728173, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitBatarian")</Value>
+				<Value type="3">(UniqueName="VanguardKrogan", Rarity=Rarity_Rare, VersionIdx=2, GUIName=340581, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitKroganBM")</Value>
+				<Value type="3">(UniqueName="AdeptAsariCommando", Rarity=Rarity_Rare, VersionIdx=2, GUIName=313998, GUICategory=EReinforcementGUICategory_Kit, GUIType="char", GUITextureRef="DLC_MPImages.Cards.KitAsariCommando")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXWeapon_AssaultRifle_Krogan", MaxCount = 10, Rarity=Rarity_Rare, GUIName=728040, GUIDescription=728041, GUICategory=EReinforcementGUICategory_AssaultRifle, GUIType="assault", GUITextureRef="DLC_MPImages.Weapons.asl_krogan_256x128")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXWeapon_SniperRifle_Batarian", MaxCount = 10, Rarity=Rarity_Rare, GUIName=728034, GUIDescription=728035, GUICategory=EReinforcementGUICategory_SniperRifle, GUIType="sniper", GUITextureRef="DLC_MPImages.Weapons.snp_batarian_256x128")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXWeapon_SMG_Geth", MaxCount = 10, Rarity=Rarity_Rare, GUIName=728037, GUIDescription=728038, GUICategory=EReinforcementGUICategory_SMG, GUIType="smg", GUITextureRef="DLC_MPImages.Weapons.smg_geth_256x128")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXGameEffect_MatchConsumable_StabilityBonus", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=728048, GUIDescription=728049, GUIType="armorUpgrade", GUITextureRef="DLC_MPImages.Cards.DLC_Stability")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXGameEffect_MatchConsumable_MeleeDamage", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=728050, GUIDescription=728051, GUIType="weaponUpgrade", GUITextureRef="DLC_MPImages.Cards.DLC_MeleeDamage")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXGameEffect_MatchConsumable_HeadshotDamage", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 3, GUICategory=EReinforcementGUICategory_MatchConsumableWeapon, GUIName=728052, GUIDescription=728053, GUIType="weaponUpgrade", GUITextureRef="DLC_MPImages.Cards.DLC_Headshot")</Value>
+				<Value type="3">(UniqueName="SFXGameContentDLC_CON_MP1.SFXGameEffect_MatchConsumable_ShieldRegenBonus", Rarity=Rarity_Common, bUseVersionIdx=true, VersionIdx = 0, Category = 2, GUICategory=EReinforcementGUICategory_MatchConsumableArmor, GUIName=728054, GUIDescription=728055, GUIType="armorUpgrade", GUITextureRef="DLC_MPImages.Cards.DLC_ShieldRegen")</Value>
+			</Property>
+		</Section>
+		<Section name="sfxgamempcontent.sfxprimp">
+			<Property name="mapsettings">
+				<Value type="3">(MapName="BioP_MPMoon",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_InnerCouncil,ZoneIncrease=7)</Value>
+				<Value type="3">(MapName="BioP_MPGeth",XPMultiplier=1.f,CreditsMultiplier=1.f,ZoneID=EGAWZone_Attican,ZoneIncrease=7)</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>

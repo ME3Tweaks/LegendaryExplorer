@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CoalesceAsset id="BioEngine">
+	<Sections>
+		<Section name="fullscreenmovie">
+			<!--<Property name="bforcenomovies" type="2">FALSE</Property>-->
+			<!--<Property name="binkiostreamreadbuffersize" type="2">262144</Property>-->
+			<!--<Property name="bshouldstopmovieatendofloadmap" type="2">true</Property>-->
+			<!--<Property name="importstartupmovies" type="2">ME1_CharImport_LoadLoop</Property>-->
+			<Property name="skippablemovies">
+				<Value type="-1" />
+
+				<!---->
+				<Value type="2">ME3_sig_logo</Value>
+				<Value type="2">StartupLoop</Value>
+				<Value type="2">attractmovie</Value>
+				<Value type="2">attractmovieloc</Value>
+				<Value type="2">End001_HammerGood</Value>
+				<Value type="2">End01_Landing</Value>
+				<Value type="2">End01_Reinforce</Value>
+				<Value type="2">End01_ShieldIntro</Value>
+				<Value type="2">End01_SwordIntro_Bad</Value>
+				<Value type="2">End01_SwordIntro_Good</Value>
+				<Value type="2">ME3_CitArrival</Value>
+				<Value type="2">Device_Complete</Value>
+				<Value type="2">Device_Reveal</Value>
+				<Value type="2">CerJcb_100_Arrival</Value>
+				<Value type="2">GthN7b_300_GunDestroy</Value>
+				<Value type="2">ME3_CitArrival_Generic</Value>
+				<Value type="2">Cat003_100_DockArv</Value>
+				<Value type="2">Cat001_100_Arrival</Value>
+				<Value type="2">Gth002_500_QuarDeath</Value>
+				<Value type="2">OmgZae_100_Arrival</Value>
+				<Value type="2">Cat001_600_Dept</Value>
+				<Value type="2">Cat002_600_ShepFalls</Value>
+				<Value type="2">Kro002_600_ZillaFight</Value>
+				<Value type="2">Cat003_Ninjas</Value>
+				<Value type="2">Kro002_300_Convoy</Value>
+				<Value type="2">Kro002_600_Cure</Value>
+				<Value type="2">Gth001_400_NorDept</Value>
+				<Value type="2">KroGar_100_Arrival</Value>
+				<Value type="2">Gth001_100_NorArrival</Value>
+				<Value type="2">Cat002_100_Arrival</Value>
+				<Value type="2">Gth002_400_QuarBomb</Value>
+				<Value type="2">Gth002_500_GethDept</Value>
+				<Value type="2">Gth002_500_QuarDept</Value>
+				<Value type="2">KroGru_500_GruntDeath</Value>
+				<Value type="2">KroGru_500_DagRun</Value>
+				<Value type="2">CerJcb_500_Dept</Value>
+				<Value type="2">Gth002_500_GethDeath</Value>
+				<Value type="2">KroN7b_650_Bomb</Value>
+				<Value type="2">OmgJck_100_Arrival</Value>
+				<Value type="2">OmgJck_300_JackReveal</Value>
+				<Value type="2">OmgJck_600_Dept</Value>
+				<Value type="2">ProCit_100_Arrival</Value>
+				<Value type="2">GthLeg_100_Arrival</Value>
+				<Value type="2">GthN7a_100_Arrival</Value>
+				<Value type="2">BlbGtl_100_Depart</Value>
+				<Value type="2">BlbGtl_100_Depart_Bad</Value>
+				<Value type="2">BlbGtl_100_Depart_Good</Value>
+				<Value type="2">Citadel_Est</Value>
+				<Value type="2">CitGrl_NeonArrival</Value>
+				<Value type="2">CitHub_Approach</Value>
+				<Value type="2">CitHub_Arrival</Value>
+				<Value type="2">CitHub_Depart</Value>
+				<Value type="2">CrtKrL_100_CraterArrival</Value>
+				<Value type="2">EndGm2_100_Huddle01Nor</Value>
+				<Value type="2">EndGm2_300_huddle03</Value>
+				<Value type="2">EndGm2_Escape</Value>
+				<Value type="2">EndGm2_ReaperFall</Value>
+				<Value type="2">EndGm2_ReaperRise</Value>
+				<Value type="2">EndGm2_RepearDeath</Value>
+				<Value type="2">EndGm3_Flyby</Value>
+				<Value type="2">HorCr1_202_Capture</Value>
+				<Value type="2">horcr1_302_collectordepart1</Value>
+				<Value type="2">horcr1_302_collectordepart2</Value>
+				<Value type="2">horcr1_302_collectordepart3</Value>
+				<Value type="2">HorCr1_LilthArrival</Value>
+				<Value type="2">JunCvL_100_Flyby</Value>
+				<Value type="2">KroHub_Arrival</Value>
+				<Value type="2">KroHub_Depart</Value>
+				<Value type="2">KroPrL_Arrival</Value>
+				<Value type="2">ME2_006_ON_AntiGlamour2</Value>
+				<Value type="2">OmgHub_approach_shot01</Value>
+				<Value type="2">OmgHub_approach_shot02</Value>
+				<Value type="2">OmgHub_approach_shot03</Value>
+				<Value type="2">OmgHub_approach_shot04</Value>
+				<Value type="2">OmgHub_Depart</Value>
+				<Value type="2">ProCer_300_FirstFlight</Value>
+				<Value type="2">ProCer_300_NorReveal</Value>
+				<Value type="2">ProCer_300_Transfer_pt1</Value>
+				<Value type="2">ProCer_300_Transfer_pt2</Value>
+				<Value type="2">ProFre_501_VeetorFootage</Value>
+				<Value type="2">ProFre_NormandyFlight</Value>
+				<Value type="2">ProFre_NormandyReveal</Value>
+				<Value type="2">ProFre_Tali_Reintro</Value>
+				<Value type="2">PrsCva_100_Arrival</Value>
+				<Value type="2">QuaTiL_400_ShipTransfer1</Value>
+				<Value type="2">QuaTiL_400_ShipTransfer2</Value>
+				<Value type="2">RprGta_100_Arrival_Pt03</Value>
+				<Value type="2">RprGta_430_Depature_Joker</Value>
+				<Value type="2">RprGta_430_RprCollapse</Value>
+				<Value type="2">RPR_JokerDeparts</Value>
+				<Value type="2">ShpCr2_100_Arrival_Part1</Value>
+				<Value type="2">ShpCr2_100_Arrival_Part3</Value>
+				<Value type="2">ShpCr2_100_Arrival_Part5</Value>
+				<Value type="2">ShpCR2_100_escape_part1</Value>
+				<Value type="2">ShpCR2_100_escape_part2</Value>
+				<Value type="2">ShpCR2_100_escape_part3</Value>
+				<Value type="2">ShpCR2_100_escape_part4</Value>
+				<Value type="2">ShpCR2_100_escape_part5</Value>
+				<Value type="2">TwrAsA_106_ElevatorArrive_B</Value>
+				<Value type="2">TwrAsA_106_ElevatorDepart_A</Value>
+				<Value type="2">TwrAsA_HubDepature</Value>
+				<Value type="2">TWRHuB_Arrival</Value>
+				<Value type="2">TwrMta_101_Arrival</Value>
+				<Value type="2">TwrVxL_100_Arrival</Value>
+				<Value type="2">Twr_CityFlyThrough_01</Value>
+				<Value type="2">Twr_CityFlyThrough_02</Value>
+				<Value type="2">Twr_CityFlyThrough_03</Value>
+				<Value type="2">Twr_CityFlyThrough_04</Value>
+				<Value type="2">Twr_CityFlyThrough_05</Value>
+				<Value type="2">Twr_CityFlyThrough_06</Value>
+				<Value type="2">Twr_CityFlyThrough_07</Value>
+				<Value type="2">ME_EAsig_720p_v2_raw</Value>
+				<Value type="2">publisher</Value>
+				<Value type="2">BWLogo</Value>
+				<Value type="2">AdvCombat1</Value>
+				<Value type="2">AdvCombat2</Value>
+				<Value type="2">AdvCombat3</Value>
+				<Value type="2">Kro001_100_SurArrival_Animatic</Value>
+				<Value type="2">Kro001_700_Depart_Animatic</Value>
+				<Value type="2">Kro001_700_ExoIntro_Animatic</Value>
+				<Value type="2">proear_earth_escape_Animatic</Value>
+				<Value type="2">proear_trial_reapers_animatic</Value>
+				<Value type="2">Promar_100_Landing</Value>
+				<Value type="2">ProMar_200_LiaraIntro</Value>
+				<Value type="2">Promar_800_FemEscape</Value>
+				<Value type="2">Promar_900_Escape</Value>
+				<Value type="2">proear_intro_Animatic</Value>
+			</Property>
+			<Property name="startupmovies">
+				<Value type="-1" />
+
+				<!---->
+				<!--<Value type="2">ME3_sig_logo</Value>-->
+				<Value type="2">StartupLoop</Value>
+			</Property>
+		</Section>
+	</Sections>
+</CoalesceAsset>
