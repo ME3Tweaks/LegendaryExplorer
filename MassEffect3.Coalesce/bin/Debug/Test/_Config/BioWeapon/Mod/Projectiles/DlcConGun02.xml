@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioWeapon">
-	<Sections>
-		<Section name="sfxgamecontentdlc_con_gun02.sfxprojectile_batariansniperround_gun02">
-			<Property name="bleedduration" type="0">5.00</Property>
-			<Property name="directdamageproportion" type="0">0.60</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

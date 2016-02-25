@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioGame">
-	<Sections>
-		<Section name="sfxonlinefoundation.sfxonlinecomponentcommerce">
-			<Property name="adlcentitlementinfo" type="3">(BWEntitlement=(ID=(nID=4000125),sTokens[0]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.sfxweapon_pistol_asari_gun02", sValue="1"),sTokens[1]=(sKey="plotbool",sName="24047",sValue="1"),sTokens[2]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.sfxweapon_assaultrifle_lmg_gun02",sValue="1"),sTokens[3]=(sKey="plotbool",sName="24048",sValue="1"),sTokens[4]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.sfxweapon_shotgun_assault_gun02",sValue="1"),sTokens[5]=(sKey="plotbool",sName="24049",sValue="1"),sTokens[6]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.sfxweapon_assaultrifle_krogan_gun02",sValue="1"),sTokens[7]=(sKey="plotbool",sName="24050",sValue="1"),sTokens[8]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.sfxweapon_sniperrifle_batarian_gun02",sValue="1"),sTokens[9]=(sKey="plotbool",sName="24051",sValue="1"),sTokens[10]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Shotgun_Salarian",sValue="1"),sTokens[11]=(sKey="plotbool",sName="24052",sValue="1"),sTokens[12]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN02.SFXWeapon_Pistol_Bloodpack",sValue="1"),sTokens[13]=(sKey="plotbool",sName="24053",sValue="1")))</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

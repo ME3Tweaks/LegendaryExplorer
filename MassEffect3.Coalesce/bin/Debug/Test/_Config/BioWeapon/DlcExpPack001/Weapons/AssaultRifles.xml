@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioWeapon">
-	<Sections>
-		<Section name="sfxgamecontent.sfxweapon_assaultrifle_argus">
-			<Property name="weaponacquiredid" type="0">23743</Property>
-			<Property name="weaponacquiredid_ngp" type="0">23744</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

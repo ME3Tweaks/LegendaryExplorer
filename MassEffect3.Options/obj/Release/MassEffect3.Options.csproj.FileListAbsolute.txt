@@ -1,2 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Options\bin\Release\MassEffect3.Options.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Options\obj\Release\MassEffect3.Options.dll

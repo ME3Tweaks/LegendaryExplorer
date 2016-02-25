@@ -1,6 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Conditionals\obj\x86\Release\MassEffect3.Conditionals.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.Conditionals.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.Conditionals.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.Conditionals.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Conditionals\obj\x86\Release\MassEffect3.Conditionals.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.Conditionals\obj\x86\Release\MassEffect3.Conditionals.pdb

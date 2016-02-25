@@ -1,8 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\lzma_32.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\lzma_64.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SFXArchiveUnpack\obj\x86\Release\MassEffect3.SFXArchiveUnpack.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.SFXArchiveUnpack.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.SFXArchiveUnpack.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.SFXArchiveUnpack.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SFXArchiveUnpack\obj\x86\Release\MassEffect3.SFXArchiveUnpack.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.SFXArchiveUnpack\obj\x86\Release\MassEffect3.SFXArchiveUnpack.pdb

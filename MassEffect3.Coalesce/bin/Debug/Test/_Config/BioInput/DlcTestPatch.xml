@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioInput">
-	<Includes>
-		<Include source="DlcTestPatch/Core.xml" />
-	</Includes>
-</CoalesceAsset>

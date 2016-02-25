@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioDifficulty">
-	<Includes>
-		<Include source="Multiplayer/Bronze.xml" />
-		<Include source="Multiplayer/Silver.xml" />
-		<Include source="Multiplayer/Gold.xml" />
-		<Include source="Multiplayer/Platinum.xml" />
-	</Includes>
-</CoalesceAsset>

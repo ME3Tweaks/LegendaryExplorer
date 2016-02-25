@@ -1,9 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.csproj.GenerateResource.Cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.TocEditor.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.TocEditor.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.TocEditor.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.TocFileEditor.resources
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.TocEditor\obj\x86\Release\MassEffect3.TocEditor.WindowProgressForm.resources

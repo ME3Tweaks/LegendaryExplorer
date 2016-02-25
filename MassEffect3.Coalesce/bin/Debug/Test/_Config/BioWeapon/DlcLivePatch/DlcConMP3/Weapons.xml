@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioWeapon">
-	<Includes>
-		<Include source="Weapons/AssaultRifles.xml" />
-		<Include source="Weapons/Pistols.xml" />
-		<Include source="Weapons/Shotguns.xml" />
-	</Includes>
-</CoalesceAsset>

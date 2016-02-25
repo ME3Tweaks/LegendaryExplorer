@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioGame">
-	<Sections>
-		<Section name="sfxonlinefoundation.sfxonlinecomponentcommerce">
-			<Property name="adlcentitlementinfo" type="3">(BWEntitlement=(ID=(nID=4000120),sTokens[0]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Geth_GUN01", sValue="1"),sTokens[1]=(sKey="plotbool",sName="23700",sValue="1"),sTokens[2]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_Shotgun_Quarian_GUN01",sValue="1"),sTokens[3]=(sKey="plotbool",sName="23701",sValue="1"),sTokens[4]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Cerb_GUN01",sValue="1"),sTokens[5]=(sKey="plotbool",sName="23702",sValue="1"),sTokens[6]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SniperRifle_Turian_GUN01",sValue="1"),sTokens[7]=(sKey="plotbool",sName="23703",sValue="1"),sTokens[8]=(sKey="playervar",sName="SFXGameContent.SFXWeapon_SniperRifle_Indra",sValue="1"),sTokens[9]=(sKey="plotbool",sName="22631",sValue="1"),sTokens[10]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_SMG_Bloodpack",sValue="1"),sTokens[11]=(sKey="plotbool",sName="23704",sValue="1"),sTokens[12]=(sKey="playervar",sName="SFXGameContentDLC_CON_GUN01.SFXWeapon_AssaultRifle_Quarian",sValue="1"),sTokens[13]=(sKey="plotbool",sName="23705",sValue="1"),sTokens[14]=(sKey="plotbool",sName="23727",sValue="1"),sTokens[15]=(sKey="plotbool",sName="23728",sValue="1"),sTokens[16]=(sKey="plotbool",sName="23729",sValue="1"),sTokens[17]=(sKey="plotbool",sName="23730",sValue="1"),sTokens[18]=(sKey="plotbool",sName="12731",sValue="1"),sTokens[19]=(sKey="plotbool",sName="12732",sValue="1")))</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

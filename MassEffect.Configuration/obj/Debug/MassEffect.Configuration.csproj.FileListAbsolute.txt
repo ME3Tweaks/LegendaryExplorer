@@ -1,7 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\bin\Debug\MassEffect.Configuration.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\bin\Debug\MassEffect.Configuration.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\bin\Debug\Gammtek.Conduit.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\bin\Debug\Gammtek.Conduit.Core.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\obj\Debug\MassEffect.Configuration.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\obj\Debug\MassEffect.Configuration.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\MassEffect.Configuration\obj\Debug\MassEffect.Configuration.pdb

@@ -1,6 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\bin\Debug\Gammtek.Conduit.UnrealEngine.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\bin\Debug\Gammtek.Conduit.UnrealEngine.Core.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\bin\Debug\Gammtek.Conduit.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\bin\Debug\Gammtek.Conduit.Core.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\obj\Debug\Gammtek.Conduit.UnrealEngine.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.UnrealEngine.Core\obj\Debug\Gammtek.Conduit.UnrealEngine.Core.pdb

@@ -1,6 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceXml\obj\x86\Release\MassEffect3.CoalesceXml.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.CoalesceXml.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.CoalesceXml.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.CoalesceXml.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceXml\obj\x86\Release\MassEffect3.CoalesceXml.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceXml\obj\x86\Release\MassEffect3.CoalesceXml.pdb

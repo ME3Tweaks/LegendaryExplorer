@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioUI">
-	<Sections>
-		<Section name="sfxgamempcontent.sfxgui_mpreinforcementsreveal">
-			<Property name="cardtypetextdata" type="3">(CardType="gearUpgrade", GUIType=724441 )</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="subtitles" name="subtitles.int" source="..\..\engine\localization\int\subtitles.int">
-  <Sections>
-    <Section name="subtitles">
-      <Property name="movieispaused" type="2">PAUSED</Property>
-    </Section>
-  </Sections>
-</CoalesceAsset>

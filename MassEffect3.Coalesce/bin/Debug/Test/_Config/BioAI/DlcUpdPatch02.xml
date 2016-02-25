@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioAI.DlcUpdPatch02">
-	<Includes>
-		<Include source="DlcUpdPatch02/Core.xml" />
-		<Include source="DlcUpdPatch02/DlcConMP4.xml" />
-	</Includes>
-</CoalesceAsset>

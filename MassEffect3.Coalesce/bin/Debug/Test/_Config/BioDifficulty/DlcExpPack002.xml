@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioDifficulty">
-	<Includes>
-		<Include source="DlcExpPack002/SinglePlayer.xml" />
-	</Includes>
-</CoalesceAsset>

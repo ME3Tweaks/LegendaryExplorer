@@ -1,7 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\bin\Debug\Gammtek.Conduit.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\bin\Debug\Gammtek.Conduit.Core.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\obj\Debug\Gammtek.Conduit.Properties.Resources.resources
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\obj\Debug\Gammtek.Conduit.Core.csproj.GenerateResource.Cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\obj\Debug\Gammtek.Conduit.Core.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\obj\Debug\Gammtek.Conduit.Core.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.Core\obj\Debug\Gammtek.Conduit.Core.csprojResolveAssemblyReference.cache

@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="bioweapon" name="bioweapon.ini" source="..\..\biogame\config\bioweapon.ini">
-  <Sections>
-    <Section name="sfxgamecontentdlc_con_mp1.sfxweapon_sniperrifle_batarian">
-      <Property name="headshotdamagemultiplier" type="0">(X=3.0f,Y=3.0f)</Property>
-    </Section>
-  </Sections>
-</CoalesceAsset>

@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioWeapon">
-	<Sections>
-		<Section name="sfxgamecontent.sfxweapon_shotgun_raider">
-			<Property name="weaponacquiredid" type="0">23741</Property>
-			<Property name="weaponacquiredid_ngp" type="0">23742</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

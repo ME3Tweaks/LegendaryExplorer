@@ -1,6 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageUnpack\obj\x86\Release\MassEffect3.PackageUnpack.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageUnpack.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageUnpack.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\MassEffect3.PackageUnpack.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageUnpack\obj\x86\Release\MassEffect3.PackageUnpack.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.PackageUnpack\obj\x86\Release\MassEffect3.PackageUnpack.pdb

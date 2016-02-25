@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceFile id="" name="" source="">
-  <Assets>
-    <Asset source="bioengine.xml" />
-    <Asset source="biogame.xml" />
-    <Asset source="bioui.xml" />
-  </Assets>
-</CoalesceFile>

@@ -1,5 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.CommandLine\bin\Debug\Gammtek.Conduit.CommandLine.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.CommandLine\bin\Debug\Gammtek.Conduit.CommandLine.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.CommandLine\obj\Debug\Gammtek.Conduit.CommandLine.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.CommandLine\obj\Debug\Gammtek.Conduit.CommandLine.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect\ModTools\Gammtek.Conduit.CommandLine\obj\Debug\Gammtek.Conduit.CommandLine.csprojResolveAssemblyReference.cache

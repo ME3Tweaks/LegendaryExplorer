@@ -1,6 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.CoalesceDLC.exe.config
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.CoalesceDLC.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\bin\Release\Gibbed.MassEffect3.CoalesceDLC.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceDLC\obj\x86\Release\MassEffect3.CoalesceDLC.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceDLC\obj\x86\Release\Gibbed.MassEffect3.CoalesceDLC.exe
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\ModTools\MassEffect3.CoalesceDLC\obj\x86\Release\Gibbed.MassEffect3.CoalesceDLC.pdb

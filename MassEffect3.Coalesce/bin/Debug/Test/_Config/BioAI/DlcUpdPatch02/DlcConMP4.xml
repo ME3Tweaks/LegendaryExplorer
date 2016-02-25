@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CoalesceAsset id="BioAI.DlcUpdPatch02.DlcConMP4">
-	<Sections>
-		<Section name="sfxgamecontentdlc_con_mp4.sfxweapon_ai_scioncannon">
-			<Property name="damage" type="0">(X=400,Y=400)</Property>
-		</Section>
-	</Sections>
-</CoalesceAsset>

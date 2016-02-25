@@ -1,5 +1,0 @@
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\Gibbed.ProjectData\bin\Debug\Gibbed.ProjectData.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\Gibbed.ProjectData\bin\Debug\Gibbed.ProjectData.pdb
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\Gibbed.ProjectData\obj\Debug\Gibbed.ProjectData.csprojResolveAssemblyReference.cache
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\Gibbed.ProjectData\obj\Debug\Gibbed.ProjectData.dll
-C:\Users\Matthew\Documents\Gammtek\Mass Effect 3\Utilities\Mod Tools\Gibbed.ProjectData\obj\Debug\Gibbed.ProjectData.pdb
