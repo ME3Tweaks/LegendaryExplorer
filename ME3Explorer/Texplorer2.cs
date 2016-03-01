@@ -1602,7 +1602,7 @@ namespace ME3Explorer
                 bool FoundImage = false;
 
                 // KFreon: If no thumbnail, try again
-                if (tex.ThumbnailPath == null)
+                if (tex?.ThumbnailPath == null)
                     continue;
                 else if (File.Exists(tex.ThumbnailPath))
                 {

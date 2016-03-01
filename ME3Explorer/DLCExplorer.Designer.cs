@@ -101,12 +101,13 @@
             this.treeViewSfar.ImageIndex = 0;
             this.treeViewSfar.ImageList = this.imageListIcons;
             this.treeViewSfar.Indent = 25;
-            this.treeViewSfar.Location = new System.Drawing.Point(0, 34);
+            this.treeViewSfar.Location = new System.Drawing.Point(0, 52);
+            this.treeViewSfar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeViewSfar.Name = "treeViewSfar";
             this.treeViewSfar.PathSeparator = "/";
             this.treeViewSfar.SelectedImageIndex = 0;
             this.treeViewSfar.ShowLines = false;
-            this.treeViewSfar.Size = new System.Drawing.Size(579, 445);
+            this.treeViewSfar.Size = new System.Drawing.Size(866, 682);
             this.treeViewSfar.TabIndex = 4;
             this.treeViewSfar.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewSfar_AfterSelect);
             this.treeViewSfar.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewSfar_NodeMouseClick);
@@ -123,6 +124,7 @@
             // 
             // contextMenuStripEditor
             // 
+            this.contextMenuStripEditor.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStripEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addFileToolStripMenuItem,
             this.extractToolStripMenuItem,
@@ -131,47 +133,47 @@
             this.undoToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.contextMenuStripEditor.Name = "contextMenuStripEditor";
-            this.contextMenuStripEditor.Size = new System.Drawing.Size(128, 136);
+            this.contextMenuStripEditor.Size = new System.Drawing.Size(178, 184);
             // 
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.addFileToolStripMenuItem.Text = "Add File";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.addFileToolStripMenuItem_Click);
             // 
             // extractToolStripMenuItem
             // 
             this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
-            this.extractToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.extractToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.extractToolStripMenuItem.Text = "Extract";
             this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
             // 
             // replaceToolStripMenuItem
             // 
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
-            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.replaceToolStripMenuItem.Text = "Replace";
             this.replaceToolStripMenuItem.Click += new System.EventHandler(this.replaceToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(177, 30);
             this.propertiesToolStripMenuItem.Text = "Properties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
@@ -210,11 +212,13 @@
             this.groupBoxFile.Controls.Add(this.textBoxUncSize);
             this.groupBoxFile.Controls.Add(this.labelUncSizeBytes);
             this.groupBoxFile.Controls.Add(this.labelFileSize);
-            this.groupBoxFile.Location = new System.Drawing.Point(585, 261);
-            this.groupBoxFile.MaximumSize = new System.Drawing.Size(344, 0);
-            this.groupBoxFile.MinimumSize = new System.Drawing.Size(344, 218);
+            this.groupBoxFile.Location = new System.Drawing.Point(878, 402);
+            this.groupBoxFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxFile.MaximumSize = new System.Drawing.Size(516, 0);
+            this.groupBoxFile.MinimumSize = new System.Drawing.Size(516, 335);
             this.groupBoxFile.Name = "groupBoxFile";
-            this.groupBoxFile.Size = new System.Drawing.Size(344, 218);
+            this.groupBoxFile.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxFile.Size = new System.Drawing.Size(516, 335);
             this.groupBoxFile.TabIndex = 20;
             this.groupBoxFile.TabStop = false;
             this.groupBoxFile.Text = "File Properties";
@@ -222,152 +226,161 @@
             // labelDataOffset
             // 
             this.labelDataOffset.AutoSize = true;
-            this.labelDataOffset.Location = new System.Drawing.Point(71, 186);
+            this.labelDataOffset.Location = new System.Drawing.Point(106, 286);
+            this.labelDataOffset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDataOffset.Name = "labelDataOffset";
-            this.labelDataOffset.Size = new System.Drawing.Size(64, 13);
+            this.labelDataOffset.Size = new System.Drawing.Size(96, 20);
             this.labelDataOffset.TabIndex = 21;
             this.labelDataOffset.Text = "Data Offset:";
             // 
             // textBoxDataOffset
             // 
             this.textBoxDataOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxDataOffset.Location = new System.Drawing.Point(141, 180);
-            this.textBoxDataOffset.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxDataOffset.Location = new System.Drawing.Point(212, 277);
+            this.textBoxDataOffset.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxDataOffset.Name = "textBoxDataOffset";
             this.textBoxDataOffset.ReadOnly = true;
-            this.textBoxDataOffset.Size = new System.Drawing.Size(88, 25);
+            this.textBoxDataOffset.Size = new System.Drawing.Size(130, 34);
             this.textBoxDataOffset.TabIndex = 20;
             // 
             // labelFullName
             // 
             this.labelFullName.AutoSize = true;
-            this.labelFullName.Location = new System.Drawing.Point(15, 22);
+            this.labelFullName.Location = new System.Drawing.Point(22, 34);
+            this.labelFullName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelFullName.Name = "labelFullName";
-            this.labelFullName.Size = new System.Drawing.Size(57, 13);
+            this.labelFullName.Size = new System.Drawing.Size(84, 20);
             this.labelFullName.TabIndex = 12;
             this.labelFullName.Text = "Full Name:";
             // 
             // labelComprSizeBytes
             // 
             this.labelComprSizeBytes.AutoSize = true;
-            this.labelComprSizeBytes.Location = new System.Drawing.Point(205, 105);
+            this.labelComprSizeBytes.Location = new System.Drawing.Point(308, 162);
+            this.labelComprSizeBytes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelComprSizeBytes.Name = "labelComprSizeBytes";
-            this.labelComprSizeBytes.Size = new System.Drawing.Size(33, 13);
+            this.labelComprSizeBytes.Size = new System.Drawing.Size(49, 20);
             this.labelComprSizeBytes.TabIndex = 19;
             this.labelComprSizeBytes.Text = "Bytes";
             // 
             // labelHash
             // 
             this.labelHash.AutoSize = true;
-            this.labelHash.Location = new System.Drawing.Point(6, 51);
+            this.labelHash.Location = new System.Drawing.Point(9, 78);
+            this.labelHash.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHash.Name = "labelHash";
-            this.labelHash.Size = new System.Drawing.Size(66, 13);
+            this.labelHash.Size = new System.Drawing.Size(97, 20);
             this.labelHash.TabIndex = 8;
             this.labelHash.Text = "Hash Name:";
             // 
             // textBoxHash
             // 
             this.textBoxHash.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxHash.Location = new System.Drawing.Point(76, 45);
-            this.textBoxHash.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxHash.Location = new System.Drawing.Point(114, 69);
+            this.textBoxHash.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxHash.Name = "textBoxHash";
             this.textBoxHash.ReadOnly = true;
-            this.textBoxHash.Size = new System.Drawing.Size(264, 25);
+            this.textBoxHash.Size = new System.Drawing.Size(394, 34);
             this.textBoxHash.TabIndex = 9;
             // 
             // textBoxBlockIndex
             // 
             this.textBoxBlockIndex.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxBlockIndex.Location = new System.Drawing.Point(141, 153);
-            this.textBoxBlockIndex.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxBlockIndex.Location = new System.Drawing.Point(212, 235);
+            this.textBoxBlockIndex.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxBlockIndex.Name = "textBoxBlockIndex";
             this.textBoxBlockIndex.ReadOnly = true;
-            this.textBoxBlockIndex.Size = new System.Drawing.Size(88, 25);
+            this.textBoxBlockIndex.Size = new System.Drawing.Size(130, 34);
             this.textBoxBlockIndex.TabIndex = 11;
             // 
             // textBoxComprSize
             // 
             this.textBoxComprSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxComprSize.Location = new System.Drawing.Point(141, 99);
-            this.textBoxComprSize.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxComprSize.Location = new System.Drawing.Point(212, 152);
+            this.textBoxComprSize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxComprSize.Name = "textBoxComprSize";
             this.textBoxComprSize.ReadOnly = true;
-            this.textBoxComprSize.Size = new System.Drawing.Size(60, 25);
+            this.textBoxComprSize.Size = new System.Drawing.Size(88, 34);
             this.textBoxComprSize.TabIndex = 18;
             this.textBoxComprSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // textBoxFullName
             // 
-            this.textBoxFullName.Location = new System.Drawing.Point(76, 19);
-            this.textBoxFullName.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxFullName.Location = new System.Drawing.Point(114, 29);
+            this.textBoxFullName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxFullName.Name = "textBoxFullName";
             this.textBoxFullName.ReadOnly = true;
-            this.textBoxFullName.Size = new System.Drawing.Size(264, 20);
+            this.textBoxFullName.Size = new System.Drawing.Size(394, 26);
             this.textBoxFullName.TabIndex = 13;
             // 
             // labelBlockIndex
             // 
             this.labelBlockIndex.AutoSize = true;
-            this.labelBlockIndex.Location = new System.Drawing.Point(69, 159);
+            this.labelBlockIndex.Location = new System.Drawing.Point(104, 245);
+            this.labelBlockIndex.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelBlockIndex.Name = "labelBlockIndex";
-            this.labelBlockIndex.Size = new System.Drawing.Size(66, 13);
+            this.labelBlockIndex.Size = new System.Drawing.Size(95, 20);
             this.labelBlockIndex.TabIndex = 10;
             this.labelBlockIndex.Text = "Block Index:";
             // 
             // labelComprSize
             // 
             this.labelComprSize.AutoSize = true;
-            this.labelComprSize.Location = new System.Drawing.Point(44, 105);
+            this.labelComprSize.Location = new System.Drawing.Point(66, 162);
+            this.labelComprSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelComprSize.Name = "labelComprSize";
-            this.labelComprSize.Size = new System.Drawing.Size(91, 13);
+            this.labelComprSize.Size = new System.Drawing.Size(138, 20);
             this.labelComprSize.TabIndex = 17;
             this.labelComprSize.Text = "Compressed Size:";
             // 
             // textBoxEntry
             // 
             this.textBoxEntry.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxEntry.Location = new System.Drawing.Point(141, 126);
-            this.textBoxEntry.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxEntry.Location = new System.Drawing.Point(212, 194);
+            this.textBoxEntry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxEntry.Name = "textBoxEntry";
             this.textBoxEntry.ReadOnly = true;
-            this.textBoxEntry.Size = new System.Drawing.Size(88, 25);
+            this.textBoxEntry.Size = new System.Drawing.Size(130, 34);
             this.textBoxEntry.TabIndex = 7;
             // 
             // labelEntry
             // 
             this.labelEntry.AutoSize = true;
-            this.labelEntry.Location = new System.Drawing.Point(70, 132);
+            this.labelEntry.Location = new System.Drawing.Point(105, 203);
+            this.labelEntry.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelEntry.Name = "labelEntry";
-            this.labelEntry.Size = new System.Drawing.Size(65, 13);
+            this.labelEntry.Size = new System.Drawing.Size(98, 20);
             this.labelEntry.TabIndex = 6;
             this.labelEntry.Text = "Entry Offset:";
             // 
             // textBoxUncSize
             // 
             this.textBoxUncSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxUncSize.Location = new System.Drawing.Point(141, 72);
-            this.textBoxUncSize.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxUncSize.Location = new System.Drawing.Point(212, 111);
+            this.textBoxUncSize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxUncSize.Name = "textBoxUncSize";
             this.textBoxUncSize.ReadOnly = true;
-            this.textBoxUncSize.Size = new System.Drawing.Size(60, 25);
+            this.textBoxUncSize.Size = new System.Drawing.Size(88, 34);
             this.textBoxUncSize.TabIndex = 14;
             this.textBoxUncSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // labelUncSizeBytes
             // 
             this.labelUncSizeBytes.AutoSize = true;
-            this.labelUncSizeBytes.Location = new System.Drawing.Point(205, 78);
+            this.labelUncSizeBytes.Location = new System.Drawing.Point(308, 120);
+            this.labelUncSizeBytes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelUncSizeBytes.Name = "labelUncSizeBytes";
-            this.labelUncSizeBytes.Size = new System.Drawing.Size(33, 13);
+            this.labelUncSizeBytes.Size = new System.Drawing.Size(49, 20);
             this.labelUncSizeBytes.TabIndex = 16;
             this.labelUncSizeBytes.Text = "Bytes";
             // 
             // labelFileSize
             // 
             this.labelFileSize.AutoSize = true;
-            this.labelFileSize.Location = new System.Drawing.Point(86, 78);
+            this.labelFileSize.Location = new System.Drawing.Point(129, 120);
+            this.labelFileSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelFileSize.Name = "labelFileSize";
-            this.labelFileSize.Size = new System.Drawing.Size(49, 13);
+            this.labelFileSize.Size = new System.Drawing.Size(73, 20);
             this.labelFileSize.TabIndex = 15;
             this.labelFileSize.Text = "File Size:";
             // 
@@ -391,11 +404,13 @@
             this.groupBoxSfar.Controls.Add(this.labelTotalComprSize);
             this.groupBoxSfar.Controls.Add(this.textBoxFirstDataOffset);
             this.groupBoxSfar.Controls.Add(this.labelFirstDataOffset);
-            this.groupBoxSfar.Location = new System.Drawing.Point(585, 34);
-            this.groupBoxSfar.MaximumSize = new System.Drawing.Size(344, 0);
-            this.groupBoxSfar.MinimumSize = new System.Drawing.Size(344, 0);
+            this.groupBoxSfar.Location = new System.Drawing.Point(878, 52);
+            this.groupBoxSfar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxSfar.MaximumSize = new System.Drawing.Size(516, 0);
+            this.groupBoxSfar.MinimumSize = new System.Drawing.Size(516, 0);
             this.groupBoxSfar.Name = "groupBoxSfar";
-            this.groupBoxSfar.Size = new System.Drawing.Size(344, 221);
+            this.groupBoxSfar.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxSfar.Size = new System.Drawing.Size(516, 335);
             this.groupBoxSfar.TabIndex = 21;
             this.groupBoxSfar.TabStop = false;
             this.groupBoxSfar.Text = "sfar Properties";
@@ -403,153 +418,162 @@
             // textBoxCRatio
             // 
             this.textBoxCRatio.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCRatio.Location = new System.Drawing.Point(140, 98);
-            this.textBoxCRatio.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxCRatio.Location = new System.Drawing.Point(210, 151);
+            this.textBoxCRatio.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxCRatio.Name = "textBoxCRatio";
             this.textBoxCRatio.ReadOnly = true;
-            this.textBoxCRatio.Size = new System.Drawing.Size(75, 25);
+            this.textBoxCRatio.Size = new System.Drawing.Size(110, 34);
             this.textBoxCRatio.TabIndex = 16;
             // 
             // labelTotalComprBytes
             // 
             this.labelTotalComprBytes.AutoSize = true;
-            this.labelTotalComprBytes.Location = new System.Drawing.Point(217, 77);
+            this.labelTotalComprBytes.Location = new System.Drawing.Point(326, 118);
+            this.labelTotalComprBytes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTotalComprBytes.Name = "labelTotalComprBytes";
-            this.labelTotalComprBytes.Size = new System.Drawing.Size(33, 13);
+            this.labelTotalComprBytes.Size = new System.Drawing.Size(49, 20);
             this.labelTotalComprBytes.TabIndex = 15;
             this.labelTotalComprBytes.Text = "Bytes";
             // 
             // labelTotalUncBytes
             // 
             this.labelTotalUncBytes.AutoSize = true;
-            this.labelTotalUncBytes.Location = new System.Drawing.Point(217, 50);
+            this.labelTotalUncBytes.Location = new System.Drawing.Point(326, 77);
+            this.labelTotalUncBytes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTotalUncBytes.Name = "labelTotalUncBytes";
-            this.labelTotalUncBytes.Size = new System.Drawing.Size(33, 13);
+            this.labelTotalUncBytes.Size = new System.Drawing.Size(49, 20);
             this.labelTotalUncBytes.TabIndex = 14;
             this.labelTotalUncBytes.Text = "Bytes";
             // 
             // textBoxNumOfFiles
             // 
             this.textBoxNumOfFiles.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxNumOfFiles.Location = new System.Drawing.Point(140, 17);
-            this.textBoxNumOfFiles.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxNumOfFiles.Location = new System.Drawing.Point(210, 26);
+            this.textBoxNumOfFiles.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxNumOfFiles.Name = "textBoxNumOfFiles";
             this.textBoxNumOfFiles.ReadOnly = true;
-            this.textBoxNumOfFiles.Size = new System.Drawing.Size(75, 25);
+            this.textBoxNumOfFiles.Size = new System.Drawing.Size(110, 34);
             this.textBoxNumOfFiles.TabIndex = 13;
             // 
             // labelNumOfFiles
             // 
             this.labelNumOfFiles.AutoSize = true;
-            this.labelNumOfFiles.Location = new System.Drawing.Point(69, 23);
+            this.labelNumOfFiles.Location = new System.Drawing.Point(104, 35);
+            this.labelNumOfFiles.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelNumOfFiles.Name = "labelNumOfFiles";
-            this.labelNumOfFiles.Size = new System.Drawing.Size(65, 13);
+            this.labelNumOfFiles.Size = new System.Drawing.Size(96, 20);
             this.labelNumOfFiles.TabIndex = 12;
             this.labelNumOfFiles.Text = "Num of files:";
             // 
             // labelFirstBlockOffset
             // 
             this.labelFirstBlockOffset.AutoSize = true;
-            this.labelFirstBlockOffset.Location = new System.Drawing.Point(61, 158);
+            this.labelFirstBlockOffset.Location = new System.Drawing.Point(92, 243);
+            this.labelFirstBlockOffset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelFirstBlockOffset.Name = "labelFirstBlockOffset";
-            this.labelFirstBlockOffset.Size = new System.Drawing.Size(73, 13);
+            this.labelFirstBlockOffset.Size = new System.Drawing.Size(108, 20);
             this.labelFirstBlockOffset.TabIndex = 11;
             this.labelFirstBlockOffset.Text = "Blocks Offset:";
             // 
             // textBoxFirstBlockOffset
             // 
             this.textBoxFirstBlockOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxFirstBlockOffset.Location = new System.Drawing.Point(140, 152);
-            this.textBoxFirstBlockOffset.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxFirstBlockOffset.Location = new System.Drawing.Point(210, 234);
+            this.textBoxFirstBlockOffset.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxFirstBlockOffset.Name = "textBoxFirstBlockOffset";
             this.textBoxFirstBlockOffset.ReadOnly = true;
-            this.textBoxFirstBlockOffset.Size = new System.Drawing.Size(88, 25);
+            this.textBoxFirstBlockOffset.Size = new System.Drawing.Size(130, 34);
             this.textBoxFirstBlockOffset.TabIndex = 10;
             // 
             // textBoxFirstEntryOffset
             // 
             this.textBoxFirstEntryOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxFirstEntryOffset.Location = new System.Drawing.Point(140, 125);
-            this.textBoxFirstEntryOffset.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxFirstEntryOffset.Location = new System.Drawing.Point(210, 192);
+            this.textBoxFirstEntryOffset.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxFirstEntryOffset.Name = "textBoxFirstEntryOffset";
             this.textBoxFirstEntryOffset.ReadOnly = true;
-            this.textBoxFirstEntryOffset.Size = new System.Drawing.Size(88, 25);
+            this.textBoxFirstEntryOffset.Size = new System.Drawing.Size(130, 34);
             this.textBoxFirstEntryOffset.TabIndex = 9;
             // 
             // labelFirstEntryOffset
             // 
             this.labelFirstEntryOffset.AutoSize = true;
-            this.labelFirstEntryOffset.Location = new System.Drawing.Point(69, 131);
+            this.labelFirstEntryOffset.Location = new System.Drawing.Point(104, 202);
+            this.labelFirstEntryOffset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelFirstEntryOffset.Name = "labelFirstEntryOffset";
-            this.labelFirstEntryOffset.Size = new System.Drawing.Size(65, 13);
+            this.labelFirstEntryOffset.Size = new System.Drawing.Size(98, 20);
             this.labelFirstEntryOffset.TabIndex = 8;
             this.labelFirstEntryOffset.Text = "Entry Offset:";
             // 
             // labelComprRatio
             // 
             this.labelComprRatio.AutoSize = true;
-            this.labelComprRatio.Location = new System.Drawing.Point(36, 104);
+            this.labelComprRatio.Location = new System.Drawing.Point(54, 160);
+            this.labelComprRatio.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelComprRatio.Name = "labelComprRatio";
-            this.labelComprRatio.Size = new System.Drawing.Size(98, 13);
+            this.labelComprRatio.Size = new System.Drawing.Size(148, 20);
             this.labelComprRatio.TabIndex = 6;
             this.labelComprRatio.Text = "Compression Ratio:";
             // 
             // labelTotalUncSize
             // 
             this.labelTotalUncSize.AutoSize = true;
-            this.labelTotalUncSize.Location = new System.Drawing.Point(11, 50);
+            this.labelTotalUncSize.Location = new System.Drawing.Point(16, 77);
+            this.labelTotalUncSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTotalUncSize.Name = "labelTotalUncSize";
-            this.labelTotalUncSize.Size = new System.Drawing.Size(123, 13);
+            this.labelTotalUncSize.Size = new System.Drawing.Size(185, 20);
             this.labelTotalUncSize.TabIndex = 5;
             this.labelTotalUncSize.Text = "Uncompressed files size:";
             // 
             // textBoxTotalUncSize
             // 
             this.textBoxTotalUncSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxTotalUncSize.Location = new System.Drawing.Point(140, 44);
-            this.textBoxTotalUncSize.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxTotalUncSize.Location = new System.Drawing.Point(210, 68);
+            this.textBoxTotalUncSize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxTotalUncSize.Name = "textBoxTotalUncSize";
             this.textBoxTotalUncSize.ReadOnly = true;
-            this.textBoxTotalUncSize.Size = new System.Drawing.Size(75, 25);
+            this.textBoxTotalUncSize.Size = new System.Drawing.Size(110, 34);
             this.textBoxTotalUncSize.TabIndex = 4;
             this.textBoxTotalUncSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // textBoxTotalComprSize
             // 
             this.textBoxTotalComprSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxTotalComprSize.Location = new System.Drawing.Point(140, 71);
-            this.textBoxTotalComprSize.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxTotalComprSize.Location = new System.Drawing.Point(210, 109);
+            this.textBoxTotalComprSize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxTotalComprSize.Name = "textBoxTotalComprSize";
             this.textBoxTotalComprSize.ReadOnly = true;
-            this.textBoxTotalComprSize.Size = new System.Drawing.Size(75, 25);
+            this.textBoxTotalComprSize.Size = new System.Drawing.Size(110, 34);
             this.textBoxTotalComprSize.TabIndex = 3;
             this.textBoxTotalComprSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // labelTotalComprSize
             // 
             this.labelTotalComprSize.AutoSize = true;
-            this.labelTotalComprSize.Location = new System.Drawing.Point(24, 77);
+            this.labelTotalComprSize.Location = new System.Drawing.Point(36, 118);
+            this.labelTotalComprSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTotalComprSize.Name = "labelTotalComprSize";
-            this.labelTotalComprSize.Size = new System.Drawing.Size(110, 13);
+            this.labelTotalComprSize.Size = new System.Drawing.Size(167, 20);
             this.labelTotalComprSize.TabIndex = 2;
             this.labelTotalComprSize.Text = "Compressed files size:";
             // 
             // textBoxFirstDataOffset
             // 
             this.textBoxFirstDataOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxFirstDataOffset.Location = new System.Drawing.Point(140, 179);
-            this.textBoxFirstDataOffset.Margin = new System.Windows.Forms.Padding(1);
+            this.textBoxFirstDataOffset.Location = new System.Drawing.Point(210, 275);
+            this.textBoxFirstDataOffset.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxFirstDataOffset.Name = "textBoxFirstDataOffset";
             this.textBoxFirstDataOffset.ReadOnly = true;
-            this.textBoxFirstDataOffset.Size = new System.Drawing.Size(88, 25);
+            this.textBoxFirstDataOffset.Size = new System.Drawing.Size(130, 34);
             this.textBoxFirstDataOffset.TabIndex = 1;
             // 
             // labelFirstDataOffset
             // 
             this.labelFirstDataOffset.AutoSize = true;
-            this.labelFirstDataOffset.Location = new System.Drawing.Point(70, 185);
+            this.labelFirstDataOffset.Location = new System.Drawing.Point(105, 285);
+            this.labelFirstDataOffset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelFirstDataOffset.Name = "labelFirstDataOffset";
-            this.labelFirstDataOffset.Size = new System.Drawing.Size(64, 13);
+            this.labelFirstDataOffset.Size = new System.Drawing.Size(96, 20);
             this.labelFirstDataOffset.TabIndex = 0;
             this.labelFirstDataOffset.Text = "Data Offset:";
             // 
@@ -560,25 +584,27 @@
             // statusStrip
             // 
             this.statusStrip.GripMargin = new System.Windows.Forms.Padding(2, 3, 2, 2);
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar,
             this.toolStripStatusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 493);
+            this.statusStrip.Location = new System.Drawing.Point(0, 770);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(935, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStrip.Size = new System.Drawing.Size(1402, 22);
             this.statusStrip.TabIndex = 22;
             this.statusStrip.Text = "statusStrip";
             // 
             // toolStripProgressBar
             // 
             this.toolStripProgressBar.Name = "toolStripProgressBar";
-            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar.Size = new System.Drawing.Size(150, 25);
             this.toolStripProgressBar.Visible = false;
             // 
             // toolStripStatusLabel
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(112, 17);
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(169, 25);
             this.toolStripStatusLabel.Text = "toolStripStatusLabel";
             this.toolStripStatusLabel.Visible = false;
             // 
@@ -610,7 +636,8 @@
             this.toolStripAbout});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(935, 31);
+            this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripMenu.Size = new System.Drawing.Size(1402, 31);
             this.toolStripMenu.TabIndex = 23;
             this.toolStripMenu.Text = "Open File";
             // 
@@ -662,18 +689,19 @@
             // 
             // DLCExplorer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(935, 515);
+            this.ClientSize = new System.Drawing.Size(1402, 792);
             this.Controls.Add(this.toolStripMenu);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.groupBoxSfar);
             this.Controls.Add(this.treeViewSfar);
             this.Controls.Add(this.groupBoxFile);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 542);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MinimumSize = new System.Drawing.Size(1189, 804);
             this.Name = "DLCExplorer";
-            this.Text = "DLC Basic Editor";
+            this.Text = "SFAR Basic Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.contextMenuStripEditor.ResumeLayout(false);
             this.groupBoxFile.ResumeLayout(false);

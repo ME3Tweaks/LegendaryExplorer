@@ -52,7 +52,9 @@ namespace KFreonLib.Textures
         /// <returns>Hash as a uint.</returns>
         public static uint FormatTexmodHashAsUint(string line)
         {
-            return uint.Parse(line.Split('|')[0].Substring(2), System.Globalization.NumberStyles.AllowHexSpecifier);
+            uint hash = 0;
+            uint.TryParse(line.Split('|')[0].Substring(2), System.Globalization.NumberStyles.AllowHexSpecifier, null, out hash);
+            return hash;
         }
 
 

@@ -30,7 +30,9 @@ namespace ME3Explorer
         public Form1()
         {
             InitializeComponent();
-            DoDLCCheck();
+            disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            if (!disableDLCCheckOnStartupToolStripMenuItem.Checked)
+                DoDLCCheck();
         }
 
         private async void DoDLCCheck()
@@ -888,6 +890,26 @@ namespace ME3Explorer
         private void nexusModsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://www.nexusmods.com/masseffect3/mods/409/");
+        }
+
+        private void disableDLCCheckOnStartupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (disableDLCCheckOnStartupToolStripMenuItem.Checked)
+            {
+                disableDLCCheckOnStartupToolStripMenuItem.Checked = false;
+                Properties.Settings.Default.DisableDLCCheckOnStart = false;
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                var res = MessageBox.Show(String.Join(Environment.NewLine, new[] { "Disabling DLC check when all DLC is not extracted can lead to unusual activity in Texplorer, TPFTools, and Modmaker.", "Are you sure you want to disable this check?" }), "Uhh...Commander?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (res == DialogResult.Yes)
+                {
+                    Properties.Settings.Default.DisableDLCCheckOnStart = true;
+                    Properties.Settings.Default.Save();
+                    disableDLCCheckOnStartupToolStripMenuItem.Checked = true;
+                }
+            }
         }
     }
 }

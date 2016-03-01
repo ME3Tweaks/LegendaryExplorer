@@ -367,8 +367,9 @@ namespace KFreonLib
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
+                Debugging.DebugOutput.PrintLn("Failed to load tree: " + e.Message);
                 if (invokeObject != null)
                 {
                     int temp = status;

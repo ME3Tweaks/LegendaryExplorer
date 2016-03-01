@@ -354,6 +354,13 @@ namespace KFreonLib.Textures
         public int Width = -1;
         public SaltTPF.ZipReader zippy = null;
         public bool wasAnalysed = false;
+        public string PreviewKey
+        {
+            get
+            {
+                return FilePath + FileName + TexName + Hash + Width + Height;
+            }
+        }
         
 
         #region Properties
@@ -591,7 +598,7 @@ namespace KFreonLib.Textures
             if (temp == true) // If given path is a directory
             {
                 string hashString = KFreonLib.Textures.Methods.FormatTexmodHashAsString(Hash);
-                if (TexName == null)
+                if (String.IsNullOrEmpty(TexName))
                     extractName = Path.GetFileNameWithoutExtension(FileName);
                 else
                     extractName = TexName;

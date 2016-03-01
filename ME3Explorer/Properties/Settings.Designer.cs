@@ -178,5 +178,17 @@ namespace ME3Explorer.Properties {
                 this["ME1InstallDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisableDLCCheckOnStart {
+            get {
+                return ((bool)(this["DisableDLCCheckOnStart"]));
+            }
+            set {
+                this["DisableDLCCheckOnStart"] = value;
+            }
+        }
     }
 }

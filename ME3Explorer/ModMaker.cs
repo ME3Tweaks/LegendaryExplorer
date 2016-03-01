@@ -1281,7 +1281,7 @@ namespace ME3Explorer
 
         private void HelpButton_Click(object sender, EventArgs e)
         {
-            Process.Start("http://me3explorer.freeforums.org/tutorial-modmaker-2-0-ish-t1427.html");
+            Process.Start("http://me3explorer.wikia.com/wiki/ModMaker");
         }
 
         private void GameVersionBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1327,7 +1327,7 @@ namespace ME3Explorer
                         {
                             ModJob job = KFreonLib.Scripting.ModMaker.JobList[MainListView.SelectedIndices[i]];
                             string destpath = null;
-                            if (job.JobType == "Texture")
+                            if (job.JobType == "TEXTURE")
                                 destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + ".dds";
                             else
                             {

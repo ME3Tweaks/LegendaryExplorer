@@ -979,10 +979,9 @@ namespace ME3Explorer
             }
 
             // KFreon: Gather from cache if available
-            string key = tex.FilePath + tex.FileName + tex.TexName + tex.Hash + tex.Width + tex.Height;
-            if (Previews.ContainsKey(key))
+            if (Previews.ContainsKey(tex.PreviewKey))
             {
-                Bitmap img = Previews[key];
+                Bitmap img = Previews[tex.PreviewKey];
                 try
                 {
                     this.Invoke(new Action(() => PreviewBox.Image = img));
@@ -1022,7 +1021,7 @@ namespace ME3Explorer
                         img = image.GetGDIBitmap(true, 512);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
-                Previews.Add(key, img);
+                Previews.Add(tex.PreviewKey, img);
                 DisappearTextBox(true);
             }
         }
@@ -1206,14 +1205,27 @@ namespace ME3Explorer
         {
             if (e.KeyCode == Keys.Enter && !CancelButton.Visible && gooey.GetControlAffectedState("Analyse"))
             {
-                TPFTexInfo tex;
-                int index = GetSelectedTex(out tex);
-                DebugOutput.PrintLn("Updating hash for texture: " + Path.GetFileName(tex.FileName) + " to: " + HashTextBox.Text);
-                UpdateHashAndReplace(tex, index, HashTextBox.Text);
+                HashBox_Altered();
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-                DisplayInfo(tex);
             }
+        }
+
+        private void HashBox_Altered()
+        {
+            TPFTexInfo tex;
+            int index = GetSelectedTex(out tex);
+            if (index < 0)
+                return;
+
+            // Set length of things
+            if (HashTextBox.Text.Length != 10)
+                return;
+
+
+            DebugOutput.PrintLn("Updating hash for texture: " + Path.GetFileName(tex.FileName) + " to: " + HashTextBox.Text);
+            UpdateHashAndReplace(tex, index, HashTextBox.Text);
+            DisplayInfo(tex);
         }
 
         public void UpdateHashAndReplace(TPFTexInfo tex, int index, string hash)
@@ -1793,12 +1805,18 @@ namespace ME3Explorer
             ClearPreview();
             FirstHalfInfoState(false);
 
-            TPFTexInfo tex;
+            TPFTexInfo tex = null;
             int index = ind == -1 ? GetSelectedTex(out tex) : ind;
+
+            if (index < 0)
+                return false;
 
             // KFreon: Remove from lists
             LoadedTexes.RemoveAt(index);
             MainTreeView.Nodes.RemoveAt(index);
+
+            if (tex != null)
+                Previews.Remove(tex.PreviewKey);
 
             //RedrawTreeView();
             //MainTreeView.ResumeLayout();
@@ -2242,6 +2260,8 @@ namespace ME3Explorer
         {
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
+            if (index < 0)
+                return;
             string path = Path.Combine(TemporaryPath, tex.TexName);
             tex.Extract(path);
 
@@ -2357,7 +2377,7 @@ namespace ME3Explorer
             }
             else
             {
-                Process.Start("http://me3explorer.freeforums.org/tutorial-tpf-dds-tools-3-0-t1428.html");
+                Process.Start("http://me3explorer.wikia.com/wiki/TPF_Tools");
                 HelpButton.Text = "Help";
             }
         }
@@ -2407,6 +2427,12 @@ namespace ME3Explorer
 
         private async void RepackWithTexplorer()
         {
+            if (!LoadedTexes.Any(tex => tex.Hash != 0))
+            {
+                Overall.UpdateText("No valid textures to use.");
+                return;
+            }
+
             string path = "";
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
@@ -2481,6 +2507,13 @@ namespace ME3Explorer
         {
             bool success = false;
 
+            // KFreon: Must have valid textures.
+            if (!LoadedTexes.Any(tex => tex.Hash != 0))
+            {
+                Overall.UpdateText("No valid textures to use.");
+                return;
+            }
+
             // KFreon: Extract all valid textures and build .def
             ExtractAndBuildLog(Path.Combine(TemporaryPath, "TexmodRebuild"));
 
@@ -2497,6 +2530,8 @@ namespace ME3Explorer
                 MessageBox.Show("Texmod not found at: " + texmodLocFile);
                 return;
             }
+
+            
 
             pc = new ProcessStartInfo(texmodLocFile);
             Process.Start(pc);
@@ -3332,12 +3367,12 @@ namespace ME3Explorer
         {
             StringBuilder sb = new StringBuilder();
 
-            if (PCCsCheckListBox.SelectedItems.Count <= 0)
+            if (PCCsCheckListBox.Items.Count <= 0)
                 return;
 
-            for (int i = 0; i < PCCsCheckListBox.SelectedItems.Count; i++)
+            for (int i = 0; i < PCCsCheckListBox.Items.Count; i++)
             {
-                string str = PCCsCheckListBox.SelectedItems[i].Text;
+                string str = PCCsCheckListBox.Items[i].Text;
                 sb.AppendLine(str);
             }
 
@@ -3428,6 +3463,27 @@ namespace ME3Explorer
             Overall.UpdateText("Extracting " + LoadedTexes.Where(r => r.Valid && !r.isDef).Count() + " valid textures...");
             Extractor(outputPath, null, t => t.Valid && !t.isDef);
             Overall.UpdateText("All valids extracted!");
+        }
+
+        private void CopySelectedClipBoardButton_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (PCCsCheckListBox.SelectedItems.Count <= 0)
+                return;
+
+            for (int i = 0; i < PCCsCheckListBox.SelectedItems.Count; i++)
+            {
+                string str = PCCsCheckListBox.SelectedItems[i].Text;
+                sb.AppendLine(str);
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void HashBox_FocusLost(object sender, EventArgs e)
+        {
+            HashBox_Altered();
         }
     }
 }
