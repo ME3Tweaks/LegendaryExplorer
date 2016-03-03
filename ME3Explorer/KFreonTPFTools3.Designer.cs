@@ -112,7 +112,6 @@
             this.PCCsCheckListBox = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AnalyseButton = new System.Windows.Forms.Button();
-            this.SaveModButton = new System.Windows.Forms.Button();
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -973,7 +972,7 @@
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 563);
+            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 553);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -986,7 +985,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 29);
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(1072, 530);
+            this.PreviewPage.Size = new System.Drawing.Size(1072, 520);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -998,7 +997,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 530);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 520);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
@@ -1022,7 +1021,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 29);
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(1072, 530);
+            this.PCCsPage.Size = new System.Drawing.Size(1072, 520);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -1057,25 +1056,11 @@
             this.AnalyseButton.UseVisualStyleBackColor = true;
             this.AnalyseButton.Click += new System.EventHandler(this.AnalyseButton_Click);
             // 
-            // SaveModButton
-            // 
-            this.SaveModButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SaveModButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveModButton.Location = new System.Drawing.Point(171, 934);
-            this.SaveModButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.SaveModButton.Name = "SaveModButton";
-            this.SaveModButton.Size = new System.Drawing.Size(122, 64);
-            this.SaveModButton.TabIndex = 4;
-            this.SaveModButton.Text = "Save Valid to .mod";
-            this.PrimaryToolTip.SetToolTip(this.SaveModButton, "Saves all valid textures to a .mod file");
-            this.SaveModButton.UseVisualStyleBackColor = true;
-            this.SaveModButton.Click += new System.EventHandler(this.SaveModButton_Click);
-            // 
             // InstallButton
             // 
             this.InstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.InstallButton.Location = new System.Drawing.Point(304, 934);
+            this.InstallButton.Location = new System.Drawing.Point(166, 934);
             this.InstallButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.InstallButton.Name = "InstallButton";
             this.InstallButton.Size = new System.Drawing.Size(129, 64);
@@ -1089,7 +1074,7 @@
             // 
             this.AutofixInstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AutofixInstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutofixInstallButton.Location = new System.Drawing.Point(446, 934);
+            this.AutofixInstallButton.Location = new System.Drawing.Point(302, 934);
             this.AutofixInstallButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.AutofixInstallButton.Name = "AutofixInstallButton";
             this.AutofixInstallButton.Size = new System.Drawing.Size(153, 64);
@@ -1113,7 +1098,6 @@
             this.Controls.Add(this.TopStrip);
             this.Controls.Add(this.BottomStrip);
             this.Controls.Add(this.AnalyseButton);
-            this.Controls.Add(this.SaveModButton);
             this.Controls.Add(this.InstallButton);
             this.Controls.Add(this.AutofixInstallButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1172,7 +1156,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel OverallStatusLabel;
         private System.Windows.Forms.Button AnalyseButton;
-        private System.Windows.Forms.Button SaveModButton;
         private System.Windows.Forms.Button InstallButton;
         private System.Windows.Forms.Button AutofixInstallButton;
         private System.Windows.Forms.ToolStripButton CancelButton;

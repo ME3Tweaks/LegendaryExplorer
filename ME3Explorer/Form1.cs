@@ -31,8 +31,6 @@ namespace ME3Explorer
         {
             InitializeComponent();
             disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
-            if (!disableDLCCheckOnStartupToolStripMenuItem.Checked)
-                DoDLCCheck();
         }
 
         private async void DoDLCCheck()
@@ -198,14 +196,14 @@ namespace ME3Explorer
                         sc.Show();
                         sc.WindowState = FormWindowState.Maximized;
                         break;
-                    case ".mod":
+                    /*case ".mod":    // KFreon: Disabled for now due to the fact that it doesn't do the DLC check first
                         ModMaker m = new ModMaker();
                         m.Show();
                         string[] s = new string[1];
                         s[0] = args[1];
                         //m.LoadMods(s);
                         m.WindowState = FormWindowState.Maximized;
-                        break;
+                        break;*/
                 }
             }
 
@@ -220,6 +218,9 @@ namespace ME3Explorer
             versionToolStripMenuItem.Text += "0110 (r" + vers[2] + ")";
             versionToolStripMenuItem.Tag = "versionItem";
             menuStrip1.Renderer = new NoHighlightRenderer();
+
+            if (!disableDLCCheckOnStartupToolStripMenuItem.Checked)
+                DoDLCCheck();
         }
 
         internal class NoHighlightRenderer : ToolStripProfessionalRenderer
