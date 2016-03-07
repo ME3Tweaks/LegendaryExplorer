@@ -47,14 +47,16 @@ namespace ME3Explorer
         private async void ExtractButton_Click(object sender, RoutedEventArgs e)
         {
             vm.NotWorking = false;
+            bool dlcProblem = false;
             await Task.Run(() =>
             {
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                 DebugOutput.PrintLn("Extracting DLC...");
-                dlcedit2.ExtractAllDLC();
+                dlcProblem = !dlcedit2.ExtractAllDLC();
+                    
             });
             vm.NotWorking = true;
-            MessageBox.Show("DLC Extracted!");
+            MessageBox.Show(dlcProblem ? "Some DLC wasn't extracted. This is likely due to pathing. Check the Debug Window." : "DLC Extracted!");
             this.Close();
         }
 

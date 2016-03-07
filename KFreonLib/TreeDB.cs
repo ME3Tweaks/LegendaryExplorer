@@ -454,5 +454,34 @@ namespace KFreonLib
             newtree.TreePath = TreePath;
             return newtree;
         }
+
+        public void ExportToCSV(string fileName, bool ShowFilesExpIDs)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            // KFreon: Headers
+            sb.AppendLine("Texture Name, Format, Texmod Hash, Texture Package (LOD Group Stand-in), Files, Export IDs");
+
+            for (int i = 0; i < Texes.Count; i++)
+            {
+                var tex = Texes[i];
+                string line = $"{tex.TexName}, {tex.Format}, {KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash)}, {tex.FullPackage}";
+
+                // KFreon: Make sure the lists have stuff in them - ? stops a null list from breaking when calling count. i.e. list.count when null = exception, but list?.count = null/false.
+                if (ShowFilesExpIDs && tex.Files?.Count > 0 && tex.ExpIDs?.Count > 0)
+                {
+                    line += $", {tex.Files[0]}, {tex.ExpIDs[0]}";  // First line
+                    sb.AppendLine(line);
+
+                    if (tex.Files.Count > 1 && tex.ExpIDs.Count > 1)
+                        for (int j = 1; j < tex.Files.Count; j++)
+                            sb.AppendLine($",,,,{tex.Files[j]}, {tex.ExpIDs[j]}");  // KFreon: ,,,'s are blank columns so these file/expid combos are in line with the others
+                }
+                else
+                    sb.AppendLine(line);
+            }
+
+            File.WriteAllText(fileName, sb.ToString());
+        }
     }
 }

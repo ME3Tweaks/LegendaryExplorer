@@ -567,4 +567,10 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="ImageEngine_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ImageEngine_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="sfar_basiceditor_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfar_basiceditor_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sfar_editor2_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfar_editor2_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

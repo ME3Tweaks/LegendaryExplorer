@@ -1332,6 +1332,9 @@
     <None Include="Resources\conditionals_editor_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />
     <None Include="Resources\ImageEngine_icon_64x64.png" />
+    <None Include="Resources\sfar_basiceditor_icon.ico" />
+    <None Include="Resources\sfar_basiceditor_icon_64x64.png" />
+    <None Include="Resources\sfar_editor2_icon_64x64.png" />
     <Content Include="SevenZip.csproj" />
   </ItemGroup>
   <ItemGroup>

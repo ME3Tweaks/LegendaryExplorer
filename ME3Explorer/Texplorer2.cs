@@ -2848,5 +2848,38 @@ namespace ME3Explorer
         {
 
         }
+
+        private void showFilesExpIDsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveTreeToCSV(true);
+        }
+
+        private void dontShowFilesExpIDsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveTreeToCSV(false);
+        }
+
+        private void SaveTreeToCSV(bool ShowFilesExpIDs)
+        {
+            if (Tree != null)
+            {
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.FileName = "ME" + MEExDirecs.WhichGame + " Texture Details.csv";
+                    sfd.Filter = "Comma Separated|*.csv";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        ProgBarUpdater.ChangeProgressBar(0, 1);
+                        StatusUpdater.UpdateText("Exporting Tree...");
+
+                        Tree.ExportToCSV(sfd.FileName, ShowFilesExpIDs);
+
+                        StatusUpdater.UpdateText("Tree exported!");
+                        ProgBarUpdater.ChangeProgressBar(1, 1);
+                    }
+                }
+            }
+
+        }
     }
 }

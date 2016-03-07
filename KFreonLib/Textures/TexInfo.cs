@@ -352,6 +352,8 @@ namespace KFreonLib.Textures
         public List<int> TreeDuplicates = null;
         public int Height = -1;
         public int Width = -1;
+        private int OrigHeight = -1;
+        private int OrigWidth = -1;
         public SaltTPF.ZipReader zippy = null;
         public bool wasAnalysed = false;
         public string PreviewKey
@@ -485,6 +487,8 @@ namespace KFreonLib.Textures
             retval.TexName = TexName;
             retval.GameVersion = GameVersion;
             retval.ValidDimensions = ValidDimensions;
+            retval.OrigHeight = OrigHeight;
+            retval.OrigWidth = OrigWidth;
 
             return retval;
         }
@@ -781,6 +785,12 @@ namespace KFreonLib.Textures
                         Width = image.Width;
                         Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
 
+                        if (OrigWidth == -1)
+                            OrigWidth = Width;
+
+                        if (OrigHeight == -1)
+                            OrigHeight = Height;
+
                         image.Save(Thumbnail, ImageEngineFormat.JPG, MipHandling.Default, 64);
                     }
                 }
@@ -814,7 +824,10 @@ namespace KFreonLib.Textures
 
         public bool ValidateDimensions()
         {
-            return UsefulThings.General.IsPowerOfTwo(Height) && UsefulThings.General.IsPowerOfTwo(Width);
+            bool power = UsefulThings.General.IsPowerOfTwo(Height) && UsefulThings.General.IsPowerOfTwo(Width);
+            bool ratio = (OrigHeight * 1.0 / OrigWidth * 1.0) == (Height * 1.0 / Width * 1.0);
+
+            return power && ratio;
         }
     }
 }

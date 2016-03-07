@@ -248,11 +248,10 @@ namespace ME3Explorer
             gooey.AddControl(LoadButton, "Load", true);
             gooey.AddControl(ExtractTOP, "ExtractTOP", true);
             gooey.AddControl(ClearAllFilesButton, "ClearAll", true);
-            gooey.AddControl(RebuildTOP, "Rebuild", true);
+            gooey.AddControl(BuildTPFTOP, "Rebuild", true);
             gooey.AddControl(RunAutofixButton, "RunAutofix", true);
             //gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
             gooey.AddControl(AnalyseButton, "Analyse", true);
-            gooey.AddControl(SaveModButton, "SaveMod", true);
             gooey.AddControl(InstallButton, "InstallB", true);
             gooey.AddControl(AutofixInstallButton, "AutoFixInstall", true);
             gooey.AddControl(extractInvalidToolStripMenuItem, "extractInvalid", true);
@@ -1285,6 +1284,17 @@ namespace ME3Explorer
             if (node == null)
                 return -1;
 
+            return GetTexFromNode(node, out tex);
+        }
+
+        private int GetTexFromNode(myTreeNode node, out TPFTexInfo tex)
+        {
+            tex = null;
+
+            // Heff: Cancellation check
+            if (cts.IsCancellationRequested)
+                return -1;
+
             if (node.TexInd >= LoadedTexes.Count)
                 return 0;
 
@@ -1768,8 +1778,21 @@ namespace ME3Explorer
 
                 if (e.KeyCode == Keys.Delete)
                 {
-                    if (!DeleteEntry())
-                        return;
+                    // KFreon: Get selected items in a better format
+                    List<int> inds = new List<int>();
+                    for (int i = 0; i < MainTreeView.Nodes.Count; i++)
+                        if (MainTreeView.Nodes[i].Checked)
+                            inds.Add(i);
+
+                    // KFreon: Get list in descending order (to avoid having to recalculate indicies)
+                    inds.Sort();
+                    inds.Reverse();
+
+                    // KFreon: Delete items from both lists
+                    inds.ForEach(index =>
+                    {
+                        DeleteEntry(index);
+                    });
                 }
                 else if (e.KeyCode == Keys.Up)
                 {
@@ -2231,28 +2254,39 @@ namespace ME3Explorer
 
         private void ExtractButton_Click(object sender, EventArgs e)
         {
-            TPFTexInfo tex;
-            int index = GetSelectedTex(out tex);
-
-            if (index < 0)
+            List<TPFTexInfo> temps = GetCheckedTexes();
+            if (temps.Count == 0)
                 return;
 
-            string outputPath = "";
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Title = "Where to extract to?";
-                sfd.Filter = "DirectX Images|*.dds";
-                string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
-                sfd.FileName = tex.TexName + "_" + hash + ".dds";
-                if (tex.TexName == null)
-                    sfd.FileName = tex.FileName.Contains(hash) ? tex.FileName : Path.GetFileNameWithoutExtension(tex.FileName) + "_" + hash + Path.GetExtension(tex.FileName);
 
-                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    outputPath = sfd.FileName;
-                else
-                    return;
+            if (temps.Count == 1)
+            {
+                TPFTexInfo tex = temps[0];
+
+                string outputPath = "";
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Title = "Where to extract to?";
+                    sfd.Filter = "DirectX Images|*.dds";
+                    string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
+                    sfd.FileName = tex.TexName + "_" + hash + ".dds";
+                    if (tex.TexName == null)
+                        sfd.FileName = tex.FileName.Contains(hash) ? tex.FileName : Path.GetFileNameWithoutExtension(tex.FileName) + "_" + hash + Path.GetExtension(tex.FileName);
+
+                    if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        outputPath = sfd.FileName;
+                    else
+                        return;
+                }
+                Extractor(outputPath, tex, null);
             }
-            Extractor(outputPath, tex, null);
+            else
+            {
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (fbd.ShowDialog() == DialogResult.OK)
+                    Extractor(fbd.SelectedPath, null, t => temps.Contains(t));
+            }
+            
             Overall.UpdateText("Extraction complete!");
         }
 
@@ -2416,18 +2450,9 @@ namespace ME3Explorer
             }
         }
 
-        private void RebuildTOP_Click(object sender, EventArgs e)
+        private async void RepackWithTexplorer(List<TPFTexInfo> texes)
         {
-            var result =  MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-            if (result == System.Windows.Forms.DialogResult.No)
-                RepackWithTexplorer();
-            else if (result == System.Windows.Forms.DialogResult.Yes)
-                RepackWithTexmod();
-        }
-
-        private async void RepackWithTexplorer()
-        {
-            if (!LoadedTexes.Any(tex => tex.Hash != 0))
+            if (!texes.Any(tex => tex.Hash != 0))
             {
                 Overall.UpdateText("No valid textures to use.");
                 return;
@@ -2448,7 +2473,7 @@ namespace ME3Explorer
             string filesPath = Path.Combine(TemporaryPath, "TPF_REBUILD");
 
             // KFreon: Extract files to central location and build .log
-            ExtractAndBuildLog(filesPath);
+            ExtractAndBuildLog(filesPath, texes);
             await Task.Run(() => backbone.GetCurrentJob().Wait());
 
             List<string> files = new List<string>(Directory.GetFiles(filesPath));
@@ -2471,7 +2496,7 @@ namespace ME3Explorer
             Overall.UpdateText(File.Exists(path) && files.Count > 1 ? "Build complete." : "Build failed.");
         }
 
-        private void ExtractAndBuildLog(string extractPath)
+        private void ExtractAndBuildLog(string extractPath, List<TPFTexInfo> tmptexes)
         {
             // Heff: delete earlier temp contents, create temp folder:
             if (Directory.Exists(extractPath))
@@ -2483,7 +2508,7 @@ namespace ME3Explorer
             {
                 var hashes = new List<uint>();
                 var texes = new List<TPFTexInfo>();
-                foreach (TPFTexInfo tex in LoadedTexes)
+                foreach (TPFTexInfo tex in tmptexes)
                 {
                     // KFreon: Ignore textures with no hash
                     if (tex.Hash == 0)
@@ -2503,19 +2528,19 @@ namespace ME3Explorer
             }
         }
 
-        private async void RepackWithTexmod()
+        private async void RepackWithTexmod(List<TPFTexInfo> texes)
         {
             bool success = false;
 
             // KFreon: Must have valid textures.
-            if (!LoadedTexes.Any(tex => tex.Hash != 0))
+            if (!texes.Any(tex => tex.Hash != 0))
             {
                 Overall.UpdateText("No valid textures to use.");
                 return;
             }
 
             // KFreon: Extract all valid textures and build .def
-            ExtractAndBuildLog(Path.Combine(TemporaryPath, "TexmodRebuild"));
+            ExtractAndBuildLog(Path.Combine(TemporaryPath, "TexmodRebuild"), texes);
 
             await Task.Run(() => backbone.GetCurrentJob().Wait());
 
@@ -2908,14 +2933,35 @@ namespace ME3Explorer
             RedrawTreeView();
         }
 
+        private List<TPFTexInfo> GetCheckedTexes()
+        {
+            List<TPFTexInfo> temps = new List<TPFTexInfo>();
+            foreach (myTreeNode node in MainTreeView.Nodes)
+            {
+                if (node == null)
+                    continue;
+
+                if (node.Checked)
+                {
+                    TPFTexInfo tex = null;
+                    int index = GetTexFromNode(node, out tex);
+                    if (tex != null)
+                        temps.Add(tex);
+                }
+            }
+            return temps;
+        }
+
         private async void InstallSingleButton_Click(object sender, EventArgs e)
         {
-            TPFTexInfo tex;
-            int index = GetSelectedTex(out tex);
-            if (tex == null)
+            List<TPFTexInfo> temps = GetCheckedTexes();
+            
+
+            if (temps.Count == 0)
                 return;
 
-            bool res = await Task<bool>.Run(() => InstallTextures(new List<TPFTexInfo>() { tex }, true));
+
+            bool res = await Task<bool>.Run(() => InstallTextures(temps, true));
             if (!res)
             {
                 Overall.UpdateText("Install Failed!");
@@ -3320,48 +3366,6 @@ namespace ME3Explorer
             return diffs;
         }
 
-        private void MainListView_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                // KFreon: Get selected items in a better format
-                List<int> inds = new List<int>();
-                for (int i = 0; i < MainListView.SelectedIndices.Count; i++)
-                    inds.Add(MainListView.SelectedIndices[i]);
-
-                // KFreon: Get list in descending order (to avoid having to recalculate indicies)
-                inds.Sort();
-                inds.Reverse();
-
-                // KFreon: Delete items from both lists
-                inds.ForEach(index =>
-                {
-                    DeleteEntry(index);
-                    MainListView.Items.RemoveAt(index);
-                });
-
-                DrawListView();
-            }
-        }
-
-        private void MainTabPages_TabChanged(object sender, TabControlEventArgs e)
-        {
-            if (e.TabPage.Text == "Delete Page")
-            {
-                // KFreon: Populate items
-                DrawListView();
-            }
-        }
-
-        private void DrawListView()
-        {
-            MainListView.Items.Clear();
-            for (int i = 0; i < LoadedTexes.Count; i++)
-            {
-                TPFTexInfo tex = LoadedTexes[i];
-                MainListView.Items.Add(String.IsNullOrEmpty(tex.TexName) ? tex.FileName : tex.TexName, tex.ThumbInd);
-            }
-        }
 
         private void CopyClipBoardButton_Click(object sender, EventArgs e)
         {
@@ -3381,9 +3385,9 @@ namespace ME3Explorer
 
         private void AutofixSingleButton_Click(object sender, EventArgs e)
         {
-            TPFTexInfo tex;
-            int index = GetSelectedTex(out tex);
-            backbone.AddToBackBone((t) => Autofix(tex));
+            List<TPFTexInfo> temps = GetCheckedTexes();
+            if (temps.Count > 0)
+                backbone.AddToBackBone((t) => Autofix(temps.ToArray()));
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -3484,6 +3488,45 @@ namespace ME3Explorer
         private void HashBox_FocusLost(object sender, EventArgs e)
         {
             HashBox_Altered();
+        }
+
+        private void TPFBuild(List<TPFTexInfo> texes)
+        {
+            var result = MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            if (result == System.Windows.Forms.DialogResult.No)
+                RepackWithTexplorer(texes);
+            else if (result == System.Windows.Forms.DialogResult.Yes)
+                RepackWithTexmod(texes);
+        }
+
+        private void allTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TPFBuild(LoadedTexes);
+        }
+
+        private void onlyCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<TPFTexInfo> texes = GetCheckedTexes();
+            if (texes.Count == 0)
+                return;
+
+            TPFBuild(texes);
+        }
+
+        private void CheckAllButton_Click(object sender, EventArgs e)
+        {
+            ChangeTreeViewCheckState(true);
+        }
+
+        private void UncheckAllButton_Click(object sender, EventArgs e)
+        {
+            ChangeTreeViewCheckState(false);
+        }
+
+        private void ChangeTreeViewCheckState(bool isChecked)
+        {
+            foreach (myTreeNode node in MainTreeView.Nodes)
+                node.Checked = isChecked;
         }
     }
 }

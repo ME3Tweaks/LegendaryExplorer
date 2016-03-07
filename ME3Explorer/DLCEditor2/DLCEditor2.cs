@@ -658,13 +658,23 @@ namespace ME3Explorer.DLCEditor2
             ExtractAllDLC();
         }
 
-        public void ExtractAllDLC()
+        public bool ExtractAllDLC()
         {
+            bool retval = true;
             string DLCBasePath = ME3Directory.DLCPath;
             DebugOutput.PrintLn("DLC Path: " + DLCBasePath);
             List<string> files = new List<string>(Directory.EnumerateFiles(DLCBasePath, "Default.sfar", SearchOption.AllDirectories));
             foreach (string file in files)
             {
+                string[] parts = file.Split('\\');
+                if (parts[parts.Length-2].ToLower() != "cookedpcconsole")
+                {
+                    DebugOutput.PrintLn(file + "  doesn't look correct. SFAR in the wrong place?");
+                    retval = false;
+                    continue;
+                }
+
+
                 if (file != "")
                 {
                     DLCPackage DLC = openSFAR2(file);
@@ -673,6 +683,7 @@ namespace ME3Explorer.DLCEditor2
                 }
             }
             DebugOutput.PrintLn("All DLCs Done.");
+            return retval;
         }
 
         public string GetRelativePath(string DLCpath)

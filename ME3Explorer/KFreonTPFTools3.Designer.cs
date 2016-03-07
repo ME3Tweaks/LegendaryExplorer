@@ -37,7 +37,9 @@
             this.extractInvalidToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractValidsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearAllFilesButton = new System.Windows.Forms.ToolStripButton();
-            this.RebuildTOP = new System.Windows.Forms.ToolStripButton();
+            this.BuildTPFTOP = new System.Windows.Forms.ToolStripDropDownButton();
+            this.allTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlyCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RunAutofixButton = new System.Windows.Forms.ToolStripButton();
             this.HelpButton = new System.Windows.Forms.ToolStripButton();
             this.MODtoTPFButton = new System.Windows.Forms.ToolStripButton();
@@ -67,13 +69,8 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.VersionLabel = new System.Windows.Forms.ToolStripLabel();
             this.MainSplitter = new System.Windows.Forms.SplitContainer();
-            this.MainTabPages = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.MainTreeView = new System.Windows.Forms.TreeView();
             this.MainTreeViewImageList = new System.Windows.Forms.ImageList(this.components);
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.MainListView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ContextPanel = new System.Windows.Forms.ToolStrip();
             this.InstallSingleButton = new System.Windows.Forms.ToolStripButton();
             this.ExtractButton = new System.Windows.Forms.ToolStripButton();
@@ -115,15 +112,15 @@
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.CheckAllButton = new System.Windows.Forms.Button();
+            this.UncheckAllButton = new System.Windows.Forms.Button();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
             this.MainSplitter.Panel1.SuspendLayout();
             this.MainSplitter.Panel2.SuspendLayout();
             this.MainSplitter.SuspendLayout();
-            this.MainTabPages.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.ContextPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LowerRightSplitter)).BeginInit();
             this.LowerRightSplitter.Panel1.SuspendLayout();
@@ -138,6 +135,7 @@
             this.PreviewPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).BeginInit();
             this.PCCsPage.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TopStrip
@@ -149,7 +147,7 @@
             this.LoadButton,
             this.ExtractTOP,
             this.ClearAllFilesButton,
-            this.RebuildTOP,
+            this.BuildTPFTOP,
             this.RunAutofixButton,
             this.HelpButton,
             this.MODtoTPFButton,
@@ -226,15 +224,31 @@
             this.ClearAllFilesButton.Text = "Clear All Files";
             this.ClearAllFilesButton.Click += new System.EventHandler(this.CloseFilesButton_Click);
             // 
-            // RebuildTOP
+            // BuildTPFTOP
             // 
-            this.RebuildTOP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.RebuildTOP.Enabled = false;
-            this.RebuildTOP.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RebuildTOP.Name = "RebuildTOP";
-            this.RebuildTOP.Size = new System.Drawing.Size(108, 29);
-            this.RebuildTOP.Text = "Rebuild TPF";
-            this.RebuildTOP.Click += new System.EventHandler(this.RebuildTOP_Click);
+            this.BuildTPFTOP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.BuildTPFTOP.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allTexturesToolStripMenuItem,
+            this.onlyCheckedToolStripMenuItem});
+            this.BuildTPFTOP.Image = ((System.Drawing.Image)(resources.GetObject("BuildTPFTOP.Image")));
+            this.BuildTPFTOP.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.BuildTPFTOP.Name = "BuildTPFTOP";
+            this.BuildTPFTOP.Size = new System.Drawing.Size(102, 29);
+            this.BuildTPFTOP.Text = "Build TPF";
+            // 
+            // allTexturesToolStripMenuItem
+            // 
+            this.allTexturesToolStripMenuItem.Name = "allTexturesToolStripMenuItem";
+            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.allTexturesToolStripMenuItem.Text = "All Textures";
+            this.allTexturesToolStripMenuItem.Click += new System.EventHandler(this.allTexturesToolStripMenuItem_Click);
+            // 
+            // onlyCheckedToolStripMenuItem
+            // 
+            this.onlyCheckedToolStripMenuItem.Name = "onlyCheckedToolStripMenuItem";
+            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.onlyCheckedToolStripMenuItem.Text = "Only Checked";
+            this.onlyCheckedToolStripMenuItem.Click += new System.EventHandler(this.onlyCheckedToolStripMenuItem_Click);
             // 
             // RunAutofixButton
             // 
@@ -488,7 +502,8 @@
             // 
             // MainSplitter.Panel1
             // 
-            this.MainSplitter.Panel1.Controls.Add(this.MainTabPages);
+            this.MainSplitter.Panel1.Controls.Add(this.MainTreeView);
+            this.MainSplitter.Panel1.Controls.Add(this.panel1);
             this.MainSplitter.Panel1.Controls.Add(this.ContextPanel);
             // 
             // MainSplitter.Panel2
@@ -499,34 +514,11 @@
             this.MainSplitter.SplitterWidth = 10;
             this.MainSplitter.TabIndex = 2;
             // 
-            // MainTabPages
-            // 
-            this.MainTabPages.Controls.Add(this.tabPage1);
-            this.MainTabPages.Controls.Add(this.tabPage2);
-            this.MainTabPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainTabPages.Location = new System.Drawing.Point(0, 0);
-            this.MainTabPages.Margin = new System.Windows.Forms.Padding(0);
-            this.MainTabPages.Name = "MainTabPages";
-            this.MainTabPages.SelectedIndex = 0;
-            this.MainTabPages.Size = new System.Drawing.Size(500, 866);
-            this.MainTabPages.TabIndex = 2;
-            this.MainTabPages.Selected += new System.Windows.Forms.TabControlEventHandler(this.MainTabPages_TabChanged);
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.MainTreeView);
-            this.tabPage1.Location = new System.Drawing.Point(4, 29);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(492, 833);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Main Page";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
             // MainTreeView
             // 
             this.MainTreeView.AllowDrop = true;
             this.MainTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.MainTreeView.CheckBoxes = true;
             this.MainTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.MainTreeView.FullRowSelect = true;
@@ -534,11 +526,11 @@
             this.MainTreeView.ImageIndex = 0;
             this.MainTreeView.ImageList = this.MainTreeViewImageList;
             this.MainTreeView.ItemHeight = 66;
-            this.MainTreeView.Location = new System.Drawing.Point(0, 0);
+            this.MainTreeView.Location = new System.Drawing.Point(0, 36);
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(0);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 0;
-            this.MainTreeView.Size = new System.Drawing.Size(492, 833);
+            this.MainTreeView.Size = new System.Drawing.Size(500, 830);
             this.MainTreeView.TabIndex = 0;
             this.MainTreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.MainTreeView_DrawNode);
             this.MainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.MainTreeView_AfterSelect);
@@ -554,42 +546,6 @@
             this.MainTreeViewImageList.TransparentColor = System.Drawing.Color.Transparent;
             this.MainTreeViewImageList.Images.SetKeyName(0, "TPFTools.ico");
             this.MainTreeViewImageList.Images.SetKeyName(1, "TextDoc.jpg");
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.MainListView);
-            this.tabPage2.Location = new System.Drawing.Point(4, 29);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(492, 833);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Delete Page";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // MainListView
-            // 
-            this.MainListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.MainListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.MainListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.MainListView.HideSelection = false;
-            this.MainListView.LabelWrap = false;
-            this.MainListView.LargeImageList = this.MainTreeViewImageList;
-            this.MainListView.Location = new System.Drawing.Point(0, 0);
-            this.MainListView.Margin = new System.Windows.Forms.Padding(0);
-            this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(492, 833);
-            this.MainListView.SmallImageList = this.MainTreeViewImageList;
-            this.MainListView.TabIndex = 0;
-            this.MainListView.TileSize = new System.Drawing.Size(200, 200);
-            this.MainListView.UseCompatibleStateImageBehavior = false;
-            this.MainListView.View = System.Windows.Forms.View.Details;
-            this.MainListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainListView_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Width = 200;
             // 
             // ContextPanel
             // 
@@ -618,8 +574,8 @@
             this.InstallSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("InstallSingleButton.Image")));
             this.InstallSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.InstallSingleButton.Name = "InstallSingleButton";
-            this.InstallSingleButton.Size = new System.Drawing.Size(62, 29);
-            this.InstallSingleButton.Text = "Install";
+            this.InstallSingleButton.Size = new System.Drawing.Size(134, 29);
+            this.InstallSingleButton.Text = "Install Checked";
             this.InstallSingleButton.Click += new System.EventHandler(this.InstallSingleButton_Click);
             // 
             // ExtractButton
@@ -627,8 +583,8 @@
             this.ExtractButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ExtractButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractButton.Name = "ExtractButton";
-            this.ExtractButton.Size = new System.Drawing.Size(68, 29);
-            this.ExtractButton.Text = "Extract";
+            this.ExtractButton.Size = new System.Drawing.Size(140, 29);
+            this.ExtractButton.Text = "Extract Checked";
             this.ExtractButton.Click += new System.EventHandler(this.ExtractButton_Click);
             // 
             // ReplaceButton
@@ -636,8 +592,8 @@
             this.ReplaceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ReplaceButton.Name = "ReplaceButton";
-            this.ReplaceButton.Size = new System.Drawing.Size(76, 29);
-            this.ReplaceButton.Text = "Replace";
+            this.ReplaceButton.Size = new System.Drawing.Size(147, 29);
+            this.ReplaceButton.Text = "Replace Selected";
             this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
             // GotoInvalidButton
@@ -673,8 +629,8 @@
             this.AutofixSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("AutofixSingleButton.Image")));
             this.AutofixSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AutofixSingleButton.Name = "AutofixSingleButton";
-            this.AutofixSingleButton.Size = new System.Drawing.Size(73, 29);
-            this.AutofixSingleButton.Text = "Autofix";
+            this.AutofixSingleButton.Size = new System.Drawing.Size(145, 29);
+            this.AutofixSingleButton.Text = "Autofix Checked";
             this.AutofixSingleButton.Click += new System.EventHandler(this.AutofixSingleButton_Click);
             // 
             // LowerRightSplitter
@@ -972,7 +928,7 @@
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 553);
+            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 533);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -985,7 +941,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 29);
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(1072, 520);
+            this.PreviewPage.Size = new System.Drawing.Size(1072, 500);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -997,7 +953,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 520);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 500);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
@@ -1021,7 +977,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 29);
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(1072, 520);
+            this.PCCsPage.Size = new System.Drawing.Size(1072, 500);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -1088,6 +1044,36 @@
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.UncheckAllButton);
+            this.panel1.Controls.Add(this.CheckAllButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(500, 36);
+            this.panel1.TabIndex = 2;
+            // 
+            // CheckAllButton
+            // 
+            this.CheckAllButton.Location = new System.Drawing.Point(0, 0);
+            this.CheckAllButton.Name = "CheckAllButton";
+            this.CheckAllButton.Size = new System.Drawing.Size(92, 33);
+            this.CheckAllButton.TabIndex = 0;
+            this.CheckAllButton.Text = "Check All";
+            this.CheckAllButton.UseVisualStyleBackColor = true;
+            this.CheckAllButton.Click += new System.EventHandler(this.CheckAllButton_Click);
+            // 
+            // UncheckAllButton
+            // 
+            this.UncheckAllButton.Location = new System.Drawing.Point(98, 0);
+            this.UncheckAllButton.Name = "UncheckAllButton";
+            this.UncheckAllButton.Size = new System.Drawing.Size(113, 33);
+            this.UncheckAllButton.TabIndex = 1;
+            this.UncheckAllButton.Text = "Uncheck All";
+            this.UncheckAllButton.UseVisualStyleBackColor = true;
+            this.UncheckAllButton.Click += new System.EventHandler(this.UncheckAllButton_Click);
+            // 
             // KFreonTPFTools3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -1114,9 +1100,6 @@
             this.MainSplitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).EndInit();
             this.MainSplitter.ResumeLayout(false);
-            this.MainTabPages.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
             this.ContextPanel.ResumeLayout(false);
             this.ContextPanel.PerformLayout();
             this.LowerRightSplitter.Panel1.ResumeLayout(false);
@@ -1134,6 +1117,7 @@
             this.PreviewPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).EndInit();
             this.PCCsPage.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1194,7 +1178,6 @@
         private System.Windows.Forms.ToolStripButton GotoInvalidButton;
         private System.Windows.Forms.ToolStripButton PromoteButton;
         private System.Windows.Forms.ToolStripButton GotoDupButton;
-        private System.Windows.Forms.ToolStripButton RebuildTOP;
         private System.Windows.Forms.Panel PCCContextPanel;
         private System.Windows.Forms.Button ExportPCCListButton;
         private System.Windows.Forms.Button PCCSelectAllButton;
@@ -1211,12 +1194,6 @@
         private System.Windows.Forms.ToolStripButton ClearAllFilesButton;
         private System.Windows.Forms.ToolStripButton ReplaceButton;
         private System.Windows.Forms.ToolStripButton InstallSingleButton;
-        private System.Windows.Forms.TabControl MainTabPages;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TreeView MainTreeView;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ListView MainListView;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Button CopySelectedClipBoardButton;
         private System.Windows.Forms.ListView PCCsCheckListBox;
         private System.Windows.Forms.ColumnHeader columnHeader2;
@@ -1226,5 +1203,12 @@
         private System.Windows.Forms.ToolStripButton BulkExtractTPFButton;
         private System.Windows.Forms.ToolStripMenuItem extractValidsToolStripMenuItem;
         private System.Windows.Forms.Button CopyClipboardButton;
+        private System.Windows.Forms.TreeView MainTreeView;
+        private System.Windows.Forms.ToolStripDropDownButton BuildTPFTOP;
+        private System.Windows.Forms.ToolStripMenuItem allTexturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlyCheckedToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button UncheckAllButton;
+        private System.Windows.Forms.Button CheckAllButton;
     }
 }

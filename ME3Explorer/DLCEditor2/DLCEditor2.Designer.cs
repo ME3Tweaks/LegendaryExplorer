@@ -38,7 +38,6 @@
             this.deleteSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createReplaceModJobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unpackAllDLCsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -61,7 +60,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(921, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(921, 35);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.Visible = false;
@@ -76,79 +75,71 @@
             this.deleteSelectedToolStripMenuItem,
             this.extractSelectedToolStripMenuItem,
             this.replaceSelectedToolStripMenuItem,
-            this.createReplaceModJobToolStripMenuItem,
             this.unpackAllDLCsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 31);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openSFARToolStripMenuItem
             // 
             this.openSFARToolStripMenuItem.Name = "openSFARToolStripMenuItem";
-            this.openSFARToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.openSFARToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.openSFARToolStripMenuItem.Text = "Open SFAR";
             this.openSFARToolStripMenuItem.Click += new System.EventHandler(this.openSFARToolStripMenuItem_Click);
             // 
             // rebuildSFARToolStripMenuItem
             // 
             this.rebuildSFARToolStripMenuItem.Name = "rebuildSFARToolStripMenuItem";
-            this.rebuildSFARToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.rebuildSFARToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.rebuildSFARToolStripMenuItem.Text = "Rebuild SFAR";
             this.rebuildSFARToolStripMenuItem.Click += new System.EventHandler(this.rebuildSFARToolStripMenuItem_Click);
             // 
             // unpackSFARToolStripMenuItem
             // 
             this.unpackSFARToolStripMenuItem.Name = "unpackSFARToolStripMenuItem";
-            this.unpackSFARToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.unpackSFARToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.unpackSFARToolStripMenuItem.Text = "Unpack SFAR";
             this.unpackSFARToolStripMenuItem.Click += new System.EventHandler(this.unpackSFARToolStripMenuItem_Click);
             // 
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.addFileToolStripMenuItem.Text = "Add File";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.addFileToolStripMenuItem_Click);
             // 
             // deleteSelectedToolStripMenuItem
             // 
             this.deleteSelectedToolStripMenuItem.Name = "deleteSelectedToolStripMenuItem";
-            this.deleteSelectedToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.deleteSelectedToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.deleteSelectedToolStripMenuItem.Text = "Delete Selected";
             this.deleteSelectedToolStripMenuItem.Click += new System.EventHandler(this.deleteSelectedToolStripMenuItem_Click);
             // 
             // extractSelectedToolStripMenuItem
             // 
             this.extractSelectedToolStripMenuItem.Name = "extractSelectedToolStripMenuItem";
-            this.extractSelectedToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.extractSelectedToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.extractSelectedToolStripMenuItem.Text = "Extract Selected";
             this.extractSelectedToolStripMenuItem.Click += new System.EventHandler(this.extractSelectedToolStripMenuItem_Click);
             // 
             // replaceSelectedToolStripMenuItem
             // 
             this.replaceSelectedToolStripMenuItem.Name = "replaceSelectedToolStripMenuItem";
-            this.replaceSelectedToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.replaceSelectedToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.replaceSelectedToolStripMenuItem.Text = "Replace Selected";
             this.replaceSelectedToolStripMenuItem.Click += new System.EventHandler(this.replaceSelectedToolStripMenuItem_Click);
-            // 
-            // createReplaceModJobToolStripMenuItem
-            // 
-            this.createReplaceModJobToolStripMenuItem.Name = "createReplaceModJobToolStripMenuItem";
-            this.createReplaceModJobToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
-            this.createReplaceModJobToolStripMenuItem.Text = "Create Replace Mod Job from Selected";
-            this.createReplaceModJobToolStripMenuItem.Click += new System.EventHandler(this.createReplaceModJobToolStripMenuItem_Click);
             // 
             // unpackAllDLCsToolStripMenuItem
             // 
             this.unpackAllDLCsToolStripMenuItem.Name = "unpackAllDLCsToolStripMenuItem";
-            this.unpackAllDLCsToolStripMenuItem.Size = new System.Drawing.Size(403, 30);
+            this.unpackAllDLCsToolStripMenuItem.Size = new System.Drawing.Size(228, 30);
             this.unpackAllDLCsToolStripMenuItem.Text = "Unpack all DLCs";
             this.unpackAllDLCsToolStripMenuItem.Click += new System.EventHandler(this.unpackAllDLCsToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(76, 31);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(76, 29);
             this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
@@ -247,7 +238,6 @@
         private System.Windows.Forms.ToolStripMenuItem rebuildSFARToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceSelectedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem createReplaceModJobToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackSFARToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackAllDLCsToolStripMenuItem;
