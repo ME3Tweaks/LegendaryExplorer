@@ -69,6 +69,33 @@ namespace ME3Explorer
 
     public class ViewModel : ViewModelBase
     {
+        public string ME1Path
+        {
+            get
+            {
+                return ME1Directory.GamePath();
+            }
+        }
+
+        public string ME2Path
+        {
+            get
+            {
+                return ME2Directory.GamePath();
+            }
+        }
+
+        public string ME3Path
+        {
+            get
+            {
+                return ME3Directory.GamePath();
+            }
+        }
+
+
+
+
         bool notWorking = true;
         public bool NotWorking
         {

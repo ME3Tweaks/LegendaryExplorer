@@ -460,7 +460,7 @@ namespace KFreonLib
             StringBuilder sb = new StringBuilder();
 
             // KFreon: Headers
-            sb.AppendLine("Texture Name, Format, Texmod Hash, Texture Package (LOD Group Stand-in), Files, Export IDs");
+            sb.AppendLine("Texture Name, Format, Texmod Hash, Texture Package (LOD Group Stand-in)" + (ShowFilesExpIDs ? ", Files, Export IDs" : ""));
 
             for (int i = 0; i < Texes.Count; i++)
             {
