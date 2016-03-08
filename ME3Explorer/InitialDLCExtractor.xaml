@@ -25,17 +25,17 @@
 
         <Label Content="Pathing" DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0"/>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label Content="ME1 Path" FontStyle="Italic"/>
+            <Label Content="ME1 Path:" FontStyle="Italic"/>
             <TextBlock Text="{Binding ME1Path}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label Content="ME2 Path" FontStyle="Italic"/>
+            <Label Content="ME2 Path:" FontStyle="Italic"/>
             <TextBlock Text="{Binding ME2Path}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label Content="ME3 Path" FontStyle="Italic"/>
+            <Label Content="ME3 Path:" FontStyle="Italic"/>
             <TextBlock Text="{Binding ME3Path}"/>
         </StackPanel>
 
