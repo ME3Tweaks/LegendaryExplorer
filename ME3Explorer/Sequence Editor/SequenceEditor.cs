@@ -476,6 +476,7 @@ namespace ME3Explorer
             else
                 n = CurrentObjects[n];
             Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
+            ip.Text = "Interpreter (SequenceEditor)";
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;

@@ -109,9 +109,11 @@ namespace ME3Explorer.Interpreter2
             StartScan();
         }
 
-        public void Show()
+        public new void Show()
         {
             base.Show();
+            toolStripStatusLabel1.Text = "Class: " + pcc.Exports[Index].ClassName + ", Export Index: " + Index;
+            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
             StartScan();
         }
 

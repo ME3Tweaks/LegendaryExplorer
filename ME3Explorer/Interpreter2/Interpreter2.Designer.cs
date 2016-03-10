@@ -32,6 +32,8 @@ namespace ME3Explorer.Interpreter2
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter2));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -58,6 +60,7 @@ namespace ME3Explorer.Interpreter2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -67,11 +70,28 @@ namespace ME3Explorer.Interpreter2
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 414);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Font = new System.Drawing.Font("Courier New", 9.75F);
+            this.toolStripStatusLabel2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 17);
+            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
             // 
             // toolStrip1
             // 
@@ -109,7 +129,7 @@ namespace ME3Explorer.Interpreter2
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(69, 22);
+            this.toolStripButton2.Size = new System.Drawing.Size(70, 22);
             this.toolStripButton2.Text = "Export Tree";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
@@ -244,35 +264,35 @@ namespace ME3Explorer.Interpreter2
             // 
             this.arraysOfBYTEPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfBYTEPropertiesToolStripMenuItem.Name = "arraysOfBYTEPropertiesToolStripMenuItem";
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBYTEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBYTEPropertiesToolStripMenuItem.Text = "Arrays of BYTE properties";
             // 
             // arraysOfBYTEPropertiesToolStripMenuItem1
             // 
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Enabled = false;
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Name = "arraysOfBYTEPropertiesToolStripMenuItem1";
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBYTEPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Text = "Arrays of STRING properties";
             // 
             // arraysOfSTRUCTPropertiesToolStripMenuItem
             // 
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Name = "arraysOfSTRUCTPropertiesToolStripMenuItem";
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Text = "Arrays of STRUCT properties";
             // 
             // arraysOfDELEGATEPropertiesToolStripMenuItem
             // 
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Name = "arraysOfDELEGATEPropertiesToolStripMenuItem";
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Text = "Arrays of DELEGATE properties";
             // 
             // arraysOfBOOLPropertiesToolStripMenuItem
             // 
             this.arraysOfBOOLPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfBOOLPropertiesToolStripMenuItem.Name = "arraysOfBOOLPropertiesToolStripMenuItem";
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBOOLPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBOOLPropertiesToolStripMenuItem.Text = "Arrays of BOOL properties";
             // 
             // menuStrip1
@@ -342,6 +362,8 @@ namespace ME3Explorer.Interpreter2
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Interpreter2";
             this.Text = "Interpreter";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -382,5 +404,7 @@ namespace ME3Explorer.Interpreter2
         private System.Windows.Forms.ToolStripMenuItem arraysOfSTRUCTPropertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem arraysOfDELEGATEPropertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem arraysOfBOOLPropertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
     }
 }
