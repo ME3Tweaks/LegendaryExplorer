@@ -671,9 +671,9 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap interp_editor_64x64 {
+        public static System.Drawing.Bitmap interp_viewer_icon_64x64 {
             get {
-                object obj = ResourceManager.GetObject("interp_editor_64x64", resourceCulture);
+                object obj = ResourceManager.GetObject("interp_viewer_icon_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
