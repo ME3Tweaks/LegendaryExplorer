@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using ME1Explorer.SequenceObjects;
-//using ME3Explorer.TOCUpdater;
+//using ME1Explorer.TOCUpdater;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -35,6 +35,7 @@ namespace ME1Explorer
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            zoomController = new ZoomController(graphEditor);
 
             var tlkPath = ME1Directory.cookedPath + "BIOGame_INT.tlk";
             //talkFile = new TalkFile();
@@ -66,6 +67,7 @@ namespace ME1Explorer
         //private TalkFile talkFile;
         private bool selectedByNode;
         private int selectedIndex;
+        private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
         public PCCObject pcc;
@@ -485,7 +487,7 @@ namespace ME1Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pcc.SaveToFile(d.FileName);
-                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME1Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 //{
                 //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
                 //    tc.MdiParent = this.ParentForm;
@@ -869,6 +871,62 @@ namespace ME1Explorer
 
         }
 
+        private void graphEditor_MouseEnter(object sender, EventArgs e)
+        {
+            graphEditor.Focus();
+        }
+
     }
 
+    public class ZoomController
+    {
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        PCamera camera;
+
+        public ZoomController(GraphEditor graphEditor)
+        {
+            this.camera = graphEditor.Camera;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += new PInputEventHandler(OnMouseWheel);
+            graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void OnKeyDown(object o, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.OemMinus)
+                {
+                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+                else if (e.KeyCode == Keys.Oemplus)
+                {
+                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+            }
+        }
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        private void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+        }
+    }
 }

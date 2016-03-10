@@ -141,9 +141,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PiccoloX\PiccoloX.csproj" />
     <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
-    <Content Include="Piccolo\Piccolo.csproj" />
     <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

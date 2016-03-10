@@ -41,12 +41,13 @@ namespace ME3Explorer
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            zoomController = new ZoomController(graphEditor);
 
             var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
             talkFiles = new TalkFiles();
             talkFiles.LoadTlkData(tlkPath);
             if(SText.fontcollection == null)
-                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+                SText.LoadFont("KismetFont.ttf");
             SObj.talkfiles = talkFiles;
             if (System.IO.File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
@@ -72,6 +73,7 @@ namespace ME3Explorer
         private TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
+        private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
         public PCCObject pcc;
@@ -607,17 +609,6 @@ namespace ME3Explorer
             
         }
 
-        public static PrivateFontCollection LoadFont(string file, int fontSize)
-        {
-            PrivateFontCollection fontCollection = new PrivateFontCollection();
-            fontCollection.AddFontFile(file);
-            if (fontCollection.Families.Length < 0)
-            {
-                throw new InvalidOperationException("No font familiy found when loading font");
-            }
-            return fontCollection;
-        }
-
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             graphEditor.ScaleViewTo((float)Convert.ToDecimal(toolStripTextBox1.Text));
@@ -1024,6 +1015,62 @@ namespace ME3Explorer
             tm.Show();
         }
 
+        private void graphEditor_MouseEnter(object sender, EventArgs e)
+        {
+            graphEditor.Focus();
+        }
+
     }
 
+    public class ZoomController
+    {
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        PCamera camera;
+
+        public ZoomController(GraphEditor graphEditor)
+        {
+            this.camera = graphEditor.Camera;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += new PInputEventHandler(OnMouseWheel);
+            graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void OnKeyDown(object o, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.OemMinus)
+                {
+                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+                else if (e.KeyCode == Keys.Oemplus)
+                {
+                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+            }
+        }
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        private void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+        }
+    }
 }

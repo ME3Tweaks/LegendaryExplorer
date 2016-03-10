@@ -31,6 +31,9 @@ namespace ME3Explorer.DialogEditor
         {
             InitializeComponent();
             InitTalkFile();
+            //dialogVis.BackColor = Color.FromArgb(167, 167, 167);
+            if (ME3Explorer.SequenceObjects.SText.fontcollection == null)
+                ME3Explorer.SequenceObjects.SText.LoadFont("KismetFont.ttf");
         }
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -73,6 +76,15 @@ namespace ME3Explorer.DialogEditor
                 return;
             Dialog = new BioConversation(pcc, Objs[n]);
             RefreshTabs();
+            RefreshVisualizer();
+        }
+
+        private void RefreshVisualizer()
+        {
+            for (int i = 0; i < Dialog.StartingList.Count; i++)
+			{
+                //dialogVis.addNode(new DlgStart(i, i * 100, 0, Dialog, dialogVis));
+			}
         }
 
         public void RefreshTabs()

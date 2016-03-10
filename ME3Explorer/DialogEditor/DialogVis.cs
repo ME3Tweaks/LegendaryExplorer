@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,12 +10,14 @@ using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 
-namespace UMD.HCIL.GraphEditor {
+namespace ME3Explorer.DialogEditor
+{
     /// <summary>
     /// Creates a simple graph control with some random nodes and connected edges.
     /// An event handler allows users to drag nodes around, keeping the edges connected.
     /// </summary>
-    public class GraphEditor : PCanvas {
+    public class DialogVis : PCanvas
+    {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -26,11 +28,12 @@ namespace UMD.HCIL.GraphEditor {
         /// <summary>
         /// Empty Constructor is necessary so that this control can be used as an applet.
         /// </summary>
-        public GraphEditor() : this(DEFAULT_WIDTH, DEFAULT_HEIGHT) {}
+        public DialogVis() : this(DEFAULT_WIDTH, DEFAULT_HEIGHT) { }
         public PLayer nodeLayer;
         public PLayer edgeLayer;
         public PLayer backLayer;
-        public GraphEditor(int width, int height) {
+        public DialogVis(int width, int height)
+        {
             InitializeComponent();
             this.Size = new Size(width, height);
             nodeLayer = this.Layer;
@@ -60,7 +63,8 @@ namespace UMD.HCIL.GraphEditor {
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdge(PPath edge) {
+        public static void UpdateEdge(PPath edge)
+        {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
             // determining their position.
@@ -70,28 +74,18 @@ namespace UMD.HCIL.GraphEditor {
             PNode node2 = (PNode)nodes[1];
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
-            float h1x, h1y, h2x;
-            if (nodes.Count > 2 && (int)nodes[2] == -1) //var link
-            {
-                start.X += node1.GlobalBounds.Width * 0.5f;
-                start.Y += node1.GlobalBounds.Height;
-                h1x = h2x = 0;
-                h1y = end.Y > start.Y ? 200 * (float)Math.Log10((end.Y - start.Y) / 200 + 1) : 200 * (float)Math.Log10((start.Y - end.Y) / 100 + 1);
-                end.X += node2.GlobalBounds.Width / 2;
-                end.Y += node2.GlobalBounds.Height / 2;
-            }
-            else
-            {
-                start.X += node1.GlobalBounds.Width;
-                start.Y += node1.GlobalBounds.Height * 0.5f;
-                end.Y += node2.GlobalBounds.Height * 0.5f;
-                h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X)/200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
-                h1y = 0;
-            }
+            float h1x, h1y, h2x, h2y;
+
+            start.X += node1.GlobalBounds.Width * 0.5f;
+            start.Y += node1.GlobalBounds.Height;
+            h1x = h2x = 0;
+            h1y = h2y = end.Y > start.Y ? 200 * (float)Math.Log10((end.Y - start.Y) / 200 + 1) : 200 * (float)Math.Log10((start.Y - end.Y) / 100 + 1);
+            end.X += node2.GlobalBounds.Width / 2;
+            //end.Y += node2.GlobalBounds.Height / 2;
 
             edge.Reset();
             //edge.AddLine(start.X, start.Y, end.X, end.Y);
-            edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y, end.X, end.Y);
+            edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y - h2y, end.X, end.Y);
         }
 
         public void ScaleViewTo(float scale)
@@ -106,18 +100,22 @@ namespace UMD.HCIL.GraphEditor {
         /// edges where each edge is a PPath which each have a Tag that references an ArrayList
         /// with a list of associated nodes.
         /// </summary>
-        public class NodeDragHandler : PDragEventHandler {
-            public override bool DoesAcceptEvent(PInputEventArgs e) {
+        public class NodeDragHandler : PDragEventHandler
+        {
+            public override bool DoesAcceptEvent(PInputEventArgs e)
+            {
                 return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
             }
 
-            protected override void OnStartDrag(object sender, PInputEventArgs e) {
+            protected override void OnStartDrag(object sender, PInputEventArgs e)
+            {
                 base.OnStartDrag(sender, e);
                 e.Handled = true;
                 e.PickedNode.MoveToFront();
             }
 
-            protected override void OnDrag(object sender, PInputEventArgs e) {
+            protected override void OnDrag(object sender, PInputEventArgs e)
+            {
                 if (!e.Handled)
                 {
                     base.OnDrag(sender, e);
@@ -127,7 +125,7 @@ namespace UMD.HCIL.GraphEditor {
                         if (edges != null)
                             foreach (PPath edge in edges)
                             {
-                                GraphEditor.UpdateEdge(edge);
+                                DialogVis.UpdateEdge(edge);
                             }
                     }
                 }
@@ -137,12 +135,14 @@ namespace UMD.HCIL.GraphEditor {
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing ) {
-            if( disposing ) {
-                if( components != null )
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
                     components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Component Designer generated code
@@ -150,14 +150,16 @@ namespace UMD.HCIL.GraphEditor {
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        public void InitializeComponent() {
+        public void InitializeComponent()
+        {
             components = new System.ComponentModel.Container();
         }
         #endregion
 
         // Draw a border for when this control is used as an applet.
-        protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint (e);
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
         }
     }
 }

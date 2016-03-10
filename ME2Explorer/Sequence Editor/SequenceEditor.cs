@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using ME2Explorer.Unreal;
 using ME2Explorer.Unreal.Classes;
 using ME2Explorer.SequenceObjects;
-//using ME3Explorer.TOCUpdater;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -23,7 +22,6 @@ using UMD.HCIL.GraphEditor;
 
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
-
 
 namespace ME2Explorer
 {
@@ -35,14 +33,15 @@ namespace ME2Explorer
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            zoomController = new ZoomController(graphEditor);
 
             var tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
-            //talkFile = new TalkFile();
-            //talkFile.LoadTlkData(tlkPath);
+            talkFiles = new TalkFiles();
+            talkFiles.LoadTlkData(tlkPath);
             if(SText.fontcollection == null)
                 SText.fontcollection = LoadFont("KismetFont.ttf", 8);
-            //SObj.talkfile = talkFile;
-            if (System.IO.File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+            SObj.talkfiles = talkFiles;
+            if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
                 if (options.ContainsKey("AutoSave")) 
@@ -63,9 +62,10 @@ namespace ME2Explorer
             public float Y;
         }
 
-        //private TalkFile talkFile;
+        private TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
+        private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
         public PCCObject pcc;
@@ -85,7 +85,7 @@ namespace ME2Explorer
                 saveView();
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "PCC Files(*.pcc)|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc = new PCCObject(d.FileName);
                 CurrentFile = d.FileName;
@@ -194,8 +194,8 @@ namespace ME2Explorer
             SetupJSON(index);
             if(SavedPositions == null)
                 SavedPositions = new List<SaveData>();
-            if (fromFile && System.IO.File.Exists(JSONpath))
-                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(System.IO.File.ReadAllText(JSONpath));
+            if (fromFile && File.Exists(JSONpath))
+                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             GenerateGraph(SequenceIndex);
             selectedIndex = -1;
         }
@@ -210,9 +210,9 @@ namespace ME2Explorer
                 packageName = packageName.Replace("SequenceReference", "");
                 int idx = index;
                 string ObjName = "";
-                while (idx != 0)
+                while (idx > 0)
                 {
-                    if (pcc.Exports[pcc.Exports[idx].LinkID].ClassName == "SequenceReference")
+                    if (pcc.Exports[pcc.Exports[idx].LinkID - 1].ClassName == "SequenceReference")
                     {
                         List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
                         for (int i = 0; i < p.Count(); i++)
@@ -356,16 +356,13 @@ namespace ME2Explorer
                 {
                     if (o.GetType() == Type.GetType("ME2Explorer.SequenceObjects.SAction"))
                     {
-                        if (SavedPositions.Count != 0)
-                        {
-                            SaveData savedInfo = new SaveData();
-                            if (RefOrRefChild)
-                                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
-                            else
-                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
-                            if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
-                                o.Layout(savedInfo.X, savedInfo.Y);
-                        }
+                        SaveData savedInfo = new SaveData();
+                        if (RefOrRefChild)
+                            savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
+                        else
+                            savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
+                        if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
+                            o.Layout(savedInfo.X, savedInfo.Y);
                         else
                         {
                             o.Layout(StartPosActions, 250);
@@ -869,6 +866,62 @@ namespace ME2Explorer
 
         }
 
+        private void graphEditor_MouseEnter(object sender, EventArgs e)
+        {
+            graphEditor.Focus();
+        }
+
     }
 
+    public class ZoomController
+    {
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        PCamera camera;
+
+        public ZoomController(GraphEditor graphEditor)
+        {
+            this.camera = graphEditor.Camera;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += new PInputEventHandler(OnMouseWheel);
+            graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void OnKeyDown(object o, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.OemMinus)
+                {
+                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+                else if (e.KeyCode == Keys.Oemplus)
+                {
+                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+            }
+        }
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        private void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+        }
+    }
 }
