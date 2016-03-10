@@ -705,12 +705,6 @@
     <Compile Include="TOCeditor.Designer.cs">
       <DependentUpon>TOCeditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TOCEditorAK\TOCEditorAK.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOCEditorAK\TOCEditorAK.Designer.cs">
-      <DependentUpon>TOCEditorAK.cs</DependentUpon>
-    </Compile>
     <Compile Include="TOCUpdater\TOCUpdater.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1093,9 +1087,6 @@
     <EmbeddedResource Include="TOCeditor.resx">
       <DependentUpon>TOCeditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TOCEditorAK\TOCEditorAK.resx">
-      <DependentUpon>TOCEditorAK.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TOCUpdater\TOCUpdater.resx">
       <DependentUpon>TOCUpdater.cs</DependentUpon>
     </EmbeddedResource>
@@ -1160,6 +1151,7 @@
     <None Include="Icons\versioncheck.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Back.png" />
+    <Content Include="Icons\interp_viewer_icon.ico" />
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1180,10 +1172,6 @@
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
       <Project>{5FD88B3C-B192-42BE-8B05-9CAC3F7405FB}</Project>
       <Name>AmaroK86.MassEffect3.DLCEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory.csproj">
-      <Project>{4C897537-C3FB-46FE-AD6A-E6D17BD51520}</Project>
-      <Name>AmaroK86.MassEffect3.ME3Directory</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler.csproj">
       <Project>{FD18702E-C7A4-42A1-AC91-C1671FDF7522}</Project>
@@ -1320,7 +1308,6 @@
     <None Include="Resources\level_explorer_64x64.png" />
     <None Include="Resources\level_editor_64x64.png" />
     <None Include="Resources\level_database_64x64.png" />
-    <None Include="Resources\interp_editor_64x64.png" />
     <None Include="Resources\GUIDcache_editor_64x64.png" />
     <None Include="Resources\fxa_editor_64x64.png" />
     <None Include="Resources\dlc_editor2_64x64.png" />
@@ -1332,6 +1319,7 @@
     <None Include="Resources\conditionals_editor_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />
     <None Include="Resources\ImageEngine_icon_64x64.png" />
+    <None Include="Resources\interp_viewer_icon_64x64.png" />
     <None Include="Resources\sfar_basiceditor_icon.ico" />
     <None Include="Resources\sfar_basiceditor_icon_64x64.png" />
     <None Include="Resources\sfar_editor2_icon_64x64.png" />
