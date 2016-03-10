@@ -71,6 +71,9 @@
             this.MainSplitter = new System.Windows.Forms.SplitContainer();
             this.MainTreeView = new System.Windows.Forms.TreeView();
             this.MainTreeViewImageList = new System.Windows.Forms.ImageList(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.UncheckAllButton = new System.Windows.Forms.Button();
+            this.CheckAllButton = new System.Windows.Forms.Button();
             this.ContextPanel = new System.Windows.Forms.ToolStrip();
             this.InstallSingleButton = new System.Windows.Forms.ToolStripButton();
             this.ExtractButton = new System.Windows.Forms.ToolStripButton();
@@ -112,15 +115,13 @@
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.CheckAllButton = new System.Windows.Forms.Button();
-            this.UncheckAllButton = new System.Windows.Forms.Button();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
             this.MainSplitter.Panel1.SuspendLayout();
             this.MainSplitter.Panel2.SuspendLayout();
             this.MainSplitter.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.ContextPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LowerRightSplitter)).BeginInit();
             this.LowerRightSplitter.Panel1.SuspendLayout();
@@ -135,7 +136,6 @@
             this.PreviewPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).BeginInit();
             this.PCCsPage.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TopStrip
@@ -239,14 +239,14 @@
             // allTexturesToolStripMenuItem
             // 
             this.allTexturesToolStripMenuItem.Name = "allTexturesToolStripMenuItem";
-            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.allTexturesToolStripMenuItem.Text = "All Textures";
             this.allTexturesToolStripMenuItem.Click += new System.EventHandler(this.allTexturesToolStripMenuItem_Click);
             // 
             // onlyCheckedToolStripMenuItem
             // 
             this.onlyCheckedToolStripMenuItem.Name = "onlyCheckedToolStripMenuItem";
-            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.onlyCheckedToolStripMenuItem.Text = "Only Checked";
             this.onlyCheckedToolStripMenuItem.Click += new System.EventHandler(this.onlyCheckedToolStripMenuItem_Click);
             // 
@@ -547,6 +547,36 @@
             this.MainTreeViewImageList.Images.SetKeyName(0, "TPFTools.ico");
             this.MainTreeViewImageList.Images.SetKeyName(1, "TextDoc.jpg");
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.UncheckAllButton);
+            this.panel1.Controls.Add(this.CheckAllButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(500, 36);
+            this.panel1.TabIndex = 2;
+            // 
+            // UncheckAllButton
+            // 
+            this.UncheckAllButton.Location = new System.Drawing.Point(98, 0);
+            this.UncheckAllButton.Name = "UncheckAllButton";
+            this.UncheckAllButton.Size = new System.Drawing.Size(113, 33);
+            this.UncheckAllButton.TabIndex = 1;
+            this.UncheckAllButton.Text = "Uncheck All";
+            this.UncheckAllButton.UseVisualStyleBackColor = true;
+            this.UncheckAllButton.Click += new System.EventHandler(this.UncheckAllButton_Click);
+            // 
+            // CheckAllButton
+            // 
+            this.CheckAllButton.Location = new System.Drawing.Point(0, 0);
+            this.CheckAllButton.Name = "CheckAllButton";
+            this.CheckAllButton.Size = new System.Drawing.Size(92, 33);
+            this.CheckAllButton.TabIndex = 0;
+            this.CheckAllButton.Text = "Check All";
+            this.CheckAllButton.UseVisualStyleBackColor = true;
+            this.CheckAllButton.Click += new System.EventHandler(this.CheckAllButton_Click);
+            // 
             // ContextPanel
             // 
             this.ContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -648,8 +678,8 @@
             // 
             // LowerRightSplitter.Panel2
             // 
-            this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
             this.LowerRightSplitter.Panel2.Controls.Add(this.PreviewTabPages);
+            this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
             this.LowerRightSplitter.Size = new System.Drawing.Size(1080, 898);
             this.LowerRightSplitter.SplitterDistance = 252;
             this.LowerRightSplitter.SplitterWidth = 14;
@@ -919,16 +949,14 @@
             // 
             // PreviewTabPages
             // 
-            this.PreviewTabPages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.PreviewTabPages.Controls.Add(this.PreviewPage);
             this.PreviewTabPages.Controls.Add(this.PCCsPage);
+            this.PreviewTabPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 533);
+            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 602);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -941,7 +969,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 29);
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(1072, 500);
+            this.PreviewPage.Size = new System.Drawing.Size(1072, 569);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -953,7 +981,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 500);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 569);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
@@ -966,7 +994,7 @@
             this.PreviewBox.Location = new System.Drawing.Point(0, 0);
             this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewBox.Name = "PreviewBox";
-            this.PreviewBox.Size = new System.Drawing.Size(1068, 551);
+            this.PreviewBox.Size = new System.Drawing.Size(1068, 630);
             this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PreviewBox.TabIndex = 0;
             this.PreviewBox.TabStop = false;
@@ -977,7 +1005,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 29);
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(1072, 500);
+            this.PCCsPage.Size = new System.Drawing.Size(1072, 490);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -1044,36 +1072,6 @@
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.UncheckAllButton);
-            this.panel1.Controls.Add(this.CheckAllButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(500, 36);
-            this.panel1.TabIndex = 2;
-            // 
-            // CheckAllButton
-            // 
-            this.CheckAllButton.Location = new System.Drawing.Point(0, 0);
-            this.CheckAllButton.Name = "CheckAllButton";
-            this.CheckAllButton.Size = new System.Drawing.Size(92, 33);
-            this.CheckAllButton.TabIndex = 0;
-            this.CheckAllButton.Text = "Check All";
-            this.CheckAllButton.UseVisualStyleBackColor = true;
-            this.CheckAllButton.Click += new System.EventHandler(this.CheckAllButton_Click);
-            // 
-            // UncheckAllButton
-            // 
-            this.UncheckAllButton.Location = new System.Drawing.Point(98, 0);
-            this.UncheckAllButton.Name = "UncheckAllButton";
-            this.UncheckAllButton.Size = new System.Drawing.Size(113, 33);
-            this.UncheckAllButton.TabIndex = 1;
-            this.UncheckAllButton.Text = "Uncheck All";
-            this.UncheckAllButton.UseVisualStyleBackColor = true;
-            this.UncheckAllButton.Click += new System.EventHandler(this.UncheckAllButton_Click);
-            // 
             // KFreonTPFTools3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -1100,6 +1098,7 @@
             this.MainSplitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).EndInit();
             this.MainSplitter.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ContextPanel.ResumeLayout(false);
             this.ContextPanel.PerformLayout();
             this.LowerRightSplitter.Panel1.ResumeLayout(false);
@@ -1117,7 +1116,6 @@
             this.PreviewPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).EndInit();
             this.PCCsPage.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
