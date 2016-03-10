@@ -34,11 +34,13 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dLCCrackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,7 +61,7 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dLCCrackToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
             // 
             // dLCCrackToolStripMenuItem
@@ -70,28 +72,13 @@
             this.dLCCrackToolStripMenuItem.Text = "DLC Crack";
             this.dLCCrackToolStripMenuItem.Click += new System.EventHandler(this.dLCCrackToolStripMenuItem_Click);
             // 
-            // optionToolStripMenuItem
-            // 
-            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openDebugWindowToolStripMenuItem});
-            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionToolStripMenuItem.Text = "Options";
-            // 
-            // openDebugWindowToolStripMenuItem
-            // 
-            this.openDebugWindowToolStripMenuItem.Name = "openDebugWindowToolStripMenuItem";
-            this.openDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.openDebugWindowToolStripMenuItem.Text = "Open Debug Window";
-            this.openDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.openDebugWindowToolStripMenuItem_Click);
-            // 
             // developerToolsToolStripMenuItem
             // 
             this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sequenceEditorToolStripMenuItem,
             this.pCCEditorToolStripMenuItem});
             this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
-            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
+            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
             this.developerToolsToolStripMenuItem.Text = "Developer Tools";
             // 
             // sequenceEditorToolStripMenuItem
@@ -110,11 +97,43 @@
             this.pCCEditorToolStripMenuItem.Text = "Package Editor";
             this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
             // 
+            // optionToolStripMenuItem
+            // 
+            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openDebugWindowToolStripMenuItem});
+            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionToolStripMenuItem.Text = "Options";
+            // 
+            // openDebugWindowToolStripMenuItem
+            // 
+            this.openDebugWindowToolStripMenuItem.Name = "openDebugWindowToolStripMenuItem";
+            this.openDebugWindowToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.openDebugWindowToolStripMenuItem.Text = "Open Debug Window";
+            this.openDebugWindowToolStripMenuItem.Click += new System.EventHandler(this.openDebugWindowToolStripMenuItem_Click);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(60, 50);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 518);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(986, 25);
+            this.toolStrip1.TabIndex = 9;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(986, 543);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
@@ -138,6 +157,8 @@
         private System.Windows.Forms.ToolStripMenuItem developerToolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sequenceEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
+        public System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

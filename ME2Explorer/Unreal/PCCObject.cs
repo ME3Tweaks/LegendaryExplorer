@@ -28,6 +28,7 @@ namespace ME2Explorer
             internal byte[] info; //Properties, not raw data
             public int ClassNameID { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); } }
             public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); } }
             public int PackageNameID;
             public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); } }
             public string ObjectName;
@@ -367,7 +368,7 @@ namespace ME2Explorer
             return s;
         }
 
-        public string GetName(int Index)
+        public string getNameEntry(int Index)
         {
             string s = "";
             if (isName(Index))
@@ -442,7 +443,7 @@ namespace ME2Explorer
         {
             for (int i = 0; i < Names.Count; i++)
             {
-                if (String.Compare(nameToFind, GetName(i)) == 0)
+                if (String.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
             }
             return -1;

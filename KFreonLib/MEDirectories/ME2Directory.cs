@@ -34,7 +34,7 @@ namespace KFreonLib.MEDirectories
             return _gamePath;
         }
 
-        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath,  @"BioGame\CookedPC") : null; } }
+        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath,  @"BioGame\CookedPC\") : null; } }
         public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BioGame\DLC\") : null; } }
 
         // "C:\...\MyDocuments\BioWare\Mass Effect 2\" folder

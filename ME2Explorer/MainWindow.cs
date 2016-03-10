@@ -14,47 +14,47 @@ namespace ME2Explorer
         public MainWindow()
         {
             InitializeComponent();
+            taskbar.Strip = toolStrip1;
+        }
+        
+        private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KFreonLib.Debugging.DebugOutput.StartDebugger("ME2Explorer Main Window");
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            foreach (taskbar.task_list l in taskbar.tools)
+            {
+                if (l.tool != null && l.tool.IsDisposed)
+                {
+                    taskbar.Strip.Items.Remove(l.icon);
+                    taskbar.tools.Remove(l);
+                    break;
+                }
+                else if (l.wpfWindow != null && System.Windows.PresentationSource.FromVisual(l.wpfWindow) == null)
+                {
+                    taskbar.Strip.Items.Remove(l.icon);
+                    taskbar.tools.Remove(l);
+                    break;
+                }
+            }
         }
 
         private void pCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PCCEditor ed = new PCCEditor();
-            ed.MdiParent = this;
-            ed.Show();
-            ed.WindowState = FormWindowState.Maximized;
+            taskbar.AddTool(ed, Properties.Resources.package_editor_64x64);
         }
 
         private void dLCCrackToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DLC_Crack.GiveEntitlements ent = new DLC_Crack.GiveEntitlements();
-            ent.MdiParent = this;
-            ent.WindowState = FormWindowState.Maximized;
-            ent.Show();
-        }
-
-        public void StartDebug()
-        {
-            KFreonLib.Debugging.DebugOutput.StartDebugger("ME2Explorer Main Window");
-        }
-
-        private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StartDebug();
-        }
-
-        public void OpenFormMaximized(Form f)
-        {
-            f.MdiParent = this;
-            f.Show();
-            f.WindowState = FormWindowState.Maximized;
+            taskbar.AddTool(new DLC_Crack.GiveEntitlements(), Properties.Resources.dlc_crackME2_64x64);
         }
 
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SequenceEditor sqed = new SequenceEditor();
-            sqed.MdiParent = this;
-            sqed.Show();
-            sqed.WindowState = FormWindowState.Maximized;
+            taskbar.AddTool(new SequenceEditor(), Properties.Resources.sequence_editor_64x64);
         }
     }
 }

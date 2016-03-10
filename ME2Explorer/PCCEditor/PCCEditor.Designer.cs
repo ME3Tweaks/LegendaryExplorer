@@ -69,6 +69,8 @@
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveHexChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.status2 = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -86,7 +88,7 @@
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPccToolStripMenuItem.Text = "Open Pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click_1);
             // 
@@ -99,14 +101,14 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(444, 458);
+            this.listBox1.Size = new System.Drawing.Size(444, 434);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -117,7 +119,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(993, 458);
+            this.splitContainer1.Size = new System.Drawing.Size(993, 434);
             this.splitContainer1.SplitterDistance = 444;
             this.splitContainer1.TabIndex = 7;
             // 
@@ -127,7 +129,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(444, 458);
+            this.treeView1.Size = new System.Drawing.Size(444, 434);
             this.treeView1.TabIndex = 2;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -142,7 +144,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(545, 458);
+            this.tabControl1.Size = new System.Drawing.Size(545, 434);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -151,7 +153,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(537, 432);
+            this.tabPage1.Size = new System.Drawing.Size(537, 408);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hex Editor";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -166,7 +168,7 @@
             this.hexBox1.Location = new System.Drawing.Point(3, 3);
             this.hexBox1.Name = "hexBox1";
             this.hexBox1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexBox1.Size = new System.Drawing.Size(531, 426);
+            this.hexBox1.Size = new System.Drawing.Size(531, 402);
             this.hexBox1.StringViewVisible = true;
             this.hexBox1.TabIndex = 1;
             this.hexBox1.UseFixedBytesPerLine = true;
@@ -178,7 +180,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(537, 408);
+            this.tabPage2.Size = new System.Drawing.Size(537, 432);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Properties";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -189,7 +191,7 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(531, 402);
+            this.propGrid.Size = new System.Drawing.Size(531, 426);
             this.propGrid.TabIndex = 0;
             // 
             // tabPage3
@@ -203,7 +205,7 @@
             this.tabPage3.Controls.Add(this.label12);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(537, 408);
+            this.tabPage3.Size = new System.Drawing.Size(537, 432);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Meta Data Editor";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -273,7 +275,7 @@
             this.tabPage4.Controls.Add(this.hb2);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(537, 408);
+            this.tabPage4.Size = new System.Drawing.Size(537, 432);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Header Raw";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -288,7 +290,7 @@
             this.hb2.Location = new System.Drawing.Point(0, 0);
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(537, 408);
+            this.hb2.Size = new System.Drawing.Size(537, 432);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 1;
             this.hb2.UseFixedBytesPerLine = true;
@@ -306,7 +308,7 @@
             this.toolStripTextBox1,
             this.toolStripButton5,
             this.toolStripButton6});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(993, 25);
             this.toolStrip1.TabIndex = 5;
@@ -348,7 +350,7 @@
             this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton7.Size = new System.Drawing.Size(62, 22);
             this.toolStripButton7.Text = "Tree View";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
@@ -396,7 +398,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Status});
+            this.Status,
+            this.status2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 483);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(993, 22);
@@ -425,7 +428,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPccToolStripMenuItem,
-            this.savePccToolStripMenuItem});
+            this.savePccToolStripMenuItem,
+            this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -433,7 +437,7 @@
             // savePccToolStripMenuItem
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.savePccToolStripMenuItem.Text = "Save Pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click);
             // 
@@ -484,6 +488,21 @@
             this.saveHexChangesToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.saveHexChangesToolStripMenuItem.Text = "Save Hex Changes";
             this.saveHexChangesToolStripMenuItem.Click += new System.EventHandler(this.saveHexChangesToolStripMenuItem_Click);
+            // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
+            this.recentToolStripMenuItem.DropDownOpening += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpening);
+            // 
+            // status2
+            // 
+            this.status2.Font = new System.Drawing.Font("Courier New", 9.75F);
+            this.status2.ForeColor = System.Drawing.Color.Blue;
+            this.status2.Name = "status2";
+            this.status2.Size = new System.Drawing.Size(0, 17);
             // 
             // PCCEditor
             // 
@@ -560,6 +579,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TabPage tabPage4;
         private Be.Windows.Forms.HexBox hb2;
-
+        private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel status2;
     }
 }
