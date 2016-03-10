@@ -20,13 +20,72 @@ namespace ME1Explorer
         public int NameIdx, ClassIdx, LinkIdx;
         public PCCObject pcc;
         public PropGrid pg;
-        private TabPage scriptTab;
         public List<int> classes;
+        public List<string> RFiles;
 
         public PCCEditor()
         {
             InitializeComponent();
+            LoadRecentList();
+            RefreshRecent();
+            if (RFiles != null && RFiles.Count != 0)
+            {
+                int index = RFiles.Count - 1;
+                if (File.Exists(RFiles[index]))
+                {
+                    pcc = new PCCObject(RFiles[index]);
+                    loadPCC();
+                }
+            }
+        }
 
+        public new void Show()
+        {
+            base.Show();
+            this.Text = "Package Editor (" + Path.GetFileName(pcc?.fullname) + ")";
+        }
+
+        private void openPccToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                AddRecent(d.FileName);
+                SaveRecentList();
+                pcc = new PCCObject(d.FileName);
+                loadPCC();
+            }
+        }
+
+        public void loadPCC()
+        {
+            CurrentView = 2;
+            classes = new List<int>();
+            foreach (PCCObject.ExportEntry ent in pcc.Exports)
+            {
+                int f = -1;
+                for (int i = 0; i < classes.Count(); i++)
+                    if (classes[i] == ent.ClassNameID)
+                        f = i;
+                if (f == -1)
+                    classes.Add(ent.ClassNameID);
+            }
+            bool run = true;
+            while (run)
+            {
+                run = false;
+                for (int i = 0; i < classes.Count() - 1; i++)
+                    if (pcc.getNameEntry(classes[i]).CompareTo(pcc.getNameEntry(classes[i + 1])) > 0)
+                    {
+                        int t = classes[i];
+                        classes[i] = classes[i + 1];
+                        classes[i + 1] = t;
+                        run = true;
+                    }
+            }
+            RefreshView();
+            status2.Text = "@" + Path.GetFileName(Path.GetFileName(pcc.fullname));
         }
 
         public void RefreshView()
@@ -154,41 +213,6 @@ namespace ME1Explorer
             return t;
         }
 
-        private void openPccToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                pcc = new PCCObject(d.FileName);
-                CurrentView = 2;
-                classes = new List<int>();
-                foreach (PCCObject.ExportEntry ent in pcc.Exports)
-                {
-                    int f = -1;
-                    for (int i = 0; i < classes.Count(); i++)
-                        if (classes[i] == ent.ClassNameID)
-                            f = i;
-                    if (f == -1)
-                        classes.Add(ent.ClassNameID);
-                }
-                bool run = true;
-                while (run)
-                {
-                    run = false;
-                    for (int i = 0; i < classes.Count() - 1; i++)
-                        if (pcc.GetName(classes[i]).CompareTo(pcc.GetName(classes[i + 1])) > 0)
-                        {
-                            int t = classes[i];
-                            classes[i] = classes[i + 1];
-                            classes[i + 1] = t;
-                            run = true;
-                        }
-                }
-                RefreshView();
-            }
-        }
-
         public void listBox1SelectIndex(int i)
         {
             listBox1.SelectedIndex = i;
@@ -281,7 +305,7 @@ namespace ME1Explorer
             SaveFileDialog d = new SaveFileDialog();
             //d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             d.Filter = "ME1 Package File|*." + pcc.pccFileName.Split('.')[pcc.pccFileName.Split('.').Length - 1];
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.SaveToFile(d.FileName);
                 MessageBox.Show("Done.");
@@ -313,7 +337,7 @@ namespace ME1Explorer
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].raw);
             }
             if ((CurrentView == 2 || CurrentView == 3) && n != -1)
-        {
+            {
                 int off = pcc.Imports.Count;
                 NameIdx = pcc.Exports[n].ObjectNameID;
                 ClassIdx = pcc.Exports[n].ClassNameID;
@@ -323,10 +347,10 @@ namespace ME1Explorer
                 comboBox2.SelectedIndex = ClassIdx + off;
                 comboBox3.SelectedIndex = LinkIdx + off;
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].info);
-        }
-            if (n >= 0)
-        {
-            Status.Text = "Class: " + pcc.Exports[n].ClassName + " Flags: 0x" + pcc.Exports[n].flagint.ToString("X8");
+            }
+            if (n >= 0 && (CurrentView == 2 || CurrentView == 3))
+            {
+                Status.Text = "Class: " + pcc.Exports[n].ClassName + " Flags: 0x" + pcc.Exports[n].flagint.ToString("X8");
             }
             else
             {
@@ -336,13 +360,13 @@ namespace ME1Explorer
         }
 
         public void PreviewProps()
-                {
+        {
             int n = GetSelected();
             if (n == -1 || !(CurrentView == 2 || CurrentView == 3))
                 return;
             List<PropertyReader.Property> p;
             switch (pcc.Exports[n].ClassName)
-                    {
+            {
                 default:
                     byte[] buff = pcc.Exports[n].Data;
                     p = PropertyReader.getPropList(pcc, buff);
@@ -509,6 +533,100 @@ namespace ME1Explorer
                 }
         }
 
+        private void recentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshRecent();
+        }
+
+        private void RefreshRecent()
+        {
+            recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+
+            for (int i = 0; i < RFiles.Count; i++)
+            {
+                ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count() - i - 1], null, RecentFile_click);
+                recentToolStripMenuItem.DropDownItems.Add(fr);
+            }
+
+        }
+
+        private void LoadRecentList()
+        {
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\ME1PackageEditorHistory.log";
+            if (File.Exists(path))
+            {
+                BitConverter.IsLittleEndian = true;
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                byte[] buff = new byte[4]; ;
+                fs.Read(buff, 0, 4);
+                int count = BitConverter.ToInt32(buff, 0);
+                for (int i = 0; i < count; i++)
+                {
+                    fs.Read(buff, 0, 4);
+                    int len = BitConverter.ToInt32(buff, 0);
+                    string s = "";
+                    for (int j = 0; j < len; j++)
+                        s += (char)fs.ReadByte();
+                    AddRecent(s);
+                }
+                fs.Close();
+            }
+        }
+
+        public void AddRecent(string s)
+        {
+            if (RFiles.Count < 10)
+                RFiles.Add(s);
+            else
+            {
+                RFiles.RemoveAt(0);
+                RFiles.Add(s);
+            }
+
+        }
+
+        private void SaveRecentList()
+        {
+            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\ME1PackageEditorHistory.log";
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            if (File.Exists(path))
+                File.Delete(path);
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            BitConverter.IsLittleEndian = true;
+            byte[] buff = BitConverter.GetBytes(RFiles.Count);
+            fs.Write(buff, 0, 4);
+            for (int i = 0; i < RFiles.Count; i++)
+            {
+                buff = BitConverter.GetBytes(RFiles[i].Length);
+                fs.Write(buff, 0, 4);
+                for (int j = 0; j < RFiles[i].Length; j++)
+                    fs.WriteByte((byte)RFiles[i][j]);
+            }
+            fs.Close();
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            //just load a file
+            string s = sender.ToString();
+            try
+            {
+                pcc = new PCCObject(s);
+                loadPCC();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
+        }
+
         private void toolStripTextBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)0xd)
@@ -516,16 +634,6 @@ namespace ME1Explorer
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            Preview();
-        }
-
-        private void rawToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Preview();
-        }
-
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Preview();
         }
