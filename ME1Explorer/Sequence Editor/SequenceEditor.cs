@@ -662,12 +662,11 @@ namespace ME1Explorer
             if (l == -1)
                 return;
             PCCEditor p = new PCCEditor();
-            p.MdiParent = this.MdiParent;
-            p.WindowState = FormWindowState.Maximized;
+            taskbar.AddTool(p, Properties.Resources.package_editor_64x64);
+            //taskbar.AddTool doesn't call the override in PCCEditor.
             p.Show();
             p.pcc = new PCCObject(CurrentFile);
-            p.CurrentView = 2;
-            p.RefreshView();
+            p.loadPCC();
             p.listBox1SelectIndex(l);
         }
 
@@ -701,7 +700,7 @@ namespace ME1Explorer
                         List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
                         for (int j = 0; j < p.Count(); j++)
                         {
-                            if (pcc.GetName(p[j].Name) == "SequenceObjects")
+                            if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
                             {
                                 int count = BitConverter.ToInt32(p[j].raw, 24);
                                 byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[j].raw, 16) + 4);
