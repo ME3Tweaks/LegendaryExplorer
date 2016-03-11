@@ -33,7 +33,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openPCCFromDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -157,6 +156,8 @@
             this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
             this.DebugOut = new System.Windows.Forms.RichTextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.contextImportTable = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -231,6 +232,7 @@
             this.splitContainer9.Panel2.SuspendLayout();
             this.splitContainer9.SuspendLayout();
             this.toolStrip4.SuspendLayout();
+            this.contextImportTable.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -247,7 +249,6 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPCCToolStripMenuItem,
-            this.openPCCFromDLCToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -256,20 +257,14 @@
             // openPCCToolStripMenuItem
             // 
             this.openPCCToolStripMenuItem.Name = "openPCCToolStripMenuItem";
-            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPCCToolStripMenuItem.Text = "Open PCC";
             this.openPCCToolStripMenuItem.Click += new System.EventHandler(this.openPCCToolStripMenuItem_Click);
-            // 
-            // openPCCFromDLCToolStripMenuItem
-            // 
-            this.openPCCFromDLCToolStripMenuItem.Name = "openPCCFromDLCToolStripMenuItem";
-            this.openPCCFromDLCToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.openPCCFromDLCToolStripMenuItem.Text = "Open PCC from DLC";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -541,12 +536,12 @@
             this.contextkismet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.findInExportTableToolStripMenuItem});
             this.contextkismet.Name = "contextkismet";
-            this.contextkismet.Size = new System.Drawing.Size(178, 26);
+            this.contextkismet.Size = new System.Drawing.Size(179, 26);
             // 
             // findInExportTableToolStripMenuItem
             // 
             this.findInExportTableToolStripMenuItem.Name = "findInExportTableToolStripMenuItem";
-            this.findInExportTableToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.findInExportTableToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.findInExportTableToolStripMenuItem.Text = "Find in Export Table";
             this.findInExportTableToolStripMenuItem.Click += new System.EventHandler(this.findInExportTableToolStripMenuItem_Click);
             // 
@@ -721,6 +716,7 @@
             // 
             // listBox2
             // 
+            this.listBox2.ContextMenuStrip = this.contextImportTable;
             this.listBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBox2.FormattingEnabled = true;
@@ -821,7 +817,6 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.tabControl3);
-            this.splitContainer5.Panel2.Controls.Add(this.status2);
             this.splitContainer5.Size = new System.Drawing.Size(945, 262);
             this.splitContainer5.SplitterDistance = 444;
             this.splitContainer5.TabIndex = 0;
@@ -850,16 +845,17 @@
             this.tabControl3.Name = "tabControl3";
             this.tabControl3.Padding = new System.Drawing.Point(0, 0);
             this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(497, 240);
+            this.tabControl3.Size = new System.Drawing.Size(497, 262);
             this.tabControl3.TabIndex = 0;
             // 
             // tabExRaw
             // 
             this.tabExRaw.Controls.Add(this.hb2);
+            this.tabExRaw.Controls.Add(this.status2);
             this.tabExRaw.Location = new System.Drawing.Point(4, 22);
             this.tabExRaw.Name = "tabExRaw";
             this.tabExRaw.Padding = new System.Windows.Forms.Padding(3);
-            this.tabExRaw.Size = new System.Drawing.Size(489, 214);
+            this.tabExRaw.Size = new System.Drawing.Size(489, 236);
             this.tabExRaw.TabIndex = 0;
             this.tabExRaw.Text = "Raw hex";
             this.tabExRaw.UseVisualStyleBackColor = true;
@@ -887,19 +883,18 @@
             this.tabExProp.Location = new System.Drawing.Point(4, 22);
             this.tabExProp.Name = "tabExProp";
             this.tabExProp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabExProp.Size = new System.Drawing.Size(489, 214);
+            this.tabExProp.Size = new System.Drawing.Size(489, 236);
             this.tabExProp.TabIndex = 1;
             this.tabExProp.Text = "Properties";
             this.tabExProp.UseVisualStyleBackColor = true;
             // 
             // treeView5
             // 
-            this.treeView5.ContextMenuStrip = this.contextMenuStrip1;
             this.treeView5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView5.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView5.Location = new System.Drawing.Point(3, 3);
             this.treeView5.Name = "treeView5";
-            this.treeView5.Size = new System.Drawing.Size(483, 208);
+            this.treeView5.Size = new System.Drawing.Size(483, 230);
             this.treeView5.TabIndex = 2;
             // 
             // contextMenuStrip1
@@ -908,19 +903,19 @@
             this.cloneToolStripMenuItem,
             this.findInTableToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(143, 48);
             // 
             // cloneToolStripMenuItem
             // 
             this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.cloneToolStripMenuItem.Text = "Clone";
             this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
             // findInTableToolStripMenuItem
             // 
             this.findInTableToolStripMenuItem.Name = "findInTableToolStripMenuItem";
-            this.findInTableToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.findInTableToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.findInTableToolStripMenuItem.Text = "Find in Table";
             this.findInTableToolStripMenuItem.Click += new System.EventHandler(this.findInTableToolStripMenuItem_Click);
             // 
@@ -928,9 +923,9 @@
             // 
             this.status2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.status4});
-            this.status2.Location = new System.Drawing.Point(0, 240);
+            this.status2.Location = new System.Drawing.Point(3, 211);
             this.status2.Name = "status2";
-            this.status2.Size = new System.Drawing.Size(497, 22);
+            this.status2.Size = new System.Drawing.Size(483, 22);
             this.status2.TabIndex = 1;
             this.status2.Text = "statusStrip3";
             // 
@@ -1010,7 +1005,7 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(74, 22);
+            this.toolStripButton3.Size = new System.Drawing.Size(75, 22);
             this.toolStripButton3.Text = "Find By Text";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
@@ -1611,6 +1606,20 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // contextImportTable
+            // 
+            this.contextImportTable.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cloneToolStripMenuItem1});
+            this.contextImportTable.Name = "contextImportTable";
+            this.contextImportTable.Size = new System.Drawing.Size(106, 26);
+            // 
+            // cloneToolStripMenuItem1
+            // 
+            this.cloneToolStripMenuItem1.Name = "cloneToolStripMenuItem1";
+            this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.cloneToolStripMenuItem1.Text = "Clone";
+            this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1676,11 +1685,11 @@
             this.tabContent5.PerformLayout();
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
-            this.splitContainer5.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
             this.tabControl3.ResumeLayout(false);
             this.tabExRaw.ResumeLayout(false);
+            this.tabExRaw.PerformLayout();
             this.tabExProp.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.status2.ResumeLayout(false);
@@ -1719,6 +1728,7 @@
             this.splitContainer9.ResumeLayout(false);
             this.toolStrip4.ResumeLayout(false);
             this.toolStrip4.PerformLayout();
+            this.contextImportTable.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1729,7 +1739,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openPCCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openPCCFromDLCToolStripMenuItem;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -1853,6 +1862,8 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ContextMenuStrip contextImportTable;
+        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
     }
 }
 

@@ -133,8 +133,12 @@ namespace ME3Explorer
                 if (args[1].Equals("-toceditorupdate"))
                 {
                     //autostart the TOCEditor (used by FemShep's Mod Manager 3)
-                    //saves a little duplicate code
-                    tOCbinEditorToolStripMenuItem.PerformClick();
+                    TOCeditor tocedit = new TOCeditor();
+                    lang.SetLang(tocedit);
+                    tocedit.MdiParent = this;
+                    tocedit.WindowState = FormWindowState.Maximized;
+                    tocedit.Show();
+                    taskbar.AddTool(tocedit, Properties.Resources.TOCbin_editor_64x64);
                     return;
                 }
                 if (args[1].Equals("-autotoc"))
@@ -357,13 +361,6 @@ namespace ME3Explorer
         private void patcherToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMaximized(new Patcher.Patcher());
-        }
-
-        private void tOCbinUpdaterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var form = new TOCUpdater.TOCUpdater();
-            OpenMaximized(form);
-            taskbar.AddTool(form, Properties.Resources.TOCbinUpdater_64x64);
         }
 
         private void materialViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -664,23 +661,6 @@ namespace ME3Explorer
             taskbar.AddTool(form, Properties.Resources.SFARTOC_64x64);
         }
 
-        private void tOCbinEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            TOCeditor tocedit = new TOCeditor();
-            lang.SetLang(tocedit);
-            tocedit.MdiParent = this;
-            tocedit.WindowState = FormWindowState.Maximized;
-            tocedit.Show();
-            taskbar.AddTool(tocedit, Properties.Resources.TOCbin_editor_64x64);
-        }
-
-        private void TOCbinAKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            var tool = new TOCEditorAK.TOCEditorAK();
-            OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.TOCbin_editorAK86_64x64);
-        }
-
         private void subtitleScannerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             var tool = new SubtitleScanner.SubtitleScanner();
@@ -843,7 +823,7 @@ namespace ME3Explorer
         {
             var tool = new InterpEditor.InterpEditor();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.interp_editor_64x64);
+            taskbar.AddTool(tool, Properties.Resources.interp_viewer_icon_64x64);
         }
 
         private void massEffect3ToolStripMenuItem_Click(object sender, EventArgs e)

@@ -170,7 +170,13 @@ namespace ME3VanillaMaker
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = GamePath = AmaroK86.MassEffect3.ME3Paths.gamePath;
+            string gameExe = "MassEffect3.exe";
+            OpenFileDialog selectDir = new OpenFileDialog();
+            selectDir.FileName = gameExe;
+            selectDir.Filter = "ME3 exe file|" + gameExe;
+            selectDir.Title = "Select the Mass Effect 3 executable file";
+            if (selectDir.ShowDialog() == DialogResult.OK)
+                textBox1.Text = GamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(selectDir.FileName))) + @"\";
             DisplayRefresh(true, false);
         }
     }

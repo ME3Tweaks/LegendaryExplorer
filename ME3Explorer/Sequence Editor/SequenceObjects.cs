@@ -1500,8 +1500,19 @@ namespace ME3Explorer.SequenceObjects
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = new Font (fontcollection.Families[0], 6);
             shadowRendering = shadows;
+        }
+
+        public static void LoadFont(string file)
+        {
+            if(fontcollection == null)
+                fontcollection = new PrivateFontCollection();
+            fontcollection.AddFontFile(file);
+            if (fontcollection.Families.Length < 0)
+            {
+                throw new InvalidOperationException("No font familiy found when loading font");
+            }
         }
 
         protected override void Paint(PPaintContext paintContext)

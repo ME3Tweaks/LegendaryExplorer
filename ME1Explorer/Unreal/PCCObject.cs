@@ -401,7 +401,7 @@ namespace ME1Explorer
             return s;
         }
 
-        public string GetName(int Index)
+        public string getNameEntry(int Index)
         {
             string s = "";
             if (isName(Index))
@@ -495,7 +495,7 @@ namespace ME1Explorer
         {
             for (int i = 0; i < Names.Count; i++)
             {
-                if (String.Compare(nameToFind, GetName(i)) == 0)
+                if (String.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
             }
             return -1;

@@ -129,7 +129,7 @@ namespace ME1Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(ME1Explorer.PCCObject pcc, byte[] raw)
+        public static List<Property> getPropList(PCCObject pcc, byte[] raw)
         {
             Application.DoEvents();
             int start = detectStart(pcc, raw);
@@ -154,7 +154,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static string PropertyToText(Property p, ME1Explorer.PCCObject pcc)
+        public static string PropertyToText(Property p, PCCObject pcc)
         {
             string s = "";
             s = "Name: " + p.Name;
@@ -163,7 +163,7 @@ namespace ME1Explorer.Unreal
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + pcc.GetName(p.Value.IntValue) + "\" with " + p.Size + " bytes";
+                    s += " \"" + pcc.getNameEntry(p.Value.IntValue) + "\" with " + p.Size + " bytes";
                     break;
                 case Type.IntProperty:
                 case Type.ObjectProperty:
@@ -194,37 +194,37 @@ namespace ME1Explorer.Unreal
             return s;
         }
 
-        public static ME1Explorer.Unreal.CustomProperty PropertyToGrid(Property p, ME1Explorer.PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
         {
             string cat = p.TypeVal.ToString();
-            ME1Explorer.Unreal.CustomProperty pg;
+            CustomProperty pg;
             switch (p.TypeVal)
             {
                 case Type.BoolProperty:
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, (p.Value.IntValue == 1), typeof(bool), false, true);
+                    pg = new CustomProperty(p.Name, cat, (p.Value.IntValue == 1), typeof(bool), false, true);
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff, 0);
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, f, typeof(float), false, true);
+                    pg = new CustomProperty(p.Name, cat, f, typeof(float), false, true);
                     break;
                 case Type.ByteProperty:
                 case Type.NameProperty:
                     NameProp pp = new NameProp();
-                    pp.name = pcc.GetName(p.Value.IntValue);
+                    pp.name = pcc.getNameEntry(p.Value.IntValue);
                     pp.nameindex = p.Value.IntValue;
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, pp, typeof(NameProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, pp, typeof(NameProp), false, true);
                     break;
                 case Type.ObjectProperty:
                     ObjectProp ppo = new ObjectProp();
                     ppo.name = pcc.getObjectName(p.Value.IntValue);
                     //ppo.name = pcc.GetName(pcc.Exports[p.Value.IntValue].name);
                     ppo.nameindex = p.Value.IntValue;
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, ppo, typeof(ObjectProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StructProperty:
                     StructProp ppp = new StructProp();
-                    ppp.name = pcc.GetName(p.Value.IntValue);
+                    ppp.name = pcc.getNameEntry(p.Value.IntValue);
                     ppp.nameindex = p.Value.IntValue;
                     byte[] buf = new byte[p.Value.Array.Count()];
                     for (int i = 0; i < p.Value.Array.Count(); i++)
@@ -233,16 +233,16 @@ namespace ME1Explorer.Unreal
                     for (int i = 0; i < p.Value.Array.Count() / 4; i++)
                         buf2.Add(BitConverter.ToInt32(buf, i * 4));
                     ppp.data = buf2.ToArray();
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, ppp, typeof(StructProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, ppp, typeof(StructProp), false, true);
                     break;
                 default:
-                    pg = new ME1Explorer.Unreal.CustomProperty(p.Name, cat, p.Value.IntValue, typeof(int), false, true);
+                    pg = new CustomProperty(p.Name, cat, p.Value.IntValue, typeof(int), false, true);
                     break;
             }
             return pg;
         }
 
-        public static List<Property> ReadProp(ME1Explorer.PCCObject pcc, byte[] raw, int start)
+        public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
         {
             Property p;
             PropertyValue v;
@@ -254,7 +254,7 @@ namespace ME1Explorer.Unreal
             int name = (int)BitConverter.ToInt64(raw, pos);
             if (!pcc.isName(name))
                 return result;
-            string t = pcc.GetName(name);
+            string t = pcc.getNameEntry(name);
             if (t == "None")
             {
                 p = new Property();
@@ -274,7 +274,7 @@ namespace ME1Explorer.Unreal
             int idx = BitConverter.ToInt32(raw, pos + 20); //Unused
             if (!pcc.isName(type) || size < 0 || size >= raw.Length)
                 return result;
-            string tp = pcc.GetName(type);
+            string tp = pcc.getNameEntry(type);
             switch (tp)
             {
                 case "BoolProperty":
@@ -297,7 +297,7 @@ namespace ME1Explorer.Unreal
                     //pos += 32;
                     v = new PropertyValue();
                     v.IntValue = BitConverter.ToInt32(raw, pos + 24);
-                    v.StringValue = pcc.GetName(v.IntValue);
+                    v.StringValue = pcc.getNameEntry(v.IntValue);
                     p.Value = v;
                     pos += 32;
                     //throw new NullReferenceException();
@@ -422,10 +422,10 @@ namespace ME1Explorer.Unreal
                     p.Size = size;
                     p.TypeVal = Type.ByteProperty;
                     p.i = 0;
-                    p.offsetval = pos + 32;
+                    p.offsetval = pos + 24;
                     v = new PropertyValue();
-                    v.StringValue = pcc.GetName(sname);
-                    v.IntValue = BitConverter.ToInt32(raw, pos + 28); 
+                    v.StringValue = pcc.getNameEntry(sname);
+                    v.IntValue = sname; 
                     v.len = size;
                     pos += 32;
                     //v.IntValue = (int)BitConverter.ToInt64(raw, pos);
@@ -467,9 +467,9 @@ namespace ME1Explorer.Unreal
             return result;
         }
 
-        private static Type getType(ME1Explorer.PCCObject pcc, int type)
+        private static Type getType(PCCObject pcc, int type)
         {
-            switch (pcc.GetName(type))
+            switch (pcc.getNameEntry(type))
             {
                 case "None": return Type.None;
                 case "StructProperty": return Type.StructProperty;
@@ -488,10 +488,10 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        private static PropertyValue ReadValue(ME1Explorer.PCCObject pcc, byte[] raw, int start, int type)
+        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
-            switch (pcc.GetName(type))
+            switch (pcc.getNameEntry(type))
             {
                 case "IntProperty":
                 case "FloatProperty":
@@ -513,7 +513,7 @@ namespace ME1Explorer.Unreal
             return v;
         }
 
-        public static int detectStart(ME1Explorer.PCCObject pcc, byte[] raw)
+        public static int detectStart(PCCObject pcc, byte[] raw)
         {
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);
@@ -616,7 +616,7 @@ namespace ME1Explorer.Unreal
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + pcc.GetName (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + pcc.getNameEntry (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
                     break;
                 case Type.IntProperty:   
                 case Type.BoolProperty:
@@ -640,7 +640,7 @@ namespace ME1Explorer.Unreal
                     s += " " + pcc.Names[p.Value.IntValue];
                     break;
                 case Type.ByteProperty:
-                    s += " Value: \"" + p.Value.StringValue + "\" with \"" + pcc.GetName(p.Value.IntValue) + "\"";
+                    s += " Value: \"" + p.Value.StringValue + "\"";
                     break;
                 case Type.ArrayProperty:
                     s += " bytes"; //Value: " + p.Value.Array.Count.ToString() + " Elements";
@@ -671,7 +671,7 @@ namespace ME1Explorer.Unreal
                 case Type.ByteProperty:
                 case Type.NameProperty:
                     NameProp pp = new NameProp();
-                    pp.name = pcc.GetName(p.Value.IntValue);
+                    pp.name = pcc.getNameEntry(p.Value.IntValue);
                     pp.nameindex = p.Value.IntValue;
                     pg = new CustomProperty(pcc.Names[p.Name], cat, pp, typeof(NameProp), false, true);
                     break;
@@ -683,7 +683,7 @@ namespace ME1Explorer.Unreal
                     break;
                 case Type.StructProperty:
                     StructProp ppp = new StructProp();
-                    ppp.name = pcc.GetName(p.Value.IntValue);
+                    ppp.name = pcc.getNameEntry(p.Value.IntValue);
                     ppp.nameindex = p.Value.IntValue;
                     byte[] buf = new byte[p.Value.Array.Count()];
                     for (int i = 0; i < p.Value.Array.Count(); i++)
@@ -866,7 +866,7 @@ namespace ME1Explorer.Unreal
 
         private static Type getType(PCCObject pcc, int type)
         {
-            switch (pcc.GetName(type))
+            switch (pcc.getNameEntry(type))
             {
                 case "None": return Type.None;
                 case "StructProperty": return Type.StructProperty;

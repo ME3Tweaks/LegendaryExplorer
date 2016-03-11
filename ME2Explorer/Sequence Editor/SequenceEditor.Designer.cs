@@ -126,6 +126,7 @@
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
             this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
+            this.graphEditor.MouseEnter += new System.EventHandler(this.graphEditor_MouseEnter);
             // 
             // splitContainer3
             // 

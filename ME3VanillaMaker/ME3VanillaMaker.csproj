@@ -90,12 +90,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory\AmaroK86.MassEffect3.ME3Directory.csproj">
-      <Project>{4c897537-c3fb-46fe-ad6a-e6d17bd51520}</Project>
-      <Name>AmaroK86.MassEffect3.ME3Directory</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

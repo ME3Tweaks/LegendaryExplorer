@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.AutoTOC
 {
@@ -30,18 +31,6 @@ namespace ME3Explorer.AutoTOC
                     Environment.Exit(0);
                     Application.Exit();
                 }
-            }
-        }
-
-        private void createTOCForBasefolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
-            d.FileName = "PCConsoleTOC.bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string path = Path.GetDirectoryName(d.FileName) + "\\";
-                prepareToCreateTOC(path);
             }
         }
 
@@ -74,26 +63,26 @@ namespace ME3Explorer.AutoTOC
                             files[i] = files[i].Substring(n);
                     }
                 }
+                rtb1.AppendText("Getting file list...\n");
+                //rtb1.Visible = false;
+                foreach (string s in files)
+                    rtb1.AppendText(s + "\n");
+                rtb1.Visible = true;
+                rtb1.AppendText("Creating TOC...\n");
+                string pathbase;
+                string t3 = files[0];
+                int n2 = t3.IndexOf("BIOGame");
+                if (n2 >= 0)
+                {
+                    pathbase = Path.GetDirectoryName(Path.GetDirectoryName(consoletocFile)) + "\\";
+                }
+                else
+                {
+                    pathbase = consoletocFile;
+                }
+                CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin",files.ToArray());
+                rtb1.AppendText("Done.\n");
             }
-            rtb1.Text = "Getting file list...\n";
-            rtb1.Visible = false;
-            foreach (string s in files)
-                rtb1.AppendText(s + "\n");
-            rtb1.Visible = true;
-            rtb1.AppendText("Creating TOC...\n");
-            string pathbase;
-            string t3 = files[0];
-            int n2 = t3.IndexOf("BIOGame");
-            if (n2 >= 0)
-            {
-                pathbase = Path.GetDirectoryName(Path.GetDirectoryName(consoletocFile)) + "\\";
-            }
-            else
-            {
-                pathbase = consoletocFile;
-            }
-            CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin",files.ToArray());
-            rtb1.AppendText("Done.\n");
         }
 
         public void CreateTOC(string basepath, string tocFile, string[] files)
@@ -162,6 +151,36 @@ namespace ME3Explorer.AutoTOC
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
             return res.ToArray();
+        }
+
+        private void generateAllTOCsButton_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            {
+                MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
+                return;
+            }
+            rtb1.Clear();
+            prepareToCreateTOC(ME3Directory.gamePath + @"BIOGame\");
+            DirectoryInfo[] dlcFolders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories();
+            foreach (DirectoryInfo d in dlcFolders)
+            {
+                prepareToCreateTOC(d.FullName);
+            }
+            rtb1.AppendText("***********************\n* All TOCs Generated! *\n***********************\n");
+        }
+
+        private void createTOCButton_Click(object sender, EventArgs e)
+        {
+            rtb1.Clear();
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
+            d.FileName = "PCConsoleTOC.bin";
+            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = Path.GetDirectoryName(d.FileName) + "\\";
+                prepareToCreateTOC(path);
+            }
         }
     }
 }

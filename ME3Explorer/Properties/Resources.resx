@@ -214,9 +214,6 @@
   <data name="versioncheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\versioncheck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="interp_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\interp_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="DDSConverter_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\DDSConverter_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -537,9 +534,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="document-save" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\document-save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sequence_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\sequence_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="HowTo15" xml:space="preserve">
     <value>You will see a message saying the work is done and all the data from the TLK file is now in a text file selected before.</value>
   </data>
@@ -572,5 +566,11 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   </data>
   <data name="sfar_editor2_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sfar_editor2_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="interp_viewer_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\interp_viewer_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sequence_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sequence_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

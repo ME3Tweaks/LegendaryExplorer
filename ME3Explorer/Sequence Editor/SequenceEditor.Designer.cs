@@ -83,7 +83,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -93,7 +93,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(652, 494);
+            this.splitContainer1.Size = new System.Drawing.Size(652, 518);
             this.splitContainer1.SplitterDistance = 445;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -111,8 +111,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(445, 494);
-            this.splitContainer2.SplitterDistance = 365;
+            this.splitContainer2.Size = new System.Drawing.Size(445, 518);
+            this.splitContainer2.SplitterDistance = 382;
             this.splitContainer2.TabIndex = 0;
             // 
             // graphEditor
@@ -124,10 +124,11 @@
             this.graphEditor.Location = new System.Drawing.Point(0, 0);
             this.graphEditor.Name = "graphEditor";
             this.graphEditor.RegionManagement = true;
-            this.graphEditor.Size = new System.Drawing.Size(445, 365);
+            this.graphEditor.Size = new System.Drawing.Size(445, 382);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
             this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
+            this.graphEditor.MouseEnter += new System.EventHandler(this.graphEditor_MouseEnter);
             // 
             // splitContainer3
             // 
@@ -142,7 +143,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(445, 125);
+            this.splitContainer3.Size = new System.Drawing.Size(445, 132);
             this.splitContainer3.SplitterDistance = 221;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -154,7 +155,7 @@
             this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
-            this.pg1.Size = new System.Drawing.Size(219, 100);
+            this.pg1.Size = new System.Drawing.Size(219, 107);
             this.pg1.TabIndex = 0;
             this.pg1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pg1_PropertyValueChanged);
             // 
@@ -166,7 +167,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(220, 100);
+            this.treeView1.Size = new System.Drawing.Size(220, 107);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -181,7 +182,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(2, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(201, 469);
+            this.listBox1.Size = new System.Drawing.Size(201, 493);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -214,28 +215,28 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // savePccToolStripMenuItem
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.savePccToolStripMenuItem.Text = "Save pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click);
             // 
             // saveViewToolStripMenuItem1
             // 
             this.saveViewToolStripMenuItem1.Name = "saveViewToolStripMenuItem1";
-            this.saveViewToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+            this.saveViewToolStripMenuItem1.Size = new System.Drawing.Size(187, 22);
             this.saveViewToolStripMenuItem1.Text = "Save View";
             this.saveViewToolStripMenuItem1.Click += new System.EventHandler(this.saveViewToolStripMenuItem1_Click);
             // 
             // saveViewToolStripMenuItem
             // 
             this.saveViewToolStripMenuItem.Name = "saveViewToolStripMenuItem";
-            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.saveViewToolStripMenuItem.Text = "Save Image";
             this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveViewToolStripMenuItem_Click);
             // 
@@ -257,7 +258,7 @@
             // addObjectsToolStripMenuItem
             // 
             this.addObjectsToolStripMenuItem.Name = "addObjectsToolStripMenuItem";
-            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addObjectsToolStripMenuItem.Text = "Add Objects";
             this.addObjectsToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
@@ -339,19 +340,19 @@
             this.addInputLinkToolStripMenuItem,
             this.breakLinksToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(185, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(186, 92);
             // 
             // openInPCCEditorToolStripMenuItem
             // 
             this.openInPCCEditorToolStripMenuItem.Name = "openInPCCEditorToolStripMenuItem";
-            this.openInPCCEditorToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.openInPCCEditorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.openInPCCEditorToolStripMenuItem.Text = "Open in PCC editor";
             this.openInPCCEditorToolStripMenuItem.Click += new System.EventHandler(this.openInPCCEditorToolStripMenuItem_Click);
             // 
             // openInInterpEditorToolStripMenuItem
             // 
             this.openInInterpEditorToolStripMenuItem.Name = "openInInterpEditorToolStripMenuItem";
-            this.openInInterpEditorToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.openInInterpEditorToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.openInInterpEditorToolStripMenuItem.Text = "Open in InterpViewer";
             this.openInInterpEditorToolStripMenuItem.Visible = false;
             this.openInInterpEditorToolStripMenuItem.Click += new System.EventHandler(this.openInInterpEditorToolStripMenuItem_Click);
@@ -359,14 +360,14 @@
             // addInputLinkToolStripMenuItem
             // 
             this.addInputLinkToolStripMenuItem.Name = "addInputLinkToolStripMenuItem";
-            this.addInputLinkToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.addInputLinkToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.addInputLinkToolStripMenuItem.Text = "Add input link";
             this.addInputLinkToolStripMenuItem.Click += new System.EventHandler(this.addInputLinkToolStripMenuItem_Click);
             // 
             // breakLinksToolStripMenuItem
             // 
             this.breakLinksToolStripMenuItem.Name = "breakLinksToolStripMenuItem";
-            this.breakLinksToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.breakLinksToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.breakLinksToolStripMenuItem.Text = "Break Links";
             // 
             // statusStrip1

@@ -76,7 +76,7 @@ namespace ME3Explorer.UnrealHelper
             l.Entries.Add(f1.dLCEditorToolStripMenuItem.Text);
             l.Entries.Add(f1.tLKEditorToolStripMenuItem.Text);
 
-            l.Entries.Add(f1.tOCbinEditorToolStripMenuItem.Text);           //5
+            l.Entries.Add("");           //5
             l.Entries.Add(f1.decompressorToolStripMenuItem.Text);
             l.Entries.Add(f1.conditionalsToolStripMenuItem.Text);
             l.Entries.Add(f1.lanugageSelectorToolStripMenuItem.Text);
@@ -220,7 +220,7 @@ namespace ME3Explorer.UnrealHelper
             f1.userToolsToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[0];
             f1.dLCEditorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[3];
             f1.tLKEditorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[4];
-            f1.tOCbinEditorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[5];
+            //f1.tOCbinEditorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[5];
             f1.decompressorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[6];
             f1.conditionalsToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[7];
             f1.lanugageSelectorToolStripMenuItem.Text = GlobalLang[CurrentLanguage].Entries[8];

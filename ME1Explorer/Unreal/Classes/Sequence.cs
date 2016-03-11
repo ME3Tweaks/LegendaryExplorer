@@ -35,7 +35,7 @@ namespace ME1Explorer.Unreal.Classes
             if (props == null || props.Count == 0)
                 return;
             for (int i = 0; i < props.Count(); i++)
-                if (pcc.GetName(props[i].Name) == "SequenceObjects")
+                if (pcc.getNameEntry(props[i].Name) == "SequenceObjects")
                 {
                     SequenceObjects = new List<int>();
                     byte[] buff = props[i].raw;

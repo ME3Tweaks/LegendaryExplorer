@@ -63,6 +63,16 @@ namespace ME1Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap dialogue_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("dialogue_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap package_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
@@ -86,6 +96,26 @@ namespace ME1Explorer.Properties {
         internal static System.Drawing.Bitmap save_gameoperator_64x64 {
             get {
                 object obj = ResourceManager.GetObject("save_gameoperator_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sequence_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("sequence_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TLK_editor_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("TLK_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

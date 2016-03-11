@@ -1163,6 +1163,7 @@ namespace ME3Explorer
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
             Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
+            ip.Text = "Interpreter (PCCEditor 2)";
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;

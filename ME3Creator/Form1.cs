@@ -2068,5 +2068,15 @@ namespace ME3Creator
                 toolStripLabel1.Visible = toolStripTextBox1.Visible = false;
             }
         }
+
+        private void cloneToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+            int n = listBox2.SelectedIndex;
+            if (n == -1)
+                return;
+            pcc.CloneEntry(-(n + 1));
+            RefreshAll();
+        }
     }
 }

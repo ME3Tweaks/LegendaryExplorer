@@ -72,6 +72,13 @@ namespace ME3LibWV
         }
     }
 
+    public struct NameReference
+    {
+        public int index;
+        public int count;
+        public String Name;
+    }
+
     public static class PropertyReader
     {
         public enum Type
@@ -108,6 +115,7 @@ namespace ME3LibWV
             public int len;
             public string StringValue;
             public int IntValue;
+            public NameReference NameValue;
             public List<PropertyValue> Array;
         }
 
@@ -416,6 +424,13 @@ namespace ME3LibWV
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
+                    var nameRef = new NameReference();
+                    nameRef.index = v.IntValue;
+                    nameRef.count = BitConverter.ToInt32(raw, start + 4);
+                    nameRef.Name = pcc.GetName(nameRef.index);
+                    if (nameRef.count > 0)
+                        nameRef.Name += "_" + (nameRef.count - 1);
+                    v.NameValue = nameRef;
                     v.len = 8;
                     break;
                 case "BoolProperty":
@@ -445,6 +460,7 @@ namespace ME3LibWV
         }
         public static int detectStart(PCCPackage pcc, byte[] raw, uint flags)
         {
+            //has stack
             if ((flags & 0x02000000) != 0)
             {
                 return 30;

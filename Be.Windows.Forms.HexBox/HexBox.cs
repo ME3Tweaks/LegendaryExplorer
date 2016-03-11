@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Security.Permissions;
 using System.Windows.Forms.VisualStyles;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace Be.Windows.Forms
@@ -2094,7 +2095,25 @@ namespace Be.Windows.Forms
             else if (da.GetDataPresent(typeof(string)))
             {
                 string sBuffer = (string)da.GetData(typeof(string));
-                buffer = System.Text.Encoding.ASCII.GetBytes(sBuffer);
+                Regex invalidHex = new Regex("[^0-9A-Fa-f]");
+                if (!invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0 && _keyInterpreter == _ki)
+                {
+                    buffer = new byte[sBuffer.Length / 2];
+                    byte tmp;
+                    for (int i = 0; i < sBuffer.Length; i += 2)
+                    {
+                        if (!byte.TryParse(sBuffer.Substring(i, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.CurrentInfo, out tmp))
+                        {
+                            buffer = null;
+                            break;
+                        }
+                        buffer[i / 2] = tmp;
+                    }
+                }
+                if(buffer == null)
+                {
+                    buffer = System.Text.Encoding.ASCII.GetBytes(sBuffer);
+                }
             }
             else
             {

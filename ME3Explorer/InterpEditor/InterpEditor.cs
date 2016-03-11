@@ -20,7 +20,7 @@ namespace ME3Explorer.InterpEditor
         public InterpEditor()
         {
             if (SText.fontcollection == null)
-                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+                SText.LoadFont("KismetFont.ttf");
             InitializeComponent();
             timeline.Scrollbar = vScrollBar1;
             timeline.GroupList.ScrollbarH = hScrollBar1;
@@ -103,17 +103,6 @@ namespace ME3Explorer.InterpEditor
             if (n == -1)
                 return;
             loadInterpData(objects[n]);
-        }
-
-        public static PrivateFontCollection LoadFont(string file, int fontSize)
-        {
-            PrivateFontCollection fontCollection = new PrivateFontCollection();
-            fontCollection.AddFontFile(file);
-            if (fontCollection.Families.Length < 0)
-            {
-                throw new InvalidOperationException("No font familiy found when loading font");
-            }
-            return fontCollection;
         }
 
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
