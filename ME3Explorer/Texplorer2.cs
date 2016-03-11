@@ -2618,14 +2618,7 @@ namespace ME3Explorer
 
         private void treeIOToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (Helpers.KFreonMessageBox box = new Helpers.KFreonMessageBox("Tree Input/Output GUI", "Do you want to import or export a tree?", "Import", MessageBoxIcon.Information, "Export", "Cancel"))
-            {
-                DialogResult dr = box.ShowDialog();
-                if (dr == System.Windows.Forms.DialogResult.Abort)
-                    ExportTree();
-                else if (dr == System.Windows.Forms.DialogResult.OK)
-                    ImportTree();
-            }
+            
         }
 
         private void changePathsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2942,6 +2935,16 @@ namespace ME3Explorer
                     }
             }
             return true;
+        }
+
+        private void importTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImportTree();
+        }
+
+        private void asFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExportTree();
         }
     }
 }
