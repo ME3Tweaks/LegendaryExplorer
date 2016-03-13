@@ -301,12 +301,14 @@ namespace ME3Explorer
                     ProgBarUpdater.IncrementBar();
                 }
 
-                StatusUpdater.UpdateText("All textures saved!");
                 OutputBoxPrintLn("All textures saved!");
                 ChangedTextures.Clear();
-                ProgBarUpdater.ChangeProgressBar(1, 1);
                 DisableContext = false;
+                StatusUpdater.UpdateText("Updating TOC's...");
+                ProgBarUpdater.ChangeProgressBar(0, 1);
                 UpdateTOCs(pathBIOGame, WhichGame, DLCPath);
+                ProgBarUpdater.ChangeProgressBar(1, 1);
+                StatusUpdater.UpdateText("All textures saved!");
                 return true;
             });
         }
