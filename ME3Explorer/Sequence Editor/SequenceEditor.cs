@@ -482,6 +482,7 @@ namespace ME3Explorer
             ip.Index = n;
             ip.InitInterpreter(talkFiles);
             ip.Show();
+            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)

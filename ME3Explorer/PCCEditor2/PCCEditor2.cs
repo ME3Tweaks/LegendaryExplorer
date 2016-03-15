@@ -1169,6 +1169,7 @@ namespace ME3Explorer
             ip.Index = n;
             ip.InitInterpreter();
             ip.Show();
+            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

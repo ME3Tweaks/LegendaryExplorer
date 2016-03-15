@@ -1060,6 +1060,7 @@
     <None Include="Icons\versioncheck.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Back.png" />
+    <Content Include="Icons\interpreter_icon.ico" />
     <Content Include="Icons\interp_viewer_icon.ico" />
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1232,6 +1233,7 @@
     <None Include="Resources\sfar_basiceditor_icon.ico" />
     <None Include="Resources\sfar_basiceditor_icon_64x64.png" />
     <None Include="Resources\sfar_editor2_icon_64x64.png" />
+    <None Include="Resources\interpreter_icon_64x64.png" />
     <Content Include="SevenZip.csproj" />
   </ItemGroup>
   <ItemGroup>
