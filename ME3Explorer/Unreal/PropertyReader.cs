@@ -400,6 +400,9 @@ namespace ME3Explorer.Unreal
                 case Type.StrProperty:
                     pg = new CustomProperty(pcc.Names[p.Name], cat, p.Value.StringValue, typeof(string), false, true);
                     break;
+                case Type.ArrayProperty:
+                    pg = new CustomProperty(pcc.Names[p.Name], cat, BitConverter.ToInt32(p.raw,24) + " elements", typeof(string), false, true);
+                    break;
                 case Type.StructProperty:
                     string structType = pcc.getNameEntry(p.Value.IntValue);
                     if(structType == "Color") {
