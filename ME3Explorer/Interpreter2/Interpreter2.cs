@@ -535,12 +535,14 @@ namespace ME3Explorer.Interpreter2
                 }
                 else if (e.Node.Tag != null && (e.Node.Tag.Equals(STRUCTLEAFFLOAT_TAG) || e.Node.Tag.Equals(STRUCTLEAFBYTE_TAG) || e.Node.Tag.Equals(STRUCTLEAFDEG_TAG)))
                 {
+                    deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     TryParseStructProperty((int)e.Node.Tag);
                     LAST_SELECTED_PROP_TYPE = (int)e.Node.Tag;
                 }
                 else
                 {
+                    deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     TryParseProperty();
                     LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
@@ -641,6 +643,7 @@ namespace ME3Explorer.Interpreter2
                 int value = BitConverter.ToInt32(memory, pos);
                 proptext.Text = value.ToString();
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = true;
+                deleteArrayElement.Visible = true;
                 arrayPropertyDropdown.Enabled = true;
             }
             catch (Exception ex)
@@ -814,6 +817,62 @@ namespace ME3Explorer.Interpreter2
             }
         }
 
+        private void deleteArrayLeaf()
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                if (hb1.SelectionStart != lastSetOffset)
+                {
+                    return; //user manually moved cursor
+                }
+
+                if (memory.Length - pos < 16) //not long enough to deal with
+                    return;
+
+                TreeNode parent = LAST_SELECTED_NODE.Parent;
+                if (parent != null && Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY)
+                {
+                    int parentOffset = Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name);
+                    Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
+                    memory = RemoveIndices(memory,Convert.ToInt32(LAST_SELECTED_NODE.Name),4);
+                    updateArrayLength(parentOffset, -1, -4);
+                    RefreshMem();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private T[] RemoveIndices<T>(T[] IndicesArray, int RemoveAt, int NumElementsToRemove)
+        {
+            if (RemoveAt < 0 || RemoveAt > IndicesArray.Length - 1 || NumElementsToRemove < 0 || NumElementsToRemove + RemoveAt > IndicesArray.Length - 1)
+            {
+                return IndicesArray;
+            }
+            T[] newIndicesArray = new T[IndicesArray.Length - NumElementsToRemove];
+
+            int i = 0;
+            int j = 0;
+            while (i < IndicesArray.Length)
+            {
+                if (i < RemoveAt || i >= RemoveAt + NumElementsToRemove)
+                {                    
+                    newIndicesArray[j] = IndicesArray[i];
+                    j++;
+                } else
+                {
+                    Debug.WriteLine("Skipping byte: " + i.ToString("X4"));
+                }
+
+                i++;
+            }
+
+            return newIndicesArray;
+        }
+
         private void WriteMem(int pos, byte[] buff)
         {
             for (int i = 0; i < buff.Length; i++)
@@ -941,6 +1000,11 @@ namespace ME3Explorer.Interpreter2
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void deleteArrayElement_Click(object sender, EventArgs e)
+        {
+            deleteArrayLeaf();
         }
     }
 }
