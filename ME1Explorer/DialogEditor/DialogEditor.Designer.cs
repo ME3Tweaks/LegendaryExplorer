@@ -131,22 +131,22 @@
             // openPCCToolStripMenuItem
             // 
             this.openPCCToolStripMenuItem.Name = "openPCCToolStripMenuItem";
-            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.openPCCToolStripMenuItem.Text = "Open Package";
             this.openPCCToolStripMenuItem.Click += new System.EventHandler(this.openPCCToolStripMenuItem_Click);
             // 
             // saveChangesToolStripMenuItem
             // 
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.saveChangesToolStripMenuItem.Text = "Save Changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
             // manageTLKSetToolStripMenuItem
             // 
             this.manageTLKSetToolStripMenuItem.Name = "manageTLKSetToolStripMenuItem";
-            this.manageTLKSetToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.manageTLKSetToolStripMenuItem.Text = "Manage TLKSet";
+            this.manageTLKSetToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.manageTLKSetToolStripMenuItem.Text = "Manage Loaded TLKs";
             this.manageTLKSetToolStripMenuItem.Click += new System.EventHandler(this.manageTLKSetToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
@@ -177,7 +177,7 @@
             this.toolStripMenuItem10,
             this.toSpeakerListToolStripMenuItem});
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.addToolStripMenuItem.Text = "Add";
             // 
             // toStartingListToolStripMenuItem
@@ -272,7 +272,7 @@
             this.toolStripMenuItem5,
             this.fromFemalFaceSetsToolStripMenuItem});
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             // 
             // fromStartingListToolStripMenuItem
@@ -373,7 +373,7 @@
             this.toolStripMenuItem11,
             this.scriptListToolStripMenuItem});
             this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.cloneToolStripMenuItem.Text = "Clone";
             // 
             // entryListEntryToolStripMenuItem
@@ -420,7 +420,7 @@
             this.entriesToolStripMenuItem,
             this.repliesToolStripMenuItem});
             this.expandToolStripMenuItem.Name = "expandToolStripMenuItem";
-            this.expandToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.expandToolStripMenuItem.Text = "Expand All";
             // 
             // entriesToolStripMenuItem
@@ -443,7 +443,7 @@
             this.entriesToolStripMenuItem1,
             this.repliesToolStripMenuItem1});
             this.collapseToolStripMenuItem.Name = "collapseToolStripMenuItem";
-            this.collapseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.collapseToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.collapseToolStripMenuItem.Text = "Collapse All";
             // 
             // entriesToolStripMenuItem1

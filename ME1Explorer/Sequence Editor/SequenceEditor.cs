@@ -36,16 +36,15 @@ namespace ME1Explorer
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
-
-            var tlkPath = ME1Directory.cookedPath + "BIOGame_INT.tlk";
-            //talkFile = new TalkFile();
-            //talkFile.LoadTlkData(tlkPath);
+            
+            talkFiles = new TalkFiles();
+            talkFiles.LoadGlobalTlk();
             if(SText.fontcollection == null)
                 SText.fontcollection = LoadFont("KismetFont.ttf", 8);
-            //SObj.talkfile = talkFile;
-            if (System.IO.File.Exists(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+            SObj.talkfiles = talkFiles;
+            if (File.Exists(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
-                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
                 if (options.ContainsKey("AutoSave")) 
                     autoSaveViewToolStripMenuItem.Checked = (bool)options["AutoSave"];
                 if (options.ContainsKey("OutputNumbers"))
@@ -64,7 +63,7 @@ namespace ME1Explorer
             public float Y;
         }
 
-        //private TalkFile talkFile;
+        private TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         private ZoomController zoomController;
@@ -87,7 +86,7 @@ namespace ME1Explorer
                 saveView();
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc = new PCCObject(d.FileName);
                 CurrentFile = d.FileName;
@@ -211,8 +210,8 @@ namespace ME1Explorer
             SetupJSON(index);
             if(SavedPositions == null)
                 SavedPositions = new List<SaveData>();
-            if (fromFile && System.IO.File.Exists(JSONpath))
-                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(System.IO.File.ReadAllText(JSONpath));
+            if (fromFile && File.Exists(JSONpath))
+                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             GenerateGraph(SequenceIndex);
             selectedIndex = -1;
         }
@@ -227,9 +226,9 @@ namespace ME1Explorer
                 packageName = packageName.Replace("SequenceReference", "");
                 int idx = index;
                 string ObjName = "";
-                while (idx != 0)
+                while (idx > 0)
                 {
-                    if (pcc.Exports[pcc.Exports[idx].LinkID].ClassName == "SequenceReference")
+                    if (pcc.Exports[pcc.Exports[idx].LinkID - 1].ClassName == "SequenceReference")
                     {
                         List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
                         for (int i = 0; i < p.Count(); i++)
@@ -355,20 +354,16 @@ namespace ME1Explorer
                 {
                     if (o.GetType() == Type.GetType("ME1Explorer.SequenceObjects.SAction"))
                     {
-                        if (SavedPositions.Count != 0)
-                        {
-                            SaveData savedInfo = new SaveData();
-                            if (RefOrRefChild)
-                                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
-                            else
-                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
-                            //if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
-                                o.Layout(savedInfo.X, savedInfo.Y);
-                        }
+                        SaveData savedInfo = new SaveData();
+                        if (RefOrRefChild)
+                            savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
+                        else
+                            savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
+                        if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
+                            o.Layout(savedInfo.X, savedInfo.Y);
                         else
                         {
-                            o.Layout(StartPosActions, 250);
-                            StartPosActions += o.Width + 20;
+                            o.Layout(-0.1f, -0.1f);
                         }
                     }
                 }
@@ -450,9 +445,7 @@ namespace ME1Explorer
             if (!System.IO.Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews"))
                 System.IO.Directory.CreateDirectory(ME1Directory.cookedPath + @"\SequenceViews");
             System.IO.File.WriteAllText(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
-
-          
-            //taskbar.RemoveTool(this);
+            
         }
 
         //save image
@@ -462,7 +455,7 @@ namespace ME1Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "Bmp Files (*.bmp)|*.bmp";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
                 RectangleF rr = r.GlobalFullBounds;
@@ -484,17 +477,10 @@ namespace ME1Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "ME1 Package File|*." + pcc.pccFileName.Split('.')[pcc.pccFileName.Split('.').Length - 1];
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.SaveToFile(d.FileName);
-                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME1Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                //{
-                //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
-                //    tc.MdiParent = this.ParentForm;
-                //    tc.Show();
-                //    tc.EasyUpdate();
-                //    tc.Close();
-                //}
+                MessageBox.Show("Done");
             }
         }
 
@@ -526,7 +512,7 @@ namespace ME1Explorer
                 return;
             selectedByNode = true;
             listBox1.SelectedIndex = n;
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
@@ -633,9 +619,9 @@ namespace ME1Explorer
             if (toFile)
             {
                 string outputFile = JsonConvert.SerializeObject(SavedPositions);
-                if (!System.IO.Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
-                    System.IO.Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
-                System.IO.File.WriteAllText(JSONpath, outputFile);
+                if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
+                    Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
+                File.WriteAllText(JSONpath, outputFile);
             }
             
         }
@@ -875,6 +861,17 @@ namespace ME1Explorer
             graphEditor.Focus();
         }
 
+        private void manageLoadedTLKsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TlkManager tm = new TlkManager();
+            tm.InitTlkManager(talkFiles);
+            tm.Show();
+        }
+
+        private void treeView1_MouseEnter(object sender, EventArgs e)
+        {
+            treeView1.Focus();
+        }
     }
 
     public class ZoomController
