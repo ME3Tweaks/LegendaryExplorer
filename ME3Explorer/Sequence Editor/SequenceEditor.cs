@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.SequenceObjects;
-using ME3Explorer.TOCUpdater;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -32,7 +31,7 @@ namespace ME3Explorer
 
         public SequenceEditor()
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 this.Close();
@@ -42,16 +41,12 @@ namespace ME3Explorer
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
-
-            var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFiles = new TalkFiles();
-            talkFiles.LoadTlkData(tlkPath);
+            
             if(SText.fontcollection == null)
                 SText.LoadFont("KismetFont.ttf");
-            SObj.talkfiles = talkFiles;
-            if (System.IO.File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+            if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
-                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
                 if (options.ContainsKey("AutoSave")) 
                     autoSaveViewToolStripMenuItem.Checked = (bool)options["AutoSave"];
                 if (options.ContainsKey("OutputNumbers"))
@@ -69,8 +64,7 @@ namespace ME3Explorer
             public float X;
             public float Y;
         }
-
-        private TalkFiles talkFiles;
+        
         private bool selectedByNode;
         private int selectedIndex;
         private ZoomController zoomController;
@@ -93,7 +87,7 @@ namespace ME3Explorer
                 saveView();
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "PCC Files(*.pcc)|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try {
                     pcc = new PCCObject(d.FileName);
@@ -161,7 +155,7 @@ namespace ME3Explorer
                     }
                     else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
                     {
-                        var props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1].Data);
+                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1].Data);
                         var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -193,8 +187,8 @@ namespace ME3Explorer
             SetupJSON(index);
             if(SavedPositions == null)
                 SavedPositions = new List<SaveData>();
-            if (fromFile && System.IO.File.Exists(JSONpath))
-                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(System.IO.File.ReadAllText(JSONpath));
+            if (fromFile && File.Exists(JSONpath))
+                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             GenerateGraph(SequenceIndex);
             selectedIndex = -1;
         }
@@ -413,9 +407,9 @@ namespace ME3Explorer
             options.Add("AutoSave", autoSaveViewToolStripMenuItem.Checked);
             options.Add("GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked);
             string outputFile = JsonConvert.SerializeObject(options);
-            if (!System.IO.Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews"))
-                System.IO.Directory.CreateDirectory(ME3Directory.cookedPath + @"\SequenceViews");
-            System.IO.File.WriteAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
+            if (!Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews"))
+                Directory.CreateDirectory(ME3Directory.cookedPath + @"\SequenceViews");
+            File.WriteAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
 
           
             taskbar.RemoveTool(this);
@@ -427,7 +421,7 @@ namespace ME3Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "Bmp Files (*.bmp)|*.bmp";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
                 RectangleF rr = r.GlobalFullBounds;
@@ -449,17 +443,10 @@ namespace ME3Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.altSaveToFile(d.FileName, true);
-                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                //{
-                //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
-                //    tc.MdiParent = this.ParentForm;
-                //    tc.Show();
-                //    tc.EasyUpdate();
-                //    tc.Close();
-                //}
+                MessageBox.Show("Done");
             }
         }
 
@@ -480,7 +467,7 @@ namespace ME3Explorer
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;
-            ip.InitInterpreter(talkFiles);
+            ip.InitInterpreter();
             ip.Show();
             taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
@@ -493,7 +480,7 @@ namespace ME3Explorer
                 return;
             selectedByNode = true;
             listBox1.SelectedIndex = n;
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
@@ -604,9 +591,9 @@ namespace ME3Explorer
             if (toFile)
             {
                 string outputFile = JsonConvert.SerializeObject(SavedPositions);
-                if (!System.IO.Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
-                    System.IO.Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
-                System.IO.File.WriteAllText(JSONpath, outputFile);
+                if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
+                    Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
+                File.WriteAllText(JSONpath, outputFile);
             }
             
         }
@@ -765,7 +752,7 @@ namespace ME3Explorer
                     for (int i = 0; i < 4; i++)
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
-                case ME3Explorer.Unreal.PropertyReader.Type.StrProperty:
+                case PropertyReader.Type.StrProperty:
                     string s = Convert.ToString(e.ChangedItem.Value);
                     int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
                     List<byte> stringBuff = new List<byte>(s.Length * 2);
@@ -984,7 +971,7 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadPCC(CurrentFile, talkFiles);
+            p.LoadPCC(CurrentFile);
             if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
@@ -1012,7 +999,6 @@ namespace ME3Explorer
         private void loadAlternateTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.tlkFiles = talkFiles;
             tm.InitTlkManager();
             tm.Show();
         }

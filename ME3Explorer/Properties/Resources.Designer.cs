@@ -1384,6 +1384,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap TLKManager_icon_64x64 {
+            get {
+                object obj = ResourceManager.GetObject("TLKManager_icon_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap tocbin {
             get {
                 object obj = ResourceManager.GetObject("tocbin", resourceCulture);

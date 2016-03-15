@@ -163,7 +163,6 @@ namespace ME3Explorer.InterpEditor
 
         public TreeView propView;
         public TreeView keyPropView;
-        public TalkFiles talkfiles;
         public PCCObject pcc;
         public int index;
 
@@ -931,10 +930,10 @@ namespace ME3Explorer.InterpEditor
             public bool bShowAtTop;
             public bool bUseOnlyAsReplyWheelHint;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc, TalkFiles tlk)
+            public TreeNode ToTree(int index, float time, PCCObject pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("nStrRefID : " + tlk.findDataById(nStrRefID) + " (" + nStrRefID + ")");
+                root.Nodes.Add("nStrRefID : " + TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
                 root.Nodes.Add("fLength : " + fLength);
                 root.Nodes.Add("bShowAtTop : " + bShowAtTop);
                 root.Nodes.Add("bUseOnlyAsReplyWheelHint : " + bUseOnlyAsReplyWheelHint);
@@ -993,7 +992,7 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             TreeNode t = new TreeNode("m_aSubtitleData");
             for (int i = 0; i < m_aSubtitleData.Count; i++)
-                t.Nodes.Add(m_aSubtitleData[i].ToTree(i, m_aTrackKeys[i].fTime, pcc, talkfiles));
+                t.Nodes.Add(m_aSubtitleData[i].ToTree(i, m_aTrackKeys[i].fTime, pcc));
             AddToTree(t);
         }
     }
@@ -1102,7 +1101,7 @@ namespace ME3Explorer.InterpEditor
         public override void ToTree()
         {
             base.ToTree();
-            AddToTree("m_nStrRefID : " + talkfiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
+            AddToTree("m_nStrRefID : " + TalkFiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
             AddToTree("m_fJCutOffset : " + m_fJCutOffset);
         }
     }
@@ -1867,11 +1866,11 @@ namespace ME3Explorer.InterpEditor
             public bool bAllowInConversation;
             public bool bSubtitleHasPriority;
 
-            public TreeNode ToTree(int index, float time, TalkFiles tlk)
+            public TreeNode ToTree(int index, float time)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pConversation : " + pConversation);
-                root.Nodes.Add("nLineStrRef : " + tlk.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
+                root.Nodes.Add("nLineStrRef : " + TalkFiles.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
                 root.Nodes.Add("srActorNameOverride : " + srActorNameOverride);
                 root.Nodes.Add("bForceHideSubtitles : " + bForceHideSubtitles);
                 root.Nodes.Add("bPlaySoundOnly : " + bPlaySoundOnly);
@@ -1940,7 +1939,7 @@ namespace ME3Explorer.InterpEditor
             base.ToTree();
             TreeNode t = new TreeNode("m_aFOVOKeys");
             for (int i = 0; i < m_aFOVOKeys.Count; i++)
-                t.Nodes.Add(m_aFOVOKeys[i].ToTree(i, m_aTrackKeys[i].fTime, talkfiles));
+                t.Nodes.Add(m_aFOVOKeys[i].ToTree(i, m_aTrackKeys[i].fTime));
             AddToTree(t);
         }
     }
