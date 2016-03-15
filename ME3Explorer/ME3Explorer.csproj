@@ -91,10 +91,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Libraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Piccolo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Piccolo.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -1125,6 +1121,10 @@
     <ProjectReference Include="..\ME3VanillaMaker\ME3VanillaMaker.csproj">
       <Project>{2D2226F5-75D2-4AEE-9799-EAAB9FC931AF}</Project>
       <Name>ME3VanillaMaker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
+      <Name>Piccolo</Name>
     </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
