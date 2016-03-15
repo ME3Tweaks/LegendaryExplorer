@@ -361,14 +361,13 @@ namespace ME1Explorer.Unreal
                     p.Value = v;
                     break;
                 case "StrProperty":
-                    count = (int)BitConverter.ToInt64(raw, pos + 24);
+                    count = BitConverter.ToInt32(raw, pos + 24);
                     p = new Property();
                     p.Name = t;
                     p.Size = size;
                     p.TypeVal = Type.StrProperty;
                     p.i = 0;
                     p.offsetval = pos + 24;
-                    //count *= -1;
                     v = new PropertyValue();
                     v.IntValue = type;
                     v.len = count;
@@ -424,10 +423,19 @@ namespace ME1Explorer.Unreal
                     p.i = 0;
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
-                    v.StringValue = pcc.getNameEntry(sname);
-                    v.IntValue = sname; 
+                    if (size != 1)
+                    {
+                        v.StringValue = pcc.getNameEntry(sname);
+                        v.IntValue = sname; 
+                        pos += 32;
+                    }
+                    else
+                    {
+                        v.StringValue = "";
+                        v.IntValue = raw[pos + 24];
+                        pos += 25;
+                    }
                     v.len = size;
-                    pos += 32;
                     //v.IntValue = (int)BitConverter.ToInt64(raw, pos);
                     //pos += size;
                     p.Value = v;
@@ -782,7 +790,7 @@ namespace ME1Explorer.Unreal
                     p.Value = v;
                     break;
                 case "StrProperty":
-                    count = (int)BitConverter.ToInt64(raw, pos + 24);
+                    count = BitConverter.ToInt32(raw, pos + 24);
                     p = new Property();
                     p.Name = name;
                     p.TypeVal = Type.StrProperty;

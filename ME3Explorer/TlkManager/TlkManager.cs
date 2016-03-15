@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ME3Explorer
 {
     public partial class TlkManager : Form
     {
-        public TalkFiles tlkFiles;
 
         public TlkManager()
         {
@@ -27,7 +19,7 @@ namespace ME3Explorer
         private void refresh()
         {
             listBox1.Items.Clear();
-            foreach (TalkFile tlk in tlkFiles.tlkList)
+            foreach (TalkFile tlk in TalkFiles.tlkList)
             {
                 listBox1.Items.Add(tlk.path);
             }
@@ -37,9 +29,9 @@ namespace ME3Explorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.tlk|*.tlk";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
-                tlkFiles.LoadTlkData(d.FileName);
+                TalkFiles.addTLK(d.FileName);
                 refresh();
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
             }
@@ -50,7 +42,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n != -1)
             {
-                tlkFiles.tlkList.RemoveAt(n);
+                TalkFiles.removeTLK(n);
                 refresh();
             }
         }
@@ -60,9 +52,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n > 0)
             {
-                TalkFile tlk = tlkFiles.tlkList[n];
-                tlkFiles.tlkList.RemoveAt(n);
-                tlkFiles.tlkList.Insert(n - 1, tlk);
+                TalkFiles.moveTLKUp(n);
                 refresh();
                 listBox1.SelectedIndex = n - 1;
             }
@@ -73,9 +63,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n != -1 && n < listBox1.Items.Count - 1)
             {
-                TalkFile tlk = tlkFiles.tlkList[n];
-                tlkFiles.tlkList.RemoveAt(n);
-                tlkFiles.tlkList.Insert(n + 1, tlk);
+                TalkFiles.moveTLKDown(n);
                 refresh();
                 listBox1.SelectedIndex = n + 1;
             }

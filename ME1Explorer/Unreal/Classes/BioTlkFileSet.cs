@@ -10,7 +10,7 @@ namespace ME1Explorer.Unreal.Classes
         public PCCObject pcc;
         public int index;
         public int selectedTLK;
-        public string Name { get { return index != -1 ? pcc.Exports[index].ObjectName : null; } }
+        public string Name { get { return index != -1 ? (pcc.Exports[index].ObjectName  + "."): null; } }
 
         public BioTlkFileSet(PCCObject _pcc)
         {

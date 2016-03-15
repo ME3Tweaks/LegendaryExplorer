@@ -69,8 +69,7 @@ namespace ME3Explorer.Interpreter2
         private const int ARRAYSVIEW_RAW = 0;
         private const int ARRAYSVIEW_IMPORTEXPORT = 1;
         private const int ARRAYSVIEW_NAMES = 2;
-
-        private TalkFiles talkFiles;
+        
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private int LAST_SELECTED_PROP_TYPE = -100; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
@@ -81,27 +80,12 @@ namespace ME3Explorer.Interpreter2
             arrayViewerDropdown.SelectedIndex = 0;
         }
 
-        public void InitInterpreter(TalkFiles editorTalkFile = null)
+        public void InitInterpreter()
         {
             DynamicByteProvider db = new DynamicByteProvider(pcc.Exports[Index].Data);
             hb1.ByteProvider = db;
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
-
-            // Load the default TLK file into memory.
-            if (editorTalkFile == null)
-            {
-                if (ME3Directory.cookedPath != null)
-                {
-                    var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                    talkFiles = new TalkFiles();
-                    talkFiles.LoadTlkData(tlkPath);
-                }
-            }
-            else
-            {
-                talkFiles = editorTalkFile;
-            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -395,7 +379,7 @@ namespace ME3Explorer.Interpreter2
                 case STRINGREF_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx.ToString() + ": ";
-                    s += talkFiles == null ? "(.tlk not loaded)" : talkFiles.findDataById(idx);
+                    s += TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : TalkFiles.findDataById(idx);
                     break;
             }
             TreeNode ret = new TreeNode(s);

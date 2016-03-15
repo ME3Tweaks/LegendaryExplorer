@@ -32,6 +32,18 @@ namespace ME1Explorer
             }
         }
 
+        public void InitTlkManager(TalkFiles tlks)
+        {
+            packages = new List<PCCObject>();
+            tlkFileSets = new List<BioTlkFileSet>();
+            selectedTlks = tlks;
+            
+            foreach (TalkFile tlkFile in selectedTlks.tlkList)
+            {
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.fullname) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
+            }
+        }
+
         public void InitTlkManager(PCCObject pcc, BioTlkFileSet tlkSet, TalkFiles tlks = null)
         {
             packages = new List<PCCObject>();
@@ -59,7 +71,7 @@ namespace ME1Explorer
             }
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.fullname) + " -> " + tlkFile.BioTlkSetName + " -> " + tlkFile.Name); 
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.fullname) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
             }
         }
 

@@ -91,10 +91,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Libraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Piccolo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Piccolo.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -324,7 +320,7 @@
     <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </Compile>
-    <Compile Include="TalkFiles.cs" />
+    <Compile Include="TlkManager\TalkFiles.cs" />
     <Compile Include="Texplorer2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -337,10 +333,10 @@
     <Compile Include="TexplorerFirstTimeSetup.Designer.cs">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="TlkManager.cs">
+    <Compile Include="TlkManager\TlkManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TlkManager.Designer.cs">
+    <Compile Include="TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Unreal\Classes\BioConversation.cs" />
@@ -994,7 +990,7 @@
     <EmbeddedResource Include="TextureExplorer.resx">
       <DependentUpon>TextureExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TlkManager.resx">
+    <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TOCeditor.resx">
@@ -1064,7 +1060,9 @@
     <None Include="Icons\versioncheck.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Back.png" />
+    <Content Include="Icons\interpreter_icon.ico" />
     <Content Include="Icons\interp_viewer_icon.ico" />
+    <Content Include="Icons\TLKManager_icon.ico" />
     <Content Include="KismetFont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1125,6 +1123,10 @@
     <ProjectReference Include="..\ME3VanillaMaker\ME3VanillaMaker.csproj">
       <Project>{2D2226F5-75D2-4AEE-9799-EAAB9FC931AF}</Project>
       <Name>ME3VanillaMaker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Piccolo\Piccolo.csproj">
+      <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
+      <Name>Piccolo</Name>
     </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
@@ -1232,6 +1234,8 @@
     <None Include="Resources\sfar_basiceditor_icon.ico" />
     <None Include="Resources\sfar_basiceditor_icon_64x64.png" />
     <None Include="Resources\sfar_editor2_icon_64x64.png" />
+    <None Include="Resources\interpreter_icon_64x64.png" />
+    <None Include="Resources\TLKManager_icon_64x64.png" />
     <Content Include="SevenZip.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@ namespace ME3Explorer
         {
             InitializeComponent();
             disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            TalkFiles.LoadSavedTlkList();
         }
 
         private async void DoDLCCheck()
@@ -74,7 +75,7 @@ namespace ME3Explorer
             expl.MdiParent = this;
             expl.WindowState = FormWindowState.Maximized;
             expl.Show();
-            taskbar.AddTool(expl, Properties.Resources.dlc_basiceditor_64x64);
+            taskbar.AddTool(expl, Properties.Resources.sfar_basiceditor_icon_64x64);
         }
 
         private void languageSelectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -623,7 +624,7 @@ namespace ME3Explorer
         {
             var tool = new DLCEditor2.DLCEditor2();
             OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.dlc_editor2_64x64);
+            taskbar.AddTool(tool, Properties.Resources.sfar_editor2_icon_64x64);
         }
 
         private void pAREditorToolStripMenuItem_Click(object sender, EventArgs e)

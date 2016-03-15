@@ -59,13 +59,13 @@ namespace ME3Explorer
             tool_button.Click += new EventHandler(tipek_onclick); //I can haz event handler? No? ORLY?!
             if (wpfWindow != null)
             {
-                tool_button.Text = wpfWindow.Title;
+                tool_button.ToolTipText = wpfWindow.Title;
                 tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("This tool cannot be docked.") });
                 tool_button.ContextMenu.MenuItems[0].Enabled = false;
             }
             else
             {
-                tool_button.Text = original.Text;
+                tool_button.ToolTipText = original.Text;
                 tool_button.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("Undock tool"), new MenuItem("Dock tool") });
                 tool_button.ContextMenu.MenuItems[0].Click += HandleDockEvent;
                 tool_button.ContextMenu.MenuItems[1].Click += HandleDockEvent;

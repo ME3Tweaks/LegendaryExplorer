@@ -69,7 +69,7 @@ namespace ME1Explorer.Unreal.Classes
         public bool male;
 
         public string Name { get { return pcc.Exports[index].ObjectName; } }
-        public string BioTlkSetName { get { return tlkSetIndex != -1 ? pcc.Exports[tlkSetIndex].ObjectName + "." : null; } }
+        public string BioTlkSetName { get { return tlkSetIndex != -1 ? (pcc.Exports[tlkSetIndex].ObjectName + ".") : null; } }
 
 
         #region Constructors

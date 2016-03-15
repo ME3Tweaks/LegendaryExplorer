@@ -25,13 +25,13 @@ namespace ME1Explorer
         public class ExportEntry
         {
             internal byte[] info; //Properties, not raw data
-            public int ClassNameID { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); } }
-            public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); } }
+            public int ClassNameID { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); InfoChanged(); } }
+            public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); InfoChanged(); } }
             public int PackageNameID;
-            public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); } }
-            public int indexValue { get { return BitConverter.ToInt32(info, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); } }
-            public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); } }
-            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); } }
+            public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); InfoChanged(); } }
+            public int indexValue { get { return BitConverter.ToInt32(info, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); InfoChanged(); } }
+            public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); InfoChanged(); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); InfoChanged(); } }
             public string ObjectName;
             public string PackageName 
             { 
@@ -124,6 +124,12 @@ namespace ME1Explorer
                     pccRef.listsStream.WriteValueS32(0);
                     pccRef.listsStream.WriteValueS32(458768);
                 }
+            }
+
+            private void InfoChanged()
+            {
+                pccRef.listsStream.Seek(infoOffset, SeekOrigin.Begin);
+                pccRef.listsStream.WriteBytes(info);
             }
         }
         public struct ImportEntry

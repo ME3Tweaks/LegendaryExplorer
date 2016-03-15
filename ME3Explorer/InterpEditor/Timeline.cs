@@ -150,14 +150,6 @@ namespace ME3Explorer.InterpEditor
         }
         public TreeView tree1;
         public TreeView tree2;
-        public TalkFiles Talkfiles
-        {
-            set
-            {
-                foreach (InterpGroup g in InterpGroups)
-                    g.Talkfiles = value;
-            }
-        }
 
         public PCCObject pcc;
         public int index;
@@ -350,16 +342,6 @@ namespace ME3Explorer.InterpEditor
         protected Color groupColor;
         protected PNode colorAccent;
         protected bool collapsed;
-        protected TalkFiles talkfiles;
-        public TalkFiles Talkfiles
-        {
-            set
-            {
-                talkfiles = value;
-                foreach (InterpTrack t in InterpTracks)
-                    t.talkfiles = value;
-            }
-        }
         private TreeView propView;
         public TreeView PropView
         {
