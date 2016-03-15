@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
-             mc:Ignorable="d" Width="436.751" Height="315.634" Title="DLC Extractor">
+             mc:Ignorable="d" Width="436.751" Height="426.112" Title="DLC Extractor">
     <DockPanel LastChildFill="False">
         <Label Content="All UNEXTRACTED DLC will be extracted." HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" FontSize="20" FontWeight="Bold"/>
         <Label Content="This is to alleviate issues regarding DLC." HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" FontSize="12" FontWeight="Bold"/>

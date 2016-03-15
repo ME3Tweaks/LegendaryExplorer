@@ -61,12 +61,12 @@ namespace ME3Explorer.Unreal.Classes
             public bool AlwaysHideSubtitle;
             public int GUIStyleType;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, TalkFiles talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, PCCObject pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
                     s = Text.Substring(0, Text.Length - 1);
-                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + talk.findDataById(refText));
+                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + TalkFiles.findDataById(refText));
                 TreeNode t = new TreeNode("Reply List");
                 for (int i = 0; i < ReplyList.Count; i++)
                 {
@@ -79,7 +79,7 @@ namespace ME3Explorer.Unreal.Classes
                                   + " " 
                                   + e.refParaphrase 
                                   + " " 
-                                  + talk.findDataById(e.refParaphrase) 
+                                  + TalkFiles.findDataById(e.refParaphrase) 
                                   + " " 
                                   + e.Index 
                                   + " " 
@@ -108,7 +108,7 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("IgnoreBodyGestures : " + IgnoreBodyGestures);
                 res.Nodes.Add("AlwaysHideSubtitle : " + AlwaysHideSubtitle);
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText, true));
+                res.Nodes.Add("refText : " + refText + " " + TalkFiles.findDataById(refText, true));
                 res.Nodes.Add("GUIStyle : (" + pcc.getNameEntry(GUIStyleType) + ") " + pcc.getNameEntry(GUIStyleValue));
                 return res;
             }
@@ -140,12 +140,12 @@ namespace ME3Explorer.Unreal.Classes
             public int GUIStyleType;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, TalkFiles talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, PCCObject pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
                     s = Text.Substring(0, Text.Length - 1);
-                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + talk.findDataById(refText));
+                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + TalkFiles.findDataById(refText));
                 TreeNode t = new TreeNode("Entry List");
                 for (int i = 0; i < EntryList.Count; i++)
                     t.Nodes.Add(i + " : " + EntryList[i]);
@@ -156,7 +156,7 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("IsMajorDecision : " + IsMajorDecision);
                 res.Nodes.Add("ReplyType : (" + pcc.getNameEntry(ReplyTypeType) + ") " + pcc.getNameEntry(ReplyTypeValue));
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + talk.findDataById(refText, true));
+                res.Nodes.Add("refText : " + refText + " " + TalkFiles.findDataById(refText, true));
                 res.Nodes.Add("ConditionalFunc : " + ConditionalFunc);
                 res.Nodes.Add("ConditionalParam : " + ConditionalParam);
                 res.Nodes.Add("StateTransition : " + StateTransition);

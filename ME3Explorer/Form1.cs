@@ -31,6 +31,7 @@ namespace ME3Explorer
         {
             InitializeComponent();
             disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            TalkFiles.LoadSavedTlkList();
         }
 
         private async void DoDLCCheck()

@@ -14,33 +14,23 @@ namespace ME3Explorer.DialogEditor
 {
     public partial class DialogEditor : Form
     {
-        public TalkFiles talkFiles;
         public BioConversation Dialog;
         public PCCObject pcc;
         public List<int> Objs;
 
-        public void InitTalkFile()
-        {
-            var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFiles = new TalkFiles();
-            talkFiles.LoadTlkData(tlkPath);
-        }
-
-
         public DialogEditor()
         {
             InitializeComponent();
-            InitTalkFile();
             //dialogVis.BackColor = Color.FromArgb(167, 167, 167);
-            if (ME3Explorer.SequenceObjects.SText.fontcollection == null)
-                ME3Explorer.SequenceObjects.SText.LoadFont("KismetFont.ttf");
+            if (SequenceObjects.SText.fontcollection == null)
+                SequenceObjects.SText.LoadFont("KismetFont.ttf");
         }
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
@@ -103,16 +93,16 @@ namespace ME3Explorer.DialogEditor
                 listBox1.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, talkFiles, pcc));
+                treeView1.Nodes.Add(e.ToTree(count++, pcc));
             count = 0;
             foreach (BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, talkFiles, pcc));
+                treeView2.Nodes.Add(r.ToTree(count++, pcc));
             count = 0;
             foreach (int i in Dialog.SpeakerList)
                 listBox2.Items.Add((count++) + " : " + i + " , " + pcc.getNameEntry(i));
             count = 0;
             foreach (BioConversation.StageDirectionStruct sd in Dialog.StageDirections)
-                listBox3.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + talkFiles.findDataById(sd.StringRef));
+                listBox3.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + TalkFiles.findDataById(sd.StringRef));
             count = 0;
             foreach (int i in Dialog.MaleFaceSets)
                 listBox4.Items.Add((count++) + " : " + i);
@@ -832,7 +822,6 @@ namespace ME3Explorer.DialogEditor
         private void loadDifferentTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.tlkFiles = talkFiles;
             tm.InitTlkManager();
             tm.Show();
         }

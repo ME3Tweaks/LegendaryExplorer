@@ -32,7 +32,7 @@ namespace ME1Explorer.SequenceObjects
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        //public static TalkFile talkfile { get; set;}
+        public static ITalkFile talkfiles { get; set;}
         public static bool draggingOutlink = false;
         public static bool draggingVarlink = false;
         public static PNode dragTarget;
@@ -321,7 +321,7 @@ namespace ME1Explorer.SequenceObjects
                         {
                             if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                             {
-                                //return talkfile.findDataById(prop.Value.IntValue);
+                                return talkfiles.findDataById(prop.Value.IntValue);
                             }
                         }
                         return "???";
@@ -390,8 +390,11 @@ namespace ME1Explorer.SequenceObjects
 
         public void OnMouseLeave(object sender, PInputEventArgs e)
         {
-            ((PPath)((SVar)sender)[1]).Pen = outlinePen;
-            dragTarget = null;
+            if (draggingVarlink)
+            {
+                ((PPath)((SVar)sender)[1]).Pen = outlinePen;
+                dragTarget = null;
+            }
         }
     }
 
@@ -754,8 +757,8 @@ namespace ME1Explorer.SequenceObjects
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
-                return false;
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                //return false;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -806,8 +809,8 @@ namespace ME1Explorer.SequenceObjects
 
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
-                return false;
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+                //return false;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -926,7 +929,7 @@ namespace ME1Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue + (p2[i + 1].Value.StringValue.Length == 0 ? "\0" : "" ) == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 52);
@@ -1024,7 +1027,7 @@ namespace ME1Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 28);
@@ -1081,7 +1084,7 @@ namespace ME1Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1135,7 +1138,7 @@ namespace ME1Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1311,9 +1314,9 @@ namespace ME1Explorer.SequenceObjects
 
         public override void Layout(float x, float y)
         {
-            if (originalX != -1)
+            if (x == -0.1f)
                 x = originalX;
-            if (originalY != -1)
+            if (y == -0.1f)
                 y = originalY;
             outlinePen = new Pen(Color.Black);
             string s = pcc.Exports[index].ObjectName;

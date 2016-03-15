@@ -132,6 +132,7 @@
             this.ClientSize = new System.Drawing.Size(688, 207);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.toolStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TlkManager";
             this.Text = "TlkManager";
             this.toolStrip1.ResumeLayout(false);

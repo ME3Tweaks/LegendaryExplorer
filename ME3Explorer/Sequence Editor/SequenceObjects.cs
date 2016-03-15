@@ -31,7 +31,6 @@ namespace ME3Explorer.SequenceObjects
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static TalkFiles talkfiles { get; set;}
         public static bool draggingOutlink = false;
         public static bool draggingVarlink = false;
         public static PNode dragTarget;
@@ -201,6 +200,7 @@ namespace ME3Explorer.SequenceObjects
             }
             this.TranslateBy(x, y);
             this.MouseEnter += new PInputEventHandler(OnMouseEnter);
+            this.MouseLeave += new PInputEventHandler(OnMouseLeave);
         }
 
         public string GetValue()
@@ -319,7 +319,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
                             {
-                                return talkfiles.findDataById(prop.Value.IntValue);
+                                return TalkFiles.findDataById(prop.Value.IntValue);
                             }
                         }
                         return "???";
@@ -383,6 +383,15 @@ namespace ME3Explorer.SequenceObjects
             {
                 ((PPath)((SVar)sender)[1]).Pen = selectedPen;
                 dragTarget = (PNode)sender;
+            }
+        }
+
+        public void OnMouseLeave(object sender, PInputEventArgs e)
+        {
+            if (draggingVarlink)
+            {
+                ((PPath)((SVar)sender)[1]).Pen = outlinePen;
+                dragTarget = null;
             }
         }
     }

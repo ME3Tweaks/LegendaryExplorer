@@ -33,17 +33,17 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveGameEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveGameOperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dialogEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tLKEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tLKEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveGameEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveGameOperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dialogEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sequenceViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +68,22 @@
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.toolsToolStripMenuItem.Text = "User Tools";
             // 
+            // saveGameEditorToolStripMenuItem
+            // 
+            this.saveGameEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveGameEditorToolStripMenuItem.Image")));
+            this.saveGameEditorToolStripMenuItem.Name = "saveGameEditorToolStripMenuItem";
+            this.saveGameEditorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveGameEditorToolStripMenuItem.Text = "Save Game Editor";
+            this.saveGameEditorToolStripMenuItem.Click += new System.EventHandler(this.saveGameEditorToolStripMenuItem_Click);
+            // 
+            // saveGameOperatorToolStripMenuItem
+            // 
+            this.saveGameOperatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveGameOperatorToolStripMenuItem.Image")));
+            this.saveGameOperatorToolStripMenuItem.Name = "saveGameOperatorToolStripMenuItem";
+            this.saveGameOperatorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.saveGameOperatorToolStripMenuItem.Text = "Save Game Operator";
+            this.saveGameOperatorToolStripMenuItem.Click += new System.EventHandler(this.saveGameOperatorToolStripMenuItem_Click);
+            // 
             // developerToolsToolStripMenuItem
             // 
             this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -78,6 +94,38 @@
             this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
             this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
             this.developerToolsToolStripMenuItem.Text = "Developer Tools";
+            // 
+            // pCCEditorToolStripMenuItem
+            // 
+            this.pCCEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pCCEditorToolStripMenuItem.Image")));
+            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
+            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.pCCEditorToolStripMenuItem.Text = "Package Editor";
+            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pccEditorToolStripMenuItem_Click);
+            // 
+            // dialogEditorToolStripMenuItem
+            // 
+            this.dialogEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.dialogue_editor_64x64;
+            this.dialogEditorToolStripMenuItem.Name = "dialogEditorToolStripMenuItem";
+            this.dialogEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.dialogEditorToolStripMenuItem.Text = "Dialog Editor";
+            this.dialogEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogEditorToolStripMenuItem_Click);
+            // 
+            // sequenceViewerToolStripMenuItem
+            // 
+            this.sequenceViewerToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.sequence_editor_64x64;
+            this.sequenceViewerToolStripMenuItem.Name = "sequenceViewerToolStripMenuItem";
+            this.sequenceViewerToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.sequenceViewerToolStripMenuItem.Text = "Sequence Editor";
+            this.sequenceViewerToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
+            // 
+            // tLKEditorToolStripMenuItem
+            // 
+            this.tLKEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.TLK_editor_64x64;
+            this.tLKEditorToolStripMenuItem.Name = "tLKEditorToolStripMenuItem";
+            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.tLKEditorToolStripMenuItem.Text = "TLK Editor";
+            this.tLKEditorToolStripMenuItem.Click += new System.EventHandler(this.tLKEditorToolStripMenuItem_Click);
             // 
             // optionToolStripMenuItem
             // 
@@ -109,54 +157,6 @@
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // tLKEditorToolStripMenuItem
-            // 
-            this.tLKEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.TLK_editor_64x64;
-            this.tLKEditorToolStripMenuItem.Name = "tLKEditorToolStripMenuItem";
-            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.tLKEditorToolStripMenuItem.Text = "TLK Editor";
-            this.tLKEditorToolStripMenuItem.Click += new System.EventHandler(this.tLKEditorToolStripMenuItem_Click);
-            // 
-            // saveGameEditorToolStripMenuItem
-            // 
-            this.saveGameEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveGameEditorToolStripMenuItem.Image")));
-            this.saveGameEditorToolStripMenuItem.Name = "saveGameEditorToolStripMenuItem";
-            this.saveGameEditorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.saveGameEditorToolStripMenuItem.Text = "Save Game Editor";
-            this.saveGameEditorToolStripMenuItem.Click += new System.EventHandler(this.saveGameEditorToolStripMenuItem_Click);
-            // 
-            // saveGameOperatorToolStripMenuItem
-            // 
-            this.saveGameOperatorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveGameOperatorToolStripMenuItem.Image")));
-            this.saveGameOperatorToolStripMenuItem.Name = "saveGameOperatorToolStripMenuItem";
-            this.saveGameOperatorToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.saveGameOperatorToolStripMenuItem.Text = "Save Game Operator";
-            this.saveGameOperatorToolStripMenuItem.Click += new System.EventHandler(this.saveGameOperatorToolStripMenuItem_Click);
-            // 
-            // pCCEditorToolStripMenuItem
-            // 
-            this.pCCEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pCCEditorToolStripMenuItem.Image")));
-            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
-            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.pCCEditorToolStripMenuItem.Text = "Package Editor";
-            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pccEditorToolStripMenuItem_Click);
-            // 
-            // dialogEditorToolStripMenuItem
-            // 
-            this.dialogEditorToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.dialogue_editor_64x64;
-            this.dialogEditorToolStripMenuItem.Name = "dialogEditorToolStripMenuItem";
-            this.dialogEditorToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.dialogEditorToolStripMenuItem.Text = "Dialog Editor";
-            this.dialogEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogEditorToolStripMenuItem_Click);
-            // 
-            // sequenceViewerToolStripMenuItem
-            // 
-            this.sequenceViewerToolStripMenuItem.Image = global::ME1Explorer.Properties.Resources.sequence_editor_64x64;
-            this.sequenceViewerToolStripMenuItem.Name = "sequenceViewerToolStripMenuItem";
-            this.sequenceViewerToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.sequenceViewerToolStripMenuItem.Text = "Sequence Viewer";
-            this.sequenceViewerToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
             // MainWindow
             // 

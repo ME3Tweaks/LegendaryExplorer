@@ -13,7 +13,6 @@ namespace ME3Explorer.InterpEditor
     public partial class InterpEditor : Form
     {
         public PCCObject pcc;
-        public TalkFiles talkfiles;
         public string CurrentFile;
         public List<int> objects;
 
@@ -30,42 +29,21 @@ namespace ME3Explorer.InterpEditor
             objects = new List<int>();
         }
 
-        public void InitTalkFile()
-        {
-            var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-            talkfiles = new TalkFiles();
-            talkfiles.LoadTlkData(tlkPath);
-        }
-
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath) && talkfiles == null)
-            {
-                MessageBox.Show("ME3 install directory not found. Set its path at:\n Options > Set Custom Path > Mass Effect 3\n\n Or, specify a .tlk file location with:\n File > Load Alternate TLK");
-                return;
-            }
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "PCC Files(*.pcc)|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadPCC(d.FileName);
             }
         }
 
-        public void LoadPCC(string fileName, TalkFiles editorTalkFiles = null)
+        public void LoadPCC(string fileName)
         {
             try
             {
                 pcc = new PCCObject(fileName);
-                InitTalkFile();
-                if (editorTalkFiles != null)
-                {
-                    talkfiles = editorTalkFiles;
-                }
-                else
-                {
-                    InitTalkFile();
-                }
                 objects.Clear();
                 CurrentFile = fileName;
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -94,7 +72,6 @@ namespace ME3Explorer.InterpEditor
         {
             timeline.GroupList.LoadInterpData(index, pcc);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
-            timeline.GroupList.Talkfiles = talkfiles;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -113,7 +90,6 @@ namespace ME3Explorer.InterpEditor
         private void loadAlternateTlkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.tlkFiles = talkfiles;
             tm.InitTlkManager();
             tm.Show();
         }
@@ -122,7 +98,7 @@ namespace ME3Explorer.InterpEditor
         private void InterpTrackScan_Click(object sender, EventArgs e)
         {
             KFreonLib.Debugging.DebugOutput.StartDebugger("Main ME3Explorer Form");
-            string basepath = KFreonLib.MEDirectories.ME3Directory.cookedPath;
+            string basepath = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(basepath, "*.pcc");
             List<string> conds = new List<string>();
             List<string> conds1 = new List<string>();
