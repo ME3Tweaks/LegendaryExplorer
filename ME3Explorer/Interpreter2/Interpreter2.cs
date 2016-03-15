@@ -187,7 +187,7 @@ namespace ME3Explorer.Interpreter2
                                 if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_IMPORTEXPORT)
                                 {
                                     s += i + ": ";
-                                    Debug.WriteLine("IMPEXP BLOCK REACHED.");
+                                    //Debug.WriteLine("IMPEXP BLOCK REACHED.");
                                     int value = val;
                                     if (value == 0)
                                     {
@@ -230,7 +230,7 @@ namespace ME3Explorer.Interpreter2
                                 else if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_NAMES)
                                 {
                                     s += i / 2 + ": ";
-                                    Debug.WriteLine("NAMES BLOCK REACHED.");
+                                    //Debug.WriteLine("NAMES BLOCK REACHED.");
                                     int value = val;
                                     if (value < 0)
                                     {
@@ -527,7 +527,7 @@ namespace ME3Explorer.Interpreter2
                 hb1.SelectionStart = off;
                 lastSetOffset = off;
                 hb1.SelectionLength = 1;
-                Debug.WriteLine("Node offset: " + off);
+                //Debug.WriteLine("Node offset: " + off);
                 if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAYLEAF_TAG))
                 {
                     TryParseArrayProperty();
@@ -830,15 +830,24 @@ namespace ME3Explorer.Interpreter2
                 if (memory.Length - pos < 16) //not long enough to deal with
                     return;
 
+                int parentOffset = -1;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
-                if (parent != null && Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY)
+                
+                //bubble up size
+                bool firstbubble = true;
+                while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
                 {
-                    int parentOffset = Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name);
-                    Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
-                    memory = RemoveIndices(memory,Convert.ToInt32(LAST_SELECTED_NODE.Name),4);
+                    parentOffset = Convert.ToInt32(parent.Name);
+                    if (firstbubble)
+                    {
+                        Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
+                        memory = RemoveIndices(memory, Convert.ToInt32(LAST_SELECTED_NODE.Name), 4);
+                        firstbubble = false;
+                    }
                     updateArrayLength(parentOffset, -1, -4);
-                    RefreshMem();
+                    parent = parent.Parent;
                 }
+                RefreshMem();
             }
             catch (Exception ex)
             {
@@ -864,7 +873,7 @@ namespace ME3Explorer.Interpreter2
                     j++;
                 } else
                 {
-                    Debug.WriteLine("Skipping byte: " + i.ToString("X4"));
+                    //Debug.WriteLine("Skipping byte: " + i.ToString("X4"));
                 }
 
                 i++;
