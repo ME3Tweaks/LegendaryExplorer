@@ -420,6 +420,12 @@ namespace ME3Explorer.Interpreter2
             while (run)
             {
                 PropHeader p = new PropHeader();
+                if (readerpos > memory.Length)
+                {
+                    //nothing else to interpret.
+                    run = false;
+                    continue; 
+                }
                 p.name = BitConverter.ToInt32(memory, readerpos);
                 if (!pcc.isName(p.name))
                     run = false;
