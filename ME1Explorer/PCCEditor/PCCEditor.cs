@@ -223,6 +223,7 @@ namespace ME1Explorer
             comboBox1.Items.Clear();
             comboBox2.Items.Clear();
             comboBox3.Items.Clear();
+            textBox11.Clear();
             List<string> Classes = new List<string>();
             for (int i = pcc.Imports.Count - 1; i >= 0; i--)
                 Classes.Add(-(i + 1) + " : " + pcc.Imports[i].ObjectName);
@@ -346,6 +347,7 @@ namespace ME1Explorer
                 comboBox1.SelectedIndex = NameIdx;
                 comboBox2.SelectedIndex = ClassIdx + off;
                 comboBox3.SelectedIndex = LinkIdx + off;
+                textBox11.Text = pcc.Exports[n].indexValue.ToString();
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].info);
             }
             if (n >= 0 && (CurrentView == 2 || CurrentView == 3))
@@ -421,6 +423,14 @@ namespace ME1Explorer
             if (CurrentView == 2)
                 n = listBox1.SelectedIndex;
             return n;
+        }
+
+        private void SetSelected(int n)
+        {
+            if (CurrentView == 2)
+                listBox1.SelectedIndex = n;
+            else if (CurrentView == 3)
+                treeView1.SelectedNode = treeView1.Nodes[n];
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
@@ -625,6 +635,34 @@ namespace ME1Explorer
             {
                 MessageBox.Show("Error:\n" + ex.Message);
             }
+        }
+
+        private void saveMetaData(object sender, EventArgs e)
+        {
+            int off = pcc.Imports.Count;
+            if (pcc == null)
+                return;
+            int n = GetSelected();
+            if (n == -1 ||
+                !(CurrentView == 2 || CurrentView == 3) ||
+                comboBox1.SelectedIndex == -1 ||
+                comboBox2.SelectedIndex == -1 ||
+                comboBox3.SelectedIndex == -1)
+                return;
+            NameIdx = comboBox1.SelectedIndex;
+            ClassIdx = comboBox2.SelectedIndex - off;
+            LinkIdx = comboBox3.SelectedIndex - off;
+            int index = -1;
+            int.TryParse(textBox11.Text, out index);
+            if (index >= 0)
+            {
+                pcc.Exports[n].indexValue = index;
+            }
+            pcc.Exports[n].ObjectNameID = NameIdx;
+            pcc.Exports[n].ClassNameID = ClassIdx;
+            pcc.Exports[n].LinkID = LinkIdx;
+            RefreshView();
+            SetSelected(n);
         }
 
         private void toolStripTextBox1_KeyPress(object sender, KeyPressEventArgs e)
