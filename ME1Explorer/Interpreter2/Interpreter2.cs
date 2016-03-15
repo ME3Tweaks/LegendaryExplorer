@@ -365,8 +365,8 @@ namespace ME1Explorer.Interpreter2
                 case STRING_PROPERTY:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "\"";
-                    for (int i = 0; i < count * -1 - 1; i++)
-                        s += (char)memory[p.offset + 28 + i * 2];
+                    for (int i = 0; i < count - 1; i++)
+                        s += (char)memory[p.offset + 28 + i];
                     s += "\"";
                     break;
                 case BOOL_PROPERTY:
@@ -461,7 +461,7 @@ namespace ME1Explorer.Interpreter2
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.txt|*.txt";
             d.FileName = pcc.Exports[Index].ObjectName + ".txt";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 PrintNodes(treeView1.Nodes, fs, 0);
@@ -577,11 +577,11 @@ namespace ME1Explorer.Interpreter2
                         break;
                     case "StrProperty":
                         string s = "";
-                        int count = -(int)BitConverter.ToInt64(memory, pos + 24);
+                        int count = BitConverter.ToInt32(memory, pos + 24);
                         pos += 28;
                         for (int i = 0; i < count; i++)
                         {
-                            s += (char)memory[pos + i * 2];
+                            s += (char)memory[pos + i];
                         }
                         proptext.Text = s;
                         visible = true;
@@ -744,23 +744,28 @@ namespace ME1Explorer.Interpreter2
                     case "StrProperty":
                         string s = proptext.Text;
                         int offset = pos + 24;
-                        int oldLength = -(int)BitConverter.ToInt64(memory, offset);
-                        List<byte> stringBuff = new List<byte>(s.Length * 2);
+                        int oldLength = BitConverter.ToInt32(memory, offset);
+                        List<byte> stringBuff = new List<byte>(s.Length);
                         for (int j = 0; j < s.Length; j++)
                         {
-                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                            stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
                         }
                         stringBuff.Add(0);
-                        stringBuff.Add(0);
-                        byte[] buff = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
+                        if(stringBuff.Count != oldLength)
+                        {
+                            //TODO: if strprop is nested, it's parent's size would need to be changed too
+                            //until that's implemented, there's no gaurantee the code will work, thus the exception
+                            throw new NotImplementedException("Can't change StrProperty size");
+                        }
+                        byte[] buff = BitConverter.GetBytes((s.Count() + 1) + 4);
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];
-                        buff = BitConverter.GetBytes(-(s.LongCount() + 1));
-                        for (int j = 0; j < 8; j++)
+                        buff = BitConverter.GetBytes(s.Count() + 1);
+                        for (int j = 0; j < 4; j++)
                             memory[offset + j] = buff[j];
-                        buff = new byte[memory.Length - (oldLength * 2) + stringBuff.Count];
+                        buff = new byte[memory.Length - oldLength + stringBuff.Count];
                         int startLength = offset + 4;
-                        int startLength2 = startLength + (oldLength * 2);
+                        int startLength2 = startLength + oldLength;
                         for (int j = 0; j < startLength; j++)
                         {
                             buff[j] = memory[j];
