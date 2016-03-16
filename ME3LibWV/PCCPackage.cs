@@ -526,8 +526,8 @@ namespace ME3LibWV
                 GeneralInfo.compressed = (h.Flags & 0x02000000) != 0;
                 DebugLog.PrintLn("Is Compressed : " + GeneralInfo.compressed);
                 h.unk1 = ReadUInt(s);
-                if(h.unk1 != 0)
-                    throw new Exception("Not a valid PCC Package, Unk1 != 0");
+                if(h.unk1 > 1)
+                    throw new Exception("Not a valid PCC Package, Unknown 1 (offset 30) > 0");
                 h.NameCount = ReadUInt(s);
                 h.NameOffset = ReadUInt(s);
                 h.ExportCount = ReadUInt(s);
