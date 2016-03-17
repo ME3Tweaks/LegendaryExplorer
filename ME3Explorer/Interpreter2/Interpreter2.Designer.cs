@@ -43,6 +43,7 @@ namespace ME3Explorer.Interpreter2
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
+            this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
             this.arraySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.arrayViewerDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.arrayPropertyDropdown = new System.Windows.Forms.ToolStripDropDownButton();
@@ -60,7 +61,7 @@ namespace ME3Explorer.Interpreter2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
+            this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -105,6 +106,7 @@ namespace ME3Explorer.Interpreter2
             this.setValueSeparator,
             this.proptext,
             this.setPropertyButton,
+            this.addArrayElementButton,
             this.deleteArrayElement,
             this.arraySeparator,
             this.arrayViewerDropdown,
@@ -131,7 +133,7 @@ namespace ME3Explorer.Interpreter2
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(69, 22);
+            this.toolStripButton2.Size = new System.Drawing.Size(70, 22);
             this.toolStripButton2.Text = "Export Tree";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
@@ -184,6 +186,17 @@ namespace ME3Explorer.Interpreter2
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
             this.setPropertyButton.Click += new System.EventHandler(this.setProperty_Click);
+            // 
+            // deleteArrayElement
+            // 
+            this.deleteArrayElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
+            this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteArrayElement.Name = "deleteArrayElement";
+            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
+            this.deleteArrayElement.Text = "Delete Array Element";
+            this.deleteArrayElement.Visible = false;
+            this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
             // 
             // arraySeparator
             // 
@@ -266,35 +279,35 @@ namespace ME3Explorer.Interpreter2
             // 
             this.arraysOfBYTEPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfBYTEPropertiesToolStripMenuItem.Name = "arraysOfBYTEPropertiesToolStripMenuItem";
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBYTEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBYTEPropertiesToolStripMenuItem.Text = "Arrays of BYTE properties";
             // 
             // arraysOfBYTEPropertiesToolStripMenuItem1
             // 
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Enabled = false;
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Name = "arraysOfBYTEPropertiesToolStripMenuItem1";
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBYTEPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBYTEPropertiesToolStripMenuItem1.Text = "Arrays of STRING properties";
             // 
             // arraysOfSTRUCTPropertiesToolStripMenuItem
             // 
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Name = "arraysOfSTRUCTPropertiesToolStripMenuItem";
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfSTRUCTPropertiesToolStripMenuItem.Text = "Arrays of STRUCT properties";
             // 
             // arraysOfDELEGATEPropertiesToolStripMenuItem
             // 
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Name = "arraysOfDELEGATEPropertiesToolStripMenuItem";
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfDELEGATEPropertiesToolStripMenuItem.Text = "Arrays of DELEGATE properties";
             // 
             // arraysOfBOOLPropertiesToolStripMenuItem
             // 
             this.arraysOfBOOLPropertiesToolStripMenuItem.Enabled = false;
             this.arraysOfBOOLPropertiesToolStripMenuItem.Name = "arraysOfBOOLPropertiesToolStripMenuItem";
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.arraysOfBOOLPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.arraysOfBOOLPropertiesToolStripMenuItem.Text = "Arrays of BOOL properties";
             // 
             // menuStrip1
@@ -352,16 +365,16 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // deleteArrayElement
+            // addArrayElementButton
             // 
-            this.deleteArrayElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
-            this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.deleteArrayElement.Name = "deleteArrayElement";
-            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
-            this.deleteArrayElement.Text = "Delete Array Element";
-            this.deleteArrayElement.Visible = false;
-            this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
+            this.addArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
+            this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addArrayElementButton.Name = "addArrayElementButton";
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
+            this.addArrayElementButton.Text = "Add Array Element";
+            this.addArrayElementButton.Visible = false;
+            this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
             // 
             // Interpreter2
             // 
@@ -421,5 +434,6 @@ namespace ME3Explorer.Interpreter2
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripButton deleteArrayElement;
+        private System.Windows.Forms.ToolStripButton addArrayElementButton;
     }
 }

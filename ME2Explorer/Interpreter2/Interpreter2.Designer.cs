@@ -58,6 +58,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
+            this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -88,8 +90,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(665, 389);
-            this.splitContainer1.SplitterDistance = 220;
+            this.splitContainer1.Size = new System.Drawing.Size(888, 389);
+            this.splitContainer1.SplitterDistance = 293;
             this.splitContainer1.TabIndex = 3;
             // 
             // hb1
@@ -104,7 +106,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(220, 389);
+            this.hb1.Size = new System.Drawing.Size(293, 389);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -116,7 +118,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(441, 389);
+            this.treeView1.Size = new System.Drawing.Size(591, 389);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -131,12 +133,14 @@
             this.setValueSeparator,
             this.proptext,
             this.setPropertyButton,
+            this.addArrayElementButton,
+            this.deleteArrayElement,
             this.arraySeparator,
             this.arrayViewerDropdown,
             this.arrayPropertyDropdown});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(665, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(888, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -326,7 +330,7 @@
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 414);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(665, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(888, 22);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -344,11 +348,33 @@
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 17);
             this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
             // 
+            // addArrayElementButton
+            // 
+            this.addArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
+            this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addArrayElementButton.Name = "addArrayElementButton";
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
+            this.addArrayElementButton.Text = "Add Array Element";
+            this.addArrayElementButton.Visible = false;
+            this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
+            // 
+            // deleteArrayElement
+            // 
+            this.deleteArrayElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
+            this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteArrayElement.Name = "deleteArrayElement";
+            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
+            this.deleteArrayElement.Text = "Delete Array Element";
+            this.deleteArrayElement.Visible = false;
+            this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
+            // 
             // Interpreter2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 436);
+            this.ClientSize = new System.Drawing.Size(888, 436);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -399,5 +425,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripButton addArrayElementButton;
+        private System.Windows.Forms.ToolStripButton deleteArrayElement;
     }
 }

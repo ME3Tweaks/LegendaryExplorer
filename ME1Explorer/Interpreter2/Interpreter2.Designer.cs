@@ -32,6 +32,8 @@ namespace ME1Explorer.Interpreter2
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter2));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -41,6 +43,8 @@ namespace ME1Explorer.Interpreter2
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
+            this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
+            this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
             this.arraySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.arrayViewerDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.arrayPropertyDropdown = new System.Windows.Forms.ToolStripDropDownButton();
@@ -58,8 +62,6 @@ namespace ME1Explorer.Interpreter2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -79,6 +81,19 @@ namespace ME1Explorer.Interpreter2
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Font = new System.Drawing.Font("Courier New", 9.75F);
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 17);
+            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -90,6 +105,8 @@ namespace ME1Explorer.Interpreter2
             this.setValueSeparator,
             this.proptext,
             this.setPropertyButton,
+            this.addArrayElementButton,
+            this.deleteArrayElement,
             this.arraySeparator,
             this.arrayViewerDropdown,
             this.arrayPropertyDropdown});
@@ -165,6 +182,28 @@ namespace ME1Explorer.Interpreter2
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
             this.setPropertyButton.Click += new System.EventHandler(this.setProperty_Click);
+            // 
+            // addArrayElementButton
+            // 
+            this.addArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
+            this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addArrayElementButton.Name = "addArrayElementButton";
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
+            this.addArrayElementButton.Text = "Add Array Element";
+            this.addArrayElementButton.Visible = false;
+            this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
+            // 
+            // deleteArrayElement
+            // 
+            this.deleteArrayElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
+            this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteArrayElement.Name = "deleteArrayElement";
+            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
+            this.deleteArrayElement.Text = "Delete Array Element";
+            this.deleteArrayElement.Visible = false;
+            this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
             // 
             // arraySeparator
             // 
@@ -332,19 +371,6 @@ namespace ME1Explorer.Interpreter2
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 17);
-            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
-            // 
             // Interpreter2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,5 +427,7 @@ namespace ME1Explorer.Interpreter2
         private System.Windows.Forms.ToolStripMenuItem arraysOfBOOLPropertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripButton addArrayElementButton;
+        private System.Windows.Forms.ToolStripButton deleteArrayElement;
     }
 }

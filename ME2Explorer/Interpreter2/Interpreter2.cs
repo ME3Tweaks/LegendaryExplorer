@@ -143,7 +143,6 @@ namespace ME2Explorer.Interpreter2
             foreach (PropHeader header in headersList)
             {
                 int type = getType(pcc.getNameEntry(header.type));
-                pcc.getNameEntry(header.name);
                 if (type != ARRAY_PROPERTY && type != STRUCT_PROPERTY)
                     ret.Nodes.Add(GenerateNode(header));
                 else
@@ -155,7 +154,7 @@ namespace ME2Explorer.Interpreter2
                         readerpos = header.offset + 28;
                         int tmp = readerpos;
                         List<PropHeader> propHeaders = ReadHeadersTillNone();
-                        if (propHeaders.Count != 0 && arrayLength > 0)
+                        if (propHeaders.Count != 0 && arrayLength > 0 && header.size > 24)
                         {
                             if (arrayLength == 1)
                             {
@@ -364,8 +363,8 @@ namespace ME2Explorer.Interpreter2
                 case STRING_PROPERTY:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "\"";
-                    for (int i = 0; i < count * -1 - 1; i++)
-                        s += (char)memory[p.offset + 28 + i * 2];
+                    for (int i = 0; i < count - 1; i++)
+                        s += (char)memory[p.offset + 28 + i];
                     s += "\"";
                     break;
                 case BOOL_PROPERTY:
@@ -520,17 +519,32 @@ namespace ME2Explorer.Interpreter2
                 Debug.WriteLine("Node offset: " + off);
                 if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAYLEAF_TAG))
                 {
+                    addArrayElementButton.Visible = false;
                     TryParseArrayProperty();
                     LAST_SELECTED_PROP_TYPE = ARRAYLEAF_TAG;
                 }
                 else if (e.Node.Tag != null && (e.Node.Tag.Equals(STRUCTLEAFFLOAT_TAG) || e.Node.Tag.Equals(STRUCTLEAFBYTE_TAG) || e.Node.Tag.Equals(STRUCTLEAFDEG_TAG)))
                 {
+                    addArrayElementButton.Visible = false;
+                    deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     TryParseStructProperty((int)e.Node.Tag);
                     LAST_SELECTED_PROP_TYPE = (int)e.Node.Tag;
                 }
+                else if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAY_PROPERTY) && (e.Node.GetNodeCount(false) == 0 || e.Node.FirstNode.Tag.Equals(ARRAYLEAF_TAG)))
+                {
+                    addArrayElementButton.Visible = true;
+                    deleteArrayElement.Visible = false;
+                    arrayPropertyDropdown.Enabled = false;
+                    proptext.Clear();
+                    setPropertyButton.Visible = false;
+                    proptext.Visible = setValueSeparator.Visible = true;
+                    LAST_SELECTED_PROP_TYPE = ARRAY_PROPERTY;
+                }
                 else
                 {
+                    addArrayElementButton.Visible = false;
+                    deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     TryParseProperty();
                     LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
@@ -538,6 +552,10 @@ namespace ME2Explorer.Interpreter2
             }
             catch (FormatException ex)
             {
+                addArrayElementButton.Visible = true;
+                deleteArrayElement.Visible = false;
+                arrayPropertyDropdown.Enabled = false;
+                proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = false;
                 Debug.WriteLine("Node name is not in correct format.");
                 //name is wrong, don't attempt to continue parsing.
                 LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
@@ -631,6 +649,7 @@ namespace ME2Explorer.Interpreter2
                 int value = BitConverter.ToInt32(memory, pos);
                 proptext.Text = value.ToString();
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = true;
+                deleteArrayElement.Visible = true;
                 arrayPropertyDropdown.Enabled = true;
             }
             catch (Exception ex)
@@ -743,6 +762,7 @@ namespace ME2Explorer.Interpreter2
                     case "StrProperty":
                         string s = proptext.Text;
                         int offset = pos + 24;
+                        int oldSize = BitConverter.ToInt32(memory, pos + 16);
                         int oldLength = -(int)BitConverter.ToInt64(memory, offset);
                         List<byte> stringBuff = new List<byte>(s.Length * 2);
                         for (int j = 0; j < s.Length; j++)
@@ -774,6 +794,20 @@ namespace ME2Explorer.Interpreter2
                             buff[j + startLength] = memory[j + startLength2];
                         }
                         memory = buff;
+
+                        //bubble up size
+                        uint throwaway;
+                        TreeNode parent = LAST_SELECTED_NODE.Parent;
+                        while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
+                        {
+                            if (uint.TryParse(parent.Text, out throwaway))
+                            {
+                                parent = parent.Parent;
+                                continue;
+                            }
+                            updateArrayLength(Convert.ToInt32(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
+                            parent = parent.Parent;
+                        }
                         RefreshMem();
                         break;
                 }
@@ -802,6 +836,123 @@ namespace ME2Explorer.Interpreter2
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void deleteArrayLeaf()
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                if (hb1.SelectionStart != lastSetOffset)
+                {
+                    return; //user manually moved cursor
+                }
+
+                if (memory.Length - pos < 16) //not long enough to deal with
+                    return;
+
+                int parentOffset = -1;
+                TreeNode parent = LAST_SELECTED_NODE.Parent;
+
+                //bubble up size
+                bool firstbubble = true;
+                uint throwaway;
+                while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
+                {
+                    if (uint.TryParse(parent.Text, out throwaway))
+                    {
+                        parent = parent.Parent;
+                        continue;
+                    }
+                    parentOffset = Convert.ToInt32(parent.Name);
+                    if (firstbubble)
+                    {
+                        Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
+                        memory = RemoveIndices(memory, Convert.ToInt32(LAST_SELECTED_NODE.Name), 4);
+                        firstbubble = false;
+                        updateArrayLength(parentOffset, -1, -4);
+                    }
+                    else
+                    {
+                        updateArrayLength(parentOffset, 0, -4);
+                    }
+                    parent = parent.Parent;
+                }
+                RefreshMem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void addArrayLeaf()
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                int newElement;
+                if (hb1.SelectionStart != lastSetOffset)
+                {
+                    return; //user manually moved cursor
+                }
+                if (!int.TryParse(proptext.Text, out newElement))
+                {
+                    return; //not valid element
+                }
+                int size = BitConverter.ToInt32(memory, pos + 16);
+                List<byte> memList = memory.ToList();
+                memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(newElement));
+                memory = memList.ToArray();
+                updateArrayLength(pos, 1, 4);
+
+                //bubble up size
+                uint throwaway;
+                TreeNode parent = LAST_SELECTED_NODE.Parent;
+                while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
+                {
+                    if (uint.TryParse(parent.Text, out throwaway))
+                    {
+                        parent = parent.Parent;
+                        continue;
+                    }
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, 4);
+                    parent = parent.Parent;
+                }
+                RefreshMem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private T[] RemoveIndices<T>(T[] IndicesArray, int RemoveAt, int NumElementsToRemove)
+        {
+            if (RemoveAt < 0 || RemoveAt > IndicesArray.Length - 1 || NumElementsToRemove < 0 || NumElementsToRemove + RemoveAt > IndicesArray.Length - 1)
+            {
+                return IndicesArray;
+            }
+            T[] newIndicesArray = new T[IndicesArray.Length - NumElementsToRemove];
+
+            int i = 0;
+            int j = 0;
+            while (i < IndicesArray.Length)
+            {
+                if (i < RemoveAt || i >= RemoveAt + NumElementsToRemove)
+                {
+                    newIndicesArray[j] = IndicesArray[i];
+                    j++;
+                }
+                else
+                {
+                    //Debug.WriteLine("Skipping byte: " + i.ToString("X4"));
+                }
+
+                i++;
+            }
+
+            return newIndicesArray;
         }
 
         private void WriteMem(int pos, byte[] buff)
@@ -909,6 +1060,16 @@ namespace ME2Explorer.Interpreter2
                 StartScan();
             }
             previousArrayView = arrayViewerDropdown.SelectedIndex;
+        }
+
+        private void deleteArrayElement_Click(object sender, EventArgs e)
+        {
+            deleteArrayLeaf();
+        }
+
+        private void addArrayElementButton_Click(object sender, EventArgs e)
+        {
+            addArrayLeaf();
         }
     }
 }
