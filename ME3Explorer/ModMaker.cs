@@ -1486,7 +1486,8 @@ namespace ME3Explorer
                 var dlcpaths = bits.GetRange(index, bits.Count - index);
                 filename = string.Join("\\", dlcpaths);
             }
-
+            filename = filename.Replace("\\\\", "\\").Replace("\\", "\\\\"); // KFreon: Need to not end up with \\\\\\\\\\\ or something, so chances are the only thing it would have at this stage is \\\\ so reset that to \\ then expand to \\\\.
+        
             script = script.Replace("**m2**", filename);
 
 
@@ -1508,7 +1509,7 @@ namespace ME3Explorer
                     job.Script = job.OriginalScript;
 
                     job.data = modifiedPCC.Exports[i].Data;
-                    job.Name = "PCC Replacement Job for " + bits.Last();
+                    job.Name = "Binary Replacement Job for " + bits.Last();
 
                     job.ExpIDs = new List<int>();
                     job.ExpIDs.Add(i);
