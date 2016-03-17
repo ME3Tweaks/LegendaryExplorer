@@ -129,6 +129,19 @@ namespace ME1Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
+        public static Property getPropOrNull(PCCObject pcc, byte[] raw, string propName)
+        {
+            List<Property> props = getPropList(pcc, raw);
+            foreach (Property prop in props)
+            {
+                if (prop.Name == propName)
+                {
+                    return prop;
+                }
+            }
+            return null;
+        }
+
         public static List<Property> getPropList(PCCObject pcc, byte[] raw)
         {
             Application.DoEvents();

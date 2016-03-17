@@ -311,7 +311,7 @@ namespace ME1Explorer.SequenceObjects
                                 }
                                 else
                                 {
-                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].Name;
+                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].ObjectName;
                                 }
                             }
                         }
@@ -1222,7 +1222,7 @@ namespace ME1Explorer.SequenceObjects
             foreach (SaltPropertyReader.Property prop in props)
             {
                 if (prop.Name.Contains("EventName") || prop.Name == "sScriptName")
-                    s += "\n\"" + prop.Value.IntValue + "\"";
+                    s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
                     s += "\n\"" + prop.Value.StringValue + "\"";
             }
@@ -1387,19 +1387,32 @@ namespace ME1Explorer.SequenceObjects
                 if (prop.Name == "oSequenceReference")
                 {
                     if (prop.Value.IntValue > 0)
-                        s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
+                    {
+                        string seqName = pcc.Exports[prop.Value.IntValue - 1].ObjectName;
+                        if(seqName == "Sequence")
+                        {
+                            SaltPropertyReader.Property prop2 = SaltPropertyReader.getPropOrNull(pcc, pcc.Exports[prop.Value.IntValue - 1].Data, "ObjName");
+                            if (prop2 != null)
+                            {
+                                seqName = prop2.Value.StringValue;
+                            }
+                        }
+                        s += "\n\"" + seqName + "\"";
+                    }
                     else
+                    {
                         s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].ObjectName + "\"";
+                    }
                 }
                 else if (prop.Name == "EventName" || prop.Name == "StateName")
-                    s += "\n\"" + prop.Value.IntValue + "\"";
+                    s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
                     s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "m_pEffect")
                     if(prop.Value.IntValue > 0)
                         s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
                     else
-                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].Name + "\"";
+                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].ObjectName + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)

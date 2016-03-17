@@ -410,23 +410,6 @@ namespace ME3Explorer
 
         private void copyObjectToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            CopyObject();
-        }
-
-        public void CopyObject()
-        {
-            ListView.SelectedIndexCollection n = listView1.SelectedIndices;
-            if (n.Count != 1 || pcc == null)
-                return;
-            int index = Convert.ToInt32(listView1.Items[n[0]].Name);
-            int link = pcc.Exports[index].idxClassName;
-            Clipboard temp = new Clipboard();
-            temp.entry = pcc.Exports[index];
-            temp.Name = pcc.Exports[index].ObjectName;
-            temp.dep = FindLink(link);
-            temp.isFilled = true;
-            clip = temp;
-            Println(temp.Name + " copied!");
         }
 
         public PCCObject.ExportEntry CopyExport(PCCObject.ExportEntry exp)
@@ -451,60 +434,12 @@ namespace ME3Explorer
             return ret;
         }
 
-        public ClipboardDependency FindLink(int link)
-        {
-            ClipboardDependency dep = new ClipboardDependency();
-            dep.classimp = pcc.Imports[link * -1 - 1];
-            dep.Name = pcc.Imports[link * -1 - 1].ObjectName;
-            Println("Class dep: " + dep.Name);
-            if (pcc.Imports[link * -1 - 1].Link < 0)
-                dep.child = FindLink(pcc.Imports[link * -1 - 1].Link);
-            return dep;
-        }
-
-        public void PasteObject()
-        {
-            TreeNode t = TV1.SelectedNode;
-            if (t == null || pcc == null || !clip.isFilled)
-                return;
-            int nlink = Convert.ToInt32(t.Name);
-            PCCObject.ExportEntry ent = CopyExport(clip.entry);
-            ent.Link = nlink + 1;
-            int found = -1;
-            for (int i = 0; i < pcc.Names.Count; i++)
-                if (pcc.Names[i] == clip.Name)
-                    found = i;
-            if (found != -1)
-                ent.idxObjectName = found;
-            else
-            {
-                pcc.Names.Add(clip.Name);
-                ent.idxObjectName = pcc.Names.Count - 1;
-            }
-            found = -1;
-            for (int i = 0; i < pcc.Imports.Count; i++)
-                if (pcc.Imports[i].ObjectName == clip.dep.Name)
-                    found = i;
-            if (found != -1)
-            {
-                ent.idxClassName = found * -1 - 1;
-                pcc.Exports.Add(ent);
-                Println("Done! All found");
-            }
-            else
-            {
-                //the tricky part comes here! importing the imports!
-            }
-        }
-
         private void copyObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CopyObject();
         }
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PasteObject();
         }
 
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)

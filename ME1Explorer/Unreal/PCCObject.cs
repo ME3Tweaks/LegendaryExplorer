@@ -134,13 +134,15 @@ namespace ME1Explorer
         }
         public struct ImportEntry
         {
-            public string Package;
-            public int link;
-            public string Name;
             public byte[] raw;
             internal PCCObject pccRef;
+            public int link { get { return BitConverter.ToInt32(raw, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, raw, 16, sizeof(int)); } }
+            public int idxPackageName { get { return BitConverter.ToInt32(raw, 0); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, raw, 0, sizeof(int)); } }
             public int idxObjectName { get { return BitConverter.ToInt32(raw, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, raw, 20, sizeof(int)); } }
+            public int idxClassName { get { return BitConverter.ToInt32(raw, 8); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, raw, 8, sizeof(int)); } }
+            public string PackageName { get { return pccRef.Names[idxPackageName]; } }
             public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
+            public string ClassName { get { return pccRef.Names[idxClassName]; } }
         }
 
         public byte[] header;
@@ -326,11 +328,6 @@ namespace ME1Explorer
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry import = new ImportEntry();
-                import.Package = Names[fs.ReadValueS32()];
-                fs.Seek(12, SeekOrigin.Current);
-                import.link = fs.ReadValueS32();
-                import.Name = Names[fs.ReadValueS32()];
-                fs.Seek(-24, SeekOrigin.Current);
                 import.raw = fs.ReadBytes(28);
                 import.pccRef = this;
                 Imports.Add(import);
@@ -387,7 +384,7 @@ namespace ME1Explorer
             if (Index > 0 && isExport(Index - 1))
                 return Exports[Index - 1].ObjectName;
             if (Index < 0 && isImport(Index * -1 - 1))
-                return Imports[Index * -1 - 1].Name;
+                return Imports[Index * -1 - 1].ObjectName;
             return "Class";
         }
 
@@ -401,7 +398,7 @@ namespace ME1Explorer
             }
             if (Link < 0 && isImport(Link * -1 - 1))
             {
-                s = Imports[Link * -1 - 1].Name + ".";
+                s = Imports[Link * -1 - 1].ObjectName + ".";
                 s = FollowLink(Imports[Link * -1 - 1].link) + s;
             }
             return s;

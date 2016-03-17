@@ -171,7 +171,7 @@ namespace ME1Explorer
                             if (propSequenceReference.Value.IntValue < 0)
                             {
                                 n += 1;
-                                TreeNode t = new TreeNode("#" + n.ToString() + ": " + pcc.Imports[-n].Name + "(Import)");
+                                TreeNode t = new TreeNode("#" + n.ToString() + ": " + pcc.Imports[-n].ObjectName + "(Import)");
                                 t.Name = n.ToString();
                                 ret.Nodes.Add(t);
                             }

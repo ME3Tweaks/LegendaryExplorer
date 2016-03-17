@@ -1606,7 +1606,7 @@ namespace ME3Creator
                 case "NameProperty":
                     m.Write(BitConverter.GetBytes(8), 0, 4);
                     m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
+                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.GetName(p.Value.IntValue))), 0, 4);
                     m.Write(new byte[4], 0, 4);
                     break;
                 case "BoolProperty":
@@ -1699,7 +1699,7 @@ namespace ME3Creator
                         int test2 = BitConverter.ToInt32(p.raw, pos + 4);
                         if (!importpcc.isName(test1) || test2 != 0)
                             break;
-                        if (importpcc.GetName(test1) != "None")
+                        if (size > 24 && importpcc.GetName(test1) != "None")
                             if (BitConverter.ToInt32(p.raw, pos + 12) != 0)
                                 break;
                         try

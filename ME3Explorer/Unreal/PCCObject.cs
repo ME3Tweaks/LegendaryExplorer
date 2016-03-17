@@ -105,7 +105,6 @@ namespace ME3Explorer.Unreal
             public static int byteSize = 28;
             internal byte[] data = new byte[byteSize];
             internal PCCObject pccRef;
-            public int Link;
 
             public int idxPackageFile { get { return BitConverter.ToInt32(data, 0); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 0, sizeof(int)); } }
             public int idxClassName   { get { return BitConverter.ToInt32(data, 8); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 8, sizeof(int)); } }
@@ -155,7 +154,6 @@ namespace ME3Explorer.Unreal
             internal byte[] info; // holds data about export header, not the export data.
             public PCCObject pccRef;
             public uint offset { get; set; }
-            public int Link; // deprecated var, soon will be removed
 
             public int idxClassName    { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); } }
             public int idxClassParent  { get { return BitConverter.ToInt32(info, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 4, sizeof(int)); } }
@@ -671,7 +669,7 @@ namespace ME3Explorer.Unreal
 
         public string getObjectName(int index)
         {
-            if (index > 0 && index < ExportCount)
+            if (index > 0 && index <= ExportCount)
                 return Exports[index - 1].ObjectName;
             if (index * -1 > 0 && index * -1 < ImportCount)
                 return Imports[index * -1 - 1].ObjectName;

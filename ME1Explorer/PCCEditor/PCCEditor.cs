@@ -103,7 +103,7 @@ namespace ME1Explorer
             if (CurrentView == 1)
             {
                 foreach (PCCObject.ImportEntry imp in pcc.Imports)
-                    listBox1.Items.Add((count++).ToString("d6") + " : " + pcc.FollowLink(imp.link) + imp.Name);
+                    listBox1.Items.Add((count++).ToString("d6") + " : " + pcc.FollowLink(imp.link) + imp.ObjectName);
             }
             string s;
             if (CurrentView == 2)
@@ -188,7 +188,7 @@ namespace ME1Explorer
             if (idx > 0)
                 s = "(Exp)" + (idx - 1) + " : " + pcc.Exports[idx - 1].ObjectName + "(" + pcc.Exports[idx - 1].ClassName + ")";
             else
-                s = "(Imp)" + (-idx - 1) + " : " + pcc.Imports[-idx - 1].Name; //+ "(" + pcc.Imports[-idx - 1].ClassName + ")";
+                s = "(Imp)" + (-idx - 1) + " : " + pcc.Imports[-idx - 1].ObjectName; //+ "(" + pcc.Imports[-idx - 1].ClassName + ")";
             f = -1;
             for (int i = 0; i < t.Nodes.Count; i++)
                 if (t.Nodes[i].Text == s)

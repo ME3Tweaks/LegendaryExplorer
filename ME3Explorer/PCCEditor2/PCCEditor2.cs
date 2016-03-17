@@ -69,7 +69,11 @@ namespace ME3Explorer
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
                 LoadFile(d.FileName);
+                AddRecent(d.FileName);
+                SaveRecentList();
+            }
         }
 
         public void LoadFile(string s, bool isfromdlc = false)
@@ -77,8 +81,6 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                AddRecent(s);
-                SaveRecentList();
                 pcc = new PCCObject(s);
                 SetView(2);
                 RefreshView();
@@ -385,7 +387,7 @@ namespace ME3Explorer
         private void tabControl1_SelectedIndexChanged(Object sender, EventArgs e)
         {
             // keep disabled unless we're on the hex tab:
-            if (tabControl1.SelectedIndex == 0 && listBox1.SelectedItem != null)
+            if (tabControl1.SelectedIndex == 0 && GetSelected() != -1)
                 saveHexChangesToolStripMenuItem.Enabled = true;
             else
                 saveHexChangesToolStripMenuItem.Enabled = false;
@@ -406,7 +408,7 @@ namespace ME3Explorer
             if (CurrentView == IMPORTS_VIEW)
             {
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].data);
-                status2.Text = pcc.Imports[n].Link.ToString();
+                toolStripStatusLabel1.Text = "Link: " + pcc.Imports[n].idxLink;
             }
             if ((CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW) && n!=-1)
             {
@@ -603,7 +605,7 @@ namespace ME3Explorer
         {
             if (CurrentView == EXPORTS_VIEW)
                 listBox1.SelectedIndex = n;
-            else if (CurrentView == TREE_VIEW)
+            else if (CurrentView == TREE_VIEW && n < treeView1.Nodes.Count)
                 treeView1.SelectedNode = treeView1.Nodes[n];
         }
 
@@ -1065,11 +1067,7 @@ namespace ME3Explorer
             string s = sender.ToString();
             try
             {
-                pcc = new PCCObject(s);
-                SetView(2);
-                RefreshView();
-                InitStuff();
-                this.Text = "PCC Editor 2.0 (" + Path.GetFileName(s) + ")";
+                LoadFile(s);
             }
             catch (Exception ex)
             {
