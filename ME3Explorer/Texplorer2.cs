@@ -313,7 +313,7 @@ namespace ME3Explorer
             });
         }
 
-        private void ImportTree()
+        private async void ImportTree()
         {
             if (Tree == null)
             {
@@ -323,21 +323,67 @@ namespace ME3Explorer
             else if (Tree.TexCount != 0)
                 if (MessageBox.Show("This will replace your currently loaded tree but NOT on disk. Do you wish to proceed? Make REALLY sure you're loading the right game tree in...", "Sure you wanna do that Commander?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
                     return;
-
+            
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "ME Trees|*.bin";
                 ofd.Title = "Select tree to import.";
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    TreeDB temptree = Tree.Clone();
+                    StatusUpdater.UpdateText("Importing tree and thumbs...");
+                    ProgBarUpdater.ChangeProgressBar(0, 1);
+
+                    TreeDB temptree = Tree.Clone();  // KFreon: Copy settings so can back track if tree load fails
                     int status;
-                    if (!LoadTreeFromFile(ofd.FileName, out status, false))
+                    if (!LoadTreeFromFile(ofd.FileName, out status, false))  // KFreon: Load actual tree.bin
                     {
                         Tree = temptree;
                         MessageBox.Show("Error occured while loading tree. Likely a corrupted or invalid tree.");
                         return;
                     }
+
+                    await Task.Run(() =>
+                    {
+                        // KFreon: Copy thumbnails
+                        string basePath = Path.GetDirectoryName(ofd.FileName);
+                        string mainCachePath = Path.Combine(basePath, $"ThumbnailCaches\\ME{WhichGame}ThumbnailCache");
+
+                        bool inMainCachePath = Directory.Exists(mainCachePath);
+                        string sourceThumbCachePath = mainCachePath;
+
+                        if (!inMainCachePath)
+                        {
+                            string nakedPath = Path.Combine(basePath, $"ME{WhichGame}ThumbnailCache");
+                            bool isNakedPath = Directory.Exists(nakedPath);  // KFreon: Huehuehue
+
+                            if (isNakedPath)
+                                sourceThumbCachePath = nakedPath;
+                            else
+                            {
+                                DebugOutput.PrintLn("Thumbnails not found. Skipping...");
+                                return;
+                            }
+                        }
+
+                        string destThumbCachePath = ThumbnailPath;
+                        Directory.CreateDirectory(destThumbCachePath);
+
+                        var files = Directory.GetFiles(sourceThumbCachePath);
+                        ProgBarUpdater.ChangeProgressBar(0, files.Length);
+
+                        foreach (var file in files)
+                        {
+                            string filename = Path.GetFileName(file);
+                            string destPath = Path.Combine(destThumbCachePath, filename);  // KFreon: No overwriting. 
+                            if (!File.Exists(destPath))
+                                File.Copy(file, destPath);
+
+                            ProgBarUpdater.IncrementBar();
+                        }
+                    });
+
+                    ProgBarUpdater.ChangeProgressBar(1, 1);
+                    StatusUpdater.UpdateText("Tree imported!");
                 }
             }
         }
