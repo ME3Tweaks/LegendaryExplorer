@@ -331,7 +331,7 @@
             this.addInputLinkToolStripMenuItem,
             this.breakLinksToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 92);
             // 
             // openInPCCEditorToolStripMenuItem
             // 
@@ -353,7 +353,6 @@
             this.breakLinksToolStripMenuItem.Name = "breakLinksToolStripMenuItem";
             this.breakLinksToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.breakLinksToolStripMenuItem.Text = "Break Links";
-            this.breakLinksToolStripMenuItem.Visible = false;
             // 
             // statusStrip1
             // 

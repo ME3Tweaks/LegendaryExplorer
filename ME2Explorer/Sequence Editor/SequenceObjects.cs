@@ -202,6 +202,7 @@ namespace ME2Explorer.SequenceObjects
             }
             this.TranslateBy(x, y);
             this.MouseEnter += new PInputEventHandler(OnMouseEnter);
+            this.MouseLeave += new PInputEventHandler(OnMouseLeave);
         }
 
         public string GetValue()
@@ -384,6 +385,15 @@ namespace ME2Explorer.SequenceObjects
             {
                 ((PPath)((SVar)sender)[1]).Pen = selectedPen;
                 dragTarget = (PNode)sender;
+            }
+        }
+
+        public void OnMouseLeave(object sender, PInputEventArgs e)
+        {
+            if (draggingVarlink)
+            {
+                ((PPath)((SVar)sender)[1]).Pen = outlinePen;
+                dragTarget = null;
             }
         }
     }
@@ -691,8 +701,7 @@ namespace ME2Explorer.SequenceObjects
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
-                return false;
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -743,8 +752,7 @@ namespace ME2Explorer.SequenceObjects
 
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                //return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
-                return false;
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -863,7 +871,7 @@ namespace ME2Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue + (p2[i + 1].Value.StringValue.Length == 0 ? "\0" : "" ) == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 52);
@@ -961,7 +969,7 @@ namespace ME2Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 28);
@@ -1018,7 +1026,7 @@ namespace ME2Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
+                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1072,7 +1080,7 @@ namespace ME2Explorer.SequenceObjects
                     List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
+                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1156,7 +1164,7 @@ namespace ME2Explorer.SequenceObjects
             foreach (SaltPropertyReader.Property prop in props)
             {
                 if (prop.Name.Contains("EventName") || prop.Name == "sScriptName")
-                    s += "\n\"" + prop.Value.IntValue + "\"";
+                    s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
                     s += "\n\"" + prop.Value.StringValue + "\"";
             }
@@ -1321,7 +1329,7 @@ namespace ME2Explorer.SequenceObjects
                 if (prop.Name == "oSequenceReference")
                     s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
                 else if (prop.Name == "EventName" || prop.Name == "StateName")
-                    s += "\n\"" + prop.Value.IntValue + "\"";
+                    s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
                     s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (prop.Name == "m_pEffect")
