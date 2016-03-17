@@ -2513,7 +2513,7 @@ namespace ME3Explorer
                     savepath = Path.Combine(Path.GetDirectoryName(savepath), Path.GetFileNameWithoutExtension(savepath) + "_" + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + Path.GetExtension(savepath));
 
                 // KFreon: Save file
-                File.WriteAllBytes(savepath, tex2D.extractImage(imgsize, false));
+                File.WriteAllBytes(savepath, tex2D.extractImage(imgsize, true));
 
                 StatusUpdater.UpdateText("Image extracted and saved!");
                 ProgBarUpdater.ChangeProgressBar(1, 1);
