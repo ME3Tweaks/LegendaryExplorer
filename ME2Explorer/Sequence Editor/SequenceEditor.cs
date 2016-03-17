@@ -43,7 +43,7 @@ namespace ME2Explorer
             SObj.talkfiles = talkFiles;
             if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
-                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(System.IO.File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
                 if (options.ContainsKey("AutoSave")) 
                     autoSaveViewToolStripMenuItem.Checked = (bool)options["AutoSave"];
                 if (options.ContainsKey("OutputNumbers"))
@@ -442,9 +442,9 @@ namespace ME2Explorer
             options.Add("AutoSave", autoSaveViewToolStripMenuItem.Checked);
             options.Add("GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked);
             string outputFile = JsonConvert.SerializeObject(options);
-            if (!System.IO.Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews"))
-                System.IO.Directory.CreateDirectory(ME2Directory.cookedPath + @"\SequenceViews");
-            System.IO.File.WriteAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
+            if (!Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews"))
+                Directory.CreateDirectory(ME2Directory.cookedPath + @"\SequenceViews");
+            File.WriteAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
 
           
             //taskbar.RemoveTool(this);
@@ -457,7 +457,7 @@ namespace ME2Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "Bmp Files (*.bmp)|*.bmp";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
                 RectangleF rr = r.GlobalFullBounds;
@@ -479,17 +479,10 @@ namespace ME2Explorer
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.SaveToFile(d.FileName);
-                //if (MessageBox.Show("Do you want to update TOC.bin?", "ME3Explorer", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                //{
-                //    TOCUpdater.TOCUpdater tc = new TOCUpdater.TOCUpdater();
-                //    tc.MdiParent = this.ParentForm;
-                //    tc.Show();
-                //    tc.EasyUpdate();
-                //    tc.Close();
-                //}
+                MessageBox.Show("Done");
             }
         }
 
@@ -521,7 +514,7 @@ namespace ME2Explorer
                 return;
             selectedByNode = true;
             listBox1.SelectedIndex = n;
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
@@ -628,9 +621,9 @@ namespace ME2Explorer
             if (toFile)
             {
                 string outputFile = JsonConvert.SerializeObject(SavedPositions);
-                if (!System.IO.Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
-                    System.IO.Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
-                System.IO.File.WriteAllText(JSONpath, outputFile);
+                if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
+                    Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
+                File.WriteAllText(JSONpath, outputFile);
             }
             
         }
