@@ -53,5 +53,10 @@ namespace KFreonLib.Debugging
         {
             DebugOutput.NullifyRTB();
         }
+
+        private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtb1.Clear();
+        }
     }
 }
