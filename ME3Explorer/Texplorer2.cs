@@ -388,7 +388,7 @@ namespace ME3Explorer
             }
         }
 
-        private void ExportTree()
+        private async void ExportTree()
         {
             if (Tree == null || Tree.TexCount == 0)
             {
@@ -405,13 +405,33 @@ namespace ME3Explorer
                 {
                     StatusUpdater.UpdateText("Exporting Tree...");
                     ProgBarUpdater.ChangeProgressBar(0, 1);
-                    Task.Run(() =>
+                    await Task.Run(() =>
                     {
                         Tree.WriteToFile(sfd.FileName, Path.GetDirectoryName(pathBIOGame));
-                        DebugOutput.PrintLn("Tree exported successfully!");
-                        StatusUpdater.UpdateText("Tree Exported!");
-                        ProgBarUpdater.ChangeProgressBar(1, 1);
+
+                        // KFreon: Copy out Thumbnails
+                        if (Directory.Exists(ThumbnailPath))
+                        {
+                            string destThumbDirec = Path.GetDirectoryName(sfd.FileName);
+                            Directory.CreateDirectory(destThumbDirec);
+
+                            var files = Directory.GetFiles(ThumbnailPath);
+
+                            ProgBarUpdater.ChangeProgressBar(0, files.Length);
+
+                            foreach (var file in files)
+                            {
+                                string destName = Path.Combine(destThumbDirec, Path.GetFileName(file));
+                                File.Copy(file, destName, true);
+
+                                ProgBarUpdater.IncrementBar();
+                            }
+                        }
                     });
+
+                    DebugOutput.PrintLn("Tree exported successfully!");
+                    StatusUpdater.UpdateText("Tree Exported!");
+                    ProgBarUpdater.ChangeProgressBar(1, 1);
                 }
             }
         }

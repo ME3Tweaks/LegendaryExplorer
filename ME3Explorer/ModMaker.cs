@@ -1311,6 +1311,9 @@ namespace ME3Explorer
 
         private void ExtractDataButton_Click(object sender, EventArgs e)
         {
+            if (MainListView.SelectedItems == null || MainListView.SelectedItems.Count == 0)
+                return; 
+
             int ListInd = MainListView.SelectedIndices[0];
             if (ListInd < 0)
                 return;
