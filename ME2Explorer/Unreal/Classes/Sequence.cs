@@ -44,6 +44,7 @@ namespace ME2Explorer.Unreal.Classes
                     for (int j = 0; j < count; j++)
                         SequenceObjects.Add(BitConverter.ToInt32(buff, 28 + j * 4));
                     SequenceObjects.Sort();
+                    SequenceObjects.Remove(0);
                 }
         }
     }
