@@ -769,6 +769,9 @@ namespace ME3Explorer
             {
                 List<int> whichgames = new List<int>();
                 List<string> DLCPCCs = RunJobs(templist, ref whichgames);
+                if (DLCPCCs == null)
+                    return true;
+
                 if (!cts.IsCancellationRequested)
                     UpdateTOCS(DLCPCCs, whichgames);
 
@@ -779,7 +782,10 @@ namespace ME3Explorer
         }
 
         private List<string> RunJobs(List<ModJob> joblist, ref List<int> whichgames)
-        {
+        {         
+            int count = 1;
+            List<string> DLCPCCs = new List<string>();
+
             bool alreadyExtracted = true;
             foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
             {
@@ -793,14 +799,16 @@ namespace ME3Explorer
             DialogResult result = DialogResult.Yes;
             this.Invoke(new Action(() =>
             {
-                if (!alreadyExtracted)
-                    result = MessageBox.Show("NOTE: ALL DLC's will be extracted to facilitate updating. This will take ~1 hour give or take 2 hours. It'll also take up many gigabytes on your HDD." + Environment.NewLine + "Continue? If you don't, the game may not start.", "You should say yes", MessageBoxButtons.YesNo);
+                if (!alreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
+                    result = MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo);
             }));
-            
 
+            if (result == DialogResult.No)
+            {
+                StatusUpdater.UpdateText("Install cancelled due to lack of DLC.");
+                return null;
+            }
 
-            int count = 1;
-            List<string> DLCPCCs = new List<string>();
             foreach (ModJob job in joblist)
             {
                 if (cts.IsCancellationRequested)

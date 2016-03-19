@@ -119,6 +119,21 @@ namespace KFreonLib.Scripting
         /// </summary>
         public class ModJob
         {
+            public bool HasDLCPCCs
+            {
+                get
+                {
+                    if (PCCs == null || PCCs.Count == 0)
+                        return false;
+
+                    return PCCs.Any(pcc =>
+                    {
+                        string dlcname = KFreonLib.Misc.Methods.GetDLCNameFromPath(pcc);
+                        return !String.IsNullOrEmpty(dlcname);
+                    });
+                }
+            }
+
             public string Script = null;
             public string OriginalScript = null;
             public string Name = null;

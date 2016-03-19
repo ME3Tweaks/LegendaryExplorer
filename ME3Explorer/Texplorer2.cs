@@ -1508,6 +1508,12 @@ namespace ME3Explorer
             // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works. KFREON: Re-enabled as part of the TOC all day, everywhere, anywhen strategy.
             if (WhichGame == 3)
             {
+                if (!Directory.EnumerateDirectories(ME3Directory.DLCPath, "*.*", SearchOption.AllDirectories).Any(file => file.EndsWith(".pcc")))
+                { 
+                    DebugOutput.PrintLn("No extracted DLC. Not TOCing.");
+                    return;
+                }
+
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                 DebugOutput.PrintLn("Updating DLC...");
                 dlcedit2.ExtractAllDLC();
@@ -2537,31 +2543,8 @@ namespace ME3Explorer
                 int index = GetSelectedTexInd();
                 TreeTexInfo tex = Tree.GetTex(index);
                 Textures.ITexture2D tex2D = tex.Textures[0];
-                for (int i = 0; i < tex2D.imgList.Count; i++)
-                {
-                    bool pccstored = tex2D.imgList[i].CompareStorage("pccSto");
 
-                    // KFreon: Ignore null entries
-                    int offset = (int)((pccstored) ? tex2D.imgList[i].offset + tex2D.pccOffset : tex2D.imgList[i].offset);
-                    if (offset != -1)
-                        names.Add("Image: " + tex2D.imgList[i].imgSize + " stored inside " + (pccstored ? "PCC file" : "Archive file") + " at offset " + offset.ToString());
-                }
 
-                string selectedImage = "";
-                using (Helpers.SelectionForm sf = new Helpers.SelectionForm(names, "Select ONE image to extract.", "Extract Image Selector", false))
-                {
-                    sf.ShowDialog();
-                    if (sf.SelectedInds.Count == 0)
-                        return;
-                    else if (sf.SelectedInds.Count == 1)
-                        selectedImage = sf.SelectedItems[0];
-                    else
-                    {
-                        MessageBox.Show("You must select ONLY ONE image to extract.");
-                        return;
-                    }
-                }
-                string imgsize = selectedImage.Split(' ')[1];
                 string savepath = "";
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
@@ -2579,7 +2562,7 @@ namespace ME3Explorer
                     savepath = Path.Combine(Path.GetDirectoryName(savepath), Path.GetFileNameWithoutExtension(savepath) + "_" + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + Path.GetExtension(savepath));
 
                 // KFreon: Save file
-                File.WriteAllBytes(savepath, tex2D.extractImage(imgsize, true));
+                File.WriteAllBytes(savepath, tex2D.extractMaxImage(true));
 
                 StatusUpdater.UpdateText("Image extracted and saved!");
                 ProgBarUpdater.ChangeProgressBar(1, 1);
