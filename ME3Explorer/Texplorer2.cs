@@ -22,6 +22,7 @@ using System.Reflection;
 using CSharpImageLibrary.General;
 using System.Text;
 using UsefulThings;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
 {
@@ -2720,14 +2721,18 @@ namespace ME3Explorer
         private void addDLCToTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> pccs = new List<string>();
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
-            {
-                fbd.Description = "Select DLC Folder to add. (e.g. DLC_CON_END)";
-                if (fbd.ShowDialog() != DialogResult.OK)
-                    return;
 
-                pccs = Directory.EnumerateFiles(fbd.SelectedPath, "*.pcc", SearchOption.AllDirectories).ToList();
-            }
+            string outputPath = null;
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+           dialog.Title = "Select DLC Folder to add. (e.g. DLC_CON_END)";
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                outputPath = dialog.FileName;
+            else
+                return;
+
+            pccs = Directory.EnumerateFiles(outputPath, "*.pcc", SearchOption.AllDirectories).ToList();
 
             backbone.AddToBackBone(b =>
             {

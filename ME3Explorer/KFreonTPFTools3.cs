@@ -20,6 +20,7 @@ using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
 using CSharpImageLibrary.General;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
 {
@@ -1697,13 +1698,15 @@ namespace ME3Explorer
         private void extractAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string outputPath = "";
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
-            {
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    outputPath = fbd.SelectedPath;
-                else
-                    return;
-            }
+
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                outputPath = dialog.FileName;
+            else
+                return;
+
             Extractor(outputPath);
         }
 
@@ -1757,13 +1760,13 @@ namespace ME3Explorer
         private void extractInvalidToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string outputPath = "";
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
-            {
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    outputPath = fbd.SelectedPath;
-                else
-                    return;
-            }
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                outputPath = dialog.FileName;
+            else
+                return;
             Overall.UpdateText("Extracting " + LoadedTexes.Where(r => !r.Valid && !r.isDef).Count() + " invalid textures...");
             Extractor(outputPath, null, t => !t.Valid && !t.isDef);
             Overall.UpdateText("All invalids extracted!");
@@ -2282,9 +2285,11 @@ namespace ME3Explorer
             }
             else
             {
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-                if (fbd.ShowDialog() == DialogResult.OK)
-                    Extractor(fbd.SelectedPath, null, t => temps.Contains(t));
+                var dialog = new CommonOpenFileDialog();
+                dialog.IsFolderPicker = true;
+                dialog.EnsurePathExists = true;
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    Extractor(dialog.FileName, null, t => temps.Contains(t));
             }
             
             Overall.UpdateText("Extraction complete!");
@@ -3399,54 +3404,59 @@ namespace ME3Explorer
 
         private void BulkExtractTPFButton_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            string outputPath = null;
+
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+            dialog.Title = "Select folder containing multiple TPF's to extract.";
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                outputPath = dialog.FileName;
+            else
+                return;
+
+
+            OverallProgressBar.Value = 0;
+            var tpfs = Directory.EnumerateFiles(outputPath);
+            OverallProgressBar.Maximum = tpfs.Count();
+            foreach (var item in tpfs)
             {
-                fbd.Tag = "Select folder containing multiple TPF's to extract.";
-                if (fbd.ShowDialog() == DialogResult.OK)
+                if (!item.EndsWith(".tpf", StringComparison.OrdinalIgnoreCase))  // KFreon: TPF's only.
+                    continue;
+
+                SaltTPF.ZipReader zippy = new SaltTPF.ZipReader(item);
+
+                OverallStatusLabel.Text = "Extracting " + Path.GetFileName(zippy._filename);
+
+                // KFreon: Create individual directory
+                string extractPath = Path.Combine(outputPath, Path.GetFileNameWithoutExtension(zippy._filename));
+                Directory.CreateDirectory(extractPath);
+
+                List<string> hashes = GetHashesFromTPF(zippy, false);
+
+                for (int i = 0; i < zippy.Entries.Count - 1; i++) 
                 {
-                    OverallProgressBar.Value = 0;
-                    var tpfs = Directory.EnumerateFiles(fbd.SelectedPath);
-                    OverallProgressBar.Maximum = tpfs.Count();
-                    foreach (var item in tpfs)
+                    var entry = zippy.Entries[i];
+                    string filename = entry.Filename;
+                    string hash = hashes[i].Split('|').First();
+
+                    if (!filename.Contains(hash))
                     {
-                        if (!item.EndsWith(".tpf", StringComparison.OrdinalIgnoreCase))  // KFreon: TPF's only.
-                            continue;
-
-                        SaltTPF.ZipReader zippy = new SaltTPF.ZipReader(item);
-
-                        OverallStatusLabel.Text = "Extracting " + Path.GetFileName(zippy._filename);
-
-                        // KFreon: Create individual directory
-                        string extractPath = Path.Combine(fbd.SelectedPath, Path.GetFileNameWithoutExtension(zippy._filename));
-                        Directory.CreateDirectory(extractPath);
-
-                        List<string> hashes = GetHashesFromTPF(zippy, false);
-
-                        for (int i = 0; i < zippy.Entries.Count - 1; i++) 
-                        {
-                            var entry = zippy.Entries[i];
-                            string filename = entry.Filename;
-                            string hash = hashes[i].Split('|').First();
-
-                            if (!filename.Contains(hash))
-                            {
-                                string tempname = Path.GetFileNameWithoutExtension(filename);
-                                filename = filename.Replace(tempname, tempname + "_" + hash);
-                            }
-
-                            if (File.Exists(Path.Combine(extractPath, filename)))
-                                continue;
-
-                            entry.Extract(false, Path.Combine(extractPath, filename));
-                        }
-
-                        OverallProgressBar.Value++;
+                        string tempname = Path.GetFileNameWithoutExtension(filename);
+                        filename = filename.Replace(tempname, tempname + "_" + hash);
                     }
 
-                    OverallProgressBar.Value = OverallProgressBar.Maximum;
-                    MessageBox.Show("Done");
+                    if (File.Exists(Path.Combine(extractPath, filename)))
+                        continue;
+
+                    entry.Extract(false, Path.Combine(extractPath, filename));
                 }
+
+                OverallProgressBar.Value++;
             }
+
+            OverallProgressBar.Value = OverallProgressBar.Maximum;
+            MessageBox.Show("Done");
         }
 
         private void texmodPreviewBox_TextChanged(object sender, EventArgs e)
@@ -3457,13 +3467,13 @@ namespace ME3Explorer
         private void extractValidsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string outputPath = "";
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
-            {
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    outputPath = fbd.SelectedPath;
-                else
-                    return;
-            }
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                outputPath = dialog.FileName;
+            else
+                return;
             Overall.UpdateText("Extracting " + LoadedTexes.Where(r => r.Valid && !r.isDef).Count() + " valid textures...");
             Extractor(outputPath, null, t => t.Valid && !t.isDef);
             Overall.UpdateText("All valids extracted!");

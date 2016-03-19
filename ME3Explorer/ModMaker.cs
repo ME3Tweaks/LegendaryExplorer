@@ -22,6 +22,7 @@ using System.Reflection;
 using UsefulThings;
 using KFreonLib.PCCObjects;
 using System.Windows.Forms.Integration;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
 {
@@ -1328,41 +1329,45 @@ namespace ME3Explorer
 
             if (MainListView.SelectedIndices.Count > 1)
             {
-                using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+                string outputPath = null;
+                var dialog = new CommonOpenFileDialog();
+                dialog.IsFolderPicker = true;
+                dialog.EnsurePathExists = true;
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    outputPath = dialog.FileName;
+                else
+                    return;
+
+
+                MainProgBar.ChangeProgressBar(0, MainListView.SelectedIndices.Count);
+                StatusUpdater.UpdateText("Extracting data...");
+                for (int i = 0; i < MainListView.SelectedIndices.Count; i++)
                 {
-                    if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    ModJob job = KFreonLib.Scripting.ModMaker.JobList[MainListView.SelectedIndices[i]];
+                    string destpath = null;
+                    if (job.JobType == "TEXTURE")
+                        destpath = Path.Combine(outputPath, job.ObjectName) + ".dds";
+                    else
                     {
-                        MainProgBar.ChangeProgressBar(0, MainListView.SelectedIndices.Count);
-                        StatusUpdater.UpdateText("Extracting data...");
-                        for (int i = 0; i < MainListView.SelectedIndices.Count; i++)
-                        {
-                            ModJob job = KFreonLib.Scripting.ModMaker.JobList[MainListView.SelectedIndices[i]];
-                            string destpath = null;
-                            if (job.JobType == "TEXTURE")
-                                destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + ".dds";
-                            else
-                            {
-                                int exp = (job.ExpIDs != null && job.ExpIDs.Count > 0) ? job.ExpIDs[0] : 0;
-                                destpath = Path.Combine(fbd.SelectedPath, job.ObjectName) + "_EXP- " + exp + ".bin";
-                            }
-
-                            // KFreon: If it exists already, DO NOT overwrite. Just rename.
-                            int count = 0;
-                            string newpath = destpath;
-                            while (true)  // KFreon: Not using File.Exists as condition cos it can be a bit weird that way
-                            {
-                                if (!File.Exists(newpath))
-                                    break;
-                                
-                                newpath = Path.Combine(Path.GetDirectoryName(destpath), Path.GetFileNameWithoutExtension(destpath) + count + Path.GetExtension(destpath));
-                            }
-
-                            File.WriteAllBytes(newpath, job.data);
-                            MainProgBar.IncrementBar();
-                        }
-                        StatusUpdater.UpdateText("Data extracted!");
+                        int exp = (job.ExpIDs != null && job.ExpIDs.Count > 0) ? job.ExpIDs[0] : 0;
+                        destpath = Path.Combine(outputPath, job.ObjectName) + "_EXP- " + exp + ".bin";
                     }
+
+                    // KFreon: If it exists already, DO NOT overwrite. Just rename.
+                    int count = 0;
+                    string newpath = destpath;
+                    while (true)  // KFreon: Not using File.Exists as condition cos it can be a bit weird that way
+                    {
+                        if (!File.Exists(newpath))
+                            break;
+                                
+                        newpath = Path.Combine(Path.GetDirectoryName(destpath), Path.GetFileNameWithoutExtension(destpath) + count + Path.GetExtension(destpath));
+                    }
+
+                    File.WriteAllBytes(newpath, job.data);
+                    MainProgBar.IncrementBar();
                 }
+                StatusUpdater.UpdateText("Data extracted!");
             }
             else
             {
