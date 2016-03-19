@@ -28,7 +28,7 @@ namespace KFreonLib.Textures
         public uint Hash = 0;
         public uint OriginalHash = 0;
         public int NumMips = 0;
-        public string Format = null;
+        public ImageEngineFormat Format = ImageEngineFormat.Unknown;
         public int TreeInd = -1;
         public int GameVersion = -1;
     }
@@ -240,27 +240,10 @@ namespace KFreonLib.Textures
                 uint hash = 0;
 
 
-
-                /*if (WhichGame != 1 && temptex2D.arcName != "None")
-                    ValidFirstPCC = true;*/
-                
-
-
-
-
-                // KFreon: Add pcc name to list in tex2D if necessary
-                /*if (temptex2D.allFiles == null || temptex2D.allFiles.Count == 0)
-                {
-                    temptex2D.allFiles = new List<string>();
-                    temptex2D.allFiles.Add(temppcc.pccFileName);
-                }
-                else if (!temptex2D.allFiles.Contains(temppcc.pccFileName))
-                    temptex2D.allFiles.Add(temppcc.pccFileName);*/
-
                 // KFreon: Get texture hash
                 if (tempImg.CompareStorage("pccSto"))
                 {
-                    if (temptex2D.texFormat != "PF_NormalMap_HQ")
+                    if (temptex2D.texFormat != ImageEngineFormat.DDS_ATI2_3Dc)
                         hash = ~crcgen.BlockChecksum(temptex2D.DumpImg(tempImg.imgSize, ArcPath));
                     else
                         hash = ~crcgen.BlockChecksum(temptex2D.DumpImg(tempImg.imgSize, pathBIOGame), 0, tempImg.uncSize / 2);
@@ -272,7 +255,7 @@ namespace KFreonLib.Textures
                         hash = 0;
                     else
                     {
-                        if (temptex2D.texFormat != "PF_NormalMap_HQ")
+                        if (temptex2D.texFormat != ImageEngineFormat.DDS_ATI2_3Dc)
                             hash = ~crcgen.BlockChecksum(buffer);
                         else
                             hash = ~crcgen.BlockChecksum(buffer, 0, tempImg.uncSize / 2);
@@ -340,7 +323,7 @@ namespace KFreonLib.Textures
     {
         // KFreon: Class Specific Variables
         public String FileName = "";
-        public String ExpectedFormat = "";
+        public ImageEngineFormat ExpectedFormat = ImageEngineFormat.Unknown;
         public int ExpectedMips = 0;
         public bool found = false;
         public int TPFInd = -1;
@@ -402,9 +385,7 @@ namespace KFreonLib.Textures
         {
             get
             {
-                string expected = ExpectedFormat.ToLowerInvariant();
-                string given = Format.ToLowerInvariant();
-                return (expected.Contains("pf_norm") && given.Contains("ati")) || (expected.Contains("ati") && given.Contains("pf_norm")) || expected.Contains(given) || given.Contains(expected);
+                return ExpectedFormat == Format;
             }
         }
 
@@ -518,7 +499,7 @@ namespace KFreonLib.Textures
             ExpIDs.Clear();
             OriginalExpIDs.Clear();
             found = false;
-            ExpectedFormat = "";
+            ExpectedFormat = ImageEngineFormat.Unknown;
             ExpectedMips = 0;
             AutofixSuccess = true;
             FileDuplicates.Clear();
@@ -720,12 +701,7 @@ namespace KFreonLib.Textures
             OriginalExpIDs = new List<int>(ExpIDs);
 
             ExpectedMips = treetex.NumMips;
-            ExpectedFormat = treetex.Format.Replace("PF_", "");
-            if (ExpectedFormat.ToUpperInvariant().Contains("NORMALMAP"))
-                ExpectedFormat = "ATI2_3Dc";
-
-            if (ExpectedFormat.ToUpperInvariant().Contains("A8R8G8B8"))
-                ExpectedFormat = "ARGB";
+            ExpectedFormat = treetex.Format;
 
             // KFreon: File Dups
             List<TPFTexInfo> dups = new List<TPFTexInfo>(FileDuplicates);
@@ -783,7 +759,7 @@ namespace KFreonLib.Textures
                         NumMips = image.NumMipMaps;
                         Height = image.Height;
                         Width = image.Width;
-                        Format = image.Format.InternalFormat.ToString().Replace("DDS_", "");
+                        Format = image.Format.InternalFormat;
 
                         if (OrigWidth == -1)
                             OrigWidth = Width;
@@ -798,7 +774,6 @@ namespace KFreonLib.Textures
                 {
                     DebugOutput.PrintLn("Error checking texture: " + e.Message);
                     NumMips = 0;
-                    Format = Format ?? Path.GetExtension(FileName);
                     Thumbnail = null;
                 }
                 data = null;
@@ -817,8 +792,8 @@ namespace KFreonLib.Textures
 
         public string Autofixedpath(string TemporaryPath)
         {
-            Format format = ImageFormats.FindFormatInString(ExpectedFormat);
-            string newfilename = String.IsNullOrEmpty(ExpectedFormat) ? FileName : Path.ChangeExtension(FileName, ImageFormats.GetExtensionOfFormat(format.InternalFormat));
+            Format format = new CSharpImageLibrary.General.Format(ExpectedFormat);
+            string newfilename = Path.ChangeExtension(FileName, ImageFormats.GetExtensionOfFormat(format.InternalFormat));
             return Path.Combine(Path.Combine(TemporaryPath, "Autofixed"), newfilename);   
         }
 

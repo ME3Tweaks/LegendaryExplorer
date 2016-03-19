@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using CSharpImageLibrary.General;
 
 namespace KFreonLib.Textures
 {
@@ -24,7 +25,7 @@ namespace KFreonLib.Textures
 
         byte[] DumpImg(ImageSize imageSize, string ArcPath);
 
-        string texFormat { get; set; }
+        CSharpImageLibrary.General.ImageEngineFormat texFormat { get; set; }
 
         List<string> allPccs { get; set; }
 

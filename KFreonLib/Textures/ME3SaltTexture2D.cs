@@ -158,7 +158,7 @@ namespace KFreonLib.Textures
                     switch (property.Name)
                     {
                         case "Format":
-                            texFormat = pccObj.Names[property.Value.IntValue].Substring(3);
+                            texFormat = Textures.Methods.ParseFormat(pccObj.Names[property.Value.IntValue].Substring(3));
                             break;
                         case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
                         case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
@@ -548,7 +548,7 @@ namespace KFreonLib.Textures
             }
 
             //if (getFileFormat() == ".dds")
-            imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+            imgFile = new DDS(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
             //else
             //    imgFile = new TGA(fileName, imgInfo.imgSize, texFormat, imgBuffer);
 
@@ -668,9 +668,11 @@ namespace KFreonLib.Textures
             ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
             // check if replacing image is supported
             ImageFile imgFile = im;
+            ImageEngineFormat imageFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+
 
             //NEW Check for correct image format
-            if (texFormat != imgFile.format)
+            if (texFormat != imageFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // !!! warning, this method breaks consistency between imgList and imageData[] !!!
@@ -734,9 +736,10 @@ namespace KFreonLib.Textures
 
             // check if replacing image is supported
             ImageFile imgFile = im;
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
 
             // check if images have same format type
-            if (texFormat != imgFile.format && texFormat != "G8")
+            if (texFormat != imgFileFormat && texFormat != ImageEngineFormat.DDS_G8_L8)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             byte[] imgBuffer;
@@ -866,10 +869,10 @@ namespace KFreonLib.Textures
             ImageInfo imgInfo = privateimgList[imageIdx];
 
             ImageFile imgFile = im;
-
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
 
             // check if images have same format type
-            if (texFormat != imgFile.format && texFormat != "G8")
+            if (texFormat != imgFileFormat && texFormat != ImageEngineFormat.DDS_G8_L8)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             byte[] imgBuffer;
@@ -997,9 +1000,10 @@ namespace KFreonLib.Textures
             ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
             // check if replacing image is supported
             ImageFile imgFile = im;
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
 
             //NEW Check for correct image format
-            if (texFormat != imgFile.format || texFormat.Contains("ATI") && imgFile.format.Contains("NormalMap") || texFormat.Contains("NormalMap") && imgFile.format.Contains("ATI"))
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // check if image to add is valid
@@ -1098,8 +1102,10 @@ namespace KFreonLib.Textures
                 if (newImageFile.imgSize.height < 4 || newImageFile.imgSize.width < 4)
                     continue;
 
+                ImageEngineFormat newImageFileFormat = Textures.Methods.ParseFormat(newImageFile.format);
+
                 //NEW Check for correct format
-                if (texFormat != newImageFile.format)
+                if (texFormat != newImageFileFormat)
                 {
                     //MessageBox.Show("Warning! The input image is of the wrong format! Aborting");
                     throw new FormatException("Different image format, original is " + texFormat + ", new is " + newImageFile.subtype());
@@ -1242,7 +1248,7 @@ namespace KFreonLib.Textures
                 switch (property.Name)
                 {
                     case "Format":
-                        texFormat = pcc.Names[property.Value.IntValue].Substring(3);
+                        texFormat = Textures.Methods.ParseFormat(pcc.Names[property.Value.IntValue].Substring(3));
                         break;
                     case "TextureFileCacheName": arcName = property.Value.NameValue.Name; break;
                     case "LODGroup": LODGroup = property.Value.NameValue.Name; break;
@@ -1569,7 +1575,7 @@ namespace KFreonLib.Textures
         }
 
 
-        public string texFormat
+        public ImageEngineFormat texFormat
         {
             get;
             set;

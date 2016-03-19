@@ -56,9 +56,15 @@ namespace AmaroK86.ImageFormat
                     throw new FormatException("The image doesn't have any mipmaps");
                 }
             } */
+
+
+
+
+            // KFreon: This can be wrong too much. Single mip images etc.
+            /*
             var size = ImageMipMapDataSize(imageMipMap.imgSize, CprFormat(imageMipMap.format), imageMipMap.BPP);
             if (imageMipMap.imgData.Length != size)
-                throw new FormatException("The image doesn't have any mipmaps");
+                throw new FormatException("The image doesn't have any mipmaps");*/
 
             byte[] buffer = null;
 

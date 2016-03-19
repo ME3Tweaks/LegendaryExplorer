@@ -1821,7 +1821,7 @@ namespace ME3Explorer
         {
             List<string> message = new List<string>();
             message.Add("Texture Name:  " + tex2D.texName);
-            message.Add("Format:  " + (tex2D.texFormat.ToLower().Contains("g8") ? tex2D.texFormat + @"/L8" : (tex2D.texFormat.ToLower().Contains("normalmap") ? "ThreeDc" : tex2D.texFormat)));
+            message.Add("Format:  " + tex2D.texFormat.ToString().Replace("DDS_", ""));
             message.Add("Width:  " + info.imgSize.width + ",  Height:  " + info.imgSize.height);
             //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
             // Heff: Were ALL modified textures assigned the shadowmap texture group?
@@ -2228,8 +2228,8 @@ namespace ME3Explorer
             // KFreon: Check replacing texture
             using (ImageEngineImage img = new ImageEngineImage(path))
             {
-                if (!img.Format.InternalFormat.ToString().Contains(tex2D.texFormat, StringComparison.OrdinalIgnoreCase))
-                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToUpperInvariant());
+                if (img.Format.InternalFormat != tex2D.texFormat)
+                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToString().ToUpperInvariant());
 
                 if (img.NumMipMaps < tex2D.Mips)
                     sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);

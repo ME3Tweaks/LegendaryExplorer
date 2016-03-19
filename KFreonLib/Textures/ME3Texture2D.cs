@@ -94,7 +94,7 @@ namespace KFreonLib.Textures
         public string texName { get; set; }
         public string arcName { get; set; }
         public string LODGroup { get; set; }
-        public string texFormat { get; set; }
+        public ImageEngineFormat texFormat { get; set; }
         private byte[] headerData;
         private byte[] imageData;
         public uint pccOffset { get; set; }
@@ -122,10 +122,10 @@ namespace KFreonLib.Textures
                     PropertyReader.Property property = tempProperties[i];
                     if (!properties.ContainsKey(pccObj.Names[property.Name]))
                         properties.Add(pccObj.Names[property.Name], property);
-
+                    
                     switch (pccObj.Names[property.Name])
                     {
-                        case "Format": texFormat = pccObj.Names[property.Value.IntValue].Substring(3); break;
+                        case "Format": texFormat = Textures.Methods.ParseFormat(pccObj.Names[property.Value.IntValue].Substring(3)); break;
                         case "TextureFileCacheName": arcName = pccObj.Names[property.Value.IntValue]; break;
                         case "LODGroup": LODGroup = pccObj.Names[property.Value.IntValue]; break;
                         case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
@@ -274,9 +274,9 @@ namespace KFreonLib.Textures
             }
 
             if (getFileFormat() == ".dds")
-                imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+                imgFile = new DDS(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
             else
-                imgFile = new TGA(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+                imgFile = new TGA(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
 
             byte[] saveImg = imgFile.ToArray();
 
@@ -304,14 +304,15 @@ namespace KFreonLib.Textures
             ImageInfo imgInfo = privateImageList[imageIdx];
 
             ImageFile imgFile = im;
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
 
 
             // check if images have same format type
-            if (texFormat != imgFile.format || texFormat.Contains("ATI") && imgFile.format.Contains("NormalMap") || texFormat.Contains("NormalMap") && imgFile.format.Contains("ATI"))
+            if (texFormat != imgFileFormat)
             {
                 bool res = KFreonLib.Misc.Methods.DisplayYesNoDialogBox("Warning, replacing image has format " + imgFile.subtype() + " while original has " + texFormat + ", would you like to replace it anyway?", "Warning, different image format found");
                 if (res)
-                    imgFile.format = texFormat;
+                    imgFile.format = Textures.Methods.StringifyFormat(texFormat);
                 else
                     return;
                 //throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
@@ -538,7 +539,10 @@ namespace KFreonLib.Textures
 
         public string getFileFormat()
         {
-            switch (texFormat)
+            return ".dds";
+
+            // KFreon: Not really used anymore.
+            /*switch (texFormat)
             {
                 case "DXT1":
                 case "DXT5":
@@ -546,7 +550,7 @@ namespace KFreonLib.Textures
                 case "G8":
                 case "A8R8G8B8": return ".tga";
                 default: throw new FormatException("Unknown ME3 texture format");
-            }
+            }*/
         }
 
         public void removeImage()

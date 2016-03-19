@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using KFreonLib.PCCObjects;
 using KFreonLib.Debugging;
 using CSharpImageLibrary.General;
+using UsefulThings;
 
 namespace KFreonLib.Textures
 {
@@ -95,12 +96,28 @@ namespace KFreonLib.Textures
         }
 
 
-        public static bool CheckTextureFormat(string currentFormat, string desiredFormat)
+        /*public static bool CheckTextureFormat(string currentFormat, string desiredFormat)
         {
             string curr = currentFormat.ToLowerInvariant().Replace("pf_", "").Replace("DDS_", "");
             string des = desiredFormat.ToLowerInvariant().Replace("pf_", "").Replace("DDS_", "");
             bool correct = curr == des;
             return correct || (!correct && curr.Contains("ati") && des.Contains("normalmap")) || (!correct && curr.Contains("normalmap") && des.Contains("ati"));
+        }*/
+
+        public static ImageEngineFormat ParseFormat(string formatString)
+        {
+            if (String.IsNullOrEmpty(formatString))
+                return ImageEngineFormat.Unknown;
+
+            if (formatString.Contains("normal", StringComparison.OrdinalIgnoreCase))
+                return ImageEngineFormat.DDS_ATI2_3Dc;
+            else
+                return ImageFormats.FindFormatInString(formatString).InternalFormat;
+        }
+
+        public static string StringifyFormat(ImageEngineFormat format)
+        {
+            return format.ToString().Replace("DDS_", "").Replace("_3Dc","");
         }
     }
 

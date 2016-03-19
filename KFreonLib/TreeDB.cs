@@ -341,10 +341,9 @@ namespace KFreonLib
                             }
 
                             tempStruct.NumMips = bin.ReadInt32();
-                            tempStruct.Format = "";
                             int formatlen = bin.ReadInt32();
                             tempChar = bin.ReadChars(formatlen);
-                            tempStruct.Format = new string(tempChar);
+                            tempStruct.Format = Textures.Methods.ParseFormat(new string(tempChar));
 
                             int numFiles = bin.ReadInt32();
                             tempStruct.Files = new List<string>();
@@ -421,8 +420,11 @@ namespace KFreonLib
                         bin.Write(thumbpath.ToCharArray());
 
                         bin.Write(tex.NumMips);
-                        bin.Write(tex.Format.Length);
-                        bin.Write(tex.Format.ToCharArray());
+
+                        string format = Textures.Methods.StringifyFormat(tex.Format);
+                        bin.Write(format.Length);
+                        bin.Write(format.ToCharArray());
+
                         bin.Write(tex.Files.Count);
 
                         /*if (GameVersion != 1)

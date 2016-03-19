@@ -157,7 +157,7 @@ namespace KFreonLib.Textures
 
                 switch (property.Name)
                 {
-                    case "Format": texFormat = property.Value.StringValue; break;
+                    case "Format": texFormat = Textures.Methods.ParseFormat(property.Value.StringValue); break;
                     case "LODGroup": LODGroup = property.Value.StringValue; break;
                     case "CompressionSettings": Compression = property.Value.StringValue; break;
                     case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
@@ -274,9 +274,9 @@ namespace KFreonLib.Textures
             if (imgInfo.storageType == storage.pccSto || imgInfo.storageType == storage.pccCpr)
             {
                 if (getFileFormat() == ".dds")
-                    imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+                    imgFile = new DDS(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
                 else
-                    imgFile = new TGA(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+                    imgFile = new TGA(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
 
                 byte[] saveImg = imgFile.ToArray();
 
@@ -453,8 +453,9 @@ namespace KFreonLib.Textures
             if (enforceSize && (imgFile.imgSize.height != imgInfo.imgSize.height || imgFile.imgSize.width != imgInfo.imgSize.width))
                 throw new FormatException("Incorrect input texture dimensions. Expected: " + imgInfo.imgSize.ToString());
 
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
             // check if images have same format type
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            if (texFormat != imgFileFormat) 
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             byte[] imgBuffer;
@@ -519,8 +520,8 @@ namespace KFreonLib.Textures
             for (int i = imgMipMap.imageList.Count - 1; i >= 0; i--)
             {
                 ImageFile newImageFile = imgMipMap.imageList[i];
-
-                if (!Methods.CheckTextureFormat(texFormat, newImageFile.format))
+                ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(newImageFile.format);
+                if (texFormat != imgFileFormat)
                     throw new FormatException("Different image format, original is " + texFormat + ", new is " + newImageFile.subtype());
 
                 // if the image size exists inside the ME1Texture2D image list then we have to replace it
@@ -575,12 +576,9 @@ namespace KFreonLib.Textures
                 dds = new DDS(null, dds.imgSize, "A8R8G8B8", buff);
             }
 
-            if (texFormat == "PF_NormalMap_HQ")
-            {
-                if (dds.format != "ATI2")
-                    throw new FormatException("Input texture is the wrong format");
-            }
-            else if (String.Compare(texFormat, "PF_" + dds.format, true) != 0 && String.Compare(texFormat, dds.format, true) != 0)
+            ImageEngineFormat ddsFormat = Textures.Methods.ParseFormat(dds.format);
+
+            if (texFormat != ddsFormat)
                 throw new FormatException("Input texture is the wrong format");
 
             ImageInfo newImg = new ImageInfo();
@@ -661,8 +659,8 @@ namespace KFreonLib.Textures
                 byte[] buff = ImageMipMapHandler.ConvertTo32bit(imgFile.imgData, (int)imgFile.imgSize.width, (int)imgFile.imgSize.height);
                 imgFile = new DDS(null, imgFile.imgSize, "A8R8G8B8", buff);
             }
-
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // check if image to add is valid
@@ -766,12 +764,9 @@ namespace KFreonLib.Textures
             if (Class == class2 || Class == class3)
                 ChangeFormat(dds.format);
 
-            if (texFormat == "PF_NormalMap_HQ")
-            {
-                if (dds.format != "ATI2")
-                    throw new FormatException("Input texture is the wrong format");
-            }
-            else if (String.Compare(texFormat, "PF_" + dds.format, true) != 0 && String.Compare(texFormat, dds.format, true) != 0)
+            ImageEngineFormat ddsFormat = Textures.Methods.ParseFormat(dds.format);
+
+            if (texFormat != ddsFormat)
                 throw new FormatException("Input texture is the wrong format");
 
             ImageInfo newImg = new ImageInfo();
@@ -870,7 +865,7 @@ namespace KFreonLib.Textures
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)formatID];
             properties["Format"] = prop;
-            texFormat = properties["Format"].Value.StringValue;
+            texFormat = Textures.Methods.ParseFormat(properties["Format"].Value.StringValue);
         }
 
         public void ChangeCompression(string newComp, ME1PCCObject pcc)
@@ -1118,7 +1113,7 @@ namespace KFreonLib.Textures
 
                 switch (property.Name)
                 {
-                    case "Format": texFormat = property.Value.StringValue; break;
+                    case "Format": texFormat = Textures.Methods.ParseFormat(property.Value.StringValue); break;
                     case "LODGroup": LODGroup = property.Value.StringValue; break;
                     case "CompressionSettings": Compression = property.Value.StringValue; break;
                     case "None": dataOffset = (uint)(property.offsetval + property.Size); break;
@@ -1228,23 +1223,11 @@ namespace KFreonLib.Textures
             return imgBuffer;
         }
 
-        public DDSFormat GetDDSFormat()
-        {
-            switch (texFormat)
-            {
-                case "PF_DXT1":
-                    return DDSFormat.DXT1;
-                case "PF_DXT5":
-                    return DDSFormat.DXT5;
-                case "PF_NormalMap_HQ":
-                    return DDSFormat.ATI2;
-                default:
-                    throw new FormatException("Unknown or non-DDS Format");
-            }
-        }
 
         private void ChangeFormat(string newformat)
         {
+            return;
+            /*
             if (newformat == "PF_R8G8B8" || newformat == "R8G8B8")
                 throw new FormatException("24-bit textures are not allowed in ME1");
             if (texFormat != "PF_NormalMap_HQ")
@@ -1268,7 +1251,7 @@ namespace KFreonLib.Textures
                         texFormat = newformat;
                     properties["Format"].Value.StringValue = texFormat;
                 }
-            }
+            }*/
         }
 
         public void LowResFix(int MipMapsToKeep = 1)
@@ -1329,13 +1312,10 @@ namespace KFreonLib.Textures
                 if (Class == class2 || Class == class3) // Allow format modification if one of the derived classes. Don't need the single level check since we're replacing all levels
                     ChangeFormat(mipmaps.imageList[0].format);
 
-                if (texFormat == "PF_NormalMap_HQ") // Check formats
-                {
-                    if (mipmaps.imageList[0].format != "ATI2")
-                        throw new FormatException("Texture not in correct format - Expected ATI2");
-                }
-                else if (String.Compare(texFormat, "PF_" + mipmaps.imageList[0].format, true) != 0)
-                    throw new FormatException("Texture not in correct format - Expected " + texFormat);
+                ImageEngineFormat ddsFormat = Textures.Methods.ParseFormat(mipmaps.imageList[0].format);
+
+                if (texFormat != ddsFormat)
+                throw new FormatException("Texture not in correct format - Expected " + texFormat);
 
                 for (int i = mipmaps.imageList.Count - 1; i >= 0; i--)
                 {
@@ -1373,12 +1353,9 @@ namespace KFreonLib.Textures
                 if (privateimgList.Count == 1 && (Class == class2 || Class == class3)) // Since this is single level replacement, only allow format change if a single level texture with required class
                     ChangeFormat(ddsfile.format);
 
-                if (texFormat == "PF_NormalMap_HQ") // Check format
-                {
-                    if (ddsfile.format != "ATI2")
-                        throw new FormatException("Texture not in correct format - Expected ATI2");
-                }
-                else if (String.Compare(texFormat, "PF_" + ddsfile.format, true) != 0)
+                ImageEngineFormat ddsFormat = Textures.Methods.ParseFormat(ddsfile.format);
+
+                if (texFormat != ddsFormat)
                     throw new FormatException("Texture not in correct format - Expected " + texFormat);
 
                 if (privateimgList.Count == 1 && privateimgList[0].imgSize != ddsfile.imgSize) // If img doesn't exist and it's a single level texture, use hard replace
@@ -1577,7 +1554,7 @@ namespace KFreonLib.Textures
             return DumpImage(imageSize);
         }
 
-        public string texFormat
+        public ImageEngineFormat texFormat
         {
             get;
             set;
@@ -1622,8 +1599,9 @@ namespace KFreonLib.Textures
             ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
             // check if replacing image is supported
             ImageFile imgFile = im;
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
 
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // !!! warning, this method breaks consistency between imgList and imageData[] !!!

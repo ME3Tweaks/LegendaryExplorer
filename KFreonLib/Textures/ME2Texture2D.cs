@@ -154,7 +154,7 @@ namespace KFreonLib.Textures
 
                 switch (property.Name)
                 {
-                    case "Format": texFormat = property.Value.StringValue; break;
+                    case "Format": texFormat = Textures.Methods.ParseFormat(property.Value.StringValue); break;
                     case "TextureFileCacheName": arcName = property.Value.StringValue; break;
                     case "LODGroup": LODGroup = property.Value.StringValue; break;
                     case "CompressionSettings": Compression = property.Value.StringValue; break;
@@ -274,7 +274,7 @@ namespace KFreonLib.Textures
                     throw new FormatException("Unsupported texture storage type");
             }
 
-            imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+            imgFile = new DDS(fileName, imgInfo.imgSize, Textures.Methods.StringifyFormat(texFormat), imgBuffer);
             byte[] saveImg = imgFile.ToArray();
 
             if (!NoOutput)
@@ -437,7 +437,8 @@ namespace KFreonLib.Textures
             if (imgFile.imgSize.height != imgInfo.imgSize.height || imgFile.imgSize.width != imgInfo.imgSize.width)
                 throw new FormatException("Incorrect input texture dimensions. Expected: " + imgInfo.imgSize.ToString());
 
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             byte[] imgBuffer;
@@ -538,8 +539,8 @@ namespace KFreonLib.Textures
             for (int i = imgMipMap.imageList.Count - 1; i >= 0; i--)
             {
                 ImageFile newImageFile = imgMipMap.imageList[i];
-
-                if (!Methods.CheckTextureFormat(texFormat, newImageFile.format))
+                ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(newImageFile.format);
+                if (texFormat != imgFileFormat)
                     throw new FormatException("Different image format, original is " + texFormat + ", new is " + newImageFile.subtype());
 
                 // if the image size exists inside the texture2d image list then we have to replace it
@@ -579,8 +580,8 @@ namespace KFreonLib.Textures
             ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
             // check if replacing image is supported
             ImageFile imgFile = im;
-
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // check if image to add is valid
@@ -624,8 +625,8 @@ namespace KFreonLib.Textures
             ImageSize biggerImageSizeOnList = privateimgList.Max(image => image.imgSize);
             // check if replacing image is supported
             ImageFile imgFile = im;
-
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             // !!! warning, this method breaks consistency between imgList and imageData[] !!!
@@ -657,8 +658,8 @@ namespace KFreonLib.Textures
 
             // check if replacing image is supported
             ImageFile imgFile = im;
-
-            if (!Methods.CheckTextureFormat(texFormat, imgFile.format))
+            ImageEngineFormat imgFileFormat = Textures.Methods.ParseFormat(imgFile.format);
+            if (texFormat != imgFileFormat)
                 throw new FormatException("Different image format, original is " + texFormat + ", new is " + imgFile.subtype());
 
             byte[] imgBuffer;
@@ -848,7 +849,7 @@ namespace KFreonLib.Textures
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)formatID];
             properties["Format"] = prop;
-            texFormat = properties["Format"].Value.StringValue;
+            texFormat = Textures.Methods.ParseFormat(properties["Format"].Value.StringValue);
         }
 
         public void ChangeCompression(string newComp, ME2PCCObject pcc)
@@ -1129,26 +1130,13 @@ namespace KFreonLib.Textures
             }
         }
 
-        public DDSFormat GetDDSFormat()
-        {
-            switch (texFormat)
-            {
-                case "PF_DXT1":
-                    return DDSFormat.DXT1;
-                case "PF_DXT5":
-                    return DDSFormat.DXT5;
-                case "PF_NormalMap_HQ":
-                    return DDSFormat.ATI2;
-                default:
-                    throw new FormatException("Unknown or non-DDS Format");
-            }
-        }
-
         private void ChangeFormat(string newformat)
         {
+            return;
+            /*
             if (newformat == "PF_R8G8B8" || newformat == "R8G8B8")
                 throw new FormatException("24-bit textures are not allowed in ME2");
-            if (texFormat != "PF_NormalMap_HQ")
+            if (texFormat != ImageEngineFormat.DDS_ATI2_3Dc)
             {
                 if (texFormat != newformat && texFormat != "PF_" + newformat)
                 {
@@ -1169,7 +1157,7 @@ namespace KFreonLib.Textures
                         texFormat = newformat;
                     properties["Format"].Value.StringValue = texFormat;
                 }
-            }
+            }*/
         }
 
         private List<ImageInfo> privateimgList { get; set; } // showable image list
@@ -1203,7 +1191,7 @@ namespace KFreonLib.Textures
             return DumpImage(imageSize, ArcPath);
         }
 
-        public string texFormat
+        public ImageEngineFormat texFormat
         {
             get;
             set;

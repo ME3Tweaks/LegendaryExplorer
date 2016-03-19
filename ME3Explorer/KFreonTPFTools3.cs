@@ -1051,10 +1051,10 @@ namespace ME3Explorer
 
             // KFreon: Tree details
             TreeMipsEntry.Text = (tex.ExpectedMips == 0 ? "¯\\_(ツ)_/¯" : tex.ExpectedMips.ToString());
-            TreeFormatEntry.Text = (tex.ExpectedFormat == "") ? "¯\\_(ツ)_/¯" : tex.ExpectedFormat;
+            TreeFormatEntry.Text = (tex.ExpectedFormat == ImageEngineFormat.Unknown) ? "¯\\_(ツ)_/¯" : tex.ExpectedFormat.ToString().Replace("DDS_", "");
 
             // KFreon: Display main info
-            TPFFormatEntry.Text = tex.Format;
+            TPFFormatEntry.Text = tex.Format.ToString().Replace("DDS_", "");
             HashTextBox.Text = (tex.Hash == 0) ? "Unknown" : KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
             TPFMipsEntry.Text = tex.NumMips.ToString();
             ImageSizeEntry.Text = tex.Width + "x" + tex.Height;
@@ -2859,7 +2859,7 @@ namespace ME3Explorer
 
             using (ImageEngineImage img = new ImageEngineImage(imgData))
             {
-                var destFormat = ImageEngine.ParseFromString(tex.ExpectedFormat);
+                var destFormat = tex.ExpectedFormat;
                 img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
                 retval = img.Save(path, destFormat, tex.ExpectedMips > 1 ? MipHandling.Default : MipHandling.KeepTopOnly);
             }
