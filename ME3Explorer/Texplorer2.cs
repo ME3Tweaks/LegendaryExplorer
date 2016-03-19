@@ -35,6 +35,7 @@ namespace ME3Explorer
         static readonly object TreeLock = new object();
         MEDirectories MEExDirecs = new MEDirectories();
 
+        List<ToolTip> tooltips = new List<ToolTip>();
 
         string pathBIOGame
         {
@@ -437,40 +438,11 @@ namespace ME3Explorer
             }
         }
 
-        private void instructionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (CancelButton.Visible)
-                return;
-
-            if (instructionsToolStripMenuItem.Text == "Instructions")
-            {
-                // KFreon: Show tooltips
-                ShowContextPanel(true);
-                System.Threading.Thread.Sleep(300);
-                SetupToolTip(MainTreeView);
-                SetupToolTip(MainListView);
-                SetupToolTip(DetailsHideButton);
-                SetupToolTip(ContextPanel);
-                SetupToolTip(tabControl1);
-                SetupToolTip(ChangeButton);
-                SetupToolTip(OutputBox);
-
-                instructionsToolStripMenuItem.Text = "Further instructions online";
-            }
-            else
-            {
-                Process.Start("http://me3explorer.wikia.com/wiki/Texplorer");
-                instructionsToolStripMenuItem.Text = "Instructions";
-            }
-
-
-        }
-
-        public void SetupToolTip(Control control)
+        public ToolTip SetupToolTip(Control control)
         {
             ToolTip newtip = new ToolTip();
-            //newtip.IsBalloon = true;
             newtip.Show(PrimaryToolTip.GetToolTip(control), control, 10, 10, 100000);
+            return newtip;
         }
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1050,142 +1022,6 @@ namespace ME3Explorer
             OutputBoxPrintLn("Performing first time setup. Don't worry, this only has to be done once.");
             return true;
         }
-
-
-        /*private bool CheckDLCExtracted()
-        {
-            List<string> retval = new List<string>();
-            List<string> check = new List<string>(Directory.GetFiles(pathBIOGame + "\\DLC", "*.*", SearchOption.AllDirectories).Where(b => b.EndsWith(".tfc") || b.EndsWith(".pcc")));
-            List<string> modified = new List<string>();
-            string print = "";
-            foreach (string str in check)
-            {
-                modified.Add(str);
-                print += "Modified DLC File: " + str + Environment.NewLine;
-            }
-            DebugOutput.PrintLn(print);
-
-            if (modified.Count != 0)
-            {
-                KFreonListErrorBox modifiedFilesDisplay = new KFreonListErrorBox("Potentially modified DLC files detected. These are shown below." + Environment.NewLine + "If you use content mods like ThaneMOD and MEHEM, click Yes." + Environment.NewLine + "Do you want to use these files?", "DLC potentially modified.", modified, System.Drawing.SystemIcons.Information);
-                modifiedFilesDisplay.Show();
-                return false;
-            }
-            return false;
-        }*/
-
-        // KFreon: Extracts .tfc from DLC's and calculates number of files
-        /*public bool EnumerateDLC()
-        {
-            List<string> files = new List<string>();
-            DebugOutput.PrintLn("Detecting and investigating DLC...");
-            switch (WhichGame)
-            {
-                case 1:
-                    if (Directory.Exists(DLCPath))
-                        files.AddRange(Directory.EnumerateFiles(DLCPath, "*", SearchOption.AllDirectories).Where(s => s.EndsWith(".upk", true, null) || s.EndsWith(".u", true, null) || s.EndsWith(".sfm", true, null)));
-                    else
-                    {
-                        OutputBoxPrintLn("No DLC found. Continuing...");
-                        return false;
-                    }
-                    break;
-                case 2:
-                    if (Directory.Exists(DLCPath))
-                        files.AddRange(Directory.GetFiles(DLCPath, "*.pcc", SearchOption.AllDirectories));
-                    else
-                    {
-                        OutputBoxPrintLn("No DLC found. Continuing...");
-                        return false;
-                    }
-                    break;
-                case 3:
-                    if (Directory.Exists(DLCPath))
-                        files.AddRange(Directory.GetFiles(DLCPath, "Default.sfar", SearchOption.AllDirectories));
-                    else
-                    {
-                        OutputBoxPrintLn("No DLC found. Continuing...");
-                        return false;
-                    }
-                    break;
-            }
-
-            List<string> tempfiles = new List<string>();
-
-            // KFreon: Get DLC name
-            foreach (String file in files)
-            {
-                string[] parts = file.Remove(0, DLCPath.Length).Split('\\');
-                string tempfile = parts.First(s => s != "");
-                if (!tempfiles.Contains(tempfile))
-                    tempfiles.Add(tempfile);
-            }
-
-            // KFreon: Allow selection of DLC's
-            using (Helpers.SelectionForm sf = new Helpers.SelectionForm(tempfiles, "Select DLC to use." + ((WhichGame == 3) ? " Selected DLC will be extracted if necessary." : ""), "Select DLC", true))
-            {
-                sf.ShowDialog();
-                if (sf.SelectedItems.Count != 0)
-                {
-                    List<string> newfiles = new List<string>();
-                    foreach (string name in sf.SelectedItems)
-                    {
-                        foreach (string file in files)
-                            if (file.Contains(name) && !newfiles.Contains(file))
-                                newfiles.Add(file);
-                    }
-                    files = newfiles;
-                }
-                else
-                {
-                    OutputBoxPrintLn("No DLC selected, so ignoring DLC.");
-                    return false;
-                }
-            }
-
-
-            // KFreon: ME3 DLC extraction
-            if (WhichGame == 3)
-            {
-                ProgBarUpdater.ChangeProgressBar(0, files.Count);
-
-                // KFreon: Check if DLC is already extracted
-                if (!CheckDLCExtracted())
-                {
-                    // KFreon: Extract pccs and tfc from DLC
-                    OutputBoxPrintLn("Extracting and shrinking DLC");
-                    foreach (string file in files)
-                    {
-                        OutputBoxPrintLn("Extracting and shrinking DLC: " + file);
-                        DLCExtractHelper(file);
-                        ProgBarUpdater.IncrementBar();
-                        if (cts.IsCancellationRequested)
-                            return false;
-                    }
-                    List<string> date = new List<string>();
-                    date.Add(DateTime.Now.Ticks.ToString());
-                    File.WriteAllLines(pathBIOGame + "\\DLC\\" + "TexplorerDLCDate.txt", date.ToArray());
-                }
-
-                // KFreon: Add extracted files to list
-                List<string> newfiles = new List<string>();
-                foreach (string dlc in files)
-                    newfiles.AddRange(Directory.EnumerateFiles(Path.GetDirectoryName(dlc), "*.pcc", SearchOption.AllDirectories));  //.Where(s => s.EndsWith(".pcc") || s.EndsWith(".tfc")));
-
-                files = newfiles;
-            }
-
-            if (!Tree.AddPCCs(files))
-            {
-                MessageBox.Show("Adding DLC to Tree failed. PCCs is null.");
-                return false;
-            }
-            Tree.numDLCFiles = files.Count;
-            return true;
-        }*/
-
-
-
 
         private void DisappearPictureBox()
         {
@@ -2450,6 +2286,7 @@ namespace ME3Explorer
             }
         }
 
+        [Obsolete("Not used anymore")]
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
             if (MainListView.SelectedIndices.Count != 0 && MainListView.SelectedIndices[0] >= 0)
@@ -3001,6 +2838,38 @@ namespace ME3Explorer
         private void asFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ExportTree();
+        }
+
+        private void toggleTooltipsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CancelButton.Visible)
+                return;
+
+            if (tooltips.Count == 0)
+            {
+                // KFreon: Show tooltips
+                ShowContextPanel(true);
+                System.Threading.Thread.Sleep(300);
+                tooltips.Add(SetupToolTip(MainTreeView));
+                tooltips.Add(SetupToolTip(MainListView));
+                tooltips.Add(SetupToolTip(DetailsHideButton));
+                tooltips.Add(SetupToolTip(ContextPanel));
+                tooltips.Add(SetupToolTip(tabControl1));
+                tooltips.Add(SetupToolTip(ChangeButton));
+                tooltips.Add(SetupToolTip(OutputBox));
+
+                instructionsToolStripMenuItem.Text = "Further instructions online";
+            }
+            else
+            {
+                tooltips.ForEach(tool => tool.Dispose());
+                tooltips.Clear();
+            }
+        }
+
+        private void wikiArticleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://me3explorer.wikia.com/wiki/Texplorer");
         }
     }
 }

@@ -41,7 +41,6 @@
             this.allTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlyCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RunAutofixButton = new System.Windows.Forms.ToolStripButton();
-            this.HelpButton = new System.Windows.Forms.ToolStripButton();
             this.MODtoTPFButton = new System.Windows.Forms.ToolStripButton();
             this.ChangeButton = new System.Windows.Forms.ToolStripButton();
             this.ThreeLabel = new System.Windows.Forms.ToolStripLabel();
@@ -99,11 +98,6 @@
             this.TPFMipsLabel = new System.Windows.Forms.Label();
             this.HashLabel = new System.Windows.Forms.Label();
             this.TPFFormatLabel = new System.Windows.Forms.Label();
-            this.PCCContextPanel = new System.Windows.Forms.Panel();
-            this.CopyClipboardButton = new System.Windows.Forms.Button();
-            this.CopySelectedClipBoardButton = new System.Windows.Forms.Button();
-            this.ExportPCCListButton = new System.Windows.Forms.Button();
-            this.PCCSelectAllButton = new System.Windows.Forms.Button();
             this.PreviewTabPages = new System.Windows.Forms.TabControl();
             this.PreviewPage = new System.Windows.Forms.TabPage();
             this.texmodPreviewBox = new System.Windows.Forms.RichTextBox();
@@ -111,10 +105,18 @@
             this.PCCsPage = new System.Windows.Forms.TabPage();
             this.PCCsCheckListBox = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.PCCContextPanel = new System.Windows.Forms.Panel();
+            this.CopyClipboardButton = new System.Windows.Forms.Button();
+            this.CopySelectedClipBoardButton = new System.Windows.Forms.Button();
+            this.ExportPCCListButton = new System.Windows.Forms.Button();
+            this.PCCSelectAllButton = new System.Windows.Forms.Button();
             this.AnalyseButton = new System.Windows.Forms.Button();
             this.InstallButton = new System.Windows.Forms.Button();
             this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.HelpButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toggleHelpTooltipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wikiArticleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -131,11 +133,11 @@
             this.DetailsSplitter.Panel1.SuspendLayout();
             this.DetailsSplitter.Panel2.SuspendLayout();
             this.DetailsSplitter.SuspendLayout();
-            this.PCCContextPanel.SuspendLayout();
             this.PreviewTabPages.SuspendLayout();
             this.PreviewPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).BeginInit();
             this.PCCsPage.SuspendLayout();
+            this.PCCContextPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TopStrip
@@ -239,14 +241,14 @@
             // allTexturesToolStripMenuItem
             // 
             this.allTexturesToolStripMenuItem.Name = "allTexturesToolStripMenuItem";
-            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
+            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
             this.allTexturesToolStripMenuItem.Text = "All Textures";
             this.allTexturesToolStripMenuItem.Click += new System.EventHandler(this.allTexturesToolStripMenuItem_Click);
             // 
             // onlyCheckedToolStripMenuItem
             // 
             this.onlyCheckedToolStripMenuItem.Name = "onlyCheckedToolStripMenuItem";
-            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
+            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
             this.onlyCheckedToolStripMenuItem.Text = "Only Checked";
             this.onlyCheckedToolStripMenuItem.Click += new System.EventHandler(this.onlyCheckedToolStripMenuItem_Click);
             // 
@@ -259,15 +261,6 @@
             this.RunAutofixButton.Size = new System.Drawing.Size(109, 29);
             this.RunAutofixButton.Text = "Run Autofix";
             this.RunAutofixButton.Click += new System.EventHandler(this.RunAutofixButton_Click);
-            // 
-            // HelpButton
-            // 
-            this.HelpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.HelpButton.Name = "HelpButton";
-            this.HelpButton.Size = new System.Drawing.Size(53, 29);
-            this.HelpButton.Text = "Help";
-            this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
             // 
             // MODtoTPFButton
             // 
@@ -888,6 +881,85 @@
             this.TPFFormatLabel.TabIndex = 0;
             this.TPFFormatLabel.Text = "Image Format:";
             // 
+            // PreviewTabPages
+            // 
+            this.PreviewTabPages.Controls.Add(this.PreviewPage);
+            this.PreviewTabPages.Controls.Add(this.PCCsPage);
+            this.PreviewTabPages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
+            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PreviewTabPages.Name = "PreviewTabPages";
+            this.PreviewTabPages.SelectedIndex = 0;
+            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 602);
+            this.PreviewTabPages.TabIndex = 0;
+            this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
+        "PCC\'s");
+            this.PreviewTabPages.Click += new System.EventHandler(this.TabControl_TabChanged);
+            // 
+            // PreviewPage
+            // 
+            this.PreviewPage.Controls.Add(this.texmodPreviewBox);
+            this.PreviewPage.Controls.Add(this.PreviewBox);
+            this.PreviewPage.Location = new System.Drawing.Point(4, 29);
+            this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
+            this.PreviewPage.Name = "PreviewPage";
+            this.PreviewPage.Size = new System.Drawing.Size(1072, 569);
+            this.PreviewPage.TabIndex = 0;
+            this.PreviewPage.Text = "Preview";
+            this.PreviewPage.UseVisualStyleBackColor = true;
+            // 
+            // texmodPreviewBox
+            // 
+            this.texmodPreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.texmodPreviewBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
+            this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
+            this.texmodPreviewBox.Name = "texmodPreviewBox";
+            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 569);
+            this.texmodPreviewBox.TabIndex = 1;
+            this.texmodPreviewBox.Text = "";
+            this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
+            // 
+            // PreviewBox
+            // 
+            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PreviewBox.Location = new System.Drawing.Point(0, 0);
+            this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
+            this.PreviewBox.Name = "PreviewBox";
+            this.PreviewBox.Size = new System.Drawing.Size(1068, 630);
+            this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PreviewBox.TabIndex = 0;
+            this.PreviewBox.TabStop = false;
+            // 
+            // PCCsPage
+            // 
+            this.PCCsPage.Controls.Add(this.PCCsCheckListBox);
+            this.PCCsPage.Location = new System.Drawing.Point(4, 29);
+            this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
+            this.PCCsPage.Name = "PCCsPage";
+            this.PCCsPage.Size = new System.Drawing.Size(1072, 569);
+            this.PCCsPage.TabIndex = 1;
+            this.PCCsPage.Text = "PCC\'s";
+            this.PCCsPage.UseVisualStyleBackColor = true;
+            // 
+            // PCCsCheckListBox
+            // 
+            this.PCCsCheckListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PCCsCheckListBox.CheckBoxes = true;
+            this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2});
+            this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
+            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
+            this.PCCsCheckListBox.Name = "PCCsCheckListBox";
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(818, 426);
+            this.PCCsCheckListBox.TabIndex = 0;
+            this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
+            this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
+            this.PCCsCheckListBox.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.PCCsCheckBox_IndexChanged);
+            // 
             // PCCContextPanel
             // 
             this.PCCContextPanel.AutoSize = true;
@@ -947,85 +1019,6 @@
             this.PCCSelectAllButton.UseVisualStyleBackColor = true;
             this.PCCSelectAllButton.Click += new System.EventHandler(this.PCCSelectAllButton_Click);
             // 
-            // PreviewTabPages
-            // 
-            this.PreviewTabPages.Controls.Add(this.PreviewPage);
-            this.PreviewTabPages.Controls.Add(this.PCCsPage);
-            this.PreviewTabPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
-            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.PreviewTabPages.Name = "PreviewTabPages";
-            this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 602);
-            this.PreviewTabPages.TabIndex = 0;
-            this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
-        "PCC\'s");
-            this.PreviewTabPages.Click += new System.EventHandler(this.TabControl_TabChanged);
-            // 
-            // PreviewPage
-            // 
-            this.PreviewPage.Controls.Add(this.texmodPreviewBox);
-            this.PreviewPage.Controls.Add(this.PreviewBox);
-            this.PreviewPage.Location = new System.Drawing.Point(4, 29);
-            this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
-            this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(1072, 569);
-            this.PreviewPage.TabIndex = 0;
-            this.PreviewPage.Text = "Preview";
-            this.PreviewPage.UseVisualStyleBackColor = true;
-            // 
-            // texmodPreviewBox
-            // 
-            this.texmodPreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.texmodPreviewBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
-            this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
-            this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 569);
-            this.texmodPreviewBox.TabIndex = 1;
-            this.texmodPreviewBox.Text = "";
-            this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
-            // 
-            // PreviewBox
-            // 
-            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PreviewBox.Location = new System.Drawing.Point(0, 0);
-            this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
-            this.PreviewBox.Name = "PreviewBox";
-            this.PreviewBox.Size = new System.Drawing.Size(1068, 630);
-            this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PreviewBox.TabIndex = 0;
-            this.PreviewBox.TabStop = false;
-            // 
-            // PCCsPage
-            // 
-            this.PCCsPage.Controls.Add(this.PCCsCheckListBox);
-            this.PCCsPage.Location = new System.Drawing.Point(4, 29);
-            this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
-            this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(1072, 490);
-            this.PCCsPage.TabIndex = 1;
-            this.PCCsPage.Text = "PCC\'s";
-            this.PCCsPage.UseVisualStyleBackColor = true;
-            // 
-            // PCCsCheckListBox
-            // 
-            this.PCCsCheckListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.PCCsCheckListBox.CheckBoxes = true;
-            this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
-            this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
-            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(818, 426);
-            this.PCCsCheckListBox.TabIndex = 0;
-            this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
-            this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
-            this.PCCsCheckListBox.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.PCCsCheckBox_IndexChanged);
-            // 
             // AnalyseButton
             // 
             this.AnalyseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1072,6 +1065,31 @@
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
             // 
+            // HelpButton
+            // 
+            this.HelpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.HelpButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toggleHelpTooltipsToolStripMenuItem,
+            this.wikiArticleToolStripMenuItem});
+            this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.HelpButton.Name = "HelpButton";
+            this.HelpButton.Size = new System.Drawing.Size(67, 29);
+            this.HelpButton.Text = "Help";
+            // 
+            // toggleHelpTooltipsToolStripMenuItem
+            // 
+            this.toggleHelpTooltipsToolStripMenuItem.Name = "toggleHelpTooltipsToolStripMenuItem";
+            this.toggleHelpTooltipsToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
+            this.toggleHelpTooltipsToolStripMenuItem.Text = "Toggle Help Tooltips";
+            this.toggleHelpTooltipsToolStripMenuItem.Click += new System.EventHandler(this.toggleHelpTooltipsToolStripMenuItem_Click);
+            // 
+            // wikiArticleToolStripMenuItem
+            // 
+            this.wikiArticleToolStripMenuItem.Name = "wikiArticleToolStripMenuItem";
+            this.wikiArticleToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
+            this.wikiArticleToolStripMenuItem.Text = "Wiki Article";
+            this.wikiArticleToolStripMenuItem.Click += new System.EventHandler(this.wikiArticleToolStripMenuItem_Click);
+            // 
             // KFreonTPFTools3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -1111,11 +1129,11 @@
             this.DetailsSplitter.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DetailsSplitter)).EndInit();
             this.DetailsSplitter.ResumeLayout(false);
-            this.PCCContextPanel.ResumeLayout(false);
             this.PreviewTabPages.ResumeLayout(false);
             this.PreviewPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PreviewBox)).EndInit();
             this.PCCsPage.ResumeLayout(false);
+            this.PCCContextPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1129,7 +1147,6 @@
         private System.Windows.Forms.ToolStripMenuItem extractAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractInvalidToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton RunAutofixButton;
-        private System.Windows.Forms.ToolStripButton HelpButton;
         private System.Windows.Forms.ToolStripButton MODtoTPFButton;
         private System.Windows.Forms.ToolStripButton ChangeButton;
         private System.Windows.Forms.ToolStrip BottomStrip;
@@ -1208,5 +1225,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button UncheckAllButton;
         private System.Windows.Forms.Button CheckAllButton;
+        private System.Windows.Forms.ToolStripMenuItem toggleHelpTooltipsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wikiArticleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton HelpButton;
     }
 }

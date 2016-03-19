@@ -32,6 +32,9 @@ namespace ME3Explorer
         int WhichGame = 3;
         MEDirectories MEExDirecs = new MEDirectories();
 
+        bool tooltipsVisible = false;
+        List<ToolTip> tooltips = new List<ToolTip>();
+
         string DLCPath
         {
             get
@@ -2421,11 +2424,11 @@ namespace ME3Explorer
             }
         }
 
-        public void SetupToolTip(Control control)
+        public ToolTip SetupToolTip(Control control)
         {
             ToolTip newtip = new ToolTip();
-            //newtip.IsBalloon = true;
             newtip.Show(PrimaryToolTip.GetToolTip(control), control, 10, 10, 100000);
+            return newtip;
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
@@ -3537,6 +3540,33 @@ namespace ME3Explorer
         {
             foreach (myTreeNode node in MainTreeView.Nodes)
                 node.Checked = isChecked;
+        }
+
+        private void toggleHelpTooltipsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!tooltipsVisible)
+            {
+                ShowContextPanel(true);
+                System.Threading.Thread.Sleep(400);
+                tooltips.Add(SetupToolTip(PreviewTabPages));
+                tooltips.Add(SetupToolTip(MainTreeView));
+                tooltips.Add(SetupToolTip(DuplicatesTextBox));
+                tooltips.Add(SetupToolTip(GeneralInfoRTB));
+                tooltips.Add(SetupToolTip(DetailsSplitter.Panel2));
+                tooltips.Add(SetupToolTip(ContextPanel));
+                tooltipsVisible = true;
+            }
+            else
+            {
+                tooltips.ForEach(tool => tool.Dispose());
+                tooltips.Clear();
+                tooltipsVisible = false;
+            }
+        }
+
+        private void wikiArticleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://me3explorer.wikia.com/wiki/TPF_Tools");
         }
     }
 }
