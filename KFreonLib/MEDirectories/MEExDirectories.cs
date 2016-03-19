@@ -142,7 +142,7 @@ namespace KFreonLib.MEDirectories
                 else
                     Messages.Add("ME" + i + " game files not found.");
             }
-            SaveSettings();
+            SaveSettings(BIOGames);
             return Messages;
         }
 
@@ -189,7 +189,7 @@ namespace KFreonLib.MEDirectories
         }
 
 
-        public  void SaveSettings()
+        public static void SaveSettings(List<string> BIOGames)
         {
             try
             {
@@ -219,7 +219,7 @@ namespace KFreonLib.MEDirectories
             }
         }
 
-        public  void SetPaths(string ME1Path = null, string ME2Path = null, string ME3Path = null)
+        public void SetPaths(string ME1Path = null, string ME2Path = null, string ME3Path = null)
         {
             if (!String.IsNullOrEmpty(ME1Path))
                 BIOGames[0] = ME1Path;
@@ -230,7 +230,7 @@ namespace KFreonLib.MEDirectories
             if (!String.IsNullOrEmpty(ME3Path))
                 BIOGames[2] = ME3Path;
 
-            SaveSettings();
+            SaveSettings(BIOGames);
 
             SetupPathing(false);
         }

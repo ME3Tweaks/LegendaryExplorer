@@ -23,26 +23,27 @@
             <TextBlock Text="{Binding AvailableSpace}" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <Label Content="Pathing" DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0"/>
+        <Label Content="PLEASE check pathing prior to extraction" DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0" Foreground="Red"/>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="ME1 Path:" FontStyle="Italic"/>
-            <TextBlock Text="{Binding ME1Path}"/>
+            <TextBlock Text="{Binding ME1Path}" VerticalAlignment="Center"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="ME2 Path:" FontStyle="Italic"/>
-            <TextBlock Text="{Binding ME2Path}"/>
+            <TextBlock Text="{Binding ME2Path}" VerticalAlignment="Center"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="ME3 Path:" FontStyle="Italic"/>
-            <TextBlock Text="{Binding ME3Path}"/>
+            <TextBlock Text="{Binding ME3Path}" VerticalAlignment="Center"/>
         </StackPanel>
 
         <Label Content="Once started, this operation cannot be interrupted." DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold"/>
 
         <DockPanel LastChildFill="False" DockPanel.Dock="Bottom">
-            <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click" IsEnabled="{Binding NotWorking}">
+            <Button DockPanel.Dock="Bottom" Content="Cancel to change paths" HorizontalAlignment="Center" Click="Button_Click"/>
+            <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click" IsEnabled="{Binding NotWorking}" IsDefault="True">
                 <Button.Content>
                     <Grid Height="95">
                         <Label Content="ü" Foreground="Green" FontSize="100" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Wingdings" Padding="0"/>
@@ -50,7 +51,7 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button x:Name="DontExtractButton" DockPanel.Dock="Right" VerticalAlignment="Center" Background="White" Click="DontExtractButton_Click" IsEnabled="{Binding NotWorking}">
+            <Button x:Name="DontExtractButton" DockPanel.Dock="Right" VerticalAlignment="Center" Background="White" Click="DontExtractButton_Click" IsEnabled="{Binding NotWorking}" IsCancel="True">
                 <Button.Content>
                     <Grid>
                         <Label Content="û" FontFamily="Wingdings" Foreground="Red" FontSize="50" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
@@ -75,6 +76,7 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
+
         </DockPanel>
     </DockPanel>
 </Window>

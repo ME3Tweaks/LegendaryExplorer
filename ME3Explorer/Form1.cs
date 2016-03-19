@@ -40,7 +40,37 @@ namespace ME3Explorer
             InitialDLCExtractor dlcChecker = new InitialDLCExtractor();
             dlcChecker.Closing += (sender, args) => IsDLCDone = true;
             if (dlcChecker.vm.Required == true)
-                dlcChecker.Show();
+            {
+                var result = dlcChecker.ShowDialog();
+                if (result == null) // KFreon: Fix pathing
+                {
+                    string[] biogames = new string[3];
+                    biogames[0] = ME1Directory.GamePath();
+                    biogames[1] = ME2Directory.GamePath();
+                    biogames[2] = ME3Directory.GamePath();
+
+
+                    // KFreon: Display PathChanger
+                    using (KFreonLib.Helpers.PathChanger changer = new KFreonLib.Helpers.PathChanger(biogames[0], biogames[1], biogames[2]))
+                    {
+                        if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+                            return;
+
+                        #region Change Paths and Save
+                        // KFreon: Change paths
+
+                        Properties.Settings.Default.ME1InstallDir = changer.PathME1;
+                        Properties.Settings.Default.ME2InstallDir = changer.PathME2;
+                        Properties.Settings.Default.ME3InstallDir = changer.PathME3;
+
+                        KFreonLib.MEDirectories.MEDirectories.SaveSettings(new List<string>() { changer.PathME1, changer.PathME2, changer.PathME2 });
+                        ME1Directory.GamePath(changer.PathME1);
+                        ME2Directory.GamePath(changer.PathME2);
+                        ME3Directory.GamePath(changer.PathME3);
+                        #endregion
+                    }
+                }
+            }
             else
                 IsDLCDone = true;
         }

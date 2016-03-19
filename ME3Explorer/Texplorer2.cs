@@ -1496,6 +1496,9 @@ namespace ME3Explorer
         /// <param name="nod">Node to load textures into.</param>
         private void UpdateThumbnailDisplays(myTreeNode nod)
         {
+            if (nod == null)
+                return;
+
             if (!MainListView.InvokeRequired)
             {
                 Task.Run(new Action(() => UpdateThumbnailDisplays(nod)));
@@ -1595,8 +1598,13 @@ namespace ME3Explorer
                 this.Invoke(new Action(() =>
                 {
                     ListViewImageList.Images.Clear();
-                    ListViewImageList.Images.Add(new Bitmap(Path.Combine(ExecFolder, "placeholder.ico")));
+                    var placeholder = new Bitmap(Path.Combine(ExecFolder, "placeholder.ico"));
+                    ListViewImageList.Images.Add(placeholder);
                     ListViewImageList.Images.AddRange(thumbs.ToArray());
+
+                    placeholder.Dispose();
+                    thumbs.ForEach(t => t.Dispose());
+                    thumbs = null;
 
 
                     for (int i = 0; i < MainListView.Items.Count; i++)
@@ -2670,7 +2678,7 @@ namespace ME3Explorer
 
             if (MessageBox.Show("This will delete and recreate all thumbnails for the selected folder. This will take some time. Are you sure?", "Consensus?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
             {
-                int texCount = Tree.TexCount;
+                int texCount = temptexes.Count;
                 ProgBarUpdater.ChangeProgressBar(0, texCount);
                 OutputBoxPrintLn("Regenerating ME" + WhichGame + " thumbnails...");
                 StatusUpdater.UpdateText("Regenerating thumbnails...  0 of " + texCount);
@@ -2684,25 +2692,14 @@ namespace ME3Explorer
 
         private bool RegenerateThumbs(List<TreeTexInfo> temptexes)
         {
-            // KFreon: Find all textures inside each file
-            Dictionary<string, List<int>> files = new Dictionary<string, List<int>>();
-            int count = 0;
-            foreach (TreeTexInfo treetex in temptexes)
+            this.Invoke(new Action(() =>
             {
-                if (!files.ContainsKey(treetex.Files[0]))
-                {
-                    List<int> texinds = new List<int>();
-                    texinds.Add(count);
-                    files.Add(treetex.Files[0], texinds);
-                }
-                else
-                {
-                    List<int> texinds = files[treetex.Files[0]];
-                    texinds.Add(count);
-                    files[treetex.Files[0]] = texinds;
-                }
-                count++;
-            }
+                foreach (Bitmap img in ListViewImageList.Images)
+                    img.Dispose();
+
+                ListViewImageList.Images.Clear();
+            }));
+            System.Threading.Thread.Sleep(200);
 
             if (temptexes.Count > 1000)  // KFreon: Entire thing - no folder has > 1000 texes
             {
@@ -2730,14 +2727,24 @@ namespace ME3Explorer
             {
                 foreach (var tex in temptexes)
                 {
-                    try
+                    for (int i = 0; i < 10; i++)
                     {
-                        File.Delete(tex.ThumbnailPath);
+                        try
+                        {
+                            File.Delete(tex.ThumbnailPath);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            DebugOutput.PrintLn($"Thumbnail: {tex.ThumbnailPath} not found, thus not deleted.");
+                            System.Threading.Thread.Sleep(100);
+                        }
+                        catch (Exception e)
+                        {
+                            DebugOutput.PrintLn($"Error occured deleting thumbnail: {tex.ThumbnailPath}. {e.Message}");
+                            System.Threading.Thread.Sleep(100);
+                        }
                     }
-                    catch (FileNotFoundException e)
-                    {
-                        DebugOutput.PrintLn($"Thumbnail: {tex.ThumbnailPath} not found, thus not deleted.");
-                    }
+                    
                 }
             }
             
@@ -2746,69 +2753,45 @@ namespace ME3Explorer
             Directory.CreateDirectory(ThumbnailPath);
 
             // KFreon: Generate thumbnails for all textures in file
-            ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = NumThreads;
-            count = 0;
-            object locker = new object();
-
-
-
-            int curnt = 0;
-            foreach (string file in files.Keys)
-                curnt += files[file].Count;
-
-
-
-            Parallel.ForEach(files.Keys, po, file =>
+            int count = 0;
+            foreach (var tex in temptexes)
             {
-                using (PCCObjects.IPCCObject pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(file, WhichGame))
+                // KFreon: Generate thumbnails for each texture
+                for (int j = 0; j < 3; j++)
                 {
-                    List<int> texinds = files[file];
-
-                    // KFreon: Generate thumbnails for each texture inside this file
-                    for (int i = 0; i < texinds.Count; i++)
+                    try
                     {
-                        TreeTexInfo tex = Tree.GetTex(texinds[i]);
-
-                        for (int j = 0; j < 3; j++)
+                        using (Textures.ITexture2D tex2D = KFreonLib.Textures.Creation.CreateTexture2D(tex.Textures[0], WhichGame, pathBIOGame))
                         {
-                            try
+                            string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
+                            using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
                             {
-                                using (Textures.ITexture2D tex2D = KFreonLib.Textures.Creation.CreateTexture2D(tex.Textures[0], WhichGame, pathBIOGame))
-                                {
-                                    string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
-                                    using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
-                                    {
-                                        if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128))
-                                            tex.ThumbnailPath = destination;
-                                        else
-                                            tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
-                                    }
-
-
-                                    DebugOutput.PrintLn("Generated thumbnail at: " + tex.ThumbnailPath);
-                                    ProgBarUpdater.IncrementBar();
-
-                                    // KFreon: Update status
-                                    lock (locker)
-                                    {
-                                        count++;
-                                        if (count % 10 == 0)
-                                            StatusUpdater.UpdateText("Regenerating thumbnails...  " + count + " of " + temptexes.Count);
-                                    }
-                                    break;
-                                }
+                                if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128))
+                                    tex.ThumbnailPath = destination;
+                                else
+                                    tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
                             }
-                            catch
-                            {
-                                DebugOutput.PrintLn("Failed to generate thumbnail from: " + tex.TexName + ". Sleeping before trying again.");
-                                System.Threading.Thread.Sleep(100);
-                            }
+
+
+                            DebugOutput.PrintLn("Generated thumbnail at: " + tex.ThumbnailPath);
+                            ProgBarUpdater.IncrementBar();
+
+                            // KFreon: Update status
+                                count++;
+                                if (count % 10 == 0)
+                                    StatusUpdater.UpdateText("Regenerating thumbnails...  " + count + " of " + temptexes.Count);
+                            break;
                         }
                     }
+                    catch
+                    {
+                        DebugOutput.PrintLn("Failed to generate thumbnail from: " + tex.TexName + ". Sleeping before trying again.");
+                        System.Threading.Thread.Sleep(100);
+                    }
                 }
+                
 
-            });
+            }
             ProgBarUpdater.ChangeProgressBar(1, 1);
             StatusUpdater.UpdateText("Thumbnails Regenerated.");
             OutputBoxPrintLn("Thumbnails Regenerated");
@@ -2827,6 +2810,8 @@ namespace ME3Explorer
                         System.Threading.Thread.Sleep(200);
                     }
             }
+
+            UpdateThumbnailDisplays(MainTreeView.SelectedNode as myTreeNode);
             return true;
         }
 

@@ -41,6 +41,7 @@ namespace ME3Explorer
 
         private void DontExtractButton_Click(object sender, RoutedEventArgs e)
         {
+            DialogResult = false;
             this.Close();
         }
 
@@ -57,6 +58,7 @@ namespace ME3Explorer
             });
             vm.NotWorking = true;
             MessageBox.Show(dlcProblem ? "Some DLC wasn't extracted. This is likely due to pathing. Check the Debug Window." : "DLC Extracted!");
+            this.DialogResult = true;
             this.Close();
         }
 
@@ -64,6 +66,12 @@ namespace ME3Explorer
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = null;
+            this.Close();
         }
     }
 

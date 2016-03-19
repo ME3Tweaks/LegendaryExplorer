@@ -329,6 +329,7 @@ namespace AmaroK86.ImageFormat
                     break;
                 case "PF_G8":
                 case "G8":
+                case "G8_L8":
                     BPP = 1;
                     DDSHeader.pfFlags = 0x20000;
                     DDSHeader.RGBBitCount = 0x8;
