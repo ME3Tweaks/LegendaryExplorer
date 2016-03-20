@@ -53,23 +53,24 @@ namespace ME3Explorer
                     // KFreon: Display PathChanger
                     using (KFreonLib.Helpers.PathChanger changer = new KFreonLib.Helpers.PathChanger(biogames[0], biogames[1], biogames[2]))
                     {
-                        if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                            return;
+                        if (changer.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            // KFreon: Change paths
+                            Properties.Settings.Default.ME1InstallDir = changer.PathME1;
+                            Properties.Settings.Default.ME2InstallDir = changer.PathME2;
+                            Properties.Settings.Default.ME3InstallDir = changer.PathME3;
 
-                        #region Change Paths and Save
-                        // KFreon: Change paths
+                            KFreonLib.MEDirectories.MEDirectories.SaveSettings(new List<string>() { changer.PathME1, changer.PathME2, changer.PathME2 });
+                            ME1Directory.GamePath(changer.PathME1);
+                            ME2Directory.GamePath(changer.PathME2);
+                            ME3Directory.GamePath(changer.PathME3);
 
-                        Properties.Settings.Default.ME1InstallDir = changer.PathME1;
-                        Properties.Settings.Default.ME2InstallDir = changer.PathME2;
-                        Properties.Settings.Default.ME3InstallDir = changer.PathME3;
-
-                        KFreonLib.MEDirectories.MEDirectories.SaveSettings(new List<string>() { changer.PathME1, changer.PathME2, changer.PathME2 });
-                        ME1Directory.GamePath(changer.PathME1);
-                        ME2Directory.GamePath(changer.PathME2);
-                        ME3Directory.GamePath(changer.PathME3);
-                        #endregion
+                            DoDLCCheck();  // KFreon: Go back into DLC check again.
+                        }
                     }
                 }
+
+                IsDLCDone = true;
             }
             else
                 IsDLCDone = true;
@@ -813,6 +814,7 @@ namespace ME3Explorer
             var conv = new CSharpImageLibrary.MainWindow();
             ElementHost.EnableModelessKeyboardInterop(conv);
             conv.Show();
+            taskbar.AddTool(null, Properties.Resources.ImageEngine_icon_64x64, true, conv);
         }
 
         private void mE3WikiToolStripMenuItem_Click(object sender, EventArgs e)

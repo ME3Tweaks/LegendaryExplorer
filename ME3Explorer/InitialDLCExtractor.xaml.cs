@@ -176,7 +176,7 @@ namespace ME3Explorer
         public double GetRequiredSize()
         {
             var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath);
-            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith(".bin")));
+            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith(".bin", StringComparison.OrdinalIgnoreCase)));
             var unextracted = folders.Except(extracted);
 
             double size = 0;
@@ -184,8 +184,16 @@ namespace ME3Explorer
             {
                 if (folder.Contains("__metadata"))
                     continue;
-                FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Where(file => file.EndsWith(".sfar")).First());
-                size += info.Length*1.1; // KFreon: Fudge factor for decompression
+
+                try
+                {
+                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Where(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)).First());
+                    size += info.Length * 1.1; // KFreon: Fudge factor for decompression
+                }
+                catch(Exception e)
+                {
+                    DebugOutput.PrintLn(e.Message);
+                }
             }
             return size;
         }
