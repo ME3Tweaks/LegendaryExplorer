@@ -45,7 +45,7 @@ namespace SimpleScripts
 			}
 			catch (Exception e)
 			{
-				DebugOutput.WriteLine("Failed to add names to PCC.", "Modmaker", e)
+				DebugOutput.WriteLine("Failed to add names to PCC.", "Modmaker", e);
 			}
 			
 			

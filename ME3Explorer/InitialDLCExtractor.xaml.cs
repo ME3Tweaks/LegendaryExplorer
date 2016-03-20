@@ -176,7 +176,7 @@ namespace ME3Explorer
         public double GetRequiredSize()
         {
             var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath);
-            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith(".bin", StringComparison.OrdinalIgnoreCase)));
+            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
             var unextracted = folders.Except(extracted);
 
             double size = 0;
