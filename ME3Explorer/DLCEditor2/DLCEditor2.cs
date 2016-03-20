@@ -13,6 +13,7 @@ using ME3Explorer.Unreal;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using UsefulThings;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.DLCEditor2
 {
@@ -521,15 +522,14 @@ namespace ME3Explorer.DLCEditor2
                 if (result == "")
                     return;
                 DebugOutput.PrintLn("result : " + result);
-                FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
-                fbd.Description = "Choose a folder to unpack this DLC to. Unpacking may take a few minutes. To unpack the files to their proper folder choose the Mass Effect 3 directory.";
-                fbd.SelectedPath = Directory.GetParent(DLC.MyFileName).FullName;
-                DialogResult dresult = fbd.ShowDialog();
-                if (dresult != DialogResult.OK)
-                {
+                var dialog = new CommonOpenFileDialog();
+                dialog.IsFolderPicker = true;
+                dialog.EnsurePathExists = true;
+                dialog.Title = "Choose a folder to unpack to. Select ME3 directory to unpack to proper folder";
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    unpackFolder = dialog.FileName;
+                else
                     return;
-                }
-                unpackFolder = fbd.SelectedPath;
             } else
             {
                 unpackFolder = autoUnpackFolder;
