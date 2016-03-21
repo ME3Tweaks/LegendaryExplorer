@@ -259,7 +259,6 @@ namespace ME3Explorer
             gooey.AddControl(InstallButton, "InstallB", true);
             gooey.AddControl(AutofixInstallButton, "AutoFixInstall", true);
             gooey.AddControl(extractInvalidToolStripMenuItem, "extractInvalid", true);
-            gooey.AddControl(ChangePathsButton, "ChangePaths", true);
             gooey.AddControl(ChangeButton, "ChangeButton", true);
             gooey.AddControl(AutofixSingleButton, "AutofixSingleButton", false);
             gooey.AddControl(extractValidsToolStripMenuItem, "extractValids", true);
@@ -552,7 +551,6 @@ namespace ME3Explorer
                 {
                     gooey.ModifyControl("ExtractTOP", true);
                     gooey.ModifyControl("Rebuild", true);
-                    gooey.ModifyControl("ChangePaths", false);
                     gooey.ModifyControl("ClearAll", true);
                     gooey.ModifyControl("Analyse", true);
                 }
@@ -1811,6 +1809,10 @@ namespace ME3Explorer
                     int index = MainTreeView.Nodes.IndexOf(MainTreeView.SelectedNode);
                     if (index < MainTreeView.Nodes.Count - 1)
                         MainTreeView.SelectedNode = MainTreeView.Nodes[index + 1];
+                }
+                else if (e.KeyCode == Keys.Space)
+                {
+                    MainTreeView.SelectedNode.Checked = !MainTreeView.SelectedNode.Checked;
                 }
             }
             e.Handled = true;

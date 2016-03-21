@@ -39,7 +39,6 @@
             this.TwoLabel = new System.Windows.Forms.ToolStripLabel();
             this.OneLabel = new System.Windows.Forms.ToolStripLabel();
             this.GameFoundLabel = new System.Windows.Forms.ToolStripLabel();
-            this.ChangePathsButton = new System.Windows.Forms.ToolStripButton();
             this.HelpButton = new System.Windows.Forms.ToolStripButton();
             this.CreateFromPCCDiffButton = new System.Windows.Forms.ToolStripButton();
             this.BottomStrip = new System.Windows.Forms.ToolStrip();
@@ -126,7 +125,6 @@
             this.TwoLabel,
             this.OneLabel,
             this.GameFoundLabel,
-            this.ChangePathsButton,
             this.HelpButton,
             this.CreateFromPCCDiffButton});
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
@@ -209,15 +207,6 @@
             this.GameFoundLabel.Name = "GameFoundLabel";
             this.GameFoundLabel.Size = new System.Drawing.Size(122, 29);
             this.GameFoundLabel.Text = "Game Found?";
-            // 
-            // ChangePathsButton
-            // 
-            this.ChangePathsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ChangePathsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ChangePathsButton.Name = "ChangePathsButton";
-            this.ChangePathsButton.Size = new System.Drawing.Size(174, 29);
-            this.ChangePathsButton.Text = "Change Game Paths";
-            this.ChangePathsButton.Click += new System.EventHandler(this.ChangePathsButton_Click);
             // 
             // HelpButton
             // 
@@ -837,7 +826,6 @@
         private System.Windows.Forms.ToolStripLabel TwoLabel;
         private System.Windows.Forms.ToolStripLabel OneLabel;
         private System.Windows.Forms.ToolStripLabel GameFoundLabel;
-        private System.Windows.Forms.ToolStripButton ChangePathsButton;
         private System.Windows.Forms.SplitContainer TopSplitter;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SplitContainer ScriptPaneSplitter;

@@ -23,7 +23,10 @@
             <TextBlock Text="{Binding AvailableSpace}" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <Label Content="PLEASE check pathing prior to extraction" DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0" Foreground="Red"/>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <Label Content="PLEASE check pathing prior to extraction" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0" Foreground="Red" DockPanel.Dock="Left"/>
+            <Button Content="Change" DockPanel.Dock="Right" Background="White" Click="Button_Click_1"/>
+        </DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="ME1 Path:" FontStyle="Italic"/>
             <TextBlock Text="{Binding ME1Path}" VerticalAlignment="Center"/>
@@ -42,7 +45,6 @@
         <Label Content="Once started, this operation cannot be interrupted." DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold"/>
 
         <DockPanel LastChildFill="False" DockPanel.Dock="Bottom">
-            <Button DockPanel.Dock="Bottom" Content="Cancel to change paths" HorizontalAlignment="Center" Click="Button_Click"/>
             <Button x:Name="ExtractButton" DockPanel.Dock="Left" Background="White" Click="ExtractButton_Click" IsEnabled="{Binding NotWorking}" IsDefault="True">
                 <Button.Content>
                     <Grid Height="95">

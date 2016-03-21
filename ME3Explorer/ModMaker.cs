@@ -167,7 +167,6 @@ namespace ME3Explorer
                 if (CancelationButton.Visible)
                     cts = new CancellationTokenSource();
             }));
-            gooey.AddControl(ChangePathsButton, "ChangePaths", true);
 
             DebugOutput.PrintLn();
             DebugOutput.PrintLn("Changing Trees...");
@@ -621,7 +620,6 @@ namespace ME3Explorer
             gooey.ModifyControl("Load", false);
             gooey.ModifyControl("ChangePaths", true);
             gooey.ChangeState(false);
-            ChangePathsButton.Enabled = true;
 
 
 

@@ -209,7 +209,6 @@ namespace ME3Explorer
 
             gooey.AddControl(saveChangesToolStripMenuItem, "saveChanges", true);
             gooey.AddControl(treeIOToolStripMenuItem, "treeIO", true);
-            gooey.AddControl(changePathsToolStripMenuItem, "changePaths", true);
             gooey.AddControl(rebuildDatabaseToolStripMenuItem, "rebuild", true);
             gooey.AddControl(updateTOCsToolStripMenuItem, "updateTOCs", true);
             gooey.AddControl(SearchBox, "SearchBox", true);

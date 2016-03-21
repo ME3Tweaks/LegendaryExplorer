@@ -73,6 +73,11 @@ namespace ME3Explorer
             DialogResult = null;
             this.Close();
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            vm.ChangePaths();
+        }
     }
 
     public class ViewModel : ViewModelBase
@@ -203,6 +208,36 @@ namespace ME3Explorer
             var parts = ME3Directory.GamePath().Split(':');
             DriveInfo info = new DriveInfo(parts[0]);
             return info.AvailableFreeSpace;
+        }
+
+        public void ChangePaths()
+        {
+            string[] biogames = new string[3];
+            biogames[0] = ME1Directory.GamePath();
+            biogames[1] = ME2Directory.GamePath();
+            biogames[2] = ME3Directory.GamePath();
+
+
+            // KFreon: Display PathChanger
+            using (KFreonLib.Helpers.PathChanger changer = new KFreonLib.Helpers.PathChanger(biogames[0], biogames[1], biogames[2]))
+            {
+                if (changer.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    // KFreon: Change paths
+                    Properties.Settings.Default.ME1InstallDir = changer.PathME1;
+                    Properties.Settings.Default.ME2InstallDir = changer.PathME2;
+                    Properties.Settings.Default.ME3InstallDir = changer.PathME3;
+
+                    KFreonLib.MEDirectories.MEDirectories.SaveSettings(new List<string>() { changer.PathME1, changer.PathME2, changer.PathME2 });
+                    ME1Directory.GamePath(changer.PathME1);
+                    ME2Directory.GamePath(changer.PathME2);
+                    ME3Directory.GamePath(changer.PathME3);
+
+                    OnPropertyChanged(nameof(ME1Path));
+                    OnPropertyChanged(nameof(ME2Path));
+                    OnPropertyChanged(nameof(ME3Path));
+                }
+            }
         }
     }
 }

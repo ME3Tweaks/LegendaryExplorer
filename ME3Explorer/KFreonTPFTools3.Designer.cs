@@ -41,13 +41,15 @@
             this.allTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlyCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RunAutofixButton = new System.Windows.Forms.ToolStripButton();
+            this.HelpButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toggleHelpTooltipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wikiArticleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MODtoTPFButton = new System.Windows.Forms.ToolStripButton();
             this.ChangeButton = new System.Windows.Forms.ToolStripButton();
             this.ThreeLabel = new System.Windows.Forms.ToolStripLabel();
             this.TwoLabel = new System.Windows.Forms.ToolStripLabel();
             this.OneLabel = new System.Windows.Forms.ToolStripLabel();
             this.GameFoundLabel = new System.Windows.Forms.ToolStripLabel();
-            this.ChangePathsButton = new System.Windows.Forms.ToolStripButton();
             this.ThreeTreeLabel = new System.Windows.Forms.ToolStripLabel();
             this.TwoTreeLabel = new System.Windows.Forms.ToolStripLabel();
             this.OneTreeLabel = new System.Windows.Forms.ToolStripLabel();
@@ -112,11 +114,9 @@
             this.PCCSelectAllButton = new System.Windows.Forms.Button();
             this.AnalyseButton = new System.Windows.Forms.Button();
             this.InstallButton = new System.Windows.Forms.Button();
-            this.AutofixInstallButton = new System.Windows.Forms.Button();
             this.PrimaryToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.HelpButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toggleHelpTooltipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.wikiArticleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.TopStrip.SuspendLayout();
             this.BottomStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitter)).BeginInit();
@@ -158,7 +158,6 @@
             this.TwoLabel,
             this.OneLabel,
             this.GameFoundLabel,
-            this.ChangePathsButton,
             this.ThreeTreeLabel,
             this.TwoTreeLabel,
             this.OneTreeLabel,
@@ -241,14 +240,14 @@
             // allTexturesToolStripMenuItem
             // 
             this.allTexturesToolStripMenuItem.Name = "allTexturesToolStripMenuItem";
-            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.allTexturesToolStripMenuItem.Text = "All Textures";
             this.allTexturesToolStripMenuItem.Click += new System.EventHandler(this.allTexturesToolStripMenuItem_Click);
             // 
             // onlyCheckedToolStripMenuItem
             // 
             this.onlyCheckedToolStripMenuItem.Name = "onlyCheckedToolStripMenuItem";
-            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.onlyCheckedToolStripMenuItem.Text = "Only Checked";
             this.onlyCheckedToolStripMenuItem.Click += new System.EventHandler(this.onlyCheckedToolStripMenuItem_Click);
             // 
@@ -261,6 +260,31 @@
             this.RunAutofixButton.Size = new System.Drawing.Size(109, 29);
             this.RunAutofixButton.Text = "Run Autofix";
             this.RunAutofixButton.Click += new System.EventHandler(this.RunAutofixButton_Click);
+            // 
+            // HelpButton
+            // 
+            this.HelpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.HelpButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toggleHelpTooltipsToolStripMenuItem,
+            this.wikiArticleToolStripMenuItem});
+            this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.HelpButton.Name = "HelpButton";
+            this.HelpButton.Size = new System.Drawing.Size(67, 29);
+            this.HelpButton.Text = "Help";
+            // 
+            // toggleHelpTooltipsToolStripMenuItem
+            // 
+            this.toggleHelpTooltipsToolStripMenuItem.Name = "toggleHelpTooltipsToolStripMenuItem";
+            this.toggleHelpTooltipsToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
+            this.toggleHelpTooltipsToolStripMenuItem.Text = "Toggle Help Tooltips";
+            this.toggleHelpTooltipsToolStripMenuItem.Click += new System.EventHandler(this.toggleHelpTooltipsToolStripMenuItem_Click);
+            // 
+            // wikiArticleToolStripMenuItem
+            // 
+            this.wikiArticleToolStripMenuItem.Name = "wikiArticleToolStripMenuItem";
+            this.wikiArticleToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
+            this.wikiArticleToolStripMenuItem.Text = "Wiki Article";
+            this.wikiArticleToolStripMenuItem.Click += new System.EventHandler(this.wikiArticleToolStripMenuItem_Click);
             // 
             // MODtoTPFButton
             // 
@@ -319,15 +343,6 @@
             this.GameFoundLabel.Name = "GameFoundLabel";
             this.GameFoundLabel.Size = new System.Drawing.Size(122, 29);
             this.GameFoundLabel.Text = "Game Found?";
-            // 
-            // ChangePathsButton
-            // 
-            this.ChangePathsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ChangePathsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ChangePathsButton.Name = "ChangePathsButton";
-            this.ChangePathsButton.Size = new System.Drawing.Size(174, 29);
-            this.ChangePathsButton.Text = "Change Game Paths";
-            this.ChangePathsButton.Click += new System.EventHandler(this.ChangePathsButton_Click);
             // 
             // ThreeTreeLabel
             // 
@@ -503,7 +518,7 @@
             // 
             this.MainSplitter.Panel2.Controls.Add(this.LowerRightSplitter);
             this.MainSplitter.Size = new System.Drawing.Size(1590, 898);
-            this.MainSplitter.SplitterDistance = 500;
+            this.MainSplitter.SplitterDistance = 1053;
             this.MainSplitter.SplitterWidth = 10;
             this.MainSplitter.TabIndex = 2;
             // 
@@ -523,7 +538,7 @@
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(0);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 0;
-            this.MainTreeView.Size = new System.Drawing.Size(500, 830);
+            this.MainTreeView.Size = new System.Drawing.Size(1053, 830);
             this.MainTreeView.TabIndex = 0;
             this.MainTreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.MainTreeView_DrawNode);
             this.MainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.MainTreeView_AfterSelect);
@@ -547,7 +562,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(500, 36);
+            this.panel1.Size = new System.Drawing.Size(1053, 36);
             this.panel1.TabIndex = 2;
             // 
             // UncheckAllButton
@@ -576,17 +591,19 @@
             this.ContextPanel.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ContextPanel.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.ContextPanel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel2,
             this.InstallSingleButton,
             this.ExtractButton,
             this.ReplaceButton,
+            this.AutofixSingleButton,
+            this.toolStripSeparator5,
             this.GotoInvalidButton,
             this.PromoteButton,
-            this.GotoDupButton,
-            this.AutofixSingleButton});
+            this.GotoDupButton});
             this.ContextPanel.Location = new System.Drawing.Point(0, 866);
             this.ContextPanel.Name = "ContextPanel";
             this.ContextPanel.Padding = new System.Windows.Forms.Padding(0, 0, 32, 0);
-            this.ContextPanel.Size = new System.Drawing.Size(500, 32);
+            this.ContextPanel.Size = new System.Drawing.Size(1053, 32);
             this.ContextPanel.TabIndex = 1;
             this.ContextPanel.Text = "toolStrip1";
             this.PrimaryToolTip.SetToolTip(this.ContextPanel, "This context menu provides texture and duplicate functions");
@@ -597,8 +614,8 @@
             this.InstallSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("InstallSingleButton.Image")));
             this.InstallSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.InstallSingleButton.Name = "InstallSingleButton";
-            this.InstallSingleButton.Size = new System.Drawing.Size(134, 29);
-            this.InstallSingleButton.Text = "Install Checked";
+            this.InstallSingleButton.Size = new System.Drawing.Size(62, 29);
+            this.InstallSingleButton.Text = "Install";
             this.InstallSingleButton.Click += new System.EventHandler(this.InstallSingleButton_Click);
             // 
             // ExtractButton
@@ -606,8 +623,8 @@
             this.ExtractButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ExtractButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractButton.Name = "ExtractButton";
-            this.ExtractButton.Size = new System.Drawing.Size(140, 29);
-            this.ExtractButton.Text = "Extract Checked";
+            this.ExtractButton.Size = new System.Drawing.Size(68, 29);
+            this.ExtractButton.Text = "Extract";
             this.ExtractButton.Click += new System.EventHandler(this.ExtractButton_Click);
             // 
             // ReplaceButton
@@ -615,8 +632,8 @@
             this.ReplaceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ReplaceButton.Name = "ReplaceButton";
-            this.ReplaceButton.Size = new System.Drawing.Size(147, 29);
-            this.ReplaceButton.Text = "Replace Selected";
+            this.ReplaceButton.Size = new System.Drawing.Size(76, 29);
+            this.ReplaceButton.Text = "Replace";
             this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
             // GotoInvalidButton
@@ -652,8 +669,8 @@
             this.AutofixSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("AutofixSingleButton.Image")));
             this.AutofixSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AutofixSingleButton.Name = "AutofixSingleButton";
-            this.AutofixSingleButton.Size = new System.Drawing.Size(145, 29);
-            this.AutofixSingleButton.Text = "Autofix Checked";
+            this.AutofixSingleButton.Size = new System.Drawing.Size(73, 29);
+            this.AutofixSingleButton.Text = "Autofix";
             this.AutofixSingleButton.Click += new System.EventHandler(this.AutofixSingleButton_Click);
             // 
             // LowerRightSplitter
@@ -673,7 +690,7 @@
             // 
             this.LowerRightSplitter.Panel2.Controls.Add(this.PreviewTabPages);
             this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
-            this.LowerRightSplitter.Size = new System.Drawing.Size(1080, 898);
+            this.LowerRightSplitter.Size = new System.Drawing.Size(527, 898);
             this.LowerRightSplitter.SplitterDistance = 252;
             this.LowerRightSplitter.SplitterWidth = 14;
             this.LowerRightSplitter.TabIndex = 0;
@@ -707,7 +724,7 @@
             this.DetailsSplitter.Panel2.Controls.Add(this.HashLabel);
             this.DetailsSplitter.Panel2.Controls.Add(this.TPFFormatLabel);
             this.PrimaryToolTip.SetToolTip(this.DetailsSplitter.Panel2, "This area shows details of the texture,\r\nincluding tree details if applicable");
-            this.DetailsSplitter.Size = new System.Drawing.Size(1080, 252);
+            this.DetailsSplitter.Size = new System.Drawing.Size(527, 252);
             this.DetailsSplitter.SplitterDistance = 100;
             this.DetailsSplitter.SplitterWidth = 14;
             this.DetailsSplitter.TabIndex = 0;
@@ -721,7 +738,7 @@
             this.GeneralInfoRTB.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.GeneralInfoRTB.Name = "GeneralInfoRTB";
             this.GeneralInfoRTB.ReadOnly = true;
-            this.GeneralInfoRTB.Size = new System.Drawing.Size(1080, 100);
+            this.GeneralInfoRTB.Size = new System.Drawing.Size(527, 100);
             this.GeneralInfoRTB.TabIndex = 0;
             this.GeneralInfoRTB.Text = resources.GetString("GeneralInfoRTB.Text");
             this.PrimaryToolTip.SetToolTip(this.GeneralInfoRTB, "This area displays details of the loaded image or tpf");
@@ -752,7 +769,7 @@
             this.DuplicatesTextBox.BackColor = System.Drawing.Color.White;
             this.DuplicatesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DuplicatesTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-            this.DuplicatesTextBox.Location = new System.Drawing.Point(880, 0);
+            this.DuplicatesTextBox.Location = new System.Drawing.Point(327, 0);
             this.DuplicatesTextBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.DuplicatesTextBox.Name = "DuplicatesTextBox";
             this.DuplicatesTextBox.ReadOnly = true;
@@ -890,7 +907,7 @@
             this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(1080, 602);
+            this.PreviewTabPages.Size = new System.Drawing.Size(527, 602);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -903,7 +920,7 @@
             this.PreviewPage.Location = new System.Drawing.Point(4, 29);
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(1072, 569);
+            this.PreviewPage.Size = new System.Drawing.Size(519, 569);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -915,7 +932,7 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(1072, 569);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(519, 569);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
@@ -928,7 +945,7 @@
             this.PreviewBox.Location = new System.Drawing.Point(0, 0);
             this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewBox.Name = "PreviewBox";
-            this.PreviewBox.Size = new System.Drawing.Size(1068, 630);
+            this.PreviewBox.Size = new System.Drawing.Size(515, 630);
             this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PreviewBox.TabIndex = 0;
             this.PreviewBox.TabStop = false;
@@ -972,7 +989,7 @@
             this.PCCContextPanel.Location = new System.Drawing.Point(0, 602);
             this.PCCContextPanel.Margin = new System.Windows.Forms.Padding(0);
             this.PCCContextPanel.Name = "PCCContextPanel";
-            this.PCCContextPanel.Size = new System.Drawing.Size(1080, 30);
+            this.PCCContextPanel.Size = new System.Drawing.Size(527, 30);
             this.PCCContextPanel.TabIndex = 1;
             // 
             // CopyClipboardButton
@@ -1047,48 +1064,23 @@
             this.InstallButton.UseVisualStyleBackColor = true;
             this.InstallButton.Click += new System.EventHandler(this.InstallButton_Click);
             // 
-            // AutofixInstallButton
-            // 
-            this.AutofixInstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AutofixInstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutofixInstallButton.Location = new System.Drawing.Point(302, 934);
-            this.AutofixInstallButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
-            this.AutofixInstallButton.Name = "AutofixInstallButton";
-            this.AutofixInstallButton.Size = new System.Drawing.Size(153, 64);
-            this.AutofixInstallButton.TabIndex = 6;
-            this.AutofixInstallButton.Text = "Autofix and Install";
-            this.PrimaryToolTip.SetToolTip(this.AutofixInstallButton, "Attempts to fix invalid textures before installing");
-            this.AutofixInstallButton.UseVisualStyleBackColor = true;
-            this.AutofixInstallButton.Click += new System.EventHandler(this.AutofixInstallButton_Click);
-            // 
             // PrimaryToolTip
             // 
             this.PrimaryToolTip.AutomaticDelay = 1000;
             // 
-            // HelpButton
+            // toolStripLabel2
             // 
-            this.HelpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.HelpButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toggleHelpTooltipsToolStripMenuItem,
-            this.wikiArticleToolStripMenuItem});
-            this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.HelpButton.Name = "HelpButton";
-            this.HelpButton.Size = new System.Drawing.Size(67, 29);
-            this.HelpButton.Text = "Help";
+            this.toolStripLabel2.Enabled = false;
+            this.toolStripLabel2.ForeColor = System.Drawing.SystemColors.ActiveCaption;
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(88, 29);
+            this.toolStripLabel2.Text = "Checked: ";
             // 
-            // toggleHelpTooltipsToolStripMenuItem
+            // toolStripSeparator5
             // 
-            this.toggleHelpTooltipsToolStripMenuItem.Name = "toggleHelpTooltipsToolStripMenuItem";
-            this.toggleHelpTooltipsToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
-            this.toggleHelpTooltipsToolStripMenuItem.Text = "Toggle Help Tooltips";
-            this.toggleHelpTooltipsToolStripMenuItem.Click += new System.EventHandler(this.toggleHelpTooltipsToolStripMenuItem_Click);
-            // 
-            // wikiArticleToolStripMenuItem
-            // 
-            this.wikiArticleToolStripMenuItem.Name = "wikiArticleToolStripMenuItem";
-            this.wikiArticleToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
-            this.wikiArticleToolStripMenuItem.Text = "Wiki Article";
-            this.wikiArticleToolStripMenuItem.Click += new System.EventHandler(this.wikiArticleToolStripMenuItem_Click);
+            this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 32);
             // 
             // KFreonTPFTools3
             // 
@@ -1101,7 +1093,6 @@
             this.Controls.Add(this.BottomStrip);
             this.Controls.Add(this.AnalyseButton);
             this.Controls.Add(this.InstallButton);
-            this.Controls.Add(this.AutofixInstallButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.Name = "KFreonTPFTools3";
@@ -1156,7 +1147,6 @@
         private System.Windows.Forms.ToolStripLabel OverallStatusLabel;
         private System.Windows.Forms.Button AnalyseButton;
         private System.Windows.Forms.Button InstallButton;
-        private System.Windows.Forms.Button AutofixInstallButton;
         private System.Windows.Forms.ToolStripButton CancelButton;
         private System.Windows.Forms.ToolStripLabel OverallLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -1201,7 +1191,6 @@
         private System.Windows.Forms.ToolStripLabel ThreeLabel;
         private System.Windows.Forms.ToolStripLabel TwoLabel;
         private System.Windows.Forms.ToolStripLabel OneLabel;
-        private System.Windows.Forms.ToolStripButton ChangePathsButton;
         private System.Windows.Forms.ToolStripLabel OneTreeLabel;
         private System.Windows.Forms.ToolStripLabel TwoTreeLabel;
         private System.Windows.Forms.ToolStripLabel ThreeTreeLabel;
@@ -1228,5 +1217,7 @@
         private System.Windows.Forms.ToolStripMenuItem toggleHelpTooltipsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wikiArticleToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton HelpButton;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
