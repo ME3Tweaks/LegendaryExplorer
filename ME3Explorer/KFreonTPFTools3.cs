@@ -257,7 +257,6 @@ namespace ME3Explorer
             //gooey.AddControl(MODtoTPFButton, "MODtoTPF", true);
             gooey.AddControl(AnalyseButton, "Analyse", true);
             gooey.AddControl(InstallButton, "InstallB", true);
-            gooey.AddControl(AutofixInstallButton, "AutoFixInstall", true);
             gooey.AddControl(extractInvalidToolStripMenuItem, "extractInvalid", true);
             gooey.AddControl(ChangeButton, "ChangeButton", true);
             gooey.AddControl(AutofixSingleButton, "AutofixSingleButton", false);
@@ -2889,11 +2888,6 @@ namespace ME3Explorer
 
             tex.AutofixSuccess = retval;
             return retval;
-        }
-
-        private void AutofixInstallButton_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Disabled for now. Instead: Load, Run Autofix, then Install.");
         }
 
         private async void ReplaceButton_Click(object sender, EventArgs e)
