@@ -36,7 +36,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         }
         public Pressedkeys Pkeys = new Pressedkeys();
         public bool MoveWASD = true;
-        public float MoveSpeed = 10000f;
+        public float MoveSpeed = 100f;
 
         public Device CreateView(PictureBox p)
         {
