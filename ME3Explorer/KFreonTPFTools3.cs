@@ -936,6 +936,8 @@ namespace ME3Explorer
         {
             TPFTexInfo tex;
             GetSelectedTex(out tex);
+            if (tex == null)
+                return;
             DisplayInfo(tex);
 
 
@@ -951,6 +953,8 @@ namespace ME3Explorer
                     DebugOutput.PrintLn("Preview failed: " + ex.Message);
                 }
             });
+
+            MainTreeView.SelectedNode.Checked = !MainTreeView.SelectedNode.Checked;
         }
 
         private void ClearPreview()
@@ -1664,6 +1668,7 @@ namespace ME3Explorer
                 AttemptedAnalyse = false;
 
                 DebugOutput.PrintLn("Deleting runtimes...");
+                Previews?.Clear();
 
                 // KFreon: Reset picturebox
                 if (PreviewBox.Image != null)
@@ -1671,7 +1676,6 @@ namespace ME3Explorer
                     foreach (var preview in Previews)
                         preview.Value.Dispose();
 
-                    Previews.Clear();
                     PreviewBox.Image = null;
                     PreviewBox.Refresh();
                 }
@@ -1847,6 +1851,19 @@ namespace ME3Explorer
 
             if (tex != null)
                 Previews.Remove(tex.PreviewKey);
+
+            if (index == 0)
+            {
+                PreviewObject(LoadedTexes[0]);
+                MainTreeView.SelectedNode = MainTreeView.Nodes[0];
+                MainTreeView.SelectedNode.Checked = true;
+            }
+            else
+            {
+                PreviewObject(LoadedTexes[index - 1]);
+                MainTreeView.SelectedNode = MainTreeView.Nodes[index - 1];
+                MainTreeView.SelectedNode.Checked = true;
+            }
 
             //RedrawTreeView();
             //MainTreeView.ResumeLayout();
