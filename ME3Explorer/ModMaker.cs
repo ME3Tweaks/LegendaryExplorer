@@ -780,25 +780,33 @@ namespace ME3Explorer
             });
         }
 
+        private bool IsAlreadyExtracted
+        {
+            get
+            {
+                bool alreadyExtracted = true;
+                foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
+                {
+                    if (!Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
+                    {
+                        alreadyExtracted = false;
+                        break;
+                    }
+                }
+
+                return alreadyExtracted;
+            }
+        }
+
         private List<string> RunJobs(List<ModJob> joblist, ref List<int> whichgames)
         {         
             int count = 1;
             List<string> DLCPCCs = new List<string>();
 
-            bool alreadyExtracted = true;
-            foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
-            {
-                if (!Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
-                {
-                    alreadyExtracted = false;
-                    break;
-                }
-            }
-
             DialogResult result = DialogResult.Yes;
             this.Invoke(new Action(() =>
             {
-                if (!alreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
+                if (!IsAlreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
                     result = MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo);
             }));
 
@@ -936,6 +944,8 @@ namespace ME3Explorer
                 this.Invoke(new Action(() => count = MainListView.SelectedIndices.Count));
                 MainProgBar.ChangeProgressBar(0, count);
                 List<int> whichgames = new List<int>();
+
+                bool continuingAfterDLC = true;
                 for (int i = 0; i < count; i++)
                 {
                     int index = 0;
@@ -945,6 +955,16 @@ namespace ME3Explorer
                     else
                     {
                         ModJob job = KFreonLib.Scripting.ModMaker.JobList[index];
+
+                        if (job.HasDLCPCCs && !IsAlreadyExtracted)
+                        {
+                            if (MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                continuingAfterDLC = false;
+                                break;
+                            }
+                        }
+
                         StatusUpdater.UpdateText("Installing Mod: " + (i + 1) + " (" + job.Name + ") of " + count);
                         modified.AddRange(InstallJob(job));
 
@@ -953,9 +973,13 @@ namespace ME3Explorer
                     }
                     MainProgBar.IncrementBar();
                 }
-                UpdateTOCS(modified, whichgames);
+
+                if (modified.Count != 0)
+                    UpdateTOCS(modified, whichgames);
+
+
                 MainProgBar.ChangeProgressBar(1, 1);
-                StatusUpdater.UpdateText("All Mods Installed!");
+                StatusUpdater.UpdateText(continuingAfterDLC ? "All Mods Installed!" : "Installation stopped due to DLC.");
                 return true;
             });
         }
