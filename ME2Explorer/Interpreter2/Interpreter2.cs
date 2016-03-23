@@ -83,21 +83,6 @@ namespace ME2Explorer.Interpreter2
             hb1.ByteProvider = db;
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
-
-            // Load the default TLK file into memory.
-            if (editorTalkFiles == null)
-            {
-                if (ME2Directory.cookedPath != null)
-                {
-                    var tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
-                    talkFiles = new TalkFiles();
-                    talkFiles.LoadTlkData(tlkPath);
-                }
-            }
-            else
-            {
-                talkFiles = editorTalkFiles;
-            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -353,12 +338,16 @@ namespace ME2Explorer.Interpreter2
             s += "Type: \"" + pcc.getNameEntry(p.type) + "\" ";
             s += "Size: " + p.size.ToString() + " Value: ";
             int propertyType = getType(pcc.getNameEntry(p.type));
+            int idx;
             switch (propertyType)
             {
                 case INT_PROPERTY:
-                case OBJECT_PROPERTY:
-                    int idx = BitConverter.ToInt32(memory, p.offset + 24);
+                    idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += idx.ToString();
+                    break;
+                case OBJECT_PROPERTY:
+                    idx = BitConverter.ToInt32(memory, p.offset + 24);
+                    s += idx.ToString() + " (" + pcc.getObjectName(idx) + ")";
                     break;
                 case STRING_PROPERTY:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -391,7 +380,7 @@ namespace ME2Explorer.Interpreter2
                 case STRINGREF_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx.ToString() + ": ";
-                    s += talkFiles == null ? "(.tlk not loaded)" : talkFiles.findDataById(idx);
+                    s += TalkFiles.findDataById(idx);
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -905,10 +894,25 @@ namespace ME2Explorer.Interpreter2
                     return; //not valid element
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
+                int count = BitConverter.ToInt32(memory, pos + 24);
+                int leafsize = 4;
+                if (count > 0)
+                {
+                    leafsize = (size - 4) / count;
+                }
+                else if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_NAMES)
+                {
+                    leafsize = 8;
+                }
                 List<byte> memList = memory.ToList();
                 memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(newElement));
+                if (leafsize > 4)
+                {
+                    byte[] extrabytes = new byte[leafsize - 4];
+                    memList.InsertRange(pos + 24 + size + 4, extrabytes);
+                }
                 memory = memList.ToArray();
-                updateArrayLength(pos, 1, 4);
+                updateArrayLength(pos, 1, leafsize);
 
                 //bubble up size
                 uint throwaway;
@@ -920,7 +924,7 @@ namespace ME2Explorer.Interpreter2
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Convert.ToInt32(parent.Name), 0, 4);
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, leafsize);
                     parent = parent.Parent;
                 }
                 RefreshMem();

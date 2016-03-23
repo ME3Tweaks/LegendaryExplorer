@@ -906,10 +906,25 @@ namespace ME3Explorer.Interpreter2
                     return; //not valid element
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
+                int count = BitConverter.ToInt32(memory, pos + 24);
+                int leafsize = 4;
+                if (count > 0)
+                {
+                    leafsize = (size - 4) / count;
+                }
+                else if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_NAMES)
+                {
+                    leafsize = 8;
+                }
                 List<byte> memList = memory.ToList();
                 memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(newElement));
+                if(leafsize > 4)
+                {
+                    byte[] extrabytes = new byte[leafsize - 4];
+                    memList.InsertRange(pos + 24 + size + 4, extrabytes);
+                }
                 memory = memList.ToArray();
-                updateArrayLength(pos, 1, 4);
+                updateArrayLength(pos, 1, leafsize);
 
                 //bubble up size
                 uint throwaway;
@@ -921,7 +936,7 @@ namespace ME3Explorer.Interpreter2
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Convert.ToInt32(parent.Name), 0, 4);
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, leafsize);
                     parent = parent.Parent;
                 }
                 RefreshMem();

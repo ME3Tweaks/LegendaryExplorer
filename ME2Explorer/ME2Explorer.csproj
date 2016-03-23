@@ -133,8 +133,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TalkFile.cs" />
-    <Compile Include="Talkfiles.cs" />
     <Compile Include="taskbar.cs" />
+    <Compile Include="TlkManager\TalkFiles.cs" />
+    <Compile Include="TlkManager\TlkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TlkManager\TlkManager.Designer.cs">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
@@ -142,6 +148,10 @@
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <None Include="Resources\TLKManager_icon_64x64.png" />
+    <EmbeddedResource Include="TlkManager\TlkManager.resx">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Resources\package_editor_64x64.png" />
     <None Include="Resources\sequence_editor_icon.ico" />

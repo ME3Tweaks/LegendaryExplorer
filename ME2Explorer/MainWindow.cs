@@ -15,6 +15,7 @@ namespace ME2Explorer
         {
             InitializeComponent();
             taskbar.Strip = toolStrip1;
+            TalkFiles.LoadSavedTlkList();
         }
         
         private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
