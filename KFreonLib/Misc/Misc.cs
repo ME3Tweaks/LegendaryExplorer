@@ -46,11 +46,11 @@ namespace KFreonLib.Misc
                     {
                         case 0:
                             temp = Path.GetDirectoryName(temp);
-                            tocPath = Path.Combine(temp, "\\Binaries\\MassEffect.exe");
+                            tocPath = Path.Combine(temp, "Binaries\\MassEffect.exe");
                             break;
                         case 1:
                             temp = Path.GetDirectoryName(temp);
-                            tocPath = Path.Combine(temp, "\\Binaries\\MassEffect2.exe");
+                            tocPath = Path.Combine(temp, "Binaries\\MassEffect2.exe");
                             break;
                         case 2:
                             tocPath = Path.Combine(temp, "PCConsoleTOC.bin");
