@@ -329,19 +329,26 @@ namespace ME3Explorer
             {
                 ofd.Filter = "ME Trees|*.bin";
                 ofd.Title = "Select tree to import.";
+
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    StatusUpdater.UpdateText("Importing tree and thumbs...");
+                    StatusUpdater.UpdateText("Importing tree...");
                     ProgBarUpdater.ChangeProgressBar(0, 1);
 
                     TreeDB temptree = Tree.Clone();  // KFreon: Copy settings so can back track if tree load fails
+
+                    string destTreePath = ExecFolder + "me" + WhichGame + "tree.bin";
+                    File.Copy(ofd.FileName, destTreePath);
+
                     int status;
-                    if (!LoadTreeFromFile(ofd.FileName, out status, false))  // KFreon: Load actual tree.bin
+                    if (!LoadTreeFromFile(destTreePath, out status, false))  // KFreon: Load actual tree.bin
                     {
                         Tree = temptree;
                         MessageBox.Show("Error occured while loading tree. Likely a corrupted or invalid tree.");
                         return;
                     }
+
+                    StatusUpdater.UpdateText("Importing thumbs...");
 
                     await Task.Run(() =>
                     {
@@ -372,6 +379,7 @@ namespace ME3Explorer
                         var files = Directory.GetFiles(sourceThumbCachePath);
                         ProgBarUpdater.ChangeProgressBar(0, files.Length);
 
+                        int count = 0;
                         foreach (var file in files)
                         {
                             string filename = Path.GetFileName(file);
@@ -379,10 +387,12 @@ namespace ME3Explorer
                             if (!File.Exists(destPath))
                                 File.Copy(file, destPath);
 
-                            ProgBarUpdater.IncrementBar();
+                            if (count++ % 10 == 0)
+                                ProgBarUpdater.IncrementBar();
                         }
                     });
 
+                    ChangeTreeIndicators(MEExDirecs.WhichGame, true);
                     ProgBarUpdater.ChangeProgressBar(1, 1);
                     StatusUpdater.UpdateText("Tree imported!");
                 }
@@ -413,7 +423,9 @@ namespace ME3Explorer
                         // KFreon: Copy out Thumbnails
                         if (Directory.Exists(ThumbnailPath))
                         {
-                            string destThumbDirec = Path.GetDirectoryName(sfd.FileName);
+                            string baseDirec = Path.GetDirectoryName(sfd.FileName);
+                            string destThumbDirec = Path.Combine(baseDirec, $"ThumbnailCaches\\ME{MEExDirecs.WhichGame}ThumbnailCache");
+
                             Directory.CreateDirectory(destThumbDirec);
 
                             var files = Directory.GetFiles(ThumbnailPath);
