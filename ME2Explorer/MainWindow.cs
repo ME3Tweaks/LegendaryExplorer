@@ -57,5 +57,10 @@ namespace ME2Explorer
         {
             taskbar.AddTool(new SequenceEditor(), Properties.Resources.sequence_editor_64x64);
         }
+
+        private void dialogueEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            taskbar.AddTool(new DialogEditor(), Properties.Resources.dialogue_editor_64x64);
+        }
     }
 }
