@@ -473,12 +473,13 @@ namespace ME3Explorer
                     File.Delete(ExecFolder + "me" + WhichGame + "tree.bin");
                 OutputBoxPrintLn(Environment.NewLine + "Rebuilding ME" + WhichGame + " tree...");
 
+                // KFreon: Removed due to extraction occuring during toolset start
                 // MrFob: probably unnecessary but if the game is ME3, run extract DLCs just to be sure
-                if (WhichGame == 3)
+                /*if (WhichGame == 3)
                 {
                     DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                     dlcedit2.ExtractAllDLC();
-                }
+                }*/
 
                 // KFreon: Clear everything and rebuild tree
                 ClearDisplays();
@@ -1701,7 +1702,7 @@ namespace ME3Explorer
             message.Add("Texmod Hash:  " + Textures.Methods.FormatTexmodHashAsString(tex2D.Hash));
 
             if (WhichGame != 1)
-                message.Add("Texture Cache File:  " + (String.IsNullOrEmpty(tex2D.arcName) ? "PCC Stored" : tex2D.arcName + ".tfc"));
+                message.Add("Texture Cache File:  " + (info.storageType == 0  ? "PCC Stored" : tex2D.arcName + ".tfc"));
 
             PropertiesRTB.Text = String.Join(Environment.NewLine, message);
         }
