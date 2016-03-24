@@ -492,7 +492,7 @@ namespace ME3Explorer
         {
             if (WhichGame == 3)
             {
-                List<string> dlcs = Directory.EnumerateFiles(DLCPath, "*.sfar", SearchOption.AllDirectories) as List<string>;
+                List<string> dlcs = Directory.EnumerateFiles(DLCPath, "*.sfar", SearchOption.AllDirectories).ToList();
                 using (Helpers.SelectionForm sf = new Helpers.SelectionForm(dlcs, "Select DLC's to update.", "DLC TOC Update Selector", true))
                 {
                     sf.ShowDialog();
