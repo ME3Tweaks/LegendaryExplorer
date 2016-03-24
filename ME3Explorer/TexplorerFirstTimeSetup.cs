@@ -170,13 +170,6 @@ namespace ME3Explorer
         {
             InitializeComponent();
 
-            // KFreon: Hide GUI stuff
-            BackupCheckBox.Visible = false;
-            BackupPresentLabel.Visible = false;
-            ExtractedLabel.Visible = false;
-            ExtractedListBox.Visible = false;
-
-
             StatusProgLabel.Text = "Loading...";
 
             StatusUpdater = new TextUpdater(StatusProgLabel, toolStrip1);
@@ -229,59 +222,10 @@ namespace ME3Explorer
             if (dlc.isBaseGame == true)
             {
                 MainListView.SetItemChecked(0, true);
-
-                // KFreon: Hide everything
-                BackupCheckBox.Visible = false;
-                ExtractedLabel.Visible = false;
-                ExtractedListBox.Visible = false;
-                BackupPresentLabel.Visible = false;
-                DiskSpaceLabel.Text = "";
                 return;
             }
 
-            ExtractedListBox.Visible = dlc.isExtracted;
-            ExtractedLabel.Visible = dlc.isExtracted;
 
-            if (dlc.isBackupPresent)
-            {
-                BackupPresentLabel.Text = "Backup present at: " + dlc.BackupFileName;
-                BackupPresentLabel.Visible = true;
-            }
-
-            if (dlc.isExtracted)
-            {
-                ExtractedListBox.Items.Clear();
-                ExtractedListBox.Items.AddRange(dlc.ExtractedFiles.ToArray());
-            }
-
-
-            BackupCheckBox.Visible = true;
-            if (dlc.isBackupPresent && dlc.isExtracted)
-            {
-                BackupCheckBox.Text = "Use extracted Files?";
-                BackupCheckBox.Checked = dlc.UseExtracted == true;
-                BackupCheckBox.Enabled = true;
-            }
-            else if (dlc.isBackupPresent)
-            {
-                BackupCheckBox.Text = "Backup already present.";
-                BackupCheckBox.Checked = false;
-                BackupCheckBox.Enabled = false;
-            }
-            else if (dlc.isExtracted)
-            {
-                BackupCheckBox.Text = "No backup. Must use extracted.";
-                BackupCheckBox.Checked = false;
-                BackupCheckBox.Enabled = false;
-            }
-            else
-            {
-                BackupCheckBox.Text = "Backup?";
-                BackupCheckBox.Checked = dlc.BackupRequested == true;
-                BackupCheckBox.Enabled = true;
-            }
-
-            DiskSpaceLabel.Text = dlc.SizeString + " GB";
             StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's. Disk space to be used: ~" + DLCs.Select(d => d.Size).Sum() + " GB");
         }
 
@@ -297,13 +241,6 @@ namespace ME3Explorer
             if (index < 0)
                 return;
 
-            DLCInfo dlc = DLCs[index];
-            if (BackupCheckBox.Text.Contains("extracted"))
-                dlc.UseExtracted = BackupCheckBox.Checked;
-            else
-                dlc.BackupRequested = BackupCheckBox.Checked;
-
-            DiskSpaceLabel.Text = dlc.SizeString + " GB";
             StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's. Disk space to be used: ~" + DLCs.Select(d => d.Size).Sum() + " GB");
         }
 
