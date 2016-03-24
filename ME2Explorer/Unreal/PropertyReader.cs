@@ -96,9 +96,9 @@ namespace ME2Explorer.Unreal
         public class Property
         {
             public string Name;
+            public int idxName;
             public Type TypeVal;
             public int Size;
-            public int i;
             public int offsetval;
             public int offend;
             public PropertyValue Value;
@@ -129,7 +129,7 @@ namespace ME2Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(ME2Explorer.PCCObject pcc, byte[] raw)
+        public static List<Property> getPropList(PCCObject pcc, byte[] raw)
         {
             Application.DoEvents();
             int start = detectStart(pcc, raw);
@@ -154,7 +154,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static string PropertyToText(Property p, ME2Explorer.PCCObject pcc)
+        public static string PropertyToText(Property p, PCCObject pcc)
         {
             string s = "";
             s = "Name: " + p.Name;
@@ -194,33 +194,33 @@ namespace ME2Explorer.Unreal
             return s;
         }
 
-        public static ME2Explorer.Unreal.CustomProperty PropertyToGrid(Property p, ME2Explorer.PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
         {
             string cat = p.TypeVal.ToString();
-            ME2Explorer.Unreal.CustomProperty pg;
+            CustomProperty pg;
             switch (p.TypeVal)
             {
                 case Type.BoolProperty:
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, (p.Value.IntValue == 1), typeof(bool), false, true);
+                    pg = new CustomProperty(p.Name, cat, (p.Value.IntValue == 1), typeof(bool), false, true);
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff, 0);
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, f, typeof(float), false, true);
+                    pg = new CustomProperty(p.Name, cat, f, typeof(float), false, true);
                     break;
                 case Type.ByteProperty:
                 case Type.NameProperty:
                     NameProp pp = new NameProp();
                     pp.name = pcc.getNameEntry(p.Value.IntValue);
                     pp.nameindex = p.Value.IntValue;
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, pp, typeof(NameProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, pp, typeof(NameProp), false, true);
                     break;
                 case Type.ObjectProperty:
                     ObjectProp ppo = new ObjectProp();
                     ppo.name = pcc.getObjectName(p.Value.IntValue);
                     //ppo.name = pcc.GetName(pcc.Exports[p.Value.IntValue].name);
                     ppo.nameindex = p.Value.IntValue;
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, ppo, typeof(ObjectProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StructProperty:
                     StructProp ppp = new StructProp();
@@ -233,16 +233,16 @@ namespace ME2Explorer.Unreal
                     for (int i = 0; i < p.Value.Array.Count() / 4; i++)
                         buf2.Add(BitConverter.ToInt32(buf, i * 4));
                     ppp.data = buf2.ToArray();
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, ppp, typeof(StructProp), false, true);
+                    pg = new CustomProperty(p.Name, cat, ppp, typeof(StructProp), false, true);
                     break;
                 default:
-                    pg = new ME2Explorer.Unreal.CustomProperty(p.Name, cat, p.Value.IntValue, typeof(int), false, true);
+                    pg = new CustomProperty(p.Name, cat, p.Value.IntValue, typeof(int), false, true);
                     break;
             }
             return pg;
         }
 
-        public static List<Property> ReadProp(ME2Explorer.PCCObject pcc, byte[] raw, int start)
+        public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
         {
             Property p;
             PropertyValue v;
@@ -254,46 +254,36 @@ namespace ME2Explorer.Unreal
             int name = (int)BitConverter.ToInt64(raw, pos);
             if (!pcc.isName(name))
                 return result;
-            string t = pcc.getNameEntry(name);
-            if (t == "None")
+            p = new Property();
+            p.idxName = name;
+            p.Name = pcc.getNameEntry(name);
+            if (p.Name == "None")
             {
-                p = new Property();
-                p.Name = t;
                 p.TypeVal = Type.None;
-                p.i = 0;
                 p.offsetval = pos;
-                p.Size = 20;
+                p.Size = 8;
                 p.Value = new PropertyValue();
                 p.raw = BitConverter.GetBytes((Int64)name);
-                p.offend = pos + 20;
+                p.offend = pos + 8;
                 result.Add(p);
                 return result;
             }
             int type = (int)BitConverter.ToInt64(raw, pos + 8);
-            int size = BitConverter.ToInt32(raw, pos + 16);
-            int idx = BitConverter.ToInt32(raw, pos + 20); //Unused
-            if (!pcc.isName(type) || size < 0 || size >= raw.Length)
+            p.Size = BitConverter.ToInt32(raw, pos + 16);
+            if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
                 return result;
             string tp = pcc.getNameEntry(type);
             switch (tp)
             {
                 case "BoolProperty":
-                    p = new Property();
                     p.TypeVal = Type.BoolProperty;
-                    p.Name = t;
-                    p.Size = size;
-                    p.i = 0;
                     v = new PropertyValue();
                     v.IntValue = BitConverter.ToInt32(raw, pos + 24); //Guess. I haven't seen a true boolproperty yet
                     pos += 28;
                     p.Value = v;
                     break;
                 case "NameProperty":
-                    p = new Property();
                     p.TypeVal = Type.NameProperty;
-                    p.Name = t;
-                    p.Size = size;
-                    p.i = 0;
                     //pos += 32;
                     v = new PropertyValue();
                     //int tempInt = BitConverter.ToInt32(raw, pos + 24);
@@ -304,30 +294,22 @@ namespace ME2Explorer.Unreal
                     //throw new NullReferenceException();
                     break;
                 case "IntProperty":
-                    p = new Property();
                     p.TypeVal = Type.IntProperty;
                     v = new PropertyValue();
                     v.IntValue = BitConverter.ToInt32(raw, pos + 24);
-                    p.Name = t;
-                    p.Size = size;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     pos += 28;
                     p.Value = v;
                     break;
                 case "DelegateProperty":
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
                     p.TypeVal = Type.DelegateProperty;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = BitConverter.ToInt32(raw, pos + 28);
-                    v.len = size;
+                    v.len = p.Size;
                     v.Array = new List<PropertyValue>();
                     pos += 24;
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < p.Size; i++)
                     {
                         PropertyValue v2 = new PropertyValue();
                         if (pos < raw.Length)
@@ -339,15 +321,11 @@ namespace ME2Explorer.Unreal
                     break;
                 case "ArrayProperty":
                     int count = (int)BitConverter.ToInt64(raw, pos + 24);
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
                     p.TypeVal = Type.ArrayProperty;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = type;
-                    v.len = size - 4;
+                    v.len = p.Size - 4;
                     count = v.len;//TODO can be other objects too
                     v.Array = new List<PropertyValue>();
                     pos += 28;
@@ -362,12 +340,8 @@ namespace ME2Explorer.Unreal
                     p.Value = v;
                     break;
                 case "StrProperty":
-                    count = (int)BitConverter.ToInt32(raw, pos + 24);
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
+                    count = BitConverter.ToInt32(raw, pos + 24);
                     p.TypeVal = Type.StrProperty;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     //count *= -1;
                     v = new PropertyValue();
@@ -381,25 +355,24 @@ namespace ME2Explorer.Unreal
                         s += (char)raw[pos];
                         pos++;
                     }
-                    pos++;
+                    if (count > 0)
+                    {
+                        pos++;
+                    }
                     v.StringValue = s;
                     p.Value = v;
                     break;
                 case "StructProperty":
                     sname = (int)BitConverter.ToInt64(raw, pos + 24);
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
                     p.TypeVal = Type.StructProperty;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = sname;
                     v.StringValue = pcc.getNameEntry(sname);
-                    v.len = size;
+                    v.len = p.Size;
                     v.Array = new List<PropertyValue>();
                     pos += 32;
-                    for (int i = 0; i < size; i += 4)
+                    for (int i = 0; i < p.Size; i += 4)
                     {
                         PropertyValue v2 = new PropertyValue();
                         //if (pos < raw.Length)
@@ -414,44 +387,37 @@ namespace ME2Explorer.Unreal
                     p.Value = v;
                     break;
                 case "ByteProperty":
-                    //sname = (int)BitConverter.ToInt64(raw, pos + 24);
                     sname = BitConverter.ToInt32(raw, pos + 24);
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
                     p.TypeVal = Type.ByteProperty;
-                    p.i = 0;
-                    p.offsetval = pos + 32;
+                    p.offsetval = pos + 24;
                     v = new PropertyValue();
-                    v.StringValue = pcc.getNameEntry(sname);
-                    v.IntValue = BitConverter.ToInt32(raw, pos + 28);
-                    v.String2 = pcc.getNameEntry(v.IntValue);
-                    v.len = size;
-                    pos += 32;
-                    //v.IntValue = (int)BitConverter.ToInt64(raw, pos);
-                    //pos += size;
+                    if (p.Size != 1)
+                    {
+                        v.StringValue = pcc.getNameEntry(sname);
+                        v.IntValue = sname;
+                        pos += 32;
+                    }
+                    else
+                    {
+                        v.StringValue = "";
+                        v.IntValue = raw[pos + 24];
+                        pos += 25;
+                    }
+                    v.len = p.Size;
                     p.Value = v;
                     break;
                 case "FloatProperty":
                     sname = BitConverter.ToInt32(raw, pos + 24);
-                    p = new Property();
-                    p.Name = t;
-                    p.Size = size;
                     p.TypeVal = Type.FloatProperty;
-                    p.i = 0;
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.FloatValue = BitConverter.ToSingle(raw, pos + 24);
-                    v.len = size;
+                    v.len = p.Size;
                     pos += 28;
                     p.Value = v;
                     break;
                 default:
-                    p = new Property();
-                    p.Name = t;
                     p.TypeVal = getType(pcc, type);
-                    p.i = 0;
-                    p.Size = size;
                     p.offsetval = pos + 24;
                     p.Value = ReadValue(pcc, raw, pos + 24, type);
                     pos += p.Value.len + 24;
@@ -467,7 +433,7 @@ namespace ME2Explorer.Unreal
             return result;
         }
 
-        private static Type getType(ME2Explorer.PCCObject pcc, int type)
+        private static Type getType(PCCObject pcc, int type)
         {
             switch (pcc.getNameEntry(type))
             {
@@ -488,7 +454,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        private static PropertyValue ReadValue(ME2Explorer.PCCObject pcc, byte[] raw, int start, int type)
+        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
             switch (pcc.getNameEntry(type))
@@ -513,7 +479,7 @@ namespace ME2Explorer.Unreal
             return v;
         }
 
-        public static int detectStart(ME2Explorer.PCCObject pcc, byte[] raw)
+        public static int detectStart(PCCObject pcc, byte[] raw)
         {
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);

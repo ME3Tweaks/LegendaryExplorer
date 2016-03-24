@@ -168,6 +168,8 @@ namespace ME3Explorer.Interpreter2
                             {
                                 int val = BitConverter.ToInt32(memory, header.offset + 28 + i * 4);
                                 string s = (header.offset + 28 + i * 4).ToString("X4") + "|";
+                                TreeNode node = new TreeNode();
+                                node.Name = (header.offset + 28 + i * 4).ToString();
                                 if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_IMPORTEXPORT)
                                 {
                                     s += i + ": ";
@@ -239,9 +241,8 @@ namespace ME3Explorer.Interpreter2
                                     s += i + ": ";
                                     s += val.ToString();
                                 }
-                                TreeNode node = new TreeNode(s);
+                                node.Text = s;
                                 node.Tag = ARRAYLEAF_TAG;
-                                node.Name = (header.offset + 28 + i * 4).ToString();
                                 t.Nodes.Add(node);
                             }
                             ret.Nodes.Add(t);
@@ -549,7 +550,7 @@ namespace ME3Explorer.Interpreter2
                     LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
                 }
             }
-            catch (System.FormatException ex)
+            catch (Exception ex)
             {
                 addArrayElementButton.Visible = true;
                 deleteArrayElement.Visible = false;
@@ -850,12 +851,13 @@ namespace ME3Explorer.Interpreter2
                 if (memory.Length - pos < 16) //not long enough to deal with
                     return;
 
-                int parentOffset = -1;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
+                int parentOffset = Convert.ToInt32(parent.Name);
                 
                 //bubble up size
                 bool firstbubble = true;
                 uint throwaway;
+                int leafsize = (BitConverter.ToInt32(memory, 16 + parentOffset) - 4) / BitConverter.ToInt32(memory, 24 + parentOffset);
                 while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
                 {
                     if (uint.TryParse(parent.Text, out throwaway))
@@ -866,14 +868,18 @@ namespace ME3Explorer.Interpreter2
                     parentOffset = Convert.ToInt32(parent.Name);
                     if (firstbubble)
                     {
-                        Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
-                        memory = RemoveIndices(memory, Convert.ToInt32(LAST_SELECTED_NODE.Name), 4);
+                        int leafOffset = Convert.ToInt32(LAST_SELECTED_NODE.Name);
+                        if((leafOffset - parentOffset + 28) % leafsize != 0)
+                        {
+                            break;
+                        }
+                        memory = RemoveIndices(memory, leafOffset, leafsize);
                         firstbubble = false;
-                        updateArrayLength(parentOffset, -1, -4);
+                        updateArrayLength(parentOffset, -1, -leafsize);
                     }
                     else
                     {
-                        updateArrayLength(parentOffset, 0, -4);
+                        updateArrayLength(parentOffset, 0, -leafsize);
                     }
                     parent = parent.Parent;
                 }
@@ -900,10 +906,25 @@ namespace ME3Explorer.Interpreter2
                     return; //not valid element
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
+                int count = BitConverter.ToInt32(memory, pos + 24);
+                int leafsize = 4;
+                if (count > 0)
+                {
+                    leafsize = (size - 4) / count;
+                }
+                else if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_NAMES)
+                {
+                    leafsize = 8;
+                }
                 List<byte> memList = memory.ToList();
                 memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(newElement));
+                if(leafsize > 4)
+                {
+                    byte[] extrabytes = new byte[leafsize - 4];
+                    memList.InsertRange(pos + 24 + size + 4, extrabytes);
+                }
                 memory = memList.ToArray();
-                updateArrayLength(pos, 1, 4);
+                updateArrayLength(pos, 1, leafsize);
 
                 //bubble up size
                 uint throwaway;
@@ -915,7 +936,7 @@ namespace ME3Explorer.Interpreter2
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Convert.ToInt32(parent.Name), 0, 4);
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, leafsize);
                     parent = parent.Parent;
                 }
                 RefreshMem();

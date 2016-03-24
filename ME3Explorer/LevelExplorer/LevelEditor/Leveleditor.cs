@@ -45,6 +45,9 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
 
         private void Leveleditor_Activated(object sender, EventArgs e)
         {
+            SceneMan = new SceneManager();
+            SceneMan.Init(SceneMan.CreateView(p1), tv1);
+            timer1.Enabled = true;
             toolStripComboBox1.Items.Clear();
             toolStripComboBox1.Items.Add("100");
             toolStripComboBox1.Items.Add("200");
@@ -53,10 +56,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             toolStripComboBox1.Items.Add("2000");
             toolStripComboBox1.Items.Add("5000");
             toolStripComboBox1.Items.Add("10000");
-            toolStripComboBox1.SelectedIndex = 6;
-            SceneMan = new SceneManager();
-            SceneMan.Init(SceneMan.CreateView(p1), tv1);
-            timer1.Enabled = true;
+            toolStripComboBox1.SelectedIndex = 0;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -141,11 +141,13 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             SceneMan.MoveWASD = MoveWASD;
         }
 
-        private void toolStripComboBox1_Click(object sender, EventArgs e)
+        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             float[] speeds = { 100f, 200f, 500f, 1000f, 2000f, 5000f, 10000f };
             if (toolStripComboBox1.SelectedIndex != -1)
+            {
                 SceneMan.MoveSpeed = speeds[toolStripComboBox1.SelectedIndex];
+            }
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)

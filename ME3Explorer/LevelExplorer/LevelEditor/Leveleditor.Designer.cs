@@ -120,27 +120,27 @@
             this.saveAllToolStripMenuItem,
             this.unloadAllToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.openPccToolStripMenuItem.Text = "Open PCC";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // saveAllToolStripMenuItem
             // 
             this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
-            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.saveAllToolStripMenuItem.Text = "Save All";
             this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.saveAllToolStripMenuItem_Click);
             // 
             // unloadAllToolStripMenuItem
             // 
             this.unloadAllToolStripMenuItem.Name = "unloadAllToolStripMenuItem";
-            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.unloadAllToolStripMenuItem.Text = "Unload All";
             this.unloadAllToolStripMenuItem.Click += new System.EventHandler(this.unloadAllToolStripMenuItem_Click);
             // 
@@ -149,7 +149,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.moveWASDToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // moveWASDToolStripMenuItem
@@ -159,7 +159,7 @@
             this.moveWASDToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.moveWASDToolStripMenuItem.Name = "moveWASDToolStripMenuItem";
             this.moveWASDToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.moveWASDToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.moveWASDToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.moveWASDToolStripMenuItem.Text = "Move WASD";
             this.moveWASDToolStripMenuItem.Click += new System.EventHandler(this.moveWASDToolStripMenuItem_Click);
             // 
@@ -168,7 +168,7 @@
             this.toolboxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.transformToolStripMenuItem});
             this.toolboxToolStripMenuItem.Name = "toolboxToolStripMenuItem";
-            this.toolboxToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.toolboxToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.toolboxToolStripMenuItem.Text = "Toolbox";
             // 
             // transformToolStripMenuItem
@@ -177,7 +177,7 @@
             this.transformToolStripMenuItem.CheckOnClick = true;
             this.transformToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
-            this.transformToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.transformToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.transformToolStripMenuItem.Text = "Transform";
             this.transformToolStripMenuItem.Click += new System.EventHandler(this.transformToolStripMenuItem_Click);
             // 
@@ -186,13 +186,13 @@
             this.modmakingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createModJobsFromCurrentChangesToolStripMenuItem});
             this.modmakingToolStripMenuItem.Name = "modmakingToolStripMenuItem";
-            this.modmakingToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.modmakingToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
             this.modmakingToolStripMenuItem.Text = "Modmaking";
             // 
             // createModJobsFromCurrentChangesToolStripMenuItem
             // 
             this.createModJobsFromCurrentChangesToolStripMenuItem.Name = "createModJobsFromCurrentChangesToolStripMenuItem";
-            this.createModJobsFromCurrentChangesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.createModJobsFromCurrentChangesToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
             this.createModJobsFromCurrentChangesToolStripMenuItem.Text = "Create Mod Jobs From Current Changes";
             this.createModJobsFromCurrentChangesToolStripMenuItem.Click += new System.EventHandler(this.createModJobsFromCurrentChangesToolStripMenuItem_Click);
             // 
@@ -201,13 +201,13 @@
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportSceneTo3DSToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportSceneTo3DSToolStripMenuItem
             // 
             this.exportSceneTo3DSToolStripMenuItem.Name = "exportSceneTo3DSToolStripMenuItem";
-            this.exportSceneTo3DSToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.exportSceneTo3DSToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportSceneTo3DSToolStripMenuItem.Text = "Export Scene to 3DS";
             this.exportSceneTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportSceneTo3DSToolStripMenuItem_Click);
             // 
@@ -224,7 +224,7 @@
             // status
             // 
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(38, 17);
+            this.status.Size = new System.Drawing.Size(39, 17);
             this.status.Text = "Ready";
             // 
             // toolStrip1
@@ -307,14 +307,14 @@
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(41, 44);
+            this.toolStripLabel1.Size = new System.Drawing.Size(42, 44);
             this.toolStripLabel1.Text = "Speed:";
             // 
             // toolStripComboBox1
             // 
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(121, 47);
-            this.toolStripComboBox1.Click += new System.EventHandler(this.toolStripComboBox1_Click);
+            this.toolStripComboBox1.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBox1_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
@@ -636,10 +636,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(4, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 25);
+            this.label1.Size = new System.Drawing.Size(118, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Transform";
             // 

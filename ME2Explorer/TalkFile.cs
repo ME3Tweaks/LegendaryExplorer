@@ -184,7 +184,7 @@ namespace ME2Explorer
             r.Close();
         }
 
-        public string findDataById(int strRefID)
+        public string findDataById(int strRefID, bool withFileName = false)
         {
             string data = "No Data";
             for (int i = 0; i < StringRefs.Count; i++)
@@ -192,6 +192,10 @@ namespace ME2Explorer
                 if (StringRefs[i].StringID == strRefID)
                 {
                     data = "\"" + StringRefs[i].Data + "\"";
+                    if (withFileName)
+                    {
+                        data += " (" + name + ")";
+                    }
                     break;
                 }
             }

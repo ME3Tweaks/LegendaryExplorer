@@ -35,12 +35,8 @@ namespace ME2Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
 
-            var tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
-            talkFiles = new TalkFiles();
-            talkFiles.LoadTlkData(tlkPath);
             if(SText.fontcollection == null)
                 SText.fontcollection = LoadFont("KismetFont.ttf", 8);
-            SObj.talkfiles = talkFiles;
             if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
@@ -61,8 +57,7 @@ namespace ME2Explorer
             public float X;
             public float Y;
         }
-
-        private TalkFiles talkFiles;
+        
         private bool selectedByNode;
         private int selectedIndex;
         private ZoomController zoomController;

@@ -66,8 +66,7 @@ namespace ME2Explorer.Interpreter2
         private const int ARRAYSVIEW_RAW = 0;
         private const int ARRAYSVIEW_IMPORTEXPORT = 1;
         private const int ARRAYSVIEW_NAMES = 2;
-
-        private TalkFiles talkFiles;
+        
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private int LAST_SELECTED_PROP_TYPE = -100; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
@@ -78,27 +77,12 @@ namespace ME2Explorer.Interpreter2
             arrayViewerDropdown.SelectedIndex = 0;
         }
 
-        public void InitInterpreter(TalkFiles editorTalkFiles = null)
+        public void InitInterpreter()
         {
             DynamicByteProvider db = new DynamicByteProvider(pcc.Exports[Index].Data);
             hb1.ByteProvider = db;
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
-
-            // Load the default TLK file into memory.
-            if (editorTalkFiles == null)
-            {
-                if (ME2Directory.cookedPath != null)
-                {
-                    var tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
-                    talkFiles = new TalkFiles();
-                    talkFiles.LoadTlkData(tlkPath);
-                }
-            }
-            else
-            {
-                talkFiles = editorTalkFiles;
-            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -181,6 +165,8 @@ namespace ME2Explorer.Interpreter2
                             {
                                 int val = BitConverter.ToInt32(memory, header.offset + 28 + i * 4);
                                 string s = (header.offset + 28 + i * 4).ToString("X4") + "|";
+                                TreeNode node = new TreeNode();
+                                node.Name = (header.offset + 28 + i * 4).ToString();
                                 if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_IMPORTEXPORT)
                                 {
                                     s += i + ": ";
@@ -252,9 +238,8 @@ namespace ME2Explorer.Interpreter2
                                     s += i + ": ";
                                     s += val.ToString();
                                 }
-                                TreeNode node = new TreeNode(s);
+                                node.Text = s;
                                 node.Tag = ARRAYLEAF_TAG;
-                                node.Name = (header.offset + 28 + i * 4).ToString();
                                 t.Nodes.Add(node);
                             }
                             ret.Nodes.Add(t);
@@ -353,12 +338,16 @@ namespace ME2Explorer.Interpreter2
             s += "Type: \"" + pcc.getNameEntry(p.type) + "\" ";
             s += "Size: " + p.size.ToString() + " Value: ";
             int propertyType = getType(pcc.getNameEntry(p.type));
+            int idx;
             switch (propertyType)
             {
                 case INT_PROPERTY:
-                case OBJECT_PROPERTY:
-                    int idx = BitConverter.ToInt32(memory, p.offset + 24);
+                    idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += idx.ToString();
+                    break;
+                case OBJECT_PROPERTY:
+                    idx = BitConverter.ToInt32(memory, p.offset + 24);
+                    s += idx.ToString() + " (" + pcc.getObjectName(idx) + ")";
                     break;
                 case STRING_PROPERTY:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -391,7 +380,7 @@ namespace ME2Explorer.Interpreter2
                 case STRINGREF_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx.ToString() + ": ";
-                    s += talkFiles == null ? "(.tlk not loaded)" : talkFiles.findDataById(idx);
+                    s += TalkFiles.findDataById(idx);
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -550,7 +539,7 @@ namespace ME2Explorer.Interpreter2
                     LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
                 }
             }
-            catch (FormatException ex)
+            catch (Exception ex)
             {
                 addArrayElementButton.Visible = true;
                 deleteArrayElement.Visible = false;
@@ -594,11 +583,11 @@ namespace ME2Explorer.Interpreter2
                         break;
                     case "StrProperty":
                         string s = "";
-                        int count = -(int)BitConverter.ToInt64(memory, pos + 24);
+                        int count = BitConverter.ToInt32(memory, pos + 24);
                         pos += 28;
                         for (int i = 0; i < count; i++)
                         {
-                            s += (char)memory[pos + i * 2];
+                            s += (char)memory[pos + i];
                         }
                         proptext.Text = s;
                         visible = true;
@@ -763,23 +752,22 @@ namespace ME2Explorer.Interpreter2
                         string s = proptext.Text;
                         int offset = pos + 24;
                         int oldSize = BitConverter.ToInt32(memory, pos + 16);
-                        int oldLength = -(int)BitConverter.ToInt64(memory, offset);
-                        List<byte> stringBuff = new List<byte>(s.Length * 2);
+                        int oldLength = BitConverter.ToInt32(memory, offset);
+                        List<byte> stringBuff = new List<byte>(s.Length);
                         for (int j = 0; j < s.Length; j++)
                         {
-                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                            stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
                         }
                         stringBuff.Add(0);
-                        stringBuff.Add(0);
-                        byte[] buff = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
+                        byte[] buff = BitConverter.GetBytes((s.Count() + 1) + 4);
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];
-                        buff = BitConverter.GetBytes(-(s.LongCount() + 1));
-                        for (int j = 0; j < 8; j++)
+                        buff = BitConverter.GetBytes(s.Count() + 1);
+                        for (int j = 0; j < 4; j++)
                             memory[offset + j] = buff[j];
-                        buff = new byte[memory.Length - (oldLength * 2) + stringBuff.Count];
+                        buff = new byte[memory.Length - oldLength + stringBuff.Count];
                         int startLength = offset + 4;
-                        int startLength2 = startLength + (oldLength * 2);
+                        int startLength2 = startLength + oldLength;
                         for (int j = 0; j < startLength; j++)
                         {
                             buff[j] = memory[j];
@@ -851,12 +839,13 @@ namespace ME2Explorer.Interpreter2
                 if (memory.Length - pos < 16) //not long enough to deal with
                     return;
 
-                int parentOffset = -1;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
+                int parentOffset = Convert.ToInt32(parent.Name);
 
                 //bubble up size
                 bool firstbubble = true;
                 uint throwaway;
+                int leafsize = (BitConverter.ToInt32(memory, 16 + parentOffset) - 4) / BitConverter.ToInt32(memory, 24 + parentOffset);
                 while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
                 {
                     if (uint.TryParse(parent.Text, out throwaway))
@@ -867,14 +856,18 @@ namespace ME2Explorer.Interpreter2
                     parentOffset = Convert.ToInt32(parent.Name);
                     if (firstbubble)
                     {
-                        Debug.WriteLine("Array to delete element from: " + parentOffset.ToString("X8"));
-                        memory = RemoveIndices(memory, Convert.ToInt32(LAST_SELECTED_NODE.Name), 4);
+                        int leafOffset = Convert.ToInt32(LAST_SELECTED_NODE.Name);
+                        if ((leafOffset - parentOffset + 28) % leafsize != 0)
+                        {
+                            break;
+                        }
+                        memory = RemoveIndices(memory, leafOffset, leafsize);
                         firstbubble = false;
-                        updateArrayLength(parentOffset, -1, -4);
+                        updateArrayLength(parentOffset, -1, -leafsize);
                     }
                     else
                     {
-                        updateArrayLength(parentOffset, 0, -4);
+                        updateArrayLength(parentOffset, 0, -leafsize);
                     }
                     parent = parent.Parent;
                 }
@@ -901,10 +894,25 @@ namespace ME2Explorer.Interpreter2
                     return; //not valid element
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
+                int count = BitConverter.ToInt32(memory, pos + 24);
+                int leafsize = 4;
+                if (count > 0)
+                {
+                    leafsize = (size - 4) / count;
+                }
+                else if (arrayViewerDropdown.SelectedIndex == ARRAYSVIEW_NAMES)
+                {
+                    leafsize = 8;
+                }
                 List<byte> memList = memory.ToList();
                 memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(newElement));
+                if (leafsize > 4)
+                {
+                    byte[] extrabytes = new byte[leafsize - 4];
+                    memList.InsertRange(pos + 24 + size + 4, extrabytes);
+                }
                 memory = memList.ToArray();
-                updateArrayLength(pos, 1, 4);
+                updateArrayLength(pos, 1, leafsize);
 
                 //bubble up size
                 uint throwaway;
@@ -916,7 +924,7 @@ namespace ME2Explorer.Interpreter2
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Convert.ToInt32(parent.Name), 0, 4);
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, leafsize);
                     parent = parent.Parent;
                 }
                 RefreshMem();
