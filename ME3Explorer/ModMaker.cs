@@ -220,7 +220,6 @@ namespace ME3Explorer
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     backbone.AddToBackBone(b =>
                     {
-                        gooey.ModifyControl("ChangePaths", false);
                         LoadFromFiles(ofd.FileNames);
                         return true;
                     });
@@ -605,7 +604,6 @@ namespace ME3Explorer
 
             // KFreon: Fix GUI
             gooey.ModifyControl("Load", false);
-            gooey.ModifyControl("ChangePaths", true);
             gooey.ChangeState(false);
 
 
@@ -1246,21 +1244,6 @@ namespace ME3Explorer
         {
             if (MessageBox.Show("Are you sure you want to cancel?", "HIGHLY not recommended.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
                 cts.Cancel();
-        }
-
-        private void ChangePathsButton_Click(object sender, EventArgs e)
-        {
-            using (PathChanger changer = new PathChanger(BIOGames[0], BIOGames[1], BIOGames[2]))
-            {
-                if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                    return;
-
-                // KFreon: Change paths
-                MEExDirecs.SetPaths(changer.PathME1, changer.PathME2, changer.PathME3);
-
-                // KFreon: Colour stuff
-                CheckGameState();
-            }
         }
 
         public static async Task<ModMaker> GetCurrentInstance()
