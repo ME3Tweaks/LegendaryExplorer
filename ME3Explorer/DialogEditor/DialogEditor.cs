@@ -824,6 +824,7 @@ namespace ME3Explorer.DialogEditor
             TlkManager tm = new TlkManager();
             tm.InitTlkManager();
             tm.Show();
+            taskbar.AddTool(tm, Properties.Resources.TLKManager_icon_64x64);
         }
 
         private void toEntrysReplyListToolStripMenuItem_Click(object sender, EventArgs e)

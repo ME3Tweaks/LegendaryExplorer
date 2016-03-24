@@ -611,7 +611,8 @@ namespace ME3Explorer
             PCCEditor2 p = new PCCEditor2();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
-            p.Show(); 
+            p.Show();
+            taskbar.AddTool(p, Properties.Resources.pcceditor2_64x64);
             try
             {
 
@@ -972,7 +973,8 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadPCC(CurrentFile);
-            if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
+            taskbar.AddTool(p, Properties.Resources.interp_viewer_icon_64x64);
+            if (pcc.Exports[Objects[listBox1.SelectedIndex].Index].ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
                 p.loadInterpData(n);
@@ -1001,6 +1003,7 @@ namespace ME3Explorer
             TlkManager tm = new TlkManager();
             tm.InitTlkManager();
             tm.Show();
+            taskbar.AddTool(tm, Properties.Resources.TLKManager_icon_64x64);
         }
 
         private void graphEditor_MouseEnter(object sender, EventArgs e)
