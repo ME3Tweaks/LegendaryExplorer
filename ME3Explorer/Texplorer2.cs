@@ -2503,7 +2503,14 @@ namespace ME3Explorer
                 StatusUpdater.UpdateText("Errors occured. See DebugWindow");
             }
             else
+            {
+                StatusUpdater.UpdateText("Refreshing Tree...");
+
+                ClearDisplays();
+                Tree = null;
+                BeginLoadingTree();
                 StatusUpdater.UpdateText("DLC added to tree!");
+            }
 
             ProgBarUpdater.ChangeProgressBar(1, 1);
         }
@@ -2516,13 +2523,19 @@ namespace ME3Explorer
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
             dialog.EnsurePathExists = true;
-           dialog.Title = "Select DLC Folder to add. (e.g. DLC_CON_END)";
+            dialog.Title = "Select DLC Folder to add. (e.g. DLC_CON_END)";
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 outputPath = dialog.FileName;
             else
                 return;
 
             pccs = Directory.EnumerateFiles(outputPath, "*.pcc", SearchOption.AllDirectories).ToList();
+
+            if (pccs.Count == 0)
+            {
+                StatusUpdater.UpdateText("DLC is not extracted (no PCC's found).");
+                return;
+            }
 
             backbone.AddToBackBone(b =>
             {
