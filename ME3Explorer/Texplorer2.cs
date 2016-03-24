@@ -2315,83 +2315,6 @@ namespace ME3Explorer
             }
         }
 
-        [Obsolete("Not used anymore")]
-        private void ReplaceButton_Click(object sender, EventArgs e)
-        {
-            if (MainListView.SelectedIndices.Count != 0 && MainListView.SelectedIndices[0] >= 0)
-            {
-                // KFreon: Select mip to replace
-                List<string> names = new List<string>();
-                int index = GetSelectedTexInd();
-                TreeTexInfo tex = Tree.GetTex(index);
-                Textures.ITexture2D tex2D = tex.Textures[0];
-                for (int i = 0; i < tex2D.imgList.Count; i++)
-                {
-                    bool pccstored = tex2D.imgList[i].CompareStorage("pccSto");
-                    names.Add("Image: " + tex2D.imgList[i].imgSize + " stored inside " + (pccstored ? "PCC file" : "Archive file") + " at offset " + ((pccstored) ? (tex2D.imgList[i].offset + tex2D.pccOffset).ToString() : tex2D.imgList[i].offset.ToString()));
-                }
-
-                string selectedImage = "";
-                using (Helpers.SelectionForm sf = new Helpers.SelectionForm(names, "Select ONE image to replace.", "Replace Image Selector", false))
-                {
-                    sf.ShowDialog();
-                    if (sf.SelectedInds.Count == 0)
-                        return;
-                    else if (sf.SelectedInds.Count == 1)
-                        selectedImage = sf.SelectedItems[0];
-                    else
-                    {
-                        MessageBox.Show("You must select ONLY ONE image to replace.");
-                        return;
-                    }
-                }
-                string imgsize = selectedImage.Split(' ')[1];
-                string replacingfile = "";
-                using (OpenFileDialog ofd = new OpenFileDialog())
-                {
-                    ofd.Title = "Select Image to replace with";
-                    ofd.Filter = "Image File|*.dds";
-
-                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        replacingfile = ofd.FileName;
-                    else
-                        return;
-                }
-
-                byte[] imgData = File.ReadAllBytes(replacingfile);
-                ImageMipMapHandler mip = new ImageMipMapHandler("", imgData);
-                string[] sizes = imgsize.Split('x');
-                ImageFile im = mip.imageList.First(img => img.imgSize.width.ToString() == sizes[0] && img.imgSize.height.ToString() == sizes[1]);
-
-                DebugOutput.PrintLn("Replacing image in " + tex.TexName + " at " + imgsize + " with " + replacingfile);
-
-                tex2D.replaceImage(imgsize, im, pathBIOGame);  // So each mipmap is made into a fully formatted DDS with no mipmaps by ImageMipMapHandler. Is that necessary?
-                UpdateModifiedTex(tex2D, tex, index);
-                DebugOutput.PrintLn("Image replaced.");
-
-                StatusUpdater.UpdateText("Image replaced!");
-                MainProgressBar.Value = MainProgressBar.Maximum;
-
-                DisplayTextureProperties(tex2D, tex2D.GenerateImageInfo());
-
-                RegenerateThumbnail(tex, index, false);
-
-                if (ModMakerMode)
-                {
-                    AddModJob(tex2D, replacingfile);
-                    StatusUpdater.UpdateText("Replacement complete and job added to modmaker!");
-                }
-
-                if (TPFMode)
-                {
-                    AddTPFToolsJob(replacingfile, tex.Hash);
-                    StatusUpdater.UpdateText("Replacement Complete and job added to TPFTools!");
-                }
-
-                Previews.Remove(tex.TexName + tex.Hash);
-            }
-        }
-
         private async void AddModJob(Textures.ITexture2D tex2D, string replacingfile)
         {
             ModMaker modmaker = await ModMaker.GetCurrentInstance();
@@ -2863,8 +2786,6 @@ namespace ME3Explorer
                 tooltips.Add(SetupToolTip(tabControl1));
                 tooltips.Add(SetupToolTip(ChangeButton));
                 tooltips.Add(SetupToolTip(OutputBox));
-
-                instructionsToolStripMenuItem.Text = "Further instructions online";
             }
             else
             {
