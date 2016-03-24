@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmaroK86.ImageFormat", "Ama
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmaroK86.ImageMipMapHandler", "AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj", "{4740CDBD-DC9C-4964-BAE0-8C401340ED95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.MassEffect3.Coalesce", "Tools\Gibbed.MassEffect3.Coalesce\Gibbed.MassEffect3.Coalesce.csproj", "{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NDesk.Options", "Tools\NDesk.Options\NDesk.Options.csproj", "{C98A6CD6-9422-4B35-8B7A-F520D75534D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDKExplorer", "UDKExplorer\UDKExplorer.csproj", "{F660E850-DA7A-41A6-AE77-4AB4F21D8F33}"
@@ -207,20 +205,6 @@ Global
 		{4740CDBD-DC9C-4964-BAE0-8C401340ED95}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4740CDBD-DC9C-4964-BAE0-8C401340ED95}.Release|x64.ActiveCfg = Release|Any CPU
 		{4740CDBD-DC9C-4964-BAE0-8C401340ED95}.Release|x86.ActiveCfg = Release|Any CPU
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|Any CPU.Build.0 = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|x64.ActiveCfg = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|x86.ActiveCfg = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Debug|x86.Build.0 = Debug|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|Any CPU.ActiveCfg = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|Any CPU.Build.0 = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|Mixed Platforms.Build.0 = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|x64.ActiveCfg = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|x86.ActiveCfg = Release|x86
-		{35D8FCDF-B9CE-41F5-BE58-5E6EE114FFB6}.Release|x86.Build.0 = Release|x86
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C98A6CD6-9422-4B35-8B7A-F520D75534D1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
