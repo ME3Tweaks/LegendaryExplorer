@@ -228,7 +228,7 @@ namespace ME3Explorer.Unreal
                     return s;
                 }
             }
-            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "None"; } }
+            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 + 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
 
             public int DataSize   { get { return BitConverter.ToInt32(info, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
             public int DataOffset { get { return BitConverter.ToInt32(info, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }

@@ -456,7 +456,7 @@ namespace ME3Explorer
             textBox5.Text = pcc.Exports[n].indexValue.ToString();
             textBox6.Text = pcc.Exports[n].ArchtypeName;
             if (pcc.Exports[n].idxArchtypeName != 0)
-                textBox6.Text += " (" + ((pcc.Exports[n].idxArchtypeName < 0) ? "imported" : "local") + " class)";
+                textBox6.Text += " (" + ((pcc.Exports[n].idxArchtypeName < 0) ? "imported" : "local") + " class) " + pcc.Exports[n].idxArchtypeName;
             textBox10.Text = "0x" + pcc.Exports[n].ObjectFlags.ToString("X16");
             textBox7.Text = pcc.Exports[n].DataSize + " bytes";
             textBox8.Text = "0x" + pcc.Exports[n].DataOffset.ToString("X8");
