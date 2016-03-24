@@ -423,8 +423,8 @@
             this.ExtractDataButton.Image = ((System.Drawing.Image)(resources.GetObject("ExtractDataButton.Image")));
             this.ExtractDataButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractDataButton.Name = "ExtractDataButton";
-            this.ExtractDataButton.Size = new System.Drawing.Size(110, 37);
-            this.ExtractDataButton.Text = "Extract Data";
+            this.ExtractDataButton.Size = new System.Drawing.Size(139, 37);
+            this.ExtractDataButton.Text = "Extract Selected";
             this.ExtractDataButton.Click += new System.EventHandler(this.ExtractDataButton_Click);
             // 
             // DetailsSplitter

@@ -5,6 +5,7 @@ using ME3Explorer.Unreal;
 using KFreonLib.Scripting;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
+using System.Collections.Generic;
 
 namespace SimpleScripts
 {
@@ -41,7 +42,7 @@ namespace SimpleScripts
 			try
 			{
 				foreach (string name in names)
-					pcc.AddName(name);
+					pcc.addName(name);
 			}
 			catch (Exception e)
 			{

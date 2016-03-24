@@ -983,17 +983,26 @@ namespace ME3Explorer
             DebugOutput.PrintLn("Beginning First Time Setup...");
             List<string> dlcfiles = new List<string>();
 
+
+            // KFreon: Removed for rev 745 fix #261
             // KFreon: Added game gate here to stop it trying to do stuff for other games
             if (WhichGame == 3)
             {
-                DebugOutput.PrintLn("Starting DLC Extraction...");
+                /*DebugOutput.PrintLn("Starting DLC Extraction...");
                 StatusUpdater.UpdateText("Extracting all DLC. This will take time...");
 
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
-                dlcedit2.ExtractAllDLC();
+                dlcedit2.ExtractAllDLC();*/
 
                 // KFreon: Enumerate DLC files here
-                dlcfiles = new List<string>(Directory.EnumerateFiles(DLCPath).Where(file => file.ToLower().EndsWith(".pcc") || file.ToLower().EndsWith(".tfc")));
+                try
+                {
+                    dlcfiles = new List<string>(Directory.EnumerateFiles(DLCPath).Where(file => file.ToLower().EndsWith(".pcc") || file.ToLower().EndsWith(".tfc")));
+                }
+                catch
+                {
+                    // Kfreon: Ignore.
+                }
             }
 
             DebugOutput.PrintLn(String.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
@@ -1011,6 +1020,7 @@ namespace ME3Explorer
                 {
                     Tree.Clear(true);
                     Tree.AddPCCs(fts.FilesToAddToTree);
+                    if (dlcfiles.Count != 0)
                     Tree.AddPCCs(dlcfiles);
                 }
             }

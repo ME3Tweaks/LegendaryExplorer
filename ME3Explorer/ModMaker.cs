@@ -331,20 +331,7 @@ namespace ME3Explorer
 
                 // KFreon: Format size
                 double len = job.Length;
-                string size = len.ToString() + " bytes.";
-                if (len > 1024)   // KFreon: Kilobyte
-                {
-                    double siz = 1024;
-                    string ending = " Kilobytes.";
-                    if (len > 1024 * 1024)  // KFreon: Megabytes
-                    {
-                        siz = 1024 * 1024;
-                        ending = " Megabytes.";
-                    }
-
-                    string newsize = (len / siz).ToString();
-                    size = newsize.Substring(0, newsize.IndexOf('.') + 3) + ending;
-                }
+                string size = UsefulThings.General.GetFileSizeAsString(len);
                 names[i] = (job.Name + "  --> Size: " + size);
 
                 DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
@@ -787,7 +774,8 @@ namespace ME3Explorer
                 bool alreadyExtracted = true;
                 foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
                 {
-                    if (!Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
+                    // KFreon: Skip metadata
+                    if (!item.Contains("__metadata") && !Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
                     {
                         alreadyExtracted = false;
                         break;
@@ -806,7 +794,8 @@ namespace ME3Explorer
             DialogResult result = DialogResult.Yes;
             this.Invoke(new Action(() =>
             {
-                if (!IsAlreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
+                // KFreon: only for ME3
+                if (joblist.Any(job => job.WhichGame == 3) && !IsAlreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
                     result = MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo);
             }));
 
@@ -955,8 +944,7 @@ namespace ME3Explorer
                     else
                     {
                         ModJob job = KFreonLib.Scripting.ModMaker.JobList[index];
-
-                        if (job.HasDLCPCCs && !IsAlreadyExtracted)
+                        if (job.WhichGame == 3 && job.HasDLCPCCs && !IsAlreadyExtracted)
                         {
                             if (MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo) == DialogResult.No)
                             {
@@ -1540,6 +1528,10 @@ namespace ME3Explorer
 
             for (int i = 0; i < basePCC.ExportCount; i++)
             {
+                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding exports just yet.
+                    break;
+
+
                 if (!basePCC.Exports[i].Data.SequenceEqual(modifiedPCC.Exports[i].Data))
                 {
                     ModJob job = new ModJob();
