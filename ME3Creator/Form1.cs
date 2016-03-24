@@ -1755,7 +1755,8 @@ namespace ME3Creator
                         {
                             string s = importpcc.GetName(BitConverter.ToInt32(p.raw, 28 + i * 8));
                             m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(s)), 0, 4);
-                            m.Write(new byte[4], 0, 4);
+                            //preserve index or whatever the second part of a namereference is
+                            m.Write(p.raw, 32 + i * 8, 4);
                         }
                     }
                     else
