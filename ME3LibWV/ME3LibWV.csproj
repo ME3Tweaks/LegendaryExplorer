@@ -149,6 +149,7 @@
     <Compile Include="SharpZip\Zip\ZipInputStream.cs" />
     <Compile Include="SharpZip\Zip\ZipNameTransform.cs" />
     <Compile Include="SharpZip\Zip\ZipOutputStream.cs" />
+    <Compile Include="UnrealClasses\SkeletalMesh.cs" />
     <Compile Include="TOCBinFile.cs" />
     <Compile Include="UnrealClasses\Level.cs" />
     <Compile Include="UnrealClasses\ModelComponent.cs" />

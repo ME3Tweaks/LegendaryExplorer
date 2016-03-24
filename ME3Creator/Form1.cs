@@ -1552,8 +1552,34 @@ namespace ME3Creator
                 pcc.Header.NameCount = namecount;
                 MessageBox.Show("Error occured while trying to importing : " + exe.Message);
             }
-            for (int i = end; i < idata.Length; i++)
-                res.WriteByte(idata[i]);
+            if (importpcc.GetObject(ex.idxClass) == "SkeletalMesh")
+            {
+                SkeletalMesh skl = new SkeletalMesh(importpcc, n);
+                SkeletalMesh.BoneStruct bone;
+                for (int i = 0; i < skl.Bones.Count; i++)
+                {
+                    bone = skl.Bones[i];
+                    string s = importpcc.GetName(bone.Name);
+                    bone.Name = pcc.FindNameOrAdd(s);
+                    skl.Bones[i] = bone;
+                }
+                SkeletalMesh.TailNamesStruct tailName;
+                for (int i = 0; i < skl.TailNames.Count; i++)
+                {
+                    tailName = skl.TailNames[i];
+                    string s = importpcc.GetName(tailName.Name);
+                    tailName.Name = pcc.FindNameOrAdd(s);
+                    skl.TailNames[i] = tailName;
+                }
+                ME3LibWV.SerializingContainer container = new ME3LibWV.SerializingContainer(res);
+                container.isLoading = false;
+                skl.Serialize(container);
+            }
+            else
+            {
+                for (int i = end; i < idata.Length; i++)
+                    res.WriteByte(idata[i]);
+            }
             nex.DataLoaded = true;
             nex.Data = res.ToArray();
             nex.Datasize = nex.Data.Length;
