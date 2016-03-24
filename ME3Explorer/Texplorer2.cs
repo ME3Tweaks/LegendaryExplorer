@@ -1367,7 +1367,7 @@ namespace ME3Explorer
             // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works. KFREON: Re-enabled as part of the TOC all day, everywhere, anywhen strategy.
             if (WhichGame == 3)
             {
-                if (!Directory.EnumerateDirectories(ME3Directory.DLCPath, "*.*", SearchOption.AllDirectories).Any(file => file.EndsWith(".pcc")))
+                if (!Directory.EnumerateDirectories(ME3Directory.DLCPath, "*.*", SearchOption.AllDirectories).Where(folder => !folder.Contains("__metadata")).Any(file => file.EndsWith(".pcc")))
                 { 
                     DebugOutput.PrintLn("No extracted DLC. Not TOCing.");
                     return;
