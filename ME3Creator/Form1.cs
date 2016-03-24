@@ -1690,18 +1690,18 @@ namespace ME3Creator
                 case "ArrayProperty":
                     size = BitConverter.ToInt32(p.raw, 16);
                     count = BitConverter.ToInt32(p.raw, 24);
+                    int leafSize = 0;
+                    if (count > 0)
+                    {
+                        leafSize = (size - 4) / count;
+                    }
                     pos = 28;
                     List<PropertyReader.Property> AllProps = new List<PropertyReader.Property>();
                     for (int i = 0; i < count; i++)
                     {
                         Props = new List<PropertyReader.Property>();
-                        int test1 = BitConverter.ToInt32(p.raw, pos);
-                        int test2 = BitConverter.ToInt32(p.raw, pos + 4);
-                        if (!importpcc.isName(test1) || test2 != 0)
+                        if (leafSize < 24)
                             break;
-                        if (size > 24 && importpcc.GetName(test1) != "None")
-                            if (BitConverter.ToInt32(p.raw, pos + 12) != 0)
-                                break;
                         try
                         {
                             Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
@@ -1719,10 +1719,23 @@ namespace ME3Creator
                     m.Write(new byte[4], 0, 4);
                     m.Write(BitConverter.GetBytes(count), 0, 4);
                     if (AllProps.Count != 0)
+                    {
                         foreach (PropertyReader.Property pp in AllProps)
                             ImportProperty(pcc, importpcc, pp, m);
+                    }
+                    else if (leafSize == 8)
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            string s = importpcc.GetName(BitConverter.ToInt32(p.raw, 28 + i * 8));
+                            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(s)), 0, 4);
+                            m.Write(new byte[4], 0, 4);
+                        }
+                    }
                     else
+                    {
                         m.Write(p.raw, 28, size - 4);
+                    }
                     break;
                 default:
                     throw new Exception(type);
