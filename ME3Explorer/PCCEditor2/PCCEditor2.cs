@@ -1089,7 +1089,13 @@ namespace ME3Explorer
                     listBox1.SelectedIndex = selected;
                     listBox1.TopIndex = scrollTo;
                 }
-                MessageBox.Show("\"" + result + "\" added at index " + (pcc.Names.Count - 1));
+                byte[] buff = BitConverter.GetBytes(pcc.Names.Count - 1);
+                string s = "";
+                for (int i = 0; i < 4; i++)
+                {
+                    s += buff[i].ToString("X2");
+                }
+                MessageBox.Show("\"" + result + "\" added at index " + (pcc.Names.Count - 1) + " (" + s + ")");
             }
         }
 
