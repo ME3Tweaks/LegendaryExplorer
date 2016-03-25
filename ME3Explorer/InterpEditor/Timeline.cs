@@ -239,8 +239,10 @@ namespace ME3Explorer.InterpEditor
             }
             foreach(int i in groups)
             {
-                if(pcc.Exports[i].ClassName.StartsWith("InterpGroup"))
+                if (pcc.Exports[i].ClassName.StartsWith("InterpGroup"))
                     addGroup(new InterpGroup(i, pcc));
+                else
+                    addGroup(new SFXSceneGroup(i, pcc));
             }
             TimeScale.MoveToFront();
             PPath startmark = PPath.CreatePolygon(53,1, 61,1, 61,9);
@@ -286,10 +288,13 @@ namespace ME3Explorer.InterpEditor
 
             foreach (InterpGroup g in InterpGroups)
             {
-                g.listEntry.OffsetY = yOffset;
-                foreach (InterpTrack t in g.InterpTracks)
-                    t.timelineEntry.OffsetY = yOffset + t.listEntry.OffsetY;
-                yOffset += (int)Math.Round(g.EffectiveHeight);
+                if (g.Visible)
+                {
+                    g.listEntry.OffsetY = yOffset;
+                    foreach (InterpTrack t in g.InterpTracks)
+                        t.timelineEntry.OffsetY = yOffset + t.listEntry.OffsetY;
+                    yOffset += (int)Math.Round(g.EffectiveHeight); 
+                }
             }
             //seperationLine.Y = yOffset;
             //seperationLine.Height = Bounds.Bottom - yOffset + Timeline.InfoHeight;
@@ -342,7 +347,7 @@ namespace ME3Explorer.InterpEditor
         protected Color groupColor;
         protected PNode colorAccent;
         protected bool collapsed;
-        private TreeView propView;
+        protected TreeView propView;
         public TreeView PropView
         {
             set
@@ -410,6 +415,47 @@ namespace ME3Explorer.InterpEditor
                     t.Visible = !value;
 
                 }
+                if (!bIsParented)
+                {
+                    List<InterpGroup> groups = ((InterpData)listEntry.Parent)?.InterpGroups;
+                    bool children = false;
+                    for (int i = 0; i < groups?.Count; i++)
+                    {
+                        if (!groups[i].bIsParented)
+                        {
+                            children = false;
+                        }
+                        if (children)
+                        {
+                            groups[i].Visible = !value;
+                        }
+                        if (groups[i].index == index)
+                        {
+                            children = true;
+                        }
+                    }
+                }
+                
+            }
+        }
+        public bool Visible
+        {
+            get
+            {
+                return listEntry.Visible;
+            }
+            set
+            {
+                if(!collapsed) {
+                    foreach (InterpTrack t in InterpTracks)
+                    {
+                        t.Visible = value;
+
+                    }
+                }
+                listEntry.Visible = value;
+                listEntry.Pickable = value;
+                
             }
         }
         public bool bIsParented;
@@ -453,6 +499,10 @@ namespace ME3Explorer.InterpEditor
             InterpTracks = new List<InterpTrack>();
 
             LoadData();
+            if (bIsParented)
+            {
+                listEntry.TranslateBy(10, 0);
+            }
         }
 
         protected void LoadData()
@@ -648,7 +698,7 @@ namespace ME3Explorer.InterpEditor
                         addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
-                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: http://me3explorer.freeforums.org/bug-reports-f13.html \nwith this information: #" + i + " " + pcc.pccFileName.Substring(pcc.pccFileName.LastIndexOf(@"\")));
+                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/ME3Explorer/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.pccFileName.Substring(pcc.pccFileName.LastIndexOf(@"\")));
                         break;
                 }
             }
@@ -656,7 +706,7 @@ namespace ME3Explorer.InterpEditor
 
         void listEntry_MouseDown(object sender, PInputEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 ContextMenuStrip menu = new ContextMenuStrip();
                 ToolStripMenuItem openInPCCEd = new ToolStripMenuItem("Open in PCCEditor2");
@@ -726,7 +776,7 @@ namespace ME3Explorer.InterpEditor
         public virtual void ToTree()
         {
             propView.Nodes.Clear();
-            TreeNode t = new TreeNode("Group Name : \"" + GroupName + "\" (#" + index + " " + pcc.getClassName(index) + ")");
+            TreeNode t = new TreeNode("Group Name : \"" + GroupName + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
             t.Name = "GroupName";
             propView.Nodes.Add(t);
             t = new TreeNode("GroupColor");
@@ -738,6 +788,95 @@ namespace ME3Explorer.InterpEditor
             propView.Nodes.Add("Find Actor Mode: " + m_eSFXFindActorMode.ToString(pcc));
             if (m_nmSFXFindActor != -1)
                 propView.Nodes.Add("m_nmSFXFindActor : " + m_nmSFXFindActor);
+        }
+    }
+
+    public class SFXSceneGroup : InterpGroup
+    {
+        public struct BioResourcePreloadItem
+        {
+	        public int pObject; //object
+	        public int nKeyIndex;
+            public float fTime;
+            public bool bPreloadFired;
+
+            public TreeNode ToTree(int index, PCCObject pcc)
+            {
+                TreeNode root = new TreeNode(index + ": " + fTime);
+                root.Nodes.Add("pObject : " + pObject);
+                root.Nodes.Add("nKeyIndex : " + nKeyIndex);
+                root.Nodes.Add("fTime : " + fTime);
+                root.Nodes.Add("bPreloadFired : " + bPreloadFired);
+                return root;
+            }
+        }
+
+
+        public List<BioResourcePreloadItem> m_aBioPreloadData = new List<BioResourcePreloadItem>();
+        public float m_fSceneLength;
+        public float m_fPlayRate = 1;
+
+        public SFXSceneGroup(int idx, PCCObject pccobj)
+            : base(idx, pccobj)
+        {
+            LoadData();
+            listEntry[0].RotateInPlace(90);
+            listEntry[0].TranslateBy(5, 5);
+            collapsed = false;
+        }
+
+        protected void LoadData()
+        {
+
+            BitConverter.IsLittleEndian = true;
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            List<int> tracks = new List<int>();
+            foreach (PropertyReader.Property p in props)
+            {
+                if (pcc.getNameEntry(p.Name) == "m_fSceneLength")
+                    m_fSceneLength = BitConverter.ToSingle(p.raw, 24);
+                else if (pcc.getNameEntry(p.Name) == "m_fPlayRate")
+                    m_fPlayRate = BitConverter.ToSingle(p.raw, 24);
+                else if (pcc.getNameEntry(p.Name) == "m_aBioPreloadData")
+                {
+                    int pos = 28;
+                    int count = BitConverter.ToInt32(p.raw, 24);
+                    for (int j = 0; j < count; j++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        BioResourcePreloadItem key = new BioResourcePreloadItem();
+                        for (int i = 0; i < p2.Count; i++)
+                        {
+                            if (pcc.getNameEntry(p2[i].Name) == "pObject")
+                                key.pObject = p2[i].Value.IntValue;
+                            else if (pcc.getNameEntry(p2[i].Name) == "nKeyIndex")
+                                key.nKeyIndex = p2[i].Value.IntValue;
+                            else if (pcc.getNameEntry(p2[i].Name) == "fTime")
+                                key.fTime = BitConverter.ToSingle(p2[i].raw, 24);
+                            else if (pcc.getNameEntry(p2[i].Name) == "bPreloadFired")
+                                key.bPreloadFired = p2[i].Value.IntValue != 0;
+                            pos += p2[i].raw.Length;
+                        }
+                        m_aBioPreloadData.Add(key);
+                    }
+                }
+            }
+        }
+
+
+
+        public override void ToTree()
+        {
+            propView.Nodes.Clear();
+            TreeNode t = new TreeNode("SFXSceneGroup: \"" + GroupName + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
+            t.Name = "GroupName";
+            propView.Nodes.Add(t);
+            t = new TreeNode("m_aBioPreloadData");
+            for (int i = 0; i < m_aBioPreloadData.Count; i++)
+                t.Nodes.Add(m_aBioPreloadData[i].ToTree(i, pcc));
+            propView.Nodes.Add(t);
+            propView.Nodes.Add("m_fSceneLength: " + m_fSceneLength);
+            propView.Nodes.Add("m_fPlayRate : " + m_fPlayRate);
         }
     }
 }
