@@ -506,7 +506,9 @@ namespace ME3Explorer
                     ToolStripMenuItem temp;
                     ArrayList array;
                     ToolStripDropDown submenu = new ToolStripDropDown();
-                    for(int i = 0; i < ((SBox)sender).Varlinks.Count; i++)
+                    ToolStripDropDown varLinkMenu = new ToolStripDropDown();
+                    ToolStripDropDown outLinkMenu = new ToolStripDropDown();
+                    for (int i = 0; i < ((SBox)sender).Varlinks.Count; i++)
                     {
                         for (int j = 0; j < ((SBox)sender).Varlinks[i].Links.Count; j++)
                         {
@@ -520,7 +522,7 @@ namespace ME3Explorer
                                 array.Add(i);
                                 array.Add(j);
                                 temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                varLinkMenu.Items.Add(temp);
                             }
                         }
                     }
@@ -538,11 +540,23 @@ namespace ME3Explorer
                                 array.Add(i);
                                 array.Add(j);
                                 temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                outLinkMenu.Items.Add(temp);
                             }
                         }
                     }
-                    if(submenu.Items.Count > 0)
+                    if(varLinkMenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Variable Links");
+                        temp.DropDown = varLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (outLinkMenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Output Links");
+                        temp.DropDown = outLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (submenu.Items.Count > 0)
                     {
                         breakLinksToolStripMenuItem.Enabled = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
