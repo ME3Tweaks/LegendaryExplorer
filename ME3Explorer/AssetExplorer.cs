@@ -860,7 +860,7 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(pcc, pcc.Exports[index].Data);
+                WwiseStream w = new WwiseStream(pcc, index);
                 w.ExtractToFile(pathCooked,pcc.Exports[index].ObjectName);
             }
         }
@@ -873,7 +873,7 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                w = new WwiseStream(pcc, pcc.Exports[index].Data);
+                w = new WwiseStream(pcc, index);
                 w.Play(pathCooked);
             }
         }
@@ -890,7 +890,7 @@ namespace ME3Explorer
                 o.Filter = "Wwise wav (*.wav)|*.wav";
                 if (o.ShowDialog() == DialogResult.OK)
                 {
-                    w = new WwiseStream(pcc, pcc.Exports[index].Data);
+                    w = new WwiseStream(pcc, index);
                     w.ImportFromFile(o.FileName, pathCooked);
                     byte[] buff = new byte[w.memsize];
                     for (int i = 0; i < w.memsize; i++)

@@ -53,7 +53,7 @@ namespace ME3Explorer.Property_Dumper
             {
                 PCCObject.ExportEntry e = pcc.Exports[i];
                 string s = "Properties for Object #" + i + " \"" + e.ObjectName + "\" :\n\n";
-                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, e.Data);
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, e);
                 foreach (PropertyReader.Property prop in p)
                     s += PropertyReader.PropertyToText(prop, pcc) + "\n";
                 s += "\n";
@@ -137,7 +137,7 @@ namespace ME3Explorer.Property_Dumper
                         for (int j = 0; j < pcc.Exports.Count; j++)
                         {
                             PCCObject.ExportEntry ent = pcc.Exports[j];
-                            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent.Data);
+                            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
 
                             for (int k = 0; k < p.Count; k++)
                             {
@@ -255,7 +255,7 @@ namespace ME3Explorer.Property_Dumper
                         PCCObject.ExportEntry ent = pcc.Exports[j];
                         if (ent.ClassName == classname)
                         {
-                            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent.Data);
+                            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
                             for (int k = 0; k < p.Count; k++)
                             {
                                 PropertyReader.Property prop = p[k];

@@ -138,7 +138,7 @@ namespace ME3Explorer.Propertydb
                             f = Classes.Count() - 1;
                             UpdateStatus();
                         }
-                        List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[j].Data);
+                        List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[j]);
                         ClassDef res = Classes[f];
                         foreach (PropertyReader.Property p in props)
                         {

@@ -147,12 +147,12 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion 
 
-        public SkeletalMeshOld(PCCObject Pcc, byte[] Raw)
+        public SkeletalMeshOld(PCCObject Pcc, int index)
         {
             pcc = Pcc;
-            memory = Raw;
+            memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            props = PropertyReader.getPropList(pcc, memory);
+            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             Deserialize();
         }
 

@@ -474,8 +474,8 @@ namespace ME3Explorer
             //treeView1.Visible = false;
             if (pcc.Exports[n].ClassName.Contains("BlockingVolume") || pcc.Exports[n].ClassName.Contains("SFXDoor"))
             {
-                List<ME3Explorer.Unreal.PropertyReader.Property> props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n].Data);
-                foreach (ME3Explorer.Unreal.PropertyReader.Property p in props)
+                List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+                foreach (Unreal.PropertyReader.Property p in props)
                 {
                     if (pcc.getNameEntry(p.Name) == "location")
                     {
@@ -568,8 +568,7 @@ namespace ME3Explorer
             switch (pcc.Exports[n].ClassName)
             {
                 default:
-                    byte[] buff = pcc.Exports[n].Data;
-                    p = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, buff);
+                    p = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     break;
             }
             pg = new PropGrid();
@@ -631,15 +630,14 @@ namespace ME3Explorer
             {
                 name = parent.Label;
             }
-            byte[] buff = pcc.Exports[n].Data;
-            List<ME3Explorer.Unreal.PropertyReader.Property> p = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, buff);
+            PCCObject.ExportEntry ent = pcc.Exports[n];
+            List<Unreal.PropertyReader.Property> p = Unreal.PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.Names[p[i].Name] == name)
                     m = i;
             if (m == -1)
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
             byte[] buff2;
             switch (p[m].TypeVal)
             {
@@ -1138,7 +1136,7 @@ namespace ME3Explorer
             int n = GetSelected();
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW)) 
                 return;
-            List<ME3Explorer.Unreal.PropertyReader.Property> prop = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n].Data);
+            List<Unreal.PropertyReader.Property> prop = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
             d.FileName = pcc.Exports[n].ObjectName + ".bin";
@@ -1279,8 +1277,8 @@ namespace ME3Explorer
             //treeView1.Visible = false;
             if (pcc.Exports[n].ClassName.Contains("BlockingVolume") || pcc.Exports[n].ClassName.Contains("SFXDoor"))
             {
-                List<ME3Explorer.Unreal.PropertyReader.Property> props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n].Data);
-                foreach (ME3Explorer.Unreal.PropertyReader.Property p in props)
+                List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+                foreach (Unreal.PropertyReader.Property p in props)
                 {
                     if (pcc.getNameEntry(p.Name) == "location")
                     {
@@ -1493,7 +1491,7 @@ namespace ME3Explorer
                 {
                     byte[] buff = pcc.Exports[n].Data;
                     BitConverter.IsLittleEndian = true;
-                    List<ME3Explorer.Unreal.PropertyReader.Property> props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, buff);
+                    List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     int start = props[props.Count - 1].offend;
                     int len = BitConverter.ToInt32(buff, start);
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -1517,7 +1515,7 @@ namespace ME3Explorer
                 {
                     byte[] buff = pcc.Exports[n].Data;
                     BitConverter.IsLittleEndian = true;
-                    List<ME3Explorer.Unreal.PropertyReader.Property> props = ME3Explorer.Unreal.PropertyReader.getPropList(pcc, buff);
+                    List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     int start = props[props.Count - 1].offend;
                     MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
