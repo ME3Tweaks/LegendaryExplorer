@@ -161,13 +161,18 @@ namespace ME3Explorer.AutoTOC
                 return;
             }
             rtb1.Clear();
+            GenerateAllTOCs();
+            rtb1.AppendText("***********************\n* All TOCs Generated! *\n***********************\n");
+        }
+
+        public void GenerateAllTOCs()
+        {
             prepareToCreateTOC(ME3Directory.gamePath + @"BIOGame\");
             DirectoryInfo[] dlcFolders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories();
             foreach (DirectoryInfo d in dlcFolders)
             {
                 prepareToCreateTOC(d.FullName);
             }
-            rtb1.AppendText("***********************\n* All TOCs Generated! *\n***********************\n");
         }
 
         private void createTOCButton_Click(object sender, EventArgs e)

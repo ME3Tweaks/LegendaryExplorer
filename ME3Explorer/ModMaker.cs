@@ -757,7 +757,7 @@ namespace ME3Explorer
                     return true;
 
                 if (!cts.IsCancellationRequested)
-                    UpdateTOCS(DLCPCCs, whichgames);
+                    UpdateTOCS(whichgames);
 
                 MainProgBar.ChangeProgressBar(1, 1);
                 StatusUpdater.UpdateText(cts.IsCancellationRequested ? "Installation cancelled!" : "All Mods Installed!");
@@ -961,7 +961,7 @@ namespace ME3Explorer
                 }
 
                 if (modified.Count != 0)
-                    UpdateTOCS(modified, whichgames);
+                    UpdateTOCS(whichgames);
 
 
                 MainProgBar.ChangeProgressBar(1, 1);
@@ -970,17 +970,12 @@ namespace ME3Explorer
             });
         }
 
-        private void UpdateTOCS(List<string> DLCPCCs, List<int> whichgames)
+        private void UpdateTOCS(List<int> whichgames)
         {
             StatusUpdater.UpdateText("Updating TOC's...");
 
-            List<string> temp = new List<string>();
-            foreach (string dlc in DLCPCCs)
-                if (!temp.Contains(dlc))
-                    temp.Add(dlc);
-
             for (int i = 0; i < whichgames.Count; i++)
-                Texplorer2.UpdateTOCs(BIOGames[whichgames[i] - 1], whichgames[i], MEExDirecs.GetDifferentDLCPath(whichgames[i]), temp);
+                Texplorer2.UpdateTOCs(whichgames[i]);
         }
 
         private void SaveAllButton_Click(object sender, EventArgs e)

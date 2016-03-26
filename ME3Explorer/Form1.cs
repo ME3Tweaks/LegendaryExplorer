@@ -471,11 +471,6 @@ namespace ME3Explorer
             taskbar.AddTool(tool, Properties.Resources.script_database_64x64);
         }
 
-        private void textureToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new Texture_Tool.TextureTool());
-        }
-
         private void animationExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new AnimationExplorer.AnimationExplorer();

@@ -1518,41 +1518,6 @@ namespace KFreonLib.Textures
                     fs.WriteValueS32(r.Next());
             }
             //DebugOutput.PrintLn( "Made new cache?  " + filename + "\n");
-            AddToTOC(filename, biopath);
-        }
-
-        private void AddToTOC(String filename, String biopath)
-        {
-            List<string> parts = new List<string>(biopath.Split('\\'));
-            parts.Remove("");
-            if (parts[parts.Count - 1] == "CookedPCConsole")
-            {
-                parts.RemoveAt(parts.Count - 1);
-                biopath = String.Join("\\", parts);
-            }
-            if (!File.Exists(Path.Combine(biopath, "PCConsoleTOC.bin")))
-                throw new FileNotFoundException("TOC.bin not found at: " + Path.Combine(biopath, "PCConsoleTOC.bin"));
-
-            AmaroK86.MassEffect3.TOCHandler tochandler = new AmaroK86.MassEffect3.TOCHandler(Path.Combine(biopath, "PCConsoleTOC.bin"), Path.GetDirectoryName(biopath) + @"\");
-            //DebugOutput.PrintLn( " TOC handler exists?" + tochandler.existsFile(filename) + "\n");
-            if (tochandler.existsFile(filename))
-                return;
-
-            int minval = 100000;
-            int minid = 0;
-            for (int i = 0; i < tochandler.chunkList.Count; i++)
-            {
-                if (tochandler.chunkList[i].fileList == null || tochandler.chunkList[i].fileList.Count == 0)
-                    continue;
-                if (tochandler.chunkList[i].fileList.Count < minval)
-                {
-                    minval = tochandler.chunkList[i].fileList.Count;
-                    minid = i;
-                }
-            }
-            // DebugOutput.PrintLn( "Should be saving TOC to file now\n");
-            tochandler.addFile(filename, minid);
-            tochandler.saveToFile(true);
         }
 
         private List<ImageInfo> privateimgList { get; set; } // showable image list
