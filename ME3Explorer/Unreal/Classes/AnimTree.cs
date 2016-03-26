@@ -62,7 +62,7 @@ namespace ME3Explorer.Unreal.Classes
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, data);
+            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
             BitConverter.IsLittleEndian = true;
             AnimGroups = new List<AnimGroupEntry>();
             ComposePrePassBoneNames = new List<string>();

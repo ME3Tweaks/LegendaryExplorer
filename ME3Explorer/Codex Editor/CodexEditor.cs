@@ -62,7 +62,7 @@ namespace ME3Explorer.Codex_Editor
         {
             CodexMap = new List<EntryStruct>();
             byte[] buff = pcc.Exports[0].Data;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[0]);
             int pos = props[props.Count - 1].offend;
             BitConverter.IsLittleEndian = true;
             while (pos < buff.Length)

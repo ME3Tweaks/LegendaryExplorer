@@ -81,8 +81,7 @@ namespace ME3Explorer.SequenceObjects
         protected string GetComment(int index)
         {
             string res = "";
-            byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "m_aObjComment")
@@ -184,7 +183,7 @@ namespace ME3Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
@@ -207,7 +206,7 @@ namespace ME3Explorer.SequenceObjects
         {
             try
             {
-                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
                 PropertyReader.Property property;
                 switch (type)
                 {
@@ -521,8 +520,7 @@ namespace ME3Explorer.SequenceObjects
         protected void GetVarLinks()
         {
             Varlinks = new List<VarLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
@@ -593,8 +591,7 @@ namespace ME3Explorer.SequenceObjects
         protected void GetOutputLinks()
         {
             Outlinks = new List<OutputLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
@@ -824,7 +821,7 @@ namespace ME3Explorer.SequenceObjects
             if (inputIndex == -1)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, this.pcc.Exports[start.Index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -922,7 +919,7 @@ namespace ME3Explorer.SequenceObjects
             if(link.Links == null)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[start.Index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -979,7 +976,7 @@ namespace ME3Explorer.SequenceObjects
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
             OutputLink link = Outlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -1033,7 +1030,7 @@ namespace ME3Explorer.SequenceObjects
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
             VarLink link = Varlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -1139,7 +1136,7 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
@@ -1302,7 +1299,7 @@ namespace ME3Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
@@ -1347,8 +1344,7 @@ namespace ME3Explorer.SequenceObjects
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "InputLinks")

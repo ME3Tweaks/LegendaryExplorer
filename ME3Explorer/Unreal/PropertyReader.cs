@@ -305,11 +305,11 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(PCCObject pcc, byte[] raw)
+        public static List<Property> getPropList(PCCObject pcc, PCCObject.ExportEntry export)
         {
             Application.DoEvents();
-            int start = detectStart(pcc, raw);
-            return ReadProp(pcc,raw,start);
+            int start = detectStart(pcc, export.Data, export.ObjectFlags);
+            return ReadProp(pcc, export.Data, start);
         }
 
         public static string TypeToString(int type)
@@ -678,23 +678,7 @@ namespace ME3Explorer.Unreal
             }
             return v;
         }
-
-        public static int detectStart(PCCObject pcc, byte[] raw)
-        {
-            int result = 8;
-            int test1 = BitConverter.ToInt32(raw, 4);
-            if (test1 < 0)
-                result = 30;
-            else
-            {
-                int test2 = BitConverter.ToInt32(raw, 8);
-                if (pcc.isName(test1) && test2 == 0)
-                    result = 4;
-                if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
-                    result = 8;
-            }
-            return result;
-        }
+        
         public static int detectStart(PCCObject pcc, byte[] raw, long flags)
         {
             if ((flags & (long)UnrealFlags.EObjectFlags.HasStack) != 0)

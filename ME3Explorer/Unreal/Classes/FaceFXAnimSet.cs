@@ -78,7 +78,7 @@ namespace ME3Explorer.Unreal.Classes
             pcc = Pcc;
             MyIndex = Index;
             byte[] buff = pcc.Exports[Index].Data;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
             int start = props[props.Count - 1].offend + 4;
             Memory = new byte[buff.Length - start];
             for (int i = 0; i < buff.Length - start; i++)
@@ -322,7 +322,7 @@ namespace ME3Explorer.Unreal.Classes
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
             byte[] buff = pcc.Exports[MyIndex].Data;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
             int start = props[props.Count - 1].offend;
             res.Write(buff, 0, start);
             res.Write(BitConverter.GetBytes((int)m.Length), 0, 4);

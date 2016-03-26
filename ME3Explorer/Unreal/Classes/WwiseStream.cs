@@ -14,6 +14,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public PCCObject pcc;
+        int Index;
         public List<PropertyReader.Property> props;
         public SoundPlayer sp;
 
@@ -27,17 +28,18 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
         
-        public WwiseStream(PCCObject Pcc, byte[] Raw)
+        public WwiseStream(PCCObject Pcc, int index)
         {
             pcc = Pcc;
-            memory = Raw;
+            Index = index;
+            memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
             Deserialize();
         }
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, memory);
+            props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
             int off = props[props.Count - 1].offend + 8;
             ValueOffset = off;
             DataSize = BitConverter.ToInt32(memory, off);

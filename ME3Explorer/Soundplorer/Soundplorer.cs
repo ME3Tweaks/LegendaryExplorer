@@ -85,7 +85,7 @@ namespace ME3Explorer
             PCCObject.ExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
-                w = new WwiseStream(pcc, ex.Data);                
+                w = new WwiseStream(pcc, index);                
                 string s = "#" + index + " WwiseStream : " + ex.ObjectName + "\n\n";
                 s += "Filename : \"" + w.FileName + "\"\n";
                 s += "Data size: " + w.DataSize + " bytes\n";                    
@@ -112,7 +112,7 @@ namespace ME3Explorer
             if (ex.ClassName == "WwiseStream")
             {
                 Stop();
-                w = new WwiseStream(pcc, ex.Data);
+                w = new WwiseStream(pcc, index);
                 string path = getPathToAFC();
                 if (path != "")
                 {
