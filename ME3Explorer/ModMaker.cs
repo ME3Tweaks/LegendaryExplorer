@@ -773,7 +773,7 @@ namespace ME3Explorer
                 foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
                 {
                     // KFreon: Skip metadata
-                    if (!item.Contains("__metadata") && !Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
+                    if (!item.Contains("__metadata") && !Directory.EnumerateFiles(item).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)))
                     {
                         alreadyExtracted = false;
                         break;
