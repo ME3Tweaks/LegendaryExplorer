@@ -35,8 +35,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSharpImageLibrary, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSharpImageLibrary.3.1.2.0\lib\net45\CSharpImageLibrary.exe</HintPath>
+    <Reference Include="CSharpImageLibrary, Version=3.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpImageLibrary.3.1.3.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -172,10 +172,6 @@
     <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
       <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
       <Name>AmaroK86.ImageMipMapHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler.csproj">
-      <Project>{fd18702e-c7a4-42a1-ac91-c1671fdf7522}</Project>
-      <Name>AmaroK86.MassEffect3.TOCHandler</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
       <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>

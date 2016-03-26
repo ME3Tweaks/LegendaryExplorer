@@ -133,7 +133,7 @@ namespace KFreonLib.Helpers
 
             if (whichGame == 3)
                 BIOGame = Path.GetDirectoryName(BIOGame);
-            return Path.Combine(BIOGame, "BIOGame");
+            return BIOGame;
         }
     }
 }

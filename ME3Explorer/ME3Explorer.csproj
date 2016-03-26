@@ -66,8 +66,8 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="CSharpImageLibrary, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSharpImageLibrary.3.1.2.0\lib\net45\CSharpImageLibrary.exe</HintPath>
+    <Reference Include="CSharpImageLibrary, Version=3.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpImageLibrary.3.1.3.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="lib3ds.Net">
@@ -617,12 +617,6 @@
     <Compile Include="TextInput.Designer.cs">
       <DependentUpon>TextInput.cs</DependentUpon>
     </Compile>
-    <Compile Include="Texture Tool\TextureTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texture Tool\TextureTool.Designer.cs">
-      <DependentUpon>TextureTool.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextureExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -996,9 +990,6 @@
     <EmbeddedResource Include="TextInput.resx">
       <DependentUpon>TextInput.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Texture Tool\TextureTool.resx">
-      <DependentUpon>TextureTool.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TextureExplorer.resx">
       <DependentUpon>TextureExplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1095,14 +1086,6 @@
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
       <Project>{5FD88B3C-B192-42BE-8B05-9CAC3F7405FB}</Project>
       <Name>AmaroK86.MassEffect3.DLCEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler\AmaroK86.MassEffect3.TOCHandler.csproj">
-      <Project>{FD18702E-C7A4-42A1-AC91-C1671FDF7522}</Project>
-      <Name>AmaroK86.MassEffect3.TOCHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress\AmaroK86.MassEffect3.WindowProgress.csproj">
-      <Project>{2DAF61F8-EDA9-4AEA-8CC5-FA3F19CF9D66}</Project>
-      <Name>AmaroK86.MassEffect3.WindowProgress</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
       <Project>{9010228E-4393-47E2-9DEE-FB5090A1D1AB}</Project>

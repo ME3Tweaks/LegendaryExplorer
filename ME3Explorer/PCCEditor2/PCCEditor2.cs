@@ -456,7 +456,7 @@ namespace ME3Explorer
             textBox5.Text = pcc.Exports[n].indexValue.ToString();
             textBox6.Text = pcc.Exports[n].ArchtypeName;
             if (pcc.Exports[n].idxArchtypeName != 0)
-                textBox6.Text += " (" + ((pcc.Exports[n].idxArchtypeName < 0) ? "imported" : "local") + " class)";
+                textBox6.Text += " (" + ((pcc.Exports[n].idxArchtypeName < 0) ? "imported" : "local") + " class) " + pcc.Exports[n].idxArchtypeName;
             textBox10.Text = "0x" + pcc.Exports[n].ObjectFlags.ToString("X16");
             textBox7.Text = pcc.Exports[n].DataSize + " bytes";
             textBox8.Text = "0x" + pcc.Exports[n].DataOffset.ToString("X8");
@@ -1614,73 +1614,7 @@ namespace ME3Explorer
             scanForCoalescedValuesToolStripMenuItem.Checked = scanningCoalescedBits;
             RefreshView();
         }
-
-        //unused
-        private void addBiggerImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n = listBox1.SelectedIndex;
-            if (n <= 0)
-                return;
-
-            if (pcc.Exports[n].ClassName != "Texture2D")
-                MessageBox.Show("Not a texture.");
-            else
-            {
-                using (OpenFileDialog ofd = new OpenFileDialog())
-                {
-                    ofd.Filter = "DirectX images|*.dds";
-                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        string path = Path.GetDirectoryName(pcc.pccFileName);
-                        ME3PCCObject temp = new ME3PCCObject(pcc.pccFileName);
-                        KFreonLib.Textures.ME3SaltTexture2D tex2D = new KFreonLib.Textures.ME3SaltTexture2D(temp, n, path);
-                        ImageFile im = KFreonLib.Textures.Creation.LoadAKImageFile(null, ofd.FileName);
-                        if (tex2D.imgList.Count <= 1)
-                            tex2D.singleImageUpscale(im, path);
-                        else
-                            tex2D.OneImageToRuleThemAll(im, path, im.imgData);
-
-                        ME3ExportEntry expEntry = temp.Exports[tex2D.pccExpIdx];
-                        expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, temp));
-                        temp.saveToFile(temp.pccFileName);
-                    }
-                }
-            } 
-            // Reload pcc? TOC update?
-        }
-
-        //unused
-        private void replaceImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n = listBox1.SelectedIndex;
-            if (n <= 0)
-                return;
-
-            if (pcc.Exports[n].ClassName != "Texture2D")
-                MessageBox.Show("Not a texture.");
-            else
-            {
-                using (OpenFileDialog ofd = new OpenFileDialog())
-                {
-                    ofd.Filter = "DirectX images|*.dds";
-                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        string path = Path.GetDirectoryName(pcc.pccFileName);
-                        ME3PCCObject temp = new ME3PCCObject(pcc.pccFileName);
-                        ME3SaltTexture2D tex2D = new ME3SaltTexture2D(temp, n, path);
-                        string test = tex2D.imgList.Max(t => t.imgSize).ToString();
-                        ImageFile im = KFreonLib.Textures.Creation.LoadAKImageFile(null, ofd.FileName);
-                        tex2D.replaceImage(test, im, path);
-
-                        ME3ExportEntry expEntry = temp.Exports[tex2D.pccExpIdx];
-                        expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, temp));
-                        temp.saveToFile(temp.pccFileName);
-                    }
-                }
-            }
-            // Reload pcc?
-        }
-
+        
     }
 
 

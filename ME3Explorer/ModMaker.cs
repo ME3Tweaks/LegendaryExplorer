@@ -220,7 +220,6 @@ namespace ME3Explorer
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     backbone.AddToBackBone(b =>
                     {
-                        gooey.ModifyControl("ChangePaths", false);
                         LoadFromFiles(ofd.FileNames);
                         return true;
                     });
@@ -331,20 +330,7 @@ namespace ME3Explorer
 
                 // KFreon: Format size
                 double len = job.Length;
-                string size = len.ToString() + " bytes.";
-                if (len > 1024)   // KFreon: Kilobyte
-                {
-                    double siz = 1024;
-                    string ending = " Kilobytes.";
-                    if (len > 1024 * 1024)  // KFreon: Megabytes
-                    {
-                        siz = 1024 * 1024;
-                        ending = " Megabytes.";
-                    }
-
-                    string newsize = (len / siz).ToString();
-                    size = newsize.Substring(0, newsize.IndexOf('.') + 3) + ending;
-                }
+                string size = UsefulThings.General.GetFileSizeAsString(len);
                 names[i] = (job.Name + "  --> Size: " + size);
 
                 DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
@@ -618,7 +604,6 @@ namespace ME3Explorer
 
             // KFreon: Fix GUI
             gooey.ModifyControl("Load", false);
-            gooey.ModifyControl("ChangePaths", true);
             gooey.ChangeState(false);
 
 
@@ -772,7 +757,7 @@ namespace ME3Explorer
                     return true;
 
                 if (!cts.IsCancellationRequested)
-                    UpdateTOCS(DLCPCCs, whichgames);
+                    UpdateTOCS(whichgames);
 
                 MainProgBar.ChangeProgressBar(1, 1);
                 StatusUpdater.UpdateText(cts.IsCancellationRequested ? "Installation cancelled!" : "All Mods Installed!");
@@ -780,25 +765,35 @@ namespace ME3Explorer
             });
         }
 
+        private bool IsAlreadyExtracted
+        {
+            get
+            {
+                bool alreadyExtracted = true;
+                foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
+                {
+                    // KFreon: Skip metadata
+                    if (!item.Contains("__metadata") && !Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
+                    {
+                        alreadyExtracted = false;
+                        break;
+                    }
+                }
+
+                return alreadyExtracted;
+            }
+        }
+
         private List<string> RunJobs(List<ModJob> joblist, ref List<int> whichgames)
         {         
             int count = 1;
             List<string> DLCPCCs = new List<string>();
 
-            bool alreadyExtracted = true;
-            foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
-            {
-                if (!Directory.EnumerateFiles(item).ToList().Any(f => f.EndsWith(".pcc")))
-                {
-                    alreadyExtracted = false;
-                    break;
-                }
-            }
-
             DialogResult result = DialogResult.Yes;
             this.Invoke(new Action(() =>
             {
-                if (!alreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
+                // KFreon: only for ME3
+                if (joblist.Any(job => job.WhichGame == 3) && !IsAlreadyExtracted && joblist.Any(job => job.HasDLCPCCs))
                     result = MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo);
             }));
 
@@ -936,6 +931,8 @@ namespace ME3Explorer
                 this.Invoke(new Action(() => count = MainListView.SelectedIndices.Count));
                 MainProgBar.ChangeProgressBar(0, count);
                 List<int> whichgames = new List<int>();
+
+                bool continuingAfterDLC = true;
                 for (int i = 0; i < count; i++)
                 {
                     int index = 0;
@@ -945,6 +942,15 @@ namespace ME3Explorer
                     else
                     {
                         ModJob job = KFreonLib.Scripting.ModMaker.JobList[index];
+                        if (job.WhichGame == 3 && job.HasDLCPCCs && !IsAlreadyExtracted)
+                        {
+                            if (MessageBox.Show("Some jobs contain DLC references, but you don't have DLC extracted. You should restart the toolset and allow DLC Extraction." + Environment.NewLine + "Continue installing anyway? If you do, only basegame will be affected.", "Don't **** with Aria.", MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                continuingAfterDLC = false;
+                                break;
+                            }
+                        }
+
                         StatusUpdater.UpdateText("Installing Mod: " + (i + 1) + " (" + job.Name + ") of " + count);
                         modified.AddRange(InstallJob(job));
 
@@ -953,24 +959,23 @@ namespace ME3Explorer
                     }
                     MainProgBar.IncrementBar();
                 }
-                UpdateTOCS(modified, whichgames);
+
+                if (modified.Count != 0)
+                    UpdateTOCS(whichgames);
+
+
                 MainProgBar.ChangeProgressBar(1, 1);
-                StatusUpdater.UpdateText("All Mods Installed!");
+                StatusUpdater.UpdateText(continuingAfterDLC ? "All Mods Installed!" : "Installation stopped due to DLC.");
                 return true;
             });
         }
 
-        private void UpdateTOCS(List<string> DLCPCCs, List<int> whichgames)
+        private void UpdateTOCS(List<int> whichgames)
         {
             StatusUpdater.UpdateText("Updating TOC's...");
 
-            List<string> temp = new List<string>();
-            foreach (string dlc in DLCPCCs)
-                if (!temp.Contains(dlc))
-                    temp.Add(dlc);
-
             for (int i = 0; i < whichgames.Count; i++)
-                Texplorer2.UpdateTOCs(BIOGames[whichgames[i] - 1], whichgames[i], MEExDirecs.GetDifferentDLCPath(whichgames[i]), temp);
+                Texplorer2.UpdateTOCs(whichgames[i]);
         }
 
         private void SaveAllButton_Click(object sender, EventArgs e)
@@ -1234,21 +1239,6 @@ namespace ME3Explorer
         {
             if (MessageBox.Show("Are you sure you want to cancel?", "HIGHLY not recommended.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
                 cts.Cancel();
-        }
-
-        private void ChangePathsButton_Click(object sender, EventArgs e)
-        {
-            using (PathChanger changer = new PathChanger(BIOGames[0], BIOGames[1], BIOGames[2]))
-            {
-                if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                    return;
-
-                // KFreon: Change paths
-                MEExDirecs.SetPaths(changer.PathME1, changer.PathME2, changer.PathME3);
-
-                // KFreon: Colour stuff
-                CheckGameState();
-            }
         }
 
         public static async Task<ModMaker> GetCurrentInstance()
@@ -1516,6 +1506,10 @@ namespace ME3Explorer
 
             for (int i = 0; i < basePCC.ExportCount; i++)
             {
+                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding exports just yet.
+                    break;
+
+
                 if (!basePCC.Exports[i].Data.SequenceEqual(modifiedPCC.Exports[i].Data))
                 {
                     ModJob job = new ModJob();

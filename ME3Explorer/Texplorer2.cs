@@ -307,7 +307,7 @@ namespace ME3Explorer
                 DisableContext = false;
                 StatusUpdater.UpdateText("Updating TOC's...");
                 ProgBarUpdater.ChangeProgressBar(0, 1);
-                UpdateTOCs(pathBIOGame, WhichGame, DLCPath);
+                UpdateTOCs(WhichGame);
                 ProgBarUpdater.ChangeProgressBar(1, 1);
                 StatusUpdater.UpdateText("All textures saved!");
                 return true;
@@ -329,19 +329,26 @@ namespace ME3Explorer
             {
                 ofd.Filter = "ME Trees|*.bin";
                 ofd.Title = "Select tree to import.";
+
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    StatusUpdater.UpdateText("Importing tree and thumbs...");
+                    StatusUpdater.UpdateText("Importing tree...");
                     ProgBarUpdater.ChangeProgressBar(0, 1);
 
                     TreeDB temptree = Tree.Clone();  // KFreon: Copy settings so can back track if tree load fails
+
+                    string destTreePath = ExecFolder + "me" + WhichGame + "tree.bin";
+                    File.Copy(ofd.FileName, destTreePath);
+
                     int status;
-                    if (!LoadTreeFromFile(ofd.FileName, out status, false))  // KFreon: Load actual tree.bin
+                    if (!LoadTreeFromFile(destTreePath, out status, false))  // KFreon: Load actual tree.bin
                     {
                         Tree = temptree;
                         MessageBox.Show("Error occured while loading tree. Likely a corrupted or invalid tree.");
                         return;
                     }
+
+                    StatusUpdater.UpdateText("Importing thumbs...");
 
                     await Task.Run(() =>
                     {
@@ -372,6 +379,7 @@ namespace ME3Explorer
                         var files = Directory.GetFiles(sourceThumbCachePath);
                         ProgBarUpdater.ChangeProgressBar(0, files.Length);
 
+                        int count = 0;
                         foreach (var file in files)
                         {
                             string filename = Path.GetFileName(file);
@@ -379,10 +387,12 @@ namespace ME3Explorer
                             if (!File.Exists(destPath))
                                 File.Copy(file, destPath);
 
-                            ProgBarUpdater.IncrementBar();
+                            if (count++ % 10 == 0)
+                                ProgBarUpdater.IncrementBar();
                         }
                     });
 
+                    ChangeTreeIndicators(MEExDirecs.WhichGame, true);
                     ProgBarUpdater.ChangeProgressBar(1, 1);
                     StatusUpdater.UpdateText("Tree imported!");
                 }
@@ -413,7 +423,9 @@ namespace ME3Explorer
                         // KFreon: Copy out Thumbnails
                         if (Directory.Exists(ThumbnailPath))
                         {
-                            string destThumbDirec = Path.GetDirectoryName(sfd.FileName);
+                            string baseDirec = Path.GetDirectoryName(sfd.FileName);
+                            string destThumbDirec = Path.Combine(baseDirec, $"ThumbnailCaches\\ME{MEExDirecs.WhichGame}ThumbnailCache");
+
                             Directory.CreateDirectory(destThumbDirec);
 
                             var files = Directory.GetFiles(ThumbnailPath);
@@ -461,12 +473,13 @@ namespace ME3Explorer
                     File.Delete(ExecFolder + "me" + WhichGame + "tree.bin");
                 OutputBoxPrintLn(Environment.NewLine + "Rebuilding ME" + WhichGame + " tree...");
 
+                // KFreon: Removed due to extraction occuring during toolset start
                 // MrFob: probably unnecessary but if the game is ME3, run extract DLCs just to be sure
-                if (WhichGame == 3)
+                /*if (WhichGame == 3)
                 {
                     DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
                     dlcedit2.ExtractAllDLC();
-                }
+                }*/
 
                 // KFreon: Clear everything and rebuild tree
                 ClearDisplays();
@@ -479,23 +492,12 @@ namespace ME3Explorer
         {
             if (WhichGame == 3)
             {
-                List<string> dlcs = Directory.EnumerateFiles(DLCPath, "*.sfar", SearchOption.AllDirectories) as List<string>;
-                using (Helpers.SelectionForm sf = new Helpers.SelectionForm(dlcs, "Select DLC's to update.", "DLC TOC Update Selector", true))
-                {
-                    sf.ShowDialog();
-                    if (sf.SelectedInds.Count == 0)
-                        return;
-                    else
-                    {
-                        dlcs.Clear();
-                        foreach (string item in sf.SelectedItems)
-                            dlcs.Add(item);
-                        Task.Run(() => UpdateTOCs(pathBIOGame, WhichGame, DLCPath, dlcs));
-                    }
-                }
+                Task.Run(() => UpdateTOCs(WhichGame));
             }
             else
-                Task.Run(() => UpdateTOCs(pathBIOGame, WhichGame, DLCPath));
+            {
+                DebugOutput.PrintLn($"ME{WhichGame} does not require TOCing.");
+            }
         }
 
         private async void ChangeButton_Click(object sender, EventArgs e)
@@ -983,17 +985,26 @@ namespace ME3Explorer
             DebugOutput.PrintLn("Beginning First Time Setup...");
             List<string> dlcfiles = new List<string>();
 
+
+            // KFreon: Removed for rev 745 fix #261
             // KFreon: Added game gate here to stop it trying to do stuff for other games
             if (WhichGame == 3)
             {
-                DebugOutput.PrintLn("Starting DLC Extraction...");
+                /*DebugOutput.PrintLn("Starting DLC Extraction...");
                 StatusUpdater.UpdateText("Extracting all DLC. This will take time...");
 
                 DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
-                dlcedit2.ExtractAllDLC();
+                dlcedit2.ExtractAllDLC();*/
 
                 // KFreon: Enumerate DLC files here
-                dlcfiles = new List<string>(Directory.EnumerateFiles(DLCPath).Where(file => file.ToLower().EndsWith(".pcc") || file.ToLower().EndsWith(".tfc")));
+                try
+                {
+                    dlcfiles = new List<string>(Directory.EnumerateFiles(DLCPath).Where(file => file.ToLower().EndsWith(".pcc") || file.ToLower().EndsWith(".tfc")));
+                }
+                catch
+                {
+                    // Kfreon: Ignore.
+                }
             }
 
             DebugOutput.PrintLn(String.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
@@ -1011,6 +1022,7 @@ namespace ME3Explorer
                 {
                     Tree.Clear(true);
                     Tree.AddPCCs(fts.FilesToAddToTree);
+                    if (dlcfiles.Count != 0)
                     Tree.AddPCCs(dlcfiles);
                 }
             }
@@ -1311,66 +1323,15 @@ namespace ME3Explorer
             }
         }
 
-        public static void UpdateTOCs(string pathBIOGame, int WhichGame, string DLCPath, List<string> modifiedDLC = null)
+        public static void UpdateTOCs(int WhichGame = 3)
         {
-            DebugOutput.PrintLn("Updating Basegame...");
-            AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
-
-            // KFreon: Format filenames
-            List<string> FileNames = toc.GetFiles(pathBIOGame + "\\");
-            List<string> tet = new List<string>(pathBIOGame.Split('\\'));
-            tet.RemoveAt(tet.Count - 1);
-            string remov = String.Join("\\", tet.ToArray());
-            for (int i = 0; i < FileNames.Count; i++)
-                FileNames[i] = FileNames[i].Substring(remov.Length + 1);
-
-            // KFreon: Format basepath
-            string[] ts = pathBIOGame.Split('\\');
-            tet.Clear();
-            tet.AddRange(ts);
-            tet.RemoveAt(tet.Count - 1);
-            string basepath = String.Join("\\", tet.ToArray()) + '\\';
-            string tocfile = pathBIOGame + "\\PCConsoleTOC.bin";
-            Console.WriteLine("BasePath: " + basepath);
-            Console.WriteLine("Tocfile: " + tocfile);
-            toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
-
-            // KFreon: Update pcconsole.bin - not updated by WV's code.
-            //tocUpdater(pathBIOGame + "\\PCConsoleTOC.bin");
-            DebugOutput.PrintLn("Basegame updated.");
-
-
-            // KFreon: Update DLC TOCs
-            // Updated by MrFob - crude for now as a TOC.bin update should be enough but it works. KFREON: Re-enabled as part of the TOC all day, everywhere, anywhen strategy.
+            //SirCxyrtyx: ME1+2 do not have TOCs
             if (WhichGame == 3)
             {
-                if (!Directory.EnumerateDirectories(ME3Directory.DLCPath, "*.*", SearchOption.AllDirectories).Any(file => file.EndsWith(".pcc")))
-                { 
-                    DebugOutput.PrintLn("No extracted DLC. Not TOCing.");
-                    return;
-                }
-
-                DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
-                DebugOutput.PrintLn("Updating DLC...");
-                dlcedit2.ExtractAllDLC();
-                DebugOutput.PrintLn("DLC Updated.");
-
-                
-                /*foreach (string dlc in modifiedDLC)
-                {
-                    var matchingDLC = files.Where(d => d.Contains(dlc));
-                    if (matchingDLC.Count() == 0)
-                    {
-                        Debug.WriteLine("No matching DLC found for " + dlc + ".  Skipping...");
-                        continue;
-                    }
-
-                    if (matchingDLC.Count() > 1)
-                        Debug.WriteLine("Weirdness detected. In UpdateTOC's more than one matching DLC found. Count = " + matchingDLC.Count());
-
-                    DLCPackage package = new DLCPackage(matchingDLC.First());
-                    package.UpdateTOCbin(true);
-                }*/
+                DebugOutput.PrintLn("Updating TOCs...");
+                AutoTOC.AutoTOC toccer = new AutoTOC.AutoTOC();
+                toccer.GenerateAllTOCs();
+                DebugOutput.PrintLn("TOCs updated.");
             }
         }
 
@@ -1679,7 +1640,7 @@ namespace ME3Explorer
             message.Add("Texmod Hash:  " + Textures.Methods.FormatTexmodHashAsString(tex2D.Hash));
 
             if (WhichGame != 1)
-                message.Add("Texture Cache File:  " + (String.IsNullOrEmpty(tex2D.arcName) ? "PCC Stored" : tex2D.arcName + ".tfc"));
+                message.Add("Texture Cache File:  " + (info.storageType == 0  ? "PCC Stored" : tex2D.arcName + ".tfc"));
 
             PropertiesRTB.Text = String.Join(Environment.NewLine, message);
         }
@@ -2141,23 +2102,7 @@ namespace ME3Explorer
 
                 UpdateModifiedTex(tex2D, tex, ind);
 
-                if (WhichGame == 3)
-                {
-                    // KFreon:  Update TOC.bin using custom path if necessary
-                    if (tex2D.arcName == null)
-                    {
-                        string tempCache = "";
-                        for (int i = 10; i >= 0; i--)
-                        {
-                            tempCache = pathBIOGame + "\\CookedPCConsole\\CustTextures" + i + ".tfc";
-                            if (File.Exists(tempCache))
-                                break;
-                        }
-                        tocUpdater(tempCache);
-                    }
-                    else
-                        tocUpdater(tex2D.GetTexArchive(pathBIOGame));
-                }
+                UpdateTOCs(WhichGame);
                 StatusUpdater.UpdateText("Replacement Complete!");
                 OutputBoxPrintLn("Texture: " + tex.TexName + " Replaced.");
                 this.Invoke(new Action(() => MainProgressBar.Value = MainProgressBar.Maximum));
@@ -2199,39 +2144,6 @@ namespace ME3Explorer
             tpftools.UpdateHashAndReplace(texind, hash, true);
             tpftools.RedrawTreeView();
         }
-
-        /// <summary>
-        /// Will update PCConsoleTOC.bin for a particular filename s
-        /// </summary>
-        /// <param name="s">The filename of the file to be updated</param>
-        private bool tocUpdater(string s)
-        {
-            FileInfo finfo = new FileInfo(s);
-            if (!finfo.Exists)
-                throw new FileNotFoundException("File: " + s + " not found");
-            if (String.IsNullOrEmpty(tocpath))
-                tocpath = Path.Combine(pathBIOGame, "PCConsoleTOC.bin");
-            TOCeditor tc = new TOCeditor();
-            if (!File.Exists(tocpath))
-            {
-                OpenFileDialog tocopen = new OpenFileDialog();
-                tocopen.Title = "Select the PCConsoleTOC.bin file to use";
-                tocopen.Filter = "TOC.bin|PCConsoleTOC.bin";
-                if (tocopen.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    MessageBox.Show("Since you have elected not to select your TOC.bin file, you'll get harrassed every time the program wants to update it and the game will crash unless you run the TOCbinUpdater tool", "I hope you're happy", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-                tocpath = tocopen.FileName;
-            }
-
-            // KFreon: If normal TOC update fails, try with WV's
-            if (!tc.UpdateFile(Path.GetFileName(s), (uint)finfo.Length, tocpath))
-                return false;
-            else
-                return true;
-        }
-
 
         private void RegenerateThumbnail(TreeTexInfo tex, int index, bool FromFile)
         {
@@ -2290,83 +2202,6 @@ namespace ME3Explorer
                 UpdateThumbnailDisplays(MainTreeView.SelectedNode as myTreeNode);
                 StatusUpdater.UpdateText("Thumbnail Regenerated!");
                 MainProgressBar.Value = MainProgressBar.Maximum;
-            }
-        }
-
-        [Obsolete("Not used anymore")]
-        private void ReplaceButton_Click(object sender, EventArgs e)
-        {
-            if (MainListView.SelectedIndices.Count != 0 && MainListView.SelectedIndices[0] >= 0)
-            {
-                // KFreon: Select mip to replace
-                List<string> names = new List<string>();
-                int index = GetSelectedTexInd();
-                TreeTexInfo tex = Tree.GetTex(index);
-                Textures.ITexture2D tex2D = tex.Textures[0];
-                for (int i = 0; i < tex2D.imgList.Count; i++)
-                {
-                    bool pccstored = tex2D.imgList[i].CompareStorage("pccSto");
-                    names.Add("Image: " + tex2D.imgList[i].imgSize + " stored inside " + (pccstored ? "PCC file" : "Archive file") + " at offset " + ((pccstored) ? (tex2D.imgList[i].offset + tex2D.pccOffset).ToString() : tex2D.imgList[i].offset.ToString()));
-                }
-
-                string selectedImage = "";
-                using (Helpers.SelectionForm sf = new Helpers.SelectionForm(names, "Select ONE image to replace.", "Replace Image Selector", false))
-                {
-                    sf.ShowDialog();
-                    if (sf.SelectedInds.Count == 0)
-                        return;
-                    else if (sf.SelectedInds.Count == 1)
-                        selectedImage = sf.SelectedItems[0];
-                    else
-                    {
-                        MessageBox.Show("You must select ONLY ONE image to replace.");
-                        return;
-                    }
-                }
-                string imgsize = selectedImage.Split(' ')[1];
-                string replacingfile = "";
-                using (OpenFileDialog ofd = new OpenFileDialog())
-                {
-                    ofd.Title = "Select Image to replace with";
-                    ofd.Filter = "Image File|*.dds";
-
-                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        replacingfile = ofd.FileName;
-                    else
-                        return;
-                }
-
-                byte[] imgData = File.ReadAllBytes(replacingfile);
-                ImageMipMapHandler mip = new ImageMipMapHandler("", imgData);
-                string[] sizes = imgsize.Split('x');
-                ImageFile im = mip.imageList.First(img => img.imgSize.width.ToString() == sizes[0] && img.imgSize.height.ToString() == sizes[1]);
-
-                DebugOutput.PrintLn("Replacing image in " + tex.TexName + " at " + imgsize + " with " + replacingfile);
-
-                tex2D.replaceImage(imgsize, im, pathBIOGame);  // So each mipmap is made into a fully formatted DDS with no mipmaps by ImageMipMapHandler. Is that necessary?
-                UpdateModifiedTex(tex2D, tex, index);
-                DebugOutput.PrintLn("Image replaced.");
-
-                StatusUpdater.UpdateText("Image replaced!");
-                MainProgressBar.Value = MainProgressBar.Maximum;
-
-                DisplayTextureProperties(tex2D, tex2D.GenerateImageInfo());
-
-                RegenerateThumbnail(tex, index, false);
-
-                if (ModMakerMode)
-                {
-                    AddModJob(tex2D, replacingfile);
-                    StatusUpdater.UpdateText("Replacement complete and job added to modmaker!");
-                }
-
-                if (TPFMode)
-                {
-                    AddTPFToolsJob(replacingfile, tex.Hash);
-                    StatusUpdater.UpdateText("Replacement Complete and job added to TPFTools!");
-                }
-
-                Previews.Remove(tex.TexName + tex.Hash);
             }
         }
 
@@ -2557,7 +2392,14 @@ namespace ME3Explorer
                 StatusUpdater.UpdateText("Errors occured. See DebugWindow");
             }
             else
+            {
+                StatusUpdater.UpdateText("Refreshing Tree...");
+
+                ClearDisplays();
+                Tree = null;
+                BeginLoadingTree();
                 StatusUpdater.UpdateText("DLC added to tree!");
+            }
 
             ProgBarUpdater.ChangeProgressBar(1, 1);
         }
@@ -2570,13 +2412,19 @@ namespace ME3Explorer
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
             dialog.EnsurePathExists = true;
-           dialog.Title = "Select DLC Folder to add. (e.g. DLC_CON_END)";
+            dialog.Title = "Select DLC Folder to add. (e.g. DLC_CON_END)";
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 outputPath = dialog.FileName;
             else
                 return;
 
             pccs = Directory.EnumerateFiles(outputPath, "*.pcc", SearchOption.AllDirectories).ToList();
+
+            if (pccs.Count == 0)
+            {
+                StatusUpdater.UpdateText("DLC is not extracted (no PCC's found).");
+                return;
+            }
 
             backbone.AddToBackBone(b =>
             {
@@ -2841,8 +2689,6 @@ namespace ME3Explorer
                 tooltips.Add(SetupToolTip(tabControl1));
                 tooltips.Add(SetupToolTip(ChangeButton));
                 tooltips.Add(SetupToolTip(OutputBox));
-
-                instructionsToolStripMenuItem.Text = "Further instructions online";
             }
             else
             {
