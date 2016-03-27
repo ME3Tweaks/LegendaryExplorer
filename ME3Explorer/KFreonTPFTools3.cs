@@ -1082,9 +1082,9 @@ namespace ME3Explorer
             PreventPCC = true;
 
             // KFreon: Show pccs
+            PCCsCheckListBox.Items.Clear();
             if (tex.TexName != null)
             {
-                PCCsCheckListBox.Items.Clear();
                 int count = 0;
                 foreach (string file in tex.OriginalFiles)
                 {
