@@ -1696,6 +1696,8 @@ namespace ME3Explorer
             message.Add("Texture Name:  " + tex2D.texName);
             message.Add("Format:  " + tex2D.texFormat.ToString().Replace("DDS_", ""));
             message.Add("Width:  " + info.imgSize.width + ",  Height:  " + info.imgSize.height);
+            int mipcount = tex2D.imgList.Where(t => t.offset != -1).Count();
+            message.Add("Mipmaps:  " + (mipcount > 1 ? "Yes (" + mipcount + ")" : "No (1)"));
             //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
             // Heff: Were ALL modified textures assigned the shadowmap texture group?
             message.Add("LODGroup:  " + (String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
@@ -2104,7 +2106,7 @@ namespace ME3Explorer
                 if (img.Format.InternalFormat != tex2D.texFormat)
                     sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToString().ToUpperInvariant());
 
-                if (img.NumMipMaps < tex2D.Mips)
+                if (img.NumMipMaps <= tex2D.Mips)
                     sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);
             }
 

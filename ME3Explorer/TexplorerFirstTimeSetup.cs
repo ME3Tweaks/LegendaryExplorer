@@ -182,7 +182,7 @@ namespace ME3Explorer
                 MainListView.Items.Add(dlc.Name, true);
             }
 
-            StatusUpdater.UpdateText("Ready. Loaded " + (DLCs.Count - 1) + " DLC's. Disk space to be used: ~" + DLCs.Select(d => d.Size).Sum() + " GB");
+            StatusUpdater.UpdateText("Ready. Loaded " + (DLCs.Count - 1) + " DLC's.");
         }
 
         private void SetupStuff(int game, string DLCPath, string CookedPath)
@@ -226,7 +226,7 @@ namespace ME3Explorer
             }
 
 
-            StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's. Disk space to be used: ~" + DLCs.Select(d => d.Size).Sum() + " GB");
+            StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's.");
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -241,7 +241,7 @@ namespace ME3Explorer
             if (index < 0)
                 return;
 
-            StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's. Disk space to be used: ~" + DLCs.Select(d => d.Size).Sum() + " GB");
+            StatusUpdater.UpdateText("Ready. Loaded " + DLCs.Count + " DLC's.");
         }
 
         private async void ContinueButton_Click(object sender, EventArgs e)

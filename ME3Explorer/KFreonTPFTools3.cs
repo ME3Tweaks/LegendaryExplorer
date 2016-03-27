@@ -953,8 +953,6 @@ namespace ME3Explorer
                     DebugOutput.PrintLn("Preview failed: " + ex.Message);
                 }
             });
-
-            MainTreeView.SelectedNode.Checked = !MainTreeView.SelectedNode.Checked;
         }
 
         private void ClearPreview()

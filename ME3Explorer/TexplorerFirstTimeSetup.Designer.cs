@@ -53,7 +53,7 @@
             this.toolStrip1.Location = new System.Drawing.Point(0, 557);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStrip1.Size = new System.Drawing.Size(1074, 37);
+            this.toolStrip1.Size = new System.Drawing.Size(568, 37);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -103,7 +103,7 @@
             this.MainListView.Location = new System.Drawing.Point(0, 0);
             this.MainListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MainListView.Name = "MainListView";
-            this.MainListView.Size = new System.Drawing.Size(1074, 557);
+            this.MainListView.Size = new System.Drawing.Size(568, 557);
             this.MainListView.TabIndex = 0;
             this.MainListView.SelectedIndexChanged += new System.EventHandler(this.MainListView_SelectedIndexChanged);
             // 
@@ -111,7 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1074, 594);
+            this.ClientSize = new System.Drawing.Size(568, 594);
             this.Controls.Add(this.MainListView);
             this.Controls.Add(this.toolStrip1);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
