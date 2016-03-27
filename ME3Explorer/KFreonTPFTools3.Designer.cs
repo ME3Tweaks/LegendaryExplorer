@@ -165,8 +165,8 @@
             this.BulkExtractTPFButton});
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
-            this.TopStrip.Padding = new System.Windows.Forms.Padding(0, 0, 21, 0);
-            this.TopStrip.Size = new System.Drawing.Size(1084, 25);
+            this.TopStrip.Padding = new System.Windows.Forms.Padding(0, 0, 32, 0);
+            this.TopStrip.Size = new System.Drawing.Size(1626, 32);
             this.TopStrip.TabIndex = 0;
             this.TopStrip.Text = "TopStrip";
             // 
@@ -175,7 +175,7 @@
             this.LoadButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LoadButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.LoadButton.Name = "LoadButton";
-            this.LoadButton.Size = new System.Drawing.Size(37, 22);
+            this.LoadButton.Size = new System.Drawing.Size(55, 29);
             this.LoadButton.Text = "Load";
             this.LoadButton.ToolTipText = "Load .tpf\'s, .mod\'s and image files.";
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
@@ -190,13 +190,13 @@
             this.ExtractTOP.Enabled = false;
             this.ExtractTOP.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractTOP.Name = "ExtractTOP";
-            this.ExtractTOP.Size = new System.Drawing.Size(55, 22);
+            this.ExtractTOP.Size = new System.Drawing.Size(82, 29);
             this.ExtractTOP.Text = "Extract";
             // 
             // extractAllToolStripMenuItem
             // 
             this.extractAllToolStripMenuItem.Name = "extractAllToolStripMenuItem";
-            this.extractAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.extractAllToolStripMenuItem.Size = new System.Drawing.Size(214, 30);
             this.extractAllToolStripMenuItem.Text = "Extract All";
             this.extractAllToolStripMenuItem.Click += new System.EventHandler(this.extractAllToolStripMenuItem_Click);
             // 
@@ -204,14 +204,14 @@
             // 
             this.extractInvalidToolStripMenuItem.Enabled = false;
             this.extractInvalidToolStripMenuItem.Name = "extractInvalidToolStripMenuItem";
-            this.extractInvalidToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.extractInvalidToolStripMenuItem.Size = new System.Drawing.Size(214, 30);
             this.extractInvalidToolStripMenuItem.Text = "Extract Invalids";
             this.extractInvalidToolStripMenuItem.Click += new System.EventHandler(this.extractInvalidToolStripMenuItem_Click);
             // 
             // extractValidsToolStripMenuItem
             // 
             this.extractValidsToolStripMenuItem.Name = "extractValidsToolStripMenuItem";
-            this.extractValidsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.extractValidsToolStripMenuItem.Size = new System.Drawing.Size(214, 30);
             this.extractValidsToolStripMenuItem.Text = "Extract Valids";
             this.extractValidsToolStripMenuItem.Click += new System.EventHandler(this.extractValidsToolStripMenuItem_Click);
             // 
@@ -221,7 +221,7 @@
             this.ClearAllFilesButton.Enabled = false;
             this.ClearAllFilesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ClearAllFilesButton.Name = "ClearAllFilesButton";
-            this.ClearAllFilesButton.Size = new System.Drawing.Size(81, 22);
+            this.ClearAllFilesButton.Size = new System.Drawing.Size(119, 29);
             this.ClearAllFilesButton.Text = "Clear All Files";
             this.ClearAllFilesButton.Click += new System.EventHandler(this.CloseFilesButton_Click);
             // 
@@ -234,20 +234,20 @@
             this.BuildTPFTOP.Image = ((System.Drawing.Image)(resources.GetObject("BuildTPFTOP.Image")));
             this.BuildTPFTOP.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.BuildTPFTOP.Name = "BuildTPFTOP";
-            this.BuildTPFTOP.Size = new System.Drawing.Size(70, 22);
+            this.BuildTPFTOP.Size = new System.Drawing.Size(102, 29);
             this.BuildTPFTOP.Text = "Build TPF";
             // 
             // allTexturesToolStripMenuItem
             // 
             this.allTexturesToolStripMenuItem.Name = "allTexturesToolStripMenuItem";
-            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.allTexturesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.allTexturesToolStripMenuItem.Text = "All Textures";
             this.allTexturesToolStripMenuItem.Click += new System.EventHandler(this.allTexturesToolStripMenuItem_Click);
             // 
             // onlyCheckedToolStripMenuItem
             // 
             this.onlyCheckedToolStripMenuItem.Name = "onlyCheckedToolStripMenuItem";
-            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.onlyCheckedToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
             this.onlyCheckedToolStripMenuItem.Text = "Only Checked";
             this.onlyCheckedToolStripMenuItem.Click += new System.EventHandler(this.onlyCheckedToolStripMenuItem_Click);
             // 
@@ -257,7 +257,7 @@
             this.RunAutofixButton.Enabled = false;
             this.RunAutofixButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunAutofixButton.Name = "RunAutofixButton";
-            this.RunAutofixButton.Size = new System.Drawing.Size(73, 22);
+            this.RunAutofixButton.Size = new System.Drawing.Size(109, 29);
             this.RunAutofixButton.Text = "Run Autofix";
             this.RunAutofixButton.Click += new System.EventHandler(this.RunAutofixButton_Click);
             // 
@@ -269,20 +269,20 @@
             this.wikiArticleToolStripMenuItem});
             this.HelpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.HelpButton.Name = "HelpButton";
-            this.HelpButton.Size = new System.Drawing.Size(45, 22);
+            this.HelpButton.Size = new System.Drawing.Size(67, 29);
             this.HelpButton.Text = "Help";
             // 
             // toggleHelpTooltipsToolStripMenuItem
             // 
             this.toggleHelpTooltipsToolStripMenuItem.Name = "toggleHelpTooltipsToolStripMenuItem";
-            this.toggleHelpTooltipsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.toggleHelpTooltipsToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
             this.toggleHelpTooltipsToolStripMenuItem.Text = "Toggle Help Tooltips";
             this.toggleHelpTooltipsToolStripMenuItem.Click += new System.EventHandler(this.toggleHelpTooltipsToolStripMenuItem_Click);
             // 
             // wikiArticleToolStripMenuItem
             // 
             this.wikiArticleToolStripMenuItem.Name = "wikiArticleToolStripMenuItem";
-            this.wikiArticleToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.wikiArticleToolStripMenuItem.Size = new System.Drawing.Size(259, 30);
             this.wikiArticleToolStripMenuItem.Text = "Wiki Article";
             this.wikiArticleToolStripMenuItem.Click += new System.EventHandler(this.wikiArticleToolStripMenuItem_Click);
             // 
@@ -291,7 +291,7 @@
             this.MODtoTPFButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MODtoTPFButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MODtoTPFButton.Name = "MODtoTPFButton";
-            this.MODtoTPFButton.Size = new System.Drawing.Size(68, 22);
+            this.MODtoTPFButton.Size = new System.Drawing.Size(102, 29);
             this.MODtoTPFButton.Text = "Load .mod";
             this.MODtoTPFButton.ToolTipText = "Attempts to convert a .mod to a .tpf";
             this.MODtoTPFButton.Visible = false;
@@ -304,7 +304,7 @@
             this.ChangeButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ChangeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ChangeButton.Name = "ChangeButton";
-            this.ChangeButton.Size = new System.Drawing.Size(86, 22);
+            this.ChangeButton.Size = new System.Drawing.Size(130, 29);
             this.ChangeButton.Text = "Modding ME3";
             this.ChangeButton.ToolTipText = "Changes loaded game version";
             this.ChangeButton.Click += new System.EventHandler(this.ChangeButton_Click);
@@ -315,7 +315,7 @@
             this.ThreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.ThreeLabel.ForeColor = System.Drawing.Color.Red;
             this.ThreeLabel.Name = "ThreeLabel";
-            this.ThreeLabel.Size = new System.Drawing.Size(17, 22);
+            this.ThreeLabel.Size = new System.Drawing.Size(24, 29);
             this.ThreeLabel.Text = "3";
             // 
             // TwoLabel
@@ -324,7 +324,7 @@
             this.TwoLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.TwoLabel.ForeColor = System.Drawing.Color.Red;
             this.TwoLabel.Name = "TwoLabel";
-            this.TwoLabel.Size = new System.Drawing.Size(17, 22);
+            this.TwoLabel.Size = new System.Drawing.Size(24, 29);
             this.TwoLabel.Text = "2";
             // 
             // OneLabel
@@ -333,7 +333,7 @@
             this.OneLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.OneLabel.ForeColor = System.Drawing.Color.Red;
             this.OneLabel.Name = "OneLabel";
-            this.OneLabel.Size = new System.Drawing.Size(17, 22);
+            this.OneLabel.Size = new System.Drawing.Size(24, 29);
             this.OneLabel.Text = "1";
             // 
             // GameFoundLabel
@@ -341,7 +341,7 @@
             this.GameFoundLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.GameFoundLabel.Enabled = false;
             this.GameFoundLabel.Name = "GameFoundLabel";
-            this.GameFoundLabel.Size = new System.Drawing.Size(80, 22);
+            this.GameFoundLabel.Size = new System.Drawing.Size(122, 29);
             this.GameFoundLabel.Text = "Game Found?";
             // 
             // ThreeTreeLabel
@@ -350,7 +350,7 @@
             this.ThreeTreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.ThreeTreeLabel.ForeColor = System.Drawing.Color.Red;
             this.ThreeTreeLabel.Name = "ThreeTreeLabel";
-            this.ThreeTreeLabel.Size = new System.Drawing.Size(17, 22);
+            this.ThreeTreeLabel.Size = new System.Drawing.Size(24, 29);
             this.ThreeTreeLabel.Text = "3";
             // 
             // TwoTreeLabel
@@ -359,7 +359,7 @@
             this.TwoTreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.TwoTreeLabel.ForeColor = System.Drawing.Color.Red;
             this.TwoTreeLabel.Name = "TwoTreeLabel";
-            this.TwoTreeLabel.Size = new System.Drawing.Size(17, 22);
+            this.TwoTreeLabel.Size = new System.Drawing.Size(24, 29);
             this.TwoTreeLabel.Text = "2";
             // 
             // OneTreeLabel
@@ -368,7 +368,7 @@
             this.OneTreeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.OneTreeLabel.ForeColor = System.Drawing.Color.Red;
             this.OneTreeLabel.Name = "OneTreeLabel";
-            this.OneTreeLabel.Size = new System.Drawing.Size(17, 22);
+            this.OneTreeLabel.Size = new System.Drawing.Size(24, 29);
             this.OneTreeLabel.Text = "1";
             // 
             // TreeFoundLabel
@@ -376,7 +376,7 @@
             this.TreeFoundLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.TreeFoundLabel.Enabled = false;
             this.TreeFoundLabel.Name = "TreeFoundLabel";
-            this.TreeFoundLabel.Size = new System.Drawing.Size(72, 22);
+            this.TreeFoundLabel.Size = new System.Drawing.Size(107, 29);
             this.TreeFoundLabel.Text = "Tree Found?";
             // 
             // BulkExtractTPFButton
@@ -385,7 +385,7 @@
             this.BulkExtractTPFButton.Image = ((System.Drawing.Image)(resources.GetObject("BulkExtractTPFButton.Image")));
             this.BulkExtractTPFButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.BulkExtractTPFButton.Name = "BulkExtractTPFButton";
-            this.BulkExtractTPFButton.Size = new System.Drawing.Size(100, 22);
+            this.BulkExtractTPFButton.Size = new System.Drawing.Size(147, 29);
             this.BulkExtractTPFButton.Text = "Bulk Extract TPFs";
             this.BulkExtractTPFButton.Click += new System.EventHandler(this.BulkExtractTPFButton_Click);
             // 
@@ -408,33 +408,33 @@
             this.toolStripLabel1,
             this.toolStripSeparator4,
             this.VersionLabel});
-            this.BottomStrip.Location = new System.Drawing.Point(0, 837);
+            this.BottomStrip.Location = new System.Drawing.Point(0, 1257);
             this.BottomStrip.Name = "BottomStrip";
-            this.BottomStrip.Padding = new System.Windows.Forms.Padding(0, 0, 21, 0);
-            this.BottomStrip.Size = new System.Drawing.Size(1084, 25);
+            this.BottomStrip.Padding = new System.Windows.Forms.Padding(0, 0, 32, 0);
+            this.BottomStrip.Size = new System.Drawing.Size(1626, 36);
             this.BottomStrip.TabIndex = 1;
             this.BottomStrip.Text = "BottomStrip";
             // 
             // OverallLabel
             // 
             this.OverallLabel.Name = "OverallLabel";
-            this.OverallLabel.Size = new System.Drawing.Size(47, 22);
+            this.OverallLabel.Size = new System.Drawing.Size(71, 33);
             this.OverallLabel.Text = "Overall:";
             // 
             // OverallProgressBar
             // 
             this.OverallProgressBar.Name = "OverallProgressBar";
-            this.OverallProgressBar.Size = new System.Drawing.Size(93, 22);
+            this.OverallProgressBar.Size = new System.Drawing.Size(140, 33);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 36);
             // 
             // OverallStatusLabel
             // 
             this.OverallStatusLabel.Name = "OverallStatusLabel";
-            this.OverallStatusLabel.Size = new System.Drawing.Size(39, 22);
+            this.OverallStatusLabel.Size = new System.Drawing.Size(60, 33);
             this.OverallStatusLabel.Text = "Ready";
             // 
             // CancelButton
@@ -443,7 +443,7 @@
             this.CancelButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.CancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(47, 22);
+            this.CancelButton.Size = new System.Drawing.Size(67, 33);
             this.CancelButton.Text = "Cancel";
             this.CancelButton.Visible = false;
             this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
@@ -451,28 +451,28 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 36);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 36);
             // 
             // CurrentLabel
             // 
             this.CurrentLabel.Name = "CurrentLabel";
-            this.CurrentLabel.Size = new System.Drawing.Size(50, 22);
+            this.CurrentLabel.Size = new System.Drawing.Size(74, 33);
             this.CurrentLabel.Text = "Current:";
             // 
             // CurrentProgressBar
             // 
             this.CurrentProgressBar.Name = "CurrentProgressBar";
-            this.CurrentProgressBar.Size = new System.Drawing.Size(93, 22);
+            this.CurrentProgressBar.Size = new System.Drawing.Size(140, 33);
             // 
             // CurrentStatusLabel
             // 
             this.CurrentStatusLabel.Name = "CurrentStatusLabel";
-            this.CurrentStatusLabel.Size = new System.Drawing.Size(39, 22);
+            this.CurrentStatusLabel.Size = new System.Drawing.Size(60, 33);
             this.CurrentStatusLabel.Text = "Ready";
             // 
             // toolStripLabel1
@@ -480,14 +480,14 @@
             this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel1.Enabled = false;
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(208, 22);
+            this.toolStripLabel1.Size = new System.Drawing.Size(315, 33);
             this.toolStripLabel1.Text = "WV, AK, Salt, Gibbed = The Real Heros";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 36);
             // 
             // VersionLabel
             // 
@@ -495,16 +495,16 @@
             this.VersionLabel.Enabled = false;
             this.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(46, 22);
+            this.VersionLabel.Size = new System.Drawing.Size(70, 33);
             this.VersionLabel.Text = "Version";
             // 
             // MainSplitter
             // 
-            this.MainSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.MainSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.MainSplitter.Location = new System.Drawing.Point(0, 21);
+            this.MainSplitter.Location = new System.Drawing.Point(0, 32);
             this.MainSplitter.Margin = new System.Windows.Forms.Padding(0);
             this.MainSplitter.Name = "MainSplitter";
             // 
@@ -517,9 +517,9 @@
             // MainSplitter.Panel2
             // 
             this.MainSplitter.Panel2.Controls.Add(this.LowerRightSplitter);
-            this.MainSplitter.Size = new System.Drawing.Size(1075, 768);
+            this.MainSplitter.Size = new System.Drawing.Size(1612, 1152);
             this.MainSplitter.SplitterDistance = 600;
-            this.MainSplitter.SplitterWidth = 7;
+            this.MainSplitter.SplitterWidth = 10;
             this.MainSplitter.TabIndex = 2;
             // 
             // MainTreeView
@@ -534,11 +534,11 @@
             this.MainTreeView.ImageIndex = 0;
             this.MainTreeView.ImageList = this.MainTreeViewImageList;
             this.MainTreeView.ItemHeight = 66;
-            this.MainTreeView.Location = new System.Drawing.Point(0, 24);
+            this.MainTreeView.Location = new System.Drawing.Point(0, 36);
             this.MainTreeView.Margin = new System.Windows.Forms.Padding(0);
             this.MainTreeView.Name = "MainTreeView";
             this.MainTreeView.SelectedImageIndex = 0;
-            this.MainTreeView.Size = new System.Drawing.Size(600, 719);
+            this.MainTreeView.Size = new System.Drawing.Size(600, 1084);
             this.MainTreeView.TabIndex = 0;
             this.MainTreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.MainTreeView_DrawNode);
             this.MainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.MainTreeView_AfterSelect);
@@ -561,17 +561,15 @@
             this.panel1.Controls.Add(this.CheckAllButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(600, 24);
+            this.panel1.Size = new System.Drawing.Size(600, 36);
             this.panel1.TabIndex = 2;
             // 
             // UncheckAllButton
             // 
-            this.UncheckAllButton.Location = new System.Drawing.Point(65, 0);
-            this.UncheckAllButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.UncheckAllButton.Location = new System.Drawing.Point(98, 0);
             this.UncheckAllButton.Name = "UncheckAllButton";
-            this.UncheckAllButton.Size = new System.Drawing.Size(75, 22);
+            this.UncheckAllButton.Size = new System.Drawing.Size(112, 33);
             this.UncheckAllButton.TabIndex = 1;
             this.UncheckAllButton.Text = "Uncheck All";
             this.UncheckAllButton.UseVisualStyleBackColor = true;
@@ -580,9 +578,8 @@
             // CheckAllButton
             // 
             this.CheckAllButton.Location = new System.Drawing.Point(0, 0);
-            this.CheckAllButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CheckAllButton.Name = "CheckAllButton";
-            this.CheckAllButton.Size = new System.Drawing.Size(61, 22);
+            this.CheckAllButton.Size = new System.Drawing.Size(92, 33);
             this.CheckAllButton.TabIndex = 0;
             this.CheckAllButton.Text = "Check All";
             this.CheckAllButton.UseVisualStyleBackColor = true;
@@ -603,10 +600,10 @@
             this.GotoInvalidButton,
             this.PromoteButton,
             this.GotoDupButton});
-            this.ContextPanel.Location = new System.Drawing.Point(0, 743);
+            this.ContextPanel.Location = new System.Drawing.Point(0, 1120);
             this.ContextPanel.Name = "ContextPanel";
-            this.ContextPanel.Padding = new System.Windows.Forms.Padding(0, 0, 21, 0);
-            this.ContextPanel.Size = new System.Drawing.Size(600, 25);
+            this.ContextPanel.Padding = new System.Windows.Forms.Padding(0, 0, 32, 0);
+            this.ContextPanel.Size = new System.Drawing.Size(600, 32);
             this.ContextPanel.TabIndex = 1;
             this.ContextPanel.Text = "toolStrip1";
             this.PrimaryToolTip.SetToolTip(this.ContextPanel, "This context menu provides texture and duplicate functions");
@@ -616,7 +613,7 @@
             this.toolStripLabel2.Enabled = false;
             this.toolStripLabel2.ForeColor = System.Drawing.SystemColors.ActiveCaption;
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(59, 22);
+            this.toolStripLabel2.Size = new System.Drawing.Size(88, 29);
             this.toolStripLabel2.Text = "Checked: ";
             // 
             // InstallSingleButton
@@ -625,7 +622,7 @@
             this.InstallSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("InstallSingleButton.Image")));
             this.InstallSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.InstallSingleButton.Name = "InstallSingleButton";
-            this.InstallSingleButton.Size = new System.Drawing.Size(42, 22);
+            this.InstallSingleButton.Size = new System.Drawing.Size(62, 29);
             this.InstallSingleButton.Text = "Install";
             this.InstallSingleButton.Click += new System.EventHandler(this.InstallSingleButton_Click);
             // 
@@ -634,7 +631,7 @@
             this.ExtractButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ExtractButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ExtractButton.Name = "ExtractButton";
-            this.ExtractButton.Size = new System.Drawing.Size(46, 22);
+            this.ExtractButton.Size = new System.Drawing.Size(68, 29);
             this.ExtractButton.Text = "Extract";
             this.ExtractButton.Click += new System.EventHandler(this.ExtractButton_Click);
             // 
@@ -643,7 +640,7 @@
             this.ReplaceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ReplaceButton.Name = "ReplaceButton";
-            this.ReplaceButton.Size = new System.Drawing.Size(52, 22);
+            this.ReplaceButton.Size = new System.Drawing.Size(76, 29);
             this.ReplaceButton.Text = "Replace";
             this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
@@ -653,7 +650,7 @@
             this.AutofixSingleButton.Image = ((System.Drawing.Image)(resources.GetObject("AutofixSingleButton.Image")));
             this.AutofixSingleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AutofixSingleButton.Name = "AutofixSingleButton";
-            this.AutofixSingleButton.Size = new System.Drawing.Size(49, 22);
+            this.AutofixSingleButton.Size = new System.Drawing.Size(73, 29);
             this.AutofixSingleButton.Text = "Autofix";
             this.AutofixSingleButton.Click += new System.EventHandler(this.AutofixSingleButton_Click);
             // 
@@ -661,14 +658,14 @@
             // 
             this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 32);
             // 
             // GotoInvalidButton
             // 
             this.GotoInvalidButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.GotoInvalidButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.GotoInvalidButton.Name = "GotoInvalidButton";
-            this.GotoInvalidButton.Size = new System.Drawing.Size(102, 22);
+            this.GotoInvalidButton.Size = new System.Drawing.Size(154, 29);
             this.GotoInvalidButton.Text = "Goto Next Invalid";
             this.GotoInvalidButton.Click += new System.EventHandler(this.GotoInvalid_Click);
             // 
@@ -677,7 +674,7 @@
             this.PromoteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.PromoteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PromoteButton.Name = "PromoteButton";
-            this.PromoteButton.Size = new System.Drawing.Size(110, 22);
+            this.PromoteButton.Size = new System.Drawing.Size(164, 29);
             this.PromoteButton.Text = "Promote Duplicate";
             this.PromoteButton.Click += new System.EventHandler(this.PromoteDupButton_Click);
             // 
@@ -686,7 +683,7 @@
             this.GotoDupButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.GotoDupButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.GotoDupButton.Name = "GotoDupButton";
-            this.GotoDupButton.Size = new System.Drawing.Size(117, 22);
+            this.GotoDupButton.Size = new System.Drawing.Size(176, 29);
             this.GotoDupButton.Text = "Goto Next Duplicate";
             this.GotoDupButton.Click += new System.EventHandler(this.GotoDupButton_Click);
             // 
@@ -695,7 +692,7 @@
             this.LowerRightSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LowerRightSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.LowerRightSplitter.Location = new System.Drawing.Point(0, 0);
-            this.LowerRightSplitter.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.LowerRightSplitter.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.LowerRightSplitter.Name = "LowerRightSplitter";
             this.LowerRightSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -707,16 +704,16 @@
             // 
             this.LowerRightSplitter.Panel2.Controls.Add(this.PreviewTabPages);
             this.LowerRightSplitter.Panel2.Controls.Add(this.PCCContextPanel);
-            this.LowerRightSplitter.Size = new System.Drawing.Size(468, 768);
+            this.LowerRightSplitter.Size = new System.Drawing.Size(1002, 1152);
             this.LowerRightSplitter.SplitterDistance = 252;
-            this.LowerRightSplitter.SplitterWidth = 9;
+            this.LowerRightSplitter.SplitterWidth = 14;
             this.LowerRightSplitter.TabIndex = 0;
             // 
             // DetailsSplitter
             // 
             this.DetailsSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DetailsSplitter.Location = new System.Drawing.Point(0, 0);
-            this.DetailsSplitter.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.DetailsSplitter.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.DetailsSplitter.Name = "DetailsSplitter";
             this.DetailsSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -741,9 +738,9 @@
             this.DetailsSplitter.Panel2.Controls.Add(this.HashLabel);
             this.DetailsSplitter.Panel2.Controls.Add(this.TPFFormatLabel);
             this.PrimaryToolTip.SetToolTip(this.DetailsSplitter.Panel2, "This area shows details of the texture,\r\nincluding tree details if applicable");
-            this.DetailsSplitter.Size = new System.Drawing.Size(468, 252);
+            this.DetailsSplitter.Size = new System.Drawing.Size(1002, 252);
             this.DetailsSplitter.SplitterDistance = 100;
-            this.DetailsSplitter.SplitterWidth = 9;
+            this.DetailsSplitter.SplitterWidth = 14;
             this.DetailsSplitter.TabIndex = 0;
             // 
             // GeneralInfoRTB
@@ -752,10 +749,10 @@
             this.GeneralInfoRTB.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.GeneralInfoRTB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GeneralInfoRTB.Location = new System.Drawing.Point(0, 0);
-            this.GeneralInfoRTB.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.GeneralInfoRTB.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.GeneralInfoRTB.Name = "GeneralInfoRTB";
             this.GeneralInfoRTB.ReadOnly = true;
-            this.GeneralInfoRTB.Size = new System.Drawing.Size(468, 100);
+            this.GeneralInfoRTB.Size = new System.Drawing.Size(1002, 100);
             this.GeneralInfoRTB.TabIndex = 0;
             this.GeneralInfoRTB.Text = resources.GetString("GeneralInfoRTB.Text");
             this.PrimaryToolTip.SetToolTip(this.GeneralInfoRTB, "This area displays details of the loaded image or tpf");
@@ -763,10 +760,10 @@
             // ImageSizeEntry
             // 
             this.ImageSizeEntry.AutoSize = true;
-            this.ImageSizeEntry.Location = new System.Drawing.Point(97, 72);
-            this.ImageSizeEntry.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.ImageSizeEntry.Location = new System.Drawing.Point(146, 108);
+            this.ImageSizeEntry.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.ImageSizeEntry.Name = "ImageSizeEntry";
-            this.ImageSizeEntry.Size = new System.Drawing.Size(35, 13);
+            this.ImageSizeEntry.Size = new System.Drawing.Size(51, 20);
             this.ImageSizeEntry.TabIndex = 16;
             this.ImageSizeEntry.Text = "label2";
             // 
@@ -774,10 +771,10 @@
             // 
             this.ImageSizeLabel.AutoSize = true;
             this.ImageSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ImageSizeLabel.Location = new System.Drawing.Point(11, 72);
-            this.ImageSizeLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.ImageSizeLabel.Location = new System.Drawing.Point(16, 108);
+            this.ImageSizeLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.ImageSizeLabel.Name = "ImageSizeLabel";
-            this.ImageSizeLabel.Size = new System.Drawing.Size(73, 13);
+            this.ImageSizeLabel.Size = new System.Drawing.Size(108, 20);
             this.ImageSizeLabel.TabIndex = 15;
             this.ImageSizeLabel.Text = "Image Size:";
             // 
@@ -786,11 +783,11 @@
             this.DuplicatesTextBox.BackColor = System.Drawing.Color.White;
             this.DuplicatesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DuplicatesTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-            this.DuplicatesTextBox.Location = new System.Drawing.Point(335, 0);
-            this.DuplicatesTextBox.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.DuplicatesTextBox.Location = new System.Drawing.Point(802, 0);
+            this.DuplicatesTextBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.DuplicatesTextBox.Name = "DuplicatesTextBox";
             this.DuplicatesTextBox.ReadOnly = true;
-            this.DuplicatesTextBox.Size = new System.Drawing.Size(133, 143);
+            this.DuplicatesTextBox.Size = new System.Drawing.Size(200, 138);
             this.DuplicatesTextBox.TabIndex = 14;
             this.DuplicatesTextBox.Text = "";
             this.PrimaryToolTip.SetToolTip(this.DuplicatesTextBox, "This area displays any tree duplicates found for the selected texture.\r\nTree dupl" +
@@ -800,10 +797,10 @@
             // ResetHashButton
             // 
             this.ResetHashButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ResetHashButton.Location = new System.Drawing.Point(175, 22);
-            this.ResetHashButton.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.ResetHashButton.Location = new System.Drawing.Point(262, 33);
+            this.ResetHashButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.ResetHashButton.Name = "ResetHashButton";
-            this.ResetHashButton.Size = new System.Drawing.Size(83, 18);
+            this.ResetHashButton.Size = new System.Drawing.Size(124, 27);
             this.ResetHashButton.TabIndex = 13;
             this.ResetHashButton.Text = "Reset Hash";
             this.ResetHashButton.UseVisualStyleBackColor = true;
@@ -812,10 +809,10 @@
             // 
             // HashTextBox
             // 
-            this.HashTextBox.Location = new System.Drawing.Point(100, 22);
-            this.HashTextBox.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.HashTextBox.Location = new System.Drawing.Point(150, 33);
+            this.HashTextBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.HashTextBox.Name = "HashTextBox";
-            this.HashTextBox.Size = new System.Drawing.Size(68, 20);
+            this.HashTextBox.Size = new System.Drawing.Size(100, 26);
             this.HashTextBox.TabIndex = 12;
             this.HashTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HashBox_KeyDown);
             this.HashTextBox.Leave += new System.EventHandler(this.HashBox_FocusLost);
@@ -824,10 +821,10 @@
             // 
             this.TreeMipsLabel.AutoSize = true;
             this.TreeMipsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TreeMipsLabel.Location = new System.Drawing.Point(264, 47);
-            this.TreeMipsLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TreeMipsLabel.Location = new System.Drawing.Point(396, 70);
+            this.TreeMipsLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TreeMipsLabel.Name = "TreeMipsLabel";
-            this.TreeMipsLabel.Size = new System.Drawing.Size(67, 13);
+            this.TreeMipsLabel.Size = new System.Drawing.Size(99, 20);
             this.TreeMipsLabel.TabIndex = 11;
             this.TreeMipsLabel.Text = "Tree Mips:";
             // 
@@ -835,50 +832,50 @@
             // 
             this.TreeFormatLabel.AutoSize = true;
             this.TreeFormatLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TreeFormatLabel.Location = new System.Drawing.Point(264, 6);
-            this.TreeFormatLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TreeFormatLabel.Location = new System.Drawing.Point(396, 9);
+            this.TreeFormatLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TreeFormatLabel.Name = "TreeFormatLabel";
-            this.TreeFormatLabel.Size = new System.Drawing.Size(79, 13);
+            this.TreeFormatLabel.Size = new System.Drawing.Size(118, 20);
             this.TreeFormatLabel.TabIndex = 9;
             this.TreeFormatLabel.Text = "Tree Format:";
             // 
             // TreeMipsEntry
             // 
             this.TreeMipsEntry.AutoSize = true;
-            this.TreeMipsEntry.Location = new System.Drawing.Point(352, 47);
-            this.TreeMipsEntry.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TreeMipsEntry.Location = new System.Drawing.Point(528, 70);
+            this.TreeMipsEntry.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TreeMipsEntry.Name = "TreeMipsEntry";
-            this.TreeMipsEntry.Size = new System.Drawing.Size(35, 13);
+            this.TreeMipsEntry.Size = new System.Drawing.Size(51, 20);
             this.TreeMipsEntry.TabIndex = 8;
             this.TreeMipsEntry.Text = "label6";
             // 
             // TreeFormatEntry
             // 
             this.TreeFormatEntry.AutoSize = true;
-            this.TreeFormatEntry.Location = new System.Drawing.Point(352, 6);
-            this.TreeFormatEntry.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TreeFormatEntry.Location = new System.Drawing.Point(528, 9);
+            this.TreeFormatEntry.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TreeFormatEntry.Name = "TreeFormatEntry";
-            this.TreeFormatEntry.Size = new System.Drawing.Size(35, 13);
+            this.TreeFormatEntry.Size = new System.Drawing.Size(51, 20);
             this.TreeFormatEntry.TabIndex = 6;
             this.TreeFormatEntry.Text = "label4";
             // 
             // TPFMipsEntry
             // 
             this.TPFMipsEntry.AutoSize = true;
-            this.TPFMipsEntry.Location = new System.Drawing.Point(97, 47);
-            this.TPFMipsEntry.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TPFMipsEntry.Location = new System.Drawing.Point(146, 70);
+            this.TPFMipsEntry.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TPFMipsEntry.Name = "TPFMipsEntry";
-            this.TPFMipsEntry.Size = new System.Drawing.Size(35, 13);
+            this.TPFMipsEntry.Size = new System.Drawing.Size(51, 20);
             this.TPFMipsEntry.TabIndex = 5;
             this.TPFMipsEntry.Text = "label3";
             // 
             // TPFFormatEntry
             // 
             this.TPFFormatEntry.AutoSize = true;
-            this.TPFFormatEntry.Location = new System.Drawing.Point(97, 6);
-            this.TPFFormatEntry.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TPFFormatEntry.Location = new System.Drawing.Point(146, 9);
+            this.TPFFormatEntry.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TPFFormatEntry.Name = "TPFFormatEntry";
-            this.TPFFormatEntry.Size = new System.Drawing.Size(35, 13);
+            this.TPFFormatEntry.Size = new System.Drawing.Size(51, 20);
             this.TPFFormatEntry.TabIndex = 3;
             this.TPFFormatEntry.Text = "label1";
             // 
@@ -886,10 +883,10 @@
             // 
             this.TPFMipsLabel.AutoSize = true;
             this.TPFMipsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TPFMipsLabel.Location = new System.Drawing.Point(11, 47);
-            this.TPFMipsLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TPFMipsLabel.Location = new System.Drawing.Point(16, 70);
+            this.TPFMipsLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TPFMipsLabel.Name = "TPFMipsLabel";
-            this.TPFMipsLabel.Size = new System.Drawing.Size(75, 13);
+            this.TPFMipsLabel.Size = new System.Drawing.Size(111, 20);
             this.TPFMipsLabel.TabIndex = 2;
             this.TPFMipsLabel.Text = "Image Mips:";
             // 
@@ -897,10 +894,10 @@
             // 
             this.HashLabel.AutoSize = true;
             this.HashLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HashLabel.Location = new System.Drawing.Point(11, 24);
-            this.HashLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.HashLabel.Location = new System.Drawing.Point(16, 36);
+            this.HashLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.HashLabel.Name = "HashLabel";
-            this.HashLabel.Size = new System.Drawing.Size(40, 13);
+            this.HashLabel.Size = new System.Drawing.Size(59, 20);
             this.HashLabel.TabIndex = 1;
             this.HashLabel.Text = "Hash:";
             // 
@@ -908,10 +905,10 @@
             // 
             this.TPFFormatLabel.AutoSize = true;
             this.TPFFormatLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TPFFormatLabel.Location = new System.Drawing.Point(11, 6);
-            this.TPFFormatLabel.Margin = new System.Windows.Forms.Padding(43, 0, 43, 0);
+            this.TPFFormatLabel.Location = new System.Drawing.Point(16, 9);
+            this.TPFFormatLabel.Margin = new System.Windows.Forms.Padding(64, 0, 64, 0);
             this.TPFFormatLabel.Name = "TPFFormatLabel";
-            this.TPFFormatLabel.Size = new System.Drawing.Size(87, 13);
+            this.TPFFormatLabel.Size = new System.Drawing.Size(130, 20);
             this.TPFFormatLabel.TabIndex = 0;
             this.TPFFormatLabel.Text = "Image Format:";
             // 
@@ -921,10 +918,10 @@
             this.PreviewTabPages.Controls.Add(this.PCCsPage);
             this.PreviewTabPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PreviewTabPages.Location = new System.Drawing.Point(0, 0);
-            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.PreviewTabPages.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PreviewTabPages.Name = "PreviewTabPages";
             this.PreviewTabPages.SelectedIndex = 0;
-            this.PreviewTabPages.Size = new System.Drawing.Size(468, 487);
+            this.PreviewTabPages.Size = new System.Drawing.Size(1002, 856);
             this.PreviewTabPages.TabIndex = 0;
             this.PrimaryToolTip.SetToolTip(this.PreviewTabPages, "This area displays a preview of the selected texture, and the list of associated " +
         "PCC\'s");
@@ -934,10 +931,10 @@
             // 
             this.PreviewPage.Controls.Add(this.texmodPreviewBox);
             this.PreviewPage.Controls.Add(this.PreviewBox);
-            this.PreviewPage.Location = new System.Drawing.Point(4, 22);
+            this.PreviewPage.Location = new System.Drawing.Point(4, 29);
             this.PreviewPage.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewPage.Name = "PreviewPage";
-            this.PreviewPage.Size = new System.Drawing.Size(460, 461);
+            this.PreviewPage.Size = new System.Drawing.Size(994, 823);
             this.PreviewPage.TabIndex = 0;
             this.PreviewPage.Text = "Preview";
             this.PreviewPage.UseVisualStyleBackColor = true;
@@ -949,20 +946,20 @@
             this.texmodPreviewBox.Location = new System.Drawing.Point(0, 0);
             this.texmodPreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.texmodPreviewBox.Name = "texmodPreviewBox";
-            this.texmodPreviewBox.Size = new System.Drawing.Size(460, 461);
+            this.texmodPreviewBox.Size = new System.Drawing.Size(994, 823);
             this.texmodPreviewBox.TabIndex = 1;
             this.texmodPreviewBox.Text = "";
             this.texmodPreviewBox.TextChanged += new System.EventHandler(this.texmodPreviewBox_TextChanged);
             // 
             // PreviewBox
             // 
-            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PreviewBox.Location = new System.Drawing.Point(0, 0);
             this.PreviewBox.Margin = new System.Windows.Forms.Padding(0);
             this.PreviewBox.Name = "PreviewBox";
-            this.PreviewBox.Size = new System.Drawing.Size(460, 506);
+            this.PreviewBox.Size = new System.Drawing.Size(990, 885);
             this.PreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PreviewBox.TabIndex = 0;
             this.PreviewBox.TabStop = false;
@@ -970,10 +967,10 @@
             // PCCsPage
             // 
             this.PCCsPage.Controls.Add(this.PCCsCheckListBox);
-            this.PCCsPage.Location = new System.Drawing.Point(4, 22);
+            this.PCCsPage.Location = new System.Drawing.Point(4, 29);
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(343, 375);
+            this.PCCsPage.Size = new System.Drawing.Size(994, 823);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -985,10 +982,11 @@
             this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
             this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.PCCsCheckListBox.HideSelection = false;
             this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
-            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(545, 284);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(818, 426);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
@@ -1003,18 +1001,18 @@
             this.PCCContextPanel.Controls.Add(this.ExportPCCListButton);
             this.PCCContextPanel.Controls.Add(this.PCCSelectAllButton);
             this.PCCContextPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PCCContextPanel.Location = new System.Drawing.Point(0, 487);
+            this.PCCContextPanel.Location = new System.Drawing.Point(0, 856);
             this.PCCContextPanel.Margin = new System.Windows.Forms.Padding(0);
             this.PCCContextPanel.Name = "PCCContextPanel";
-            this.PCCContextPanel.Size = new System.Drawing.Size(468, 20);
+            this.PCCContextPanel.Size = new System.Drawing.Size(1002, 30);
             this.PCCContextPanel.TabIndex = 1;
             // 
             // CopyClipboardButton
             // 
-            this.CopyClipboardButton.Location = new System.Drawing.Point(281, 0);
+            this.CopyClipboardButton.Location = new System.Drawing.Point(422, 0);
             this.CopyClipboardButton.Margin = new System.Windows.Forms.Padding(0);
             this.CopyClipboardButton.Name = "CopyClipboardButton";
-            this.CopyClipboardButton.Size = new System.Drawing.Size(105, 20);
+            this.CopyClipboardButton.Size = new System.Drawing.Size(158, 30);
             this.CopyClipboardButton.TabIndex = 3;
             this.CopyClipboardButton.Text = "Copy All to Clipboard";
             this.CopyClipboardButton.UseVisualStyleBackColor = true;
@@ -1022,10 +1020,10 @@
             // 
             // CopySelectedClipBoardButton
             // 
-            this.CopySelectedClipBoardButton.Location = new System.Drawing.Point(147, 0);
+            this.CopySelectedClipBoardButton.Location = new System.Drawing.Point(220, 0);
             this.CopySelectedClipBoardButton.Margin = new System.Windows.Forms.Padding(0);
             this.CopySelectedClipBoardButton.Name = "CopySelectedClipBoardButton";
-            this.CopySelectedClipBoardButton.Size = new System.Drawing.Size(124, 20);
+            this.CopySelectedClipBoardButton.Size = new System.Drawing.Size(186, 30);
             this.CopySelectedClipBoardButton.TabIndex = 2;
             this.CopySelectedClipBoardButton.Text = "Copy Selected To Clipboard";
             this.CopySelectedClipBoardButton.UseVisualStyleBackColor = true;
@@ -1033,10 +1031,10 @@
             // 
             // ExportPCCListButton
             // 
-            this.ExportPCCListButton.Location = new System.Drawing.Point(73, 0);
+            this.ExportPCCListButton.Location = new System.Drawing.Point(110, 0);
             this.ExportPCCListButton.Margin = new System.Windows.Forms.Padding(0);
             this.ExportPCCListButton.Name = "ExportPCCListButton";
-            this.ExportPCCListButton.Size = new System.Drawing.Size(67, 20);
+            this.ExportPCCListButton.Size = new System.Drawing.Size(100, 30);
             this.ExportPCCListButton.TabIndex = 1;
             this.ExportPCCListButton.Text = "Export PCC List";
             this.ExportPCCListButton.UseVisualStyleBackColor = true;
@@ -1047,7 +1045,7 @@
             this.PCCSelectAllButton.Location = new System.Drawing.Point(0, 0);
             this.PCCSelectAllButton.Margin = new System.Windows.Forms.Padding(0);
             this.PCCSelectAllButton.Name = "PCCSelectAllButton";
-            this.PCCSelectAllButton.Size = new System.Drawing.Size(67, 20);
+            this.PCCSelectAllButton.Size = new System.Drawing.Size(100, 30);
             this.PCCSelectAllButton.TabIndex = 0;
             this.PCCSelectAllButton.Text = "Select All";
             this.PCCSelectAllButton.UseVisualStyleBackColor = true;
@@ -1057,10 +1055,10 @@
             // 
             this.AnalyseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AnalyseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AnalyseButton.Location = new System.Drawing.Point(3, 792);
-            this.AnalyseButton.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.AnalyseButton.Location = new System.Drawing.Point(4, 1188);
+            this.AnalyseButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.AnalyseButton.Name = "AnalyseButton";
-            this.AnalyseButton.Size = new System.Drawing.Size(104, 43);
+            this.AnalyseButton.Size = new System.Drawing.Size(156, 64);
             this.AnalyseButton.TabIndex = 3;
             this.AnalyseButton.Text = "Analyse with Texplorer";
             this.PrimaryToolTip.SetToolTip(this.AnalyseButton, "Compares loaded textures against loaded tree");
@@ -1071,10 +1069,10 @@
             // 
             this.InstallButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InstallButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.InstallButton.Location = new System.Drawing.Point(111, 792);
-            this.InstallButton.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.InstallButton.Location = new System.Drawing.Point(166, 1188);
+            this.InstallButton.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.InstallButton.Name = "InstallButton";
-            this.InstallButton.Size = new System.Drawing.Size(86, 43);
+            this.InstallButton.Size = new System.Drawing.Size(129, 64);
             this.InstallButton.TabIndex = 5;
             this.InstallButton.Text = "Install Valid";
             this.PrimaryToolTip.SetToolTip(this.InstallButton, "Installs valid textures to game");
@@ -1087,17 +1085,17 @@
             // 
             // KFreonTPFTools3
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1084, 862);
+            this.ClientSize = new System.Drawing.Size(1626, 1293);
             this.Controls.Add(this.MainSplitter);
             this.Controls.Add(this.TopStrip);
             this.Controls.Add(this.BottomStrip);
             this.Controls.Add(this.AnalyseButton);
             this.Controls.Add(this.InstallButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
+            this.Margin = new System.Windows.Forms.Padding(64, 36, 64, 36);
             this.Name = "KFreonTPFTools3";
             this.Text = "TPF Tools 3.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Closing);
