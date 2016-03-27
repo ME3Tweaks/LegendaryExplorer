@@ -492,7 +492,12 @@ namespace ME3Explorer
         {
             if (WhichGame == 3)
             {
-                Task.Run(() => UpdateTOCs(WhichGame));
+                StatusUpdater.UpdateText("Updating TOCs...");
+                Task.Run(() =>
+                {
+                    UpdateTOCs(WhichGame);
+                    StatusUpdater.UpdateText("TOCs Updated!");
+                });
             }
             else
             {
