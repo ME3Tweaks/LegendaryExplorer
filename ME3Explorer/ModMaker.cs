@@ -752,15 +752,22 @@ namespace ME3Explorer
             backbone.AddToBackBone(b =>
             {
                 List<int> whichgames = new List<int>();
-                List<string> DLCPCCs = RunJobs(templist, ref whichgames);
-                if (DLCPCCs == null)
+                List<string> results = RunJobs(templist, ref whichgames);
+                if (results == null)
                     return true;
 
-                if (!cts.IsCancellationRequested)
+                if (!cts.IsCancellationRequested && results.Contains("Success"))
                     UpdateTOCS(whichgames);
 
                 MainProgBar.ChangeProgressBar(1, 1);
-                StatusUpdater.UpdateText(cts.IsCancellationRequested ? "Installation cancelled!" : "All Mods Installed!");
+                if (results.Any(x => x != "Success"))
+                {
+                    StatusUpdater.UpdateText("Some Mods Did Not Install! See Debug Output For Details.");
+                }
+                else
+                {
+                    StatusUpdater.UpdateText(cts.IsCancellationRequested ? "Installation cancelled!" : "All Mods Installed!");
+                }
                 return true;
             });
         }
@@ -787,7 +794,7 @@ namespace ME3Explorer
         private List<string> RunJobs(List<ModJob> joblist, ref List<int> whichgames)
         {         
             int count = 1;
-            List<string> DLCPCCs = new List<string>();
+            List<string> results = new List<string>();
 
             DialogResult result = DialogResult.Yes;
             this.Invoke(new Action(() =>
@@ -809,17 +816,17 @@ namespace ME3Explorer
                     break;
                 StatusUpdater.UpdateText("Installing Job: " + count + " (" + job.Name + ") of " + joblist.Count);
                 DebugOutput.PrintLn("Installing Job: " + count++ + " (" + job.Name + ") of " + joblist.Count);
-                DLCPCCs.AddRange(InstallJob(job));
+                results.AddRange(InstallJob(job));
                 MainProgBar.IncrementBar();
                 if (!whichgames.Contains(job.WhichGame))
                     whichgames.Add(job.WhichGame);
             }
-            return DLCPCCs;
+            return results;
         }
 
         private List<string> InstallJob(ModJob job)
         {
-            List<string> DLCPCCs = new List<string>();
+            List<string> results = new List<string>();
 
             ScriptCompiler sc = new ScriptCompiler();
             KFreonLib.Scripting.ModMaker.ModData = job.data;
@@ -827,19 +834,13 @@ namespace ME3Explorer
 
             try
             {
-                sc.Compile();
-                foreach (string pcc in job.PCCs)
-                {
-                    string dlcname = KFreonLib.Misc.Methods.GetDLCNameFromPath(pcc);
-                    if (dlcname != null && dlcname != "" && !DLCPCCs.Contains(dlcname))
-                        DLCPCCs.Add(dlcname);
-                }
+                results.Add(sc.Compile());
             }
             catch (Exception e)
             {
                 DebugOutput.PrintLn("Error occured: " + e.Message);
             }
-            return DLCPCCs;
+            return results;
         }
 
         private void PCCList_SelectedIndexChanged(object sender, EventArgs e)
@@ -926,7 +927,7 @@ namespace ME3Explorer
         {
             backbone.AddToBackBone(b =>
             {
-                List<string> modified = new List<string>();
+                List<string> results = new List<string>();
                 int count = 0;
                 this.Invoke(new Action(() => count = MainListView.SelectedIndices.Count));
                 MainProgBar.ChangeProgressBar(0, count);
@@ -952,7 +953,7 @@ namespace ME3Explorer
                         }
 
                         StatusUpdater.UpdateText("Installing Mod: " + (i + 1) + " (" + job.Name + ") of " + count);
-                        modified.AddRange(InstallJob(job));
+                        results.AddRange(InstallJob(job));
 
                         if (!whichgames.Contains(job.WhichGame))
                             whichgames.Add(job.WhichGame);
@@ -960,12 +961,19 @@ namespace ME3Explorer
                     MainProgBar.IncrementBar();
                 }
 
-                if (modified.Count != 0)
+                if (results.Contains("Success"))
                     UpdateTOCS(whichgames);
 
 
                 MainProgBar.ChangeProgressBar(1, 1);
-                StatusUpdater.UpdateText(continuingAfterDLC ? "All Mods Installed!" : "Installation stopped due to DLC.");
+                if (results.Any(x => x != "Success"))
+                {
+                    StatusUpdater.UpdateText("Some Mods Did Not Install! See Debug Output For Details.");
+                }
+                else
+                {
+                    StatusUpdater.UpdateText(continuingAfterDLC ? "All Mods Installed!" : "Installation stopped due to DLC.");
+                }
                 return true;
             });
         }

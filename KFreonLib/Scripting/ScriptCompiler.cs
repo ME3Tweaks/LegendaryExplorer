@@ -64,8 +64,9 @@ namespace KFreonLib.Scripting
             return result.CompiledAssembly;
         }
 
-        static void RunScript(Assembly script, RichTextBox r)
+        static string RunScript(Assembly script, RichTextBox r)
         {
+            string res = "Error";
             foreach (Type type in script.GetExportedTypes())
                 foreach (Type iface in type.GetInterfaces())
                     if (iface == typeof(IScript))
@@ -76,7 +77,7 @@ namespace KFreonLib.Scripting
                             IScript scriptObject = constructor.Invoke(null) as IScript;
                             if (scriptObject != null)
                             {
-                                r.Text = scriptObject.RunScript();
+                                r.Text = res = scriptObject.RunScript();
                             }
                             else
                             {
@@ -86,6 +87,7 @@ namespace KFreonLib.Scripting
                         {
                         }
                     }
+            return res;
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -110,9 +112,10 @@ namespace KFreonLib.Scripting
         }
 
         [STAThread]
-        public void Compile()
+        public string Compile()
         {
             string temp = rtb1.Text;
+            string res = "Error";
             /*temp = temp.Replace("Texplorer tex = new Texplorer();", "Texplorer tex = new Texplorer(true);");
             if (selectPCCModifier)
             {
@@ -121,8 +124,9 @@ namespace KFreonLib.Scripting
             //MessageBox.Show(temp);
             Assembly compiledScript = CompileCode(temp);
             if (compiledScript != null)
-                RunScript(compiledScript, rtb2);
+                res = RunScript(compiledScript, rtb2);
             GC.Collect();
+            return res;
         }
 
         private void rtb1_SelectionChanged(object sender, EventArgs e)

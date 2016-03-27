@@ -29,7 +29,7 @@ namespace SimpleScripts
             if (!File.Exists(file))
             {
                 bf.DebugPrintln("Cant find target pcc!");
-                return "";
+                return "Error";
             }
 			
             PCCObject pcc = new PCCObject(file);
@@ -46,7 +46,8 @@ namespace SimpleScripts
 			}
 			catch (Exception e)
 			{
-				DebugOutput.PrintLn("Failed to add names to PCC.", "Modmaker", e);
+				DebugOutput.PrintLn("Failed to add names to PCC.");
+				return "Error";
 			}
 			
 			
@@ -65,12 +66,12 @@ namespace SimpleScripts
             if (!found)
             {
                 bf.DebugPrintln("Cant find object!");
-                return "";
+                return "Error";
             }
             bf.DebugPrintln("Found!");
             pcc.altSaveToFile(pcc.pccFileName, true);
             bf.DebugPrintln("Done.");
-            return "";
+            return "Success";
         }
     }
 }
