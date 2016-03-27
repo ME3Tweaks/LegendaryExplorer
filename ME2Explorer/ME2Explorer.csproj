@@ -210,14 +210,6 @@
       <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
       <Name>AmaroK86.ImageMipMapHandler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj">
-      <Project>{3e5a67f3-cf3a-4cb2-a291-7882bef2fe02}</Project>
-      <Name>AmaroK86.MassEffect3.DLCBase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
-      <Project>{5fd88b3c-b192-42be-8b05-9cac3f7405fb}</Project>
-      <Name>AmaroK86.MassEffect3.DLCEditor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
       <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
       <Name>AmaroK86.MassEffect3.ZlibBlock</Name>

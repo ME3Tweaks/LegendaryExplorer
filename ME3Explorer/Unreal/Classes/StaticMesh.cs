@@ -181,7 +181,7 @@ namespace ME3Explorer.Unreal.Classes
                 isVolumetric = true;
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            props = PropertyReader.getPropList(pcc, memory);
+            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             Deserialize();
 
         }

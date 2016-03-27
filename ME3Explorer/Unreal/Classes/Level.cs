@@ -17,6 +17,7 @@ namespace ME3Explorer.Unreal.Classes
     public class Level
     {
         public PCCObject pcc;
+        public int Index;
         public byte[] memory;
         public int memlength;
 #region Levelcontent
@@ -51,12 +52,13 @@ namespace ME3Explorer.Unreal.Classes
             memory = Pcc.Exports[index].Data;
             memlength = memory.Length;
             pcc = Pcc;
+            Index = index;
             Deserialize(SimpleRead);
         }
 
         public void Deserialize(bool SimpleRead)
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, memory);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
             int off = props[props.Count() - 1].offend + 4;
             if (SimpleRead)
                 ReadObjectsSimple(off);

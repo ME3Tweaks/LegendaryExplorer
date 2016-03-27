@@ -155,7 +155,7 @@ namespace ME3Explorer
                     }
                     else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
                     {
-                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1].Data);
+                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1]);
                         var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -361,8 +361,7 @@ namespace ME3Explorer
             switch (pcc.Exports[n].ClassName)
             {
                 default:
-                    byte[] buff = pcc.Exports[n].Data;
-                    p = PropertyReader.getPropList(pcc, buff);
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     break;
             }
             pg = new PropGrid();
@@ -654,7 +653,7 @@ namespace ME3Explorer
                         byte[] buff = pcc.Exports[SequenceIndex].Data;
                         List<byte> ListBuff = new List<byte>(buff);
                         BitConverter.IsLittleEndian = true;
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[SequenceIndex]);
                         for (int j = 0; j < p.Count(); j++)
                         {
                             if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
@@ -721,15 +720,14 @@ namespace ME3Explorer
             {
                 name = parent.Label;
             }
-            byte[] buff = pcc.Exports[n].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            PCCObject.ExportEntry ent = pcc.Exports[n];
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.Names[p[i].Name] == name)
                     m = i;
             if (m == -1)
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
             byte[] buff2;
             switch (p[m].TypeVal)
             {

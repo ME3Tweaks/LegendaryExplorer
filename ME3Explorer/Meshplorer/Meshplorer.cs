@@ -124,7 +124,7 @@ namespace ME3Explorer.Meshplorer
             {
                 DisableLODs();
                 skm = new SkeletalMesh(pcc, index);
-                skmold = new SkeletalMeshOld(pcc, pcc.Exports[index].Data);
+                skmold = new SkeletalMeshOld(pcc, index);
                 hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
                 Preview3D.StatMesh = null;
                 Preview3D.SkelMesh = skm;

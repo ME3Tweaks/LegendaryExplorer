@@ -2181,8 +2181,7 @@ namespace ME3Explorer
                     OverallProgressBar.Value = OverallProgressBar.Maximum - 1;
                     OverallStatusLabel.Text = "Checking TOC.bin...";
                 }));
-                DebugOutput.PrintLn("Updating Basegame...");
-                Texplorer2.UpdateTOCs(pathBIOGame, WhichGame, DLCPath, modifiedDLC);
+                Texplorer2.UpdateTOCs(WhichGame);
 
                 // Heff: Cancellation check
                 if (cts.IsCancellationRequested)

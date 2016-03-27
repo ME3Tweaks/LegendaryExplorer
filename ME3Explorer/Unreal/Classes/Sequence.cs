@@ -26,7 +26,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, memory);
+            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             getSequenceObjects();
         }
 

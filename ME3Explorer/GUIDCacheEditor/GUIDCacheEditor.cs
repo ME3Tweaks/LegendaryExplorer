@@ -41,7 +41,7 @@ namespace ME3Explorer.GUIDCacheEditor
             try
             {
                 pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
-                ReadGUIDs(pcc.Exports[0].Data);
+                ReadGUIDs(pcc.Exports[0]);
                 RefreshLists();
             }
             catch (Exception ex)
@@ -50,9 +50,10 @@ namespace ME3Explorer.GUIDCacheEditor
             }
         }
 
-        public void ReadGUIDs(byte[] buff)
+        public void ReadGUIDs(PCCObject.ExportEntry export)
         {
-            props = PropertyReader.getPropList(pcc, buff);
+            props = PropertyReader.getPropList(pcc, export);
+            byte[] buff = export.Data;
             int pos = props[props.Count - 1].offend;
             int count = BitConverter.ToInt32(buff, pos);
             pos += 4;
@@ -154,7 +155,7 @@ namespace ME3Explorer.GUIDCacheEditor
                 return;
             MemoryStream m = new MemoryStream();
             byte[] buff = pcc.Exports[0].Data;
-            props = PropertyReader.getPropList(pcc, buff);
+            props = PropertyReader.getPropList(pcc, pcc.Exports[0]);
             int pos = props[props.Count - 1].offend;
             m.Write(buff, 0, pos);
             m.Write(BitConverter.GetBytes(GUIDs.Count), 0, 4);
