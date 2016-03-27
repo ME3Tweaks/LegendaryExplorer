@@ -829,7 +829,7 @@ namespace ME3Explorer.InterpEditor
         {
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             List<int> tracks = new List<int>();
             foreach (PropertyReader.Property p in props)
             {
