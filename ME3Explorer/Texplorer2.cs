@@ -2049,7 +2049,7 @@ namespace ME3Explorer
                 if (img.Format.InternalFormat != tex2D.texFormat)
                     sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToString().ToUpperInvariant());
 
-                if (img.NumMipMaps <= tex2D.Mips)
+                if (img.NumMipMaps < tex2D.Mips)
                     sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);
             }
 
@@ -2109,7 +2109,7 @@ namespace ME3Explorer
 
                 UpdateModifiedTex(tex2D, tex, ind);
 
-                UpdateTOCs(WhichGame);
+                //UpdateTOCs(WhichGame);
                 StatusUpdater.UpdateText("Replacement Complete!");
                 OutputBoxPrintLn("Texture: " + tex.TexName + " Replaced.");
                 this.Invoke(new Action(() => MainProgressBar.Value = MainProgressBar.Maximum));
