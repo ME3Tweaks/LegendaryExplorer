@@ -1748,8 +1748,23 @@ namespace ME3Explorer
             }
             else
             {
+                // KFreon: Filter out duplicates so multiples of the same texture under different names don't get extracted
+                List<TPFTexInfo> filteredDupsOut = new List<TPFTexInfo>();
+                for (int i = 0; i < LoadedTexes.Count; i++)
+                {
+                    var filt = LoadedTexes[i];
+                    if (filt.TreeDuplicates != null && filt.TreeDuplicates.Count > 0)
+                    {
+                        // KFreon: Any dup that refers to a previous index has already been added as that previous index.
+                        if (filt.TreeDuplicates.Any(ind => ind < i))
+                            continue;
+                    }
+
+                    filteredDupsOut.Add(filt);
+                }
+
                 // KFreon: Extract many based on predicate
-                List<TPFTexInfo> filtered = new List<TPFTexInfo>(LoadedTexes.Where(texn => predicate(texn)));
+                List<TPFTexInfo> filtered = new List<TPFTexInfo>(filteredDupsOut.Where(texn => predicate(texn)));
                 OverallProg.ChangeProgressBar(0, filtered.Count);
 
                 foreach (TPFTexInfo texn in filtered)
