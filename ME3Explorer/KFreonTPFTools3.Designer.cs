@@ -257,8 +257,8 @@
             this.RunAutofixButton.Enabled = false;
             this.RunAutofixButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunAutofixButton.Name = "RunAutofixButton";
-            this.RunAutofixButton.Size = new System.Drawing.Size(109, 29);
-            this.RunAutofixButton.Text = "Run Autofix";
+            this.RunAutofixButton.Size = new System.Drawing.Size(142, 29);
+            this.RunAutofixButton.Text = "Run Autofix ALL";
             this.RunAutofixButton.Click += new System.EventHandler(this.RunAutofixButton_Click);
             // 
             // HelpButton
@@ -1047,7 +1047,7 @@
             this.PCCSelectAllButton.Name = "PCCSelectAllButton";
             this.PCCSelectAllButton.Size = new System.Drawing.Size(100, 30);
             this.PCCSelectAllButton.TabIndex = 0;
-            this.PCCSelectAllButton.Text = "Select All";
+            this.PCCSelectAllButton.Text = "Check All";
             this.PCCSelectAllButton.UseVisualStyleBackColor = true;
             this.PCCSelectAllButton.Click += new System.EventHandler(this.PCCSelectAllButton_Click);
             // 
