@@ -130,41 +130,20 @@
   <data name="MenuExit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="materialviewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\materialviewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="shader" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\shader.fx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="asset_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\asset_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="soundexplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\soundexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="PSAViewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\PSAViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="udk_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\udk_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="level_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\level_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="meshexplorer1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\meshexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CheckboxDebugTlk" xml:space="preserve">
     <value>Test version (displays String ID before every line in-game)</value>
   </data>
   <data name="script_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\script_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="PSAViewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\PSAViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="version_checker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\version_checker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AlertExceptionTlkNotFound" xml:space="preserve">
     <value>Selected TLK file was not found or is corrupted.</value>
@@ -181,17 +160,8 @@
   <data name="dialogue_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\dialogue_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="me3exp_newbanner" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me3exp_newbanner.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CurrentInputTlkFilePath" xml:space="preserve">
     <value>Current path to TLK file:</value>
-  </data>
-  <data name="propertydumper" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\propertydumper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me3exp_favicon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\me3exp_favicon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="modmaker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\modmaker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,23 +172,11 @@
   <data name="script_compiler_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\script_compiler_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="texplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\texplorer.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="pcc_repacker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pcc_repacker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ue_codeeditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ue_codeeditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="versioncheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\versioncheck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DDSConverter_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\DDSConverter_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me2exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me2exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ApplicationName" xml:space="preserve">
     <value>Mass Effect 2 TLK Tool</value>
@@ -226,23 +184,11 @@
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="save_gameeditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\save_gameeditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="materialviewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\materialviewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me3exp_favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me3exp_favicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="HowToSubheader1" xml:space="preserve">
     <value>Getting text from TLK file</value>
   </data>
   <data name="TLK_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TLK_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me2exp_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me2exp_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="audio_extract_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\audio_extract_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -252,9 +198,6 @@
   </data>
   <data name="AboutTitle" xml:space="preserve">
     <value>About Mass Effect 2 TLK Tool</value>
-  </data>
-  <data name="PSKViewver1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\PSKViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="animation_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\animation_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -274,12 +217,6 @@
   <data name="Back" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="dlc_crackME2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dlc_crackME2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TOCbinUpdater_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\TOCbinUpdater_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MenuHelp" xml:space="preserve">
     <value>Help</value>
   </data>
@@ -295,14 +232,8 @@
   <data name="decompressor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\decompressor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="placeholder_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\placeholder_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="PAR_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PAR_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me1exp_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me1exp_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="me3creator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\me3creator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -310,18 +241,12 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning!</value>
   </data>
-  <data name="tocbin2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="AlertWritingTlkFinished" xml:space="preserve">
     <value>Finished creating TLK file.</value>
   </data>
   <data name="AlertExceptionTlkFormat" xml:space="preserve">
     <value>Error reading TLK file!
 Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.</value>
-  </data>
-  <data name="TOCbin_editorAK86_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TOCbin_editorAK86_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="class_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\class_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -332,23 +257,14 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="wwisebank_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\wwisebank_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="me3exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me3exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="psk_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\psk_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="lang" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\lang.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TextFilesFilter" xml:space="preserve">
     <value>XML Files (*.xml)|*.xml</value>
   </data>
   <data name="ChangeButton" xml:space="preserve">
     <value>Change...</value>
-  </data>
-  <data name="coaledit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\coaledit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="HowTo13" xml:space="preserve">
     <value>Repeat step two for 'Current path to output text file'. It should point to an XML file you would like to store your text in.</value>
@@ -362,29 +278,17 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="material_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\material_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="tocbin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="HowTo24" xml:space="preserve">
     <value>Hit 'Start!' and wait.</value>
   </data>
   <data name="subtitle_scanner_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\subtitle_scanner_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="me3exp_smallbanner_v1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me3exp_smallbanner_v1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tocbin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\tocbin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="AlertExceptionXmlNotFound" xml:space="preserve">
     <value>Selected XML file was not found or is corrupted.</value>
   </data>
   <data name="HowTo22" xml:space="preserve">
     <value>'Current path to XML file' should point to the previously created XML file (modified or not). If it doesn't - use the 'Change' button below it to select your file.</value>
-  </data>
-  <data name="texturetool_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\texturetool_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TOCbin_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TOCbin_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -395,17 +299,8 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="fxa_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fxa_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="backup_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\backup_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Patcher1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\Patcher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="psa_viewer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\psa_viewer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="propertydumper1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\propertydumper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CurrentInputXmlFilePath" xml:space="preserve">
     <value>Current path to XML file:</value>
@@ -424,9 +319,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   </data>
   <data name="SFARTOC_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\SFARTOC_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="soundexplorer1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\soundexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TlkFilesFilter" xml:space="preserve">
     <value>TLK Files (*.tlk)|*.tlk</value>
@@ -470,9 +362,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="HowTo23" xml:space="preserve">
     <value>'Current path to output TLK file' should point to a new TLK file which will be generated from selected XML file.</value>
   </data>
-  <data name="me1exp_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me1exp_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\info.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -482,26 +371,11 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="TLK_editor_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TLK_editor_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="save_gameoperator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\save_gameoperator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="me3exp_smallbanner_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\me3exp_smallbanner_v2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MenuAbout" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="Patcher" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\Patcher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="questmap_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\questmap_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="PSKViewver" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\PSKViewver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="meshexplorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\meshexplorer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="udk_converter_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\udk_converter_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -512,14 +386,8 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="AlertTlkLoadingFinished" xml:space="preserve">
     <value>Finished reading TLK file.</value>
   </data>
-  <data name="dlc_basiceditor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dlc_basiceditor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="HowTo11" xml:space="preserve">
     <value>Select 'Load TLK' tab.</value>
-  </data>
-  <data name="lang1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\lang.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done!</value>
@@ -531,9 +399,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
     <value>Error encountered. Please report it to the author (Gocek on social.bioware.com)!
 </value>
   </data>
-  <data name="document-save" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document-save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="HowTo15" xml:space="preserve">
     <value>You will see a message saying the work is done and all the data from the TLK file is now in a text file selected before.</value>
   </data>
@@ -542,12 +407,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   </data>
   <data name="coalesced_operator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coalesced_operator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="coaledit1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\coaledit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="dlc_editor2_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dlc_editor2_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="soundplorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\soundplorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -573,10 +432,16 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="sequence_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sequence_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="backup_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\backup_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document-save" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\document-save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="interpreter_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\interpreter_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TLKManager_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TLKManager_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="udk_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\udk_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
