@@ -100,7 +100,19 @@ namespace ME3Explorer.Unreal
             public bool bRead = false;
         }
 
-        public class ImportEntry
+        public interface IEntry
+        {
+            string ClassName { get; }
+            string GetFullPath { get; }
+            int idxClassName { get; }
+            int idxLink { get; }
+            int idxObjectName { get; }
+            string ObjectName { get; }
+            string PackageFullName { get; }
+            string PackageName { get; }
+        }
+
+        public class ImportEntry : IEntry
         {
             public static int byteSize = 28;
             internal byte[] data = new byte[byteSize];
@@ -108,7 +120,6 @@ namespace ME3Explorer.Unreal
 
             public int idxPackageFile { get { return BitConverter.ToInt32(data, 0); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 0, sizeof(int)); } }
             public int idxClassName   { get { return BitConverter.ToInt32(data, 8); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 8, sizeof(int)); } }
-            public int idxPackageName { get { return BitConverter.ToInt32(data, 16) - 1; } private set { Buffer.BlockCopy(BitConverter.GetBytes(value + 1), 0, data, 16, sizeof(int)); } }
             public int idxObjectName  { get { return BitConverter.ToInt32(data, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 20, sizeof(int)); } }
             public int idxLink        { get { return BitConverter.ToInt32(data, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 16, sizeof(int)); } }
             public int ObjectFlags    { get { return BitConverter.ToInt32(data, 24); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, data, 24, sizeof(int)); } }
@@ -116,22 +127,34 @@ namespace ME3Explorer.Unreal
             public string ClassName   { get { return pccRef.Names[idxClassName]; } }
             public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }
             public string ObjectName  { get { return pccRef.Names[idxObjectName]; } }
-            public string PackageName { get { int val = idxPackageName; if (val >= 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Package"; } }
+            public string PackageName { get { int val = idxLink; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Package"; } }
             public string PackageFullName
             {
                 get
                 {
                     string result = PackageName;
-                    int idxNewPackName = idxPackageName;
+                    int idxNewPackName = idxLink;
 
-                    while (idxNewPackName >= 0)
+                    while (idxNewPackName != 0)
                     {
-                        string newPackageName = pccRef.Exports[idxNewPackName].PackageName;
+                        string newPackageName = pccRef.getEntry(idxNewPackName).PackageName;
                         if (newPackageName != "Package")
                             result = newPackageName + "." + result;
-                        idxNewPackName = pccRef.Exports[idxNewPackName].idxPackageName;
+                        idxNewPackName = pccRef.getEntry(idxNewPackName).idxLink;
                     }
                     return result;
+                }
+            }
+
+            public string GetFullPath
+            {
+                get
+                {
+                    string s = "";
+                    if (PackageFullName != "Class" && PackageFullName != "Package")
+                        s += PackageFullName + ".";
+                    s += ObjectName;
+                    return s;
                 }
             }
 
@@ -149,7 +172,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public class ExportEntry : ICloneable // class containing info about export entry (header info + data)
+        public class ExportEntry : IEntry, ICloneable // class containing info about export entry (header info + data)
         {
             internal byte[] info; // holds data about export header, not the export data.
             public PCCObject pccRef;
@@ -228,7 +251,7 @@ namespace ME3Explorer.Unreal
                     return s;
                 }
             }
-            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 + 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
+            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
 
             public int DataSize   { get { return BitConverter.ToInt32(info, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
             public int DataOffset { get { return BitConverter.ToInt32(info, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }
@@ -701,6 +724,19 @@ namespace ME3Explorer.Unreal
                 s = "Class";
             }
             return s;
+        }
+
+        /// <summary>
+        ///     gets Export or Import entry
+        /// </summary>
+        /// <param name="index">unreal index</param>
+        public IEntry getEntry(int index)
+        {
+            if (index > 0 && index < ExportCount)
+                return Exports[index - 1];
+            if (index * -1 > 0 && index * -1 < ImportCount)
+                return Imports[-index -1];
+            return null;
         }
 
         public bool isName(int index)
