@@ -1025,7 +1025,7 @@
             this.CopySelectedClipBoardButton.Name = "CopySelectedClipBoardButton";
             this.CopySelectedClipBoardButton.Size = new System.Drawing.Size(186, 30);
             this.CopySelectedClipBoardButton.TabIndex = 2;
-            this.CopySelectedClipBoardButton.Text = "Copy Selected To Clipboard";
+            this.CopySelectedClipBoardButton.Text = "Copy checked To Clipboard";
             this.CopySelectedClipBoardButton.UseVisualStyleBackColor = true;
             this.CopySelectedClipBoardButton.Click += new System.EventHandler(this.CopySelectedClipBoardButton_Click);
             // 

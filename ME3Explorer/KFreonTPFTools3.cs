@@ -3566,12 +3566,12 @@ namespace ME3Explorer
         {
             StringBuilder sb = new StringBuilder();
 
-            if (PCCsCheckListBox.SelectedItems.Count <= 0)
+            if (PCCsCheckListBox.CheckedItems.Count <= 0)
                 return;
 
-            for (int i = 0; i < PCCsCheckListBox.SelectedItems.Count; i++)
+            for (int i = 0; i < PCCsCheckListBox.CheckedItems.Count; i++)
             {
-                string str = PCCsCheckListBox.SelectedItems[i].Text;
+                string str = PCCsCheckListBox.CheckedItems[i].Text;
                 sb.AppendLine(str);
             }
 
