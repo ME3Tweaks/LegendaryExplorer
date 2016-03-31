@@ -1728,6 +1728,13 @@ namespace ME3Creator
                         Props = new List<PropertyReader.Property>();
                         if (leafSize < 24)
                             break;
+                        int test1 = BitConverter.ToInt32(p.raw, pos);
+                        int test2 = BitConverter.ToInt32(p.raw, pos + 4);
+                        if (!importpcc.isName(test1) || test2 != 0)
+                                break;
+                        if (size > 24 && importpcc.GetName(test1) != "None")
+                            if (BitConverter.ToInt32(p.raw, pos + 12) != 0)
+                                break;
                         try
                         {
                             Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
