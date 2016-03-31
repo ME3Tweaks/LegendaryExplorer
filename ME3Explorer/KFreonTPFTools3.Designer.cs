@@ -166,7 +166,7 @@
             this.TopStrip.Location = new System.Drawing.Point(0, 0);
             this.TopStrip.Name = "TopStrip";
             this.TopStrip.Padding = new System.Windows.Forms.Padding(0, 0, 21, 0);
-            this.TopStrip.Size = new System.Drawing.Size(1084, 25);
+            this.TopStrip.Size = new System.Drawing.Size(1069, 25);
             this.TopStrip.TabIndex = 0;
             this.TopStrip.Text = "TopStrip";
             // 
@@ -257,8 +257,8 @@
             this.RunAutofixButton.Enabled = false;
             this.RunAutofixButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunAutofixButton.Name = "RunAutofixButton";
-            this.RunAutofixButton.Size = new System.Drawing.Size(73, 22);
-            this.RunAutofixButton.Text = "Run Autofix";
+            this.RunAutofixButton.Size = new System.Drawing.Size(96, 22);
+            this.RunAutofixButton.Text = "Run Autofix ALL";
             this.RunAutofixButton.Click += new System.EventHandler(this.RunAutofixButton_Click);
             // 
             // HelpButton
@@ -408,10 +408,10 @@
             this.toolStripLabel1,
             this.toolStripSeparator4,
             this.VersionLabel});
-            this.BottomStrip.Location = new System.Drawing.Point(0, 837);
+            this.BottomStrip.Location = new System.Drawing.Point(0, 763);
             this.BottomStrip.Name = "BottomStrip";
             this.BottomStrip.Padding = new System.Windows.Forms.Padding(0, 0, 21, 0);
-            this.BottomStrip.Size = new System.Drawing.Size(1084, 25);
+            this.BottomStrip.Size = new System.Drawing.Size(1069, 25);
             this.BottomStrip.TabIndex = 1;
             this.BottomStrip.Text = "BottomStrip";
             // 
@@ -686,7 +686,7 @@
             this.GotoDupButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.GotoDupButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.GotoDupButton.Name = "GotoDupButton";
-            this.GotoDupButton.Size = new System.Drawing.Size(117, 22);
+            this.GotoDupButton.Size = new System.Drawing.Size(117, 19);
             this.GotoDupButton.Text = "Goto Next Duplicate";
             this.GotoDupButton.Click += new System.EventHandler(this.GotoDupButton_Click);
             // 
@@ -973,7 +973,7 @@
             this.PCCsPage.Location = new System.Drawing.Point(4, 22);
             this.PCCsPage.Margin = new System.Windows.Forms.Padding(0);
             this.PCCsPage.Name = "PCCsPage";
-            this.PCCsPage.Size = new System.Drawing.Size(343, 375);
+            this.PCCsPage.Size = new System.Drawing.Size(460, 461);
             this.PCCsPage.TabIndex = 1;
             this.PCCsPage.Text = "PCC\'s";
             this.PCCsPage.UseVisualStyleBackColor = true;
@@ -984,11 +984,13 @@
             this.PCCsCheckListBox.CheckBoxes = true;
             this.PCCsCheckListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
+            this.PCCsCheckListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PCCsCheckListBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.PCCsCheckListBox.HideSelection = false;
             this.PCCsCheckListBox.Location = new System.Drawing.Point(0, 0);
             this.PCCsCheckListBox.Margin = new System.Windows.Forms.Padding(43, 24, 43, 24);
             this.PCCsCheckListBox.Name = "PCCsCheckListBox";
-            this.PCCsCheckListBox.Size = new System.Drawing.Size(545, 284);
+            this.PCCsCheckListBox.Size = new System.Drawing.Size(460, 461);
             this.PCCsCheckListBox.TabIndex = 0;
             this.PCCsCheckListBox.UseCompatibleStateImageBehavior = false;
             this.PCCsCheckListBox.View = System.Windows.Forms.View.Details;
@@ -1011,10 +1013,10 @@
             // 
             // CopyClipboardButton
             // 
-            this.CopyClipboardButton.Location = new System.Drawing.Point(281, 0);
+            this.CopyClipboardButton.Location = new System.Drawing.Point(286, 0);
             this.CopyClipboardButton.Margin = new System.Windows.Forms.Padding(0);
             this.CopyClipboardButton.Name = "CopyClipboardButton";
-            this.CopyClipboardButton.Size = new System.Drawing.Size(105, 20);
+            this.CopyClipboardButton.Size = new System.Drawing.Size(115, 20);
             this.CopyClipboardButton.TabIndex = 3;
             this.CopyClipboardButton.Text = "Copy All to Clipboard";
             this.CopyClipboardButton.UseVisualStyleBackColor = true;
@@ -1022,18 +1024,18 @@
             // 
             // CopySelectedClipBoardButton
             // 
-            this.CopySelectedClipBoardButton.Location = new System.Drawing.Point(147, 0);
+            this.CopySelectedClipBoardButton.Location = new System.Drawing.Point(134, 0);
             this.CopySelectedClipBoardButton.Margin = new System.Windows.Forms.Padding(0);
             this.CopySelectedClipBoardButton.Name = "CopySelectedClipBoardButton";
-            this.CopySelectedClipBoardButton.Size = new System.Drawing.Size(124, 20);
+            this.CopySelectedClipBoardButton.Size = new System.Drawing.Size(152, 20);
             this.CopySelectedClipBoardButton.TabIndex = 2;
-            this.CopySelectedClipBoardButton.Text = "Copy Selected To Clipboard";
+            this.CopySelectedClipBoardButton.Text = "Copy checked To Clipboard";
             this.CopySelectedClipBoardButton.UseVisualStyleBackColor = true;
             this.CopySelectedClipBoardButton.Click += new System.EventHandler(this.CopySelectedClipBoardButton_Click);
             // 
             // ExportPCCListButton
             // 
-            this.ExportPCCListButton.Location = new System.Drawing.Point(73, 0);
+            this.ExportPCCListButton.Location = new System.Drawing.Point(67, 0);
             this.ExportPCCListButton.Margin = new System.Windows.Forms.Padding(0);
             this.ExportPCCListButton.Name = "ExportPCCListButton";
             this.ExportPCCListButton.Size = new System.Drawing.Size(67, 20);
@@ -1049,7 +1051,7 @@
             this.PCCSelectAllButton.Name = "PCCSelectAllButton";
             this.PCCSelectAllButton.Size = new System.Drawing.Size(67, 20);
             this.PCCSelectAllButton.TabIndex = 0;
-            this.PCCSelectAllButton.Text = "Select All";
+            this.PCCSelectAllButton.Text = "Check All";
             this.PCCSelectAllButton.UseVisualStyleBackColor = true;
             this.PCCSelectAllButton.Click += new System.EventHandler(this.PCCSelectAllButton_Click);
             // 
@@ -1090,7 +1092,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1084, 862);
+            this.ClientSize = new System.Drawing.Size(1069, 788);
             this.Controls.Add(this.MainSplitter);
             this.Controls.Add(this.TopStrip);
             this.Controls.Add(this.BottomStrip);

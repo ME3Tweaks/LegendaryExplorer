@@ -553,7 +553,7 @@ namespace KFreonLib.Scripting
                 {
                     string script = "";
                     DebugOutput.PrintLn("Validating pccs");
-                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, ObjectName, WhichGame, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
+                    OrigPCCs = ValidateGivenModPCCs(ref PCCs, ExpIDs, WhichGame, pathBIOGame, out multiples, out MultiInds, ref retval, JobType == "TEXTURE");
 
                     // KFreon: Texture job
                     if (JobType == "TEXTURE")
@@ -577,7 +577,7 @@ namespace KFreonLib.Scripting
             }
         }
 
-        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, string ObjectName, int WhichGame, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
+        private static List<string> ValidateGivenModPCCs(ref List<string> PCCs, List<int> ExpIDs, int WhichGame, string pathBIOGame, out List<string> multiples, out List<int> MultiInds, ref bool retval, bool isTexture)
         {
             multiples = new List<string>();
             MultiInds = new List<int>();

@@ -142,7 +142,7 @@ namespace KFreonLib.Textures
             files.Add(pcc.pccFileName);
             List<int> expids = new List<int>();
             expids.Add(ExpID);
-            InfoInitialise(files, expids, hash, tex2D.imgList.Count, new List<ITexture2D>(), WhichGame, pathBIOGame);
+            InfoInitialise(files, expids, hash, tex2D.imgList.Where(t => t.offset != -1).Count(), new List<ITexture2D>(), WhichGame, pathBIOGame);
 
             FullPackage = pcc.Exports[ExpID].PackageFullName;
 

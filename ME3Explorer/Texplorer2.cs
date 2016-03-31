@@ -492,7 +492,12 @@ namespace ME3Explorer
         {
             if (WhichGame == 3)
             {
-                Task.Run(() => UpdateTOCs(WhichGame));
+                StatusUpdater.UpdateText("Updating TOCs...");
+                Task.Run(() =>
+                {
+                    UpdateTOCs(WhichGame);
+                    StatusUpdater.UpdateText("TOCs Updated!");
+                });
             }
             else
             {
@@ -1634,6 +1639,8 @@ namespace ME3Explorer
             message.Add("Texture Name:  " + tex2D.texName);
             message.Add("Format:  " + tex2D.texFormat.ToString().Replace("DDS_", ""));
             message.Add("Width:  " + info.imgSize.width + ",  Height:  " + info.imgSize.height);
+            int mipcount = tex2D.imgList.Where(t => t.offset != -1).Count();
+            message.Add("Mipmaps:  " + (mipcount > 1 ? "Yes (" + mipcount + ")" : "No (1)"));
             //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
             // Heff: Were ALL modified textures assigned the shadowmap texture group?
             message.Add("LODGroup:  " + (String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
@@ -2102,7 +2109,7 @@ namespace ME3Explorer
 
                 UpdateModifiedTex(tex2D, tex, ind);
 
-                UpdateTOCs(WhichGame);
+                //UpdateTOCs(WhichGame);
                 StatusUpdater.UpdateText("Replacement Complete!");
                 OutputBoxPrintLn("Texture: " + tex.TexName + " Replaced.");
                 this.Invoke(new Action(() => MainProgressBar.Value = MainProgressBar.Maximum));

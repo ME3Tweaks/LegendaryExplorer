@@ -953,8 +953,6 @@ namespace ME3Explorer
                     DebugOutput.PrintLn("Preview failed: " + ex.Message);
                 }
             });
-
-            MainTreeView.SelectedNode.Checked = !MainTreeView.SelectedNode.Checked;
         }
 
         private void ClearPreview()
@@ -1084,9 +1082,9 @@ namespace ME3Explorer
             PreventPCC = true;
 
             // KFreon: Show pccs
+            PCCsCheckListBox.Items.Clear();
             if (tex.TexName != null)
             {
-                PCCsCheckListBox.Items.Clear();
                 int count = 0;
                 foreach (string file in tex.OriginalFiles)
                 {
@@ -1114,7 +1112,7 @@ namespace ME3Explorer
             if (PCCsCheckListBox.CheckedIndices.Count == PCCsCheckListBox.Items.Count)
                 state = false;
 
-            this.Invoke(new Action(() => PCCSelectAllButton.Text = (!state ? "Deselect All" : "Select All")));
+            this.Invoke(new Action(() => PCCSelectAllButton.Text = (!state ? "Uncheck All" : "Check All")));
 
             if (SelectAll)
                 for (int i = 0; i < PCCsCheckListBox.Items.Count; i++)
@@ -1374,6 +1372,8 @@ namespace ME3Explorer
                     return true;
                 });
             }
+
+            
         }
 
         private void AnalyseVsTree()
@@ -1416,6 +1416,7 @@ namespace ME3Explorer
             gooey.ModifyControl("Rebuild", true);
             gooey.ModifyControl("AutofixSingleButton", false);
 
+            CheckNodes(LoadedTexes);
         }
 
         private bool CheckTextures()
@@ -1747,8 +1748,23 @@ namespace ME3Explorer
             }
             else
             {
+                // KFreon: Filter out duplicates so multiples of the same texture under different names don't get extracted
+                List<TPFTexInfo> filteredDupsOut = new List<TPFTexInfo>();
+                for (int i = 0; i < LoadedTexes.Count; i++)
+                {
+                    var filt = LoadedTexes[i];
+                    if (filt.TreeDuplicates != null && filt.TreeDuplicates.Count > 0)
+                    {
+                        // KFreon: Any dup that refers to a previous index has already been added as that previous index.
+                        if (filt.TreeDuplicates.Any(ind => ind < i))
+                            continue;
+                    }
+
+                    filteredDupsOut.Add(filt);
+                }
+
                 // KFreon: Extract many based on predicate
-                List<TPFTexInfo> filtered = new List<TPFTexInfo>(LoadedTexes.Where(texn => predicate(texn)));
+                List<TPFTexInfo> filtered = new List<TPFTexInfo>(filteredDupsOut.Where(texn => predicate(texn)));
                 OverallProg.ChangeProgressBar(0, filtered.Count);
 
                 foreach (TPFTexInfo texn in filtered)
@@ -2383,11 +2399,19 @@ namespace ME3Explorer
             TPFTexInfo tex;
             int index = GetSelectedTex(out tex);
 
-            List<int> indicies = new List<int>(tex.TreeDuplicates.Where(ind => ind > index));
+            myTreeNode node = GetDupNode(tex, index);
+            
+            MainTreeView.SelectedNode = node;
+        }
+
+        myTreeNode GetDupNode(TPFTexInfo tex, int forwardDupIndex)
+        {
+            List<int> indicies = new List<int>(tex.TreeDuplicates.Where(ind => ind > forwardDupIndex));
             if (indicies.Count == 0)
                 indicies = tex.TreeDuplicates;
             myTreeNode node = (myTreeNode)MainTreeView.Nodes[indicies[0]];
-            MainTreeView.SelectedNode = node;
+
+            return node;
         }
 
         private void PromoteDupButton_Click(object sender, EventArgs e)
@@ -2867,7 +2891,51 @@ namespace ME3Explorer
             }
             Overall.UpdateText("Autofix complete." + (!retval ? "Some errors occured." : ""));
             OverallProg.ChangeProgressBar(1, 1);
+
+            // KFreon: Check those already checked.
+            CheckNodes(texes);
+
             return retval;
+        }
+
+        void CheckNodes(IEnumerable<TPFTexInfo> texes)
+        {
+            MainTreeView.Invoke(new Action(() =>
+            {
+                foreach (var tex in texes)
+                {
+                    string nodeName = tex.FormatTexDetails(isAnalysed);
+                    myTreeNode texNode = null;
+
+                    // KFreon: Find node with correct name
+                    int index = 0;
+                    foreach (myTreeNode node in MainTreeView.Nodes)
+                    {
+                        if (node.Text == nodeName)
+                        {
+                            texNode = node;
+                            break;
+                        }
+                        index++;
+                    }
+
+                    if (texNode == null)
+                        continue;
+
+                    texNode.Checked = true;
+
+                    // KFreon: Check tree duplicates as well since they're basically the same texture
+                    if (tex.TreeDuplicates != null && tex.TreeDuplicates.Count != 0)
+                    {
+                        foreach (int ind in tex.TreeDuplicates)
+                        {
+                            myTreeNode dupNode = GetDupNode(tex, index);
+                            dupNode.Checked = true;
+                            index = ind; // KFreon: Update it's "current position" as GetDupNode looks for the one closest to 'index'.
+                        }
+                    }
+                }
+            }));
         }
 
         
@@ -3498,12 +3566,12 @@ namespace ME3Explorer
         {
             StringBuilder sb = new StringBuilder();
 
-            if (PCCsCheckListBox.SelectedItems.Count <= 0)
+            if (PCCsCheckListBox.CheckedItems.Count <= 0)
                 return;
 
-            for (int i = 0; i < PCCsCheckListBox.SelectedItems.Count; i++)
+            for (int i = 0; i < PCCsCheckListBox.CheckedItems.Count; i++)
             {
-                string str = PCCsCheckListBox.SelectedItems[i].Text;
+                string str = PCCsCheckListBox.CheckedItems[i].Text;
                 sb.AppendLine(str);
             }
 

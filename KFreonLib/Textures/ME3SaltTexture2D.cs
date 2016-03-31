@@ -1592,8 +1592,7 @@ namespace KFreonLib.Textures
 
         public int Mips
         {
-            get;
-            set;
+            get; set;
         }
 
 
