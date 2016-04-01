@@ -43,6 +43,7 @@ namespace ME3Explorer.Interpreter2
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
+            this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
             this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
             this.arraySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.arrayViewerDropdown = new System.Windows.Forms.ToolStripComboBox();
@@ -61,7 +62,7 @@ namespace ME3Explorer.Interpreter2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
+            this.enumDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -105,6 +106,7 @@ namespace ME3Explorer.Interpreter2
             this.collapseAllButton,
             this.setValueSeparator,
             this.proptext,
+            this.enumDropdown,
             this.setPropertyButton,
             this.addArrayElementButton,
             this.deleteArrayElement,
@@ -186,6 +188,17 @@ namespace ME3Explorer.Interpreter2
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
             this.setPropertyButton.Click += new System.EventHandler(this.setProperty_Click);
+            // 
+            // addArrayElementButton
+            // 
+            this.addArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
+            this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addArrayElementButton.Name = "addArrayElementButton";
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
+            this.addArrayElementButton.Text = "Add Array Element";
+            this.addArrayElementButton.Visible = false;
+            this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
             // 
             // deleteArrayElement
             // 
@@ -365,16 +378,14 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // addArrayElementButton
+            // enumDropdown
             // 
-            this.addArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
-            this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
-            this.addArrayElementButton.Text = "Add Array Element";
-            this.addArrayElementButton.Visible = false;
-            this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
+            this.enumDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.enumDropdown.DropDownWidth = 200;
+            this.enumDropdown.MaxDropDownItems = 20;
+            this.enumDropdown.Name = "enumDropdown";
+            this.enumDropdown.Size = new System.Drawing.Size(121, 25);
+            this.enumDropdown.Visible = false;
             // 
             // Interpreter2
             // 
@@ -435,5 +446,6 @@ namespace ME3Explorer.Interpreter2
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripButton deleteArrayElement;
         private System.Windows.Forms.ToolStripButton addArrayElementButton;
+        private System.Windows.Forms.ToolStripComboBox enumDropdown;
     }
 }

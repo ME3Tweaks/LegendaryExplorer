@@ -342,6 +342,7 @@ namespace ME3Explorer.Interpreter2
             s += "Size: " + p.size.ToString() + " Value: ";
             int propertyType = getType(pcc.getNameEntry(p.type));
             int idx;
+            byte val;
             switch (propertyType)
             {
                 case INT_PROPERTY:
@@ -360,7 +361,7 @@ namespace ME3Explorer.Interpreter2
                     s += "\"";
                     break;
                 case BOOL_PROPERTY:
-                    byte val = memory[p.offset + 24];
+                    val = memory[p.offset + 24];
                     s += (val == 1).ToString();
                     break;
                 case FLOAT_PROPERTY:
@@ -373,9 +374,17 @@ namespace ME3Explorer.Interpreter2
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case BYTE_PROPERTY:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    int idx2 = BitConverter.ToInt32(memory, p.offset + 32);
-                    s += "\"" + pcc.getNameEntry(idx) + "\",\"" + pcc.getNameEntry(idx2) + "\"";
+                    if(p.size == 1)
+                    {
+                        val = memory[p.offset + 32];
+                        s += val.ToString();
+                    }
+                    else
+	                {
+                        idx = BitConverter.ToInt32(memory, p.offset + 24);
+                        int idx2 = BitConverter.ToInt32(memory, p.offset + 32);
+                        s += "\"" + pcc.getNameEntry(idx) + "\",\"" + pcc.getNameEntry(idx2) + "\""; 
+                    }
                     break;
                 case ARRAY_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
@@ -503,11 +512,15 @@ namespace ME3Explorer.Interpreter2
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
+            proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = false;
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
                 //can't attempt to parse this.
-                arrayPropertyDropdown.Enabled = true;
+                addArrayElementButton.Visible = false;
+                deleteArrayElement.Visible = false;
+                arrayPropertyDropdown.Enabled = false;
+                LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
                 return;
             }
             try
@@ -552,7 +565,7 @@ namespace ME3Explorer.Interpreter2
             }
             catch (Exception ex)
             {
-                addArrayElementButton.Visible = true;
+                addArrayElementButton.Visible = false;
                 deleteArrayElement.Visible = false;
                 arrayPropertyDropdown.Enabled = false;
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = false;
@@ -602,6 +615,35 @@ namespace ME3Explorer.Interpreter2
                         }
                         proptext.Text = s;
                         visible = true;
+                        break;
+                    case "ByteProperty":
+                        string enumName = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
+                        if (enumName != "None")
+                        {
+                            try
+                            {
+                                List<string> values = getEnumValues(enumName);
+                                if (values != null)
+                                {
+                                    enumDropdown.Items.Clear();
+                                    enumDropdown.Items.AddRange(values.ToArray());
+                                    proptext.Visible = false;
+                                    setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = true;
+                                    string curVal = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 32));
+                                    int idx = values.IndexOf(curVal);
+                                    enumDropdown.SelectedIndex = idx;
+                                    return;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        else
+                        {
+                            proptext.Text = memory[pos + 32].ToString();
+                            visible = true;
+                        }
                         break;
                 }
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = visible;
@@ -756,6 +798,19 @@ namespace ME3Explorer.Interpreter2
                         if (int.TryParse(proptext.Text, out i) && (i == 0 || i == 1))
                         {
                             memory[pos + 24] = (byte)i;
+                            RefreshMem();
+                        }
+                        break;
+                    case "ByteProperty":
+                        if (enumDropdown.Visible)
+                        {
+                            i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                            WriteMem(pos + 32, BitConverter.GetBytes(i));
+                            RefreshMem();
+                        }
+                        else if(int.TryParse(proptext.Text, out i) && i >= 0 && i <= 255)
+                        {
+                            memory[pos + 32] = (byte)i;
                             RefreshMem();
                         }
                         break;
@@ -1111,6 +1166,34 @@ namespace ME3Explorer.Interpreter2
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
             addArrayLeaf();
+        }
+
+        public List<string> getEnumValues(string enumName)
+        {
+            if (enumName == "None" || enumName == "")
+            {
+                return null;
+            }
+            PCCObject[] pccs = new PCCObject[] { pcc, new PCCObject(ME3Directory.cookedPath + "Engine.pcc"), new PCCObject(ME3Directory.cookedPath + "SFXGame.pcc")};
+            foreach (PCCObject pccRef in pccs)
+            {
+                for (int i = 0; i < pccRef.Exports.Count; i++)
+                {
+                    List<PCCObject.ExportEntry> Exports = pccRef.Exports;
+                    if (Exports[i].ClassName == "Enum" && Exports[i].ObjectName == enumName)
+                    {
+                        List<string> values = new List<string>();
+                        byte[] buff = Exports[i].Data;
+                        int count = BitConverter.ToInt32(buff, 20);
+                        for (int j = 0; j < count; j++)
+                        {
+                            values.Add(pccRef.Names[BitConverter.ToInt32(buff, 24 + j * 8)]);
+                        }
+                        return values;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

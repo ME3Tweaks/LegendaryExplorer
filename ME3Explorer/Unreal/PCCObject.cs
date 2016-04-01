@@ -752,6 +752,15 @@ namespace ME3Explorer.Unreal
             return (index >= 0 && index < Exports.Count);
         }
 
+        public int FindNameOrAdd(string name)
+        {
+            for (int i = 0; i < Names.Count; i++)
+                if (Names[i] == name)
+                    return i;
+            Names.Add(name);
+            return Names.Count - 1;
+        }
+
         public void addName(string name)
         {
             Names.Add(name);
