@@ -226,8 +226,8 @@ namespace ME3Explorer
             {
                 if (DLCName == mainPCCFolder)
                 {
-                    pcc = new PCCObject(currentPCC);
                     currentPCC = ME3Directory.cookedPath + t.Text;
+                    pcc = new PCCObject(currentPCC);
                 }
                 else
                 {
