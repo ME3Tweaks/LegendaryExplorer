@@ -1195,137 +1195,144 @@ namespace ME3Explorer
             if (!File.Exists(fulpath))
                 return false;
 
-            using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame))
+            PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
+            
+            if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || String.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
+                throw new InvalidDataException("Export is not correct class or name!");
+
+            //Load the texture from the pcc
+            Textures.ITexture2D tex2D = pcc.CreateTexture2D(IDs[0], pathBIOGame);
             {
-                if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || String.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
-                    throw new InvalidDataException("Export is not correct class or name!");
-
-                //Load the texture from the pcc
-                using (Textures.ITexture2D tex2D = pcc.CreateTexture2D(IDs[0], pathBIOGame))
-                {
                     
-                    tex2D.allPccs = pccs;
-                    tex2D.expIDs = IDs;
-                    int noImg = tex2D.imgList.Count;
+                tex2D.allPccs = pccs;
+                tex2D.expIDs = IDs;
+                int noImg = tex2D.imgList.Count;
 
-                    DebugOutput.PrintLn("Now replacing textures in texture: " + tex2D.texName, true);
-                    Debug.WriteLine("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
-                    WriteDebug("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
+                DebugOutput.PrintLn("Now replacing textures in texture: " + tex2D.texName, true);
+                Debug.WriteLine("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
+                WriteDebug("Now replacing textures in texture: " + tex2D.texName + "  ID: " + IDs[0]);
 
-                    ImageFile im = null;
+                ImageFile im = null;
+                try
+                {
+                    im = new DDS("", imgdata);
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
+                    return false;
+                }
+
+
+
+                // KFreon: TESTING
+                Debug.WriteLine("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
+                WriteDebug("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
+
+
+
+                //The texture is a single image, therefore use replace function
+                if (noImg == 1)
+                {
+                    string imgSize = tex2D.imgList[0].imgSize.width.ToString() + "x" + tex2D.imgList[0].imgSize.height.ToString();
                     try
                     {
-                        im = new DDS("", imgdata);
+                        tex2D.replaceImage(imgSize, im, pathBIOGame);
                     }
                     catch
                     {
-                        Console.WriteLine("Error: Unable to detect input DDS format, skipping.");
-                        return false;
+                        // KFreon:  If replace fails, it's single image thus use the singleimageupscale function
+                        tex2D.singleImageUpscale(im, pathBIOGame);
                     }
+                }
 
-
-
-                    // KFreon: TESTING
-                    Debug.WriteLine("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
-                    WriteDebug("First pcc: " + fulpath + "    ArcName: " + tex2D.arcName);
-
-
-
-                    //The texture is a single image, therefore use replace function
-                    if (noImg == 1)
+                //If the texture has multiple images, then check the input texture for MIPMAPS
+                else
+                {
+                    bool hasMips = true;
+                    ImageFile imgFile = im;
+                    /*try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
+                    catch (Exception e)
                     {
-                        string imgSize = tex2D.imgList[0].imgSize.width.ToString() + "x" + tex2D.imgList[0].imgSize.height.ToString();
+                        hasMips = false;
+                    }*/
+                    using (ImageEngineImage img = new ImageEngineImage(imgdata))
+                        hasMips = img.NumMipMaps > 1;
+
+
+                    if (!hasMips)
+                    {
+                        string imgSize = imgFile.imgSize.width.ToString() + "x" + imgFile.imgSize.height.ToString();
                         try
                         {
-                            tex2D.replaceImage(imgSize, im, pathBIOGame);
+                            //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
+                            tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
                         }
-                        catch
-                        {
-                            // KFreon:  If replace fails, it's single image thus use the singleimageupscale function
-                            tex2D.singleImageUpscale(im, pathBIOGame);
-                        }
-                    }
-
-                    //If the texture has multiple images, then check the input texture for MIPMAPS
-                    else
-                    {
-                        bool hasMips = true;
-                        ImageFile imgFile = im;
-                        /*try { ImageMipMapHandler imgMipMap = new ImageMipMapHandler("", imgdata); }
                         catch (Exception e)
                         {
-                            hasMips = false;
-                        }*/
-                        using (ImageEngineImage img = new ImageEngineImage(imgdata))
-                            hasMips = img.NumMipMaps > 1;
-
-
-                        if (!hasMips)
-                        {
-                            string imgSize = imgFile.imgSize.width.ToString() + "x" + imgFile.imgSize.height.ToString();
-                            try
-                            {
-                                //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
-                                tex2D.replaceImage(imgSize, imgFile, pathBIOGame);
-                            }
-                            catch (Exception e)
-                            {
-                                tex2D.addBiggerImage(imgFile, pathBIOGame);
-                            }
+                            tex2D.addBiggerImage(imgFile, pathBIOGame);
                         }
-                        else
+                    }
+                    else
+                    {
+                        try
                         {
-                            try
+                            tex2D.OneImageToRuleThemAll(imgFile, pathBIOGame, imgdata);
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.Message.Contains("Format"))
                             {
-                                tex2D.OneImageToRuleThemAll(imgFile, pathBIOGame, imgdata);
-                            }
-                            catch (Exception e)
-                            {
-                                if (e.Message.Contains("Format"))
-                                {
-                                    MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
-                                    return false;
-                                }
+                                MessageBox.Show(texname + " is in the wrong format." + Environment.NewLine + Environment.NewLine + e.Message);
+                                return false;
                             }
                         }
                     }
-
-                    Debug.WriteLine("After replace: " + tex2D.arcName);
-                    WriteDebug("After replace: " + tex2D.arcName);
-
-
-                    DebugOutput.PrintLn("Replacement complete. Now saving pcc: " + pcc.pccFileName, true);
-
-                    PCCObjects.IExportEntry expEntry = pcc.Exports[IDs[0]];
-                    expEntry.SetData(tex2D.ToArray(expEntry.DataOffset, pcc));
-                    expEntry.hasChanged = true;
-                    pcc.Exports[IDs[0]] = expEntry;
-
-                    pcc.saveToFile(pcc.pccFileName);
-
-                    int modCount = tex2D.allPccs.Count;
-
-                    // KFreon: Elapsed time stuff
-                    int start = Environment.TickCount;
-
-                    if (modCount > 1)
-                        for (int item = 1; item < modCount; item++)
-                        {
-                            Debug.WriteLine(pccs[item] + "   " + IDs[item]);
-                            WriteDebug(pccs[item] + "   " + IDs[item]);
-                            if (!SaveFile(pccs, IDs, tex2D, item))
-                                break;
-                        }
-                    Debug.WriteLine("");
-                    WriteDebug("");
-
-                    // KFreon: More timer stuff
-                    TimeSpan ts = TimeSpan.FromMilliseconds(Environment.TickCount - start);
-                    Console.WriteLine(ts.Duration().ToString());
-                    DebugOutput.Print("All PCC updates finished. ");
-                    return true;
                 }
+
+                Debug.WriteLine("After replace: " + tex2D.arcName);
+                WriteDebug("After replace: " + tex2D.arcName);
+
+
+                DebugOutput.PrintLn("Replacement complete. Now saving pcc: " + pcc.pccFileName, true);
+
+                PCCObjects.IExportEntry expEntry = pcc.Exports[IDs[0]];
+                var tt = tex2D.ToArray(expEntry.DataOffset, pcc);
+                expEntry.SetData(tt);
+                expEntry.hasChanged = true;
+                pcc.Exports[IDs[0]] = expEntry;
+
+                pcc.saveToFile(pcc.pccFileName);
+
+                int modCount = tex2D.allPccs.Count;
+
+                // KFreon: Elapsed time stuff
+                int start = Environment.TickCount;
+
+                // KFreon: Refresh objects after saving
+                pcc = KFreonLib.PCCObjects.Creation.CreatePCCObject(pcc.pccFileName, WhichGame);
+                tex2D = pcc.CreateTexture2D(IDs[0], pathBIOGame);
+
+
+                if (modCount > 1)
+                    for (int item = 1; item < modCount; item++)
+                    {
+                        Debug.WriteLine(pccs[item] + "   " + IDs[item]);
+                        WriteDebug(pccs[item] + "   " + IDs[item]);
+                        if (!SaveFile(pccs, IDs, tex2D, item))
+                            break;
+                    }
+                Debug.WriteLine("");
+                WriteDebug("");
+
+                // KFreon: More timer stuff
+                TimeSpan ts = TimeSpan.FromMilliseconds(Environment.TickCount - start);
+                Console.WriteLine(ts.Duration().ToString());
+                DebugOutput.Print("All PCC updates finished. ");
+                return true;
             }
+
+            pcc = null;
         }
 
         public static void UpdateTOCs(int WhichGame = 3)

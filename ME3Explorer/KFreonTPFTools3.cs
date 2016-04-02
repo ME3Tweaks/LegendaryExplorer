@@ -1030,6 +1030,14 @@ namespace ME3Explorer
 
         private void DisplayInfo(TPFTexInfo tex)
         {
+            try
+            {
+                PCCsCheckListBox.Items.Clear();
+            }
+            catch
+            {
+                // Irrelevent
+            }
             string message = "";
             FirstHalfInfoState(true);
 
@@ -1082,8 +1090,7 @@ namespace ME3Explorer
             PreventPCC = true;
 
             // KFreon: Show pccs
-            PCCsCheckListBox.Items.Clear();
-            if (tex.TexName != null)
+            if (tex.TexName != null && !tex.isDef)
             {
                 int count = 0;
                 foreach (string file in tex.OriginalFiles)
@@ -2110,7 +2117,7 @@ namespace ME3Explorer
             if (cts.IsCancellationRequested)
                 return false;
             OverallProg.ChangeProgressBar(0, validtexes.Count + 1);
-            int count = 1;
+            int count = 0;
             DebugOutput.PrintLn("Textures loaded = " + validtexes.Count);
             DebugOutput.PrintLn("Num valid: " + valids);
 
