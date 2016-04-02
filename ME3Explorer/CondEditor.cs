@@ -1023,7 +1023,23 @@ namespace ME3Explorer
             if (!Tokenizer())
                 return false;
             Parser();
-            CodeGen();
+            try
+            {
+                CodeGen();
+            }
+            catch (OverflowException e)
+            {
+                if (e.Message == "Value was either too large or too small for an Int16.")
+                {
+                    MessageBox.Show("The maximum value of a 16-bit Integer is 32,767"); 
+                }
+                else
+                {
+                    MessageBox.Show(e.Message);
+                }
+                treeView1.Nodes.Clear();
+                return false;
+            }
             return true;
         }
 
