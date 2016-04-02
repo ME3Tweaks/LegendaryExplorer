@@ -324,6 +324,7 @@
     <Compile Include="PCCEditor2\DLCDialog.Designer.cs">
       <DependentUpon>DLCDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sequence Editor\SequenceObjectInfo.cs" />
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">

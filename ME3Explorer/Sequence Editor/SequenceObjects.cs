@@ -1345,6 +1345,14 @@ namespace ME3Explorer.SequenceObjects
         {
             InLinks = new List<InputLink>();
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            if (pcc.Exports[index].ClassName == "SequenceReference")
+            {
+                PropertyReader.Property prop = PropertyReader.getPropOrNull(pcc, pcc.Exports[index], "oSequenceReference");
+                if (prop != null)
+                {
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[prop.Value.IntValue - 1]);
+                }
+            }
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "InputLinks")
@@ -1373,6 +1381,33 @@ namespace ME3Explorer.SequenceObjects
                     InLinks.Add(l);
                     for (int i = 0; i < p2.Count(); i++)
                         pos += p2[i].raw.Length;
+                }
+            }
+            else
+            {
+                try
+                {
+                    SequenceObjectInfo.Info info = SequenceObjectInfo.getInfo(pcc.Exports[index].ClassName, pcc);
+                    if (info != null)
+                    {
+                        for (int i = 0; i < info.inputLinks.Count; i++)
+                        {
+                            InputLink l = new InputLink();
+                            l.Desc = info.inputLinks[i];
+                            l.hasName = true;
+                            l.index = i;
+                            l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                            l.node.Brush = outputBrush;
+                            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
+                            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                            l.node.AddInputEventListener(new InputDragHandler());
+                            InLinks.Add(l);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    InLinks.Clear();
                 }
             }
             if(this.Tag != null)

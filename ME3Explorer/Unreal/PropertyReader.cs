@@ -305,6 +305,19 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
+        public static Property getPropOrNull(PCCObject pcc, PCCObject.ExportEntry export, string propName)
+        {
+            List<Property> props = getPropList(pcc, export);
+            foreach (Property prop in props)
+            {
+                if (pcc.getNameEntry(prop.Name) == propName)
+                {
+                    return prop;
+                }
+            }
+            return null;
+        }
+
         public static List<Property> getPropList(PCCObject pcc, PCCObject.ExportEntry export)
         {
             Application.DoEvents();

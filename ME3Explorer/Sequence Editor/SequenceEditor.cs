@@ -55,6 +55,7 @@ namespace ME3Explorer
                     useGlobalSequenceRefSavesToolStripMenuItem.Checked = (bool)options["GlobalSeqRefView"];
                 SObj.OutputNumbers = showOutputNumbersToolStripMenuItem.Checked;
             }
+            SequenceObjectInfo.loadfromJSON();
         }
 
         private struct SaveData
@@ -180,6 +181,8 @@ namespace ME3Explorer
 
         private void LoadSequence(int index, bool fromFile = true)
         {
+            graphEditor.Enabled = false;
+            graphEditor.UseWaitCursor = true;
             SequenceIndex = index;
             toolStripStatusLabel2.Text = "\t#" + SequenceIndex + pcc.Exports[index].ObjectName;
             GetProperties(SequenceIndex);
@@ -191,6 +194,8 @@ namespace ME3Explorer
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             GenerateGraph(SequenceIndex);
             selectedIndex = -1;
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
         }
 
         private void SetupJSON(int index)
