@@ -420,8 +420,8 @@ namespace ME3Explorer
             Overall.UpdateText(orig);
 
             // KFreon: Change GUI stuff
-            gooey.ModifyControl("ExtractTOP", false);
-            gooey.ModifyControl("ClearAll", false);
+            gooey.ModifyControl("ExtractTOP", LoadedTexes.Count > 0);
+            gooey.ModifyControl("ClearAll", LoadedTexes.Count > 0);
             gooey.ModifyControl("Rebuild", false);
             gooey.ModifyControl("RunAutofix", false);
             gooey.ModifyControl("extractInvalid", false);
@@ -2250,6 +2250,9 @@ namespace ME3Explorer
 
         private void ChangeButton_Click(object sender, EventArgs e)
         {
+            if (isAnalysed)
+                return;
+
             // KFreon: Change trees
             int whichgame = -1;
             switch (WhichGame)
