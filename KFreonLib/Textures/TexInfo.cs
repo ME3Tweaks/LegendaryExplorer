@@ -539,7 +539,7 @@ namespace KFreonLib.Textures
                 text = TexName;
                 string ending = " <----";
 
-                if (Path.GetExtension(this.FileName) != ".dds")
+                if (Path.GetExtension(this.FileName.Trim()) != ".dds")
                 {
                     ending += "NOT DDS FORMAT";
                     text = "----> " + text + ending;
