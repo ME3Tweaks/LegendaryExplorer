@@ -32,6 +32,7 @@ namespace ME3Explorer
             InitializeComponent();
             disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
             TalkFiles.LoadSavedTlkList();
+            Unreal.UnrealObjectInfo.loadfromJSON();
         }
 
         private async void DoDLCCheck()

@@ -239,6 +239,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogEditor\DialogVisObjects.cs" />
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="DLCEditor2\DLCEditor2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -324,7 +330,7 @@
     <Compile Include="PCCEditor2\DLCDialog.Designer.cs">
       <DependentUpon>DLCDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sequence Editor\SequenceObjectInfo.cs" />
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
@@ -812,6 +818,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DLCEditor2\DLCEditor2.resx">
       <DependentUpon>DLCEditor2.cs</DependentUpon>

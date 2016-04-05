@@ -32,41 +32,12 @@ namespace ME3Explorer.DialogEditor
         private void button1_Click(object sender, EventArgs e)
         {            
             res = new BioConversation.EntryListReplyListStruct();
-            int n = pcc.findName("EReplyCategory");
-            if (n == -1)
-            {
-                MessageBox.Show("Please add Name \"EReplyCategory\"");
-                state = -1;
-                return;
-            }
             res.Paraphrase = textBox1.Text;
             res.refParaphrase = Int32.Parse(textBox2.Text);
-            res.CategoryType = n;
-            res.CategoryValue = Int32.Parse(textBox3.Text);
+            res.CategoryType = pcc.FindNameOrAdd("EReplyCategory");
+            res.CategoryValue = pcc.FindNameOrAdd(comboBox1.Text);
             res.Index = Int32.Parse(textBox4.Text);
             state = 1;
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            int i=0;
-            if (Int32.TryParse(textBox3.Text, out i))
-            {
-                label5.Text = "Preview: " + pcc.getNameEntry(i);
-            }
-            else
-            {
-                label5.Text = "Preview: fail";
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter name to search\nExamples:\nREPLY_AUTOCONTINUE\nREPLY_CATEGORY_DEFAULT\nREPLY_STANDARD", "ME3Explorer", "REPLY_CATEGORY_DEFAULT", 0, 0);
-            if (result == "") return;
-            int n = pcc.findName(result);
-            if (n != -1)
-                textBox3.Text = n.ToString();
         }
     }
 }

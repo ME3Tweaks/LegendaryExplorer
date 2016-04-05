@@ -310,7 +310,6 @@ namespace ME3Explorer.DialogEditor
             if (p.Parent == null)//MainProps
             {
                 string propname = t.Text.Split(':')[0].Trim();
-                string[] reslist;
                 switch (propname)
                 {
                     case "Listener Index":
@@ -337,12 +336,9 @@ namespace ME3Explorer.DialogEditor
                         rp.IsMajorDecision = (result == "1");
                         break;
                     case "ReplyType":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name indicies", "ME3Explorer", Dialog.ReplyList[n].ReplyTypeType + " , " + Dialog.ReplyList[n].ReplyTypeValue, 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EReplyTypes"), pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
                         if (result == "") return;
-                        reslist = result.Split(',');
-                        if (reslist.Length != 2) return;                                               
-                        if (int.TryParse(reslist[0], out i)) rp.ReplyTypeType = i;
-                        if (int.TryParse(reslist[1], out i)) rp.ReplyTypeValue= i;
+                        rp.ReplyTypeValue= pcc.FindNameOrAdd(result);
                         break;
                     case "Text":
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME3Explorer", Dialog.ReplyList[n].Text, 0, 0);
@@ -420,12 +416,9 @@ namespace ME3Explorer.DialogEditor
                         rp.AlwaysHideSubtitle = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name indicies", "ME3Explorer", Dialog.ReplyList[n].GUIStyleType + " , " + Dialog.ReplyList[n].GUIStyleValue, 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
                         if (result == "") return;
-                        reslist = result.Split(',');
-                        if (reslist.Length != 2) return;
-                        if (int.TryParse(reslist[0], out i)) rp.GUIStyleType = i;
-                        if (int.TryParse(reslist[1], out i)) rp.GUIStyleValue = i;
+                        rp.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.ReplyList[n] = rp;
@@ -535,7 +528,6 @@ namespace ME3Explorer.DialogEditor
             if (p.Parent == null)//MainProps
             {
                 string propname = t.Text.Split(':')[0].Trim();
-                string[] reslist;
                 switch (propname)
                 {
                     case "SpeakerIndex":
@@ -630,12 +622,9 @@ namespace ME3Explorer.DialogEditor
                         el.AlwaysHideSubtitle = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name indicies", "ME3Explorer", el.GUIStyleType + " , " + el.GUIStyleValue, 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(el.GUIStyleValue));
                         if (result == "") return;
-                        reslist = result.Split(',');
-                        if (reslist.Length != 2) return;
-                        if (int.TryParse(reslist[0], out i)) el.GUIStyleType = i;
-                        if (int.TryParse(reslist[1], out i)) el.GUIStyleValue = i;
+                        el.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.EntryList[n] = el;
@@ -658,12 +647,9 @@ namespace ME3Explorer.DialogEditor
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new StringRef value for \"refParaphrase\"", "ME3Explorer", rpe.refParaphrase.ToString(), 0, 0);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.refParaphrase = i;
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name indicies for \"Category\"", "ME3Explorer", rpe.CategoryType + " , " + rpe.CategoryValue, 0, 0);
+                    result = InputComboBox.GetValue("Please select new value for \"Category\"", UnrealObjectInfo.getEnumValues("EReplyCategory"), pcc.getNameEntry(rpe.CategoryValue));
                     if (result == "") return;
-                    string[] reslist = result.Split(',');
-                    if (reslist.Length != 2) return;
-                    if (int.TryParse(reslist[0], out i)) rpe.CategoryType = i;
-                    if (int.TryParse(reslist[1], out i)) rpe.CategoryValue = i;
+                    rpe.CategoryValue = pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;
                 }
                 if (p.Index == 1) //Speaker List
@@ -850,7 +836,7 @@ namespace ME3Explorer.DialogEditor
                 BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
                 ar.textBox1.Text = tr.Paraphrase;
                 ar.textBox2.Text = tr.refParaphrase.ToString();
-                ar.textBox3.Text = tr.CategoryValue.ToString();
+                ar.comboBox1.SelectedItem = pcc.getNameEntry(tr.CategoryValue);
                 ar.textBox4.Text = tr.Index.ToString();
             }
             ar.Show();

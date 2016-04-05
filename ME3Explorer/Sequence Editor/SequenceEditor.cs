@@ -55,7 +55,6 @@ namespace ME3Explorer
                     useGlobalSequenceRefSavesToolStripMenuItem.Checked = (bool)options["GlobalSeqRefView"];
                 SObj.OutputNumbers = showOutputNumbersToolStripMenuItem.Checked;
             }
-            SequenceObjectInfo.loadfromJSON();
         }
 
         private struct SaveData

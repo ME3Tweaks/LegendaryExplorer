@@ -1387,13 +1387,13 @@ namespace ME3Explorer.SequenceObjects
             {
                 try
                 {
-                    SequenceObjectInfo.Info info = SequenceObjectInfo.getInfo(pcc.Exports[index].ClassName, pcc);
-                    if (info != null)
+                    List<string> inputLinks = UnrealObjectInfo.getSequenceObjectInfo(pcc.Exports[index].ClassName)?.inputLinks;
+                    if (inputLinks != null)
                     {
-                        for (int i = 0; i < info.inputLinks.Count; i++)
+                        for (int i = 0; i < inputLinks.Count; i++)
                         {
                             InputLink l = new InputLink();
-                            l.Desc = info.inputLinks[i];
+                            l.Desc = inputLinks[i];
                             l.hasName = true;
                             l.index = i;
                             l.node = PPath.CreateRectangle(0, -4, 10, 8);

@@ -622,7 +622,7 @@ namespace ME3Explorer.Interpreter2
                         {
                             try
                             {
-                                List<string> values = getEnumValues(enumName);
+                                List<string> values = UnrealObjectInfo.getEnumValues(enumName);
                                 if (values != null)
                                 {
                                     enumDropdown.Items.Clear();
@@ -1166,34 +1166,6 @@ namespace ME3Explorer.Interpreter2
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
             addArrayLeaf();
-        }
-
-        public List<string> getEnumValues(string enumName)
-        {
-            if (enumName == "None" || enumName == "")
-            {
-                return null;
-            }
-            PCCObject[] pccs = new PCCObject[] { pcc, new PCCObject(ME3Directory.cookedPath + "Engine.pcc"), new PCCObject(ME3Directory.cookedPath + "SFXGame.pcc")};
-            foreach (PCCObject pccRef in pccs)
-            {
-                for (int i = 0; i < pccRef.Exports.Count; i++)
-                {
-                    List<PCCObject.ExportEntry> Exports = pccRef.Exports;
-                    if (Exports[i].ClassName == "Enum" && Exports[i].ObjectName == enumName)
-                    {
-                        List<string> values = new List<string>();
-                        byte[] buff = Exports[i].Data;
-                        int count = BitConverter.ToInt32(buff, 20);
-                        for (int j = 0; j < count; j++)
-                        {
-                            values.Add(pccRef.Names[BitConverter.ToInt32(buff, 24 + j * 8)]);
-                        }
-                        return values;
-                    }
-                }
-            }
-            return null;
         }
     }
 }
