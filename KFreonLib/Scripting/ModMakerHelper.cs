@@ -1005,7 +1005,11 @@ namespace KFreonLib.Scripting
             MatchCollection matches = reg.Matches(script);
             foreach (Match m in matches)
             {
-                names.Add(m.Captures[0].Value);
+                try
+                {
+                    names.Add(m.Groups[1].Value);
+                }
+                catch (Exception){}
             }
 
             return names;
