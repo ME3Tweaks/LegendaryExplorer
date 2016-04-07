@@ -103,10 +103,10 @@ namespace ME2Explorer
             {
                 int f = -1;
                 for (int i = 0; i < classes.Count(); i++)
-                    if (classes[i] == ent.ClassNameID)
+                    if (classes[i] == ent.idxClassName)
                         f = i;
                 if (f == -1)
-                    classes.Add(ent.ClassNameID);
+                    classes.Add(ent.idxClassName);
             }
             bool run = true;
             while (run)
@@ -187,12 +187,12 @@ namespace ME2Explorer
                     PCCObject.ExportEntry e = pcc.Exports[i];
                     List<int> LinkList = new List<int>();
                     LinkList.Add(i + 1);
-                    int Link = e.LinkID;
+                    int Link = e.idxLink;
                     while (Link != 0)
                     {
                         LinkList.Add(Link);
                         if (Link > 0)
-                            Link = pcc.Exports[Link - 1].LinkID;
+                            Link = pcc.Exports[Link - 1].idxLink;
                         else
                             Link = pcc.Imports[-Link - 1].link;
                     }
@@ -210,7 +210,7 @@ namespace ME2Explorer
                     {
                         LinkList.Add(Link);
                         if (Link > 0)
-                            Link = pcc.Exports[Link - 1].LinkID;
+                            Link = pcc.Exports[Link - 1].idxLink;
                         else
                             Link = pcc.Imports[-Link - 1].link;
                     }
@@ -329,8 +329,8 @@ namespace ME2Explorer
                 int off = pcc.Imports.Count;
                 RefreshCombos();
                 comboBox1.SelectedIndex = pcc.Exports[n].ObjectNameID;
-                comboBox2.SelectedIndex = pcc.Exports[n].ClassNameID + off;
-                comboBox3.SelectedIndex = pcc.Exports[n].LinkID + off;
+                comboBox2.SelectedIndex = pcc.Exports[n].idxClassName + off;
+                comboBox3.SelectedIndex = pcc.Exports[n].idxLink + off;
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].info);
             }
         }
@@ -442,7 +442,7 @@ namespace ME2Explorer
                 return;
             int clas = classes[m];
             for (int i = n; i < pcc.Exports.Count(); i++)
-                if (pcc.Exports[i].ClassNameID == clas)
+                if (pcc.Exports[i].idxClassName == clas)
                 {
                     listBox1.SelectedIndex = i;
                     return;
@@ -486,7 +486,7 @@ namespace ME2Explorer
             if (String.IsNullOrEmpty(result))
                 return;
 
-            pcc.AddName(result);
+            pcc.FindNameOrAdd(result);
             MessageBox.Show(result + ": has been added to the namelist", "Done", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 

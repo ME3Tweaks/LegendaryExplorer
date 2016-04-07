@@ -26,7 +26,7 @@ namespace ME3Explorer.Unreal
 
         public static void loadfromJSON()
         {
-            string path = System.Windows.Forms.Application.StartupPath + "//exec//ObjectInfo.json";
+            string path = System.Windows.Forms.Application.StartupPath + "//exec//ME3ObjectInfo.json";
 
             try
             {

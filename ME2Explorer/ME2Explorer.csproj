@@ -97,6 +97,12 @@
     <Compile Include="DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="DLCCrack\DataProtection.cs" />
     <Compile Include="DLCCrack\GiveEntitlements.cs">
       <SubType>Form</SubType>
@@ -153,6 +159,7 @@
     <Compile Include="TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
@@ -163,6 +170,9 @@
     <Compile Include="Unreal\UnrealFlags.cs" />
     <None Include="Resources\dialogue_editor_64x64.png" />
     <None Include="Resources\TLKManager_icon_64x64.png" />
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>

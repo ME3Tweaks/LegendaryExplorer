@@ -16,6 +16,7 @@ namespace ME2Explorer
             InitializeComponent();
             taskbar.Strip = toolStrip1;
             TalkFiles.LoadSavedTlkList();
+            Unreal.UnrealObjectInfo.loadfromJSON();
         }
         
         private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)

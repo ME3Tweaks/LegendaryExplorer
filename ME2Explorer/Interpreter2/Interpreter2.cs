@@ -339,6 +339,7 @@ namespace ME2Explorer.Interpreter2
             s += "Size: " + p.size.ToString() + " Value: ";
             int propertyType = getType(pcc.getNameEntry(p.type));
             int idx;
+            byte val;
             switch (propertyType)
             {
                 case INT_PROPERTY:
@@ -357,7 +358,7 @@ namespace ME2Explorer.Interpreter2
                     s += "\"";
                     break;
                 case BOOL_PROPERTY:
-                    byte val = memory[p.offset + 24];
+                    val = memory[p.offset + 24];
                     s += (val == 1).ToString();
                     break;
                 case FLOAT_PROPERTY:
@@ -370,8 +371,16 @@ namespace ME2Explorer.Interpreter2
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case BYTE_PROPERTY:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" + pcc.getNameEntry(idx) + "\"";
+                    if (p.size == 1)
+                    {
+                        val = memory[p.offset + 32];
+                        s += val.ToString();
+                    }
+                    else
+                    {
+                        idx = BitConverter.ToInt32(memory, p.offset + 24);
+                        s += "\"" + pcc.getNameEntry(idx) + "\"";
+                    }
                     break;
                 case ARRAY_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
@@ -492,11 +501,15 @@ namespace ME2Explorer.Interpreter2
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
+            proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = false;
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
                 //can't attempt to parse this.
-                arrayPropertyDropdown.Enabled = true;
+                addArrayElementButton.Visible = false;
+                deleteArrayElement.Visible = false;
+                arrayPropertyDropdown.Enabled = false;
+                LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
                 return;
             }
             try
@@ -541,7 +554,7 @@ namespace ME2Explorer.Interpreter2
             }
             catch (Exception ex)
             {
-                addArrayElementButton.Visible = true;
+                addArrayElementButton.Visible = false;
                 deleteArrayElement.Visible = false;
                 arrayPropertyDropdown.Enabled = false;
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = false;
@@ -591,6 +604,33 @@ namespace ME2Explorer.Interpreter2
                         }
                         proptext.Text = s;
                         visible = true;
+                        break;
+                    case "ByteProperty":
+                        int size = BitConverter.ToInt32(memory, pos + 16);
+                        if (size > 1)
+                        {
+                            try
+                            {
+                                List<string> values = UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
+                                if (values != null)
+                                {
+                                    enumDropdown.Items.Clear();
+                                    enumDropdown.Items.AddRange(values.ToArray());
+                                    proptext.Visible = false;
+                                    setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = true;
+                                    enumDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
+                                    return;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        else
+                        {
+                            proptext.Text = memory[pos + 24].ToString();
+                            visible = true;
+                        }
                         break;
                 }
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = visible;
@@ -743,6 +783,19 @@ namespace ME2Explorer.Interpreter2
                         break;
                     case "BoolProperty":
                         if (int.TryParse(proptext.Text, out i) && (i == 0 || i == 1))
+                        {
+                            memory[pos + 24] = (byte)i;
+                            RefreshMem();
+                        }
+                        break;
+                    case "ByteProperty":
+                        if (enumDropdown.Visible)
+                        {
+                            i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                            WriteMem(pos + 24, BitConverter.GetBytes(i));
+                            RefreshMem();
+                        }
+                        else if (int.TryParse(proptext.Text, out i) && i >= 0 && i <= 255)
                         {
                             memory[pos + 24] = (byte)i;
                             RefreshMem();

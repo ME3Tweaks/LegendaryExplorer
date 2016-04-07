@@ -307,7 +307,6 @@ namespace ME2Explorer
             if (p.Parent == null)//MainProps
             {
                 string propname = t.Text.Split(':')[0].Trim();
-                string[] reslist;
                 switch (propname)
                 {
                     case "Listener Index":
@@ -322,9 +321,9 @@ namespace ME2Explorer
                         rp.Unskippable = (result == "1");
                         break;
                     case "ReplyType":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name indicies", "ME2Explorer", Dialog.ReplyList[n].ReplyTypeValue.ToString(), 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EReplyTypes"), pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
                         if (result == "") return;
-                        if (int.TryParse(result, out i)) rp.ReplyTypeValue= i;
+                        rp.ReplyTypeValue = pcc.FindNameOrAdd(result);
                         break;
                     case "Text":
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME2Explorer", Dialog.ReplyList[n].Text, 0, 0);
@@ -396,9 +395,9 @@ namespace ME2Explorer
                         rp.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name index", "ME2Explorer", Dialog.ReplyList[n].GUIStyleValue.ToString(), 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
                         if (result == "") return;
-                        if (int.TryParse(result, out i)) rp.GUIStyleValue = i;
+                        rp.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.ReplyList[n] = rp;
@@ -503,7 +502,6 @@ namespace ME2Explorer
             if (p.Parent == null)//MainProps
             {
                 string propname = t.Text.Split(':')[0].Trim();
-                string[] reslist;
                 switch (propname)
                 {
                     case "SpeakerIndex":
@@ -592,9 +590,9 @@ namespace ME2Explorer
                         el.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name index", "ME2Explorer", el.GUIStyleValue.ToString(), 0, 0);
+                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(el.GUIStyleValue));
                         if (result == "") return;
-                        if (int.TryParse(result, out i)) el.GUIStyleValue = i;
+                        el.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.EntryList[n] = el;
@@ -617,9 +615,9 @@ namespace ME2Explorer
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new StringRef value for \"refParaphrase\"", "ME2Explorer", rpe.refParaphrase.ToString(), 0, 0);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.refParaphrase = i;
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name index for \"Category\"", "ME2Explorer", rpe.CategoryValue.ToString(), 0, 0);
+                    result = InputComboBox.GetValue("Please select new value for \"Category\"", UnrealObjectInfo.getEnumValues("EReplyCategory"), pcc.getNameEntry(rpe.CategoryValue));
                     if (result == "") return;
-                    if (int.TryParse(result, out i)) rpe.CategoryValue = i;
+                    rpe.CategoryValue = pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;
                 }
                 if (p.Index == 1) //Speaker List
@@ -794,7 +792,7 @@ namespace ME2Explorer
                 BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
                 ar.textBox1.Text = tr.Paraphrase;
                 ar.textBox2.Text = tr.refParaphrase.ToString();
-                ar.textBox3.Text = tr.CategoryValue.ToString();
+                ar.comboBox1.SelectedItem = pcc.getNameEntry(tr.CategoryValue);
                 ar.textBox4.Text = tr.Index.ToString();
             }
             ar.Show();

@@ -256,10 +256,10 @@ namespace ME2Explorer.Unreal.Classes
             }
             else
             {
-                buffer.WriteValueS64(pcc.AddName("LODGroup"));
-                buffer.WriteValueS64(pcc.AddName("ByteProperty"));
+                buffer.WriteValueS64(pcc.FindNameOrAdd("LODGroup"));
+                buffer.WriteValueS64(pcc.FindNameOrAdd("ByteProperty"));
                 buffer.WriteValueS64(8);
-                buffer.WriteValueS64(pcc.AddName("TEXTUREGROUP_LightAndShadowMap"));
+                buffer.WriteValueS64(pcc.FindNameOrAdd("TEXTUREGROUP_LightAndShadowMap"));
             }
 
             foreach (KeyValuePair<string, SaltPropertyReader.Property> kvp in properties)
@@ -270,8 +270,8 @@ namespace ME2Explorer.Unreal.Classes
                 {
                     for (int j = 0; j < UnpackNum; j++)
                     {
-                        buffer.WriteValueS64(pcc.AddName(prop.Name));
-                        buffer.WriteValueS64(pcc.AddName(prop.TypeVal.ToString()));
+                        buffer.WriteValueS64(pcc.FindNameOrAdd(prop.Name));
+                        buffer.WriteValueS64(pcc.FindNameOrAdd(prop.TypeVal.ToString()));
                         buffer.WriteValueS32(prop.Size);
                         buffer.WriteValueS32(j);
                         buffer.WriteValueF32(prop.Value.FloatValue, Endian.Little);
@@ -279,7 +279,7 @@ namespace ME2Explorer.Unreal.Classes
                     continue;
                 }
 
-                buffer.WriteValueS64(pcc.AddName(prop.Name));
+                buffer.WriteValueS64(pcc.FindNameOrAdd(prop.Name));
                 if (prop.Name == "None")
                 {
                     for (int j = 0; j < 12; j++)
@@ -287,7 +287,7 @@ namespace ME2Explorer.Unreal.Classes
                 }
                 else
                 {
-                    buffer.WriteValueS64(pcc.AddName(prop.TypeVal.ToString()));
+                    buffer.WriteValueS64(pcc.FindNameOrAdd(prop.TypeVal.ToString()));
                     buffer.WriteValueS64(prop.Size);
 
                     switch (prop.TypeVal)
@@ -299,7 +299,7 @@ namespace ME2Explorer.Unreal.Classes
                             buffer.WriteValueS32(prop.Value.IntValue);
                             break;
                         case SaltPropertyReader.Type.NameProperty:
-                            buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            buffer.WriteValueS64(pcc.FindNameOrAdd(prop.Value.StringValue));
                             break;
                         case SaltPropertyReader.Type.StrProperty:
                             buffer.WriteValueS32(prop.Value.StringValue.Length + 1);
@@ -308,13 +308,13 @@ namespace ME2Explorer.Unreal.Classes
                             buffer.WriteByte(0);
                             break;
                         case SaltPropertyReader.Type.StructProperty:
-                            buffer.WriteValueS64(pcc.AddName(prop.Value.StringValue));
+                            buffer.WriteValueS64(pcc.FindNameOrAdd(prop.Value.StringValue));
                             foreach (SaltPropertyReader.PropertyValue value in prop.Value.Array)
                                 buffer.WriteValueS32(value.IntValue);
                             break;
                         case SaltPropertyReader.Type.ByteProperty:
-                            buffer.WriteValueS32(pcc.AddName(prop.Value.StringValue));
-                            buffer.WriteValueS32(pcc.AddName(prop.Value.String2));
+                            buffer.WriteValueS32(pcc.FindNameOrAdd(prop.Value.StringValue));
+                            buffer.WriteValueS32(pcc.FindNameOrAdd(prop.Value.String2));
                             break;
                         case SaltPropertyReader.Type.FloatProperty:
                             buffer.WriteValueF32(prop.Value.FloatValue, Endian.Little);
@@ -872,7 +872,7 @@ namespace ME2Explorer.Unreal.Classes
         public void ChangeTexFormat(string newFormat, PCCObject pcc)
         {
             SaltPropertyReader.Property prop = properties["Format"];
-            Int64 formatID = (Int64)pcc.AddName(newFormat);
+            Int64 formatID = (Int64)pcc.FindNameOrAdd(newFormat);
             byte[] buff = BitConverter.GetBytes(formatID);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)formatID];
@@ -887,7 +887,7 @@ namespace ME2Explorer.Unreal.Classes
                 throw new KeyNotFoundException("Texture doesn't have a compression property");
             }
             SaltPropertyReader.Property prop = properties["CompressionSettings"];
-            Int64 comp = (Int64)pcc.AddName(newComp);
+            Int64 comp = (Int64)pcc.FindNameOrAdd(newComp);
             byte[] buff = BitConverter.GetBytes(comp);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)comp];
@@ -985,7 +985,7 @@ namespace ME2Explorer.Unreal.Classes
                     SaltPropertyReader.PropertyValue guid = new SaltPropertyReader.PropertyValue();
                     guid.len = guidprop.Size;
                     guid.StringValue = "Guid";
-                    guid.IntValue = pcc.AddName(guid.StringValue);
+                    guid.IntValue = pcc.FindNameOrAdd(guid.StringValue);
                     guid.Array = new List<SaltPropertyReader.PropertyValue>();
                     for (int i = 0; i < 4; i++)
                         guid.Array.Add(new SaltPropertyReader.PropertyValue());
