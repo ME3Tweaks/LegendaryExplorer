@@ -830,24 +830,24 @@ namespace KFreonLib.Textures
                 // KFreon: Set dimensions from tree tex. I don't like this method. The ratio should just be set during tree creation and saved in the tree, but back compatibility and such.
                 try
                 {
-                    string pathBIOGame = null;
+                    string pathBioGame = null;
                     switch (GameVersion)
                     {
                         case 1:
-                            pathBIOGame = ME1Directory.GamePath();
+                            pathBioGame = ME1Directory.BioGamePath;
                             break;
                         case 2:
-                            pathBIOGame = ME2Directory.GamePath();
+                            pathBioGame = ME2Directory.BioGamePath;
                             break;
                         case 3:
-                            pathBIOGame = ME3Directory.cookedPath;
+                            pathBioGame = ME3Directory.BIOGamePath;
                             break;
                     }
 
-                    if (pathBIOGame != null)
+                    if (pathBioGame != null)
                     {
                         var pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], GameVersion);
-                        var tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBIOGame);
+                        var tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBioGame);
 
                         var img = tex2D.imgList.Where(t => t.offset != -1).FirstOrDefault();
 
