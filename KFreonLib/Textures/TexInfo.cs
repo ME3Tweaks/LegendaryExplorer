@@ -417,7 +417,8 @@ namespace KFreonLib.Textures
         {
             get
             {
-                ValidDimensions = ValidateDimensions();
+                //SirCxyrtyx: making everything slow. As long as UpdateTex is called first, all should be well
+                //ValidDimensions = ValidateDimensions();
                 return found && (isDef ? false : (CorrectMips && ValidFormat && ValidDimensions));
             }
         }
