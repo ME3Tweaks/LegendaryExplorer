@@ -763,6 +763,11 @@ namespace ME3Explorer
                 if (results.Any(x => x != "Success"))
                 {
                     StatusUpdater.UpdateText("Some Mods Did Not Install! See Debug Output For Details.");
+                    if (results.Any(x => x == ""))
+                    {
+                        DebugOutput.PrintLn("It looks like these mods were created with an old version of ME3Explorer");
+                        DebugOutput.PrintLn("Try selecting each job and clicking \"Update Job\" in the lower bar, then run it again.");
+                    }
                 }
                 else
                 {
@@ -815,8 +820,14 @@ namespace ME3Explorer
                 if (cts.IsCancellationRequested)
                     break;
                 StatusUpdater.UpdateText("Installing Job: " + count + " (" + job.Name + ") of " + joblist.Count);
-                DebugOutput.PrintLn("Installing Job: " + count++ + " (" + job.Name + ") of " + joblist.Count);
-                results.AddRange(InstallJob(job));
+                DebugOutput.PrintLn("Installing Job: " + count + " (" + job.Name + ") of " + joblist.Count);
+                List<string> jobResults = InstallJob(job);
+                if (jobResults.Any(x => x != "Success"))
+                {
+                    DebugOutput.PrintLn($"ERROR!: Job {count} did not install!");
+                }
+                results.AddRange(jobResults);
+                count++;
                 MainProgBar.IncrementBar();
                 if (!whichgames.Contains(job.WhichGame))
                     whichgames.Add(job.WhichGame);
@@ -953,7 +964,12 @@ namespace ME3Explorer
                         }
 
                         StatusUpdater.UpdateText("Installing Mod: " + (i + 1) + " (" + job.Name + ") of " + count);
-                        results.AddRange(InstallJob(job));
+                        List<string> jobResults = InstallJob(job);
+                        if (jobResults.Any(x => x != "Success"))
+                        {
+                            DebugOutput.PrintLn($"ERROR!: Job {i + 1} did not install!");
+                        }
+                        results.AddRange(jobResults);
 
                         if (!whichgames.Contains(job.WhichGame))
                             whichgames.Add(job.WhichGame);
@@ -969,6 +985,11 @@ namespace ME3Explorer
                 if (results.Any(x => x != "Success"))
                 {
                     StatusUpdater.UpdateText("Some Mods Did Not Install! See Debug Output For Details.");
+                    if (results.Any(x => x == ""))
+                    {
+                        DebugOutput.PrintLn("It looks like these mods were created with an old version of ME3Explorer");
+                        DebugOutput.PrintLn("Try selecting each job and clicking the \"Update Job\" button in the lower bar, then run it again.");
+                    }
                 }
                 else
                 {
@@ -1512,6 +1533,7 @@ namespace ME3Explorer
                 script = script.Replace("// **KF_NAMES", names.ToString());
             }
 
+            int jobCount = 0;
             for (int i = 0; i < basePCC.ExportCount; i++)
             {
                 if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding exports just yet.
@@ -1539,11 +1561,19 @@ namespace ME3Explorer
                     job.PCCs.Add(modifiedPCC.pccFileName);
                     job.Texname = basePCC.Exports[i].ObjectName;
                     KFreonLib.Scripting.ModMaker.JobList.Add(job);
+                    jobCount++;
                 }
             }
 
 
-            StatusUpdater.UpdateText("Created Job.");
+            if (jobCount > 0)
+            {
+                StatusUpdater.UpdateText("Created Job.");
+            }
+            else
+            {
+                StatusUpdater.UpdateText("No differences found!");
+            }
             MainProgBar.ChangeProgressBar(1, 1);
             ExternalRefresh();
         }
