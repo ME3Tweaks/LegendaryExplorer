@@ -1020,7 +1020,7 @@ namespace ME3Explorer
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
                     using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
-                        img = image.GetGDIBitmap(true, 512);
+                        img = image.GetGDIBitmap(true, false, 512);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
                 Previews.Add(tex.PreviewKey, img);
@@ -2963,7 +2963,7 @@ namespace ME3Explorer
             using (ImageEngineImage img = new ImageEngineImage(imgData))
             {
                 var destFormat = tex.ExpectedFormat;
-                img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
+                img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width), false);
                 retval = img.Save(path, destFormat, tex.ExpectedMips > 1 ? MipHandling.Default : MipHandling.KeepTopOnly);
             }
 

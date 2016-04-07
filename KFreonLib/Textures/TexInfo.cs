@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using UsefulThings;
 using CSharpImageLibrary.General;
+using System.Windows.Media.Imaging;
+using KFreonLib.MEDirectories;
 
 namespace KFreonLib.Textures
 {
@@ -270,8 +272,10 @@ namespace KFreonLib.Textures
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(temptex2D.GetImageData()))
+                        {
                             if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 128))
                                 thumbnailPath = tempthumbpath;
+                        }
                     }
                     catch { }  // KFreon: Don't really care about failures
                     
@@ -293,7 +297,26 @@ namespace KFreonLib.Textures
         public Bitmap GetImage(string pathBIOGame, int size = -1)
         {
             ITexture2D tex2D = Textures[0];
-            return tex2D.GetImage(size);
+            byte[] imgData = tex2D.GetImageData();
+
+            Bitmap newimg = null;
+            using (ImageEngineImage img = new ImageEngineImage(imgData))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    if (!img.Save(ms, ImageEngineFormat.PNG, MipHandling.KeepTopOnly))
+                        return null;
+
+                    BitmapSource mainImage = UsefulThings.WPF.Images.CreateWPFBitmap(ms);
+                    WriteableBitmap background = new WriteableBitmap(mainImage.PixelWidth, mainImage.PixelHeight, mainImage.DpiX, mainImage.DpiY, System.Windows.Media.PixelFormats.Bgra32, mainImage.Palette);
+
+                    var overlayed = KFreonLib.Textures.Creation.Overlay(background, mainImage);
+
+                    newimg = UsefulThings.WinForms.Imaging.CreateBitmap(overlayed, true);
+                }
+            }
+
+            return newimg;
         }
 
         internal void ReorderCheck(string pathBIOGame)
@@ -339,6 +362,7 @@ namespace KFreonLib.Textures
         private int OrigWidth = -1;
         public SaltTPF.ZipReader zippy = null;
         public bool wasAnalysed = false;
+
         public string PreviewKey
         {
             get
@@ -725,7 +749,7 @@ namespace KFreonLib.Textures
                 FileDuplicates.Add(texn);
             }
 
-            ValidDimensions = ValidateDimensions();
+            ValidDimensions = ValidateDimensions(treetex);
         }
 
         public struct PCCExpID
@@ -797,9 +821,51 @@ namespace KFreonLib.Textures
             return Path.Combine(Path.Combine(TemporaryPath, "Autofixed"), newfilename);   
         }
 
-        public bool ValidateDimensions()
+        public bool ValidateDimensions(TreeTexInfo tex = null)
         {
             bool power = UsefulThings.General.IsPowerOfTwo(Height) && UsefulThings.General.IsPowerOfTwo(Width);
+
+            if (tex != null)
+            {
+                // KFreon: Set dimensions from tree tex. I don't like this method. The ratio should just be set during tree creation and saved in the tree, but back compatibility and such.
+                try
+                {
+                    string pathBIOGame = null;
+                    switch (GameVersion)
+                    {
+                        case 1:
+                            pathBIOGame = ME1Directory.GamePath();
+                            break;
+                        case 2:
+                            pathBIOGame = ME2Directory.GamePath();
+                            break;
+                        case 3:
+                            pathBIOGame = ME3Directory.cookedPath;
+                            break;
+                    }
+
+                    if (pathBIOGame != null)
+                    {
+                        var pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], GameVersion);
+                        var tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBIOGame);
+
+                        var img = tex2D.imgList.Where(t => t.offset != -1).FirstOrDefault();
+
+                        if (img != null)
+                        {
+                            OrigHeight = (int)img.imgSize.height;
+                            OrigWidth = (int)img.imgSize.width;
+                        }
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    DebugOutput.PrintLn($"Failed to get dimensions of original texture: {e.Message}");
+                }
+            }
+
             bool ratio = (OrigHeight * 1.0 / OrigWidth * 1.0) == (Height * 1.0 / Width * 1.0);
 
             return power && ratio;

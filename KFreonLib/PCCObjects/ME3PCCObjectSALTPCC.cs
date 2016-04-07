@@ -177,7 +177,7 @@ namespace KFreonLib.PCCObjects
 
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(pccFileName))
-                throw new FileNotFoundException("LET ME KNOW ABOUT THIS! filename: " + pccFileName);
+                throw new FileNotFoundException("File not found: " + pccFileName);
 
             int trycout = 0;
             while (trycout < 50)

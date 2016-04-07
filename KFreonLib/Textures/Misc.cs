@@ -15,6 +15,8 @@ using KFreonLib.PCCObjects;
 using KFreonLib.Debugging;
 using CSharpImageLibrary.General;
 using UsefulThings;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace KFreonLib.Textures
 {
@@ -132,10 +134,74 @@ namespace KFreonLib.Textures
         {
             ITexture2D tex2D = CreateTexture2D(filename, expID, WhichGame, pathBIOGame);
             using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
-                ImageEngine.GenerateThumbnailToFile(ms, savepath, 128);
+            {
+                GenerateThumbnail(ms, savepath, 128);
+            }
             return savepath;
         }
 
+        public static string GenerateThumbnail(Stream sourceStream, string savePath, int maxDimension)
+        {
+            MemoryStream stream = ImageEngine.GenerateThumbnailToStream(sourceStream, 128, false, true);
+            if (stream == null)
+                return null;
+
+            WriteableBitmap source = new WriteableBitmap(UsefulThings.WPF.Images.CreateWPFBitmap(stream));
+            WriteableBitmap dest = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, System.Windows.Media.PixelFormats.Bgra32, source.Palette);
+
+            // KFreon: Write onto black
+            var overlayed = Overlay(dest, source);
+
+            JpegBitmapEncoder enc = new JpegBitmapEncoder();
+            enc.QualityLevel = 90;
+            enc.Frames.Add(BitmapFrame.Create(overlayed));
+
+            using (FileStream fs = new FileStream(savePath, FileMode.Create))
+                enc.Save(fs);
+
+            return savePath;
+        }
+
+
+        /// <summary>
+        /// Overlays one image on top of another.
+        /// Both images MUST be the same size.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="overlay"></param>
+        /// <returns></returns>
+        public static BitmapSource Overlay(BitmapSource source, BitmapSource overlay)
+        {
+            if (source.Width != overlay.Width || source.Height != overlay.Width)
+                throw new InvalidDataException("Source and overlay must be the same dimensions.");
+
+            var drawing = new DrawingVisual();
+            var context = drawing.RenderOpen();
+            context.DrawImage(source, new System.Windows.Rect(0, 0, source.Width, source.Height));
+            context.DrawImage(overlay, new System.Windows.Rect(0, 0, overlay.Width, overlay.Height));
+
+            context.Close();
+            var overlayed = new RenderTargetBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Pbgra32);
+            overlayed.Render(drawing);
+
+
+            return overlayed;
+        }
+
+        public static Bitmap Overlay(Bitmap source, Bitmap overlay)
+        {
+            if (source.Width != overlay.Width || source.Height != overlay.Height)
+                throw new InvalidDataException("Source and Overlay must be same dimensions.");
+
+            Bitmap img = new Bitmap(source.Width, source.Height);
+            using (Graphics gr = Graphics.FromImage(img))
+            {
+                gr.DrawImage(source, new Point(0, 0));
+                gr.DrawImage(overlay, new Point(0, 0));
+            }
+
+            return img;
+        }
 
         /// <summary>
         /// Load an image into one of AK86's classes.

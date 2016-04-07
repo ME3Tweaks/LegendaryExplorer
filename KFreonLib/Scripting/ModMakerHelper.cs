@@ -492,7 +492,7 @@ namespace KFreonLib.Scripting
 
                 Bitmap bmp = null;
                 using (ImageEngineImage img = new ImageEngineImage(data, 64, false))
-                    bmp = img.GetGDIBitmap(true, 64);
+                    bmp = img.GetGDIBitmap(true, false, 64);
 
                 return bmp;
             }

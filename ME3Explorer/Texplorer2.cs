@@ -2627,7 +2627,8 @@ namespace ME3Explorer
                             string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
                             using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
                             {
-                                if (ImageEngine.GenerateThumbnailToFile(ms, destination, 128))
+                                string result = Textures.Creation.GenerateThumbnail(ms, destination, 128);
+                                if (result != null)
                                     tex.ThumbnailPath = destination;
                                 else
                                     tex.ThumbnailPath = Path.Combine(ExecFolder, "placeholder.ico");
