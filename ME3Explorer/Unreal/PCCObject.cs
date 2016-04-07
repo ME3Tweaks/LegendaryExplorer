@@ -754,7 +754,8 @@ namespace ME3Explorer.Unreal
 
         public void addName(string name)
         {
-            Names.Add(name);
+            if(!Names.Contains(name))
+                Names.Add(name);
         }
 
         public void addImport(PCCObject.ImportEntry importEntry)
