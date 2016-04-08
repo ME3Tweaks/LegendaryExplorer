@@ -907,7 +907,7 @@ namespace ME3Explorer
             object countlock = new object();
 
 
-            //DeepScanPCC(@"R:\Games\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Nor_360AICore.pcc");
+            DeepScanPCC(@"R:\Games\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BIOG_HMM_HIR_PRO_R.pcc");
 
             Parallel.For(0, isTree ? Tree.numPCCs : pccs.Count, po, (b, loopstate) =>
             {
@@ -2110,6 +2110,14 @@ namespace ME3Explorer
 
                 ProgBarUpdater.ChangeProgressBar(0);
 
+                // KFreon: TPFMode shouldn't actually change any textures, just add to TPFTools. git #301
+                if (TPFMode)
+                {
+                    AddTPFToolsJob(path, tex.Hash);
+                    StatusUpdater.UpdateText("Job added to TPFTools!");
+                    ProgBarUpdater.ChangeProgressBar(1, 1);
+                    return;
+                }
 
                 ImageFile im = Textures.Creation.LoadAKImageFile(null, path);
                 byte[] imgData = File.ReadAllBytes(path);
@@ -2145,12 +2153,6 @@ namespace ME3Explorer
                 {
                     AddModJob(tex2D, path);
                     StatusUpdater.UpdateText("Replacement Complete and job added to Modmaker!");
-                }
-
-                if (TPFMode)
-                {
-                    AddTPFToolsJob(path, tex.Hash);
-                    StatusUpdater.UpdateText("Replacement Complete and job added to TPFTools!");
                 }
 
                 Previews.Remove(tex.TexName + tex.Hash);  // KFreon: It's changed now, so needs to be regenerated.
@@ -2329,11 +2331,13 @@ namespace ME3Explorer
             {
                 startTPFModeToolStripMenuItem.Text = "Stop TPF Mode";
                 TPFMode = true;
+                saveChangesToolStripMenuItem.Enabled = false;
             }
             else if (TPFMode)
             {
                 startTPFModeToolStripMenuItem.Text = "Start TPF Mode";
                 TPFMode = false;
+                saveChangesToolStripMenuItem.Enabled = true;
             }
         }
 
