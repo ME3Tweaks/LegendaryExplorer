@@ -277,7 +277,7 @@ namespace ME3Explorer
                     // KFreon: Setup objects
                     TreeTexInfo tex = Tree.GetTex(ChangedTextures[i]);
                     StatusUpdater.UpdateText("Saving " + tex.TexName + " |  " + MainProgressBar.Value + 1 + " \\ " + MainProgressBar.Maximum);
-                    using (PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame))
+                    PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame);
                     {
                         Textures.ITexture2D tex2D = tex.Textures[0];
                         {
@@ -289,8 +289,20 @@ namespace ME3Explorer
                             /*this.Invoke(new Action(() => MainProgressBar.Increment(1)));
                             OutputBoxPrintLn("Initial saving complete for " + tex.TexName + ". Now saving remaining PCC's for this texture...");*/
 
+
+                            // KFreon: Save first file and refresh object for next file. Dunno why necessary but it is. git: #296
+                            if (!SaveFile(new List<string>() { tex.Files[0] }, new List<int>() { tex.ExpIDs[0] }, tex2D, 0))
+                                return false;
+
+                            // KFreon: Refresh objects
+                            if (tex.Files.Count > 1)
+                            {
+                                pcc = PCCObjects.Creation.CreatePCCObject(tex.Files[0], WhichGame);
+                                tex2D = pcc.CreateTexture2D(tex.ExpIDs[0], pathBIOGame);
+                            }
+
                             // KFreon: Save files
-                            for (int j = 0; j < tex.Files.Count; j++)
+                            for (int j = 1; j < tex.Files.Count; j++)
                             {
                                 if (!SaveFile(tex.Files, tex.ExpIDs, tex2D, j))
                                     return false;
