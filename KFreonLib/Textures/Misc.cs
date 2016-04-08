@@ -172,13 +172,13 @@ namespace KFreonLib.Textures
         /// <returns></returns>
         public static BitmapSource Overlay(BitmapSource source, BitmapSource overlay)
         {
-            if (source.Width != overlay.Width || source.Height != overlay.Width)
+            if (source.PixelWidth != overlay.PixelWidth || source.PixelHeight != overlay.PixelHeight)
                 throw new InvalidDataException("Source and overlay must be the same dimensions.");
 
             var drawing = new DrawingVisual();
             var context = drawing.RenderOpen();
-            context.DrawImage(source, new System.Windows.Rect(0, 0, source.Width, source.Height));
-            context.DrawImage(overlay, new System.Windows.Rect(0, 0, overlay.Width, overlay.Height));
+            context.DrawImage(source, new System.Windows.Rect(0, 0, source.PixelWidth, source.PixelHeight));
+            context.DrawImage(overlay, new System.Windows.Rect(0, 0, overlay.PixelWidth, overlay.PixelHeight));
 
             context.Close();
             var overlayed = new RenderTargetBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Pbgra32);
