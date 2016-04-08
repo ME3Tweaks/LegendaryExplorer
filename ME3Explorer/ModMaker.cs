@@ -1390,11 +1390,22 @@ namespace ME3Explorer
             {
                 ModJob job = KFreonLib.Scripting.ModMaker.JobList[ListInd];
 
+                
 
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Title = "Select destination";
                     sfd.Filter = job.JobType == "TEXTURE" ? "DirectX images|*.dds" : "Meshes/etc|*.bin";
+
+                    string destpath = null;
+                    if (job.JobType == "TEXTURE")
+                        destpath = job.ObjectName + ".dds";
+                    else
+                    {
+                        int exp = (job.ExpIDs != null && job.ExpIDs.Count > 0) ? job.ExpIDs[0] : 0;
+                        destpath = job.ObjectName + "_EXP- " + exp + ".bin";
+                    }
+                    sfd.FileName = destpath;
 
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
