@@ -907,7 +907,7 @@ namespace ME3Explorer
             object countlock = new object();
 
 
-            DeepScanPCC(@"R:\Games\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BIOG_HMM_HIR_PRO_R.pcc");
+            //DeepScanPCC(@"R:\Games\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BIOG_HMM_HIR_PRO_R.pcc");
 
             Parallel.For(0, isTree ? Tree.numPCCs : pccs.Count, po, (b, loopstate) =>
             {
