@@ -2921,7 +2921,7 @@ namespace ME3Explorer
                     int index = 0;
                     foreach (myTreeNode node in MainTreeView.Nodes)
                     {
-                        if (node.Text == nodeName)
+                        if (node.Text == nodeName && LoadedTexes[node.TexInd].Hash == tex.Hash)
                         {
                             texNode = node;
                             break;
