@@ -273,8 +273,16 @@ namespace KFreonLib.Textures
                     {
                         using (MemoryStream ms = new MemoryStream(temptex2D.GetImageData()))
                         {
-                            if (ImageEngine.GenerateThumbnailToFile(ms, tempthumbpath, 128))
-                                thumbnailPath = tempthumbpath;
+                            var tex = temptex2D.imgList.Where(t => t.offset != -1).First();
+                            int max = (int)(tex.imgSize.height > tex.imgSize.width ? tex.imgSize.height : tex.imgSize.width);
+                            double divisor = max > 128 ? max / 128.0 : 1;
+
+                            int newWidth = (int)(tex.imgSize.width / divisor);
+                            int newHeight = (int)(tex.imgSize.height / divisor);
+
+                            string temp = KFreonLib.Textures.Creation.GenerateThumbnail(ms, tempthumbpath, newWidth, newHeight);
+                            if (temp != null)
+                                thumbnailPath = temp;
                         }
                     }
                     catch { }  // KFreon: Don't really care about failures
@@ -299,7 +307,6 @@ namespace KFreonLib.Textures
             ITexture2D tex2D = Textures[0];
             byte[] imgData = tex2D.GetImageData();
 
-            Bitmap newimg = null;
             using (ImageEngineImage img = new ImageEngineImage(imgData))
             {
                 using (MemoryStream ms = new MemoryStream())
@@ -307,16 +314,10 @@ namespace KFreonLib.Textures
                     if (!img.Save(ms, ImageEngineFormat.PNG, MipHandling.KeepTopOnly))
                         return null;
 
-                    BitmapSource mainImage = UsefulThings.WPF.Images.CreateWPFBitmap(ms);
-                    WriteableBitmap background = new WriteableBitmap(mainImage.PixelWidth, mainImage.PixelHeight, mainImage.DpiX, mainImage.DpiY, System.Windows.Media.PixelFormats.Bgra32, mainImage.Palette);
-
-                    var overlayed = KFreonLib.Textures.Creation.Overlay(background, mainImage);
-
-                    newimg = UsefulThings.WinForms.Imaging.CreateBitmap(overlayed, true);
+                    MemoryStream largest = KFreonLib.Textures.Creation.OverlayAndPickDetailed(ms, img.Width, img.Height);
+                        return new Bitmap(largest);
                 }
             }
-
-            return newimg;
         }
 
         internal void ReorderCheck(string pathBIOGame)

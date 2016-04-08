@@ -907,7 +907,7 @@ namespace ME3Explorer
             object countlock = new object();
 
 
-            //DeepScanPCC(@"R:\\Games\\Mass Effect\\DLC\\DLC_UNC\\CookedPC\\Maps\\UNC52\\DSG\\BIOA_UNC52_00torch_DSG.SFM");
+            //DeepScanPCC(@"R:\Games\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Nor_360AICore.pcc");
 
             Parallel.For(0, isTree ? Tree.numPCCs : pccs.Count, po, (b, loopstate) =>
             {
@@ -926,7 +926,7 @@ namespace ME3Explorer
                         MainProgressBar.Increment(10);
                         StatusLabel.Text = "Scanning: " + count + " / " + (isTree ? Tree.numPCCs : pccs.Count);
                     }));
-            });            
+            });      
 
             return errors;
         }
@@ -2639,7 +2639,14 @@ namespace ME3Explorer
                             string destination = tex.ThumbnailPath ?? Path.Combine(ThumbnailPath, tex.ThumbName);
                             using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
                             {
-                                string result = Textures.Creation.GenerateThumbnail(ms, destination, 128);
+                                var treetex = tex2D.imgList.Where(t => t.offset != -1).First();
+                                int max = (int)(treetex.imgSize.height > treetex.imgSize.width ? treetex.imgSize.height : treetex.imgSize.width);
+                                double divisor = max > 128 ? max / 128.0 : 1;
+
+                                int newWidth = (int)(treetex.imgSize.width / divisor);
+                                int newHeight = (int)(treetex.imgSize.height / divisor);
+
+                                string result = Textures.Creation.GenerateThumbnail(ms, destination, newWidth, newHeight);
                                 if (result != null)
                                     tex.ThumbnailPath = destination;
                                 else

@@ -135,31 +135,61 @@ namespace KFreonLib.Textures
             ITexture2D tex2D = CreateTexture2D(filename, expID, WhichGame, pathBIOGame);
             using (MemoryStream ms = new MemoryStream(tex2D.GetImageData()))
             {
-                GenerateThumbnail(ms, savepath, 128);
+                var tex = tex2D.imgList.Where(t => t.offset != -1).First();
+                int max = (int)(tex.imgSize.height > tex.imgSize.width ? tex.imgSize.height : tex.imgSize.width);
+                double divisor = max > 128 ? max /128.0 : 1;
+
+                int newWidth = (int)(tex.imgSize.width / divisor);
+                int newHeight = (int)(tex.imgSize.height / divisor);
+                GenerateThumbnail(ms, savepath, newWidth, newHeight);
             }
             return savepath;
         }
 
-        public static string GenerateThumbnail(Stream sourceStream, string savePath, int maxDimension)
+        public static string GenerateThumbnail(Stream sourceStream, string savePath, int maxWidth, int maxHeight)
         {
-            MemoryStream stream = ImageEngine.GenerateThumbnailToStream(sourceStream, 128, false, true);
-            if (stream == null)
-                return null;
+            using (MemoryStream stream = ImageEngine.GenerateThumbnailToStream(sourceStream, maxWidth, maxHeight, false, true))
+            {
+                if (stream == null)
+                    return null;
 
-            WriteableBitmap source = new WriteableBitmap(UsefulThings.WPF.Images.CreateWPFBitmap(stream));
+                using (MemoryStream largest = OverlayAndPickDetailed(stream, maxWidth, maxHeight))
+                    using (FileStream fs = new FileStream(savePath, FileMode.Create))
+                        largest.WriteTo(fs);
+
+                return savePath;
+            }
+                
+        }
+
+        public static MemoryStream OverlayAndPickDetailed(MemoryStream sourceStream, int width = 128, int height = 128)
+        {
+            WriteableBitmap source = new WriteableBitmap(UsefulThings.WPF.Images.CreateWPFBitmap(sourceStream));
             WriteableBitmap dest = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, System.Windows.Media.PixelFormats.Bgra32, source.Palette);
 
             // KFreon: Write onto black
             var overlayed = Overlay(dest, source);
 
+
+            // KFreon: Choose the most detailed image between one with alpha merged and one without.
             JpegBitmapEncoder enc = new JpegBitmapEncoder();
             enc.QualityLevel = 90;
             enc.Frames.Add(BitmapFrame.Create(overlayed));
 
-            using (FileStream fs = new FileStream(savePath, FileMode.Create))
-                enc.Save(fs);
+            MemoryStream mstest = new MemoryStream();
+            {
+                enc.Save(mstest);
 
-            return savePath;
+                MemoryStream jpg = ImageEngine.GenerateThumbnailToStream(sourceStream, width, height, false);
+                {
+                    enc = new JpegBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(new WriteableBitmap(UsefulThings.WPF.Images.CreateWPFBitmap(jpg))));
+                    enc.Save(jpg);
+
+                    MemoryStream largest = jpg.Length > mstest.Length ? jpg : mstest;
+                    return largest; 
+                }
+            }
         }
 
 
@@ -170,7 +200,7 @@ namespace KFreonLib.Textures
         /// <param name="source"></param>
         /// <param name="overlay"></param>
         /// <returns></returns>
-        public static BitmapSource Overlay(BitmapSource source, BitmapSource overlay)
+         static BitmapSource Overlay(BitmapSource source, BitmapSource overlay)
         {
             if (source.PixelWidth != overlay.PixelWidth || source.PixelHeight != overlay.PixelHeight)
                 throw new InvalidDataException("Source and overlay must be the same dimensions.");
@@ -186,21 +216,6 @@ namespace KFreonLib.Textures
 
 
             return overlayed;
-        }
-
-        public static Bitmap Overlay(Bitmap source, Bitmap overlay)
-        {
-            if (source.Width != overlay.Width || source.Height != overlay.Height)
-                throw new InvalidDataException("Source and Overlay must be same dimensions.");
-
-            Bitmap img = new Bitmap(source.Width, source.Height);
-            using (Graphics gr = Graphics.FromImage(img))
-            {
-                gr.DrawImage(source, new Point(0, 0));
-                gr.DrawImage(overlay, new Point(0, 0));
-            }
-
-            return img;
         }
 
         /// <summary>
