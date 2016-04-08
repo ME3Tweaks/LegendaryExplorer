@@ -413,13 +413,15 @@ namespace KFreonLib.Textures
             }
         }
 
+        bool IncorrectRatio = false;
+
         public bool Valid
         {
             get
             {
                 //SirCxyrtyx: making everything slow. As long as UpdateTex is called first, all should be well
                 //ValidDimensions = ValidateDimensions();
-                return found && (isDef ? false : (CorrectMips && ValidFormat && ValidDimensions));
+                return found && (isDef ? false : (CorrectMips && ValidFormat && ValidDimensions && !IncorrectRatio));
             }
         }
 
@@ -571,7 +573,9 @@ namespace KFreonLib.Textures
                 }
                 else if (!isDef && !Valid)
                 {
-                    if (!ValidDimensions)
+                    if (IncorrectRatio)
+                        ending += "  ASPECT RATIO";
+                    else if (!ValidDimensions)
                         ending += "  DIMENSIONS";
                     if (!ValidFormat)
                         ending += "  FORMAT";
@@ -867,9 +871,9 @@ namespace KFreonLib.Textures
                 }
             }
 
-            bool ratio = (OrigHeight * 1.0 / OrigWidth * 1.0) == (Height * 1.0 / Width * 1.0);
+            IncorrectRatio = !((OrigHeight * 1.0 / OrigWidth * 1.0) == (Height * 1.0 / Width * 1.0));
 
-            return power && ratio;
+            return power;
         }
     }
 }
