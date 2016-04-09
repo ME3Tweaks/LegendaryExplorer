@@ -97,6 +97,12 @@
     <Compile Include="DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="HuffmanCompression.cs" />
     <Compile Include="Interpreter2\Interpreter2.cs">
       <SubType>Form</SubType>
@@ -167,11 +173,15 @@
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <EmbeddedResource Include="DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>

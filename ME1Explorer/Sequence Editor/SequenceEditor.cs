@@ -228,7 +228,7 @@ namespace ME1Explorer
                 string ObjName = "";
                 while (idx > 0)
                 {
-                    if (pcc.Exports[pcc.Exports[idx].LinkID - 1].ClassName == "SequenceReference")
+                    if (pcc.Exports[pcc.Exports[idx].idxLink - 1].ClassName == "SequenceReference")
                     {
                         List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
                         for (int i = 0; i < p.Count(); i++)
@@ -238,7 +238,7 @@ namespace ME1Explorer
                                 goto LoopOver;
                             }
                     }
-                    idx = pcc.Exports[idx].LinkID - 1;
+                    idx = pcc.Exports[idx].idxLink - 1;
 
                 }
             LoopOver:

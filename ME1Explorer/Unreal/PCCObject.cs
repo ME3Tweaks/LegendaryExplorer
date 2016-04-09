@@ -25,10 +25,11 @@ namespace ME1Explorer
         public class ExportEntry
         {
             internal byte[] info; //Properties, not raw data
-            public int ClassNameID { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); InfoChanged(); } }
-            public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); InfoChanged(); } }
+            public int idxClassName { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); InfoChanged(); } }
+            public int idxClassParent { get { return BitConverter.ToInt32(info, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 4, sizeof(int)); } }
+            public int idxLink { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); InfoChanged(); } }
             public int PackageNameID;
-            public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); InfoChanged(); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); InfoChanged(); } }
             public int indexValue { get { return BitConverter.ToInt32(info, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); InfoChanged(); } }
             public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); InfoChanged(); } }
             public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); InfoChanged(); } }
@@ -47,8 +48,9 @@ namespace ME1Explorer
                         return temppack.Split('.')[0];
                 } 
             }
-            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].ObjectNameID]; else return "None"; } }
+            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "None"; } }
             public string PackageFullName;
+            public string ClassParent { get { int val = idxClassParent; if (val < 0) return pccRef.Names[BitConverter.ToInt32(pccRef.Imports[val * -1 - 1].raw, 20)]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
             public string ClassName;
             public byte[] flag
             {
@@ -266,18 +268,18 @@ namespace ME1Explorer
             for (int i = 0; i < ExportCount; i++)
             {
                 Exports[i].hasChanged = false;
-                Exports[i].ObjectName = Names[Exports[i].ObjectNameID];
+                Exports[i].ObjectName = Names[Exports[i].idxObjectName];
             }
             for (int i = 0; i < ExportCount; i++)
             {
-                Exports[i].PackageFullName = FollowLink(Exports[i].LinkID);
+                Exports[i].PackageFullName = FollowLink(Exports[i].idxLink);
                 if (String.IsNullOrEmpty(Exports[i].PackageFullName))
                     Exports[i].PackageFullName = "Base Package";
                 else if (Exports[i].PackageFullName[Exports[i].PackageFullName.Length - 1] == '.')
                     Exports[i].PackageFullName = Exports[i].PackageFullName.Remove(Exports[i].PackageFullName.Length - 1);
             }
             for (int i = 0; i < ExportCount; i++)
-                Exports[i].ClassName = GetClass(Exports[i].ClassNameID);
+                Exports[i].ClassName = GetClass(Exports[i].idxClassName);
         }
 
         public void SaveToFile(string path)
@@ -394,7 +396,7 @@ namespace ME1Explorer
             if (Link > 0 && isExport(Link - 1))
             {
                 s = Exports[Link - 1].ObjectName + ".";
-                s = FollowLink(Exports[Link - 1].LinkID) + s;
+                s = FollowLink(Exports[Link - 1].idxLink) + s;
             }
             if (Link < 0 && isImport(Link * -1 - 1))
             {
@@ -417,7 +419,7 @@ namespace ME1Explorer
             return GetClass(p);
         }
 
-        internal int AddName(string newName)
+        internal int FindNameOrAdd(string newName)
         {
             int nameID = 0;
             //First check if name already exists

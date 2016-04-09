@@ -66,10 +66,10 @@ namespace ME1Explorer
             {
                 int f = -1;
                 for (int i = 0; i < classes.Count(); i++)
-                    if (classes[i] == ent.ClassNameID)
+                    if (classes[i] == ent.idxClassName)
                         f = i;
                 if (f == -1)
-                    classes.Add(ent.ClassNameID);
+                    classes.Add(ent.idxClassName);
             }
             bool run = true;
             while (run)
@@ -138,12 +138,12 @@ namespace ME1Explorer
                     PCCObject.ExportEntry e = pcc.Exports[i];
                     List<int> LinkList = new List<int>();
                     LinkList.Add(i + 1);
-                    int Link = e.LinkID;
+                    int Link = e.idxLink;
                     while (Link != 0)
                     {
                         LinkList.Add(Link);
                         if (Link > 0)
-                            Link = pcc.Exports[Link - 1].LinkID;
+                            Link = pcc.Exports[Link - 1].idxLink;
                         else
                             Link = pcc.Imports[-Link - 1].link;
                     }
@@ -159,7 +159,7 @@ namespace ME1Explorer
                     {
                         LinkList.Add(Link);
                         if (Link > 0)
-                            Link = pcc.Exports[Link - 1].LinkID;
+                            Link = pcc.Exports[Link - 1].idxLink;
                         else
                             Link = pcc.Imports[-Link - 1].link;
                     }
@@ -340,9 +340,9 @@ namespace ME1Explorer
             if ((CurrentView == 2 || CurrentView == 3) && n != -1)
             {
                 int off = pcc.Imports.Count;
-                NameIdx = pcc.Exports[n].ObjectNameID;
-                ClassIdx = pcc.Exports[n].ClassNameID;
-                LinkIdx = pcc.Exports[n].LinkID;
+                NameIdx = pcc.Exports[n].idxObjectName;
+                ClassIdx = pcc.Exports[n].idxClassName;
+                LinkIdx = pcc.Exports[n].idxLink;
                 RefreshCombos();
                 comboBox1.SelectedIndex = NameIdx;
                 comboBox2.SelectedIndex = ClassIdx + off;
@@ -447,7 +447,7 @@ namespace ME1Explorer
                 return;
             int clas = classes[m];
             for (int i = n; i < pcc.Exports.Count(); i++)
-                if (pcc.Exports[i].ClassNameID == clas)
+                if (pcc.Exports[i].idxClassName == clas)
                 {
                     listBox1.SelectedIndex = i;
                     return;
@@ -482,7 +482,7 @@ namespace ME1Explorer
             if (String.IsNullOrEmpty(result))
                 return;
 
-            pcc.AddName(result);
+            pcc.FindNameOrAdd(result);
             MessageBox.Show(result + ": has been added to the namelist", "Done", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
@@ -658,9 +658,9 @@ namespace ME1Explorer
             {
                 pcc.Exports[n].indexValue = index;
             }
-            pcc.Exports[n].ObjectNameID = NameIdx;
-            pcc.Exports[n].ClassNameID = ClassIdx;
-            pcc.Exports[n].LinkID = LinkIdx;
+            pcc.Exports[n].idxObjectName = NameIdx;
+            pcc.Exports[n].idxClassName = ClassIdx;
+            pcc.Exports[n].idxLink = LinkIdx;
             RefreshView();
             SetSelected(n);
         }
