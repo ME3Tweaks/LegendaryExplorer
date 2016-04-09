@@ -2581,7 +2581,10 @@ namespace ME3Explorer
                     texes.Add(tex);
                     // KFreon: Write hashes to log
                     string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
-                    fs.WriteString(hash + "|" + tex.TexName + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
+                    string name = tex.TexName;
+                    if (string.IsNullOrEmpty(name))
+                        name = tex.FileName;
+                    fs.WriteString(hash + "|" + name + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
                 }
                 Extractor(extractPath, null, t => texes.Contains(t));
             }
