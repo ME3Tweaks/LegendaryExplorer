@@ -288,13 +288,10 @@ namespace ME3Explorer.InterpEditor
 
             foreach (InterpGroup g in InterpGroups)
             {
-                if (g.Visible)
-                {
-                    g.listEntry.OffsetY = yOffset;
-                    foreach (InterpTrack t in g.InterpTracks)
-                        t.timelineEntry.OffsetY = yOffset + t.listEntry.OffsetY;
-                    yOffset += (int)Math.Round(g.EffectiveHeight); 
-                }
+                g.listEntry.OffsetY = yOffset;
+                foreach (InterpTrack t in g.InterpTracks)
+                    t.timelineEntry.OffsetY = yOffset + t.listEntry.OffsetY;
+                yOffset += (int)Math.Round(g.EffectiveHeight);
             }
             //seperationLine.Y = yOffset;
             //seperationLine.Height = Bounds.Bottom - yOffset + Timeline.InfoHeight;
@@ -415,49 +412,9 @@ namespace ME3Explorer.InterpEditor
                     t.Visible = !value;
 
                 }
-                if (!bIsParented)
-                {
-                    List<InterpGroup> groups = ((InterpData)listEntry.Parent)?.InterpGroups;
-                    bool children = false;
-                    for (int i = 0; i < groups?.Count; i++)
-                    {
-                        if (!groups[i].bIsParented)
-                        {
-                            children = false;
-                        }
-                        if (children)
-                        {
-                            groups[i].Visible = !value;
-                        }
-                        if (groups[i].index == index)
-                        {
-                            children = true;
-                        }
-                    }
-                }
-                
             }
         }
-        public bool Visible
-        {
-            get
-            {
-                return listEntry.Visible;
-            }
-            set
-            {
-                if(!collapsed) {
-                    foreach (InterpTrack t in InterpTracks)
-                    {
-                        t.Visible = value;
-
-                    }
-                }
-                listEntry.Visible = value;
-                listEntry.Pickable = value;
-                
-            }
-        }
+        
         public bool bIsParented;
         public byteprop m_eSFXFindActorMode = new byteprop("ESFXFindByTagTypes", new string[] { "UseGroupActor", "FindActorByNode", "FindActorByTag" });
 
@@ -731,7 +688,7 @@ namespace ME3Explorer.InterpEditor
             ToTree();
         }
 
-        void openInPCCEd_Click(object sender, EventArgs e)
+        protected void openInPCCEd_Click(object sender, EventArgs e)
         {
 
             PCCEditor2 p = new PCCEditor2();
@@ -823,6 +780,8 @@ namespace ME3Explorer.InterpEditor
             listEntry[0].RotateInPlace(90);
             listEntry[0].TranslateBy(5, 5);
             collapsed = false;
+            //hack to undo the triangle rotation
+            listEntry.MouseDown += listEntry_MouseDown;
         }
 
         protected void LoadData()
@@ -863,7 +822,22 @@ namespace ME3Explorer.InterpEditor
             }
         }
 
-
+        void listEntry_MouseDown(object sender, PInputEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                if (!collapsed)
+                {
+                    listEntry[0].RotateInPlace(90);
+                    listEntry[0].TranslateBy(5, 5);
+                }
+                else
+                {
+                    listEntry[0].TranslateBy(-5, -5);
+                    listEntry[0].RotateInPlace(-90);
+                }
+            }
+        }
 
         public override void ToTree()
         {
