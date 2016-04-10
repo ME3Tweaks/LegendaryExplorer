@@ -35,8 +35,7 @@ namespace ME2Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
 
-            if(SText.fontcollection == null)
-                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+            SText.LoadFont();
             if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));

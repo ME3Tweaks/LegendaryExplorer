@@ -1514,13 +1514,14 @@ namespace ME2Explorer.SequenceObjects
     {
         private Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        public static PrivateFontCollection fontcollection { get; set; }
+        private static PrivateFontCollection fontcollection;
+        private static Font kismetFont;
 
         public SText(string s, bool shadows = true)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = kismetFont;
 
             shadowRendering = shadows;
         }
@@ -1529,8 +1530,18 @@ namespace ME2Explorer.SequenceObjects
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = kismetFont;
             shadowRendering = shadows;
+        }
+
+        public static void LoadFont()
+        {
+            if (fontcollection == null || fontcollection.Families.Length < 1)
+            {
+                fontcollection = new PrivateFontCollection();
+                fontcollection.AddFontFile(@"exec\KismetFont.ttf");
+                kismetFont = new Font(fontcollection.Families[0], 6);
+            }
         }
 
         protected override void Paint(PPaintContext paintContext)

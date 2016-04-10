@@ -217,9 +217,6 @@
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <Content Include="KismetFont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -279,7 +276,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\exec\KismetFont.ttf" "$(ProjectDir)$(OutDir)\exec\"
+xcopy /f /y "$(SolutionDir)Resources\exec\ME2ObjectInfo.json" "$(ProjectDir)$(OutDir)\exec\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>

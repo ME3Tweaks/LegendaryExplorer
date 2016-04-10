@@ -39,8 +39,7 @@ namespace ME1Explorer
             
             talkFiles = new TalkFiles();
             talkFiles.LoadGlobalTlk();
-            if(SText.fontcollection == null)
-                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+            SText.LoadFont();
             SObj.talkfiles = talkFiles;
             if (File.Exists(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {

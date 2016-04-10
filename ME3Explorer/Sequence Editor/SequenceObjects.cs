@@ -1525,13 +1525,14 @@ namespace ME3Explorer.SequenceObjects
     {
         private Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        public static PrivateFontCollection fontcollection { get; set; }
+        private static PrivateFontCollection fontcollection;
+        private static Font kismetFont;
 
         public SText(string s, bool shadows = true)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = kismetFont;
 
             shadowRendering = shadows;
         }
@@ -1540,24 +1541,23 @@ namespace ME3Explorer.SequenceObjects
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
-            base.Font = new Font (fontcollection.Families[0], 6);
+            base.Font = kismetFont;
             shadowRendering = shadows;
         }
 
-        public static void LoadFont(string file)
+        public static void LoadFont()
         {
-            if(fontcollection == null)
-                fontcollection = new PrivateFontCollection();
-            fontcollection.AddFontFile(file);
-            if (fontcollection.Families.Length < 0)
+            if(fontcollection == null || fontcollection.Families.Length < 1)
             {
-                throw new InvalidOperationException("No font familiy found when loading font");
+                fontcollection = new PrivateFontCollection();
+                fontcollection.AddFontFile(@"exec\KismetFont.ttf");
+                kismetFont = new Font(fontcollection.Families[0], 6);
             }
         }
 
         protected override void Paint(PPaintContext paintContext)
         {
-            paintContext.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
+            paintContext.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
             if (shadowRendering && base.Text != null && base.TextBrush != null && base.Font != null)
             {
                 Graphics g = paintContext.Graphics;

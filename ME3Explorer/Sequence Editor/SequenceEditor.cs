@@ -42,8 +42,7 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
             
-            if(SText.fontcollection == null)
-                SText.LoadFont("KismetFont.ttf");
+            SText.LoadFont();
             if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));

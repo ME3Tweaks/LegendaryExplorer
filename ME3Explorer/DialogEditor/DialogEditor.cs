@@ -21,9 +21,6 @@ namespace ME3Explorer.DialogEditor
         public DialogEditor()
         {
             InitializeComponent();
-            //dialogVis.BackColor = Color.FromArgb(167, 167, 167);
-            if (SequenceObjects.SText.fontcollection == null)
-                SequenceObjects.SText.LoadFont("KismetFont.ttf");
         }
 
         private void openPCCToolStripMenuItem_Click(object sender, EventArgs e)

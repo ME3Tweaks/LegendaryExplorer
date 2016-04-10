@@ -300,7 +300,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\exec\KismetFont.ttf" "$(ProjectDir)$(OutDir)\exec\"
+xcopy /f /y "$(SolutionDir)Resources\exec\ME1ObjectInfo.json" "$(ProjectDir)$(OutDir)\exec\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>
