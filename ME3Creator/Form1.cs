@@ -1133,49 +1133,41 @@ namespace ME3Creator
                 case 1://Parent
                 case 2://Link
                 case 5://Archetype
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
+                    int idx = 0;
+                    int? nullableIntResult;
                     if (t.Index == 0)
-                        osel.Init(pcc, pcc.Exports[n].idxClass);
+                        idx = pcc.Exports[n].idxClass;
                     if (t.Index == 1)
-                        osel.Init(pcc, pcc.Exports[n].idxParent);
+                        idx = pcc.Exports[n].idxParent;
                     if (t.Index == 2)
-                        osel.Init(pcc, pcc.Exports[n].idxLink);
+                        idx = pcc.Exports[n].idxLink;
                     if (t.Index == 5)
-                        osel.Init(pcc, pcc.Exports[n].idxArchetype);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                        idx = pcc.Exports[n].idxArchetype;
+                    nullableIntResult = Objectselect.GetValue(pcc, idx);
+                    if (nullableIntResult == null)
                         return;
-                    osel.Close();
                     ex = pcc.Exports[n];
                     if(t.Index == 0)
-                        ex.idxClass = osel.Result;
+                        ex.idxClass = (int)nullableIntResult;
                     if (t.Index == 1)
-                        ex.idxParent = osel.Result;
+                        ex.idxParent = (int)nullableIntResult;
                     if (t.Index == 2)
-                        ex.idxLink = osel.Result;
+                        ex.idxLink = (int)nullableIntResult;
                     if (t.Index == 5)
-                        ex.idxArchetype = osel.Result;
+                        ex.idxArchetype = (int)nullableIntResult;
                     pcc.Exports[n] = ex;
                     RefreshAll();
                     break;
                 case 3://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
-                    nsel.Init(pcc, pcc.Exports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                    int intResult;
+                    intResult = Nameselect.GetValue(pcc, pcc.Exports[n].idxName);
+                    if (intResult != -1)
                     {
                         ex = pcc.Exports[n];
-                        ex.idxName = nsel.Result;
+                        ex.idxName = intResult;
                         pcc.Exports[n] = ex;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 case 4://Index
                     ex = pcc.Exports[n];
@@ -1217,50 +1209,42 @@ namespace ME3Creator
             if (t == null || n == -1 || isSelectOpen)
                 return;
             PCCPackage.ImportEntry imp;
+            int? nullableResult = 0;
             switch (t.Index)
             {
                 case 4://Link
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
-                    osel.Init(pcc, pcc.Exports[n].idxLink);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                    nullableResult = Objectselect.GetValue(pcc, pcc.Exports[n].idxLink);
+                    if (nullableResult == null)
                         return;
-                    osel.Close();
                     imp = pcc.Imports[n];
-                    imp.idxLink = osel.Result;
+                    imp.idxLink = (int)nullableResult;
                     pcc.Imports[n] = imp;
                     RefreshAll();
                     break;
                 case 0://Package
                 case 2://Class
                 case 5://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
+                    int result;
+                    int idx = 0;
                     if (t.Index == 0)
-                        nsel.Init(pcc, pcc.Imports[n].idxPackage);
+                        idx = pcc.Imports[n].idxPackage;
                     if (t.Index == 2)
-                        nsel.Init(pcc, pcc.Imports[n].idxClass);
+                        idx = pcc.Imports[n].idxClass;
                     if (t.Index == 5)
-                        nsel.Init(pcc, pcc.Imports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                        idx = pcc.Imports[n].idxName;
+                    result = Nameselect.GetValue(pcc, idx);
+                    if (result != -1)
                     {
                         imp = pcc.Imports[n];
                         if (t.Index == 0)
-                            imp.idxPackage = nsel.Result;
+                            imp.idxPackage = result;
                         if (t.Index == 2)
-                            imp.idxClass = nsel.Result;
+                            imp.idxClass = result;
                         if (t.Index == 5)
-                            imp.idxName = nsel.Result;
+                            imp.idxName = result;
                         pcc.Imports[n] = imp;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 default:
                     break;

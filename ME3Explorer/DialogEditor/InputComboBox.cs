@@ -15,7 +15,6 @@ namespace ME3Explorer.DialogEditor
         public InputComboBox()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
         }
 
         private void okButton_Click(object sender, EventArgs e)

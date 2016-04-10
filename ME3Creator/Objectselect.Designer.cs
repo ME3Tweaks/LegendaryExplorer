@@ -44,6 +44,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(330, 21);
             this.comboBox1.TabIndex = 10;
+            this.comboBox1.Enter += new System.EventHandler(this.comboBox1_Enter);
             // 
             // r3
             // 
@@ -67,16 +68,18 @@
             // 
             // button2
             // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button2.Location = new System.Drawing.Point(329, 111);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(81, 26);
             this.button2.TabIndex = 7;
-            this.button2.Text = "Abort";
+            this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button1.Location = new System.Drawing.Point(416, 111);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(81, 26);
@@ -104,11 +107,14 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(330, 21);
             this.comboBox2.TabIndex = 13;
+            this.comboBox2.Enter += new System.EventHandler(this.comboBox2_Enter);
             // 
             // Objectselect
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button2;
             this.ClientSize = new System.Drawing.Size(503, 146);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.r1);
@@ -120,8 +126,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Objectselect";
             this.Text = "Object Selection";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Objectselect_FormClosing);
-            this.Shown += new System.EventHandler(this.Objectselect_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
