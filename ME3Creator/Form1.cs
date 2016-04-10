@@ -59,11 +59,6 @@ namespace ME3Creator
             pcc = new PCCPackage(path, true, false);
         }
 
-        public void LoadDLCFile(string path, int index)
-        {
-            pcc = new PCCPackage(new DLCPackage(path), index); 
-        }
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             DebugLog.Update();
@@ -81,14 +76,7 @@ namespace ME3Creator
             timer1.Enabled = false;
             if (pcc == null)
                 return;
-            if (pcc.GeneralInfo.inDLC)
-            {
-                LoadDLCFile(pcc.GeneralInfo.filepath, pcc.GeneralInfo.inDLCIndex);
-            }
-            else
-            {
-                LoadBaseGameFile(pcc.GeneralInfo.filepath);
-            }
+            LoadBaseGameFile(pcc.GeneralInfo.filepath);
             RefreshAll();
             timer1.Enabled = true;
         }
@@ -124,10 +112,7 @@ namespace ME3Creator
             hb1.ByteProvider = new DynamicByteProvider(buff);
             treeView1.Nodes.Clear();
             TreeNode t;
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath.Replace("/", "\\")));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Nodes.Add(new TreeNode("Magic : 0x" + pcc.Header.magic.ToString("X8")));
             t.Nodes.Add(new TreeNode("Ver1 : 0x" + pcc.Header.ver1.ToString("X4")));
             t.Nodes.Add(new TreeNode("Ver2 : 0x" + pcc.Header.ver2.ToString("X4")));
@@ -251,10 +236,7 @@ namespace ME3Creator
             #endregion
             #region Exports3
             treeView4.Nodes.Clear();
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Name = "0";
             for (int i = 0; i < pcc.Header.ExportCount; i++)
             {
@@ -750,6 +732,19 @@ namespace ME3Creator
                 return;
             pcc.Save();
             MessageBox.Show("Done.");
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.pcc|*.pcc";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pcc.Save(d.FileName);
+                MessageBox.Show("Done");
+            }
         }
 
         private void treeView4_MouseDown(object sender, MouseEventArgs e)
