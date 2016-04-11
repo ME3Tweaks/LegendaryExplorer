@@ -43,6 +43,7 @@ namespace ME3Explorer.AutoTOC
             List<string> files = GetFiles(consoletocFile);
             if (files.Count != 0)
             {
+                rtb1.AppendText($"Creating TOC in {consoletocFile}\n");
                 string t = files[0];
                 int n = t.IndexOf("DLC_");
                 if (n > 0)
@@ -63,12 +64,6 @@ namespace ME3Explorer.AutoTOC
                             files[i] = files[i].Substring(n);
                     }
                 }
-                rtb1.AppendText("Getting file list...\n");
-                //rtb1.Visible = false;
-                foreach (string s in files)
-                    rtb1.AppendText(s + "\n");
-                rtb1.Visible = true;
-                rtb1.AppendText("Creating TOC...\n");
                 string pathbase;
                 string t3 = files[0];
                 int n2 = t3.IndexOf("BIOGame");
