@@ -550,15 +550,25 @@ namespace ME1Explorer.Interpreter2
                     TryParseStructProperty((int)e.Node.Tag);
                     LAST_SELECTED_PROP_TYPE = (int)e.Node.Tag;
                 }
-                else if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAY_PROPERTY) && (e.Node.GetNodeCount(false) == 0 || e.Node.FirstNode.Tag.Equals(ARRAYLEAF_TAG)))
+                else if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAY_PROPERTY))
                 {
                     addArrayElementButton.Visible = true;
                     deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     proptext.Clear();
                     setPropertyButton.Visible = false;
-                    proptext.Visible = setValueSeparator.Visible = true;
+                    setValueSeparator.Visible = true;
                     LAST_SELECTED_PROP_TYPE = ARRAY_PROPERTY;
+                    //probably an array of names or import/export references
+                    if (e.Node.GetNodeCount(false) == 0 || (e.Node.FirstNode?.Tag?.Equals(ARRAYLEAF_TAG) ?? false))
+                    {
+                        proptext.Visible = true;
+                    }
+                    //array of structs
+                    else
+                    {
+                        proptext.Visible = false;
+                    }
                 }
                 else
                 {
@@ -949,6 +959,56 @@ namespace ME1Explorer.Interpreter2
             }
         }
 
+        private void cloneArrayStruct()
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                if (hb1.SelectionStart != lastSetOffset)
+                {
+                    return; //user manually moved cursor
+                }
+                uint throwaway;
+                TreeNode arrayRoot = LAST_SELECTED_NODE;
+
+                int beginOffset;
+                int endOffset;
+                if (uint.TryParse(arrayRoot.LastNode.Text, out throwaway))
+                {
+                    beginOffset = Convert.ToInt32(arrayRoot.LastNode.FirstNode.Name);
+                }
+                else
+                {
+                    beginOffset = Convert.ToInt32(arrayRoot.FirstNode.Name);
+                }
+                endOffset = Convert.ToInt32(arrayRoot.NextNode.Name);
+                int size = endOffset - beginOffset;
+
+                List<byte> memList = memory.ToList();
+                memList.InsertRange(endOffset, memList.GetRange(beginOffset, size));
+                memory = memList.ToArray();
+                updateArrayLength(pos, 1, size);
+
+                //bubble up size
+                TreeNode parent = LAST_SELECTED_NODE.Parent;
+                while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
+                {
+                    if (uint.TryParse(parent.Text, out throwaway))
+                    {
+                        parent = parent.Parent;
+                        continue;
+                    }
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, size);
+                    parent = parent.Parent;
+                }
+                RefreshMem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void addArrayLeaf()
         {
             try
@@ -1168,7 +1228,14 @@ namespace ME1Explorer.Interpreter2
 
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
-            addArrayLeaf();
+            if (proptext.Visible)
+            {
+                addArrayLeaf();
+            }
+            else
+            {
+                cloneArrayStruct();
+            }
         }
     }
 }
