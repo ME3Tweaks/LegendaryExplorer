@@ -14,13 +14,13 @@ namespace ME3Explorer.Unreal
         private string _name;
         private int _nameindex;
         [DesignOnly(true)]
-        public string name
+        public string objectName
         {
             get { return _name; }
             set { _name = value; }
         }
 
-        public int nameindex
+        public int index
         {
             get { return _nameindex; }
             set { _nameindex = value; }
@@ -406,8 +406,8 @@ namespace ME3Explorer.Unreal
                     break;
                 case Type.ObjectProperty:
                     ObjectProp ppo = new ObjectProp();
-                    ppo.name = pcc.getObjectName(p.Value.IntValue);
-                    ppo.nameindex = p.Value.IntValue;
+                    ppo.objectName = pcc.getObjectName(p.Value.IntValue);
+                    ppo.index = p.Value.IntValue;
                     pg = new CustomProperty(pcc.Names[p.Name], cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StrProperty:
