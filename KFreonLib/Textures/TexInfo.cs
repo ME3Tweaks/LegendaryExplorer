@@ -498,7 +498,7 @@ namespace KFreonLib.Textures
             retval.ValidDimensions = ValidDimensions;
             retval.OrigHeight = OrigHeight;
             retval.OrigWidth = OrigWidth;
-
+            retval.wasAnalysed = wasAnalysed;
             return retval;
         }
 
