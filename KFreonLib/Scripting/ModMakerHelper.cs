@@ -938,6 +938,12 @@ namespace KFreonLib.Scripting
                             path = parts[1];
                         pathing = path + pathing;
                     }
+                    else if (line.Contains("pcc = new PCCObject(ME3Directory.cookedPath + \""))
+                    {
+                        string[] parts = line.Split('"');
+                        if (parts.Count() > 1)
+                            pathing = parts[1];
+                    }
                 }
                 if (pathing != "")
                 {
@@ -982,6 +988,13 @@ namespace KFreonLib.Scripting
                     {
                         string[] parts = line.Split('=');
                         string number = parts[1].Substring(1, parts[1].Length - 3);
+                        ids.Add(Int32.Parse(number));
+                        break;
+                    }
+                    else if (line.Contains("ReplaceData("))
+                    {
+                        string[] parts = line.Split('(');
+                        string number = parts[1].Substring(0, parts[1].IndexOf(","));
                         ids.Add(Int32.Parse(number));
                         break;
                     }
@@ -1031,7 +1044,13 @@ namespace KFreonLib.Scripting
             {
                 foreach (string line in lines)
                     if (line.Contains("tex."))  // KFreon: Look for texture name
-                        return line.Split('"')[1];
+                    {
+                        string[] temp = line.Split('"');
+                        if (temp.Length > 1)
+                        {
+                            return temp[1];
+                        }
+                    }
             }
             else
             {
