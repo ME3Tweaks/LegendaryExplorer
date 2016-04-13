@@ -792,19 +792,6 @@ namespace ME3Explorer
             Process.Start("http://me3explorer.freeforums.org/");
         }
 
-        private void versionSwitcherToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + "\\VersionSwitcher.exe"))
-            {
-                RunShell(loc + "\\VersionSwitcher.exe", "");
-            }
-            else
-            {
-                MessageBox.Show("Couldn't find VersionSwitcher.exe.");
-            }
-        }
-
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutME3Explorer().Show(this);
