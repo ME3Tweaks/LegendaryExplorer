@@ -626,7 +626,7 @@ namespace ME3Explorer
             {
                 parentVal = parent.Value.GetType();
             }
-            if (name == "nameindex" || parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
+            if (name == "nameindex" || name == "index" ||  parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
             {
                 name = parent.Label;
             }
