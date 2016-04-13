@@ -1208,7 +1208,7 @@ namespace ME3Creator
             switch (t.Index)
             {
                 case 4://Link
-                    nullableResult = Objectselect.GetValue(pcc, pcc.Exports[n].idxLink);
+                    nullableResult = Objectselect.GetValue(pcc, pcc.Imports[n].idxLink);
                     if (nullableResult == null)
                         return;
                     imp = pcc.Imports[n];
