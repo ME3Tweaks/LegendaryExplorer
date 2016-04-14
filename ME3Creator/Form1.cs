@@ -1222,7 +1222,7 @@ namespace ME3Creator
                 case 4://Link
                     isSelectOpen = true;
                     Objectselect osel = new Objectselect();
-                    osel.Init(pcc, pcc.Exports[n].idxLink);
+                    osel.Init(pcc, pcc.Imports[n].idxLink);
                     osel.Show();
                     while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
                     isSelectOpen = false;
