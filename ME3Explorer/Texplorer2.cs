@@ -2265,9 +2265,10 @@ namespace ME3Explorer
                         return;
                 }
 
+                // KFreon: Removed as per #313
                 // KFreon: Make sure hash is there
-                if (!savepath.Contains(Textures.Methods.FormatTexmodHashAsString(tex.Hash)))
-                    savepath = Path.Combine(Path.GetDirectoryName(savepath), Path.GetFileNameWithoutExtension(savepath) + "_" + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + Path.GetExtension(savepath));
+                /*if (!savepath.Contains(Textures.Methods.FormatTexmodHashAsString(tex.Hash)))
+                    savepath = Path.Combine(Path.GetDirectoryName(savepath), Path.GetFileNameWithoutExtension(savepath) + "_" + Textures.Methods.FormatTexmodHashAsString(tex.Hash) + Path.GetExtension(savepath));*/
 
                 // KFreon: Save file
                 File.WriteAllBytes(savepath, tex2D.extractMaxImage(true));
