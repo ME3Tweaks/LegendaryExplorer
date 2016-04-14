@@ -1551,6 +1551,9 @@ namespace ME3Explorer
                         {
                             // KFreon: Update current details
                             curr.UpdateTex(j, treetex);
+                            if (curr.FileDuplicates != null)
+                                foreach (var duplicate in curr.FileDuplicates)
+                                    duplicate.UpdateTex(j, treetex);
                         }
                     }
                 }
@@ -1561,59 +1564,35 @@ namespace ME3Explorer
 
         private void RemoveFileDuplicates()
         {
-            List<TPFTexInfo> duplicates = new List<TPFTexInfo>();
-            int currentPos = 0;
-            int stepperPos = 1;
-            while (true)
+            // KFreon: Rewrote this. Any coders, look back in the history to see the original abomination...
+
+            List<TPFTexInfo> newTexes = new List<TPFTexInfo>();
+            List<int> duplicateInds = new List<int>();
+            for (int i = 0; i < LoadedTexes.Count; i++)
             {
-                // KFreon: Break when finished
-                if (currentPos >= LoadedTexes.Count - 1)
-                    break;
+                TPFTexInfo curr = LoadedTexes[i];
+                if (curr.isDef || duplicateInds.Contains(i))
+                    continue;
 
-
-                TPFTexInfo curr = LoadedTexes[currentPos];
-                TPFTexInfo step = LoadedTexes[stepperPos];
-
-                // KFreon: Ignore currentPos if .def
-                if (!curr.isDef)
+                for (int j = i; j < LoadedTexes.Count; j++) 
                 {
-                    // KFreon: Ignore stepperPos if .def
-                    if (!step.isDef)
-                    {
-                        // KFreon: Check if textures are identical
-                        if (curr.Hash == step.Hash)// && curr.FileName == step.FileName)
-                        {
-                            // KFreon: Add to duplicate list and remove from overall texes
-                            duplicates.Add(step);
-                            LoadedTexes.RemoveAt(stepperPos);
-                        }
-                    }
+                    TPFTexInfo checker = LoadedTexes[j];
+                    if (checker.isDef || curr == checker)
+                        continue;
 
-                    // KFreon: Advance stepper and position (if applicable)
-                    if (stepperPos < LoadedTexes.Count - 1)
-                        stepperPos++;
-                    else
+                    if (curr.Hash == checker.Hash)
                     {
-                        // KFreon: Add duplicates to current tex
-                        // Heff: Don't add currently existing ones, so that we can do analyse -> load -> analyse
-                        curr.FileDuplicates.AddRange(duplicates.Where(
-                            t => !curr.FileDuplicates.Any(c => c == t)));
-                        duplicates.Clear();
-
-                        if (stepperPos == LoadedTexes.Count)
-                        {
-                            currentPos++;
-                            stepperPos = currentPos + 1;
-                        }
+                        duplicateInds.Add(j); // KFreon: Add this index to list so when curr gets to this texture, it's skipped since it's already in another textures duplicate list.
+                        if (!curr.FileDuplicates.Contains(checker))  // KFreon: Heff's check to ensure that no file duplicates are further duplicated when doing Analyse -> load -> analyse.
+                            curr.FileDuplicates.Add(checker);
                     }
                 }
-                else
-                {
-                    // KFreon: Ignore current texture cos its a .def
-                    currentPos++;
-                    stepperPos = currentPos + 1;
-                }
+
+                newTexes.Add(curr);
             }
+
+            LoadedTexes.Clear();
+            LoadedTexes.AddRange(newTexes);
         }
 
         private void MainTreeView_DragEnter(object sender, DragEventArgs e)
