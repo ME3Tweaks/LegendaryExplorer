@@ -41,24 +41,12 @@ namespace ME3Explorer.Interpreter2
             this.expandAllButton = new System.Windows.Forms.ToolStripButton();
             this.collapseAllButton = new System.Windows.Forms.ToolStripButton();
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.nameEntry = new System.Windows.Forms.ToolStripTextBox();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
             this.enumDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
             this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
             this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
-            this.arraySeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.arrayViewerDropdown = new System.Windows.Forms.ToolStripComboBox();
-            this.arrayPropertyDropdown = new System.Windows.Forms.ToolStripDropDownButton();
-            this.arrayAdd4Bytes = new System.Windows.Forms.ToolStripMenuItem();
-            this.arrayAdd8Bytes = new System.Windows.Forms.ToolStripMenuItem();
-            this.arrayRemove4Bytes = new System.Windows.Forms.ToolStripMenuItem();
-            this.arrayRemove8Bytes = new System.Windows.Forms.ToolStripMenuItem();
-            this.doNotUseThisMenuToModifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arraysOfBYTEPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arraysOfBYTEPropertiesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arraysOfBOOLPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
@@ -105,17 +93,15 @@ namespace ME3Explorer.Interpreter2
             this.expandAllButton,
             this.collapseAllButton,
             this.setValueSeparator,
+            this.nameEntry,
             this.proptext,
             this.enumDropdown,
             this.setPropertyButton,
             this.addArrayElementButton,
-            this.deleteArrayElement,
-            this.arraySeparator,
-            this.arrayViewerDropdown,
-            this.arrayPropertyDropdown});
+            this.deleteArrayElement});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1008, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(1008, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -125,7 +111,7 @@ namespace ME3Explorer.Interpreter2
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(63, 24);
+            this.toolStripButton1.Size = new System.Drawing.Size(63, 22);
             this.toolStripButton1.Text = "Start Scan";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -135,14 +121,14 @@ namespace ME3Explorer.Interpreter2
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(70, 24);
+            this.toolStripButton2.Size = new System.Drawing.Size(70, 22);
             this.toolStripButton2.Text = "Export Tree";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // expandSeparator
             // 
             this.expandSeparator.Name = "expandSeparator";
-            this.expandSeparator.Size = new System.Drawing.Size(6, 27);
+            this.expandSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // expandAllButton
             // 
@@ -150,7 +136,7 @@ namespace ME3Explorer.Interpreter2
             this.expandAllButton.Image = ((System.Drawing.Image)(resources.GetObject("expandAllButton.Image")));
             this.expandAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.expandAllButton.Name = "expandAllButton";
-            this.expandAllButton.Size = new System.Drawing.Size(66, 24);
+            this.expandAllButton.Size = new System.Drawing.Size(66, 22);
             this.expandAllButton.Text = "Expand All";
             this.expandAllButton.Click += new System.EventHandler(this.expandAllButton_Click);
             // 
@@ -160,7 +146,7 @@ namespace ME3Explorer.Interpreter2
             this.collapseAllButton.Image = ((System.Drawing.Image)(resources.GetObject("collapseAllButton.Image")));
             this.collapseAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.collapseAllButton.Name = "collapseAllButton";
-            this.collapseAllButton.Size = new System.Drawing.Size(73, 24);
+            this.collapseAllButton.Size = new System.Drawing.Size(73, 22);
             this.collapseAllButton.Text = "Collapse All";
             this.collapseAllButton.Click += new System.EventHandler(this.collapseAllButton_Click);
             // 
@@ -169,12 +155,19 @@ namespace ME3Explorer.Interpreter2
             this.setValueSeparator.AutoSize = false;
             this.setValueSeparator.Name = "setValueSeparator";
             this.setValueSeparator.Size = new System.Drawing.Size(6, 25);
-            this.setValueSeparator.Visible = false;
+            // 
+            // nameEntry
+            // 
+            this.nameEntry.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.nameEntry.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.nameEntry.Name = "nameEntry";
+            this.nameEntry.Size = new System.Drawing.Size(200, 25);
+            this.nameEntry.Visible = false;
             // 
             // proptext
             // 
             this.proptext.Name = "proptext";
-            this.proptext.Size = new System.Drawing.Size(100, 27);
+            this.proptext.Size = new System.Drawing.Size(100, 25);
             this.proptext.Visible = false;
             // 
             // enumDropdown
@@ -183,7 +176,7 @@ namespace ME3Explorer.Interpreter2
             this.enumDropdown.DropDownWidth = 300;
             this.enumDropdown.MaxDropDownItems = 20;
             this.enumDropdown.Name = "enumDropdown";
-            this.enumDropdown.Size = new System.Drawing.Size(200, 27);
+            this.enumDropdown.Size = new System.Drawing.Size(200, 25);
             this.enumDropdown.Visible = false;
             // 
             // setPropertyButton
@@ -204,7 +197,7 @@ namespace ME3Explorer.Interpreter2
             this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
             this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(110, 24);
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
             this.addArrayElementButton.Text = "Add Array Element";
             this.addArrayElementButton.Visible = false;
             this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
@@ -215,122 +208,10 @@ namespace ME3Explorer.Interpreter2
             this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
             this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElement.Name = "deleteArrayElement";
-            this.deleteArrayElement.Size = new System.Drawing.Size(121, 24);
+            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
             this.deleteArrayElement.Text = "Delete Array Element";
             this.deleteArrayElement.Visible = false;
             this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
-            // 
-            // arraySeparator
-            // 
-            this.arraySeparator.Name = "arraySeparator";
-            this.arraySeparator.Size = new System.Drawing.Size(6, 27);
-            // 
-            // arrayViewerDropdown
-            // 
-            this.arrayViewerDropdown.BackColor = System.Drawing.SystemColors.Control;
-            this.arrayViewerDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.arrayViewerDropdown.Items.AddRange(new object[] {
-            "Arrays: Raw",
-            "Arrays: Import/Export",
-            "Arrays: Name Table"});
-            this.arrayViewerDropdown.Name = "arrayViewerDropdown";
-            this.arrayViewerDropdown.Size = new System.Drawing.Size(140, 23);
-            this.arrayViewerDropdown.SelectedIndexChanged += new System.EventHandler(this.arrayViewerDropdown_selectionChanged);
-            // 
-            // arrayPropertyDropdown
-            // 
-            this.arrayPropertyDropdown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.arrayPropertyDropdown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.arrayAdd4Bytes,
-            this.arrayAdd8Bytes,
-            this.arrayRemove4Bytes,
-            this.arrayRemove8Bytes,
-            this.doNotUseThisMenuToModifyToolStripMenuItem});
-            this.arrayPropertyDropdown.Enabled = false;
-            this.arrayPropertyDropdown.Image = ((System.Drawing.Image)(resources.GetObject("arrayPropertyDropdown.Image")));
-            this.arrayPropertyDropdown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.arrayPropertyDropdown.Name = "arrayPropertyDropdown";
-            this.arrayPropertyDropdown.Size = new System.Drawing.Size(139, 19);
-            this.arrayPropertyDropdown.Text = "Array Property Actions";
-            this.arrayPropertyDropdown.Visible = false;
-            // 
-            // arrayAdd4Bytes
-            // 
-            this.arrayAdd4Bytes.Name = "arrayAdd4Bytes";
-            this.arrayAdd4Bytes.Size = new System.Drawing.Size(245, 22);
-            this.arrayAdd4Bytes.Text = "Add Value (4-bytes) ";
-            this.arrayAdd4Bytes.ToolTipText = "Adds a 4 byte value to this array.";
-            // 
-            // arrayAdd8Bytes
-            // 
-            this.arrayAdd8Bytes.Name = "arrayAdd8Bytes";
-            this.arrayAdd8Bytes.Size = new System.Drawing.Size(245, 22);
-            this.arrayAdd8Bytes.Text = "Add Value (8-bytes)";
-            this.arrayAdd8Bytes.ToolTipText = "Adds an 8-byte value to this array. If this array uses 4-byte values, this is eff" +
-    "ectively 2 values.";
-            // 
-            // arrayRemove4Bytes
-            // 
-            this.arrayRemove4Bytes.Name = "arrayRemove4Bytes";
-            this.arrayRemove4Bytes.Size = new System.Drawing.Size(245, 22);
-            this.arrayRemove4Bytes.Text = "Remove Value (4-bytes)";
-            this.arrayRemove4Bytes.ToolTipText = "Removes 4 bytes starting at the selected index.";
-            this.arrayRemove4Bytes.Click += new System.EventHandler(this.arrayRemove4Bytes_Click);
-            // 
-            // arrayRemove8Bytes
-            // 
-            this.arrayRemove8Bytes.Name = "arrayRemove8Bytes";
-            this.arrayRemove8Bytes.Size = new System.Drawing.Size(245, 22);
-            this.arrayRemove8Bytes.Text = "Remove Value (8-bytes)";
-            this.arrayRemove8Bytes.ToolTipText = "Removes 8 bytes from the selected index. If this array uses 4-byte values, this w" +
-    "ill remove 2 values.";
-            // 
-            // doNotUseThisMenuToModifyToolStripMenuItem
-            // 
-            this.doNotUseThisMenuToModifyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.arraysOfBYTEPropertiesToolStripMenuItem,
-            this.arraysOfBYTEPropertiesToolStripMenuItem1,
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem,
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem,
-            this.arraysOfBOOLPropertiesToolStripMenuItem});
-            this.doNotUseThisMenuToModifyToolStripMenuItem.Name = "doNotUseThisMenuToModifyToolStripMenuItem";
-            this.doNotUseThisMenuToModifyToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.doNotUseThisMenuToModifyToolStripMenuItem.Text = "Do not use this menu to modify:";
-            // 
-            // arraysOfBYTEPropertiesToolStripMenuItem
-            // 
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Enabled = false;
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Name = "arraysOfBYTEPropertiesToolStripMenuItem";
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.arraysOfBYTEPropertiesToolStripMenuItem.Text = "Arrays of BYTE properties";
-            // 
-            // arraysOfBYTEPropertiesToolStripMenuItem1
-            // 
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Enabled = false;
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Name = "arraysOfBYTEPropertiesToolStripMenuItem1";
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(235, 22);
-            this.arraysOfBYTEPropertiesToolStripMenuItem1.Text = "Arrays of STRING properties";
-            // 
-            // arraysOfSTRUCTPropertiesToolStripMenuItem
-            // 
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Enabled = false;
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Name = "arraysOfSTRUCTPropertiesToolStripMenuItem";
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.arraysOfSTRUCTPropertiesToolStripMenuItem.Text = "Arrays of STRUCT properties";
-            // 
-            // arraysOfDELEGATEPropertiesToolStripMenuItem
-            // 
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Enabled = false;
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Name = "arraysOfDELEGATEPropertiesToolStripMenuItem";
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.arraysOfDELEGATEPropertiesToolStripMenuItem.Text = "Arrays of DELEGATE properties";
-            // 
-            // arraysOfBOOLPropertiesToolStripMenuItem
-            // 
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Enabled = false;
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Name = "arraysOfBOOLPropertiesToolStripMenuItem";
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.arraysOfBOOLPropertiesToolStripMenuItem.Text = "Arrays of BOOL properties";
             // 
             // menuStrip1
             // 
@@ -344,7 +225,7 @@ namespace ME3Explorer.Interpreter2
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 27);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -354,7 +235,7 @@ namespace ME3Explorer.Interpreter2
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(1008, 387);
+            this.splitContainer1.Size = new System.Drawing.Size(1008, 389);
             this.splitContainer1.SplitterDistance = 332;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -370,7 +251,7 @@ namespace ME3Explorer.Interpreter2
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(332, 387);
+            this.hb1.Size = new System.Drawing.Size(332, 389);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -383,7 +264,7 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(672, 387);
+            this.treeView1.Size = new System.Drawing.Size(672, 389);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -429,23 +310,11 @@ namespace ME3Explorer.Interpreter2
         private System.Windows.Forms.ToolStripSeparator setValueSeparator;
         private System.Windows.Forms.ToolStripButton expandAllButton;
         private System.Windows.Forms.ToolStripButton collapseAllButton;
-        private System.Windows.Forms.ToolStripComboBox arrayViewerDropdown;
-        private System.Windows.Forms.ToolStripSeparator arraySeparator;
-        private System.Windows.Forms.ToolStripDropDownButton arrayPropertyDropdown;
-        private System.Windows.Forms.ToolStripMenuItem arrayAdd4Bytes;
-        private System.Windows.Forms.ToolStripMenuItem arrayAdd8Bytes;
-        private System.Windows.Forms.ToolStripMenuItem arrayRemove4Bytes;
-        private System.Windows.Forms.ToolStripMenuItem arrayRemove8Bytes;
-        private System.Windows.Forms.ToolStripMenuItem doNotUseThisMenuToModifyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arraysOfBYTEPropertiesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arraysOfBYTEPropertiesToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem arraysOfSTRUCTPropertiesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arraysOfDELEGATEPropertiesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arraysOfBOOLPropertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripButton deleteArrayElement;
         private System.Windows.Forms.ToolStripButton addArrayElementButton;
         private System.Windows.Forms.ToolStripComboBox enumDropdown;
+        private System.Windows.Forms.ToolStripTextBox nameEntry;
     }
 }

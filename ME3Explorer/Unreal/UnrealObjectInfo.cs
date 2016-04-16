@@ -12,16 +12,52 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
+        public enum ArrayType
+        {
+            Object,
+            Name,
+            Enum,
+            Struct,
+            Bool,
+            String,
+            Float,
+            Int
+        }
+
         public class PropertyInfo
         {
             public PropertyReader.Type type;
             public string reference;
         }
 
+        //public struct NameReference
+        //{
+        //    string name;
+        //    int index;
+        //}
+
+        //public class DefaultValue
+        //{
+        //    int intValue;
+        //    float floatValue;
+        //    NameReference nameValue;
+        //    bool boolValue;
+        //    byte byteValue;
+        //    string stringValue;
+        //    Dictionary<string, DefaultValue> structValue;
+        //    List<NameReference> nameArrayValue;
+        //    List<string> stringArrayValue;
+        //    List<bool> boolArrayValue;
+        //    List<Dictionary<string, DefaultValue>> structArrayValue;
+        //}
+
         public class ClassInfo
         {
             public Dictionary<string, PropertyInfo> properties;
             public string baseClass;
+            //Relative to BIOGame
+            public string pccPath;
+            public int exportIndex;
 
             public ClassInfo()
             {
@@ -86,17 +122,140 @@ namespace ME3Explorer.Unreal
             }
             return null;
         }
+        
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false)
+        {
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            if (p == null)
+            {
+                p = getPropertyInfo(className, propName, !inStruct);
+            }
+            if(p.reference == "NameProperty")
+            {
+                return ArrayType.Name;
+            }
+            else if (Enums.ContainsKey(p.reference))
+            {
+                return ArrayType.Enum;
+            }
+            else if (p.reference == "BoolProperty")
+            {
+                return ArrayType.Bool;
+            }
+            else if (p.reference == "StrProperty")
+            {
+                return ArrayType.String;
+            }
+            else if (p.reference == "FloatProperty")
+            {
+                return ArrayType.Float;
+            }
+            else if (p.reference == "IntProperty")
+            {
+                return ArrayType.Int;
+            }
+            else if (Structs.ContainsKey(p.reference))
+            {
+                return ArrayType.Struct;
+            }
+            else
+            {
+                return ArrayType.Object;
+            }
+        }
+
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
+        {
+            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            {
+                ClassInfo info = temp[className];
+                //look in class properties
+                if (info.properties.ContainsKey(propName))
+                {
+                    return info.properties[propName];
+                }
+                //look in structs
+                else
+                {
+                    foreach (PropertyInfo p in info.properties.Values)
+                    {
+                        if (p.type == PropertyReader.Type.StructProperty || p.type == PropertyReader.Type.ArrayProperty)
+                        {
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true);
+                            if (val != null)
+                            {
+                                return val;
+                            }
+                        }
+                    }
+                }
+                //look in base class
+                if (temp.ContainsKey(info.baseClass))
+                {
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct);
+                    if (val != null)
+                    {
+                        return val;
+                    }
+                }
+            }
+            return null;
+        }
+        
+        public static byte[] getDefaultClassValue(PCCObject pcc, string className)
+        {
+            if (Structs.ContainsKey(className))
+            {
+                ClassInfo info = Structs[className];
+                PCCObject importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                PCCObject.ExportEntry entry = importPCC.Exports[info.exportIndex];
+                List<PropertyReader.Property> Props = PropertyReader.ReadProp(importPCC, entry.Data, 0x24);
+                MemoryStream m = new MemoryStream(entry.DataSize - 0x24);
+                foreach (PropertyReader.Property p in Props)
+                {
+                    string propName = importPCC.getNameEntry(p.Name);
+                    if (!info.properties.ContainsKey(propName) && propName != "None")
+                    {
+                        //property is transient
+                        continue;
+                    }
+                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m, true);
+                }
+                return m.ToArray();
+            }
+            else if (Classes.ContainsKey(className))
+            {
+                ClassInfo info = Structs[className];
+                PCCObject importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                PCCObject.ExportEntry entry = pcc.Exports[info.exportIndex + 1];
+                List<PropertyReader.Property> Props = PropertyReader.getPropList(importPCC, entry);
+                MemoryStream m = new MemoryStream(entry.DataSize - 4);
+                foreach (PropertyReader.Property p in Props)
+                {
+                    if (!info.properties.ContainsKey(importPCC.getNameEntry(p.Name)))
+                    {
+                        //property is transient
+                        continue;
+                    }
+                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
+                }
+                return m.ToArray();
+            }
+            return null;
+        }
 
         #region Generating
         //call this method to regenerate ME3ObjectInfo.json
-        //Takes a long time (5 to 10 minutes maybe?). Application will be completely unresponsive during that time.
+        //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
             PCCObject pcc;
             string path = ME3Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
             string objectName;
-            for (int i = 0; i < files.Length; i++)
+            int length = files.Length;
+            for (int i = 0; i < length; i++)
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
@@ -131,11 +290,12 @@ namespace ME3Explorer.Unreal
                         }
                     }
                 }
+                System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
             //populate SequenceObjects with inherited input links
             foreach (KeyValuePair<string, SequenceObjectInfo> pair in SequenceObjects)
             {
-                if(pair.Value.inputLinks.Count == 0)
+                if (pair.Value.inputLinks.Count == 0)
                 {
                     SequenceObjectInfo s;
                     string baseClass = Classes[pair.Key].baseClass;
@@ -151,7 +311,8 @@ namespace ME3Explorer.Unreal
                     }
                 }
             }
-            File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json", JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }));
+            File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
+                JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }));
             MessageBox.Show("Done");
         }
 
@@ -180,6 +341,8 @@ namespace ME3Explorer.Unreal
         {
             ClassInfo info = new ClassInfo();
             info.baseClass = pcc.Exports[index].ClassParent;
+            info.exportIndex = index;
+            info.pccPath = new string(pcc.pccFileName.Skip(pcc.pccFileName.LastIndexOf("BIOGame") + 8).ToArray());
             foreach (PCCObject.ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"

@@ -295,7 +295,10 @@ namespace ME3Explorer
         ///   System.ArgumentOutOfRangeException:
         ///     startIndex is less than zero or greater than the length of value minus 1.
         ///</summary>
-        public static bool ToBoolean(byte[] value, int startIndex) { throw new NotImplementedException(); }
+        public static bool ToBoolean(byte[] value, int startIndex)
+        {
+            return System.BitConverter.ToBoolean(value, startIndex);
+        }
         ///
         /// <summary>
         ///     Returns a Unicode character converted from two bytes at a specified position
