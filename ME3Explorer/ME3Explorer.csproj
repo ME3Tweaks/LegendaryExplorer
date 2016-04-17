@@ -1142,10 +1142,6 @@
       <Project>{681DB2CE-E3EB-4110-AC50-F53EACA66E99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\NDesk.Options\NDesk.Options.csproj">
-      <Project>{C98A6CD6-9422-4B35-8B7A-F520D75534D1}</Project>
-      <Name>NDesk.Options</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
       <Project>{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}</Project>
       <Name>SevenZip</Name>
