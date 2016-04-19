@@ -339,7 +339,7 @@ namespace ME3Explorer.Unreal
                 case 8: return "Array Property";
                 case 9: return "String Property";
                 case 10: return "String Ref Property";
-                default: return "Unkown/None";
+                default: return "Unknown/None";
             }
         }
 
@@ -650,6 +650,7 @@ namespace ME3Explorer.Unreal
                     pos += p.Value.len + 24;
                     break;
             }
+            p.Size = size;
             p.raw = new byte[pos - start];
             p.offend = pos;
             if(pos < raw.Length)

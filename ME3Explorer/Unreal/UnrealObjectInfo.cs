@@ -21,7 +21,8 @@ namespace ME3Explorer.Unreal
             Bool,
             String,
             Float,
-            Int
+            Int,
+            Byte,
         }
 
         public class PropertyInfo
@@ -130,7 +131,12 @@ namespace ME3Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, !inStruct);
             }
-            if(p.reference == "NameProperty")
+            return getArrayType(p);
+        }
+
+        public static ArrayType getArrayType(PropertyInfo p)
+        {
+            if (p.reference == "NameProperty")
             {
                 return ArrayType.Name;
             }
@@ -141,6 +147,10 @@ namespace ME3Explorer.Unreal
             else if (p.reference == "BoolProperty")
             {
                 return ArrayType.Bool;
+            }
+            else if (p.reference == "ByteProperty")
+            {
+                return ArrayType.Byte;
             }
             else if (p.reference == "StrProperty")
             {

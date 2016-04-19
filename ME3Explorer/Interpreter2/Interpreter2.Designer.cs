@@ -174,6 +174,7 @@ namespace ME3Explorer.Interpreter2
             // 
             this.enumDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.enumDropdown.DropDownWidth = 300;
+            this.enumDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.enumDropdown.MaxDropDownItems = 20;
             this.enumDropdown.Name = "enumDropdown";
             this.enumDropdown.Size = new System.Drawing.Size(200, 25);
@@ -266,6 +267,7 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(672, 389);
             this.treeView1.TabIndex = 0;
+            this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // Interpreter2
