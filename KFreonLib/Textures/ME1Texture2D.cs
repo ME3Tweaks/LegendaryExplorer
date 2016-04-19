@@ -12,6 +12,7 @@ using KFreonLib.Helpers;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
 using CSharpImageLibrary.General;
+using System.Diagnostics;
 
 namespace KFreonLib.Textures
 {
@@ -91,7 +92,7 @@ namespace KFreonLib.Textures
             }
         }
 
-        public const string className = "ME1Texture2D";
+        public const string className = "Texture2D";
         public const string class2 = "LightMapTexture2D";
         public const string class3 = "TextureFlipBook";
         public byte[] headerData;
@@ -1434,10 +1435,11 @@ namespace KFreonLib.Textures
                 imgInfo.storageType = privateimgList.First(img => img.storageType != storage.empty).storageType;
             else if (imgInfo.storageType == storage.empty)
                 imgInfo.storageType = privateimgList.Last(img => img.storageType != storage.empty).storageType;
-            if (imgInfo.storageType == storage.arcCpr || imgInfo.storageType == storage.arcUnc)
+            /*if (imgInfo.storageType == storage.arcCpr || imgInfo.storageType == storage.arcUnc)
                 throw new FormatException("Replacement of externally stored textures is not allowed");
             else if (imgInfo.storageType == storage.empty)
-                throw new FormatException("Cannot replace images with empty image lists");
+                throw new FormatException("Cannot replace images with empty image lists");*/
+
 
             byte[] imgBuff = ddsfile.resize();
 
@@ -1461,6 +1463,7 @@ namespace KFreonLib.Textures
                 ms.WriteBytes(imgBuff);
                 imageData = ms.ToArray();
             }
+
             privateimgList[imageIdx] = imgInfo;
         }
 
@@ -1724,7 +1727,7 @@ namespace KFreonLib.Textures
                 if (imgdata == null)
                     return null;
                 using (ImageEngineImage img = new ImageEngineImage(imgdata))
-                    return img.GetGDIBitmap(true);
+                    return img.GetGDIBitmap(true, false);
             }
             catch { }
             return null;

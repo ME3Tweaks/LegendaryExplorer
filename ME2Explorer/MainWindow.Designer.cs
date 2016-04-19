@@ -32,8 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dLCCrackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,7 +46,6 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolsToolStripMenuItem,
             this.developerToolsToolStripMenuItem,
             this.optionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -56,22 +53,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(986, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dLCCrackToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
-            this.toolsToolStripMenuItem.Text = "User Tools";
-            // 
-            // dLCCrackToolStripMenuItem
-            // 
-            this.dLCCrackToolStripMenuItem.Image = global::ME2Explorer.Properties.Resources.dlc_crackME2_64x64;
-            this.dLCCrackToolStripMenuItem.Name = "dLCCrackToolStripMenuItem";
-            this.dLCCrackToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.dLCCrackToolStripMenuItem.Text = "DLC Crack";
-            this.dLCCrackToolStripMenuItem.Click += new System.EventHandler(this.dLCCrackToolStripMenuItem_Click);
             // 
             // developerToolsToolStripMenuItem
             // 
@@ -160,8 +141,6 @@
 
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dLCCrackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openDebugWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem developerToolsToolStripMenuItem;

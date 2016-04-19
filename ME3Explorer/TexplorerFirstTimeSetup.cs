@@ -19,6 +19,14 @@ namespace ME3Explorer
     {
         public class DLCInfo
         {
+            public bool Use
+            {
+                get
+                {
+                    return isExtracted;
+                }
+            }
+
             public string Name = null;
             public string Path = null;
 
@@ -178,9 +186,8 @@ namespace ME3Explorer
             SetupStuff(game, DLCPath, CookedPath);
 
             foreach (DLCInfo dlc in DLCs)
-            {
-                MainListView.Items.Add(dlc.Name, true);
-            }
+                MainListView.Items.Add(dlc.isExtracted ? dlc.Name : "NOT EXTRACTED: " + dlc.Name, dlc.isExtracted);
+
 
             StatusUpdater.UpdateText("Ready. Loaded " + (DLCs.Count - 1) + " DLC's.");
         }
@@ -272,6 +279,9 @@ namespace ME3Explorer
                 if (ischecked)
                 {
                     DLCInfo dlc = DLCs[i];
+                    if (!dlc.Use)
+                        continue;
+
                     if (dlc.isBaseGame == false)
                     {
                         if (dlc.isBackupPresent && dlc.UseExtracted == false)
@@ -363,6 +373,12 @@ namespace ME3Explorer
                 cts.Cancel();
                 e.Cancel = true;
             }
+        }
+
+        private void MainListView_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (!DLCs[e.Index].Use)
+                e.NewValue = CheckState.Unchecked;
         }
     }
 }

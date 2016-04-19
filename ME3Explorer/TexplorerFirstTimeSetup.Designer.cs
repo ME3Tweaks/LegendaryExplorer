@@ -105,6 +105,7 @@
             this.MainListView.Name = "MainListView";
             this.MainListView.Size = new System.Drawing.Size(568, 557);
             this.MainListView.TabIndex = 0;
+            this.MainListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.MainListView_ItemCheck);
             this.MainListView.SelectedIndexChanged += new System.EventHandler(this.MainListView_SelectedIndexChanged);
             // 
             // TexplorerFirstTimeSetup

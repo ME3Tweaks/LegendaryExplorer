@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BitConverter = KFreonLib.Misc.BitConverter;
@@ -492,7 +492,7 @@ namespace KFreonLib.Scripting
 
                 Bitmap bmp = null;
                 using (ImageEngineImage img = new ImageEngineImage(data, 64, false))
-                    bmp = img.GetGDIBitmap(true, 64);
+                    bmp = img.GetGDIBitmap(true, false, 64);
 
                 return bmp;
             }
@@ -567,8 +567,17 @@ namespace KFreonLib.Scripting
                     {
                         // KFreon: HOPEFULLY a mesh mod...
                         DebugOutput.PrintLn(Name + " is a mesh mod. Hopefully...");
-
                         script = ModMaker.GenerateMeshScript(ExpIDs[0].ToString(), PCCs[0]);
+
+                        // SirCxyrtyx: Might be a pcc compare job, so check for added names
+                        List<string> namesToAdd = GetNamesFromScript(Script);
+                        if(namesToAdd.Count > 0)
+                        {
+                            string names = "";
+                            foreach (var name in namesToAdd)
+                                names += "names.Add(\"" + name + "\");" + Environment.NewLine;
+                            script = script.Replace("// **KF_NAMES", names);
+                        }
                     }
                     Script = script;
                 }
@@ -929,6 +938,12 @@ namespace KFreonLib.Scripting
                             path = parts[1];
                         pathing = path + pathing;
                     }
+                    else if (line.Contains("pcc = new PCCObject(ME3Directory.cookedPath + \""))
+                    {
+                        string[] parts = line.Split('"');
+                        if (parts.Count() > 1)
+                            pathing = parts[1];
+                    }
                 }
                 if (pathing != "")
                 {
@@ -976,10 +991,41 @@ namespace KFreonLib.Scripting
                         ids.Add(Int32.Parse(number));
                         break;
                     }
+                    else if (line.Contains("ReplaceData("))
+                    {
+                        string[] parts = line.Split('(');
+                        string number = parts[1].Substring(0, parts[1].IndexOf(","));
+                        ids.Add(Int32.Parse(number));
+                        break;
+                    }
                 }
             }
             
             return ids;
+        }
+
+
+        /// <summary>
+        /// Returns list of Names from job script.
+        /// </summary>
+        /// <param name="script">Script to search through.</param>
+        /// <returns>List of Names found in script.</returns>
+        public static List<string> GetNamesFromScript(string script)
+        {
+            List<string> names = new List<string>();
+
+            Regex reg = new Regex(@"names\.Add\(\""(.+)\""\);");
+            MatchCollection matches = reg.Matches(script);
+            foreach (Match m in matches)
+            {
+                try
+                {
+                    names.Add(m.Groups[1].Value);
+                }
+                catch (Exception){}
+            }
+
+            return names;
         }
 
 
@@ -998,7 +1044,13 @@ namespace KFreonLib.Scripting
             {
                 foreach (string line in lines)
                     if (line.Contains("tex."))  // KFreon: Look for texture name
-                        return line.Split('"')[1];
+                    {
+                        string[] temp = line.Split('"');
+                        if (temp.Length > 1)
+                        {
+                            return temp[1];
+                        }
+                    }
             }
             else
             {

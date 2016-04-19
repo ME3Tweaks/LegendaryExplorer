@@ -298,9 +298,6 @@ namespace ME3Explorer
 
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!IsDLCDone)
-                return;
-
             ModMaker modmaker = new ModMaker();
             //OpenMaximized(modmaker);
             modmaker.Show();
@@ -748,9 +745,6 @@ namespace ME3Explorer
 
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (!IsDLCDone)
-                return;
-
             Texplorer2 texplorer = new Texplorer2();
             //OpenMaximized(texplorer);
             texplorer.Show();
@@ -759,9 +753,6 @@ namespace ME3Explorer
 
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!IsDLCDone)
-                return;
-
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
             //OpenMaximized(tpftools);
             tpftools.Show();

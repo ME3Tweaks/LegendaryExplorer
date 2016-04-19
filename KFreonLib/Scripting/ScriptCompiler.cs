@@ -125,6 +125,10 @@ namespace KFreonLib.Scripting
             Assembly compiledScript = CompileCode(temp);
             if (compiledScript != null)
                 res = RunScript(compiledScript, rtb2);
+            if(res == "Code Finished")
+            {
+                res = "Success";
+            }
             GC.Collect();
             return res;
         }

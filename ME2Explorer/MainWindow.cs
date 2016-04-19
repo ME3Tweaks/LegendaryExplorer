@@ -49,11 +49,6 @@ namespace ME2Explorer
             taskbar.AddTool(ed, Properties.Resources.package_editor_64x64);
         }
 
-        private void dLCCrackToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            taskbar.AddTool(new DLC_Crack.GiveEntitlements(), Properties.Resources.dlc_crackME2_64x64);
-        }
-
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             taskbar.AddTool(new SequenceEditor(), Properties.Resources.sequence_editor_64x64);

@@ -126,7 +126,19 @@ namespace ME3Explorer.Unreal
             public string ClassName   { get { return pccRef.Names[idxClassName]; } }
             public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }
             public string ObjectName  { get { return pccRef.Names[idxObjectName]; } }
-            public string PackageName { get { int val = idxLink; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Package"; } }
+            public string PackageName
+            {
+                get
+                {
+                    int val = idxLink;
+                    if (val != 0)
+                    {
+                        IEntry entry = pccRef.getEntry(val);
+                        return pccRef.Names[entry.idxObjectName];
+                    }
+                    else return "Package";
+                }
+            }
             public string PackageFullName
             {
                 get
@@ -693,17 +705,17 @@ namespace ME3Explorer.Unreal
         {
             if (index > 0 && index <= ExportCount)
                 return Exports[index - 1].ObjectName;
-            if (index * -1 > 0 && index * -1 < ImportCount)
-                return Imports[index * -1 - 1].ObjectName;
+            if (-index > 0 && -index <= ImportCount)
+                return Imports[-index - 1].ObjectName;
             return "";
         }
 
         public string getObjectClass(int index)
         {
-            if (index > 0 && index < ExportCount)
+            if (index > 0 && index <= ExportCount)
                 return Exports[index - 1].ClassName;
-            if (index * -1 > 0 && index * -1 < ImportCount)
-                return Imports[index * -1 - 1].ClassName;
+            if (-index > 0 && -index <= ImportCount)
+                return Imports[-index - 1].ClassName;
             return "";
         }
 
@@ -733,8 +745,8 @@ namespace ME3Explorer.Unreal
         {
             if (index > 0 && index <= ExportCount)
                 return Exports[index - 1];
-            if (index * -1 > 0 && index * -1 <= ImportCount)
-                return Imports[-index -1];
+            if (-index > 0 && -index <= ImportCount)
+                return Imports[-index - 1];
             return null;
         }
 
@@ -762,7 +774,8 @@ namespace ME3Explorer.Unreal
 
         public void addName(string name)
         {
-            Names.Add(name);
+            if(!Names.Contains(name))
+                Names.Add(name);
         }
 
         public void addImport(PCCObject.ImportEntry importEntry)

@@ -34,6 +34,7 @@ namespace KFreonLib.MEDirectories
             return _gamePath;
         }
 
+        public static string BioGamePath { get { return (gamePath != null) ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BioGame\") : null; } }
         public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath,  @"BioGame\CookedPC\") : null; } }
         public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BioGame\DLC\") : null; } }
 

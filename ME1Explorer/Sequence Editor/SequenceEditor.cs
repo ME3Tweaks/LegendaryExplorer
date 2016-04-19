@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using ME1Explorer.SequenceObjects;
-//using ME1Explorer.TOCUpdater;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -60,6 +59,11 @@ namespace ME1Explorer
             public int index;
             public float X;
             public float Y;
+
+            public SaveData(int i) : this()
+            {
+                index = i;
+            }
         }
 
         private TalkFiles talkFiles;
@@ -187,6 +191,7 @@ namespace ME1Explorer
         {
             if(autoSaveViewToolStripMenuItem.Checked)
                 saveView();
+            SavedPositions = null;
             int n = Convert.ToInt32(e.Node.Name);
             if (n > 0)
             {
@@ -291,11 +296,14 @@ namespace ME1Explorer
         {
             string s = pcc.Exports[index].ObjectName;
             int x = 0, y = 0;
-            SaveData savedInfo;
-            if (RefOrRefChild)
-                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
-            else
-                savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
+            SaveData savedInfo = new SaveData(-1);
+            if (SavedPositions.Count > 0)
+            {
+                if (RefOrRefChild)
+                    savedInfo = SavedPositions.First(p => CurrentObjects.IndexOf(index) == p.index);
+                else
+                    savedInfo = SavedPositions.First(p => index == p.index);
+            }
 
             List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
             foreach (SaltPropertyReader.Property prop in props)
@@ -353,11 +361,14 @@ namespace ME1Explorer
                 {
                     if (o.GetType() == Type.GetType("ME1Explorer.SequenceObjects.SAction"))
                     {
-                        SaveData savedInfo = new SaveData();
-                        if (RefOrRefChild)
-                            savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
-                        else
-                            savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
+                        SaveData savedInfo = new SaveData(-1);
+                        if (SavedPositions.Count > 0)
+                        {
+                            if (RefOrRefChild)
+                                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
+                            else
+                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index); 
+                        }
                         if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
                             o.Layout(savedInfo.X, savedInfo.Y);
                         else

@@ -420,8 +420,8 @@ namespace ME3Explorer
             Overall.UpdateText(orig);
 
             // KFreon: Change GUI stuff
-            gooey.ModifyControl("ExtractTOP", false);
-            gooey.ModifyControl("ClearAll", false);
+            gooey.ModifyControl("ExtractTOP", LoadedTexes.Count > 0);
+            gooey.ModifyControl("ClearAll", LoadedTexes.Count > 0);
             gooey.ModifyControl("Rebuild", false);
             gooey.ModifyControl("RunAutofix", false);
             gooey.ModifyControl("extractInvalid", false);
@@ -1020,7 +1020,7 @@ namespace ME3Explorer
                 Bitmap img = null;
                 using (MemoryStream ms = new MemoryStream(data))
                     using (ImageEngineImage image = new ImageEngineImage(ms, null, 512, false))
-                        img = image.GetGDIBitmap(true, 512);
+                        img = image.GetGDIBitmap(true, false, 512);
 
                 this.Invoke(new Action(() => PreviewBox.Image = img));
                 Previews.Add(tex.PreviewKey, img);
@@ -1030,6 +1030,14 @@ namespace ME3Explorer
 
         private void DisplayInfo(TPFTexInfo tex)
         {
+            try
+            {
+                PCCsCheckListBox.Items.Clear();
+            }
+            catch
+            {
+                // Irrelevent
+            }
             string message = "";
             FirstHalfInfoState(true);
 
@@ -1082,8 +1090,7 @@ namespace ME3Explorer
             PreventPCC = true;
 
             // KFreon: Show pccs
-            PCCsCheckListBox.Items.Clear();
-            if (tex.TexName != null)
+            if (tex.TexName != null && !tex.isDef)
             {
                 int count = 0;
                 foreach (string file in tex.OriginalFiles)
@@ -1544,6 +1551,9 @@ namespace ME3Explorer
                         {
                             // KFreon: Update current details
                             curr.UpdateTex(j, treetex);
+                            if (curr.FileDuplicates != null)
+                                foreach (var duplicate in curr.FileDuplicates)
+                                    duplicate.UpdateTex(j, treetex);
                         }
                     }
                 }
@@ -1554,56 +1564,35 @@ namespace ME3Explorer
 
         private void RemoveFileDuplicates()
         {
-            List<TPFTexInfo> duplicates = new List<TPFTexInfo>();
-            int currentPos = 0;
-            int stepperPos = 1;
-            while (true)
+            // KFreon: Rewrote this. Any coders, look back in the history to see the original abomination...
+
+            List<TPFTexInfo> newTexes = new List<TPFTexInfo>();
+            List<int> duplicateInds = new List<int>();
+            for (int i = 0; i < LoadedTexes.Count; i++)
             {
-                // KFreon: Break when finished
-                if (currentPos >= LoadedTexes.Count - 1)
-                    break;
+                TPFTexInfo curr = LoadedTexes[i];
+                if (curr.isDef || duplicateInds.Contains(i))
+                    continue;
 
-
-                TPFTexInfo curr = LoadedTexes[currentPos];
-                TPFTexInfo step = LoadedTexes[stepperPos];
-
-                // KFreon: Ignore currentPos if .def
-                if (!curr.isDef)
+                for (int j = i; j < LoadedTexes.Count; j++) 
                 {
-                    // KFreon: Ignore stepperPos if .def
-                    if (!step.isDef)
-                    {
-                        // KFreon: Check if textures are identical
-                        if (curr.Hash == step.Hash && curr.FileName == step.FileName)
-                        {
-                            // KFreon: Add to duplicate list and remove from overall texes
-                            duplicates.Add(step);
-                            LoadedTexes.RemoveAt(stepperPos);
-                        }
-                    }
+                    TPFTexInfo checker = LoadedTexes[j];
+                    if (checker.isDef || curr == checker)
+                        continue;
 
-                    // KFreon: Advance stepper and position (if applicable)
-                    if (stepperPos < LoadedTexes.Count - 1)
-                        stepperPos++;
-                    else
+                    if (curr.Hash == checker.Hash)
                     {
-                        // KFreon: Add duplicates to current tex
-                        // Heff: Don't add currently existing ones, so that we can do analyse -> load -> analyse
-                        curr.FileDuplicates.AddRange(duplicates.Where(
-                            t => !curr.FileDuplicates.Any(c => c.TreeInd == t.TreeInd)));
-                        LoadedTexes[currentPos] = curr;
-                        duplicates.Clear();
-                        currentPos++;
-                        stepperPos = currentPos + 1;
+                        duplicateInds.Add(j); // KFreon: Add this index to list so when curr gets to this texture, it's skipped since it's already in another textures duplicate list.
+                        if (!curr.FileDuplicates.Contains(checker))  // KFreon: Heff's check to ensure that no file duplicates are further duplicated when doing Analyse -> load -> analyse.
+                            curr.FileDuplicates.Add(checker);
                     }
                 }
-                else
-                {
-                    // KFreon: Ignore current texture cos its a .def
-                    currentPos++;
-                    stepperPos = currentPos + 1;
-                }
+
+                newTexes.Add(curr);
             }
+
+            LoadedTexes.Clear();
+            LoadedTexes.AddRange(newTexes);
         }
 
         private void MainTreeView_DragEnter(object sender, DragEventArgs e)
@@ -2110,7 +2099,7 @@ namespace ME3Explorer
             if (cts.IsCancellationRequested)
                 return false;
             OverallProg.ChangeProgressBar(0, validtexes.Count + 1);
-            int count = 1;
+            int count = 0;
             DebugOutput.PrintLn("Textures loaded = " + validtexes.Count);
             DebugOutput.PrintLn("Num valid: " + valids);
 
@@ -2243,6 +2232,9 @@ namespace ME3Explorer
 
         private void ChangeButton_Click(object sender, EventArgs e)
         {
+            if (isAnalysed)
+                return;
+
             // KFreon: Change trees
             int whichgame = -1;
             switch (WhichGame)
@@ -2571,7 +2563,10 @@ namespace ME3Explorer
                     texes.Add(tex);
                     // KFreon: Write hashes to log
                     string hash = KFreonLib.Textures.Methods.FormatTexmodHashAsString(tex.Hash);
-                    fs.WriteString(hash + "|" + tex.TexName + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
+                    string name = tex.TexName;
+                    if (string.IsNullOrEmpty(name))
+                        name = tex.FileName;
+                    fs.WriteString(hash + "|" + name + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
                 }
                 Extractor(extractPath, null, t => texes.Contains(t));
             }
@@ -2853,7 +2848,7 @@ namespace ME3Explorer
                 return true;
             }
 
-            bool retval = false;
+            List<bool> results = new List<bool>();
 
             OverallProg.ChangeProgressBar(0, texes.Length);
 
@@ -2871,7 +2866,6 @@ namespace ME3Explorer
                     tex.FilePath = dup.FilePath;
                     tex.FileName = dup.FileName;
                     tex.AutofixSuccess = true;
-                    retval = true;
                 }
 
                 Overall.UpdateText("Fixing: " + tex.TexName);
@@ -2879,9 +2873,9 @@ namespace ME3Explorer
 
                 // Heff: should we check like this for autofixsuccess here before trying to fix? See above "skip"
                 if (!tex.AutofixSuccess)
-                    retval = AutofixInternal(tex);
+                    results.Add(AutofixInternal(tex));
 
-                if (retval == true && !fixedTexes.ContainsKey(tex.Hash))
+                if (tex.AutofixSuccess && !fixedTexes.ContainsKey(tex.Hash))
                     fixedTexes.Add(tex.Hash, tex);
 
                 // Heff: Cancellation check
@@ -2889,13 +2883,13 @@ namespace ME3Explorer
                     return false;
                 RedrawTreeView();
             }
-            Overall.UpdateText("Autofix complete." + (!retval ? "Some errors occured." : ""));
+            Overall.UpdateText("Autofix complete." + (results.Any(t => !t) ? "Some errors occured. Manual fixing may be required." : ""));
             OverallProg.ChangeProgressBar(1, 1);
 
             // KFreon: Check those already checked.
-            CheckNodes(texes);
+            CheckNodes(LoadedTexes);
 
-            return retval;
+            return !results.Any(t => !t);  // Inverts number of false entries
         }
 
         void CheckNodes(IEnumerable<TPFTexInfo> texes)
@@ -2911,7 +2905,7 @@ namespace ME3Explorer
                     int index = 0;
                     foreach (myTreeNode node in MainTreeView.Nodes)
                     {
-                        if (node.Text == nodeName)
+                        if (node.Text == nodeName && LoadedTexes[node.TexInd].Hash == tex.Hash)
                         {
                             texNode = node;
                             break;
@@ -2944,18 +2938,27 @@ namespace ME3Explorer
         {
             bool retval = false;
 
+            TPFTexInfo backup = tex.Clone();
+
             string path = tex.Autofixedpath(TemporaryPath);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
             byte[] imgData = tex.Extract(Path.GetDirectoryName(path), true);
-            tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
 
             using (ImageEngineImage img = new ImageEngineImage(imgData))
             {
                 var destFormat = tex.ExpectedFormat;
-                img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width));
+                img.Resize(UsefulThings.General.RoundToNearestPowerOfTwo(img.Width), false);
                 retval = img.Save(path, destFormat, tex.ExpectedMips > 1 ? MipHandling.Default : MipHandling.KeepTopOnly);
             }
+
+            if (!retval)
+            {
+                tex.AutofixSuccess = false;
+                return false;
+            }
+
+            tex.FilePath = Path.GetDirectoryName(tex.Autofixedpath(TemporaryPath));
 
             tex.FileName = Path.GetFileName(path);
 
@@ -2970,8 +2973,15 @@ namespace ME3Explorer
             if (tex.ExpectedMips > 1 && (tex.NumMips < tex.ExpectedMips || tex.NumMips < TPFTexInfo.CalculateMipCount(tex.Width, tex.Height)))
                 tex.NumMips = Math.Max(tex.ExpectedMips, TPFTexInfo.CalculateMipCount(tex.Width, tex.Height));
 
-            tex.AutofixSuccess = retval;
-            return retval;
+            if (!tex.Valid)
+            {
+                tex = backup;
+                tex.AutofixSuccess = false;
+            }
+            else
+                tex.AutofixSuccess = true;
+
+            return tex.AutofixSuccess;
         }
 
         private async void ReplaceButton_Click(object sender, EventArgs e)
