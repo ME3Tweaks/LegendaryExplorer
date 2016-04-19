@@ -65,7 +65,7 @@ namespace ME3Explorer.UDKConverter
                 foreach (PCCObject.ImportEntry i in pcc.Imports)
                 {
                     UDKObject.ImportEntry e = new UDKObject.ImportEntry();
-                    e.raw = i.data;
+                    e.raw = i.header;
                     udk.Imports.Add(e);
                     if ((count++) % 100 == 0)
                     {
@@ -79,7 +79,7 @@ namespace ME3Explorer.UDKConverter
                 foreach (PCCObject.ExportEntry ex in pcc.Exports)
                 {
                     UDKObject.ExportEntry e = new UDKObject.ExportEntry();
-                    e.raw = ex.info;
+                    e.raw = ex.header;
                     e.data = ex.Data;
                     udk.Exports.Add(e);
                     if ((count++) % 100 == 0)

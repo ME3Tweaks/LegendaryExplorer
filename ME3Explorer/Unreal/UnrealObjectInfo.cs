@@ -110,7 +110,14 @@ namespace ME3Explorer.Unreal
             }
             if (SequenceObjects.ContainsKey(objectName))
             {
-                return SequenceObjects[objectName];
+                if (SequenceObjects[objectName].inputLinks != null && SequenceObjects[objectName].inputLinks.Count > 0)
+                {
+                    return SequenceObjects[objectName]; 
+                }
+                else
+                {
+                    return getSequenceObjectInfo(Classes[objectName].baseClass);
+                }
             }
             return null;
         }
@@ -176,6 +183,10 @@ namespace ME3Explorer.Unreal
 
         public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
         {
+            if (className.StartsWith("Default__"))
+            {
+                className = className.Substring(9);
+            }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
             if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
             {
@@ -273,27 +284,25 @@ namespace ME3Explorer.Unreal
                     for (int j = 0; j < pcc.Exports.Count; j++)
                     {
                         if (pcc.Exports[j].ClassName == "Enum")
-
                         {
                             generateEnumValues(j, pcc);
                         }
                         else if (pcc.Exports[j].ClassName == "Class")
                         {
                             objectName = pcc.Exports[j].ObjectName;
-                            if (!Classes.ContainsKey(pcc.Exports[j].ObjectName))
+                            if (!Classes.ContainsKey(objectName))
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
                             }
-                            if (pcc.Exports[j].ObjectName.Contains("Seq_Act") || pcc.Exports[j].ObjectName.Contains("Seq_Cond"))
+                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !SequenceObjects.ContainsKey(objectName))
                             {
                                 SequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
-                                return;
                             }
                         }
                         else if (pcc.Exports[j].ClassName == "ScriptStruct")
                         {
                             objectName = pcc.Exports[j].ObjectName;
-                            if (!Structs.ContainsKey(pcc.Exports[j].ObjectName))
+                            if (!Structs.ContainsKey(objectName))
                             {
                                 Structs.Add(objectName, generateClassInfo(j, pcc));
                             }
@@ -301,25 +310,6 @@ namespace ME3Explorer.Unreal
                     }
                 }
                 System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
-            }
-            //populate SequenceObjects with inherited input links
-            foreach (KeyValuePair<string, SequenceObjectInfo> pair in SequenceObjects)
-            {
-                if (pair.Value.inputLinks.Count == 0)
-                {
-                    SequenceObjectInfo s;
-                    string baseClass = Classes[pair.Key].baseClass;
-                    while (baseClass != "Class")
-                    {
-                        s = SequenceObjects[baseClass];
-                        if (s.inputLinks.Count > 0)
-                        {
-                            SequenceObjects[pair.Key] = pair.Value;
-                            break;
-                        }
-                        baseClass = Classes[baseClass].baseClass;
-                    }
-                }
             }
             File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
                 JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }));

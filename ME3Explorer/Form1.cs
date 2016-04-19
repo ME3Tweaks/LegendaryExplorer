@@ -285,6 +285,7 @@ namespace ME3Explorer
             pcc.WindowState = FormWindowState.Maximized;
             pcc.Show();
             taskbar.AddTool(pcc, Properties.Resources.pcceditor2_64x64);
+            pcc.LoadMostRecent();
         }
 
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)

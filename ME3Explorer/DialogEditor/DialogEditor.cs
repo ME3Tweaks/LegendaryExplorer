@@ -29,19 +29,24 @@ namespace ME3Explorer.DialogEditor
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    pcc = new PCCObject(d.FileName);
-                    Objs = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "BioConversation")
-                            Objs.Add(i);
-                    RefreshCombo();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        private void LoadFile(string fileName)
+        {
+            try
+            {
+                pcc = new PCCObject(fileName);
+                Objs = new List<int>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "BioConversation")
+                        Objs.Add(i);
+                RefreshCombo();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
@@ -866,6 +871,23 @@ namespace ME3Explorer.DialogEditor
         private void repliesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             treeView2.CollapseAll();
+        }
+
+        private void DialogEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void DialogEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".pcc")).ToList();
+            if (DroppedFiles.Count > 0)
+            {
+                LoadFile(DroppedFiles[0]);
+            }
         }
     }
 }

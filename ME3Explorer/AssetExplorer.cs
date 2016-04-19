@@ -1074,18 +1074,8 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            try
-            {
-                p.pcc = new PCCObject(currentPCC);
-                p.SetView(2);
-                p.RefreshView();
-                p.InitStuff();
-                p.listBox1.SelectedIndex = l;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\n" + ex.Message);
-            }
+            p.LoadFile(currentPCC);
+            p.listBox1.SelectedIndex = l;
         }
 
         private void AssetExplorer_FormClosing(object sender, FormClosingEventArgs e)

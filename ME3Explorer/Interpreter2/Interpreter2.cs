@@ -77,6 +77,7 @@ namespace ME3Explorer.Interpreter2
             StructLeafFloat,
             StructLeafDeg, //indicates this is a StructProperty leaf that is in degrees (actually unreal rotation units)
             StructLeafInt,
+            StructLeafObject,
             StructLeafName,
             StructLeafBool,
             StructLeafStr,
@@ -413,7 +414,7 @@ namespace ME3Explorer.Interpreter2
                 int n = BitConverter.ToInt32(memory, readerpos);
                 node = new TreeNode(readerpos.ToString("X4") + ": Actor : " + n + " (" + pcc.getObjectName(n) + ")" );
                 node.Name = readerpos.ToString();
-                node.Tag = nodeType.StructLeafInt;
+                node.Tag = nodeType.StructLeafObject;
                 t.Nodes.Add(node);
                 readerpos += 4;
             }
@@ -638,7 +639,7 @@ namespace ME3Explorer.Interpreter2
                     s += n + " (" + pcc.getObjectName(n) + ")";
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafInt;
+                    node.Tag = nodeType.StructLeafObject;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -998,13 +999,13 @@ namespace ME3Explorer.Interpreter2
             return (type == nodeType.StructLeafByte || type == nodeType.StructLeafDeg || type == nodeType.StructLeafFloat ||
                 type == nodeType.StructLeafBool || type == nodeType.StructLeafInt || type == nodeType.StructLeafName ||
                 type == nodeType.StructLeafStr || type == nodeType.StructLeafEnum || type == nodeType.StructLeafArray ||
-                type == nodeType.StructLeafStruct);
+                type == nodeType.StructLeafStruct || type == nodeType.StructLeafObject);
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
-            nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = enumDropdown.Visible = false;
+            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = false;
             addArrayElementButton.Visible = deleteArrayElement.Visible = false;
             if (e.Node.Name == "")
             {
@@ -1038,18 +1039,32 @@ namespace ME3Explorer.Interpreter2
                     UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(getEnclosingType(e.Node.Parent), pcc.getNameEntry(BitConverter.ToInt32(memory, off)));
                     switch (arrayType)
                     {
-                        case UnrealObjectInfo.ArrayType.Int:
-                        case UnrealObjectInfo.ArrayType.Float:
                         case UnrealObjectInfo.ArrayType.Byte:
-                        case UnrealObjectInfo.ArrayType.Bool:
                         case UnrealObjectInfo.ArrayType.String:
+                            proptext.Visible = true;
+                            break;
                         case UnrealObjectInfo.ArrayType.Object:
+                            objectNameLabel.Text = "()";
+                            proptext.Visible = objectNameLabel.Visible = true;
+                            break;
+                        case UnrealObjectInfo.ArrayType.Int:
+                            proptext.Text = "0";
+                            proptext.Visible = true;
+                            break;
+                        case UnrealObjectInfo.ArrayType.Float:
+                            proptext.Text = "0.0";
                             proptext.Visible = true;
                             break;
                         case UnrealObjectInfo.ArrayType.Name:
                             proptext.Text = "0";
                             nameEntry.AutoCompleteCustomSource.AddRange(pcc.Names.ToArray());
                             proptext.Visible = nameEntry.Visible = true;
+                            break;
+                        case UnrealObjectInfo.ArrayType.Bool:
+                            propDropdown.Items.Clear();
+                            propDropdown.Items.Add("False");
+                            propDropdown.Items.Add("True");
+                            propDropdown.Visible = true;
                             break;
                         case UnrealObjectInfo.ArrayType.Enum:
                             string enumName = getEnclosingType(e.Node);
@@ -1059,9 +1074,9 @@ namespace ME3Explorer.Interpreter2
                                 addArrayElementButton.Visible = false;
                                 return;
                             }
-                            enumDropdown.Items.Clear();
-                            enumDropdown.Items.AddRange(values.ToArray());
-                            enumDropdown.Visible = true;
+                            propDropdown.Items.Clear();
+                            propDropdown.Items.AddRange(values.ToArray());
+                            propDropdown.Visible = true;
                             break;
                         case UnrealObjectInfo.ArrayType.Struct:
                         default:
@@ -1094,29 +1109,36 @@ namespace ME3Explorer.Interpreter2
                 int test = BitConverter.ToInt32(memory, pos + 12);
                 if (test != 0 || !pcc.isName(type))
                     return;
-                bool visible = false;
                 switch (pcc.getNameEntry(type))
                 {
                     case "IntProperty":
-                    case "ObjectProperty":
                     case "StringRefProperty":
                         proptext.Text = BitConverter.ToInt32(memory, pos + 24).ToString();
-                        visible = true;
+                        proptext.Visible = true;
+                        break;
+                    case "ObjectProperty":
+                        int n = BitConverter.ToInt32(memory, pos + 24);
+                        objectNameLabel.Text = $"({pcc.getObjectName(n)})";
+                        proptext.Text = n.ToString();
+                        objectNameLabel.Visible = proptext.Visible = true;
                         break;
                     case "FloatProperty":
                         proptext.Text = BitConverter.ToSingle(memory, pos + 24).ToString();
-                        visible = true;
+                        proptext.Visible = true;
                         break;
                     case "BoolProperty":
-                        proptext.Text = memory[pos + 24].ToString();
-                        visible = true;
+                        propDropdown.Items.Clear();
+                        propDropdown.Items.Add("False");
+                        propDropdown.Items.Add("True");
+                        propDropdown.SelectedIndex = memory[pos + 24];
+                        propDropdown.Visible = true;
                         break;
                     case "NameProperty":
                         proptext.Text  = BitConverter.ToInt32(memory, pos + 28).ToString();
                         nameEntry.Text = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
                         nameEntry.AutoCompleteCustomSource.AddRange(pcc.Names.ToArray());
                         nameEntry.Visible = true;
-                        visible = true;
+                        proptext.Visible = true;
                         break;
                     case "StrProperty":
                         string s = "";
@@ -1127,7 +1149,7 @@ namespace ME3Explorer.Interpreter2
                             s += (char)memory[pos + i*2];
                         }
                         proptext.Text = s;
-                        visible = true;
+                        proptext.Visible = true;
                         break;
                     case "ByteProperty":
                         string enumName = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
@@ -1138,13 +1160,12 @@ namespace ME3Explorer.Interpreter2
                                 List<string> values = UnrealObjectInfo.getEnumValues(enumName);
                                 if (values != null)
                                 {
-                                    enumDropdown.Items.Clear();
-                                    enumDropdown.Items.AddRange(values.ToArray());
-                                    setPropertyButton.Visible = enumDropdown.Visible = true;
+                                    propDropdown.Items.Clear();
+                                    propDropdown.Items.AddRange(values.ToArray());
                                     string curVal = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 32));
                                     int idx = values.IndexOf(curVal);
-                                    enumDropdown.SelectedIndex = idx;
-                                    return;
+                                    propDropdown.SelectedIndex = idx;
+                                    propDropdown.Visible = true;
                                 }
                             }
                             catch (Exception)
@@ -1154,11 +1175,13 @@ namespace ME3Explorer.Interpreter2
                         else
                         {
                             proptext.Text = memory[pos + 32].ToString();
-                            visible = true;
+                            proptext.Visible = true;
                         }
                         break;
+                    default:
+                        return;
                 }
-                proptext.Visible = setPropertyButton.Visible = visible;
+                setPropertyButton.Visible = true;
             }
             catch (Exception ex)
             {
@@ -1185,12 +1208,21 @@ namespace ME3Explorer.Interpreter2
                         proptext.Visible = true;
                         break;
                     case nodeType.StructLeafBool:
-                        proptext.Text = memory[pos].ToString();
-                        proptext.Visible = true;
+                        propDropdown.Items.Clear();
+                        propDropdown.Items.Add("False");
+                        propDropdown.Items.Add("True");
+                        propDropdown.SelectedIndex = memory[pos];
+                        propDropdown.Visible = true;
                         break;
                     case nodeType.StructLeafDeg:
                         proptext.Text = ((float)BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
                         proptext.Visible = true;
+                        break;
+                    case nodeType.StructLeafObject:
+                        int n = BitConverter.ToInt32(memory, pos);
+                        objectNameLabel.Text = $"({pcc.getObjectName(n)})";
+                        proptext.Text = n.ToString();
+                        proptext.Visible = objectNameLabel.Visible = true;
                         break;
                     case nodeType.StructLeafInt:
                         proptext.Text = BitConverter.ToInt32(memory, pos).ToString();
@@ -1220,12 +1252,12 @@ namespace ME3Explorer.Interpreter2
                         {
                             return;
                         }
-                        enumDropdown.Items.Clear();
-                        enumDropdown.Items.AddRange(values.ToArray());
-                        setPropertyButton.Visible = enumDropdown.Visible = true;
+                        propDropdown.Items.Clear();
+                        propDropdown.Items.AddRange(values.ToArray());
+                        setPropertyButton.Visible = propDropdown.Visible = true;
                         string curVal = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         int idx = values.IndexOf(curVal);
-                        enumDropdown.SelectedIndex = idx;
+                        propDropdown.SelectedIndex = idx;
                         break;
                     default:
                         return;
@@ -1249,17 +1281,25 @@ namespace ME3Explorer.Interpreter2
                 switch (type)
                 {
                     case nodeType.ArrayLeafInt:
-                    case nodeType.ArrayLeafObject:
                         proptext.Text = BitConverter.ToInt32(memory, pos).ToString();
                         proptext.Visible = true;
+                        break;
+                    case nodeType.ArrayLeafObject:
+                        int n = BitConverter.ToInt32(memory, pos);
+                        objectNameLabel.Text = $"({pcc.getObjectName(n)})";
+                        proptext.Text = n.ToString();
+                        proptext.Visible = objectNameLabel.Visible = true;
                         break;
                     case nodeType.ArrayLeafFloat:
                         proptext.Text = BitConverter.ToSingle(memory, pos).ToString();
                         proptext.Visible = true;
                         break;
                     case nodeType.ArrayLeafBool:
-                        proptext.Text = memory[pos].ToString();
-                        proptext.Visible = true;
+                        propDropdown.Items.Clear();
+                        propDropdown.Items.Add("False");
+                        propDropdown.Items.Add("True");
+                        propDropdown.SelectedIndex = memory[pos];
+                        propDropdown.Visible = true;
                         break;
                     case nodeType.ArrayLeafByte:
                         proptext.Text = memory[pos].ToString();
@@ -1288,12 +1328,12 @@ namespace ME3Explorer.Interpreter2
                         {
                             return;
                         }
-                        enumDropdown.Items.Clear();
-                        enumDropdown.Items.AddRange(values.ToArray());
-                        setPropertyButton.Visible = enumDropdown.Visible = true;
+                        propDropdown.Items.Clear();
+                        propDropdown.Items.AddRange(values.ToArray());
+                        propDropdown.Visible = true;
                         string curVal = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         int idx = values.IndexOf(curVal);
-                        enumDropdown.SelectedIndex = idx;
+                        propDropdown.SelectedIndex = idx;
                         break;
                     case nodeType.ArrayLeafStruct:
                         break;
@@ -1352,11 +1392,8 @@ namespace ME3Explorer.Interpreter2
                         }
                         break;
                     case nodeType.StructLeafBool:
-                        if (byte.TryParse(proptext.Text, out b) && (b == 0 || b == 1))
-                        {
-                            memory[pos] = b;
-                            RefreshMem();
-                        }
+                        memory[pos] = (byte)propDropdown.SelectedIndex;
+                        RefreshMem();
                         break;
                     case nodeType.StructLeafFloat:
                         proptext.Text = CheckSeperator(proptext.Text);
@@ -1373,6 +1410,7 @@ namespace ME3Explorer.Interpreter2
                             RefreshMem();
                         }
                         break;
+                    case nodeType.StructLeafObject:
                     case nodeType.StructLeafInt:
                         proptext.Text = CheckSeperator(proptext.Text);
                         if (int.TryParse(proptext.Text, out i))
@@ -1382,7 +1420,7 @@ namespace ME3Explorer.Interpreter2
                         }
                         break;
                     case nodeType.StructLeafEnum:
-                        i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                        i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
                         RefreshMem();
                         break;
@@ -1468,6 +1506,7 @@ namespace ME3Explorer.Interpreter2
                     return;
                 int i = 0;
                 float f = 0;
+                byte b = 0;
                 switch (pcc.getNameEntry(type))
                 {
                     case "IntProperty":
@@ -1501,22 +1540,19 @@ namespace ME3Explorer.Interpreter2
                         }
                         break;
                     case "BoolProperty":
-                        if (int.TryParse(proptext.Text, out i) && (i == 0 || i == 1))
-                        {
-                            memory[pos + 24] = (byte)i;
-                            RefreshMem();
-                        }
+                        memory[pos + 24] = (byte)propDropdown.SelectedIndex;
+                        RefreshMem();
                         break;
                     case "ByteProperty":
-                        if (enumDropdown.Visible)
+                        if (propDropdown.Visible)
                         {
-                            i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                            i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                             WriteMem(pos + 32, BitConverter.GetBytes(i));
                             RefreshMem();
                         }
-                        else if(int.TryParse(proptext.Text, out i) && i >= 0 && i <= 255)
+                        else if(byte.TryParse(proptext.Text, out b))
                         {
-                            memory[pos + 32] = (byte)i;
+                            memory[pos + 32] = b;
                             RefreshMem();
                         }
                         break;
@@ -1614,11 +1650,8 @@ namespace ME3Explorer.Interpreter2
                         }
                         break;
                     case nodeType.ArrayLeafBool:
-                        if (byte.TryParse(proptext.Text, out b) && (b == 0 || b == 1))
-                        {
-                            memory[pos] = b;
-                            RefreshMem();
-                        }
+                        memory[pos] = (byte)propDropdown.SelectedIndex;
+                        RefreshMem();
                         break;
                     case nodeType.ArrayLeafName:
                         if (int.TryParse(proptext.Text, out i))
@@ -1634,7 +1667,7 @@ namespace ME3Explorer.Interpreter2
                         }
                         break;
                     case nodeType.ArrayLeafEnum:
-                        i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                        i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
                         RefreshMem();
                         break;
@@ -1817,11 +1850,7 @@ namespace ME3Explorer.Interpreter2
                         break;
                     case UnrealObjectInfo.ArrayType.Bool:
                         leafSize = 1;
-                        if (!(byte.TryParse(proptext.Text, out b) && (b == 0 || b == 1)))
-                        {
-                            return; //not valid
-                        }
-                        memList.Insert(pos + 24 + size, b);
+                        memList.Insert(pos + 24 + size, (byte)propDropdown.SelectedIndex);
                         break;
                     case UnrealObjectInfo.ArrayType.Name:
                         leafSize = 8;
@@ -1839,7 +1868,7 @@ namespace ME3Explorer.Interpreter2
                         break;
                     case UnrealObjectInfo.ArrayType.Enum:
                         leafSize = 8;
-                        string selectedItem = enumDropdown.SelectedItem as string;
+                        string selectedItem = propDropdown.SelectedItem as string;
                         if (selectedItem == null)
                         {
                             return;
@@ -1952,7 +1981,8 @@ namespace ME3Explorer.Interpreter2
 
         private void RefreshMem()
         {
-            nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = enumDropdown.Visible = addArrayElementButton.Visible = deleteArrayElement.Visible = false;
+            nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
+                addArrayElementButton.Visible = deleteArrayElement.Visible = objectNameLabel.Visible = false;
             pcc.Exports[Index].Data = memory;
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
@@ -2011,6 +2041,22 @@ namespace ME3Explorer.Interpreter2
             if (e.Node.Tag != null && e.Node.Tag.Equals(nodeType.ArrayProperty) && e.Node.Nodes.Count == 1)
             {
                 e.Node.Nodes[0].Expand();
+            }
+        }
+
+        private void proptext_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (objectNameLabel.Visible)
+            {
+                int i;
+                if (int.TryParse(proptext.Text, out i))
+                {
+                    objectNameLabel.Text = $"({pcc.getObjectName(i)})";
+                }
+                else
+                {
+                    objectNameLabel.Text = "()";
+                }
             }
         }
     }

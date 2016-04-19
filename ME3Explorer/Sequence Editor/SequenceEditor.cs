@@ -88,20 +88,26 @@ namespace ME3Explorer
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try {
-                    pcc = new PCCObject(d.FileName);
-                    CurrentFile = d.FileName;
-                    toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
-                    LoadSequences();
-                    graphEditor.nodeLayer.RemoveAllChildren();
-                    graphEditor.edgeLayer.RemoveAllChildren();
-                    if(CurrentObjects != null)
-                        CurrentObjects.Clear();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        private void LoadFile(string fileName)
+        {
+            try
+            {
+                pcc = new PCCObject(fileName);
+                CurrentFile = fileName;
+                toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
+                LoadSequences();
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                if (CurrentObjects != null)
+                    CurrentObjects.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
@@ -304,6 +310,8 @@ namespace ME3Explorer
             }
             catch (Exception)
             {
+                foreach (PPath edge in graphEditor.edgeLayer)
+                    GraphEditor.UpdateEdge(edge);
                 return false;
             }
             return true;
@@ -629,19 +637,8 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             taskbar.AddTool(p, Properties.Resources.pcceditor2_64x64);
-            try
-            {
-
-                p.pcc = new PCCObject(CurrentFile);
-                p.SetView(2);
-                p.RefreshView();
-                p.InitStuff();
-                p.listBox1.SelectedIndex = l;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\n" + ex.Message);
-            }
+            p.LoadFile(CurrentFile);
+            p.listBox1.SelectedIndex = l;
         }
 
         private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1026,6 +1023,22 @@ namespace ME3Explorer
             graphEditor.Focus();
         }
 
+        private void SequenceEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".pcc")).ToList();
+            if (DroppedFiles.Count > 0)
+            {
+                LoadFile(DroppedFiles[0]);
+            }
+        }
+
+        private void SequenceEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
     }
 
     public class ZoomController

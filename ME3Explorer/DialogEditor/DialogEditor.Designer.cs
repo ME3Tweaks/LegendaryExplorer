@@ -667,6 +667,7 @@
             // 
             // DialogEditor
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(610, 438);
@@ -677,6 +678,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DialogEditor";
             this.Text = "Dialog Editor";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragEnter);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);

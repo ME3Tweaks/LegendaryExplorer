@@ -70,10 +70,10 @@ namespace ME3Explorer
             {
                 bool found = false;
                 foreach (int index in Classes)
-                    if (e.idxClassName == index)
+                    if (e.idxClass == index)
                         found = true;
                 if (!found)
-                    Classes.Add(e.idxClassName);
+                    Classes.Add(e.idxClass);
             }
             bool run = true;
             while (run)
@@ -174,11 +174,11 @@ namespace ME3Explorer
         {
             PCCObject.ExportEntry entry = new PCCObject.ExportEntry();
             PCCObject.ExportEntry source = pcc.Exports[ObjectIndex];
-            byte[] Header = new byte[source.info.Length];                       //Header
-            for (int i = 0; i < source.info.Length; i++)
-                Header[i] = source.info[i];            
+            byte[] Header = new byte[source.header.Length];                       //Header
+            for (int i = 0; i < source.header.Length; i++)
+                Header[i] = source.header[i];            
             entry.pccRef = pcc;
-            entry.info = Header;
+            entry.header = Header;
             if (radioButton2.Checked)                                           //Name from list
                 if (comboBox1.SelectedIndex != -1)
                     entry.idxObjectName = comboBox1.SelectedIndex;
@@ -190,7 +190,7 @@ namespace ME3Explorer
                 }
             if (radioButton4.Checked)                                           //Class
                 if (comboBox2.SelectedIndex != -1)
-                    entry.idxClassName = Classes[comboBox2.SelectedIndex];
+                    entry.idxClass = Classes[comboBox2.SelectedIndex];
             if (radioButton8.Checked)                                           //Link
                 if (treeView1.SelectedNode != null)
                 {
