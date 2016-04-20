@@ -853,13 +853,6 @@ namespace ME3Explorer.UnrealHelper
                                 memory[TextureTFCs[tfc].HeaderOffset + 16 + i] = buff2[i];
                             TFCf.AppendToTFC(buff);
                             int size = TFCf.getFileSize();
-                            if (size != -1)
-                            {
-                                TOCeditor tc = new TOCeditor();
-                                if (!tc.UpdateFile(T2D.Tsource + ".tfc", (uint)size))
-                                    MessageBox.Show("Didn't found Entry");
-                                tc.Close();
-                            }
                         }
                         else
                         {
@@ -899,13 +892,6 @@ namespace ME3Explorer.UnrealHelper
                                 }
                                 TFCf.AppendToTFC(buff);
                                 int size = TFCf.getFileSize();
-                                if (size != -1)
-                                {
-                                    TOCeditor tc = new TOCeditor();
-                                    if (!tc.UpdateFile(T2D.Tsource + ".tfc", (uint)size))
-                                        MessageBox.Show("Didn't found Entry");
-                                    tc.Close();
-                                }
                             }
                         }
                     if (format > 1 && format < 5)
@@ -952,13 +938,6 @@ namespace ME3Explorer.UnrealHelper
                                     memory[TextureTFCs[tfc].HeaderOffset + 12 + i] = buff2[i];
                                 TFCf.AppendToTFC(buff);
                                 int size = TFCf.getFileSize();
-                                if (size != -1)
-                                {
-                                    TOCeditor tc = new TOCeditor();
-                                    if (!tc.UpdateFile(T2D.Tsource + ".tfc", (uint)size))
-                                        MessageBox.Show("Didn't found Entry");
-                                    tc.Close();
-                                }
                                 MessageBox.Show("Done.");
                             }
                     }

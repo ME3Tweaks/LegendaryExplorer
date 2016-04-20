@@ -43,6 +43,7 @@ namespace ME3Explorer.Interpreter2
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.nameEntry = new System.Windows.Forms.ToolStripTextBox();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
+            this.objectNameLabel = new System.Windows.Forms.ToolStripLabel();
             this.propDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
             this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
@@ -51,7 +52,6 @@ namespace ME3Explorer.Interpreter2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.objectNameLabel = new System.Windows.Forms.ToolStripLabel();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -173,6 +173,14 @@ namespace ME3Explorer.Interpreter2
             this.proptext.Visible = false;
             this.proptext.KeyUp += new System.Windows.Forms.KeyEventHandler(this.proptext_KeyUp);
             // 
+            // objectNameLabel
+            // 
+            this.objectNameLabel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.objectNameLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.objectNameLabel.Name = "objectNameLabel";
+            this.objectNameLabel.Size = new System.Drawing.Size(0, 22);
+            this.objectNameLabel.Visible = false;
+            // 
             // propDropdown
             // 
             this.propDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -201,7 +209,7 @@ namespace ME3Explorer.Interpreter2
             this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
             this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(110, 19);
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
             this.addArrayElementButton.Text = "Add Array Element";
             this.addArrayElementButton.Visible = false;
             this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
@@ -212,7 +220,7 @@ namespace ME3Explorer.Interpreter2
             this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
             this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElement.Name = "deleteArrayElement";
-            this.deleteArrayElement.Size = new System.Drawing.Size(121, 19);
+            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
             this.deleteArrayElement.Text = "Delete Array Element";
             this.deleteArrayElement.Visible = false;
             this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -272,14 +280,6 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-            // 
-            // objectNameLabel
-            // 
-            this.objectNameLabel.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.objectNameLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.objectNameLabel.Name = "objectNameLabel";
-            this.objectNameLabel.Size = new System.Drawing.Size(0, 22);
-            this.objectNameLabel.Visible = false;
             // 
             // Interpreter2
             // 

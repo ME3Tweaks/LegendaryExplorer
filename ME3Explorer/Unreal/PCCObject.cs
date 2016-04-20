@@ -817,7 +817,7 @@ namespace ME3Explorer.Unreal
             //Check whether compressed
             if (this.bCompressed)
             {
-                Form2 decompress = new Form2();
+                Decompressor decompress = new Decompressor();
                 decompress.Decompress(this.pccFileName);
                 decompress.Close();
                 //MessageBox.Show("Decompression complete");

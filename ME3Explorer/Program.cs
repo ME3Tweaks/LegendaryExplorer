@@ -17,7 +17,6 @@ namespace ME3Explorer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Helper3DS.loc = Path.GetDirectoryName(Application.ExecutablePath);
             Application.Run(new Form1());
         }
     }

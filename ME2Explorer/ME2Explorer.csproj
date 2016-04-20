@@ -111,14 +111,7 @@
     <Compile Include="Interpreter2\Interpreter2.Designer.cs">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selector.Designer.cs">
-      <DependentUpon>Selector.cs</DependentUpon>
-    </Compile>
     <Compile Include="Helper\MiniLZO.cs" />
-    <Compile Include="Helper\Targa.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,7 +135,7 @@
     <Compile Include="Sequence Editor\SequenceObjects.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TalkFile.cs" />
+    <Compile Include="TlkManager\TalkFile.cs" />
     <Compile Include="taskbar.cs" />
     <Compile Include="TlkManager\TalkFiles.cs" />
     <Compile Include="TlkManager\TlkManager.cs">
@@ -155,7 +148,6 @@
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
@@ -180,9 +172,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Selector.resx">
-      <DependentUpon>Selector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
@@ -216,17 +205,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
-      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
-      <Name>AmaroK86.ImageFormat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
-      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
-      <Name>AmaroK86.ImageMipMapHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
       <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
-      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+      <Name>AmaroK86Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>

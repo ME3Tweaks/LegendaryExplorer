@@ -137,8 +137,6 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             DebugOutput.PrintLn("Saving all changes to files...");
             foreach (Levelfile l in Levels)
                 l.level.SaveChanges();
-            DebugOutput.PrintLn("Running Tocbinupdater...");
-            TOCbinUpdater.UpdateTocBin(ME3Directory.tocFile, ME3Directory.gamePath, null, null);
             DebugOutput.PrintLn("Done.");
         }
 

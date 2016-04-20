@@ -32,7 +32,7 @@
             this.modMakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.plotVarDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dDSConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageEngineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tPFDDSToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tOCToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,7 +44,7 @@
             this.moviestfcToBIKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lanugageSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vanillaMakerBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditor20ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCRepackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -67,7 +67,6 @@
             this.meshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.meshplorer2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.meshplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.materialViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pSKViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pSAViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,7 +104,6 @@
             this.taskbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disableDLCCheckOnStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.experimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.otherEnginesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchToUDKExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mE2ExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,9 +127,8 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.userToolsToolStripMenuItem,
-            this.extraToolStripMenuItem,
+            this.developerToolsToolStripMenuItem,
             this.optionsToolStripMenuItem,
-            this.experimentalToolStripMenuItem,
             this.otherEnginesToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.versionToolStripMenuItem});
@@ -158,7 +155,7 @@
             // 
             this.assetExplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.asset_explorer_64x64;
             this.assetExplorerToolStripMenuItem.Name = "assetExplorerToolStripMenuItem";
-            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.assetExplorerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.assetExplorerToolStripMenuItem.Text = "Asset Explorer";
             this.assetExplorerToolStripMenuItem.Click += new System.EventHandler(this.assetExplorerToolStripMenuItem_Click);
             // 
@@ -166,7 +163,7 @@
             // 
             this.modMakerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.modmaker_64x64;
             this.modMakerToolStripMenuItem.Name = "modMakerToolStripMenuItem";
-            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.modMakerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.modMakerToolStripMenuItem.Text = "ModMaker";
             this.modMakerToolStripMenuItem.Click += new System.EventHandler(this.modMakerToolStripMenuItem_Click);
             // 
@@ -174,33 +171,33 @@
             // 
             this.plotVarDatabaseToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.plot_DB_64x64;
             this.plotVarDatabaseToolStripMenuItem.Name = "plotVarDatabaseToolStripMenuItem";
-            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.plotVarDatabaseToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.plotVarDatabaseToolStripMenuItem.Text = "Plot Database";
             this.plotVarDatabaseToolStripMenuItem.Click += new System.EventHandler(this.plotVarDatabaseToolStripMenuItem_Click);
             // 
             // textureToolsToolStripMenuItem
             // 
             this.textureToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dDSConverterToolStripMenuItem,
+            this.imageEngineToolStripMenuItem,
             this.texplorerToolStripMenuItem,
             this.tPFDDSToolsToolStripMenuItem});
             this.textureToolsToolStripMenuItem.Name = "textureToolsToolStripMenuItem";
-            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.textureToolsToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.textureToolsToolStripMenuItem.Text = "Textures";
             // 
-            // dDSConverterToolStripMenuItem
+            // imageEngineToolStripMenuItem
             // 
-            this.dDSConverterToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.ImageEngine_icon_64x64;
-            this.dDSConverterToolStripMenuItem.Name = "dDSConverterToolStripMenuItem";
-            this.dDSConverterToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.dDSConverterToolStripMenuItem.Text = "Image Engine";
-            this.dDSConverterToolStripMenuItem.Click += new System.EventHandler(this.dDSConverterToolStripMenuItem_Click);
+            this.imageEngineToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.ImageEngine_icon_64x64;
+            this.imageEngineToolStripMenuItem.Name = "imageEngineToolStripMenuItem";
+            this.imageEngineToolStripMenuItem.Size = new System.Drawing.Size(161, 30);
+            this.imageEngineToolStripMenuItem.Text = "Image Engine";
+            this.imageEngineToolStripMenuItem.Click += new System.EventHandler(this.imageEngineToolStripMenuItem_Click);
             // 
             // texplorerToolStripMenuItem
             // 
             this.texplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.texplorer_64x64;
             this.texplorerToolStripMenuItem.Name = "texplorerToolStripMenuItem";
-            this.texplorerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.texplorerToolStripMenuItem.Size = new System.Drawing.Size(161, 30);
             this.texplorerToolStripMenuItem.Text = "Texplorer";
             this.texplorerToolStripMenuItem.Click += new System.EventHandler(this.texplorerToolStripMenuItem_Click_1);
             // 
@@ -208,7 +205,7 @@
             // 
             this.tPFDDSToolsToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.TPFTools_64x64;
             this.tPFDDSToolsToolStripMenuItem.Name = "tPFDDSToolsToolStripMenuItem";
-            this.tPFDDSToolsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.tPFDDSToolsToolStripMenuItem.Size = new System.Drawing.Size(161, 30);
             this.tPFDDSToolsToolStripMenuItem.Text = "TPF/DDS Tools";
             this.tPFDDSToolsToolStripMenuItem.Click += new System.EventHandler(this.tPFDDSToolsToolStripMenuItem_Click);
             // 
@@ -218,7 +215,7 @@
             this.autoTOCToolStripMenuItem,
             this.dLCTOCBinUpdaterToolStripMenuItem});
             this.tOCToolsToolStripMenuItem.Name = "tOCToolsToolStripMenuItem";
-            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.tOCToolsToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.tOCToolsToolStripMenuItem.Text = "TOC Tools";
             // 
             // autoTOCToolStripMenuItem
@@ -246,14 +243,14 @@
             this.lanugageSelectorToolStripMenuItem,
             this.vanillaMakerBackupToolStripMenuItem});
             this.utilitiesToolStripMenuItem.Name = "utilitiesToolStripMenuItem";
-            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.utilitiesToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.utilitiesToolStripMenuItem.Text = "Utilities";
             // 
             // aFCToWAVToolStripMenuItem
             // 
             this.aFCToWAVToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.audio_extract_64x64;
             this.aFCToWAVToolStripMenuItem.Name = "aFCToWAVToolStripMenuItem";
-            this.aFCToWAVToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.aFCToWAVToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.aFCToWAVToolStripMenuItem.Text = "Audio Extractor";
             this.aFCToWAVToolStripMenuItem.Click += new System.EventHandler(this.aFCToolStripMenuItem_Click);
             // 
@@ -261,7 +258,7 @@
             // 
             this.batchRenamerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.batch_rename_64x64;
             this.batchRenamerToolStripMenuItem.Name = "batchRenamerToolStripMenuItem";
-            this.batchRenamerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.batchRenamerToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.batchRenamerToolStripMenuItem.Text = "Batch Renamer";
             this.batchRenamerToolStripMenuItem.Click += new System.EventHandler(this.batchrenamerToolStripMenuItem_Click);
             // 
@@ -269,7 +266,7 @@
             // 
             this.moviestfcToBIKToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.BIK_movie_64x64;
             this.moviestfcToBIKToolStripMenuItem.Name = "moviestfcToBIKToolStripMenuItem";
-            this.moviestfcToBIKToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.moviestfcToBIKToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.moviestfcToBIKToolStripMenuItem.Text = "BIK Movie Extractor";
             this.moviestfcToBIKToolStripMenuItem.Click += new System.EventHandler(this.moviestfcBikToolStripMenuItem_Click);
             // 
@@ -277,7 +274,7 @@
             // 
             this.lanugageSelectorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.lang_select_64x64;
             this.lanugageSelectorToolStripMenuItem.Name = "lanugageSelectorToolStripMenuItem";
-            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.lanugageSelectorToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.lanugageSelectorToolStripMenuItem.Text = "Lanugage Selector";
             this.lanugageSelectorToolStripMenuItem.Click += new System.EventHandler(this.languageSelectToolStripMenuItem_Click);
             // 
@@ -285,13 +282,13 @@
             // 
             this.vanillaMakerBackupToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.backup_64x64;
             this.vanillaMakerBackupToolStripMenuItem.Name = "vanillaMakerBackupToolStripMenuItem";
-            this.vanillaMakerBackupToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.vanillaMakerBackupToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.vanillaMakerBackupToolStripMenuItem.Text = "ME3 Backup Tool";
             this.vanillaMakerBackupToolStripMenuItem.Click += new System.EventHandler(this.vanillaMakerBackupToolStripMenuItem_Click);
             // 
-            // extraToolStripMenuItem
+            // developerToolsToolStripMenuItem
             // 
-            this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pCCEditor20ToolStripMenuItem,
             this.pCCRepackerToolStripMenuItem,
             this.toolStripSeparator1,
@@ -315,16 +312,15 @@
             this.questMapEditorToolStripMenuItem,
             this.sequenceEditorToolStripMenuItem,
             this.soundplorerToolStripMenuItem});
-            this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
-            this.extraToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
-            this.extraToolStripMenuItem.Text = "Developer Tools";
-            this.extraToolStripMenuItem.Click += new System.EventHandler(this.extraToolStripMenuItem_Click);
+            this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
+            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
+            this.developerToolsToolStripMenuItem.Text = "Developer Tools";
             // 
             // pCCEditor20ToolStripMenuItem
             // 
             this.pCCEditor20ToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pCCEditor20ToolStripMenuItem.Image")));
             this.pCCEditor20ToolStripMenuItem.Name = "pCCEditor20ToolStripMenuItem";
-            this.pCCEditor20ToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.pCCEditor20ToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.pCCEditor20ToolStripMenuItem.Text = "PCC Editor 2.0";
             this.pCCEditor20ToolStripMenuItem.Click += new System.EventHandler(this.pCCEditor20ToolStripMenuItem_Click);
             // 
@@ -332,27 +328,27 @@
             // 
             this.pCCRepackerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pCCRepackerToolStripMenuItem.Image")));
             this.pCCRepackerToolStripMenuItem.Name = "pCCRepackerToolStripMenuItem";
-            this.pCCRepackerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.pCCRepackerToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.pCCRepackerToolStripMenuItem.Text = "PCC Repacker";
             this.pCCRepackerToolStripMenuItem.Click += new System.EventHandler(this.pCCRepackToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(180, 6);
             // 
             // mE3CreatorToolStripMenuItem
             // 
             this.mE3CreatorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.me3creator_64x64;
             this.mE3CreatorToolStripMenuItem.Name = "mE3CreatorToolStripMenuItem";
-            this.mE3CreatorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.mE3CreatorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.mE3CreatorToolStripMenuItem.Text = "ME3Creator";
             this.mE3CreatorToolStripMenuItem.Click += new System.EventHandler(this.mE3CREATORToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(180, 6);
             // 
             // coalescedToolsToolStripMenuItem
             // 
@@ -360,14 +356,14 @@
             this.coalescedEditorToolStripMenuItem,
             this.coalescedOperatorToolStripMenuItem});
             this.coalescedToolsToolStripMenuItem.Name = "coalescedToolsToolStripMenuItem";
-            this.coalescedToolsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.coalescedToolsToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.coalescedToolsToolStripMenuItem.Text = "Coalesced Tools";
             // 
             // coalescedEditorToolStripMenuItem
             // 
             this.coalescedEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.coalesced_editor_64x64;
             this.coalescedEditorToolStripMenuItem.Name = "coalescedEditorToolStripMenuItem";
-            this.coalescedEditorToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.coalescedEditorToolStripMenuItem.Size = new System.Drawing.Size(186, 30);
             this.coalescedEditorToolStripMenuItem.Text = "Coalesced Editor";
             this.coalescedEditorToolStripMenuItem.Click += new System.EventHandler(this.coalescedEditorToolStripMenuItem_Click);
             // 
@@ -375,7 +371,7 @@
             // 
             this.coalescedOperatorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.coalesced_operator_64x64;
             this.coalescedOperatorToolStripMenuItem.Name = "coalescedOperatorToolStripMenuItem";
-            this.coalescedOperatorToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.coalescedOperatorToolStripMenuItem.Size = new System.Drawing.Size(186, 30);
             this.coalescedOperatorToolStripMenuItem.Text = "Coalesced Operator";
             this.coalescedOperatorToolStripMenuItem.Click += new System.EventHandler(this.coalescedOperatorToolStripMenuItem_Click);
             // 
@@ -390,7 +386,7 @@
             this.tLKEditorToolStripMenuItem,
             this.wwiseBankViewerToolStripMenuItem});
             this.dialogToolStripMenuItem.Name = "dialogToolStripMenuItem";
-            this.dialogToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.dialogToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.dialogToolStripMenuItem.Text = "Dialog";
             // 
             // cameraToolToolStripMenuItem
@@ -398,7 +394,7 @@
             this.cameraToolToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.camera_tool_64x64;
             this.cameraToolToolStripMenuItem.Name = "cameraToolToolStripMenuItem";
             this.cameraToolToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.cameraToolToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.cameraToolToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.cameraToolToolStripMenuItem.Text = "Camera Tool";
             this.cameraToolToolStripMenuItem.Click += new System.EventHandler(this.cameraToolToolStripMenuItem_Click);
             // 
@@ -406,7 +402,7 @@
             // 
             this.dialogEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.dialogue_editor_64x64;
             this.dialogEditorToolStripMenuItem.Name = "dialogEditorToolStripMenuItem";
-            this.dialogEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.dialogEditorToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.dialogEditorToolStripMenuItem.Text = "Dialog Editor";
             this.dialogEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogEditorToolStripMenuItem_Click_1);
             // 
@@ -414,7 +410,7 @@
             // 
             this.faceFXAnimSetEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.fxa_editor_64x64;
             this.faceFXAnimSetEditorToolStripMenuItem.Name = "faceFXAnimSetEditorToolStripMenuItem";
-            this.faceFXAnimSetEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.faceFXAnimSetEditorToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.faceFXAnimSetEditorToolStripMenuItem.Text = "FaceFXAnimSet Editor";
             this.faceFXAnimSetEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXAnimSetEditorToolStripMenuItem_Click_1);
             // 
@@ -422,7 +418,7 @@
             // 
             this.interpEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.interp_viewer_icon_64x64;
             this.interpEditorToolStripMenuItem.Name = "interpEditorToolStripMenuItem";
-            this.interpEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.interpEditorToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.interpEditorToolStripMenuItem.Text = "Interp Viewer";
             this.interpEditorToolStripMenuItem.Click += new System.EventHandler(this.interpEditorToolStripMenuItem_Click);
             // 
@@ -430,7 +426,7 @@
             // 
             this.subtitleScannerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.subtitle_scanner_64x64;
             this.subtitleScannerToolStripMenuItem.Name = "subtitleScannerToolStripMenuItem";
-            this.subtitleScannerToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.subtitleScannerToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.subtitleScannerToolStripMenuItem.Text = "Subtitle Scanner";
             this.subtitleScannerToolStripMenuItem.Click += new System.EventHandler(this.subtitleScannerToolStripMenuItem_Click_1);
             // 
@@ -438,7 +434,7 @@
             // 
             this.tLKEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.TLK_editor_64x64;
             this.tLKEditorToolStripMenuItem.Name = "tLKEditorToolStripMenuItem";
-            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.tLKEditorToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.tLKEditorToolStripMenuItem.Text = "TLK Editor";
             this.tLKEditorToolStripMenuItem.Click += new System.EventHandler(this.tLKEditorToolStripMenuItem_Click_1);
             // 
@@ -446,7 +442,7 @@
             // 
             this.wwiseBankViewerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.wwisebank_editor_64x64;
             this.wwiseBankViewerToolStripMenuItem.Name = "wwiseBankViewerToolStripMenuItem";
-            this.wwiseBankViewerToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.wwiseBankViewerToolStripMenuItem.Size = new System.Drawing.Size(198, 30);
             this.wwiseBankViewerToolStripMenuItem.Text = "WwiseBank Editor";
             this.wwiseBankViewerToolStripMenuItem.Click += new System.EventHandler(this.wwiseBankViewerToolStripMenuItem_Click_1);
             // 
@@ -456,7 +452,7 @@
             this.dLCEditorToolStripMenuItem,
             this.dLCEditor2ToolStripMenuItem});
             this.dLCExplorerToolStripMenuItem.Name = "dLCExplorerToolStripMenuItem";
-            this.dLCExplorerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.dLCExplorerToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.dLCExplorerToolStripMenuItem.Text = "SFAR Tools";
             // 
             // dLCEditorToolStripMenuItem
@@ -480,18 +476,17 @@
             this.meshToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.meshplorer2ToolStripMenuItem,
             this.meshplorerToolStripMenuItem,
-            this.materialViewerToolStripMenuItem,
             this.pSKViewerToolStripMenuItem,
             this.pSAViewerToolStripMenuItem});
             this.meshToolStripMenuItem.Name = "meshToolStripMenuItem";
-            this.meshToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.meshToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.meshToolStripMenuItem.Text = "Mesh";
             // 
             // meshplorer2ToolStripMenuItem
             // 
             this.meshplorer2ToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.meshplorer2_64x64;
             this.meshplorer2ToolStripMenuItem.Name = "meshplorer2ToolStripMenuItem";
-            this.meshplorer2ToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.meshplorer2ToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.meshplorer2ToolStripMenuItem.Text = "Meshplorer 2";
             this.meshplorer2ToolStripMenuItem.Click += new System.EventHandler(this.meshplorer2ToolStripMenuItem_Click);
             // 
@@ -499,23 +494,15 @@
             // 
             this.meshplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.meshplorer_64x64;
             this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
-            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.meshplorerToolStripMenuItem.Text = "Meshplorer";
             this.meshplorerToolStripMenuItem.Click += new System.EventHandler(this.meshplorerToolStripMenuItem_Click_1);
-            // 
-            // materialViewerToolStripMenuItem
-            // 
-            this.materialViewerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.material_viewer_64x64;
-            this.materialViewerToolStripMenuItem.Name = "materialViewerToolStripMenuItem";
-            this.materialViewerToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.materialViewerToolStripMenuItem.Text = "Material Viewer";
-            this.materialViewerToolStripMenuItem.Click += new System.EventHandler(this.materialViewerToolStripMenuItem_Click_1);
             // 
             // pSKViewerToolStripMenuItem
             // 
             this.pSKViewerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.psk_viewer_64x64;
             this.pSKViewerToolStripMenuItem.Name = "pSKViewerToolStripMenuItem";
-            this.pSKViewerToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.pSKViewerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.pSKViewerToolStripMenuItem.Text = "PSK Viewer";
             this.pSKViewerToolStripMenuItem.Click += new System.EventHandler(this.pSKViewerToolStripMenuItem_Click_1);
             // 
@@ -523,7 +510,7 @@
             // 
             this.pSAViewerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.psa_viewer_64x64;
             this.pSAViewerToolStripMenuItem.Name = "pSAViewerToolStripMenuItem";
-            this.pSAViewerToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.pSAViewerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.pSAViewerToolStripMenuItem.Text = "PSA Viewer";
             this.pSAViewerToolStripMenuItem.Click += new System.EventHandler(this.pSAViewerToolStripMenuItem_Click_1);
             // 
@@ -534,7 +521,7 @@
             this.propertyDumperToolStripMenuItem,
             this.propertyManagerToolStripMenuItem});
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.propertiesToolStripMenuItem.Text = "Properties";
             // 
             // propertyDBToolStripMenuItem
@@ -567,7 +554,7 @@
             this.scriptDBToolStripMenuItem,
             this.scriptCompilerToolStripMenuItem});
             this.scriptsToolStripMenuItem.Name = "scriptsToolStripMenuItem";
-            this.scriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.scriptsToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.scriptsToolStripMenuItem.Text = "Scripts";
             // 
             // scriptDBToolStripMenuItem
@@ -593,7 +580,7 @@
             this.uECodeEditorToolStripMenuItem,
             this.classViewerToolStripMenuItem});
             this.unrealToolStripMenuItem.Name = "unrealToolStripMenuItem";
-            this.unrealToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.unrealToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.unrealToolStripMenuItem.Text = "Unreal";
             // 
             // uDKConverterToolStripMenuItem
@@ -623,13 +610,13 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(180, 6);
             // 
             // animationExplorerToolStripMenuItem
             // 
             this.animationExplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.animation_explorer_64x64;
             this.animationExplorerToolStripMenuItem.Name = "animationExplorerToolStripMenuItem";
-            this.animationExplorerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.animationExplorerToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.animationExplorerToolStripMenuItem.Text = "Animation Explorer";
             this.animationExplorerToolStripMenuItem.Click += new System.EventHandler(this.animationExplorerToolStripMenuItem_Click);
             // 
@@ -637,7 +624,7 @@
             // 
             this.conditionalsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("conditionalsToolStripMenuItem.Image")));
             this.conditionalsToolStripMenuItem.Name = "conditionalsToolStripMenuItem";
-            this.conditionalsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.conditionalsToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.conditionalsToolStripMenuItem.Text = "Conditionals Editor";
             this.conditionalsToolStripMenuItem.Click += new System.EventHandler(this.conditionalsToolStripMenuItem_Click);
             // 
@@ -645,7 +632,7 @@
             // 
             this.codexEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.codex_editor_64x64;
             this.codexEditorToolStripMenuItem.Name = "codexEditorToolStripMenuItem";
-            this.codexEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.codexEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.codexEditorToolStripMenuItem.Text = "Codex Editor";
             this.codexEditorToolStripMenuItem.Click += new System.EventHandler(this.codexEditorToolStripMenuItem_Click);
             // 
@@ -653,7 +640,7 @@
             // 
             this.decompressorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("decompressorToolStripMenuItem.Image")));
             this.decompressorToolStripMenuItem.Name = "decompressorToolStripMenuItem";
-            this.decompressorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.decompressorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.decompressorToolStripMenuItem.Text = "Decompressor";
             this.decompressorToolStripMenuItem.Click += new System.EventHandler(this.decompressorToolStripMenuItem_Click);
             // 
@@ -661,7 +648,7 @@
             // 
             this.gUIDEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.GUIDcache_editor_64x64;
             this.gUIDEditorToolStripMenuItem.Name = "gUIDEditorToolStripMenuItem";
-            this.gUIDEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.gUIDEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.gUIDEditorToolStripMenuItem.Text = "GUID Cache Editor";
             this.gUIDEditorToolStripMenuItem.Click += new System.EventHandler(this.gUIDEditorToolStripMenuItem_Click);
             // 
@@ -669,7 +656,7 @@
             // 
             this.levelExplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.level_explorer_64x64;
             this.levelExplorerToolStripMenuItem.Name = "levelExplorerToolStripMenuItem";
-            this.levelExplorerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.levelExplorerToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.levelExplorerToolStripMenuItem.Text = "Level Explorer";
             this.levelExplorerToolStripMenuItem.Click += new System.EventHandler(this.levelExplorerToolStripMenuItem_Click);
             // 
@@ -677,7 +664,7 @@
             // 
             this.pAREditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.PAR_editor_64x64;
             this.pAREditorToolStripMenuItem.Name = "pAREditorToolStripMenuItem";
-            this.pAREditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.pAREditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.pAREditorToolStripMenuItem.Text = "PAR Editor";
             this.pAREditorToolStripMenuItem.Click += new System.EventHandler(this.pAREditorToolStripMenuItem_Click);
             // 
@@ -685,7 +672,7 @@
             // 
             this.questMapEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.questmap_editor_64x64;
             this.questMapEditorToolStripMenuItem.Name = "questMapEditorToolStripMenuItem";
-            this.questMapEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.questMapEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.questMapEditorToolStripMenuItem.Text = "Quest Map Editor";
             this.questMapEditorToolStripMenuItem.Click += new System.EventHandler(this.questMapEditorToolStripMenuItem_Click);
             // 
@@ -693,7 +680,7 @@
             // 
             this.sequenceEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("sequenceEditorToolStripMenuItem.Image")));
             this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
-            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
@@ -701,7 +688,7 @@
             // 
             this.soundplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("soundplorerToolStripMenuItem.Image")));
             this.soundplorerToolStripMenuItem.Name = "soundplorerToolStripMenuItem";
-            this.soundplorerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.soundplorerToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.soundplorerToolStripMenuItem.Text = "Soundplorer";
             this.soundplorerToolStripMenuItem.Click += new System.EventHandler(this.soundplorerToolStripMenuItem_Click);
             // 
@@ -809,13 +796,6 @@
             this.disableDLCCheckOnStartupToolStripMenuItem.Text = "Disable DLC Check on Startup";
             this.disableDLCCheckOnStartupToolStripMenuItem.Click += new System.EventHandler(this.disableDLCCheckOnStartupToolStripMenuItem_Click);
             // 
-            // experimentalToolStripMenuItem
-            // 
-            this.experimentalToolStripMenuItem.Name = "experimentalToolStripMenuItem";
-            this.experimentalToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
-            this.experimentalToolStripMenuItem.Text = "Experimental";
-            this.experimentalToolStripMenuItem.Visible = false;
-            // 
             // otherEnginesToolStripMenuItem
             // 
             this.otherEnginesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -830,7 +810,7 @@
             // 
             this.switchToUDKExplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.udk_explorer_64x64;
             this.switchToUDKExplorerToolStripMenuItem.Name = "switchToUDKExplorerToolStripMenuItem";
-            this.switchToUDKExplorerToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.switchToUDKExplorerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.switchToUDKExplorerToolStripMenuItem.Text = "UDK Explorer";
             this.switchToUDKExplorerToolStripMenuItem.Click += new System.EventHandler(this.switchToUDKExplorerToolStripMenuItem_Click_1);
             // 
@@ -838,7 +818,7 @@
             // 
             this.mE2ExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("mE2ExplorerToolStripMenuItem.Image")));
             this.mE2ExplorerToolStripMenuItem.Name = "mE2ExplorerToolStripMenuItem";
-            this.mE2ExplorerToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.mE2ExplorerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.mE2ExplorerToolStripMenuItem.Text = "ME2 Explorer";
             this.mE2ExplorerToolStripMenuItem.Click += new System.EventHandler(this.mE2ExplorerToolStripMenuItem_Click);
             // 
@@ -846,7 +826,7 @@
             // 
             this.mE1ExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("mE1ExplorerToolStripMenuItem.Image")));
             this.mE1ExplorerToolStripMenuItem.Name = "mE1ExplorerToolStripMenuItem";
-            this.mE1ExplorerToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.mE1ExplorerToolStripMenuItem.Size = new System.Drawing.Size(160, 30);
             this.mE1ExplorerToolStripMenuItem.Text = "ME1 Explorer";
             this.mE1ExplorerToolStripMenuItem.Click += new System.EventHandler(this.mE1ExplorerToolStripMenuItem_Click);
             // 
@@ -865,35 +845,35 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // forumsToolStripMenuItem
             // 
             this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.forumsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.forumsToolStripMenuItem.Text = "Forums";
             this.forumsToolStripMenuItem.Click += new System.EventHandler(this.forumsToolStripMenuItem_Click);
             // 
             // gitHubToolStripMenuItem
             // 
             this.gitHubToolStripMenuItem.Name = "gitHubToolStripMenuItem";
-            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gitHubToolStripMenuItem.Text = "GitHub";
             this.gitHubToolStripMenuItem.Click += new System.EventHandler(this.gitHubToolStripMenuItem_Click);
             // 
             // nexusModsToolStripMenuItem
             // 
             this.nexusModsToolStripMenuItem.Name = "nexusModsToolStripMenuItem";
-            this.nexusModsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.nexusModsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.nexusModsToolStripMenuItem.Text = "NexusMods";
             this.nexusModsToolStripMenuItem.Click += new System.EventHandler(this.nexusModsToolStripMenuItem_Click);
             // 
             // mE3WikiToolStripMenuItem
             // 
             this.mE3WikiToolStripMenuItem.Name = "mE3WikiToolStripMenuItem";
-            this.mE3WikiToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.mE3WikiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.mE3WikiToolStripMenuItem.Text = "Wiki";
             this.mE3WikiToolStripMenuItem.Click += new System.EventHandler(this.mE3WikiToolStripMenuItem_Click);
             // 
@@ -1005,14 +985,12 @@
         private System.Windows.Forms.ToolStripMenuItem threadOptionsMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem setCustomPathToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem extraToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem experimentalToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem developerToolsToolStripMenuItem;
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.ToolStripMenuItem otherEnginesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshplorer2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshplorerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem materialViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pSAViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pSKViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codexEditorToolStripMenuItem;
@@ -1048,7 +1026,7 @@
         private System.Windows.Forms.ToolStripMenuItem modMakerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem plotVarDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureToolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dDSConverterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem imageEngineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tPFDDSToolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tOCToolsToolStripMenuItem;
