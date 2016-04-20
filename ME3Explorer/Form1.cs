@@ -46,12 +46,9 @@ namespace ME3Explorer
                 IsDLCDone = true;
         }
 
-        Languages lang;
-
         private void decompressorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 decomp = new Form2();
-            lang.SetLang(decomp);
             decomp.MdiParent = this;
             decomp.WindowState = FormWindowState.Maximized;
             decomp.Show();
@@ -63,7 +60,6 @@ namespace ME3Explorer
         {
             Conditionals con = new Conditionals();
             con.MdiParent = this;
-            lang.SetLang(con);
             con.WindowState = FormWindowState.Maximized;
             con.Show();
             taskbar.AddTool(con, Properties.Resources.conditionals_editor_64x64);
@@ -72,7 +68,6 @@ namespace ME3Explorer
         private void dLCEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DLCExplorer expl = new DLCExplorer();
-            lang.SetLang(expl);
             expl.MdiParent = this;
             expl.WindowState = FormWindowState.Maximized;
             expl.Show();
@@ -89,7 +84,6 @@ namespace ME3Explorer
         private void aFCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AFCExtract af = new AFCExtract();
-            lang.SetLang(af);
             OpenMaximized(af);
             taskbar.AddTool(af, Properties.Resources.audio_extract_64x64);
         }
@@ -97,7 +91,6 @@ namespace ME3Explorer
         private void moviestfcBikToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BIKExtract bik = new BIKExtract();
-            lang.SetLang(bik);
             OpenMaximized(bik);
             taskbar.AddTool(bik, Properties.Resources.BIK_movie_64x64);
         }
@@ -106,8 +99,6 @@ namespace ME3Explorer
         {
             taskbar.strip = toolStrip1; //this be a toolstrip reference to class taskbar            
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            lang = new Languages(loc + "\\exec\\languages.xml", 0);
-            lang.SetLang(this);
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
@@ -136,7 +127,6 @@ namespace ME3Explorer
                 {
                     //autostart the TOCEditor (used by FemShep's Mod Manager 3)
                     TOCeditor tocedit = new TOCeditor();
-                    lang.SetLang(tocedit);
                     tocedit.MdiParent = this;
                     tocedit.WindowState = FormWindowState.Maximized;
                     tocedit.Show();
@@ -243,21 +233,10 @@ namespace ME3Explorer
         private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             XBoxConverter x = new XBoxConverter();
-            lang.SetLang(x);
             x.MdiParent = this;
             x.WindowState = FormWindowState.Maximized;
             x.Show();
             taskbar.AddTool(x, imageList1.Images[16]);
-        }
-
-        private void selectToolLanguageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Language_Editor le = new Language_Editor();
-            lang.SetLang(le);
-            le.lang = lang;
-            le.MdiParent = this;
-            le.WindowState = FormWindowState.Maximized;
-            le.Show();
         }
 
         private void pCCRepackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -442,7 +421,6 @@ namespace ME3Explorer
         private void propertyManagerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             PropertyManager m = new PropertyManager();
-            lang.SetLang(m);
             m.MdiParent = this;
             m.WindowState = FormWindowState.Maximized;
             m.Show();
