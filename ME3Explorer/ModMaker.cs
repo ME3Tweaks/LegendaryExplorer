@@ -1530,8 +1530,13 @@ namespace ME3Explorer
                 var dlcpaths = bits.GetRange(index, bits.Count - index);
                 filename = string.Join("\\", dlcpaths);
             }
+
+
+            // KFreon: Filename must contain CookedPCConsole
+            if (!filename.Contains("cookedpcconsole", StringComparison.OrdinalIgnoreCase))
+                filename = Path.Combine("CookedPCConsole", filename);
+
             filename = filename.Replace("\\\\", "\\").Replace("\\", "\\\\"); // KFreon: Need to not end up with \\\\\\\\\\\ or something, so chances are the only thing it would have at this stage is \\\\ so reset that to \\ then expand to \\\\.
-        
             script = script.Replace("**m2**", filename);
 
 
