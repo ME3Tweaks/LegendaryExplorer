@@ -114,7 +114,7 @@ namespace ME3Explorer
                 if (args[1].Equals("-version-switch-from") && args.Length == 3)
                 {
 
-                    string version = Assembly.GetExecutingAssembly().GetName().Version.Build.ToString();
+                    string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
                     if (version.Equals(args[2]))
                     {
                         MessageBox.Show("Version switched to is the same as the one you had before the switch.");
@@ -159,8 +159,8 @@ namespace ME3Explorer
                 } else
                 if (args[1].Equals("--help") || args[1].Equals("-h") || args[1].Equals("/?"))
                 {
-                    String[] version = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
-                    String commandLineHelp = "\nME3Explorer r"+version[2]+" Command Line Options\n";
+                    string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                    string commandLineHelp = "\nME3Explorer v"+version+" Command Line Options\n";
                     commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
                     commandLineHelp += "     Automates PCCRepacker to decompress a pcc to the new location.\n\n";
                     commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
@@ -219,8 +219,8 @@ namespace ME3Explorer
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
                 ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
 
-            var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
-            versionToolStripMenuItem.Text += "0110 (r" + vers[2] + ")";
+            var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            versionToolStripMenuItem.Text += vers;
             versionToolStripMenuItem.Tag = "versionItem";
             menuStrip1.Renderer = new NoHighlightRenderer();
 
