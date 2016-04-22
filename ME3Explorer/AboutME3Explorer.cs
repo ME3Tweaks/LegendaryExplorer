@@ -46,9 +46,17 @@ namespace ME3Explorer
             get
             {
                 List<String> developers = new List<String>();
+                developers.Add("CURRENT STAFF:");
+                developers.Add("- KFreon, Lead Developer");
+                developers.Add("- SirCxyrtyx, Programmer");
+                developers.Add("- Heff, Programmer");
+                developers.Add("- Giftfish, Coordinator");
+
+                developers.Add("");
+                developers.Add("");
+
                 developers.Add("TOOLSET CREATORS:");
                 developers.Add("- WarrantyVoider");
-                developers.Add("- KFreon");
                 developers.Add("- AmaroK86");
                 developers.Add("- Eudaimonium");
                 developers.Add("- Saltisgood");
@@ -63,24 +71,33 @@ namespace ME3Explorer
                 developers.Add("- Erik JS");
                 developers.Add("- FemShep");
                 developers.Add("- Fog.Gene");
-                developers.Add("- Heff");
                 developers.Add("- JohnP");
                 developers.Add("- MrFob");
-                developers.Add("- SirCxyrtyx");
 
                 developers.Add("");
                 developers.Add("");
 
                 developers.Add("THIRD PARTY CODE:");
-                developers.Add("- Eliot");
-                developers.Add("- TheFeckless");
-                developers.Add("- gibbed");
-                developers.Add("- gildor");
+                developers.Add("- Eliot, UnHood: UnrealScript Bytecode Decompiler");
+                developers.Add("- TheFeckless, UE3 SDK Generator");
+                developers.Add("- Gibbed, variety of tools");
+                developers.Add("- Gildor, UModel and others");
+                developers.Add("- RS, Texmod");
+                developers.Add("- Bernhard Elbl, Be.Windows.Forms.HexBox");
+                developers.Add("- Newtonsoft, JSON.NET");
+                developers.Add("- Gocek, ME2 TLK Tool");
+                developers.Add("- John33, Oggdec");
+                developers.Add("- Piccolo Team, Piccolo Graphics Framework");
+                developers.Add("- Luigi Auriemma, QuickBMS");
+                developers.Add("- Nvidia, Real Time DXT");
+                developers.Add("- hcs64, ww2ogg");
+                developers.Add("- Jean-Loup Gailly and Mark Adler, zLib");
 
                 developers.Add("");
                 developers.Add("");
+
                 developers.Add("ICONS and BACKGROUNDS:");
-                developers.Add("- Giftfish");
+                developers.Add("- Tool icons and toolset wallpaper by Giftfish");
                 developers.Add("- paragade icon by Joshua Bell, sailok.deviantart.com");
                 developers.Add("- hex code texture by Maksim Kabakou, Shutterstock");
 
