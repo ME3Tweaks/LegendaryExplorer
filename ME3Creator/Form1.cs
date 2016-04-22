@@ -635,9 +635,16 @@ namespace ME3Creator
                     s += "\"" + pcc.GetName(idx) + "\"";
                     break;
                 case 6:
-                    idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
-                    s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\"";
+                    if (p.size == 8)
+                    {
+                        idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
+                        int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
+                        s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\""; 
+                    }
+                    else
+                    {
+                        s += PropMemory[p.offset + 32].ToString();
+                    }
                     break;
                 case 7:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);

@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -386,6 +386,7 @@ namespace ME3LibWV
                     pos += p.Value.len + 24;
                     break;
             }
+            p.Size = size;
             p.raw = new byte[pos - start];
             p.offend = pos;
             if(pos < raw.Length)
