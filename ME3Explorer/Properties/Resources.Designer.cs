@@ -1024,16 +1024,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap TOCbin_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("TOCbin_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap TPFTools_64x64 {
             get {
                 object obj = ResourceManager.GetObject("TPFTools_64x64", resourceCulture);
