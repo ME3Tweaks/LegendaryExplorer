@@ -17,7 +17,7 @@ namespace ME3Explorer
             InitializeComponent();
             this.Text = String.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = "Mass Effect 3 Explorer";
-            this.labelVersion.Text = String.Format("Revision: {0}", Assembly.GetExecutingAssembly().GetName().Version.Build.ToString());
+            this.labelVersion.Text = String.Format("Version: {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             this.labelCompanyName.Text = "Credits:";
             this.textBoxDescription.Text = AssemblyDescription;
         }
