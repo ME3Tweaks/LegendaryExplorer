@@ -143,7 +143,12 @@ namespace KFreonLib.Scripting
                 {
                     string retval = Name;
                     if (Name.Contains("Binary"))
-                        retval = Name.Split('"')[1].Trim();
+                    {
+                        if (Name.Contains('"'))
+                            retval = Name.Split('"')[1].Trim();
+                        else
+                            retval = Name.Substring(Name.IndexOf("for ") + 4);
+                    }
                     else
                     {
                         if (Name.Contains(':'))

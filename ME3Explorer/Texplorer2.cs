@@ -334,7 +334,7 @@ namespace ME3Explorer
                 return;
             }
             else if (Tree.TexCount != 0)
-                if (MessageBox.Show("This will replace your currently loaded tree but NOT on disk. Do you wish to proceed? Make REALLY sure you're loading the right game tree in...", "Sure you wanna do that Commander?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
+                if (MessageBox.Show("This will import the tree and thumbnails (if present) from the specified location. Be sure the game currently selected in Texplorer matches the tree you're importing. Do you want to continue?", "Sure you wanna do that Commander?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
                     return;
             
             using (OpenFileDialog ofd = new OpenFileDialog())
