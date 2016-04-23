@@ -22,6 +22,13 @@ namespace ME1Explorer
         public AddReply()
         {
             InitializeComponent();
+            comboBox1.Items.AddRange(new object[] {
+            "REPLY_CATEGORY_DEFAULT",
+            "REPLY_CATEGORY_AGREE",
+            "REPLY_CATEGORY_DISAGREE",
+            "REPLY_CATEGORY_FRIENDLY",
+            "REPLY_CATEGORY_HOSTILE",
+            "REPLY_CATEGORY_INVESTIGATE"});
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -34,31 +41,9 @@ namespace ME1Explorer
             res = new BioConversation.EntryListReplyListStruct();
             res.Paraphrase = textBox1.Text;
             res.refParaphrase = Int32.Parse(textBox2.Text);
-            res.CategoryValue = Int32.Parse(textBox3.Text);
+            res.CategoryValue = pcc.FindNameOrAdd(comboBox1.Text);
             res.Index = Int32.Parse(textBox4.Text);
             state = 1;
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            int i=0;
-            if (Int32.TryParse(textBox3.Text, out i))
-            {
-                label5.Text = "Preview: " + pcc.getNameEntry(i);
-            }
-            else
-            {
-                label5.Text = "Preview: fail";
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter name to search\nExamples:\nREPLY_AUTOCONTINUE\nREPLY_CATEGORY_DEFAULT\nREPLY_STANDARD", "ME1Explorer", "REPLY_CATEGORY_DEFAULT", 0, 0);
-            if (result == "") return;
-            int n = pcc.findName(result);
-            if (n != -1)
-                textBox3.Text = n.ToString();
         }
     }
 }

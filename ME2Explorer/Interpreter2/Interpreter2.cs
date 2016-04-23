@@ -339,6 +339,7 @@ namespace ME2Explorer.Interpreter2
             s += "Size: " + p.size.ToString() + " Value: ";
             int propertyType = getType(pcc.getNameEntry(p.type));
             int idx;
+            byte val;
             switch (propertyType)
             {
                 case INT_PROPERTY:
@@ -357,7 +358,7 @@ namespace ME2Explorer.Interpreter2
                     s += "\"";
                     break;
                 case BOOL_PROPERTY:
-                    byte val = memory[p.offset + 24];
+                    val = memory[p.offset + 24];
                     s += (val == 1).ToString();
                     break;
                 case FLOAT_PROPERTY:
@@ -370,8 +371,16 @@ namespace ME2Explorer.Interpreter2
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case BYTE_PROPERTY:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" + pcc.getNameEntry(idx) + "\"";
+                    if (p.size == 1)
+                    {
+                        val = memory[p.offset + 32];
+                        s += val.ToString();
+                    }
+                    else
+                    {
+                        idx = BitConverter.ToInt32(memory, p.offset + 24);
+                        s += "\"" + pcc.getNameEntry(idx) + "\"";
+                    }
                     break;
                 case ARRAY_PROPERTY:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
@@ -492,11 +501,15 @@ namespace ME2Explorer.Interpreter2
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
+            proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = false;
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
                 //can't attempt to parse this.
-                arrayPropertyDropdown.Enabled = true;
+                addArrayElementButton.Visible = false;
+                deleteArrayElement.Visible = false;
+                arrayPropertyDropdown.Enabled = false;
+                LAST_SELECTED_PROP_TYPE = NONARRAYLEAF_TAG;
                 return;
             }
             try
@@ -520,15 +533,25 @@ namespace ME2Explorer.Interpreter2
                     TryParseStructProperty((int)e.Node.Tag);
                     LAST_SELECTED_PROP_TYPE = (int)e.Node.Tag;
                 }
-                else if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAY_PROPERTY) && (e.Node.GetNodeCount(false) == 0 || e.Node.FirstNode.Tag.Equals(ARRAYLEAF_TAG)))
+                else if (e.Node.Tag != null && e.Node.Tag.Equals(ARRAY_PROPERTY))
                 {
                     addArrayElementButton.Visible = true;
                     deleteArrayElement.Visible = false;
                     arrayPropertyDropdown.Enabled = false;
                     proptext.Clear();
                     setPropertyButton.Visible = false;
-                    proptext.Visible = setValueSeparator.Visible = true;
+                    setValueSeparator.Visible = true;
                     LAST_SELECTED_PROP_TYPE = ARRAY_PROPERTY;
+                    //probably an array of names or import/export references
+                    if (e.Node.GetNodeCount(false) == 0 || (e.Node.FirstNode?.Tag?.Equals(ARRAYLEAF_TAG) ?? false))
+                    {
+                        proptext.Visible = true;
+                    }
+                    //array of structs
+                    else
+                    {
+                        proptext.Visible = false;
+                    }
                 }
                 else
                 {
@@ -541,7 +564,7 @@ namespace ME2Explorer.Interpreter2
             }
             catch (Exception ex)
             {
-                addArrayElementButton.Visible = true;
+                addArrayElementButton.Visible = false;
                 deleteArrayElement.Visible = false;
                 arrayPropertyDropdown.Enabled = false;
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = false;
@@ -591,6 +614,33 @@ namespace ME2Explorer.Interpreter2
                         }
                         proptext.Text = s;
                         visible = true;
+                        break;
+                    case "ByteProperty":
+                        int size = BitConverter.ToInt32(memory, pos + 16);
+                        if (size > 1)
+                        {
+                            try
+                            {
+                                List<string> values = UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
+                                if (values != null)
+                                {
+                                    enumDropdown.Items.Clear();
+                                    enumDropdown.Items.AddRange(values.ToArray());
+                                    proptext.Visible = false;
+                                    setPropertyButton.Visible = setValueSeparator.Visible = enumDropdown.Visible = true;
+                                    enumDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
+                                    return;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        else
+                        {
+                            proptext.Text = memory[pos + 24].ToString();
+                            visible = true;
+                        }
                         break;
                 }
                 proptext.Visible = setPropertyButton.Visible = setValueSeparator.Visible = visible;
@@ -748,6 +798,19 @@ namespace ME2Explorer.Interpreter2
                             RefreshMem();
                         }
                         break;
+                    case "ByteProperty":
+                        if (enumDropdown.Visible)
+                        {
+                            i = pcc.FindNameOrAdd(enumDropdown.SelectedItem as string);
+                            WriteMem(pos + 24, BitConverter.GetBytes(i));
+                            RefreshMem();
+                        }
+                        else if (int.TryParse(proptext.Text, out i) && i >= 0 && i <= 255)
+                        {
+                            memory[pos + 24] = (byte)i;
+                            RefreshMem();
+                        }
+                        break;
                     case "StrProperty":
                         string s = proptext.Text;
                         int offset = pos + 24;
@@ -869,6 +932,56 @@ namespace ME2Explorer.Interpreter2
                     {
                         updateArrayLength(parentOffset, 0, -leafsize);
                     }
+                    parent = parent.Parent;
+                }
+                RefreshMem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void cloneArrayStruct()
+        {
+            try
+            {
+                int pos = (int)hb1.SelectionStart;
+                if (hb1.SelectionStart != lastSetOffset)
+                {
+                    return; //user manually moved cursor
+                }
+                uint throwaway;
+                TreeNode arrayRoot = LAST_SELECTED_NODE;
+
+                int beginOffset;
+                int endOffset;
+                if (uint.TryParse(arrayRoot.LastNode.Text, out throwaway))
+                {
+                    beginOffset = Convert.ToInt32(arrayRoot.LastNode.FirstNode.Name);
+                }
+                else
+                {
+                    beginOffset = Convert.ToInt32(arrayRoot.FirstNode.Name);
+                }
+                endOffset = Convert.ToInt32(arrayRoot.NextNode.Name);
+                int size = endOffset - beginOffset;
+
+                List<byte> memList = memory.ToList();
+                memList.InsertRange(endOffset, memList.GetRange(beginOffset, size));
+                memory = memList.ToArray();
+                updateArrayLength(pos, 1, size);
+
+                //bubble up size
+                TreeNode parent = LAST_SELECTED_NODE.Parent;
+                while (parent != null && (Convert.ToInt32(parent.Tag) == STRUCT_PROPERTY || Convert.ToInt32(parent.Tag) == ARRAY_PROPERTY))
+                {
+                    if (uint.TryParse(parent.Text, out throwaway))
+                    {
+                        parent = parent.Parent;
+                        continue;
+                    }
+                    updateArrayLength(Convert.ToInt32(parent.Name), 0, size);
                     parent = parent.Parent;
                 }
                 RefreshMem();
@@ -1077,7 +1190,14 @@ namespace ME2Explorer.Interpreter2
 
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
-            addArrayLeaf();
+            if (proptext.Visible)
+            {
+                addArrayLeaf();
+            }
+            else
+            {
+                cloneArrayStruct();
+            }
         }
     }
 }

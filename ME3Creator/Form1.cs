@@ -59,11 +59,6 @@ namespace ME3Creator
             pcc = new PCCPackage(path, true, false);
         }
 
-        public void LoadDLCFile(string path, int index)
-        {
-            pcc = new PCCPackage(new DLCPackage(path), index); 
-        }
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             DebugLog.Update();
@@ -81,14 +76,7 @@ namespace ME3Creator
             timer1.Enabled = false;
             if (pcc == null)
                 return;
-            if (pcc.GeneralInfo.inDLC)
-            {
-                LoadDLCFile(pcc.GeneralInfo.filepath, pcc.GeneralInfo.inDLCIndex);
-            }
-            else
-            {
-                LoadBaseGameFile(pcc.GeneralInfo.filepath);
-            }
+            LoadBaseGameFile(pcc.GeneralInfo.filepath);
             RefreshAll();
             timer1.Enabled = true;
         }
@@ -124,10 +112,7 @@ namespace ME3Creator
             hb1.ByteProvider = new DynamicByteProvider(buff);
             treeView1.Nodes.Clear();
             TreeNode t;
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath.Replace("/", "\\")));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Nodes.Add(new TreeNode("Magic : 0x" + pcc.Header.magic.ToString("X8")));
             t.Nodes.Add(new TreeNode("Ver1 : 0x" + pcc.Header.ver1.ToString("X4")));
             t.Nodes.Add(new TreeNode("Ver2 : 0x" + pcc.Header.ver2.ToString("X4")));
@@ -251,10 +236,7 @@ namespace ME3Creator
             #endregion
             #region Exports3
             treeView4.Nodes.Clear();
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Name = "0";
             for (int i = 0; i < pcc.Header.ExportCount; i++)
             {
@@ -653,9 +635,16 @@ namespace ME3Creator
                     s += "\"" + pcc.GetName(idx) + "\"";
                     break;
                 case 6:
-                    idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
-                    s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\"";
+                    if (p.size == 8)
+                    {
+                        idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
+                        int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
+                        s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\""; 
+                    }
+                    else
+                    {
+                        s += PropMemory[p.offset + 32].ToString();
+                    }
                     break;
                 case 7:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
@@ -750,6 +739,19 @@ namespace ME3Creator
                 return;
             pcc.Save();
             MessageBox.Show("Done.");
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.pcc|*.pcc";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pcc.Save(d.FileName);
+                MessageBox.Show("Done");
+            }
         }
 
         private void treeView4_MouseDown(object sender, MouseEventArgs e)
@@ -1133,49 +1135,41 @@ namespace ME3Creator
                 case 1://Parent
                 case 2://Link
                 case 5://Archetype
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
+                    int idx = 0;
+                    int? nullableIntResult;
                     if (t.Index == 0)
-                        osel.Init(pcc, pcc.Exports[n].idxClass);
+                        idx = pcc.Exports[n].idxClass;
                     if (t.Index == 1)
-                        osel.Init(pcc, pcc.Exports[n].idxParent);
+                        idx = pcc.Exports[n].idxParent;
                     if (t.Index == 2)
-                        osel.Init(pcc, pcc.Exports[n].idxLink);
+                        idx = pcc.Exports[n].idxLink;
                     if (t.Index == 5)
-                        osel.Init(pcc, pcc.Exports[n].idxArchetype);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                        idx = pcc.Exports[n].idxArchetype;
+                    nullableIntResult = Objectselect.GetValue(pcc, idx);
+                    if (nullableIntResult == null)
                         return;
-                    osel.Close();
                     ex = pcc.Exports[n];
                     if(t.Index == 0)
-                        ex.idxClass = osel.Result;
+                        ex.idxClass = (int)nullableIntResult;
                     if (t.Index == 1)
-                        ex.idxParent = osel.Result;
+                        ex.idxParent = (int)nullableIntResult;
                     if (t.Index == 2)
-                        ex.idxLink = osel.Result;
+                        ex.idxLink = (int)nullableIntResult;
                     if (t.Index == 5)
-                        ex.idxArchetype = osel.Result;
+                        ex.idxArchetype = (int)nullableIntResult;
                     pcc.Exports[n] = ex;
                     RefreshAll();
                     break;
                 case 3://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
-                    nsel.Init(pcc, pcc.Exports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                    int intResult;
+                    intResult = Nameselect.GetValue(pcc, pcc.Exports[n].idxName);
+                    if (intResult != -1)
                     {
                         ex = pcc.Exports[n];
-                        ex.idxName = nsel.Result;
+                        ex.idxName = intResult;
                         pcc.Exports[n] = ex;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 case 4://Index
                     ex = pcc.Exports[n];
@@ -1217,50 +1211,42 @@ namespace ME3Creator
             if (t == null || n == -1 || isSelectOpen)
                 return;
             PCCPackage.ImportEntry imp;
+            int? nullableResult = 0;
             switch (t.Index)
             {
                 case 4://Link
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
-                    osel.Init(pcc, pcc.Imports[n].idxLink);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                    nullableResult = Objectselect.GetValue(pcc, pcc.Imports[n].idxLink);
+                    if (nullableResult == null)
                         return;
-                    osel.Close();
                     imp = pcc.Imports[n];
-                    imp.idxLink = osel.Result;
+                    imp.idxLink = (int)nullableResult;
                     pcc.Imports[n] = imp;
                     RefreshAll();
                     break;
                 case 0://Package
                 case 2://Class
                 case 5://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
+                    int result;
+                    int idx = 0;
                     if (t.Index == 0)
-                        nsel.Init(pcc, pcc.Imports[n].idxPackage);
+                        idx = pcc.Imports[n].idxPackage;
                     if (t.Index == 2)
-                        nsel.Init(pcc, pcc.Imports[n].idxClass);
+                        idx = pcc.Imports[n].idxClass;
                     if (t.Index == 5)
-                        nsel.Init(pcc, pcc.Imports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                        idx = pcc.Imports[n].idxName;
+                    result = Nameselect.GetValue(pcc, idx);
+                    if (result != -1)
                     {
                         imp = pcc.Imports[n];
                         if (t.Index == 0)
-                            imp.idxPackage = nsel.Result;
+                            imp.idxPackage = result;
                         if (t.Index == 2)
-                            imp.idxClass = nsel.Result;
+                            imp.idxClass = result;
                         if (t.Index == 5)
-                            imp.idxName = nsel.Result;
+                            imp.idxName = result;
                         pcc.Imports[n] = imp;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 default:
                     break;
@@ -1540,7 +1526,7 @@ namespace ME3Creator
             {
                 foreach (PropertyReader.Property p in Props)
                 {
-                    ImportProperty(pcc, importpcc, p, res);
+                    PropertyReader.ImportProperty(pcc, importpcc, p, res);
                 }
             }
             catch (Exception exe) 
@@ -1552,8 +1538,34 @@ namespace ME3Creator
                 pcc.Header.NameCount = namecount;
                 MessageBox.Show("Error occured while trying to importing : " + exe.Message);
             }
-            for (int i = end; i < idata.Length; i++)
-                res.WriteByte(idata[i]);
+            if (importpcc.GetObject(ex.idxClass) == "SkeletalMesh")
+            {
+                SkeletalMesh skl = new SkeletalMesh(importpcc, n);
+                SkeletalMesh.BoneStruct bone;
+                for (int i = 0; i < skl.Bones.Count; i++)
+                {
+                    bone = skl.Bones[i];
+                    string s = importpcc.GetName(bone.Name);
+                    bone.Name = pcc.FindNameOrAdd(s);
+                    skl.Bones[i] = bone;
+                }
+                SkeletalMesh.TailNamesStruct tailName;
+                for (int i = 0; i < skl.TailNames.Count; i++)
+                {
+                    tailName = skl.TailNames[i];
+                    string s = importpcc.GetName(tailName.Name);
+                    tailName.Name = pcc.FindNameOrAdd(s);
+                    skl.TailNames[i] = tailName;
+                }
+                ME3LibWV.SerializingContainer container = new ME3LibWV.SerializingContainer(res);
+                container.isLoading = false;
+                skl.Serialize(container);
+            }
+            else
+            {
+                for (int i = end; i < idata.Length; i++)
+                    res.WriteByte(idata[i]);
+            }
             nex.DataLoaded = true;
             nex.Data = res.ToArray();
             nex.Datasize = nex.Data.Length;
@@ -1575,158 +1587,6 @@ namespace ME3Creator
             pcc.Header.ExportCount++;
             RefreshAll();
             MessageBox.Show("Done.");
-        }
-
-        public void ImportProperty(PCCPackage pcc, PCCPackage importpcc, PropertyReader.Property p, MemoryStream m)
-        {
-            string name = importpcc.GetName(p.Name);
-            int idxname = pcc.FindNameOrAdd(name);
-            m.Write(BitConverter.GetBytes(idxname), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            if (name == "None")
-                return;
-            string type = importpcc.GetName(BitConverter.ToInt32(p.raw, 8));
-            int idxtype = pcc.FindNameOrAdd(type);
-            m.Write(BitConverter.GetBytes(idxtype), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            string name2;
-            int idxname2;
-            int size, count, pos;
-            List<PropertyReader.Property> Props;
-            switch (type)
-            {
-                case "IntProperty":
-                case "FloatProperty":
-                case "ObjectProperty":
-                case "StringRefProperty":
-                    m.Write(BitConverter.GetBytes(4), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    break;
-                case "NameProperty":
-                    m.Write(BitConverter.GetBytes(8), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.GetName(p.Value.IntValue))), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    break;
-                case "BoolProperty":
-                    m.Write(new byte[8], 0, 8);
-                    m.WriteByte((byte)p.Value.IntValue);
-                    break;
-                case "ByteProperty": 
-                    name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    m.Write(BitConverter.GetBytes(8), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    break;
-                case "DelegateProperty":                    
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    if (size == 0xC)
-                    {
-                        name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 28));
-                        idxname2 = pcc.FindNameOrAdd(name2);
-                        m.Write(BitConverter.GetBytes(0xC), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    else
-                    {
-                        m.Write(BitConverter.GetBytes(size), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[24 + i]);
-                    }
-                    break;
-                case "StrProperty":
-                    name2 = p.Value.StringValue;
-                    m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
-                    foreach (char c in name2)
-                    {
-                        m.WriteByte((byte)c);
-                        m.WriteByte(0);
-                    }
-                    break;
-                case "StructProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    pos = 32;
-                    Props = new List<PropertyReader.Property>();
-                    try
-                    {
-                        Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    if (Props.Count == 0)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else if (Props[0].TypeVal == PropertyReader.Type.Unknown)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else
-                    {
-                        foreach (PropertyReader.Property pp in Props)
-                            ImportProperty(pcc, importpcc, pp, m);
-                    }
-                    break;
-                case "ArrayProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    count = BitConverter.ToInt32(p.raw, 24);
-                    pos = 28;
-                    List<PropertyReader.Property> AllProps = new List<PropertyReader.Property>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        Props = new List<PropertyReader.Property>();
-                        int test1 = BitConverter.ToInt32(p.raw, pos);
-                        int test2 = BitConverter.ToInt32(p.raw, pos + 4);
-                        if (!importpcc.isName(test1) || test2 != 0)
-                            break;
-                        if (size > 24 && importpcc.GetName(test1) != "None")
-                            if (BitConverter.ToInt32(p.raw, pos + 12) != 0)
-                                break;
-                        try
-                        {
-                            Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                        AllProps.AddRange(Props);
-                        if (Props.Count != 0)
-                        {
-                            pos = Props[Props.Count - 1].offend;
-                        }
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0)
-                        foreach (PropertyReader.Property pp in AllProps)
-                            ImportProperty(pcc, importpcc, pp, m);
-                    else
-                        m.Write(p.raw, 28, size - 4);
-                    break;
-                default:
-                    throw new Exception(type);
-            }
         }
 
         private void button5_Click(object sender, EventArgs e)

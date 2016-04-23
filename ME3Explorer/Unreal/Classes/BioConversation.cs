@@ -83,8 +83,6 @@ namespace ME3Explorer.Unreal.Classes
                                   + " " 
                                   + e.Index 
                                   + " " 
-                                  + pcc.getNameEntry(e.CategoryType)
-                                  + " " 
                                   + pcc.getNameEntry(e.CategoryValue));
                 }
                 res.Nodes.Add(t);

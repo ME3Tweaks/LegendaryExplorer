@@ -97,6 +97,12 @@
     <Compile Include="DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="HuffmanCompression.cs" />
     <Compile Include="Interpreter2\Interpreter2.cs">
       <SubType>Form</SubType>
@@ -107,7 +113,6 @@
     <Compile Include="Helper\Ini.cs" />
     <Compile Include="Helper\LZOHelper.cs" />
     <Compile Include="Helper\MiniLZO.cs" />
-    <Compile Include="Helper\Targa.cs" />
     <Compile Include="ITalkFile.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -136,12 +141,6 @@
     <Compile Include="SaveGameOperator\SaveGameOperator.Designer.cs">
       <DependentUpon>SaveGameOperator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selector.Designer.cs">
-      <DependentUpon>Selector.cs</DependentUpon>
-    </Compile>
     <Compile Include="Sequence Editor\SequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,16 +161,19 @@
     <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <EmbeddedResource Include="DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
@@ -198,9 +200,6 @@
     <EmbeddedResource Include="SaveGameOperator\SaveGameOperator.resx">
       <DependentUpon>SaveGameOperator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selector.resx">
-      <DependentUpon>Selector.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -220,17 +219,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
-      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
-      <Name>AmaroK86.ImageFormat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
-      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
-      <Name>AmaroK86.ImageMipMapHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
       <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
-      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+      <Name>AmaroK86Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
@@ -290,7 +281,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\exec\KismetFont.ttf" "$(ProjectDir)$(OutDir)\exec\"
+xcopy /f /y "$(SolutionDir)Resources\exec\ME1ObjectInfo.json" "$(ProjectDir)$(OutDir)\exec\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>

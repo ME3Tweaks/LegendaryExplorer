@@ -187,7 +187,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\Microsoft.Direct*.dll" "$(OutDir)*"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy /y "$(ProjectDir)$(OutDir)ME3Creator.exe.config" "$(SolutionDir)ME3Explorer\$(OutDir)"

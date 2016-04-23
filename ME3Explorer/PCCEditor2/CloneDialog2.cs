@@ -101,14 +101,14 @@ namespace ME3Explorer
             if (isExport)
             {
                 PCCObject.ExportEntry e = pcc.Exports[Index];
-                if (e.idxClassName == 0)
+                if (e.idxClass == 0)
                     listBox7.SelectedIndex = 0;
                 else
                 {
-                    if (e.idxClassName > 0)
-                        listBox3.SelectedIndex = e.idxClassName - 1;
+                    if (e.idxClass > 0)
+                        listBox3.SelectedIndex = e.idxClass - 1;
                     else
-                        listBox4.SelectedIndex = -e.idxClassName - 1;
+                        listBox4.SelectedIndex = -e.idxClass - 1;
                 }
                 if (e.idxLink == 0)
                     listBox8.SelectedIndex = 0;
@@ -307,13 +307,13 @@ namespace ME3Explorer
             Print("Writing Import Table...");
             foreach (PCCObject.ImportEntry i in pcc.Imports)
             {
-                fsout.Write(i.data, 0, i.data.Length);
-                pos += i.data.Length;
+                fsout.Write(i.header, 0, i.header.Length);
+                pos += i.header.Length;
             }
             if (!isExport)
             {
-                int len = pcc.Imports[Index].data.Length;
-                fsout.Write(pcc.Imports[Index].data, 0, len);
+                int len = pcc.Imports[Index].header.Length;
+                fsout.Write(pcc.Imports[Index].header, 0, len);
                 pos += len;
             }
             Print("Done. Pos = 0x" + pos.ToString("X8"));
@@ -322,14 +322,14 @@ namespace ME3Explorer
             int count = 0;
             foreach (PCCObject.ExportEntry ex in pcc.Exports)
             {
-                fsout.Write(ex.info, 0, ex.info.Length);
+                fsout.Write(ex.header, 0, ex.header.Length);
                 pcc.Exports[count++].offset = (uint)pos;
-                pos += ex.info.Length;
+                pos += ex.header.Length;
             }
             if (isExport)
             {
-                int len = pcc.Exports[Index].info.Length;
-                fsout.Write(pcc.Exports[Index].info, 0, len);
+                int len = pcc.Exports[Index].header.Length;
+                fsout.Write(pcc.Exports[Index].header, 0, len);
                 pos += len;
             }
             Print("Done. Pos = 0x" + pos.ToString("X8"));
@@ -376,7 +376,7 @@ namespace ME3Explorer
             if (isExport)
             {
                 Print("Fixing Clone...");
-                int clonestart = (int)pcc.Exports[pcc.Exports.Count - 1].offset + (int)pcc.Exports[pcc.Exports.Count - 1].info.Length;
+                int clonestart = (int)pcc.Exports[pcc.Exports.Count - 1].offset + (int)pcc.Exports[pcc.Exports.Count - 1].header.Length;
                 fsout.Seek(clonestart, 0);//Class
                 if (listBox3.SelectedIndex != -1)
                     fsout.Write(BitConverter.GetBytes(listBox3.SelectedIndex + 1), 0, 4);

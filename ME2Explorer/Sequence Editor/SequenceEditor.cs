@@ -35,8 +35,7 @@ namespace ME2Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
 
-            if(SText.fontcollection == null)
-                SText.fontcollection = LoadFont("KismetFont.ttf", 8);
+            SText.LoadFont();
             if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
@@ -207,7 +206,7 @@ namespace ME2Explorer
                 string ObjName = "";
                 while (idx > 0)
                 {
-                    if (pcc.Exports[pcc.Exports[idx].LinkID - 1].ClassName == "SequenceReference")
+                    if (pcc.Exports[pcc.Exports[idx].idxLink - 1].ClassName == "SequenceReference")
                     {
                         List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
                         for (int i = 0; i < p.Count(); i++)
@@ -217,7 +216,7 @@ namespace ME2Explorer
                                 goto LoopOver;
                             }
                     }
-                    idx = pcc.Exports[idx].LinkID - 1;
+                    idx = pcc.Exports[idx].idxLink - 1;
 
                 }
             LoopOver:

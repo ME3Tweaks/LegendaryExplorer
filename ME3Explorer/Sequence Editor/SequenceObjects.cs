@@ -1345,6 +1345,14 @@ namespace ME3Explorer.SequenceObjects
         {
             InLinks = new List<InputLink>();
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            if (pcc.Exports[index].ClassName == "SequenceReference")
+            {
+                PropertyReader.Property prop = PropertyReader.getPropOrNull(pcc, pcc.Exports[index], "oSequenceReference");
+                if (prop != null)
+                {
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[prop.Value.IntValue - 1]);
+                }
+            }
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "InputLinks")
@@ -1373,6 +1381,33 @@ namespace ME3Explorer.SequenceObjects
                     InLinks.Add(l);
                     for (int i = 0; i < p2.Count(); i++)
                         pos += p2[i].raw.Length;
+                }
+            }
+            else
+            {
+                try
+                {
+                    List<string> inputLinks = UnrealObjectInfo.getSequenceObjectInfo(pcc.Exports[index].ClassName)?.inputLinks;
+                    if (inputLinks != null)
+                    {
+                        for (int i = 0; i < inputLinks.Count; i++)
+                        {
+                            InputLink l = new InputLink();
+                            l.Desc = inputLinks[i];
+                            l.hasName = true;
+                            l.index = i;
+                            l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                            l.node.Brush = outputBrush;
+                            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
+                            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                            l.node.AddInputEventListener(new InputDragHandler());
+                            InLinks.Add(l);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    InLinks.Clear();
                 }
             }
             if(this.Tag != null)
@@ -1490,13 +1525,14 @@ namespace ME3Explorer.SequenceObjects
     {
         private Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        public static PrivateFontCollection fontcollection { get; set; }
+        private static PrivateFontCollection fontcollection;
+        private static Font kismetFont;
 
         public SText(string s, bool shadows = true)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = kismetFont;
 
             shadowRendering = shadows;
         }
@@ -1505,24 +1541,23 @@ namespace ME3Explorer.SequenceObjects
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
-            base.Font = new Font (fontcollection.Families[0], 6);
+            base.Font = kismetFont;
             shadowRendering = shadows;
         }
 
-        public static void LoadFont(string file)
+        public static void LoadFont()
         {
-            if(fontcollection == null)
-                fontcollection = new PrivateFontCollection();
-            fontcollection.AddFontFile(file);
-            if (fontcollection.Families.Length < 0)
+            if(fontcollection == null || fontcollection.Families.Length < 1)
             {
-                throw new InvalidOperationException("No font familiy found when loading font");
+                fontcollection = new PrivateFontCollection();
+                fontcollection.AddFontFile(@"exec\KismetFont.ttf");
+                kismetFont = new Font(fontcollection.Families[0], 6);
             }
         }
 
         protected override void Paint(PPaintContext paintContext)
         {
-            paintContext.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
+            paintContext.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
             if (shadowRendering && base.Text != null && base.TextBrush != null && base.Font != null)
             {
                 Graphics g = paintContext.Graphics;

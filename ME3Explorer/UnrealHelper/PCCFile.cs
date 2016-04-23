@@ -290,9 +290,6 @@ namespace ME3Explorer.UnrealHelper
             t[Header.ExportCount - 1] = ex;
             Export = t;
             memory = m.ToArray();
-            TOCeditor tc = new TOCeditor();
-            if (!tc.UpdateFile(loadedFilename, (uint)memsize))
-                MessageBox.Show("Didn't found Entry");
         }
         public void RedirectEntry(int entry, int offset, int size)
         {

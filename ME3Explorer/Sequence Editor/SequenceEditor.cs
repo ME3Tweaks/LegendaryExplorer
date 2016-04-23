@@ -42,8 +42,7 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             zoomController = new ZoomController(graphEditor);
             
-            if(SText.fontcollection == null)
-                SText.LoadFont("KismetFont.ttf");
+            SText.LoadFont();
             if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
             {
                 Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
@@ -89,20 +88,26 @@ namespace ME3Explorer
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try {
-                    pcc = new PCCObject(d.FileName);
-                    CurrentFile = d.FileName;
-                    toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
-                    LoadSequences();
-                    graphEditor.nodeLayer.RemoveAllChildren();
-                    graphEditor.edgeLayer.RemoveAllChildren();
-                    if(CurrentObjects != null)
-                        CurrentObjects.Clear();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        private void LoadFile(string fileName)
+        {
+            try
+            {
+                pcc = new PCCObject(fileName);
+                CurrentFile = fileName;
+                toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
+                LoadSequences();
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                if (CurrentObjects != null)
+                    CurrentObjects.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
@@ -180,6 +185,8 @@ namespace ME3Explorer
 
         private void LoadSequence(int index, bool fromFile = true)
         {
+            graphEditor.Enabled = false;
+            graphEditor.UseWaitCursor = true;
             SequenceIndex = index;
             toolStripStatusLabel2.Text = "\t#" + SequenceIndex + pcc.Exports[index].ObjectName;
             GetProperties(SequenceIndex);
@@ -191,6 +198,8 @@ namespace ME3Explorer
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             GenerateGraph(SequenceIndex);
             selectedIndex = -1;
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
         }
 
         private void SetupJSON(int index)
@@ -301,6 +310,8 @@ namespace ME3Explorer
             }
             catch (Exception)
             {
+                foreach (PPath edge in graphEditor.edgeLayer)
+                    GraphEditor.UpdateEdge(edge);
                 return false;
             }
             return true;
@@ -505,7 +516,9 @@ namespace ME3Explorer
                     ToolStripMenuItem temp;
                     ArrayList array;
                     ToolStripDropDown submenu = new ToolStripDropDown();
-                    for(int i = 0; i < ((SBox)sender).Varlinks.Count; i++)
+                    ToolStripDropDown varLinkMenu = new ToolStripDropDown();
+                    ToolStripDropDown outLinkMenu = new ToolStripDropDown();
+                    for (int i = 0; i < ((SBox)sender).Varlinks.Count; i++)
                     {
                         for (int j = 0; j < ((SBox)sender).Varlinks[i].Links.Count; j++)
                         {
@@ -519,7 +532,7 @@ namespace ME3Explorer
                                 array.Add(i);
                                 array.Add(j);
                                 temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                varLinkMenu.Items.Add(temp);
                             }
                         }
                     }
@@ -537,11 +550,23 @@ namespace ME3Explorer
                                 array.Add(i);
                                 array.Add(j);
                                 temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                outLinkMenu.Items.Add(temp);
                             }
                         }
                     }
-                    if(submenu.Items.Count > 0)
+                    if(varLinkMenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Variable Links");
+                        temp.DropDown = varLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (outLinkMenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Output Links");
+                        temp.DropDown = outLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (submenu.Items.Count > 0)
                     {
                         breakLinksToolStripMenuItem.Enabled = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
@@ -610,20 +635,10 @@ namespace ME3Explorer
             PCCEditor2 p = new PCCEditor2();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
-            p.Show(); 
-            try
-            {
-
-                p.pcc = new PCCObject(CurrentFile);
-                p.SetView(2);
-                p.RefreshView();
-                p.InitStuff();
-                p.listBox1.SelectedIndex = l;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\n" + ex.Message);
-            }
+            p.Show();
+            taskbar.AddTool(p, Properties.Resources.pcceditor2_64x64);
+            p.LoadFile(CurrentFile);
+            p.listBox1.SelectedIndex = l;
         }
 
         private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -716,7 +731,7 @@ namespace ME3Explorer
 	        {
                 parentVal = parent.Value.GetType();
 	        }
-            if (name == "nameindex" || parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp))
+            if (name == "nameindex" || name == "index" || parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp))
             {
                 name = parent.Label;
             }
@@ -970,7 +985,8 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadPCC(CurrentFile);
-            if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
+            taskbar.AddTool(p, Properties.Resources.interp_viewer_icon_64x64);
+            if (pcc.Exports[Objects[listBox1.SelectedIndex].Index].ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
                 p.loadInterpData(n);
@@ -999,6 +1015,7 @@ namespace ME3Explorer
             TlkManager tm = new TlkManager();
             tm.InitTlkManager();
             tm.Show();
+            taskbar.AddTool(tm, Properties.Resources.TLKManager_icon_64x64);
         }
 
         private void graphEditor_MouseEnter(object sender, EventArgs e)
@@ -1006,6 +1023,22 @@ namespace ME3Explorer
             graphEditor.Focus();
         }
 
+        private void SequenceEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".pcc")).ToList();
+            if (DroppedFiles.Count > 0)
+            {
+                LoadFile(DroppedFiles[0]);
+            }
+        }
+
+        private void SequenceEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
     }
 
     public class ZoomController

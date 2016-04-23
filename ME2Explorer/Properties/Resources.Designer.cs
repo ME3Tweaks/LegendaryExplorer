@@ -61,12 +61,12 @@ namespace ME2Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Icon dlc_crackME2_icon {
+        internal static System.Drawing.Bitmap dialogue_editor_64x64 {
             get {
-                object obj = ResourceManager.GetObject("dlc_crackME2_icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                object obj = ResourceManager.GetObject("dialogue_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

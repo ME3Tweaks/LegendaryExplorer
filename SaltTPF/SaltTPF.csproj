@@ -72,13 +72,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
-      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
-      <Name>AmaroK86.ImageFormat</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
+      <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
+      <Name>AmaroK86Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

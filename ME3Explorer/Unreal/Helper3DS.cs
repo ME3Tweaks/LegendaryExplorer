@@ -13,11 +13,10 @@ namespace ME3Explorer.Unreal
 {
     public static class Helper3DS
     {
-        public static string loc;
 
         public static Lib3dsFile EmptyFile()
         {
-            return LIB3DS.lib3ds_file_open(loc + "\\exec\\cube.3ds");
+            return LIB3DS.lib3ds_file_open(Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\cube.3ds");
         }
 
         public static void ConvertPSKto3DS(PSKFile f, string path)

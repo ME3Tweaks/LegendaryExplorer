@@ -85,6 +85,24 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogEditor\AddReply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\AddReply.Designer.cs">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.Designer.cs">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helper\Ini.cs" />
     <Compile Include="Helper\SaltLZOHelper.cs" />
     <Compile Include="Interpreter2\Interpreter2.cs">
@@ -93,14 +111,7 @@
     <Compile Include="Interpreter2\Interpreter2.Designer.cs">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selector.Designer.cs">
-      <DependentUpon>Selector.cs</DependentUpon>
-    </Compile>
     <Compile Include="Helper\MiniLZO.cs" />
-    <Compile Include="Helper\Targa.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,7 +135,7 @@
     <Compile Include="Sequence Editor\SequenceObjects.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TalkFile.cs" />
+    <Compile Include="TlkManager\TalkFile.cs" />
     <Compile Include="taskbar.cs" />
     <Compile Include="TlkManager\TalkFiles.cs" />
     <Compile Include="TlkManager\TlkManager.cs">
@@ -133,14 +144,19 @@
     <Compile Include="TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <None Include="Resources\dialogue_editor_64x64.png" />
     <None Include="Resources\TLKManager_icon_64x64.png" />
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -148,13 +164,14 @@
     <None Include="Resources\package_editor_64x64.png" />
     <None Include="Resources\sequence_editor_icon.ico" />
     <None Include="Resources\sequence_editor_64x64.png" />
-    <None Include="Resources\dlc_crackME2_icon.ico" />
-    <None Include="Resources\dlc_crackME2_64x64.png" />
+    <EmbeddedResource Include="DialogEditor\AddReply.resx">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Selector.resx">
-      <DependentUpon>Selector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
@@ -176,9 +193,6 @@
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <Content Include="KismetFont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -191,17 +205,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
-      <Project>{f1c6a2a0-5f1a-414a-be17-a2fda2a79e7f}</Project>
-      <Name>AmaroK86.ImageFormat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
-      <Project>{4740cdbd-dc9c-4964-bae0-8c401340ed95}</Project>
-      <Name>AmaroK86.ImageMipMapHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
       <Project>{9010228e-4393-47e2-9dee-fb5090a1d1ab}</Project>
-      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+      <Name>AmaroK86Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
@@ -238,7 +244,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\KismetFont.ttf" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\exec\KismetFont.ttf" "$(ProjectDir)$(OutDir)\exec\"
+xcopy /f /y "$(SolutionDir)Resources\exec\ME2ObjectInfo.json" "$(ProjectDir)$(OutDir)\exec\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)Libraries\lzo*.dll" "$(TargetDir)"</PreBuildEvent>

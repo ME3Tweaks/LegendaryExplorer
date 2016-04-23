@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Gibbed.MassEffect3.FileFormats;
-using NDesk.Options;
 using Newtonsoft.Json;
 using Gibbed.MassEffect3.FileFormats.Coalesced;
 

@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 using Gibbed.MassEffect3.FileFormats;
-using NDesk.Options;
 using Gibbed.MassEffect3.FileFormats.Coalesced;
 using ME3Explorer.Coalesced_Editor;
 

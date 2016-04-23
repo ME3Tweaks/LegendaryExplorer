@@ -55,7 +55,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>me3exp_favicon.ico</ApplicationIcon>
+    <ApplicationIcon>Icons\me3exp_favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -133,8 +133,11 @@
     <Compile Include="AboutME3Explorer.Designer.cs">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
     </Compile>
-    <Compile Include="AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    <Compile Include="Conditionals\CondEditor.Designer.cs">
+      <DependentUpon>CondEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
+      <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AFCExtract.cs">
       <SubType>Form</SubType>
@@ -151,10 +154,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AssetExplorer.cs">
+    <Compile Include="Asset Explorer\AssetExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AssetExplorer.Designer.cs">
+    <Compile Include="Asset Explorer\AssetExplorer.Designer.cs">
       <DependentUpon>AssetExplorer.cs</DependentUpon>
     </Compile>
     <Compile Include="AutoTOC\AutoTOC.cs">
@@ -239,6 +242,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogEditor\DialogVisObjects.cs" />
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="DLCEditor2\DLCEditor2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -262,12 +271,6 @@
     </Compile>
     <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
       <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HeaderEditor\HeaderEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HeaderEditor\HeaderEditor.Designer.cs">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="InitialDLCExtractor.xaml.cs">
       <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
@@ -324,6 +327,7 @@
     <Compile Include="PCCEditor2\DLCDialog.Designer.cs">
       <DependentUpon>DLCDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
@@ -432,12 +436,6 @@
     <Compile Include="Meshplorer\UDKCopy.Designer.cs">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </Compile>
-    <Compile Include="Patcher\Patcher.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Patcher\Patcher.Designer.cs">
-      <DependentUpon>Patcher.cs</DependentUpon>
-    </Compile>
     <Compile Include="PCCEditor2\CloneDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -511,38 +509,32 @@
       <DependentUpon>Soundplorer.cs</DependentUpon>
     </Compile>
     <Compile Include="taskbar.cs" />
-    <Compile Include="CondEditor.cs">
+    <Compile Include="Conditionals\CondEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Conditionals.cs">
+    <Compile Include="Conditionals\Conditionals.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Conditionals.Designer.cs">
+    <Compile Include="Conditionals\Conditionals.Designer.cs">
       <DependentUpon>Conditionals.cs</DependentUpon>
     </Compile>
-    <Compile Include="DebugTools.cs" />
+    <Compile Include="TlkEditor\TLKEditorDebugTools.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form2.cs">
+    <Compile Include="Decompressor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="Decompressor.Designer.cs">
+      <DependentUpon>Decompressor.cs</DependentUpon>
     </Compile>
-    <Compile Include="HowToUseWindow.xaml.cs">
-      <DependentUpon>HowToUseWindow.xaml</DependentUpon>
+    <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
+      <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HuffmanCompression.cs" />
-    <Compile Include="Language Editor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Language Editor.Designer.cs">
-      <DependentUpon>Language Editor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Language Selector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -555,32 +547,14 @@
     <Compile Include="DLCExplorer.Designer.cs">
       <DependentUpon>DLCExplorer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Leveleditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Leveleditor.Designer.cs">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Lvl_Transform.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Lvl_Transform.Designer.cs">
-      <DependentUpon>Lvl_Transform.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="TlkEditor\TlkEditor.xaml.cs">
+      <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="PCCEditor2\PCCEditor2.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PCCEditor2\PCCEditor2.Designer.cs">
       <DependentUpon>PCCEditor2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PCCEntryEdit.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PCCEntryEdit.Designer.cs">
-      <DependentUpon>PCCEntryEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="PCCRepack.cs">
       <SubType>Form</SubType>
@@ -590,10 +564,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyManager.cs">
+    <Compile Include="Property Manager\PropertyManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PropertyManager.Designer.cs">
+    <Compile Include="Property Manager\PropertyManager.Designer.cs">
       <DependentUpon>PropertyManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Sequence Editor\SequenceEditor.cs">
@@ -602,47 +576,15 @@
     <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="TalkFile.cs" />
-    <Compile Include="TargaImage.cs" />
-    <Compile Include="TexSelection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TexSelection.Designer.cs">
-      <DependentUpon>TexSelection.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextInput.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TextInput.Designer.cs">
       <DependentUpon>TextInput.cs</DependentUpon>
     </Compile>
-    <Compile Include="TextureExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TextureExplorer.Designer.cs">
-      <DependentUpon>TextureExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TOCeditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOCeditor.Designer.cs">
-      <DependentUpon>TOCeditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TOCUpdater\TOCUpdater.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOCUpdater\TOCUpdater.Designer.cs">
-      <DependentUpon>TOCUpdater.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tools\DLCHelper.cs" />
-    <Compile Include="Tools\INIManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tools\MD5Hash.cs" />
-    <Compile Include="Tools\PatcherTool.cs" />
-    <Compile Include="Tools\TOCbinUpdater.cs" />
-    <Compile Include="TreeViewSerializer.cs" />
+    <Compile Include="Property Manager\TreeViewSerializer.cs" />
     <Compile Include="UDKConverter\UDKConverter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -664,7 +606,6 @@
     </Compile>
     <Compile Include="UnrealHelper\AFCFile.cs" />
     <Compile Include="UnrealHelper\ImageFile.cs" />
-    <Compile Include="UnrealHelper\Languages.cs" />
     <Compile Include="UnrealHelper\UMaterial.cs" />
     <Compile Include="UnrealHelper\UMath.cs" />
     <Compile Include="UnrealHelper\PCCFile.cs" />
@@ -677,7 +618,7 @@
     <Compile Include="UnrealHelper\ULevel.cs" />
     <Compile Include="UnrealHelper\UnknownObject.cs" />
     <Compile Include="UnrealHelper\UnrealObject.cs" />
-    <Compile Include="UnrealHelper\UPropertyReader.cs" />
+    <Compile Include="Property Manager\UPropertyReader.cs" />
     <Compile Include="UnrealHelper\USkelMesh.cs" />
     <Compile Include="UnrealHelper\UStaticMesh.cs" />
     <Compile Include="UnrealHelper\UStaticMeshActor.cs" />
@@ -737,23 +678,11 @@
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
-    <Compile Include="VersionChecker\VersionChecker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VersionChecker\VersionChecker.Designer.cs">
-      <DependentUpon>VersionChecker.cs</DependentUpon>
-    </Compile>
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="XBoxConverter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="XBoxConverter.Designer.cs">
-      <DependentUpon>XBoxConverter.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="AboutME3Explorer.resx">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
@@ -765,7 +694,7 @@
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AssetExplorer.resx">
+    <EmbeddedResource Include="Asset Explorer\AssetExplorer.resx">
       <DependentUpon>AssetExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -799,10 +728,10 @@
     <EmbeddedResource Include="Codex Editor\CodexEditor.resx">
       <DependentUpon>CodexEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CondEditor.resx">
+    <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Conditionals.resx">
+    <EmbeddedResource Include="Conditionals\Conditionals.resx">
       <DependentUpon>Conditionals.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -811,6 +740,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DLCEditor2\DLCEditor2.resx">
       <DependentUpon>DLCEditor2.cs</DependentUpon>
@@ -828,14 +760,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <EmbeddedResource Include="Decompressor.resx">
+      <DependentUpon>Decompressor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
       <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HeaderEditor\HeaderEditor.resx">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
       <DependentUpon>InterpEditor.cs</DependentUpon>
@@ -852,18 +781,12 @@
     <EmbeddedResource Include="KFreonTPFTools3.resx">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Language Editor.resx">
-      <DependentUpon>Language Editor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Language Selector.resx">
       <DependentUpon>Language Selector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DLCExplorer.resx">
       <DependentUpon>DLCExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Leveleditor.resx">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
       <DependentUpon>Levelbase.cs</DependentUpon>
@@ -873,9 +796,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
       <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Lvl_Transform.resx">
-      <DependentUpon>Lvl_Transform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Material Viewer\MaterialViewer.resx">
       <DependentUpon>MaterialViewer.cs</DependentUpon>
@@ -904,9 +824,6 @@
     <EmbeddedResource Include="PAREditor\PAREditor.resx">
       <DependentUpon>PAREditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Patcher\Patcher.resx">
-      <DependentUpon>Patcher.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PCCEditor2\CloneDialog.resx">
       <DependentUpon>CloneDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -919,9 +836,6 @@
     <EmbeddedResource Include="PCCEditor2\PCCEditor2.resx">
       <DependentUpon>PCCEditor2.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PCCEntryEdit.resx">
-      <DependentUpon>PCCEntryEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
@@ -948,7 +862,7 @@
     <EmbeddedResource Include="Propertydb\PropertyDB.resx">
       <DependentUpon>PropertyDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PropertyManager.resx">
+    <EmbeddedResource Include="Property Manager\PropertyManager.resx">
       <DependentUpon>PropertyManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
@@ -984,23 +898,11 @@
     <EmbeddedResource Include="TexplorerFirstTimeSetup.resx">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TexSelection.resx">
-      <DependentUpon>TexSelection.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TextInput.resx">
       <DependentUpon>TextInput.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TextureExplorer.resx">
-      <DependentUpon>TextureExplorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TOCeditor.resx">
-      <DependentUpon>TOCeditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TOCUpdater\TOCUpdater.resx">
-      <DependentUpon>TOCUpdater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UDKConverter\UDKConverter.resx">
       <DependentUpon>UDKConverter.cs</DependentUpon>
@@ -1011,14 +913,8 @@
     <EmbeddedResource Include="UECodeEditor\UECodeEditor.resx">
       <DependentUpon>UECodeEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VersionChecker\VersionChecker.resx">
-      <DependentUpon>VersionChecker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XBoxConverter.resx">
-      <DependentUpon>XBoxConverter.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config">
       <SubType>Designer</SubType>
@@ -1046,8 +942,6 @@
     <None Include="Icons\me1exp_icon.png" />
     <None Include="Icons\me2exp_64x64.png" />
     <None Include="Icons\me2exp_icon.png" />
-    <None Include="Icons\me3exp_64x64.png" />
-    <None Include="Icons\me3exp_favicon.png" />
     <None Include="Icons\me3exp_newbanner.png" />
     <None Include="Icons\me3exp_smallbanner_v1.png" />
     <None Include="Icons\me3exp_smallbanner_v2.png" />
@@ -1055,41 +949,18 @@
     <None Include="Icons\plot_DB_64x64.png" />
     <None Include="Icons\SFARTOC_64x64.png" />
     <None Include="Icons\texplorer_64x64.png" />
-    <None Include="Icons\texturetool_64x64.png" />
-    <None Include="Icons\TOCbinUpdater_64x64.png" />
     <None Include="Icons\TPFTools_64x64.png" />
     <None Include="Icons\udk_explorer_64x64.png" />
-    <None Include="Icons\version_checker_64x64.png" />
-    <None Include="Icons\versioncheck.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Back.png" />
     <Content Include="Icons\interpreter_icon.ico" />
     <Content Include="Icons\interp_viewer_icon.ico" />
     <Content Include="Icons\TLKManager_icon.ico" />
-    <Content Include="KismetFont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageFormat\AmaroK86.ImageFormat\AmaroK86.ImageFormat.csproj">
-      <Project>{F1C6A2A0-5F1A-414A-BE17-A2FDA2A79E7F}</Project>
-      <Name>AmaroK86.ImageFormat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler\AmaroK86.ImageMipMapHandler.csproj">
-      <Project>{4740CDBD-DC9C-4964-BAE0-8C401340ED95}</Project>
-      <Name>AmaroK86.ImageMipMapHandler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase\AmaroK86.MassEffect3.DLCBase.csproj">
-      <Project>{3E5A67F3-CF3A-4CB2-A291-7882BEF2FE02}</Project>
-      <Name>AmaroK86.MassEffect3.DLCBase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor\AmaroK86.MassEffect3.DLCEditor.csproj">
-      <Project>{5FD88B3C-B192-42BE-8B05-9CAC3F7405FB}</Project>
-      <Name>AmaroK86.MassEffect3.DLCEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmaroK86\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock\AmaroK86.MassEffect3.ZlibBlock.csproj">
+    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
       <Project>{9010228E-4393-47E2-9DEE-FB5090A1D1AB}</Project>
-      <Name>AmaroK86.MassEffect3.ZlibBlock</Name>
+      <Name>AmaroK86Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
@@ -1135,10 +1006,6 @@
       <Project>{681DB2CE-E3EB-4110-AC50-F53EACA66E99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\NDesk.Options\NDesk.Options.csproj">
-      <Project>{C98A6CD6-9422-4B35-8B7A-F520D75534D1}</Project>
-      <Name>NDesk.Options</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
       <Project>{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}</Project>
       <Name>SevenZip</Name>
@@ -1149,30 +1016,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="back2.jpg" />
-    <Content Include="Gibbed.IO.csproj" />
-    <Content Include="Gibbed.MassEffect3.FileFormats.csproj" />
-    <Content Include="icon.ico" />
-    <Content Include="icon.png" />
+    <None Include="DLCTOCbinUpdater\back2.jpg" />
+    <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />
     <None Include="Resources\info.ico" />
     <None Include="Resources\help-browser.png" />
-    <None Include="Icons\coaledit.png" />
-    <None Include="Icons\lang.png" />
-    <None Include="Icons\Patcher.png" />
-    <None Include="Icons\tocbin.png" />
-    <None Include="Icons\propertydumper.png" />
-    <None Include="Icons\meshexplorer.png" />
-    <None Include="Icons\materialviewver.png" />
-    <None Include="Icons\PSAViewver.png" />
-    <None Include="Icons\PSKViewver.png" />
-    <None Include="Icons\soundexplorer.png" />
     <None Include="Icons\texplorer.ico" />
-    <Content Include="icon_cidatel.ico" />
     <None Include="Resources\Image1.bmp" />
-    <Content Include="me3exp.ico" />
-    <Content Include="me3exp_favicon.ico" />
+    <Content Include="Icons\me3exp_favicon.ico" />
     <None Include="Resources\camera_tool_64x64.png" />
     <None Include="Resources\codex_editor_64x64.png" />
     <None Include="Resources\coalesced_operator_64x64.png" />
@@ -1183,10 +1035,7 @@
     <None Include="Resources\wwisebank_editor_64x64.png" />
     <None Include="Resources\ue_codeeditor_64x64.png" />
     <None Include="Resources\udk_converter_64x64.png" />
-    <None Include="Resources\TOCbin_editor_64x64.png" />
-    <None Include="Resources\TOCbin_editorAK86_64x64.png" />
     <None Include="Resources\TLK_editor_64x64.png" />
-    <None Include="Resources\texturetool_64x64.png" />
     <None Include="Resources\subtitle_scanner_64x64.png" />
     <None Include="Resources\soundplorer_64x64.png" />
     <None Include="Resources\sequence_editor_64x64.png" />
@@ -1217,7 +1066,6 @@
     <None Include="Resources\GUIDcache_editor_64x64.png" />
     <None Include="Resources\fxa_editor_64x64.png" />
     <None Include="Resources\dlc_editor2_64x64.png" />
-    <None Include="Resources\dlc_crackME2_64x64.png" />
     <None Include="Resources\dlc_basiceditor_64x64.png" />
     <None Include="Resources\dialogue_editor_64x64.png" />
     <None Include="Resources\decompressor_64x64.png" />
@@ -1231,13 +1079,12 @@
     <None Include="Resources\sfar_editor2_icon_64x64.png" />
     <None Include="Resources\interpreter_icon_64x64.png" />
     <None Include="Resources\TLKManager_icon_64x64.png" />
-    <Content Include="SevenZip.csproj" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AboutWindow.xaml">
+    <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1249,7 +1096,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HowToUseWindow.xaml">
+    <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1257,7 +1104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1288,8 +1135,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.WinFx.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)VersionSwitcher\$(OutDir)VersionSwitcher.exe" "$(TargetDir)*"
-xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
 call "$(DevEnvDir)..\Tools\vsvars32.bat"

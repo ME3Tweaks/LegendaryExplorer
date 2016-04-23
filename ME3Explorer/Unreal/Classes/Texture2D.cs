@@ -10,7 +10,6 @@ using ME3Explorer.Unreal;
 using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
-using Ini;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.Unreal.Classes
@@ -450,26 +449,7 @@ namespace ME3Explorer.Unreal.Classes
 
                 File.Delete(newImageFile.fileName);
             }
-
-            // add texturegroup_world inside GamerSettings.ini in order to overwrite values
-            ImageSize maxSize = imgList.Max(image => image.imgSize);
-            uint maxValue = Math.Max(maxSize.width, maxSize.height);
-            string section = "SystemSettings";
-            string key = "texturegroup_shadowmap";
-            string newValue = "(MinLODSize=128,MaxLODSize=" + maxValue + ",LODBias=0)";
-            IniFile iniFile = new IniFile(ME3Directory.GamerSettingsIniFile);
-            string oldValue = iniFile.IniReadValue(section, key);
-            if (oldValue == "")
-            {
-                iniFile.IniWriteValue(section, key, newValue);
-            }
-            else
-            {
-                char[] delimiters = new char[] { '=', ',' };
-                uint maxLODSize = Convert.ToUInt32(oldValue.Split(delimiters)[3]);
-                if(maxValue > maxLODSize)
-                    iniFile.IniWriteValue(section, key, newValue);
-            }
+            
             
             // check that Texture2D has a TextureGroup
             if (!properties.ContainsKey("LODGroup"))

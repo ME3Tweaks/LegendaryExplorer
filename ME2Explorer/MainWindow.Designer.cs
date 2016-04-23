@@ -33,12 +33,13 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.dialogueEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,11 +57,20 @@
             // developerToolsToolStripMenuItem
             // 
             this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pCCEditorToolStripMenuItem,
             this.sequenceEditorToolStripMenuItem,
-            this.pCCEditorToolStripMenuItem});
+            this.dialogueEditorToolStripMenuItem});
             this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
             this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
             this.developerToolsToolStripMenuItem.Text = "Developer Tools";
+            // 
+            // pCCEditorToolStripMenuItem
+            // 
+            this.pCCEditorToolStripMenuItem.Image = global::ME2Explorer.Properties.Resources.package_editor_64x64;
+            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
+            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.pCCEditorToolStripMenuItem.Text = "PCC Editor";
+            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
             // 
             // sequenceEditorToolStripMenuItem
             // 
@@ -69,14 +79,6 @@
             this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
-            // 
-            // pCCEditorToolStripMenuItem
-            // 
-            this.pCCEditorToolStripMenuItem.Image = global::ME2Explorer.Properties.Resources.package_editor_64x64;
-            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
-            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.pCCEditorToolStripMenuItem.Text = "Package Editor";
-            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
             // 
             // optionToolStripMenuItem
             // 
@@ -109,6 +111,14 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // dialogueEditorToolStripMenuItem
+            // 
+            this.dialogueEditorToolStripMenuItem.Image = global::ME2Explorer.Properties.Resources.dialogue_editor_64x64;
+            this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.dialogueEditorToolStripMenuItem.Text = "Dialogue Editor";
+            this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,6 +148,7 @@
         private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
         public System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripMenuItem dialogueEditorToolStripMenuItem;
     }
 }
 

@@ -290,9 +290,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   <data name="HowTo22" xml:space="preserve">
     <value>'Current path to XML file' should point to the previously created XML file (modified or not). If it doesn't - use the 'Change' button below it to select your file.</value>
   </data>
-  <data name="TOCbin_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TOCbin_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="property_manager_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\property_manager_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -354,7 +351,7 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
     <value>..\Resources\coalesced_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="back2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\back2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\DLCTOCbinUpdater\back2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CurrentOutputTextFile" xml:space="preserve">
     <value>Current path to output text file:</value>
@@ -443,5 +440,8 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   </data>
   <data name="udk_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\udk_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TLKManager_icon_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TLKManager_icon_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

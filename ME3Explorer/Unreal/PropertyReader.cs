@@ -14,13 +14,13 @@ namespace ME3Explorer.Unreal
         private string _name;
         private int _nameindex;
         [DesignOnly(true)]
-        public string name
+        public string objectName
         {
             get { return _name; }
             set { _name = value; }
         }
 
-        public int nameindex
+        public int index
         {
             get { return _nameindex; }
             set { _nameindex = value; }
@@ -305,6 +305,19 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
+        public static Property getPropOrNull(PCCObject pcc, PCCObject.ExportEntry export, string propName)
+        {
+            List<Property> props = getPropList(pcc, export);
+            foreach (Property prop in props)
+            {
+                if (pcc.getNameEntry(prop.Name) == propName)
+                {
+                    return prop;
+                }
+            }
+            return null;
+        }
+
         public static List<Property> getPropList(PCCObject pcc, PCCObject.ExportEntry export)
         {
             Application.DoEvents();
@@ -326,7 +339,7 @@ namespace ME3Explorer.Unreal
                 case 8: return "Array Property";
                 case 9: return "String Property";
                 case 10: return "String Ref Property";
-                default: return "Unkown/None";
+                default: return "Unknown/None";
             }
         }
 
@@ -374,7 +387,8 @@ namespace ME3Explorer.Unreal
         {
             string cat = p.TypeVal.ToString();
             CustomProperty pg;
-            switch(p.TypeVal)
+            NameProp pp;
+            switch (p.TypeVal)
             {
                 case Type.BoolProperty :
                     pg = new CustomProperty(pcc.Names[p.Name], cat, (p.Value.IntValue == 1), typeof(bool), false, true);
@@ -385,16 +399,29 @@ namespace ME3Explorer.Unreal
                     pg = new CustomProperty(pcc.Names[p.Name], cat, f, typeof(float), false, true);
                     break;
                 case Type.ByteProperty:
+                    if (p.Size != 8)
+                    {
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, (byte)p.Value.IntValue, typeof(byte), false, true);
+                    }
+                    else
+                    {
+
+                        pp = new NameProp();
+                        pp.name = pcc.getNameEntry(p.Value.IntValue);
+                        pp.nameindex = p.Value.IntValue;
+                        pg = new CustomProperty(pcc.Names[p.Name], cat, pp, typeof(NameProp), false, true);
+                    }
+                    break;
                 case Type.NameProperty:
-                    NameProp pp = new NameProp();
+                    pp = new NameProp();
                     pp.name = pcc.getNameEntry(p.Value.IntValue);
                     pp.nameindex = p.Value.IntValue;
                     pg = new CustomProperty(pcc.Names[p.Name], cat, pp, typeof(NameProp), false, true);
                     break;
                 case Type.ObjectProperty:
                     ObjectProp ppo = new ObjectProp();
-                    ppo.name = pcc.getObjectName(p.Value.IntValue);
-                    ppo.nameindex = p.Value.IntValue;
+                    ppo.objectName = pcc.getObjectName(p.Value.IntValue);
+                    ppo.index = p.Value.IntValue;
                     pg = new CustomProperty(pcc.Names[p.Name], cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StrProperty:
@@ -602,7 +629,14 @@ namespace ME3Explorer.Unreal
                     v.StringValue = pcc.getNameEntry(sname);
                     v.len = size;
                     pos += 32;
-                    v.IntValue = (int)BitConverter.ToInt64(raw, pos);
+                    if (size == 8)
+                    {
+                        v.IntValue = BitConverter.ToInt32(raw, pos);
+                    }
+                    else
+                    {
+                        v.IntValue = raw[pos];
+                    }
                     pos += size;
                     p.Value = v;
                     break;                     
@@ -616,6 +650,7 @@ namespace ME3Explorer.Unreal
                     pos += p.Value.len + 24;
                     break;
             }
+            p.Size = size;
             p.raw = new byte[pos - start];
             p.offend = pos;
             if(pos < raw.Length)
@@ -693,6 +728,173 @@ namespace ME3Explorer.Unreal
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;    
             return result;
+        }
+
+        public static void ImportProperty(PCCObject pcc, PCCObject importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
+        {
+            string name = importpcc.getNameEntry(p.Name);
+            int idxname = pcc.FindNameOrAdd(name);
+            m.Write(BitConverter.GetBytes(idxname), 0, 4);
+            m.Write(new byte[4], 0, 4);
+            if (name == "None")
+                return;
+            string type = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 8));
+            int idxtype = pcc.FindNameOrAdd(type);
+            m.Write(BitConverter.GetBytes(idxtype), 0, 4);
+            m.Write(new byte[4], 0, 4);
+            string name2;
+            int idxname2;
+            int size, count, pos;
+            List<Property> Props;
+            switch (type)
+            {
+                case "IntProperty":
+                case "FloatProperty":
+                case "ObjectProperty":
+                case "StringRefProperty":
+                    m.Write(BitConverter.GetBytes(4), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
+                    break;
+                case "NameProperty":
+                    m.Write(BitConverter.GetBytes(8), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.getNameEntry(p.Value.IntValue))), 0, 4);
+                    //preserve index or whatever the second part of a namereference is
+                    m.Write(p.raw, 28, 4);
+                    break;
+                case "BoolProperty":
+                    m.Write(new byte[8], 0, 8);
+                    m.WriteByte((byte)p.Value.IntValue);
+                    break;
+                case "ByteProperty":
+                    name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
+                    idxname2 = pcc.FindNameOrAdd(name2);
+                    m.Write(BitConverter.GetBytes(p.Size), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    if (p.Size == 8)
+                    {
+                        m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
+                        m.Write(new byte[4], 0, 4);
+                    }
+                    else
+                    {
+                        m.WriteByte(p.raw[32]);
+                    }
+                    break;
+                case "DelegateProperty":
+                    size = BitConverter.ToInt32(p.raw, 16);
+                    if (size == 0xC)
+                    {
+                        name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 28));
+                        idxname2 = pcc.FindNameOrAdd(name2);
+                        m.Write(BitConverter.GetBytes(0xC), 0, 4);
+                        m.Write(new byte[4], 0, 4);
+                        m.Write(new byte[4], 0, 4);
+                        m.Write(BitConverter.GetBytes(idxname2), 0, 4);
+                        m.Write(new byte[4], 0, 4);
+                    }
+                    else
+                    {
+                        m.Write(BitConverter.GetBytes(size), 0, 4);
+                        m.Write(new byte[4], 0, 4);
+                        for (int i = 0; i < size; i++)
+                            m.WriteByte(p.raw[24 + i]);
+                    }
+                    break;
+                case "StrProperty":
+                    name2 = p.Value.StringValue;
+                    m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
+                    foreach (char c in name2)
+                    {
+                        m.WriteByte((byte)c);
+                        m.WriteByte(0);
+                    }
+                    break;
+                case "StructProperty":
+                    size = BitConverter.ToInt32(p.raw, 16);
+                    name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
+                    idxname2 = pcc.FindNameOrAdd(name2);
+                    pos = 32;
+                    Props = new List<Property>();
+                    try
+                    {
+                        Props = ReadProp(importpcc, p.raw, pos);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    m.Write(BitConverter.GetBytes(size), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    if (Props.Count == 0 || Props[0].TypeVal == Type.Unknown)
+                    {
+                        for (int i = 0; i < size; i++)
+                            m.WriteByte(p.raw[32 + i]);
+                    }
+                    else
+                    {
+                        foreach (Property pp in Props)
+                            ImportProperty(pcc, importpcc, pp, className, m, inStruct);
+                    }
+                    break;
+                case "ArrayProperty":
+                    size = BitConverter.ToInt32(p.raw, 16);
+                    count = BitConverter.ToInt32(p.raw, 24);
+                    UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name), inStruct);
+                    pos = 28;
+                    List<Property> AllProps = new List<Property>();
+
+                    if (arrayType == UnrealObjectInfo.ArrayType.Struct)
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            Props = new List<Property>();
+                            try
+                            {
+                                Props = ReadProp(importpcc, p.raw, pos);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                            AllProps.AddRange(Props);
+                            if (Props.Count != 0)
+                            {
+                                pos = Props[Props.Count - 1].offend;
+                            }
+                        }
+                    }
+                    m.Write(BitConverter.GetBytes(size), 0, 4);
+                    m.Write(new byte[4], 0, 4);
+                    m.Write(BitConverter.GetBytes(count), 0, 4);
+                    if (AllProps.Count != 0)
+                    {
+                        foreach (Property pp in AllProps)
+                            ImportProperty(pcc, importpcc, pp, className, m, inStruct);
+                    }
+                    else if (arrayType == UnrealObjectInfo.ArrayType.Name)
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            string s = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 28 + i * 8));
+                            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(s)), 0, 4);
+                            //preserve index or whatever the second part of a namereference is
+                            m.Write(p.raw, 32 + i * 8, 4);
+                        }
+                    }
+                    else
+                    {
+                        m.Write(p.raw, 28, size - 4);
+                    }
+                    break;
+                default:
+                    throw new Exception(type);
+            }
         }
     }
 }

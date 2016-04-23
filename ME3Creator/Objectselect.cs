@@ -12,19 +12,13 @@ namespace ME3Creator
 {
     public partial class Objectselect : Form
     {
-        public bool Aborted = false;
-        public bool PressedOK = false;
-        public int Result;
-        public PCCPackage pcc;
-
         public Objectselect()
         {
             InitializeComponent();
         }
 
-        public void Init(PCCPackage p, int index = 0)
+        public void Init(PCCPackage pcc, int index)
         {
-            pcc = p;
             comboBox1.Items.Clear();
             comboBox2.Items.Clear();
             for (int i = 0; i < pcc.Header.ExportCount; i++)
@@ -48,31 +42,42 @@ namespace ME3Creator
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Aborted = true;
+            Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (r1.Checked)
-                Result = 0;
+            Close();
+        }
+
+        private int? returnValue()
+        {
+            int? result = 0;
+
             if (r2.Checked)
-                Result = comboBox1.SelectedIndex + 1;
-            if (r3.Checked)
-                Result = -comboBox2.SelectedIndex - 1;
-            PressedOK = true;
+                result = comboBox1.SelectedIndex + 1;
+            else if (r3.Checked)
+                result = -comboBox2.SelectedIndex - 1;
+
+            return result;
         }
 
-        private void Objectselect_Shown(object sender, EventArgs e)
+        private void comboBox1_Enter(object sender, EventArgs e)
         {
-            this.Activate();
-            this.WindowState = FormWindowState.Normal;
-            this.TopMost = true;
-            this.Focus();
+            r2.Checked = true;
         }
 
-        private void Objectselect_FormClosing(object sender, FormClosingEventArgs e)
+        private void comboBox2_Enter(object sender, EventArgs e)
         {
-            Aborted = true;
+            r3.Checked = true;
+        }
+        
+        public static int? GetValue(PCCPackage p, int index)
+        {
+            Objectselect prompt = new Objectselect();
+            prompt.Init(p, index);
+
+            return prompt.ShowDialog() == DialogResult.OK ? prompt.returnValue() : null;
         }
     }
 }

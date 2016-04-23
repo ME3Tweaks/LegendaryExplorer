@@ -38,6 +38,7 @@
             // 
             // button1
             // 
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button1.Location = new System.Drawing.Point(408, 84);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(81, 26);
@@ -48,11 +49,12 @@
             // 
             // button2
             // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button2.Location = new System.Drawing.Point(321, 84);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(81, 26);
             this.button2.TabIndex = 1;
-            this.button2.Text = "Abort";
+            this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -85,6 +87,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(330, 21);
             this.comboBox1.TabIndex = 4;
+            this.comboBox1.Enter += new System.EventHandler(this.comboBox1_Enter);
             // 
             // textBox1
             // 
@@ -92,11 +95,14 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(330, 20);
             this.textBox1.TabIndex = 5;
+            this.textBox1.Enter += new System.EventHandler(this.textBox1_Enter);
             // 
             // Nameselect
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button2;
             this.ClientSize = new System.Drawing.Size(501, 122);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.comboBox1);
@@ -109,8 +115,6 @@
             this.MinimizeBox = false;
             this.Name = "Nameselect";
             this.Text = "Name Selection";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Nameselect_FormClosing);
-            this.Shown += new System.EventHandler(this.Nameselect_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

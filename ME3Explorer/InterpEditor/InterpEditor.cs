@@ -18,8 +18,7 @@ namespace ME3Explorer.InterpEditor
 
         public InterpEditor()
         {
-            if (SText.fontcollection == null)
-                SText.LoadFont("KismetFont.ttf");
+            SText.LoadFont();
             InitializeComponent();
             timeline.Scrollbar = vScrollBar1;
             timeline.GroupList.ScrollbarH = hScrollBar1;

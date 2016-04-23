@@ -24,14 +24,15 @@ namespace ME1Explorer
         }
         public class ExportEntry
         {
-            internal byte[] info; //Properties, not raw data
-            public int ClassNameID { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); InfoChanged(); } }
-            public int LinkID { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); InfoChanged(); } }
+            internal byte[] header; //Properties, not raw data
+            public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); InfoChanged(); } }
+            public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
+            public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); InfoChanged(); } }
             public int PackageNameID;
-            public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); InfoChanged(); } }
-            public int indexValue { get { return BitConverter.ToInt32(info, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); InfoChanged(); } }
-            public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); InfoChanged(); } }
-            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); InfoChanged(); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); InfoChanged(); } }
+            public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); InfoChanged(); } }
+            public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); InfoChanged(); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); InfoChanged(); } }
             public string ObjectName;
             public string PackageName 
             { 
@@ -47,15 +48,16 @@ namespace ME1Explorer
                         return temppack.Split('.')[0];
                 } 
             }
-            public string ArchtypeName { get { int val = idxArchtypeName; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].ObjectNameID]; else return "None"; } }
+            public string ArchtypeName { get { int val = idxArchtype; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "None"; } }
             public string PackageFullName;
+            public string ClassParent { get { int val = idxClassParent; if (val < 0) return pccRef.Names[BitConverter.ToInt32(pccRef.Imports[val * -1 - 1].raw, 20)]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
             public string ClassName;
             public byte[] flag
             {
                 get
                 {
                     byte[] val = new byte[4];
-                    Buffer.BlockCopy(info, 28, val, 0, 4);
+                    Buffer.BlockCopy(header, 28, val, 0, 4);
                     return val;
                 }
             }
@@ -64,7 +66,7 @@ namespace ME1Explorer
                 get
                 {
                     byte[] val = new byte[4];
-                    Buffer.BlockCopy(info, 28, val, 0, 4);
+                    Buffer.BlockCopy(header, 28, val, 0, 4);
                     return BitConverter.ToInt32(val, 0);
                 }
             }
@@ -82,8 +84,8 @@ namespace ME1Explorer
             }
 
             public PCCObject pccRef;
-            public int DataSize { get { return BitConverter.ToInt32(info, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
-            public int DataOffset { get { return BitConverter.ToInt32(info, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }
+            public int DataSize { get { return BitConverter.ToInt32(header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+            public int DataOffset { get { return BitConverter.ToInt32(header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
             public byte[] Data
             {
                 get { byte[] val = new byte[DataSize]; pccRef.listsStream.Seek(DataOffset, SeekOrigin.Begin); val = pccRef.listsStream.ReadBytes(DataSize); return val; }
@@ -106,7 +108,7 @@ namespace ME1Explorer
                     {
                         DataSize = value.Length;
                         pccRef.listsStream.Seek(infoOffset, SeekOrigin.Begin);
-                        pccRef.listsStream.WriteBytes(info);
+                        pccRef.listsStream.WriteBytes(header);
                     }
                 }
             }
@@ -129,7 +131,7 @@ namespace ME1Explorer
             private void InfoChanged()
             {
                 pccRef.listsStream.Seek(infoOffset, SeekOrigin.Begin);
-                pccRef.listsStream.WriteBytes(info);
+                pccRef.listsStream.WriteBytes(header);
             }
         }
         public struct ImportEntry
@@ -266,18 +268,18 @@ namespace ME1Explorer
             for (int i = 0; i < ExportCount; i++)
             {
                 Exports[i].hasChanged = false;
-                Exports[i].ObjectName = Names[Exports[i].ObjectNameID];
+                Exports[i].ObjectName = Names[Exports[i].idxObjectName];
             }
             for (int i = 0; i < ExportCount; i++)
             {
-                Exports[i].PackageFullName = FollowLink(Exports[i].LinkID);
+                Exports[i].PackageFullName = FollowLink(Exports[i].idxLink);
                 if (String.IsNullOrEmpty(Exports[i].PackageFullName))
                     Exports[i].PackageFullName = "Base Package";
                 else if (Exports[i].PackageFullName[Exports[i].PackageFullName.Length - 1] == '.')
                     Exports[i].PackageFullName = Exports[i].PackageFullName.Remove(Exports[i].PackageFullName.Length - 1);
             }
             for (int i = 0; i < ExportCount; i++)
-                Exports[i].ClassName = GetClass(Exports[i].ClassNameID);
+                Exports[i].ClassName = GetClass(Exports[i].idxClass);
         }
 
         public void SaveToFile(string path)
@@ -355,7 +357,7 @@ namespace ME1Explorer
                 fs.Seek(16, SeekOrigin.Current);
                 long end = fs.Position;
                 fs.Seek(start, SeekOrigin.Begin);
-                exp.info = fs.ReadBytes((int)(end - start));
+                exp.header = fs.ReadBytes((int)(end - start));
                 Exports.Add(exp);
                 fs.Seek(end, SeekOrigin.Begin);
 
@@ -394,7 +396,7 @@ namespace ME1Explorer
             if (Link > 0 && isExport(Link - 1))
             {
                 s = Exports[Link - 1].ObjectName + ".";
-                s = FollowLink(Exports[Link - 1].LinkID) + s;
+                s = FollowLink(Exports[Link - 1].idxLink) + s;
             }
             if (Link < 0 && isImport(Link * -1 - 1))
             {
@@ -417,7 +419,25 @@ namespace ME1Explorer
             return GetClass(p);
         }
 
-        internal int AddName(string newName)
+        public string getClassName(int index)
+        {
+            string s = "";
+            if (index > 0)
+            {
+                s = Names[Exports[index - 1].idxObjectName];
+            }
+            if (index < 0)
+            {
+                s = Names[Imports[index * -1 - 1].idxObjectName];
+            }
+            if (index == 0)
+            {
+                s = "Class";
+            }
+            return s;
+        }
+
+        internal int FindNameOrAdd(string newName)
         {
             int nameID = 0;
             //First check if name already exists

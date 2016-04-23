@@ -32,6 +32,7 @@ namespace ME3Explorer
             InitializeComponent();
             disableDLCCheckOnStartupToolStripMenuItem.Checked = Properties.Settings.Default.DisableDLCCheckOnStart;
             TalkFiles.LoadSavedTlkList();
+            Unreal.UnrealObjectInfo.loadfromJSON();
         }
 
         private async void DoDLCCheck()
@@ -45,12 +46,9 @@ namespace ME3Explorer
                 IsDLCDone = true;
         }
 
-        Languages lang;
-
         private void decompressorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 decomp = new Form2();
-            lang.SetLang(decomp);
+            Decompressor decomp = new Decompressor();
             decomp.MdiParent = this;
             decomp.WindowState = FormWindowState.Maximized;
             decomp.Show();
@@ -62,7 +60,6 @@ namespace ME3Explorer
         {
             Conditionals con = new Conditionals();
             con.MdiParent = this;
-            lang.SetLang(con);
             con.WindowState = FormWindowState.Maximized;
             con.Show();
             taskbar.AddTool(con, Properties.Resources.conditionals_editor_64x64);
@@ -71,7 +68,6 @@ namespace ME3Explorer
         private void dLCEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DLCExplorer expl = new DLCExplorer();
-            lang.SetLang(expl);
             expl.MdiParent = this;
             expl.WindowState = FormWindowState.Maximized;
             expl.Show();
@@ -88,7 +84,6 @@ namespace ME3Explorer
         private void aFCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AFCExtract af = new AFCExtract();
-            lang.SetLang(af);
             OpenMaximized(af);
             taskbar.AddTool(af, Properties.Resources.audio_extract_64x64);
         }
@@ -96,7 +91,6 @@ namespace ME3Explorer
         private void moviestfcBikToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BIKExtract bik = new BIKExtract();
-            lang.SetLang(bik);
             OpenMaximized(bik);
             taskbar.AddTool(bik, Properties.Resources.BIK_movie_64x64);
         }
@@ -105,8 +99,6 @@ namespace ME3Explorer
         {
             taskbar.strip = toolStrip1; //this be a toolstrip reference to class taskbar            
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            lang = new Languages(loc + "\\exec\\languages.xml", 0);
-            lang.SetLang(this);
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
@@ -129,17 +121,6 @@ namespace ME3Explorer
                     //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.1+)
                     //saves a little duplicate code
                     dLCEditor2ToolStripMenuItem.PerformClick();
-                    return;
-                } else
-                if (args[1].Equals("-toceditorupdate"))
-                {
-                    //autostart the TOCEditor (used by FemShep's Mod Manager 3)
-                    TOCeditor tocedit = new TOCeditor();
-                    lang.SetLang(tocedit);
-                    tocedit.MdiParent = this;
-                    tocedit.WindowState = FormWindowState.Maximized;
-                    tocedit.Show();
-                    taskbar.AddTool(tocedit, Properties.Resources.TOCbin_editor_64x64);
                     return;
                 }
                 if (args[1].Equals("-autotoc"))
@@ -175,8 +156,6 @@ namespace ME3Explorer
                     commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
                     commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
                     commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
-                    commandLineHelp += " -toceditorupdate PCConsoleTOCFile.bin SearchTerm size\n";
-                    commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
                     System.Console.WriteLine(commandLineHelp);
                     Environment.Exit(0);
                     Application.Exit();
@@ -240,26 +219,6 @@ namespace ME3Explorer
             }
         }
 
-        private void xBoxConverterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            XBoxConverter x = new XBoxConverter();
-            lang.SetLang(x);
-            x.MdiParent = this;
-            x.WindowState = FormWindowState.Maximized;
-            x.Show();
-            taskbar.AddTool(x, imageList1.Images[16]);
-        }
-
-        private void selectToolLanguageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Language_Editor le = new Language_Editor();
-            lang.SetLang(le);
-            le.lang = lang;
-            le.MdiParent = this;
-            le.WindowState = FormWindowState.Maximized;
-            le.Show();
-        }
-
         private void pCCRepackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PCCRepack pccRepack = new PCCRepack();
@@ -285,6 +244,7 @@ namespace ME3Explorer
             pcc.WindowState = FormWindowState.Maximized;
             pcc.Show();
             taskbar.AddTool(pcc, Properties.Resources.pcceditor2_64x64);
+            pcc.LoadMostRecent();
         }
 
         private void assetExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -298,15 +258,8 @@ namespace ME3Explorer
         private void modMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ModMaker modmaker = new ModMaker();
-            //OpenMaximized(modmaker);
             modmaker.Show();
             taskbar.AddTool(modmaker, Properties.Resources.modmaker_64x64, true);
-        }
-
-        private void textureExplorerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Disabled due to broken functionality, will be fixed or removed in a future release.");
-            //OpenMaximized(new TextureExplorer());
         }
 
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -340,11 +293,6 @@ namespace ME3Explorer
             }
         }
 
-        private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new Meshplorer.Meshplorer());
-        }
-
         private void coalescedOperatorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Coalesced_Operator.Operator newop = new Coalesced_Operator.Operator();
@@ -357,26 +305,6 @@ namespace ME3Explorer
 
         }
 
-        private void patcherToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new Patcher.Patcher());
-        }
-
-        private void materialViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new Material_Viewer.MaterialViewer());
-        }
-
-        private void versionCheckerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new VersionChecker.VersionChecker());
-        }
-
-        private void pSKViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new PSKViewer.PSKViewer());
-        }
-
         private void soundplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tool = new Soundplorer();
@@ -384,18 +312,10 @@ namespace ME3Explorer
             taskbar.AddTool(tool, Properties.Resources.soundplorer_64x64);
         }
 
-        private void pSAViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMaximized(new PSAViewer());
-        }
-
         private void switchToUDKExplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             UDKExplorer.UDKExplorer ex = new UDKExplorer.UDKExplorer();
             ex.Show();
-            //var tool = ex;
-            //OpenMaximized(tool);
-            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void mE2ExplorerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -433,15 +353,11 @@ namespace ME3Explorer
         {
             LevelExplorer.ME3LevelExplorer l = new LevelExplorer.ME3LevelExplorer();
             l.Show();
-            //var tool = l;
-            //OpenMaximized(tool);
-            //taskbar.AddTool(tool, Properties.Resources.placeholder_64x64);
         }
 
         private void propertyManagerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             PropertyManager m = new PropertyManager();
-            lang.SetLang(m);
             m.MdiParent = this;
             m.WindowState = FormWindowState.Maximized;
             m.Show();
@@ -562,13 +478,6 @@ namespace ME3Explorer
             var tool = new Meshplorer.Meshplorer();
             OpenMaximized(tool);
             taskbar.AddTool(tool, Properties.Resources.meshplorer_64x64);
-        }
-
-        private void materialViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            var tool = new Material_Viewer.MaterialViewer();
-            OpenMaximized(tool);
-            taskbar.AddTool(tool, Properties.Resources.material_viewer_64x64);
         }
 
         private void pSAViewerToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -737,15 +646,9 @@ namespace ME3Explorer
             }
         }
 
-        private void extraToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void texplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Texplorer2 texplorer = new Texplorer2();
-            //OpenMaximized(texplorer);
             texplorer.Show();
             taskbar.AddTool(texplorer, Properties.Resources.texplorer_64x64, true);
         }
@@ -753,7 +656,6 @@ namespace ME3Explorer
         private void tPFDDSToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             KFreonTPFTools3 tpftools = new KFreonTPFTools3();
-            //OpenMaximized(tpftools);
             tpftools.Show();
             taskbar.AddTool(tpftools, Properties.Resources.TPFTools_64x64, true);
         }
@@ -765,7 +667,7 @@ namespace ME3Explorer
             taskbar.AddTool(cam, Properties.Resources.camera_tool_64x64);
         }
 
-        private void dDSConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        private void imageEngineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var conv = new CSharpImageLibrary.MainWindow();
             ElementHost.EnableModelessKeyboardInterop(conv);
@@ -783,19 +685,6 @@ namespace ME3Explorer
             Process.Start("http://me3explorer.freeforums.org/");
         }
 
-        private void versionSwitcherToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + "\\VersionSwitcher.exe"))
-            {
-                RunShell(loc + "\\VersionSwitcher.exe", "");
-            }
-            else
-            {
-                MessageBox.Show("Couldn't find VersionSwitcher.exe.");
-            }
-        }
-
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutME3Explorer().Show(this);
@@ -803,7 +692,7 @@ namespace ME3Explorer
 
         private void tLKEditorToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            var tool = new MainWindow();
+            var tool = new TLKEditor();
             tool.Show();
             taskbar.AddTool(null, Properties.Resources.TLK_editor_64x64, true, tool);
         }
@@ -854,7 +743,7 @@ namespace ME3Explorer
 
         private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://github.com/ME3Explorer/ME3Explorer/releases");
+            Process.Start("http://github.com/ME3Explorer/ME3Explorer");
         }
 
         private void nexusModsToolStripMenuItem_Click(object sender, EventArgs e)

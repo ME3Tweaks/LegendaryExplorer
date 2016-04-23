@@ -16,6 +16,7 @@ namespace ME2Explorer
             InitializeComponent();
             taskbar.Strip = toolStrip1;
             TalkFiles.LoadSavedTlkList();
+            Unreal.UnrealObjectInfo.loadfromJSON();
         }
         
         private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -51,6 +52,11 @@ namespace ME2Explorer
         private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             taskbar.AddTool(new SequenceEditor(), Properties.Resources.sequence_editor_64x64);
+        }
+
+        private void dialogueEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            taskbar.AddTool(new DialogEditor(), Properties.Resources.dialogue_editor_64x64);
         }
     }
 }

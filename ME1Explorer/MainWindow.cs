@@ -20,6 +20,7 @@ namespace ME1Explorer
         private void MainWindow_Load(object sender, EventArgs e)
         {
             taskbar.Strip = toolStrip1;
+            Unreal.UnrealObjectInfo.loadfromJSON();
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
