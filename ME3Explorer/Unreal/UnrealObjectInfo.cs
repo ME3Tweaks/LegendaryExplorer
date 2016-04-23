@@ -369,7 +369,8 @@ namespace ME3Explorer.Unreal
             {
                 List<string> values = new List<string>();
                 byte[] buff = pcc.Exports[index].Data;
-                int count = BitConverter.ToInt32(buff, 20);
+                //subtract 1 so that we don't get the MAX value, which is an implementation detail
+                int count = BitConverter.ToInt32(buff, 20) - 1;
                 for (int i = 0; i < count; i++)
                 {
                     values.Add(pcc.Names[BitConverter.ToInt32(buff, 24 + i * 8)]);
