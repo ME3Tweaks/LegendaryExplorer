@@ -315,16 +315,16 @@
     <Compile Include="PAREditor\PAREditor.Designer.cs">
       <DependentUpon>PAREditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCCEditor2\CloneDialog2.cs">
+    <Compile Include="PCCEditor\CloneDialog2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PCCEditor2\CloneDialog2.Designer.cs">
+    <Compile Include="PCCEditor\CloneDialog2.Designer.cs">
       <DependentUpon>CloneDialog2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCCEditor2\DLCDialog.cs">
+    <Compile Include="PCCEditor\DLCDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PCCEditor2\DLCDialog.Designer.cs">
+    <Compile Include="PCCEditor\DLCDialog.Designer.cs">
       <DependentUpon>DLCDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Unreal\UnrealObjectInfo.cs" />
@@ -436,10 +436,10 @@
     <Compile Include="Meshplorer\UDKCopy.Designer.cs">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCCEditor2\CloneDialog.cs">
+    <Compile Include="PCCEditor\CloneDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PCCEditor2\CloneDialog.Designer.cs">
+    <Compile Include="PCCEditor\CloneDialog.Designer.cs">
       <DependentUpon>CloneDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
@@ -550,11 +550,11 @@
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PCCEditor2\PCCEditor2.cs">
+    <Compile Include="PCCEditor\PCCEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PCCEditor2\PCCEditor2.Designer.cs">
-      <DependentUpon>PCCEditor2.cs</DependentUpon>
+    <Compile Include="PCCEditor\PCCEditor.Designer.cs">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="PCCRepack.cs">
       <SubType>Form</SubType>
@@ -824,17 +824,17 @@
     <EmbeddedResource Include="PAREditor\PAREditor.resx">
       <DependentUpon>PAREditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PCCEditor2\CloneDialog.resx">
+    <EmbeddedResource Include="PCCEditor\CloneDialog.resx">
       <DependentUpon>CloneDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PCCEditor2\CloneDialog2.resx">
+    <EmbeddedResource Include="PCCEditor\CloneDialog2.resx">
       <DependentUpon>CloneDialog2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PCCEditor2\DLCDialog.resx">
+    <EmbeddedResource Include="PCCEditor\DLCDialog.resx">
       <DependentUpon>DLCDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PCCEditor2\PCCEditor2.resx">
-      <DependentUpon>PCCEditor2.cs</DependentUpon>
+    <EmbeddedResource Include="PCCEditor\PCCEditor.resx">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack.resx">

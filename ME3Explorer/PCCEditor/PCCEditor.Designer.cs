@@ -1,6 +1,6 @@
 ﻿namespace ME3Explorer
 {
-    partial class PCCEditor2
+    partial class PCCEditor
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -28,7 +28,7 @@
         /// </summary>
         public void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCCEditor2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCCEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1083,7 +1083,7 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
-            // PCCEditor2
+            // PCCEditor
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1095,8 +1095,8 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "PCCEditor2";
-            this.Text = "PCC Editor 2.0";
+            this.Name = "PCCEditor";
+            this.Text = "PCC Editor";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCCEditor2_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PCCEditor2_DragEnter);
             this.menuStrip1.ResumeLayout(false);

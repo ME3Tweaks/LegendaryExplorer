@@ -691,7 +691,7 @@ namespace ME3Explorer.InterpEditor
         protected void openInPCCEd_Click(object sender, EventArgs e)
         {
 
-            PCCEditor2 p = new PCCEditor2();
+            PCCEditor p = new PCCEditor();
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();

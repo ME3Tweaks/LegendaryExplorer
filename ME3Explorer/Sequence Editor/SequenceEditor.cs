@@ -632,7 +632,7 @@ namespace ME3Explorer
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
-            PCCEditor2 p = new PCCEditor2();
+            PCCEditor p = new PCCEditor();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();

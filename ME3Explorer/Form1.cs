@@ -166,7 +166,7 @@ namespace ME3Explorer
                 switch (ending)
                 {
                     case ".pcc":
-                        PCCEditor2 editor = new PCCEditor2();
+                        PCCEditor editor = new PCCEditor();
                         editor.MdiParent = this;
                         editor.Show();
                         editor.WindowState = FormWindowState.Maximized;
@@ -237,9 +237,9 @@ namespace ME3Explorer
             taskbar.AddTool(sc, Properties.Resources.script_compiler_64x64);
         }
 
-        private void pCCEditor20ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void pCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PCCEditor2 pcc = new PCCEditor2();
+            PCCEditor pcc = new PCCEditor();
             pcc.MdiParent = this;
             pcc.WindowState = FormWindowState.Maximized;
             pcc.Show();
