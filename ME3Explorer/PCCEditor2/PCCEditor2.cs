@@ -1479,15 +1479,7 @@ namespace ME3Explorer
             RefreshView();
             goToNumber(n);
         }
-
-        private void headerEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            HeaderEditor.HeaderEditor h = new HeaderEditor.HeaderEditor();
-            h.MdiParent = this.MdiParent;
-            h.Show();
-            h.WindowState = FormWindowState.Maximized;
-        }
-
+        
         private void exportFaceFXToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             int n;

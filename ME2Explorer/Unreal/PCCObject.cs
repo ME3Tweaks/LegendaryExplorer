@@ -23,28 +23,69 @@ namespace ME2Explorer
             public int Unk;
             public int flags;
         }
-        public class ExportEntry
+
+        public interface IEntry
         {
-            internal byte[] info; //Properties, not raw data
-            public int idxClassName { get { return BitConverter.ToInt32(info, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 0, sizeof(int)); } }
-            public int idxClassParent { get { return BitConverter.ToInt32(info, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 4, sizeof(int)); } }
-            public int idxLink { get { return BitConverter.ToInt32(info, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 8, sizeof(int)); } }
-            public int idxObjectName { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); } }
-            public int indexValue { get { return BitConverter.ToInt32(info, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 16, sizeof(int)); } }
-            public int idxArchtypeName { get { return BitConverter.ToInt32(info, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 20, sizeof(int)); } }
-            public long ObjectFlags { get { return BitConverter.ToInt64(info, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 64, sizeof(long)); } }
-            public int PackageNameID;
-            public int ObjectNameID { get { return BitConverter.ToInt32(info, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 12, sizeof(int)); } }
-            public string ObjectName;
-            public string PackageFullName;
-            public string ClassParent { get { int val = idxClassParent; if (val < 0) return pccRef.Names[BitConverter.ToInt32(pccRef.Imports[val * -1 - 1].raw, 20)]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
-            public string ClassName;
+            string ClassName { get; }
+            string GetFullPath { get; }
+            int idxLink { get; }
+            int idxObjectName { get; }
+            string ObjectName { get; }
+            string PackageFullName { get; }
+            string PackageName { get; }
+        }
+
+        public class ExportEntry : IEntry
+        {
+            internal byte[] header; //Properties, not raw data
+            public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
+            public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
+            public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
+            public int indexValue { get { return BitConverter.ToInt32(header, 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
+            public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); } }
+
+            public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
+            public string ClassParent { get { int val = idxClassParent; if (val < 0) return pccRef.Names[BitConverter.ToInt32(pccRef.Imports[val * -1 - 1].header, 20)]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
+            public string ClassName { get { int val = idxClass; if (val < 0) return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Class"; } }
+            public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
+            public string PackageName
+            {
+                get
+                {
+                    int val = idxLink;
+                    if (val != 0)
+                    {
+                        IEntry entry = pccRef.getEntry(val);
+                        return pccRef.Names[entry.idxObjectName];
+                    }
+                    else return "Package";
+                }
+            }
+            public string PackageFullName
+            {
+                get
+                {
+                    string result = PackageName;
+                    int idxNewPackName = idxLink;
+
+                    while (idxNewPackName != 0)
+                    {
+                        string newPackageName = pccRef.getEntry(idxNewPackName).PackageName;
+                        if (newPackageName != "Package")
+                            result = newPackageName + "." + result;
+                        idxNewPackName = pccRef.getEntry(idxNewPackName).idxLink;
+                    }
+                    return result;
+                }
+            }
             public byte[] flag
             {
                 get
                 {
                     byte[] val = new byte[4];
-                    Buffer.BlockCopy(info, 28, val, 0, 4);
+                    Buffer.BlockCopy(header, 28, val, 0, 4);
                     return val;
                 }
             }
@@ -54,7 +95,7 @@ namespace ME2Explorer
                 get
                 {
                     byte[] val = new byte[4];
-                    Buffer.BlockCopy(info, 28, val, 0, 4);
+                    Buffer.BlockCopy(header, 28, val, 0, 4);
                     return BitConverter.ToInt32(val, 0);
                 }
             }
@@ -72,8 +113,8 @@ namespace ME2Explorer
             }
 
             public PCCObject pccRef;
-            public int DataSize { get { return BitConverter.ToInt32(info, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 32, sizeof(int)); } }
-            public int DataOffset { get { return BitConverter.ToInt32(info, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, info, 36, sizeof(int)); } }
+            public int DataSize { get { return BitConverter.ToInt32(header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+            public int DataOffset { get { return BitConverter.ToInt32(header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
             public byte[] Data
             {
                 get { byte[] val = new byte[DataSize]; pccRef.listsStream.Seek(DataOffset, SeekOrigin.Begin); val = pccRef.listsStream.ReadBytes(DataSize); return val; }
@@ -95,19 +136,72 @@ namespace ME2Explorer
                     {
                         DataSize = value.Length;
                         pccRef.listsStream.Seek(infoOffset, SeekOrigin.Begin);
-                        pccRef.listsStream.WriteBytes(info);
+                        pccRef.listsStream.WriteBytes(header);
                     }
                 }
             }
-            public bool hasChanged;
+            public bool hasChanged = false;
             public int infoOffset;
         }
-        public struct ImportEntry
+        public class ImportEntry : IEntry
         {
             public string Package;
             public int link;
             public string Name;
-            public byte[] raw;
+            public byte[] header;
+            public PCCObject pccRef;
+
+            public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } }
+            public int idxClassName { get { return BitConverter.ToInt32(header, 8); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } }
+            public int idxLink { get { return BitConverter.ToInt32(header, 16); } }
+            public int ObjectFlags { get { return BitConverter.ToInt32(header, 24); } }
+
+            public string ClassName { get { return pccRef.Names[idxClassName]; } }
+            public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }
+            public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
+            public string PackageName
+            {
+                get
+                {
+                    int val = idxLink;
+                    if (val != 0)
+                    {
+                        IEntry entry = pccRef.getEntry(val);
+                        return pccRef.Names[entry.idxObjectName];
+                    }
+                    else return "Package";
+                }
+            }
+            public string PackageFullName
+            {
+                get
+                {
+                    string result = PackageName;
+                    int idxNewPackName = idxLink;
+
+                    while (idxNewPackName != 0)
+                    {
+                        string newPackageName = pccRef.getEntry(idxNewPackName).PackageName;
+                        if (newPackageName != "Package")
+                            result = newPackageName + "." + result;
+                        idxNewPackName = pccRef.getEntry(idxNewPackName).idxLink;
+                    }
+                    return result;
+                }
+            }
+
+            public string GetFullPath
+            {
+                get
+                {
+                    string s = "";
+                    if (PackageFullName != "Class" && PackageFullName != "Package")
+                        s += PackageFullName + ".";
+                    s += ObjectName;
+                    return s;
+                }
+            }
         }
 
         public byte[] header;
@@ -225,27 +319,6 @@ namespace ME2Explorer
             ReadNames(listsStream);
             ReadImports(listsStream);
             ReadExports(listsStream);
-            LoadExports();
-        }
-
-        private void LoadExports()
-        {
-            DebugOutput.PrintLn("Prefetching Export Name Data...");
-            for (int i = 0; i < ExportCount; i++)
-            {
-                Exports[i].hasChanged = false;
-                Exports[i].ObjectName = Names[Exports[i].ObjectNameID];
-            }
-            for (int i = 0; i < ExportCount; i++)
-            {
-                Exports[i].PackageFullName = FollowLink(Exports[i].idxLink);
-                if (String.IsNullOrEmpty(Exports[i].PackageFullName))
-                    Exports[i].PackageFullName = "Base Package";
-                else if (Exports[i].PackageFullName[Exports[i].PackageFullName.Length - 1] == '.')
-                    Exports[i].PackageFullName = Exports[i].PackageFullName.Remove(Exports[i].PackageFullName.Length - 1);
-            }
-            for (int i = 0; i < ExportCount; i++)
-                Exports[i].ClassName = GetClass(Exports[i].idxClassName);
         }
 
         public void SaveToFile(string path)
@@ -293,12 +366,13 @@ namespace ME2Explorer
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry import = new ImportEntry();
+                import.pccRef = this;
                 import.Package = Names[fs.ReadValueS32()];
                 fs.Seek(12, SeekOrigin.Current);
                 import.link = fs.ReadValueS32();
                 import.Name = Names[fs.ReadValueS32()];
                 fs.Seek(-24, SeekOrigin.Current);
-                import.raw = fs.ReadBytes(28);
+                import.header = fs.ReadBytes(28);
                 Imports.Add(import);
             }
         }
@@ -324,13 +398,26 @@ namespace ME2Explorer
                 fs.Seek(16, SeekOrigin.Current);
                 long end = fs.Position;
                 fs.Seek(start, SeekOrigin.Begin);
-                exp.info = fs.ReadBytes((int)(end - start));
+                exp.header = fs.ReadBytes((int)(end - start));
                 Exports.Add(exp);
                 fs.Seek(end, SeekOrigin.Begin);
 
                 if (LastExport == null || exp.DataOffset > LastExport.DataOffset)
                     LastExport = exp;
             }
+        }
+
+        /// <summary>
+        ///     gets Export or Import entry
+        /// </summary>
+        /// <param name="index">unreal index</param>
+        public IEntry getEntry(int index)
+        {
+            if (index > 0 && index <= ExportCount)
+                return Exports[index - 1];
+            if (-index > 0 && -index <= ImportCount)
+                return Imports[-index - 1];
+            return null;
         }
 
         public bool isName(int Index)
@@ -388,6 +475,24 @@ namespace ME2Explorer
             if (index * -1 > 0 && index * -1 < ImportCount)
                 return Imports[index * -1 - 1].Name;
             return "";
+        }
+
+        public string getClassName(int index)
+        {
+            string s = "";
+            if (index > 0)
+            {
+                s = Names[Exports[index - 1].idxObjectName];
+            }
+            if (index < 0)
+            {
+                s = Names[Imports[index * -1 - 1].idxObjectName];
+            }
+            if (index == 0)
+            {
+                s = "Class";
+            }
+            return s;
         }
 
         public int FindNameOrAdd(string newName)

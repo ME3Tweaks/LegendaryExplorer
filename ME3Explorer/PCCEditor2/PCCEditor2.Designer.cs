@@ -47,7 +47,6 @@
             this.cloneObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneDialog2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editBlockingVolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.headerEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.faceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportFaceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,11 +67,11 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.searchBox = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.gotonumber = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -81,10 +80,10 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.hexEditTab = new System.Windows.Forms.TabPage();
-            this.hb1 = new Be.Windows.Forms.HexBox();
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
+            this.hexEditTab = new System.Windows.Forms.TabPage();
+            this.hb1 = new Be.Windows.Forms.HexBox();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -136,8 +135,8 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.hexEditTab.SuspendLayout();
             this.propertiesTab.SuspendLayout();
+            this.hexEditTab.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.infoExportDataBox.SuspendLayout();
             this.infoHeaderBox.SuspendLayout();
@@ -248,7 +247,6 @@
             this.cloneObjectToolStripMenuItem,
             this.cloneDialog2ToolStripMenuItem,
             this.editBlockingVolToolStripMenuItem,
-            this.headerEditorToolStripMenuItem,
             this.faceFXToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -307,13 +305,6 @@
             this.editBlockingVolToolStripMenuItem.Text = "Edit Blocking Vol";
             this.editBlockingVolToolStripMenuItem.Visible = false;
             this.editBlockingVolToolStripMenuItem.Click += new System.EventHandler(this.editBlockingVolToolStripMenuItem_Click);
-            // 
-            // headerEditorToolStripMenuItem
-            // 
-            this.headerEditorToolStripMenuItem.Name = "headerEditorToolStripMenuItem";
-            this.headerEditorToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.headerEditorToolStripMenuItem.Text = "Header Editor...";
-            this.headerEditorToolStripMenuItem.Click += new System.EventHandler(this.headerEditorToolStripMenuItem_Click);
             // 
             // faceFXToolStripMenuItem
             // 
@@ -493,6 +484,21 @@
             this.toolStripButton2.Text = "Search";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(56, 22);
+            this.toolStripButton3.Text = "Interpret";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -513,21 +519,6 @@
             this.toolStripButton4.Size = new System.Drawing.Size(47, 22);
             this.toolStripButton4.Text = "Goto #";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(56, 22);
-            this.toolStripButton3.Text = "Interpret";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
             // statusStrip1
             // 
@@ -621,6 +612,27 @@
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
+            // propertiesTab
+            // 
+            this.propertiesTab.Controls.Add(this.propGrid);
+            this.propertiesTab.Location = new System.Drawing.Point(4, 22);
+            this.propertiesTab.Name = "propertiesTab";
+            this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
+            this.propertiesTab.Size = new System.Drawing.Size(660, 418);
+            this.propertiesTab.TabIndex = 1;
+            this.propertiesTab.Text = "Properties";
+            this.propertiesTab.UseVisualStyleBackColor = true;
+            // 
+            // propGrid
+            // 
+            this.propGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propGrid.Location = new System.Drawing.Point(3, 3);
+            this.propGrid.Name = "propGrid";
+            this.propGrid.Size = new System.Drawing.Size(654, 412);
+            this.propGrid.TabIndex = 0;
+            this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
+            // 
             // hexEditTab
             // 
             this.hexEditTab.Controls.Add(this.hb1);
@@ -649,27 +661,6 @@
             this.hb1.TabIndex = 1;
             this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
-            // 
-            // propertiesTab
-            // 
-            this.propertiesTab.Controls.Add(this.propGrid);
-            this.propertiesTab.Location = new System.Drawing.Point(4, 22);
-            this.propertiesTab.Name = "propertiesTab";
-            this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.propertiesTab.Size = new System.Drawing.Size(660, 418);
-            this.propertiesTab.TabIndex = 1;
-            this.propertiesTab.Text = "Properties";
-            this.propertiesTab.UseVisualStyleBackColor = true;
-            // 
-            // propGrid
-            // 
-            this.propGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propGrid.Location = new System.Drawing.Point(3, 3);
-            this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(654, 412);
-            this.propGrid.TabIndex = 0;
-            this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
             // infoTab
             // 
@@ -1119,8 +1110,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            this.hexEditTab.ResumeLayout(false);
             this.propertiesTab.ResumeLayout(false);
+            this.hexEditTab.ResumeLayout(false);
             this.infoTab.ResumeLayout(false);
             this.infoExportDataBox.ResumeLayout(false);
             this.infoExportDataBox.PerformLayout();
@@ -1211,7 +1202,6 @@
         private System.Windows.Forms.ComboBox nameComboBox;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ToolStripMenuItem headerEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem faceFXToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportFaceFXToolStripMenuItem;

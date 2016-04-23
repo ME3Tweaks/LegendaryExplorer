@@ -272,12 +272,6 @@
     <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
       <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="HeaderEditor\HeaderEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HeaderEditor\HeaderEditor.Designer.cs">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="InitialDLCExtractor.xaml.cs">
       <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
     </Compile>
@@ -771,9 +765,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
       <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HeaderEditor\HeaderEditor.resx">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
       <DependentUpon>InterpEditor.cs</DependentUpon>
