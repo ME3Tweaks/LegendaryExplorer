@@ -219,7 +219,8 @@ namespace ME3Explorer
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME1InstallDir))
                 ME1Directory.GamePath(Properties.Settings.Default.ME1InstallDir);
 
-            var vers = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string vers = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            vers = vers.Substring(0, vers.LastIndexOf('.'));
             versionToolStripMenuItem.Text += vers;
             versionToolStripMenuItem.Tag = "versionItem";
             menuStrip1.Renderer = new NoHighlightRenderer();
