@@ -67,7 +67,7 @@ namespace ME3Explorer
 
         private void dLCEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DLCExplorer expl = new DLCExplorer();
+            SFARBasicEditor expl = new SFARBasicEditor();
             expl.MdiParent = this;
             expl.WindowState = FormWindowState.Maximized;
             expl.Show();
@@ -524,7 +524,7 @@ namespace ME3Explorer
 
         private void dLCEditor2ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            var tool = new DLCEditor2.DLCEditor2();
+            var tool = new SFAREditor2();
             OpenMaximized(tool);
             taskbar.AddTool(tool, Properties.Resources.sfar_editor2_icon_64x64);
         }
@@ -559,7 +559,7 @@ namespace ME3Explorer
 
         private void dLCTOCbinUpdaterToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            var form = new DLCTOCbinUpdater.DLCTOCbinUpdater();
+            var form = new SFARTOCbinUpdater();
             OpenMaximized(form);
             taskbar.AddTool(form, Properties.Resources.SFARTOC_64x64);
         }

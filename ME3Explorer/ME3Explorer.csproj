@@ -139,10 +139,10 @@
     <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
       <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AFCExtract.cs">
+    <Compile Include="AFCExtract\AFCExtract.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AFCExtract.Designer.cs">
+    <Compile Include="AFCExtract\AFCExtract.Designer.cs">
       <DependentUpon>AFCExtract.cs</DependentUpon>
     </Compile>
     <Compile Include="AnimationExplorer\AnimationExplorer.cs">
@@ -172,10 +172,10 @@
     <Compile Include="batchrenamer\BatchRenamer.Designer.cs">
       <DependentUpon>BatchRenamer.cs</DependentUpon>
     </Compile>
-    <Compile Include="BIKExtract.cs">
+    <Compile Include="BIKExtract\BIKExtract.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BIKExtract.Designer.cs">
+    <Compile Include="BIKExtract\BIKExtract.Designer.cs">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </Compile>
     <Compile Include="CameraTool\CameraTool.cs">
@@ -223,7 +223,7 @@
     <Compile Include="Codex Editor\CodexEditor.Designer.cs">
       <DependentUpon>CodexEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="CreateJobFromPCCDiff.xaml.cs">
+    <Compile Include="Modmaker\CreateJobFromPCCDiff.xaml.cs">
       <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
     </Compile>
     <Compile Include="DialogEditor\AddReply.cs">
@@ -248,17 +248,17 @@
     <Compile Include="DialogEditor\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="DLCEditor2\DLCEditor2.cs">
+    <Compile Include="SFAREditor2\SFAREditor2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DLCEditor2\DLCEditor2.Designer.cs">
-      <DependentUpon>DLCEditor2.cs</DependentUpon>
+    <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
+      <DependentUpon>SFAREditor2.cs</DependentUpon>
     </Compile>
-    <Compile Include="DLCTOCbinUpdater\DLCTOCbinUpdater.cs">
+    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DLCTOCbinUpdater\DLCTOCbinUpdater.Designer.cs">
-      <DependentUpon>DLCTOCbinUpdater.cs</DependentUpon>
+    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.Designer.cs">
+      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
@@ -285,28 +285,28 @@
     <Compile Include="InterpEditor\Timeline.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="KFreonListErrorBox.cs">
+    <Compile Include="Texplorer\KFreonListErrorBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KFreonListErrorBox.Designer.cs">
+    <Compile Include="Texplorer\KFreonListErrorBox.Designer.cs">
       <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="KFreonSearchForm.cs">
+    <Compile Include="Texplorer\KFreonSearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KFreonSearchForm.Designer.cs">
+    <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
       <DependentUpon>KFreonSearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="KFreonTPFTools3.cs">
+    <Compile Include="TPFTools\KFreonTPFTools3.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KFreonTPFTools3.Designer.cs">
+    <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModMaker.cs">
+    <Compile Include="Modmaker\ModMaker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ModMaker.Designer.cs">
+    <Compile Include="Modmaker\ModMaker.Designer.cs">
       <DependentUpon>ModMaker.cs</DependentUpon>
     </Compile>
     <Compile Include="PAREditor\PAREditor.cs">
@@ -337,16 +337,16 @@
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </Compile>
     <Compile Include="TlkManager\TalkFiles.cs" />
-    <Compile Include="Texplorer2.cs">
+    <Compile Include="Texplorer\Texplorer2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Texplorer2.Designer.cs">
+    <Compile Include="Texplorer\Texplorer2.Designer.cs">
       <DependentUpon>Texplorer2.cs</DependentUpon>
     </Compile>
-    <Compile Include="TexplorerFirstTimeSetup.cs">
+    <Compile Include="Texplorer\TexplorerFirstTimeSetup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TexplorerFirstTimeSetup.Designer.cs">
+    <Compile Include="Texplorer\TexplorerFirstTimeSetup.Designer.cs">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
     </Compile>
     <Compile Include="TlkManager\TlkManager.cs">
@@ -490,10 +490,10 @@
     <Compile Include="ScriptDB\ScriptDB.Designer.cs">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="Select Material.cs">
+    <Compile Include="Meshplorer\Select Material.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Select Material.Designer.cs">
+    <Compile Include="Meshplorer\Select Material.Designer.cs">
       <DependentUpon>Select Material.cs</DependentUpon>
     </Compile>
     <Compile Include="Soundplorer\DirectReplace.cs">
@@ -525,27 +525,27 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Decompressor.cs">
+    <Compile Include="Decompressor\Decompressor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Decompressor.Designer.cs">
+    <Compile Include="Decompressor\Decompressor.Designer.cs">
       <DependentUpon>Decompressor.cs</DependentUpon>
     </Compile>
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
       <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HuffmanCompression.cs" />
-    <Compile Include="Language Selector.cs">
+    <Compile Include="Unreal\HuffmanCompression.cs" />
+    <Compile Include="Language Selector\Language Selector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Language Selector.Designer.cs">
+    <Compile Include="Language Selector\Language Selector.Designer.cs">
       <DependentUpon>Language Selector.cs</DependentUpon>
     </Compile>
-    <Compile Include="DLCExplorer.cs">
+    <Compile Include="SFARBasicEditor\SFARBasicEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DLCExplorer.Designer.cs">
-      <DependentUpon>DLCExplorer.cs</DependentUpon>
+    <Compile Include="SFARBasicEditor\SFARBasicEditor.Designer.cs">
+      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
@@ -556,10 +556,10 @@
     <Compile Include="PCCEditor\PCCEditor.Designer.cs">
       <DependentUpon>PCCEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCCRepack.cs">
+    <Compile Include="PCCRepack\PCCRepack.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PCCRepack.Designer.cs">
+    <Compile Include="PCCRepack\PCCRepack.Designer.cs">
       <DependentUpon>PCCRepack.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -577,13 +577,7 @@
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="TalkFile.cs" />
-    <Compile Include="TextInput.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TextInput.Designer.cs">
-      <DependentUpon>TextInput.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Property Manager\TreeViewSerializer.cs" />
     <Compile Include="UDKConverter\UDKConverter.cs">
       <SubType>Form</SubType>
@@ -687,7 +681,7 @@
     <EmbeddedResource Include="AboutME3Explorer.resx">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AFCExtract.resx">
+    <EmbeddedResource Include="AFCExtract\AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -704,7 +698,7 @@
     <EmbeddedResource Include="batchrenamer\BatchRenamer.resx">
       <DependentUpon>BatchRenamer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BIKExtract.resx">
+    <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraTool\CameraTool.resx">
@@ -744,11 +738,11 @@
     <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DLCEditor2\DLCEditor2.resx">
-      <DependentUpon>DLCEditor2.cs</DependentUpon>
+    <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
+      <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DLCTOCbinUpdater\DLCTOCbinUpdater.resx">
-      <DependentUpon>DLCTOCbinUpdater.cs</DependentUpon>
+    <EmbeddedResource Include="SFARTOCbinUpdater\SFARTOCbinUpdater.resx">
+      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
       <DependentUpon>DLLInjector.cs</DependentUpon>
@@ -760,7 +754,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Decompressor.resx">
+    <EmbeddedResource Include="Decompressor\Decompressor.resx">
       <DependentUpon>Decompressor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
@@ -775,17 +769,17 @@
     <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
       <DependentUpon>Interpreter2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="KFreonListErrorBox.resx">
+    <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
       <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="KFreonTPFTools3.resx">
+    <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Language Selector.resx">
+    <EmbeddedResource Include="Language Selector\Language Selector.resx">
       <DependentUpon>Language Selector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DLCExplorer.resx">
-      <DependentUpon>DLCExplorer.cs</DependentUpon>
+    <EmbeddedResource Include="SFARBasicEditor\SFARBasicEditor.resx">
+      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
@@ -818,7 +812,7 @@
     <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ModMaker.resx">
+    <EmbeddedResource Include="Modmaker\ModMaker.resx">
       <DependentUpon>ModMaker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PAREditor\PAREditor.resx">
@@ -837,7 +831,7 @@
       <DependentUpon>PCCEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PCCRepack.resx">
+    <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
@@ -877,7 +871,7 @@
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Select Material.resx">
+    <EmbeddedResource Include="Meshplorer\Select Material.resx">
       <DependentUpon>Select Material.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
@@ -892,14 +886,11 @@
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer2.resx">
+    <EmbeddedResource Include="Texplorer\Texplorer2.resx">
       <DependentUpon>Texplorer2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TexplorerFirstTimeSetup.resx">
+    <EmbeddedResource Include="Texplorer\TexplorerFirstTimeSetup.resx">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TextInput.resx">
-      <DependentUpon>TextInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
@@ -952,7 +943,7 @@
     <None Include="Icons\TPFTools_64x64.png" />
     <None Include="Icons\udk_explorer_64x64.png" />
     <None Include="Icons\placeholder_64x64.png" />
-    <None Include="Back.png" />
+    <None Include="Resources\Back.png" />
     <Content Include="Icons\interpreter_icon.ico" />
     <Content Include="Icons\interp_viewer_icon.ico" />
     <Content Include="Icons\TLKManager_icon.ico" />
@@ -1016,7 +1007,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DLCTOCbinUpdater\back2.jpg" />
+    <None Include="SFARTOCbinUpdater\back2.jpg" />
     <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />
@@ -1092,7 +1083,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CreateJobFromPCCDiff.xaml">
+    <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

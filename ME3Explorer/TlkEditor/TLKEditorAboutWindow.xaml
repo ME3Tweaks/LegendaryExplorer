@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:p="clr-namespace:ME3Explorer.Properties"
     Height="295" Width="389" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="Honeydew"
-    Title="{x:Static p:Resources.AboutTitle}" >
+    Title="About Mass Effect 2 TLK Tool" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
@@ -37,14 +37,14 @@
         </StackPanel>
         <StackPanel Grid.ColumnSpan="2" Grid.Row="2" Name="stackPanel2" VerticalAlignment="Center">
             <Label HorizontalContentAlignment="Center" Name="label1"
-                   Content="{x:Static p:Resources.AboutDecodingTlk}" />
+                   Content="Decoding TLK format:" />
             <Label HorizontalContentAlignment="Center" Name="label2" FontWeight="Bold">
                 "DerPlaya" (social.bioware.com)
             </Label>
         </StackPanel>
         <StackPanel Grid.ColumnSpan="2" Grid.Row="3" Name="stackPanel3" VerticalAlignment="Center">
             <Label HorizontalContentAlignment="Center" Name="label3"
-                   Content="{x:Static p:Resources.AboutRest}" />
+                   Content="Writing to TLK, user interface:" />
             <Label HorizontalContentAlignment="Center" Name="label4" FontWeight="Bold">
                 "Gocek" (social.bioware.com)
             </Label>

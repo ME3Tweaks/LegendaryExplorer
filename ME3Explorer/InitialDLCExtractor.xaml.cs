@@ -51,7 +51,7 @@ namespace ME3Explorer
             bool dlcProblem = false;
             await Task.Run(() =>
             {
-                DLCEditor2.DLCEditor2 dlcedit2 = new DLCEditor2.DLCEditor2();
+                SFAREditor2 dlcedit2 = new SFAREditor2();
                 DebugOutput.PrintLn("Extracting DLC...");
                 dlcProblem = !dlcedit2.ExtractAllDLC();
                     
