@@ -35,7 +35,6 @@ namespace ME3Explorer.Interpreter2
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.expandSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllButton = new System.Windows.Forms.ToolStripButton();
@@ -88,7 +87,6 @@ namespace ME3Explorer.Interpreter2
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
             this.toolStripButton2,
             this.expandSeparator,
             this.expandAllButton,
@@ -106,16 +104,6 @@ namespace ME3Explorer.Interpreter2
             this.toolStrip1.Size = new System.Drawing.Size(1008, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(63, 22);
-            this.toolStripButton1.Text = "Start Scan";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
             // 
@@ -237,6 +225,8 @@ namespace ME3Explorer.Interpreter2
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -248,7 +238,7 @@ namespace ME3Explorer.Interpreter2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Size = new System.Drawing.Size(1008, 389);
-            this.splitContainer1.SplitterDistance = 332;
+            this.splitContainer1.SplitterDistance = 261;
             this.splitContainer1.TabIndex = 3;
             // 
             // hb1
@@ -263,7 +253,7 @@ namespace ME3Explorer.Interpreter2
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(332, 389);
+            this.hb1.Size = new System.Drawing.Size(261, 389);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -276,7 +266,7 @@ namespace ME3Explorer.Interpreter2
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(672, 389);
+            this.treeView1.Size = new System.Drawing.Size(743, 389);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -314,7 +304,6 @@ namespace ME3Explorer.Interpreter2
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private Be.Windows.Forms.HexBox hb1;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripSeparator expandSeparator;

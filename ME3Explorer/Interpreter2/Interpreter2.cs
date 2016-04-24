@@ -118,11 +118,6 @@ namespace ME3Explorer.Interpreter2
             StartScan();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            StartScan();
-        }
-
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null)
         {
             treeView1.BeginUpdate();
@@ -186,18 +181,14 @@ namespace ME3Explorer.Interpreter2
                         if (arrayType == UnrealObjectInfo.ArrayType.Struct)
                         {
                             UnrealObjectInfo.PropertyInfo info = UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(header.name));
-                            string arrayLeafType = "";
-                            if (info != null)
-                            {
-                                arrayLeafType = $": ({info.reference})";
-                            }
+                            t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({info.reference})");
                             for (int i = 0; i < arrayLength; i++)
                             {
                                 readerpos = tmp;
                                 int pos = tmp;
                                 List<PropHeader> arrayListPropHeaders = ReadHeadersTillNone();
                                 tmp = readerpos;
-                                TreeNode n = new TreeNode(i.ToString() + (arrayListPropHeaders.Count == 0 ? arrayLeafType : ""));
+                                TreeNode n = new TreeNode(i.ToString());
                                 n.Tag = nodeType.ArrayLeafStruct;
                                 n.Name = pos.ToString();
                                 t.Nodes.Add(n);
@@ -221,6 +212,7 @@ namespace ME3Explorer.Interpreter2
                         }
                         else
                         {
+                            t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
                             int count = 0;
                             for (int i = 0; i < (header.size - 4); count++)
                             {
@@ -1079,6 +1071,14 @@ namespace ME3Explorer.Interpreter2
                             propDropdown.Visible = true;
                             break;
                         case UnrealObjectInfo.ArrayType.Struct:
+                            string structType = getEnclosingType(e.Node);
+                            //TODO: make add element work for these too
+                            if (UnrealObjectInfo.ImmutableStructs.Contains(structType))
+                            {
+                                addArrayElementButton.Visible = false;
+                                return;
+                            }
+                            break;
                         default:
                             break;
                     }
