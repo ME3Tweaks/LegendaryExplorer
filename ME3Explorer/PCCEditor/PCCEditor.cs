@@ -1637,5 +1637,24 @@ namespace ME3Explorer
                 SaveRecentList();
             }
         }
+
+        private void listBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (CurrentView == NAMES_VIEW)
+                {
+                    contextMenuStrip1.Show(MousePosition);
+                }
+            }
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentView == NAMES_VIEW && listBox1.SelectedIndex != -1)
+            {
+                Clipboard.SetText(pcc.Names[listBox1.SelectedIndex]);
+            }
+        }
     }
 }
