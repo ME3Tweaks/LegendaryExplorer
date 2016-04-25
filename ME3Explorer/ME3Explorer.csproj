@@ -1129,6 +1129,7 @@
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
+xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
 call "$(DevEnvDir)..\Tools\vsvars32.bat"
 editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
