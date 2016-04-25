@@ -123,6 +123,12 @@ namespace ME3Explorer
                     dLCEditor2ToolStripMenuItem.PerformClick();
                     return;
                 }
+                else if (args[1].Equals("-toceditorupdate"))
+                {
+                    //autostart the TOCEditor (used by FemShep's Mod Manager 3)
+                    new TOCeditor();
+                    return;
+                }
                 if (args[1].Equals("-autotoc"))
                 {
                     //autostart the AutoTOC Tool (uses a path) (used by FemShep's Mod Manager 3)
@@ -156,6 +162,8 @@ namespace ME3Explorer
                     commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
                     commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
                     commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
+                    commandLineHelp += " -toceditorupdate PCConsoleTOC.bin SearchTerm size\n";
+                    commandLineHelp += "     Updates TOC entry for specified file\n\n";
                     System.Console.WriteLine(commandLineHelp);
                     Environment.Exit(0);
                     Application.Exit();
