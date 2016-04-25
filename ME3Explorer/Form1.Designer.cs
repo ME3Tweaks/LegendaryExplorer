@@ -45,7 +45,7 @@
             this.lanugageSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vanillaMakerBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.developerToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.packageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCCRepackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mE3CreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -289,7 +289,7 @@
             // developerToolsToolStripMenuItem
             // 
             this.developerToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pCCEditorToolStripMenuItem,
+            this.packageEditorToolStripMenuItem,
             this.pCCRepackerToolStripMenuItem,
             this.toolStripSeparator1,
             this.mE3CreatorToolStripMenuItem,
@@ -316,13 +316,13 @@
             this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
             this.developerToolsToolStripMenuItem.Text = "Developer Tools";
             // 
-            // pCCEditorToolStripMenuItem
+            // packageEditorToolStripMenuItem
             // 
-            this.pCCEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pCCEditorToolStripMenuItem.Image")));
-            this.pCCEditorToolStripMenuItem.Name = "pCCEditorToolStripMenuItem";
-            this.pCCEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
-            this.pCCEditorToolStripMenuItem.Text = "PCC Editor";
-            this.pCCEditorToolStripMenuItem.Click += new System.EventHandler(this.pCCEditorToolStripMenuItem_Click);
+            this.packageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("packageEditorToolStripMenuItem.Image")));
+            this.packageEditorToolStripMenuItem.Name = "packageEditorToolStripMenuItem";
+            this.packageEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
+            this.packageEditorToolStripMenuItem.Text = "Package Editor";
+            this.packageEditorToolStripMenuItem.Click += new System.EventHandler(this.packageEditorToolStripMenuItem_Click);
             // 
             // pCCRepackerToolStripMenuItem
             // 
@@ -962,7 +962,7 @@
         public System.Windows.Forms.MenuStrip menuStrip1;
         public System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureViewerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pCCEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem packageEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pCCRepackerToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem decompressorToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem conditionalsToolStripMenuItem;

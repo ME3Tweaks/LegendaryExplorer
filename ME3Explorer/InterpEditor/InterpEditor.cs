@@ -166,21 +166,5 @@ namespace ME3Explorer.InterpEditor
             KFreonLib.Debugging.DebugOutput.PrintLn("*****************");
             KFreonLib.Debugging.DebugOutput.PrintLn("Done");
         }
-
-        //private void openInPCCEditor2ToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    int l = CurrentObjects[listBox1.SelectedIndex];
-        //    if (l == -1)
-        //        return;
-        //    PCCEditor2 p = new PCCEditor2();
-        //    p.MdiParent = this.MdiParent;
-        //    p.WindowState = FormWindowState.Maximized;
-        //    p.Show();
-        //    p.pcc = new PCCObject(CurrentFile);
-        //    p.SetView(2);
-        //    p.RefreshView();
-        //    p.InitStuff();
-        //    p.listBox1.SelectedIndex = l;
-        //}
     }
 }

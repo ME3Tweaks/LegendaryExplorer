@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 
 namespace ME3Explorer
 {
-    public partial class PCCEditor : Form
+    public partial class PackageEditor : Form
     {
         public PCCObject pcc;
         public int CurrentView;
@@ -39,7 +39,7 @@ namespace ME3Explorer
         public string inDLCFilename;
 
 
-        public PCCEditor()
+        public PackageEditor()
         {
             InitializeComponent();
             LoadRecentList();
@@ -258,7 +258,6 @@ namespace ME3Explorer
                 treeView1.EndUpdate();
                 return;
             }
-            cloneObjectToolStripMenuItem.Enabled = false;
             if (CurrentView == NAMES_VIEW)
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
@@ -283,7 +282,6 @@ namespace ME3Explorer
             string s;
             if (CurrentView == EXPORTS_VIEW)
             {
-                cloneObjectToolStripMenuItem.Enabled = true;
                 string PackageFullName, ClassName;
                 List<string> exports = new List<string>(pcc.Exports.Count);
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -332,7 +330,6 @@ namespace ME3Explorer
                 listBox1.Visible = false;
                 treeView1.Visible = true;
                 treeView1.Nodes.Clear();
-                cloneObjectToolStripMenuItem.Enabled = true;
                 int importsOffset = pcc.Exports.Count;
                 int link;
                 List<TreeNode> nodeList = new List<TreeNode>(pcc.Exports.Count + pcc.Imports.Count + 1);
@@ -858,7 +855,7 @@ namespace ME3Explorer
             Preview();
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (pcc == null)
                 return;
@@ -869,6 +866,14 @@ namespace ME3Explorer
                 pcc.altSaveToFile(d.FileName, true);
                 MessageBox.Show("Done");
             }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            pcc.altSaveToFile(pcc.pccFileName, true);
+            MessageBox.Show("Done");
         }
 
         private void saveHexChangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1118,7 +1123,7 @@ namespace ME3Explorer
                 return;
             }
             Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
-            ip.Text = "Interpreter (PCCEditor 2)";
+            ip.Text = "Interpreter (Package Editor)";
             ip.MdiParent = this.MdiParent;
             ip.pcc = pcc;
             ip.Index = n;
@@ -1211,22 +1216,6 @@ namespace ME3Explorer
                 pcc.Exports[n].Data = buff;
                 MessageBox.Show("Done.");
             }
-        }
-
-        private void cloneObjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
-            {
-                return;
-            }
-            CloneDialog cl = new CloneDialog();
-            cl.pcc = pcc;
-            cl.refForm = this;
-            cl.ObjectIndex = n;
-            cl.MdiParent = this.MdiParent;
-            cl.Show();
-            cl.WindowState = FormWindowState.Maximized;
         }
 
         private void altSavetestingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1536,14 +1525,6 @@ namespace ME3Explorer
             }
         }
 
-        private void cloneDialog2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CloneDialog2 cl = new CloneDialog2();
-            cl.MdiParent = this.MdiParent;
-            cl.Show();
-            cl.WindowState = FormWindowState.Maximized;
-        }
-
         private void loadFromDLCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
@@ -1619,7 +1600,7 @@ namespace ME3Explorer
             RefreshView();
         }
 
-        private void PCCEditor2_DragEnter(object sender, DragEventArgs e)
+        private void PackageEditor_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.All;
@@ -1627,7 +1608,7 @@ namespace ME3Explorer
                 e.Effect = DragDropEffects.None;
         }
 
-        private void PCCEditor2_DragDrop(object sender, DragEventArgs e)
+        private void PackageEditor_DragDrop(object sender, DragEventArgs e)
         {
             List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".pcc")).ToList();
             if (DroppedFiles.Count > 0)

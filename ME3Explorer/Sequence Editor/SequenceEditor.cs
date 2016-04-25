@@ -627,16 +627,16 @@ namespace ME3Explorer
             graphEditor.ScaleViewTo((float)Convert.ToDecimal(toolStripTextBox1.Text));
         }
 
-        private void openInPCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
-            PCCEditor p = new PCCEditor();
+            PackageEditor p = new PackageEditor();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            taskbar.AddTool(p, Properties.Resources.pcceditor2_64x64);
+            taskbar.AddTool(p, Properties.Resources.package_editor_64x64);
             p.LoadFile(CurrentFile);
             p.listBox1.SelectedIndex = l;
         }
@@ -1038,6 +1038,27 @@ namespace ME3Explorer
                 e.Effect = DragDropEffects.All;
             else
                 e.Effect = DragDropEffects.None;
+        }
+
+        private void savePccToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            pcc.altSaveToFile(pcc.pccFileName, true);
+            MessageBox.Show("Done");
+        }
+
+        private void savePCCAsMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.pcc|*.pcc";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pcc.altSaveToFile(d.FileName, true);
+                MessageBox.Show("Done");
+            }
         }
     }
 

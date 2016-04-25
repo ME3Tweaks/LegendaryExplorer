@@ -166,7 +166,7 @@ namespace ME3Explorer
                 switch (ending)
                 {
                     case ".pcc":
-                        PCCEditor editor = new PCCEditor();
+                        PackageEditor editor = new PackageEditor();
                         editor.MdiParent = this;
                         editor.Show();
                         editor.WindowState = FormWindowState.Maximized;
@@ -237,13 +237,13 @@ namespace ME3Explorer
             taskbar.AddTool(sc, Properties.Resources.script_compiler_64x64);
         }
 
-        private void pCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void packageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PCCEditor pcc = new PCCEditor();
+            PackageEditor pcc = new PackageEditor();
             pcc.MdiParent = this;
             pcc.WindowState = FormWindowState.Maximized;
             pcc.Show();
-            taskbar.AddTool(pcc, Properties.Resources.pcceditor2_64x64);
+            taskbar.AddTool(pcc, Properties.Resources.package_editor_64x64);
             pcc.LoadMostRecent();
         }
 

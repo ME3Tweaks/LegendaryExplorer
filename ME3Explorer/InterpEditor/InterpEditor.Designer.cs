@@ -40,7 +40,7 @@
             this.InterpTrackScan = new System.Windows.Forms.ToolStripButton();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.openInPCCEditor2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInPackageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.contextMenuKeyFrame = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -151,21 +151,21 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInPCCEditor2ToolStripMenuItem,
+            this.openInPackageEditorToolStripMenuItem,
             this.addKeyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(180, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
             // 
-            // openInPCCEditor2ToolStripMenuItem
+            // openInPackageEditorToolStripMenuItem
             // 
-            this.openInPCCEditor2ToolStripMenuItem.Name = "openInPCCEditor2ToolStripMenuItem";
-            this.openInPCCEditor2ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.openInPCCEditor2ToolStripMenuItem.Text = "Open in PCCEditor2";
+            this.openInPackageEditorToolStripMenuItem.Name = "openInPackageEditorToolStripMenuItem";
+            this.openInPackageEditorToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openInPackageEditorToolStripMenuItem.Text = "Open in Package Editor";
             // 
             // addKeyToolStripMenuItem
             // 
             this.addKeyToolStripMenuItem.Name = "addKeyToolStripMenuItem";
-            this.addKeyToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.addKeyToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.addKeyToolStripMenuItem.Text = "Add Key";
             // 
             // hScrollBar1
@@ -306,7 +306,7 @@
         private System.Windows.Forms.VScrollBar vScrollBar1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         public System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
-        private System.Windows.Forms.ToolStripMenuItem openInPCCEditor2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openInPackageEditorToolStripMenuItem;
         private System.Windows.Forms.HScrollBar hScrollBar1;
         private System.Windows.Forms.ToolStripMenuItem addKeyToolStripMenuItem;
         public System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

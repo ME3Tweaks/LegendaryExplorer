@@ -45,7 +45,7 @@
             this.imageList2 = new System.Windows.Forms.ImageList(this.components);
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.openInPCCEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInPackageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,7 +108,7 @@
             // backToOvervieToolStripMenuItem
             // 
             this.backToOvervieToolStripMenuItem.Name = "backToOvervieToolStripMenuItem";
-            this.backToOvervieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.backToOvervieToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.backToOvervieToolStripMenuItem.Text = "All PCCs";
             this.backToOvervieToolStripMenuItem.Click += new System.EventHandler(this.backToOvervieToolStripMenuItem_Click);
             // 
@@ -262,18 +262,18 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInPCCEditorToolStripMenuItem,
+            this.openInPackageEditorToolStripMenuItem,
             this.textureToolStripMenuItem,
             this.soundsToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
             // 
-            // openInPCCEditorToolStripMenuItem
+            // openInPackageEditorToolStripMenuItem
             // 
-            this.openInPCCEditorToolStripMenuItem.Name = "openInPCCEditorToolStripMenuItem";
-            this.openInPCCEditorToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.openInPCCEditorToolStripMenuItem.Text = "Open in PCC Editor";
-            this.openInPCCEditorToolStripMenuItem.Click += new System.EventHandler(this.openInPCCEditorToolStripMenuItem_Click);
+            this.openInPackageEditorToolStripMenuItem.Name = "openInPackageEditorToolStripMenuItem";
+            this.openInPackageEditorToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openInPackageEditorToolStripMenuItem.Text = "Open in Package Editor";
+            this.openInPackageEditorToolStripMenuItem.Click += new System.EventHandler(this.openInPackageEditorToolStripMenuItem_Click);
             // 
             // textureToolStripMenuItem
             // 
@@ -281,21 +281,21 @@
             this.extractToolStripMenuItem,
             this.previewToolStripMenuItem});
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
-            this.textureToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.textureToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.textureToolStripMenuItem.Text = "Texture";
             this.textureToolStripMenuItem.Visible = false;
             // 
             // extractToolStripMenuItem
             // 
             this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
-            this.extractToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.extractToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.extractToolStripMenuItem.Text = "Extract";
             this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
             // 
             // previewToolStripMenuItem
             // 
             this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
-            this.previewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.previewToolStripMenuItem.Text = "Preview";
             this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
             // 
@@ -306,27 +306,27 @@
             this.playToolStripMenuItem,
             this.stopToolStripMenuItem});
             this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
-            this.soundsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.soundsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.soundsToolStripMenuItem.Text = "Sounds";
             // 
             // extractToolStripMenuItem1
             // 
             this.extractToolStripMenuItem1.Name = "extractToolStripMenuItem1";
-            this.extractToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+            this.extractToolStripMenuItem1.Size = new System.Drawing.Size(109, 22);
             this.extractToolStripMenuItem1.Text = "Extract";
             this.extractToolStripMenuItem1.Click += new System.EventHandler(this.extractToolStripMenuItem1_Click);
             // 
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.playToolStripMenuItem.Text = "Play";
             this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
@@ -393,7 +393,7 @@
         public System.Windows.Forms.ToolStripMenuItem previewToolStripMenuItem;
         public System.Windows.Forms.Panel panelImage;
         public System.Windows.Forms.PictureBox pictureBox;
-        public System.Windows.Forms.ToolStripMenuItem openInPCCEditorToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem openInPackageEditorToolStripMenuItem;
         private System.ComponentModel.IContainer components;
     }
 }

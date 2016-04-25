@@ -1,6 +1,6 @@
 ﻿namespace ME3Explorer
 {
-    partial class PCCEditor
+    partial class PackageEditor
     {
 
         /// <summary>
@@ -25,12 +25,13 @@
         public void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCCEditor));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFromDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.altSavetestingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveIntoDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scanForCoalescedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,8 +42,6 @@
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInInterpreterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cloneObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cloneDialog2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editBlockingVolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.faceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportFaceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -165,6 +164,7 @@
             this.loadToolStripMenuItem,
             this.loadFromDLCToolStripMenuItem,
             this.saveToolStripMenuItem,
+            this.saveAsMenuItem,
             this.altSavetestingToolStripMenuItem,
             this.saveIntoDLCToolStripMenuItem,
             this.scanForCoalescedValuesToolStripMenuItem,
@@ -193,10 +193,18 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save changes by appending changes to the end of the file";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // saveAsMenuItem
+            // 
+            this.saveAsMenuItem.Name = "saveAsMenuItem";
+            this.saveAsMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.saveAsMenuItem.Text = "Save As";
+            this.saveAsMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // altSavetestingToolStripMenuItem
             // 
@@ -244,8 +252,6 @@
             this.addNameToolStripMenuItem,
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
-            this.cloneObjectToolStripMenuItem,
-            this.cloneDialog2ToolStripMenuItem,
             this.editBlockingVolToolStripMenuItem,
             this.faceFXToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
@@ -282,21 +288,6 @@
             this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
-            // 
-            // cloneObjectToolStripMenuItem
-            // 
-            this.cloneObjectToolStripMenuItem.Name = "cloneObjectToolStripMenuItem";
-            this.cloneObjectToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.cloneObjectToolStripMenuItem.Text = "Clone Object";
-            this.cloneObjectToolStripMenuItem.ToolTipText = "Clones this object, placing it at the end of the list";
-            this.cloneObjectToolStripMenuItem.Click += new System.EventHandler(this.cloneObjectToolStripMenuItem_Click);
-            // 
-            // cloneDialog2ToolStripMenuItem
-            // 
-            this.cloneDialog2ToolStripMenuItem.Name = "cloneDialog2ToolStripMenuItem";
-            this.cloneDialog2ToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.cloneDialog2ToolStripMenuItem.Text = "Clone Dialog 2";
-            this.cloneDialog2ToolStripMenuItem.Click += new System.EventHandler(this.cloneDialog2ToolStripMenuItem_Click);
             // 
             // editBlockingVolToolStripMenuItem
             // 
@@ -393,7 +384,7 @@
             this.toolStripSeparator3,
             this.gotonumber,
             this.toolStripButton4});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1002, 25);
             this.toolStrip1.TabIndex = 1;
@@ -554,7 +545,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -565,7 +556,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1002, 444);
+            this.splitContainer1.Size = new System.Drawing.Size(1002, 420);
             this.splitContainer1.SplitterDistance = 330;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -576,7 +567,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(330, 444);
+            this.treeView1.Size = new System.Drawing.Size(330, 420);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -592,10 +583,10 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(330, 444);
+            this.listBox1.Size = new System.Drawing.Size(330, 420);
             this.listBox1.TabIndex = 0;
-            this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
+            this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
             // 
             // tabControl1
             // 
@@ -609,7 +600,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(668, 444);
+            this.tabControl1.Size = new System.Drawing.Size(668, 420);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -619,7 +610,7 @@
             this.propertiesTab.Location = new System.Drawing.Point(4, 22);
             this.propertiesTab.Name = "propertiesTab";
             this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.propertiesTab.Size = new System.Drawing.Size(660, 418);
+            this.propertiesTab.Size = new System.Drawing.Size(660, 394);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.UseVisualStyleBackColor = true;
@@ -630,7 +621,7 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(654, 412);
+            this.propGrid.Size = new System.Drawing.Size(654, 388);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -1089,16 +1080,16 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(103, 26);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
-            // PCCEditor
+            // PackageEditor
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1110,10 +1101,10 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "PCCEditor";
-            this.Text = "PCC Editor";
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCCEditor2_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PCCEditor2_DragEnter);
+            this.Name = "PackageEditor";
+            this.Text = "Package Editor";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragEnter);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -1174,7 +1165,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         public System.Windows.Forms.ToolStripMenuItem getDumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceWithBINToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cloneObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem altSavetestingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editBlockingVolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modjobsToolStripMenuItem;
@@ -1221,7 +1211,6 @@
         private System.Windows.Forms.ToolStripMenuItem faceFXToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportFaceFXToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cloneDialog2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel status2;
         private System.Windows.Forms.TabPage headerTab;
         private System.Windows.Forms.ToolStripMenuItem loadFromDLCToolStripMenuItem;
@@ -1245,5 +1234,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.ComponentModel.IContainer components;
+        private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
     }
 }

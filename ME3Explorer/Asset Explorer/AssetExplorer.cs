@@ -585,7 +585,7 @@ namespace ME3Explorer
 
         }
 
-        private void openInPCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 0)
                 return;
@@ -594,7 +594,7 @@ namespace ME3Explorer
             if (t == null)
                 return;
             int l = Convert.ToInt32(item.Name);
-            PCCEditor p = new PCCEditor();
+            PackageEditor p = new PackageEditor();
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();

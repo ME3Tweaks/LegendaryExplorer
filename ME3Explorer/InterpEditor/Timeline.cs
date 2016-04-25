@@ -666,7 +666,7 @@ namespace ME3Explorer.InterpEditor
             if (e.Button == MouseButtons.Right)
             {
                 ContextMenuStrip menu = new ContextMenuStrip();
-                ToolStripMenuItem openInPCCEd = new ToolStripMenuItem("Open in PCCEditor2");
+                ToolStripMenuItem openInPCCEd = new ToolStripMenuItem("Open in Package Editor");
                 openInPCCEd.Click += openInPCCEd_Click;
                 menu.Items.AddRange(new ToolStripItem[] { openInPCCEd });
                 menu.Show(Cursor.Position);
@@ -691,7 +691,7 @@ namespace ME3Explorer.InterpEditor
         protected void openInPCCEd_Click(object sender, EventArgs e)
         {
 
-            PCCEditor p = new PCCEditor();
+            PackageEditor p = new PackageEditor();
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
