@@ -297,6 +297,7 @@
     <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
       <DependentUpon>KFreonSearchForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TOCeditor.cs" />
     <Compile Include="TPFTools\KFreonTPFTools3.cs">
       <SubType>Form</SubType>
     </Compile>
