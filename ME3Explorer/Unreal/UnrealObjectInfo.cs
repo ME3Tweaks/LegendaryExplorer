@@ -126,11 +126,16 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<string> getEnumValues(string enumName)
+        public static List<string> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
             {
-                return Enums[enumName];
+                List<string> values = new List<string>(Enums[enumName]);
+                if (includeNone)
+                {
+                    values.Insert(0, "None");
+                }
+                return values;
             }
             return null;
         }

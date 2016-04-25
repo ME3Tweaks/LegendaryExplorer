@@ -1060,7 +1060,7 @@ namespace ME3Explorer.Interpreter2
                             break;
                         case UnrealObjectInfo.ArrayType.Enum:
                             string enumName = getEnclosingType(e.Node);
-                            List<string> values = UnrealObjectInfo.getEnumValues(enumName);
+                            List<string> values = UnrealObjectInfo.getEnumValues(enumName, true);
                             if (values == null)
                             {
                                 addArrayElementButton.Visible = false;
@@ -1157,7 +1157,7 @@ namespace ME3Explorer.Interpreter2
                         {
                             try
                             {
-                                List<string> values = UnrealObjectInfo.getEnumValues(enumName);
+                                List<string> values = UnrealObjectInfo.getEnumValues(enumName, true);
                                 if (values != null)
                                 {
                                     propDropdown.Items.Clear();
@@ -1247,7 +1247,7 @@ namespace ME3Explorer.Interpreter2
                     case nodeType.StructLeafEnum:
                         int begin = node.Text.LastIndexOf(':') + 3;
                         string enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin);
-                        List<string> values = UnrealObjectInfo.getEnumValues(enumName);
+                        List<string> values = UnrealObjectInfo.getEnumValues(enumName, true);
                         if (values == null)
                         {
                             return;
@@ -1323,7 +1323,7 @@ namespace ME3Explorer.Interpreter2
                         break;
                     case nodeType.ArrayLeafEnum:
                         string enumName = getEnclosingType(node.Parent);
-                        List<string> values = UnrealObjectInfo.getEnumValues(enumName);
+                        List<string> values = UnrealObjectInfo.getEnumValues(enumName, true);
                         if (values == null)
                         {
                             return;
