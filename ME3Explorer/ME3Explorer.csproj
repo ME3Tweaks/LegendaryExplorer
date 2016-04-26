@@ -70,6 +70,10 @@
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.14.1\lib\net40\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
@@ -436,12 +440,6 @@
     </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.Designer.cs">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlotVarDB\PlotVarEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlotVarDB\PlotVarEditor.Designer.cs">
-      <DependentUpon>PlotVarEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
@@ -819,9 +817,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlotVarDB\PlotVarEditor.resx">
-      <DependentUpon>PlotVarEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
