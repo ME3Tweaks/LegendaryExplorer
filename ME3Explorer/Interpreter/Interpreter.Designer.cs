@@ -71,7 +71,7 @@ namespace ME3Explorer
             this.deleteArrayElement});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1008, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(992, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -81,8 +81,8 @@ namespace ME3Explorer
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(70, 22);
-            this.toolStripButton2.Text = "Export Tree";
+            this.toolStripButton2.Size = new System.Drawing.Size(44, 22);
+            this.toolStripButton2.Text = "Export";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // expandSeparator
@@ -146,7 +146,7 @@ namespace ME3Explorer
             this.propDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.propDropdown.MaxDropDownItems = 20;
             this.propDropdown.Name = "propDropdown";
-            this.propDropdown.Size = new System.Drawing.Size(200, 23);
+            this.propDropdown.Size = new System.Drawing.Size(200, 25);
             this.propDropdown.Visible = false;
             // 
             // setPropertyButton
@@ -187,37 +187,37 @@ namespace ME3Explorer
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.hb1);
+            this.splitContainer1.Panel1MinSize = 205;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(1008, 411);
-            this.splitContainer1.SplitterDistance = 261;
+            this.splitContainer1.Size = new System.Drawing.Size(992, 373);
+            this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
+            this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
             // 
             // hb1
             // 
             this.hb1.BoldFont = null;
             this.hb1.BytesPerLine = 4;
             this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
-            this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(261, 411);
+            this.hb1.Size = new System.Drawing.Size(205, 373);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
-            this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
             // 
             // treeView1
@@ -225,19 +225,19 @@ namespace ME3Explorer
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.HideSelection = false;
-            this.treeView1.LineColor = System.Drawing.Color.Empty;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(743, 411);
+            this.treeView1.Size = new System.Drawing.Size(783, 373);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // Interpreter2
+            // Interpreter
             // 
+            this.ClientSize = new System.Drawing.Size(992, 398);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
-            this.Size = new System.Drawing.Size(1008, 436);
+            this.Name = "Interpreter";
             this.Text = "Interpreter";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -253,10 +253,9 @@ namespace ME3Explorer
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private Be.Windows.Forms.HexBox hb1;
+        public Be.Windows.Forms.HexBox hb1;
         public System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripSeparator expandSeparator;
         private System.Windows.Forms.ToolStripTextBox proptext;
         private System.Windows.Forms.ToolStripButton setPropertyButton;
         private System.Windows.Forms.ToolStripSeparator setValueSeparator;
@@ -267,5 +266,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripComboBox propDropdown;
         private System.Windows.Forms.ToolStripTextBox nameEntry;
         private System.Windows.Forms.ToolStripLabel objectNameLabel;
+        private System.Windows.Forms.ToolStripSeparator expandSeparator;
     }
 }

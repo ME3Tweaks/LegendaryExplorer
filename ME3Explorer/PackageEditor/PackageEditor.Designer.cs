@@ -72,14 +72,17 @@
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.status2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
-            this.hexEditTab = new System.Windows.Forms.TabPage();
-            this.hb1 = new Be.Windows.Forms.HexBox();
+            this.interpreterTab = new System.Windows.Forms.TabPage();
+            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -122,29 +125,23 @@
             this.hb2 = new Be.Windows.Forms.HexBox();
             this.scriptTab = new System.Windows.Forms.TabPage();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
-            this.interpreterTab = new System.Windows.Forms.TabPage();
-            this.interpreterControl = new ME3Explorer.Interpreter();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.propertiesTab.SuspendLayout();
-            this.hexEditTab.SuspendLayout();
+            this.interpreterTab.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.infoExportDataBox.SuspendLayout();
             this.infoHeaderBox.SuspendLayout();
             this.metaDataPage.SuspendLayout();
             this.headerTab.SuspendLayout();
             this.scriptTab.SuspendLayout();
-            this.interpreterTab.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -545,6 +542,20 @@
             this.status2.Name = "status2";
             this.status2.Size = new System.Drawing.Size(0, 17);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(103, 26);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -594,12 +605,11 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.propertiesTab);
-            this.tabControl1.Controls.Add(this.hexEditTab);
+            this.tabControl1.Controls.Add(this.interpreterTab);
             this.tabControl1.Controls.Add(this.infoTab);
             this.tabControl1.Controls.Add(this.metaDataPage);
             this.tabControl1.Controls.Add(this.headerTab);
             this.tabControl1.Controls.Add(this.scriptTab);
-            this.tabControl1.Controls.Add(this.interpreterTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -629,34 +639,25 @@
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
-            // hexEditTab
+            // interpreterTab
             // 
-            this.hexEditTab.Controls.Add(this.hb1);
-            this.hexEditTab.Location = new System.Drawing.Point(4, 22);
-            this.hexEditTab.Name = "hexEditTab";
-            this.hexEditTab.Padding = new System.Windows.Forms.Padding(3);
-            this.hexEditTab.Size = new System.Drawing.Size(660, 418);
-            this.hexEditTab.TabIndex = 0;
-            this.hexEditTab.Text = "Hex Editor";
-            this.hexEditTab.UseVisualStyleBackColor = true;
+            this.interpreterTab.Controls.Add(this.interpreterControl);
+            this.interpreterTab.Location = new System.Drawing.Point(4, 22);
+            this.interpreterTab.Name = "interpreterTab";
+            this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
+            this.interpreterTab.Size = new System.Drawing.Size(660, 418);
+            this.interpreterTab.TabIndex = 6;
+            this.interpreterTab.Text = "Interpreter";
+            this.interpreterTab.UseVisualStyleBackColor = true;
             // 
-            // hb1
+            // interpreterControl
             // 
-            this.hb1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hb1.BoldFont = null;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb1.LineInfoVisible = true;
-            this.hb1.Location = new System.Drawing.Point(3, 3);
-            this.hb1.Name = "hb1";
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(654, 433);
-            this.hb1.StringViewVisible = true;
-            this.hb1.TabIndex = 1;
-            this.hb1.UseFixedBytesPerLine = true;
-            this.hb1.VScrollBarVisible = true;
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
+            this.interpreterControl.TabIndex = 0;
+            this.interpreterControl.Text = "interpreter";
             // 
             // infoTab
             // 
@@ -1045,6 +1046,7 @@
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
             this.hb2.Location = new System.Drawing.Point(3, 3);
+            this.hb2.MinBytesPerLine = 16;
             this.hb2.Name = "hb2";
             this.hb2.ReadOnly = true;
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -1079,40 +1081,6 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
-            // interpreterTab
-            // 
-            this.interpreterTab.Controls.Add(this.interpreterControl);
-            this.interpreterTab.Location = new System.Drawing.Point(4, 22);
-            this.interpreterTab.Name = "interpreterTab";
-            this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpreterTab.Size = new System.Drawing.Size(660, 418);
-            this.interpreterTab.TabIndex = 6;
-            this.interpreterTab.Text = "Interpreter";
-            this.interpreterTab.UseVisualStyleBackColor = true;
-            // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
-            this.interpreterControl.TabIndex = 0;
-            this.interpreterControl.Text = "interpreter";
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(103, 26);
-            // 
-            // copyToolStripMenuItem
-            // 
-            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
-            this.copyToolStripMenuItem.Text = "Copy";
-            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
-            // 
             // PackageEditor
             // 
             this.AllowDrop = true;
@@ -1135,13 +1103,14 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.propertiesTab.ResumeLayout(false);
-            this.hexEditTab.ResumeLayout(false);
+            this.interpreterTab.ResumeLayout(false);
             this.infoTab.ResumeLayout(false);
             this.infoExportDataBox.ResumeLayout(false);
             this.infoExportDataBox.PerformLayout();
@@ -1151,8 +1120,6 @@
             this.metaDataPage.PerformLayout();
             this.headerTab.ResumeLayout(false);
             this.scriptTab.ResumeLayout(false);
-            this.interpreterTab.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1174,7 +1141,6 @@
         public System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem saveHexChangesToolStripMenuItem;
         public System.Windows.Forms.OpenFileDialog openFileDialog;
-        public Be.Windows.Forms.HexBox hb1;
         public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         public System.Windows.Forms.ToolStripComboBox combo1;
         public System.Windows.Forms.ToolStripButton findClassButton;
@@ -1198,7 +1164,6 @@
         public System.Windows.Forms.PropertyGrid propGrid;
         public System.Windows.Forms.RichTextBox rtb1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage hexEditTab;
         private System.Windows.Forms.TabPage propertiesTab;
         private System.Windows.Forms.TabPage scriptTab;
         private System.Windows.Forms.TabPage infoTab;

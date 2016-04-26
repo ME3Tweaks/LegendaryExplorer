@@ -411,18 +411,17 @@ namespace ME3Explorer
         {
             // keep disabled unless we're on the hex tab:
             int n;
-            if (tabControl1.SelectedTab == hexEditTab && GetSelected(out n) && n >= 0)
+            if (tabControl1.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
+            {
                 saveHexChangesToolStripMenuItem.Enabled = true;
+                interpreterControl.treeView1.Nodes[0].Expand();
+            }
             else
                 saveHexChangesToolStripMenuItem.Enabled = false;
 
             if (tabControl1.SelectedTab == metaDataPage)
             {
                 RefreshMetaData();
-            }
-            if (tabControl1.SelectedTab == interpreterTab)
-            {
-                interpreterControl.treeView1.Nodes[0].Expand();
             }
         }
 
@@ -442,14 +441,13 @@ namespace ME3Explorer
                 if (n >= 0)
                 {
                     PreviewProps(n);
-                    hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[n].Data);
                     if (!tabControl1.TabPages.ContainsKey(nameof(propertiesTab)))
                     {
                         tabControl1.TabPages.Insert(0, propertiesTab);
                     }
-                    if (!tabControl1.TabPages.ContainsKey(nameof(hexEditTab)))
+                    if (!tabControl1.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
-                        tabControl1.TabPages.Insert(1, hexEditTab);
+                        tabControl1.TabPages.Insert(1, interpreterTab);
                     }
                     if (pcc.Exports[n].ClassName == "Function")
                     {
@@ -478,9 +476,9 @@ namespace ME3Explorer
                     n = -n - 1;
                     hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].header);
                     UpdateStatusIm(n);
-                    if (tabControl1.TabPages.ContainsKey(nameof(hexEditTab)))
+                    if (tabControl1.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
-                        tabControl1.TabPages.Remove(hexEditTab);
+                        tabControl1.TabPages.Remove(interpreterTab);
                     }
                     if (tabControl1.TabPages.ContainsKey(nameof(propertiesTab)))
                     {
@@ -900,11 +898,10 @@ namespace ME3Explorer
                 return;
             }
             MemoryStream m = new MemoryStream();
-            for (int i = 0; i < hb1.ByteProvider.Length; i++)
-                m.WriteByte(hb1.ByteProvider.ReadByte(i));
-            PCCObject.ExportEntry ent = pcc.Exports[n];
-            ent.Data = m.ToArray();
-            pcc.Exports[n] = ent;
+            IByteProvider provider = interpreterControl.hb1.ByteProvider;
+            for (int i = 0; i < provider.Length; i++)
+                m.WriteByte(provider.ReadByte(i));
+            pcc.Exports[n].Data = m.ToArray();
 
             Preview();
         }

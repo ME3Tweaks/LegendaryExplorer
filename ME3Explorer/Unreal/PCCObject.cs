@@ -199,8 +199,8 @@ namespace ME3Explorer.Unreal
             public long ObjectFlags    { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); } }
 
             public string ObjectName   { get { return pccRef.Names[idxObjectName]; } }
-            public string ClassName    { get { int val = idxClass; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Class"; } }
-            public string ClassParent  { get { int val = idxClassParent; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
+            public string ClassName    { get { int val = idxClass; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
+            public string ClassParent  { get { int val = idxClassParent; if (val != 0)  return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
             public string PackageName  { get { int val = idxPackageName; if (val >= 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Package"; } }
             public string PackageFullName
             {

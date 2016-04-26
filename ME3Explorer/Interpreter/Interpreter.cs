@@ -160,6 +160,10 @@ namespace ME3Explorer
         {
             foreach (PropHeader header in headersList)
             {
+                if (readerpos > memory.Length)
+                {
+                    return;
+                }
                 nodeType type = getType(pcc.getNameEntry(header.type));
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
                     localRoot.Nodes.Add(GenerateNode(header));
@@ -216,12 +220,18 @@ namespace ME3Explorer
                         {
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
                             int count = 0;
+                            int pos;
                             for (int i = 0; i < (header.size - 4); count++)
                             {
-                                int val = BitConverter.ToInt32(memory, header.offset + 28 + i);
-                                string s = (header.offset + 28 + i).ToString("X4") + "|" + count + ": ";
+                                pos = header.offset + 28 + i;
+                                if (pos > memory.Length)
+                                {
+                                    break;
+                                }
+                                int val = BitConverter.ToInt32(memory, pos);
+                                string s = pos.ToString("X4") + "|" + count + ": ";
                                 TreeNode node = new TreeNode();
-                                node.Name = (header.offset + 28 + i).ToString();
+                                node.Name = pos.ToString();
                                 if (arrayType == UnrealObjectInfo.ArrayType.Object)
                                 {
                                     node.Tag = nodeType.ArrayLeafObject;
@@ -278,7 +288,7 @@ namespace ME3Explorer
                                     {
                                         if (pcc.Names.Count > value)
                                         {
-                                            s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, header.offset + 28 + i + 4)}[NAMEINDEX {value}]";
+                                            s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, pos + 4)}[NAMEINDEX {value}]";
                                         }
                                         else
                                         {
@@ -290,31 +300,31 @@ namespace ME3Explorer
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Float)
                                 {
                                     node.Tag = nodeType.ArrayLeafFloat;
-                                    s += BitConverter.ToSingle(memory, header.offset + 28 + i).ToString("0.0######");
+                                    s += BitConverter.ToSingle(memory, pos + i).ToString("0.0######");
                                     i += 4;
                                 }
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Byte)
                                 {
                                     node.Tag = nodeType.ArrayLeafByte;
-                                    s += "(byte)" + memory[header.offset + 28 + i];
+                                    s += "(byte)" + memory[pos + i];
                                     i += 1;
                                 }
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Bool)
                                 {
                                     node.Tag = nodeType.ArrayLeafBool;
-                                    s += BitConverter.ToBoolean(memory, header.offset + 28 + i);
+                                    s += BitConverter.ToBoolean(memory, pos + i);
                                     i += 1;
                                 } 
                                 else if (arrayType == UnrealObjectInfo.ArrayType.String)
                                 {
                                     node.Tag = nodeType.ArrayLeafString;
-                                    int pos = header.offset + 28 + i + 4;
+                                    int sPos = pos + 4;
                                     s += "\"";
                                     int len = val > 0 ? val : -val;
                                     for (int j = 1; j < len; j++)
                                     {
-                                        s += BitConverter.ToChar(memory, pos);
-                                        pos += 2;
+                                        s += BitConverter.ToChar(memory, sPos);
+                                        sPos += 2;
                                     }
                                     s += "\"";
                                     i += (len * 2) + 4;
@@ -607,6 +617,10 @@ namespace ME3Explorer
 
         private int GenerateSpecialStructProp(TreeNode t, string s, int pos, PropertyReader.Property prop)
         {
+            if (pos > memory.Length)
+            {
+                return pos;
+            }
             int n;
             TreeNode node;
             UnrealObjectInfo.PropertyInfo propInfo;
@@ -2061,6 +2075,12 @@ namespace ME3Explorer
                     objectNameLabel.Text = "()";
                 }
             }
+        }
+
+        private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
+        {
+            //hack to set max width for SplitContainer1
+            splitContainer1.Panel2MinSize = splitContainer1.Width - 650;
         }
     }
 }
