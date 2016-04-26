@@ -53,6 +53,8 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.hb2 = new Be.Windows.Forms.HexBox();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.saveHexChangesButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -66,6 +68,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -126,21 +129,21 @@
             // cloneObjectToolStripMenuItem
             // 
             this.cloneObjectToolStripMenuItem.Name = "cloneObjectToolStripMenuItem";
-            this.cloneObjectToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.cloneObjectToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.cloneObjectToolStripMenuItem.Text = "Clone Object";
             this.cloneObjectToolStripMenuItem.Click += new System.EventHandler(this.cloneObjectToolStripMenuItem_Click);
             // 
             // saveHexEditsToolStripMenuItem
             // 
             this.saveHexEditsToolStripMenuItem.Name = "saveHexEditsToolStripMenuItem";
-            this.saveHexEditsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.saveHexEditsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.saveHexEditsToolStripMenuItem.Text = "Save Hex Edits";
             this.saveHexEditsToolStripMenuItem.Click += new System.EventHandler(this.saveHexEditsToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem1
             // 
             this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(228, 22);
             this.editToolStripMenuItem1.Text = "Edit Type02 Sound SFX/Voice";
             this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
             // 
@@ -157,20 +160,20 @@
             this.exportAllWEMFilesToolStripMenuItem,
             this.recreateBankToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportAllWEMFilesToolStripMenuItem
             // 
             this.exportAllWEMFilesToolStripMenuItem.Name = "exportAllWEMFilesToolStripMenuItem";
-            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.exportAllWEMFilesToolStripMenuItem.Text = "Export all WEM files";
             this.exportAllWEMFilesToolStripMenuItem.Click += new System.EventHandler(this.exportAllWEMFilesToolStripMenuItem_Click);
             // 
             // recreateBankToolStripMenuItem
             // 
             this.recreateBankToolStripMenuItem.Name = "recreateBankToolStripMenuItem";
-            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.recreateBankToolStripMenuItem.Text = "Recreate Bank To File";
             this.recreateBankToolStripMenuItem.Click += new System.EventHandler(this.recreateBankToolStripMenuItem_Click);
             // 
@@ -291,6 +294,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.hb2);
+            this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer2.Size = new System.Drawing.Size(482, 497);
             this.splitContainer2.SplitterDistance = 180;
             this.splitContainer2.TabIndex = 0;
@@ -315,14 +319,34 @@
             this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 0);
+            this.hb2.Location = new System.Drawing.Point(0, 25);
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(482, 313);
+            this.hb2.Size = new System.Drawing.Size(482, 288);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
             this.hb2.VScrollBarVisible = true;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveHexChangesButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(482, 25);
+            this.toolStrip1.TabIndex = 1;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // saveHexChangesButton
+            // 
+            this.saveHexChangesButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.saveHexChangesButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexChangesButton.Image")));
+            this.saveHexChangesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveHexChangesButton.Name = "saveHexChangesButton";
+            this.saveHexChangesButton.Size = new System.Drawing.Size(107, 22);
+            this.saveHexChangesButton.Text = "Save Hex Changes";
+            this.saveHexChangesButton.Click += new System.EventHandler(this.saveHexChangesButton_Click);
             // 
             // WwiseViewer
             // 
@@ -347,8 +371,11 @@
             this.tabPage3.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -380,5 +407,7 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem saveBankToPccToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePccToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton saveHexChangesButton;
     }
 }

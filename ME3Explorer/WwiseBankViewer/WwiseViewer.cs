@@ -130,6 +130,11 @@ namespace ME3Explorer.WwiseBankViewer
 
         private void saveHexEditsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            saveHIRCHexEdits();
+        }
+
+        private void saveHIRCHexEdits()
+        {
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
@@ -214,6 +219,11 @@ namespace ME3Explorer.WwiseBankViewer
                 pcc.altSaveToFile(d.FileName, true);
                 MessageBox.Show("Done.");
             }
+        }
+
+        private void saveHexChangesButton_Click(object sender, EventArgs e)
+        {
+            saveHIRCHexEdits();
         }
     }
 }
