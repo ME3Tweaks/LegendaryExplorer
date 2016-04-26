@@ -48,6 +48,7 @@ namespace ME3Explorer
 
             saveHexChangesToolStripMenuItem.Enabled = false;
             SetView(EXPORTS_VIEW);
+            interpreterControl.PropertyValueChanged += InterpreterControl_PropertyValueChanged;
         }
 
         public void LoadMostRecent()
@@ -78,6 +79,7 @@ namespace ME3Explorer
             {
                 currentFile = s;
                 pcc = new PCCObject(s);
+                interpreterControl.pcc = pcc;
                 RefreshView();
                 InitStuff();
                 if (!isfromdlc)
@@ -418,9 +420,13 @@ namespace ME3Explorer
             {
                 RefreshMetaData();
             }
+            if (tabControl1.SelectedTab == interpreterTab)
+            {
+                interpreterControl.treeView1.Nodes[0].Expand();
+            }
         }
 
-        public void Preview()
+        public void Preview(bool isRefresh = false)
         {
             int n;
             if (!GetSelected(out n))
@@ -459,6 +465,11 @@ namespace ME3Explorer
                         tabControl1.TabPages.Remove(scriptTab);
                     }
                     hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].header);
+                    if (!isRefresh)
+                    {
+                        interpreterControl.Index = n;
+                        interpreterControl.InitInterpreter();
+                    }
                     UpdateStatusEx(n); 
                 }
                 //import
@@ -596,6 +607,11 @@ namespace ME3Explorer
                 n = 0;
                 return false;
             }
+        }
+
+        private void InterpreterControl_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            Preview(true);
         }
 
         private void propGrid_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
@@ -1117,19 +1133,19 @@ namespace ME3Explorer
 
         public void Interpreter()
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
-            {
-                return;
-            }
-            Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
-            ip.Text = "Interpreter (Package Editor)";
-            ip.MdiParent = this.MdiParent;
-            ip.pcc = pcc;
-            ip.Index = n;
-            ip.InitInterpreter();
-            ip.Show();
-            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
+            //int n;
+            //if (pcc == null || !GetSelected(out n) || n < 0)
+            //{
+            //    return;
+            //}
+            //Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
+            //ip.Text = "Interpreter (Package Editor)";
+            //ip.MdiParent = this.MdiParent;
+            //ip.pcc = pcc;
+            //ip.Index = n;
+            //ip.InitInterpreter();
+            //ip.Show();
+            //taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

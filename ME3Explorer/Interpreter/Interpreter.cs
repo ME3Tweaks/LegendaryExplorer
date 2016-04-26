@@ -13,10 +13,12 @@ using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using System.Diagnostics;
 
-namespace ME3Explorer.Interpreter2
+namespace ME3Explorer
 {
-    public partial class Interpreter2 : Form
+    public partial class Interpreter : Control
     {
+        public event PropertyValueChangedEventHandler PropertyValueChanged;
+
         public PCCObject pcc;
         public int Index;
         public string className;
@@ -95,9 +97,10 @@ namespace ME3Explorer.Interpreter2
 
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
-        public Interpreter2()
+        public Interpreter()
         {
             InitializeComponent();
+            SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
 
@@ -108,14 +111,13 @@ namespace ME3Explorer.Interpreter2
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
             className = pcc.Exports[Index].ClassName;
-            toolStripStatusLabel1.Text = "Class: " + className + ", Export Index: " + Index;
-            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
+            StartScan();
         }
 
         public new void Show()
         {
             base.Show();
-            StartScan();
+            //StartScan();
         }
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null)
@@ -1995,6 +1997,7 @@ namespace ME3Explorer.Interpreter2
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
             StartScan(expandedNodes, treeView1.TopNode.Name);
+            PropertyValueChanged(this, new PropertyValueChangedEventArgs(null, null));
         }
 
         private string CheckSeperator(string s)

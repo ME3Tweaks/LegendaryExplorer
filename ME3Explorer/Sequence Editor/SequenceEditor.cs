@@ -231,7 +231,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < CurrentObjects.Count(); i++)
                 {
-                    LoadObjects(CurrentObjects[i]);
+                    LoadObject(CurrentObjects[i]);
                 }
                 CreateConnections();
             }
@@ -249,7 +249,7 @@ namespace ME3Explorer
         public float StartPosEvents;
         public float StartPosActions;
         public float StartPosVars;
-        public void LoadObjects(int index)
+        public void LoadObject(int index)
         {
             string s = pcc.Exports[index].ObjectName;
             SaveData savedInfo;
@@ -472,14 +472,17 @@ namespace ME3Explorer
             }
             else
                 n = CurrentObjects[n];
-            Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
+            InterpreterHost ip = new InterpreterHost(pcc, n);
             ip.Text = "Interpreter (SequenceEditor)";
             ip.MdiParent = this.MdiParent;
-            ip.pcc = pcc;
-            ip.Index = n;
-            ip.InitInterpreter();
+            ip.interpreter1.PropertyValueChanged += Interpreter_PropertyValueChanged;
             ip.Show();
             taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
+        }
+
+        private void Interpreter_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            RefreshView();
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
@@ -965,6 +968,7 @@ namespace ME3Explorer
             }
             pcc.Exports[n] = ent;
             pg1.ExpandAllGridItems();
+            RefreshView();
         }
 
         private void showOutputNumbersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1016,11 +1020,6 @@ namespace ME3Explorer
             tm.InitTlkManager();
             tm.Show();
             taskbar.AddTool(tm, Properties.Resources.TLKManager_icon_64x64);
-        }
-
-        private void graphEditor_MouseEnter(object sender, EventArgs e)
-        {
-            graphEditor.Focus();
         }
 
         private void SequenceEditor_DragDrop(object sender, DragEventArgs e)
