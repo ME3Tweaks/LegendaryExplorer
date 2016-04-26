@@ -88,7 +88,6 @@ namespace ME3Explorer
                 developers.Add("- Gocek, ME2 TLK Tool");
                 developers.Add("- John33, Oggdec");
                 developers.Add("- Piccolo Team, Piccolo Graphics Framework");
-                developers.Add("- Luigi Auriemma, QuickBMS");
                 developers.Add("- Nvidia, Real Time DXT");
                 developers.Add("- hcs64, ww2ogg");
                 developers.Add("- Jean-Loup Gailly and Mark Adler, zLib");
