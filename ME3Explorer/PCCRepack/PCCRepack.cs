@@ -15,19 +15,6 @@ namespace ME3Explorer
     {
         public PCCRepack()
         {
-            //Automation Code
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length == 4)
-            {
-                if (args[1].Equals("-decompresspcc"))
-                {
-                    autoDecompressPcc(args[2], args[3]);
-                    Application.Exit();
-                    Environment.Exit(0);
-                    return;
-                }
-            }
-            //Start UI
             InitializeComponent();
         }
 
@@ -132,10 +119,35 @@ namespace ME3Explorer
         /*
          * This method is called when using the -decompresspcc command line argument
          */
-        private int autoDecompressPcc(string sourceFile, string outputFile)
+        public static int autoDecompressPcc(string sourceFile, string outputFile)
         {
-            if (!File.Exists(sourceFile)){
+            if (!File.Exists(sourceFile))
+            {
                 MessageBox.Show("PCC to decompress does not exist:\n" + sourceFile, "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
+            }
+            System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
+            try
+            {
+                PCCObject pccObj = new PCCObject(sourceFile);
+                pccObj.saveToFile(outputFile, false);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Error:\n" + ex.Message);
+                return 1;
+            }
+            return 0;
+        }
+
+        /*
+         * This method is called when using the -compresspcc command line argument
+         */
+        public static int autoCompressPcc(string sourceFile, string outputFile)
+        {
+            if (!File.Exists(sourceFile))
+            {
+                MessageBox.Show("PCC to compress does not exist:\n" + sourceFile, "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
             System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);

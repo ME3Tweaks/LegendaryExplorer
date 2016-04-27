@@ -17,6 +17,7 @@ using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms.Integration;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
@@ -52,7 +53,7 @@ namespace ME3Explorer
             decomp.MdiParent = this;
             decomp.WindowState = FormWindowState.Maximized;
             decomp.Show();
-            
+
             taskbar.AddTool(decomp, Properties.Resources.decompressor_64x64);
         }
 
@@ -100,104 +101,10 @@ namespace ME3Explorer
             taskbar.strip = toolStrip1; //this be a toolstrip reference to class taskbar            
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                AttachConsole(ATTACH_PARENT_PROCESS);
-                if (args[1].Equals("-version-switch-from") && args.Length == 3)
-                {
+            handleCommandLineArgs(args);
 
-                    string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                    if (version.Equals(args[2]))
-                    {
-                        MessageBox.Show("Version switched to is the same as the one you had before the switch.");
-                    } else
-                    {
-                        MessageBox.Show("Version switched: "+args[2]+" => "+version);
-                    }
-                } else
-                //automation
-                if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfiles") || args[1].Equals("-dlcremovefiles") || args[1].Equals("-dlcunpack") || args[1].Equals("-dlcunpack-nodebug"))
-                {
-                    //autostart DLC editor 2 (used by FemShep's Mod Manager 3/3.1+)
-                    //saves a little duplicate code
-                    dLCEditor2ToolStripMenuItem.PerformClick();
-                    return;
-                }
-                else if (args[1].Equals("-toceditorupdate"))
-                {
-                    //autostart the TOCEditor (used by FemShep's Mod Manager 3)
-                    new TOCeditor();
-                    return;
-                }
-                if (args[1].Equals("-autotoc"))
-                {
-                    //autostart the AutoTOC Tool (uses a path) (used by FemShep's Mod Manager 3)
-                    //saves a little duplicate code
-                    autoTOCToolStripMenuItem.PerformClick();
-                    return;
-                }
-                else
-                if (args[1].Equals("-decompresspcc"))
-                {
-                    //autostart the TOCEditor (used by FemShep's Mod Manager 3.2)
-                    //saves a little duplicate code
-                    pCCRepackerToolStripMenuItem.PerformClick();
-                    return;
-                } else
-                if (args[1].Equals("--help") || args[1].Equals("-h") || args[1].Equals("/?"))
-                {
-                    string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                    string commandLineHelp = "\nME3Explorer v"+version+" Command Line Options\n";
-                    commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
-                    commandLineHelp += "     Automates PCCRepacker to decompress a pcc to the new location.\n\n";
-                    commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
-                    commandLineHelp += "     Automates injecting pairs of files into a .sfar file using DLCEditor2. SearchTerm is a value you would type into the searchbox with the first result being the file that will be replaced.\n\n";
-                    commandLineHelp += " -dlcextract DLC.sfar SearchTerm ExtractionPath\n";
-                    commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
-                    commandLineHelp += " -dlcaddfiles DLC.sfar InternalPath NewFile [InternalPath2 NewFile2]...\n";
-                    commandLineHelp += "     Automates DLCEditor2 to add the specified new files. InternalPath is the internal path in the SFAR the file NewFile will be placed at.\n\n";
-                    commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
-                    commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
-                    commandLineHelp += " -dlcunpack DLC.sfar Unpackpath\n";
-                    commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
-                    commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
-                    commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
-                    commandLineHelp += " -toceditorupdate PCConsoleTOC.bin SearchTerm size\n";
-                    commandLineHelp += "     Updates TOC entry for specified file\n\n";
-                    System.Console.WriteLine(commandLineHelp);
-                    Environment.Exit(0);
-                    Application.Exit();
-                    return;
-                }
-               
-                string ending = Path.GetExtension(args[1]).ToLower();
-                switch (ending)
-                {
-                    case ".pcc":
-                        PackageEditor editor = new PackageEditor();
-                        editor.MdiParent = this;
-                        editor.Show();
-                        editor.WindowState = FormWindowState.Maximized;
-                        editor.LoadFile(args[1]);
-                        break;
-                    case ".txt":
-                        ScriptCompiler sc = new ScriptCompiler();
-                        sc.MdiParent = this;
-                        sc.rtb1.LoadFile(args[1]);
-                        sc.Compile();
-                        sc.Show();
-                        sc.WindowState = FormWindowState.Maximized;
-                        break;
-                    /*case ".mod":    // KFreon: Disabled for now due to the fact that it doesn't do the DLC check first
-                        ModMaker m = new ModMaker();
-                        m.Show();
-                        string[] s = new string[1];
-                        s[0] = args[1];
-                        //m.LoadMods(s);
-                        m.WindowState = FormWindowState.Maximized;
-                        break;*/
-                }
-            }
+
+
 
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
                 ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
@@ -214,6 +121,136 @@ namespace ME3Explorer
 
             if (!disableDLCCheckOnStartupToolStripMenuItem.Checked)
                 DoDLCCheck();
+        }
+
+        private void handleCommandLineArgs(string[] args)
+        {
+            if (args.Count() < 2 )
+            {
+                return;
+            }
+            //automation
+            if (args[1].Equals("-dlcinject") || args[1].Equals("-dlcextract") || args[1].Equals("-dlcaddfiles") || args[1].Equals("-dlcremovefiles") || args[1].Equals("-dlcunpack") || args[1].Equals("-dlcunpack-nodebug"))
+            {
+                //Can't be automated because all operations depend on methods that 
+                //require UI instances and can't be static
+                dLCEditor2ToolStripMenuItem.PerformClick();
+                return;
+            }
+            else if (args[1].Equals("-toceditorupdate"))
+            {
+                //Legacy command requested by FemShep
+                new TOCeditor();
+                return;
+            }
+            if (args[1].Equals("-autotoc"))
+            {
+                //Can't be directly automated because methods to perform AutoTOC require UI instance
+                //and can't be static
+                autoTOCToolStripMenuItem.PerformClick();
+                return;
+            }
+            else
+            if (args[1].Equals("-sfarautotoc"))
+            {
+                if (args.Count() != 3)
+                {
+
+                }
+                BitConverter.IsLittleEndian = true;
+                DLCPackage DLC = new DLCPackage(args[2]);
+                DLC.UpdateTOCbin();
+                Environment.Exit(0);
+                Application.Exit();
+                return;
+            }
+            else
+            if (args[1].Equals("-decompresspcc"))
+            {
+                if (args.Count()  != 4)
+                {
+                    MessageBox.Show("-decompresspcc command line argument requires 2 parameters:\ninputfile.pcc outputfile.pcc\nBoth arguments can be the same.", "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Environment.Exit(1);
+                    Application.Exit();
+                    return;
+                }
+                Environment.Exit(PCCRepack.autoDecompressPcc(args[2], args[3]));
+                Application.Exit();
+                return;
+            }
+            else if (args[1].Equals("-compresspcc"))
+            {
+                if (args.Count() != 4)
+                {
+                    MessageBox.Show("-compresspcc command line argument requires 2 parameters:\ninputfile.pcc outputfile.pcc\nBoth arguments can be the same.", "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Environment.Exit(1);
+                    Application.Exit();
+                    return;
+                }
+                Environment.Exit(PCCRepack.autoDecompressPcc(args[2], args[3]));
+                Application.Exit();
+                return;
+            }
+            else
+          if (args[1].Equals("--help") || args[1].Equals("-h") || args[1].Equals("/?"))
+            {
+                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                string commandLineHelp = "\nME3Explorer v" + version + " Command Line Options\n";
+                commandLineHelp += " -autotoc rootpath\n";
+                commandLineHelp += "     Automates the AutoTOC tool to generate a new PCConsoleTOC.bin file in the folder rootpath.\n\n";
+                commandLineHelp += " -compresspcc pccPath.pcc compressedPath.pcc\n";
+                commandLineHelp += "     Automates PCCRepacker to compress a pcc to the new location.\n\n";
+                commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
+                commandLineHelp += "     Automates PCCRepacker to decompress a pcc to the new location.\n\n";
+                commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
+                commandLineHelp += "     Automates injecting pairs of files into a .sfar file using DLCEditor2. SearchTerm is a value you would type into the searchbox with the first result being the file that will be replaced.\n\n";
+                commandLineHelp += " -dlcextract DLC.sfar SearchTerm ExtractionPath\n";
+                commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
+                commandLineHelp += " -dlcaddfiles DLC.sfar InternalPath NewFile [InternalPath2 NewFile2]...\n";
+                commandLineHelp += "     Automates DLCEditor2 to add the specified new files. InternalPath is the internal path in the SFAR the file NewFile will be placed at.\n\n";
+                commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
+                commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
+                commandLineHelp += " -dlcunpack DLC.sfar Unpackpath\n";
+                commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
+                commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
+                commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
+                commandLineHelp += " -toceditorupdate PCConsoleTOC.bin SearchTerm size\n";
+                commandLineHelp += "     Updates TOC entry for specified file\n\n";
+                System.Console.WriteLine(commandLineHelp);
+                Environment.Exit(0);
+                Application.Exit();
+                return;
+            }
+
+            string ending = Path.GetExtension(args[1]).ToLower();
+            switch (ending)
+            {
+                case ".pcc":
+                    PackageEditor editor = new PackageEditor();
+                    editor.MdiParent = this;
+                    editor.Show();
+                    editor.WindowState = FormWindowState.Maximized;
+                    editor.LoadFile(args[1]);
+                    break;
+                case ".txt":
+                    ScriptCompiler sc = new ScriptCompiler();
+                    sc.MdiParent = this;
+                    sc.rtb1.LoadFile(args[1]);
+                    sc.Compile();
+                    sc.Show();
+                    sc.WindowState = FormWindowState.Maximized;
+                    break;
+                    /*case ".mod":    // KFreon: Disabled for now due to the fact that it doesn't do the DLC check first
+                        ModMaker m = new ModMaker();
+                        m.Show();
+                        string[] s = new string[1];
+                        s[0] = args[1];
+                        //m.LoadMods(s);
+                        m.WindowState = FormWindowState.Maximized;
+                        break;*/
+            }
         }
 
         internal class NoHighlightRenderer : ToolStripProfessionalRenderer

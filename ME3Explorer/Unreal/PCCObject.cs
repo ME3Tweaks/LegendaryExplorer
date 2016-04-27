@@ -817,9 +817,16 @@ namespace ME3Explorer.Unreal
             //Check whether compressed
             if (this.bCompressed)
             {
-                Decompressor decompress = new Decompressor();
-                decompress.Decompress(this.pccFileName);
-                decompress.Close();
+                string exeLoc = Path.GetDirectoryName(Application.ExecutablePath);
+                System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(exeLoc + "\\exec\\Decompress.exe", "\"" + this.pccFileName + "\"");
+                procStartInfo.WorkingDirectory = Path.GetDirectoryName(exeLoc + "\\exec\\Decompress.exe");
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                procStartInfo.CreateNoWindow = true;
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
                 //MessageBox.Show("Decompression complete");
             }
 
