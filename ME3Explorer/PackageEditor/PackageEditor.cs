@@ -414,7 +414,10 @@ namespace ME3Explorer
             if (tabControl1.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
             {
                 saveHexChangesToolStripMenuItem.Enabled = true;
-                interpreterControl.treeView1.Nodes[0].Expand();
+                if (interpreterControl.treeView1.Nodes.Count > 0)
+                {
+                    interpreterControl.treeView1.Nodes[0].Expand();
+                }
             }
             else
                 saveHexChangesToolStripMenuItem.Enabled = false;

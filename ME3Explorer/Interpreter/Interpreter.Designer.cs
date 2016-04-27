@@ -43,7 +43,9 @@ namespace ME3Explorer
             this.propDropdown = new System.Windows.Forms.ToolStripComboBox();
             this.setPropertyButton = new System.Windows.Forms.ToolStripButton();
             this.addArrayElementButton = new System.Windows.Forms.ToolStripButton();
-            this.deleteArrayElement = new System.Windows.Forms.ToolStripButton();
+            this.deleteArrayElementButton = new System.Windows.Forms.ToolStripButton();
+            this.moveUpButton = new System.Windows.Forms.ToolStripButton();
+            this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -68,7 +70,9 @@ namespace ME3Explorer
             this.propDropdown,
             this.setPropertyButton,
             this.addArrayElementButton,
-            this.deleteArrayElement});
+            this.deleteArrayElementButton,
+            this.moveUpButton,
+            this.moveDownButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(992, 25);
@@ -172,16 +176,40 @@ namespace ME3Explorer
             this.addArrayElementButton.Visible = false;
             this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
             // 
-            // deleteArrayElement
+            // deleteArrayElementButton
             // 
-            this.deleteArrayElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.deleteArrayElement.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElement.Image")));
-            this.deleteArrayElement.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.deleteArrayElement.Name = "deleteArrayElement";
-            this.deleteArrayElement.Size = new System.Drawing.Size(121, 22);
-            this.deleteArrayElement.Text = "Delete Array Element";
-            this.deleteArrayElement.Visible = false;
-            this.deleteArrayElement.Click += new System.EventHandler(this.deleteArrayElement_Click);
+            this.deleteArrayElementButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
+            this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteArrayElementButton.Name = "deleteArrayElementButton";
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
+            this.deleteArrayElementButton.Text = "Delete Array Element";
+            this.deleteArrayElementButton.Visible = false;
+            this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
+            // 
+            // moveUpButton
+            // 
+            this.moveUpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
+            this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.moveUpButton.Name = "moveUpButton";
+            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
+            this.moveUpButton.Text = "▲";
+            this.moveUpButton.ToolTipText = "Move element up";
+            this.moveUpButton.Visible = false;
+            this.moveUpButton.Click += new System.EventHandler(this.moveUpButton_Click);
+            // 
+            // moveDownButton
+            // 
+            this.moveDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
+            this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.moveDownButton.Name = "moveDownButton";
+            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
+            this.moveDownButton.Text = "▼";
+            this.moveDownButton.ToolTipText = "Move element down";
+            this.moveDownButton.Visible = false;
+            this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
             // 
             // splitContainer1
             // 
@@ -261,11 +289,13 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripSeparator setValueSeparator;
         private System.Windows.Forms.ToolStripButton expandAllButton;
         private System.Windows.Forms.ToolStripButton collapseAllButton;
-        private System.Windows.Forms.ToolStripButton deleteArrayElement;
+        private System.Windows.Forms.ToolStripButton deleteArrayElementButton;
         private System.Windows.Forms.ToolStripButton addArrayElementButton;
         private System.Windows.Forms.ToolStripComboBox propDropdown;
         private System.Windows.Forms.ToolStripTextBox nameEntry;
         private System.Windows.Forms.ToolStripLabel objectNameLabel;
         private System.Windows.Forms.ToolStripSeparator expandSeparator;
+        private System.Windows.Forms.ToolStripButton moveUpButton;
+        private System.Windows.Forms.ToolStripButton moveDownButton;
     }
 }
