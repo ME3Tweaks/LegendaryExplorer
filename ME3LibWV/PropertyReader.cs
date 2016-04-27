@@ -529,7 +529,7 @@ namespace ME3LibWV
                     m.Write(new byte[4], 0, 4);
                     if (p.Size == 8)
                     {
-                        m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
+                        m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.GetName(p.Value.IntValue))), 0, 4);
                         m.Write(new byte[4], 0, 4);
                     }
                     else

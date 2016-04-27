@@ -81,6 +81,10 @@ namespace UMD.HCIL.GraphEditor
                 start.Y += node1.GlobalBounds.Height;
                 h1x = h2x = 0;
                 h1y = end.Y > start.Y ? 200 * (float)Math.Log10((end.Y - start.Y) / 200 + 1) : 200 * (float)Math.Log10((start.Y - end.Y) / 100 + 1);
+                if (h1y < 15)
+                {
+                    h1y = 15;
+                }
                 end.X += node2.GlobalBounds.Width / 2;
                 end.Y += node2.GlobalBounds.Height / 2;
             }
@@ -90,6 +94,10 @@ namespace UMD.HCIL.GraphEditor
                 start.Y += node1.GlobalBounds.Height * 0.5f;
                 end.Y += node2.GlobalBounds.Height * 0.5f;
                 h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X) / 200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
+                if (h1x < 15)
+                {
+                    h1x = h2x = 15;
+                }
                 h1y = 0;
             }
 

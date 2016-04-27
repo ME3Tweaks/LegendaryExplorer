@@ -84,7 +84,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -94,7 +94,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(652, 494);
+            this.splitContainer1.Size = new System.Drawing.Size(652, 518);
             this.splitContainer1.SplitterDistance = 445;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -112,8 +112,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(445, 494);
-            this.splitContainer2.SplitterDistance = 363;
+            this.splitContainer2.Size = new System.Drawing.Size(445, 518);
+            this.splitContainer2.SplitterDistance = 380;
             this.splitContainer2.TabIndex = 0;
             // 
             // graphEditor
@@ -125,13 +125,12 @@
             this.graphEditor.Location = new System.Drawing.Point(0, 0);
             this.graphEditor.Name = "graphEditor";
             this.graphEditor.RegionManagement = true;
-            this.graphEditor.Size = new System.Drawing.Size(445, 363);
+            this.graphEditor.Size = new System.Drawing.Size(445, 380);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
             this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
             this.graphEditor.DragDrop += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragDrop);
             this.graphEditor.DragEnter += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragEnter);
-            this.graphEditor.MouseEnter += new System.EventHandler(this.graphEditor_MouseEnter);
             // 
             // splitContainer3
             // 
@@ -146,7 +145,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(445, 127);
+            this.splitContainer3.Size = new System.Drawing.Size(445, 134);
             this.splitContainer3.SplitterDistance = 221;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -156,9 +155,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.pg1.HelpVisible = false;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
-            this.pg1.Size = new System.Drawing.Size(219, 102);
+            this.pg1.Size = new System.Drawing.Size(219, 109);
             this.pg1.TabIndex = 0;
             this.pg1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pg1_PropertyValueChanged);
             // 
@@ -171,7 +171,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(220, 102);
+            this.treeView1.Size = new System.Drawing.Size(220, 109);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -186,7 +186,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(2, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(201, 469);
+            this.listBox1.Size = new System.Drawing.Size(201, 493);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 

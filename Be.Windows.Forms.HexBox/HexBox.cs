@@ -2716,11 +2716,21 @@ namespace Be.Windows.Forms
             }
             else
             {
-                int hmax = (int)Math.Floor((double)_recHex.Width / (double)_charSize.Width);
+                int hmax = (int)Math.Floor((double)(_recHex.Width - (_vScrollBarVisible ? _vScrollBar.Width : 0))/ (double)_charSize.Width);
                 if (hmax > 1)
-                    SetHorizontalByteCount((int)Math.Floor((double)hmax / 3));
+                {
+                    if (_stringViewVisible)
+                    {
+                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 4) );
+                        _recHex.Width = (int)Math.Floor(((double)_iHexMaxHBytes) * _charSize.Width * 3 + (2 * _charSize.Width));
+                    }
+                    else
+                    {
+                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 3));
+                    }
+                }
                 else
-                    SetHorizontalByteCount(hmax);
+                    SetHorizontalByteCount(hmax); 
             }
 
             if (_stringViewVisible)
@@ -2904,6 +2914,27 @@ namespace Be.Windows.Forms
             }
         }
         int _bytesPerLine = 16;
+
+        /// <summary>
+        /// Gets or sets the minimum count of bytes in one line.
+        /// </summary>
+        [DefaultValue(0), Category("Hex"), Description("Gets or sets the minimum count of bytes in one line.")]
+        public int MinBytesPerLine
+        {
+            get { return _minBytesPerLine; }
+            set
+            {
+                if (_minBytesPerLine == value)
+                    return;
+
+                _minBytesPerLine = value;
+                OnBytesPerLineChanged(EventArgs.Empty);
+
+                UpdateRectanglePositioning();
+                Invalidate();
+            }
+        }
+        int _minBytesPerLine = 0;
 
         /// <summary>
         /// Gets or sets if the count of bytes in one line is fix.
@@ -3437,7 +3468,14 @@ namespace Be.Windows.Forms
             if (_iHexMaxHBytes == value)
                 return;
 
-            _iHexMaxHBytes = value;
+            if(value > _minBytesPerLine)
+            {
+                _iHexMaxHBytes = value;
+            }
+            else
+            {
+                _iHexMaxHBytes = _minBytesPerLine;
+            }
             OnHorizontalByteCountChanged(EventArgs.Empty);
         }
 

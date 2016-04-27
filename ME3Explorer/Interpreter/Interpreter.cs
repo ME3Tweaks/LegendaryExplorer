@@ -1,5 +1,4 @@
-﻿//Interpreter2.cs
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,10 +12,12 @@ using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using System.Diagnostics;
 
-namespace ME3Explorer.Interpreter2
+namespace ME3Explorer
 {
-    public partial class Interpreter2 : Form
+    public partial class Interpreter : Control
     {
+        public event PropertyValueChangedEventHandler PropertyValueChanged;
+
         public PCCObject pcc;
         public int Index;
         public string className;
@@ -95,9 +96,10 @@ namespace ME3Explorer.Interpreter2
 
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
-        public Interpreter2()
+        public Interpreter()
         {
             InitializeComponent();
+            SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
 
@@ -108,17 +110,16 @@ namespace ME3Explorer.Interpreter2
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
             className = pcc.Exports[Index].ClassName;
-            toolStripStatusLabel1.Text = "Class: " + className + ", Export Index: " + Index;
-            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
+            StartScan();
         }
 
         public new void Show()
         {
             base.Show();
-            StartScan();
+            //StartScan();
         }
 
-        private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null)
+        private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
@@ -127,13 +128,20 @@ namespace ME3Explorer.Interpreter2
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             topLevelTree.Tag = nodeType.Root;
-            GenerateTree(topLevelTree, topLevelHeaders);
+            try
+            {
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR");
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
             if (expandedNodes != null)
             {
-                TreeNode[] nodes;
                 foreach (var item in expandedNodes)
                 {
                     nodes = treeView1.Nodes.Find(item, true);
@@ -146,10 +154,15 @@ namespace ME3Explorer.Interpreter2
                     }
                 }
             }
-            TreeNode[] topNodes = treeView1.Nodes.Find(topNodeName, true);
-            if (topNodes.Length > 0)
+            nodes = treeView1.Nodes.Find(topNodeName, true);
+            if (nodes.Length > 0)
             {
-                treeView1.TopNode = topNodes[0];
+                treeView1.TopNode = nodes[0];
+            }
+            nodes = treeView1.Nodes.Find(selectedNodeName, true);
+            if (nodes.Length > 0)
+            {
+                treeView1.SelectedNode = nodes[0];
             }
             treeView1.EndUpdate();
         }
@@ -158,6 +171,10 @@ namespace ME3Explorer.Interpreter2
         {
             foreach (PropHeader header in headersList)
             {
+                if (readerpos > memory.Length)
+                {
+                    throw new Exception();
+                }
                 nodeType type = getType(pcc.getNameEntry(header.type));
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
                     localRoot.Nodes.Add(GenerateNode(header));
@@ -214,12 +231,18 @@ namespace ME3Explorer.Interpreter2
                         {
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
                             int count = 0;
+                            int pos;
                             for (int i = 0; i < (header.size - 4); count++)
                             {
-                                int val = BitConverter.ToInt32(memory, header.offset + 28 + i);
-                                string s = (header.offset + 28 + i).ToString("X4") + "|" + count + ": ";
+                                pos = header.offset + 28 + i;
+                                if (pos > memory.Length)
+                                {
+                                    throw new Exception();
+                                }
+                                int val = BitConverter.ToInt32(memory, pos);
+                                string s = pos.ToString("X4") + "|" + count + ": ";
                                 TreeNode node = new TreeNode();
-                                node.Name = (header.offset + 28 + i).ToString();
+                                node.Name = pos.ToString();
                                 if (arrayType == UnrealObjectInfo.ArrayType.Object)
                                 {
                                     node.Tag = nodeType.ArrayLeafObject;
@@ -276,7 +299,7 @@ namespace ME3Explorer.Interpreter2
                                     {
                                         if (pcc.Names.Count > value)
                                         {
-                                            s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, header.offset + 28 + i + 4)}[NAMEINDEX {value}]";
+                                            s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, pos + 4)}[NAMEINDEX {value}]";
                                         }
                                         else
                                         {
@@ -288,31 +311,31 @@ namespace ME3Explorer.Interpreter2
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Float)
                                 {
                                     node.Tag = nodeType.ArrayLeafFloat;
-                                    s += BitConverter.ToSingle(memory, header.offset + 28 + i).ToString("0.0######");
+                                    s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
                                     i += 4;
                                 }
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Byte)
                                 {
                                     node.Tag = nodeType.ArrayLeafByte;
-                                    s += "(byte)" + memory[header.offset + 28 + i];
+                                    s += "(byte)" + memory[pos];
                                     i += 1;
                                 }
                                 else if (arrayType == UnrealObjectInfo.ArrayType.Bool)
                                 {
                                     node.Tag = nodeType.ArrayLeafBool;
-                                    s += BitConverter.ToBoolean(memory, header.offset + 28 + i);
+                                    s += BitConverter.ToBoolean(memory, pos);
                                     i += 1;
                                 } 
                                 else if (arrayType == UnrealObjectInfo.ArrayType.String)
                                 {
                                     node.Tag = nodeType.ArrayLeafString;
-                                    int pos = header.offset + 28 + i + 4;
+                                    int sPos = pos + 4;
                                     s += "\"";
                                     int len = val > 0 ? val : -val;
                                     for (int j = 1; j < len; j++)
                                     {
-                                        s += BitConverter.ToChar(memory, pos);
-                                        pos += 2;
+                                        s += BitConverter.ToChar(memory, sPos);
+                                        sPos += 2;
                                     }
                                     s += "\"";
                                     i += (len * 2) + 4;
@@ -605,6 +628,10 @@ namespace ME3Explorer.Interpreter2
 
         private int GenerateSpecialStructProp(TreeNode t, string s, int pos, PropertyReader.Property prop)
         {
+            if (pos > memory.Length)
+            {
+                throw new Exception();
+            }
             int n;
             TreeNode node;
             UnrealObjectInfo.PropertyInfo propInfo;
@@ -997,8 +1024,7 @@ namespace ME3Explorer.Interpreter2
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
-            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = false;
-            addArrayElementButton.Visible = deleteArrayElement.Visible = false;
+            hidePropEditingControls();
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
@@ -1096,6 +1122,13 @@ namespace ME3Explorer.Interpreter2
                 LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
                 return;
             }
+        }
+
+        private void hidePropEditingControls()
+        {
+            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
+                addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
+                moveUpButton.Visible = false;
         }
 
         private void TryParseProperty()
@@ -1340,10 +1373,18 @@ namespace ME3Explorer.Interpreter2
                     default:
                         return;
                 }
-                deleteArrayElement.Visible = setPropertyButton.Visible = true;
+                deleteArrayElementButton.Visible = setPropertyButton.Visible = addArrayElementButton.Visible = true;
                 if (type == nodeType.ArrayLeafStruct)
                 {
                     setPropertyButton.Visible = false;
+                }
+                if (node.NextNode != null)
+                {
+                    moveDownButton.Visible = true;
+                }
+                if (node.PrevNode != null)
+                {
+                    moveUpButton.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -1728,19 +1769,20 @@ namespace ME3Explorer.Interpreter2
             }
         }
 
-        private void deleteArrayLeaf()
+        private byte[] deleteArrayLeaf()
         {
             try
             {
                 int pos = (int)hb1.SelectionStart;
                 if (hb1.SelectionStart != lastSetOffset)
                 {
-                    return; //user manually moved cursor
+                    return new byte[0]; //user manually moved cursor
                 }
 
                 if (memory.Length - pos < 8) //not long enough to deal with
-                    return;
+                    return new byte[0];
 
+                byte[] removedBytes;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
                 int leafOffset = Convert.ToInt32(LAST_SELECTED_NODE.Name);
                 int parentOffset = Convert.ToInt32(parent.Name);
@@ -1770,8 +1812,9 @@ namespace ME3Explorer.Interpreter2
                         size = readerpos - tmp;
                         break;
                     default:
-                        return;
+                        return new byte[0];
                 }
+                removedBytes = memory.Skip(leafOffset).Take(size).ToArray();
                 //bubble up size
                 bool firstbubble = true;
                 while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
@@ -1795,10 +1838,12 @@ namespace ME3Explorer.Interpreter2
                     parent = parent.Parent;
                 }
                 RefreshMem();
+                return removedBytes;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return new byte[0];
             }
         }
 
@@ -1811,16 +1856,34 @@ namespace ME3Explorer.Interpreter2
                 {
                     return; //user manually moved cursor
                 }
-                
+                bool isLeaf = false;
+                int leafOffset = 0;
+                //is a leaf
+                if (deleteArrayElementButton.Visible == true)
+                {
+                    isLeaf = true;
+                    leafOffset = pos;
+                    pos = Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name);
+                    LAST_SELECTED_NODE = LAST_SELECTED_NODE.Parent;
+                }
                 int size = BitConverter.ToInt32(memory, pos + 16);
                 int count = BitConverter.ToInt32(memory, pos + 24);
-                int leafSize  = 0;
+                int leafSize = 0;
                 string propName = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                 UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(getEnclosingType(LAST_SELECTED_NODE.Parent), propName);
                 List<byte> memList = memory.ToList();
                 int i;
                 float f;
                 byte b = 0;
+                int offset;
+                if (isLeaf)
+                {
+                    offset = leafOffset;
+                }
+                else
+                {
+                    offset = pos + 24 + size;
+                }
                 switch (arrayType)
                 {
                     case UnrealObjectInfo.ArrayType.Int:
@@ -1830,7 +1893,7 @@ namespace ME3Explorer.Interpreter2
                         {
                             return; //not valid element
                         }
-                        memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(i));
+                        memList.InsertRange(offset, BitConverter.GetBytes(i));
                         break;
                     case UnrealObjectInfo.ArrayType.Float:
                         leafSize = 4;
@@ -1838,7 +1901,7 @@ namespace ME3Explorer.Interpreter2
                         {
                             return; //not valid element
                         }
-                        memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(f));
+                        memList.InsertRange(offset, BitConverter.GetBytes(f));
                         break;
                     case UnrealObjectInfo.ArrayType.Byte:
                         leafSize = 1;
@@ -1846,11 +1909,11 @@ namespace ME3Explorer.Interpreter2
                         {
                             return; //not valid
                         }
-                        memList.Insert(pos + 24 + size, b);
+                        memList.Insert(offset, b);
                         break;
                     case UnrealObjectInfo.ArrayType.Bool:
                         leafSize = 1;
-                        memList.Insert(pos + 24 + size, (byte)propDropdown.SelectedIndex);
+                        memList.Insert(offset, (byte)propDropdown.SelectedIndex);
                         break;
                     case UnrealObjectInfo.ArrayType.Name:
                         leafSize = 8;
@@ -1863,8 +1926,8 @@ namespace ME3Explorer.Interpreter2
                         {
                             return;
                         }
-                        memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
-                        memList.InsertRange(pos + 24 + size + 4, BitConverter.GetBytes(i));
+                        memList.InsertRange(offset, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
+                        memList.InsertRange(offset + 4, BitConverter.GetBytes(i));
                         break;
                     case UnrealObjectInfo.ArrayType.Enum:
                         leafSize = 8;
@@ -1874,11 +1937,11 @@ namespace ME3Explorer.Interpreter2
                             return;
                         }
                         i = pcc.FindNameOrAdd(selectedItem);
-                        memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(i));
-                        memList.InsertRange(pos + 24 + size + 4, new byte[4]);
+                        memList.InsertRange(offset, BitConverter.GetBytes(i));
+                        memList.InsertRange(offset + 4, new byte[4]);
                         break;
                     case UnrealObjectInfo.ArrayType.String:
-                        memList.InsertRange(pos + 24 + size, BitConverter.GetBytes(-(proptext.Text.Length + 1)));
+                        memList.InsertRange(offset, BitConverter.GetBytes(-(proptext.Text.Length + 1)));
                         List<byte> stringBuff = new List<byte>();
                         for (int j = 0; j < proptext.Text.Length; j++)
                         {
@@ -1886,7 +1949,7 @@ namespace ME3Explorer.Interpreter2
                         }
                         stringBuff.Add(0);
                         stringBuff.Add(0);
-                        memList.InsertRange(pos + 24 + size + 4, stringBuff);
+                        memList.InsertRange(offset + 4, stringBuff);
                         leafSize = 4 + stringBuff.Count;
                         break;
                     case UnrealObjectInfo.ArrayType.Struct:
@@ -1895,7 +1958,7 @@ namespace ME3Explorer.Interpreter2
                         {
                             return;
                         }
-                        memList.InsertRange(pos + 24 + size, buff);
+                        memList.InsertRange(offset, buff);
                         leafSize = buff.Length;
                         break;
                     default:
@@ -1979,10 +2042,9 @@ namespace ME3Explorer.Interpreter2
         }
 
 
-        private void RefreshMem()
+        private void RefreshMem(int? selectedNodePos = null)
         {
-            nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
-                addArrayElementButton.Visible = deleteArrayElement.Visible = objectNameLabel.Visible = false;
+            hidePropEditingControls();
             pcc.Exports[Index].Data = memory;
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
@@ -1994,7 +2056,8 @@ namespace ME3Explorer.Interpreter2
             }
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            StartScan(expandedNodes, treeView1.TopNode.Name);
+            StartScan(expandedNodes, treeView1.TopNode.Name, selectedNodePos?.ToString());
+            PropertyValueChanged(this, new PropertyValueChangedEventArgs(null, null));
         }
 
         private string CheckSeperator(string s)
@@ -2058,6 +2121,67 @@ namespace ME3Explorer.Interpreter2
                     objectNameLabel.Text = "()";
                 }
             }
+        }
+
+        private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
+        {
+            //hack to set max width for SplitContainer1
+            splitContainer1.Panel2MinSize = splitContainer1.Width - 650;
+        }
+
+        private void moveUpButton_Click(object sender, EventArgs e)
+        {
+            moveElement(true);
+        }
+
+        private void moveDownButton_Click(object sender, EventArgs e)
+        {
+            moveElement(false);
+        }
+
+        private void moveElement(bool up)
+        {
+            if (hb1.SelectionStart != lastSetOffset)
+            {
+                return;//user manually moved cursor
+            }
+            byte[] element = deleteArrayLeaf();
+            int pos;
+            if (up)
+            {
+                pos = Convert.ToInt32(LAST_SELECTED_NODE.PrevNode.Name);
+            }
+            else
+            {
+                pos = Convert.ToInt32(LAST_SELECTED_NODE.NextNode.Name);
+            }
+            List<byte> memList = memory.ToList();
+            memList.InsertRange(pos, element);
+            memory = memList.ToArray();
+            //bubble up size
+            TreeNode parent = LAST_SELECTED_NODE.Parent;
+            bool firstbubble = true;
+            int parentOffset;
+            while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
+            {
+                if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
+                {
+                    parent = parent.Parent;
+                    continue;
+                }
+                parentOffset = Convert.ToInt32(parent.Name);
+                if (firstbubble)
+                {
+                    firstbubble = false;
+                    updateArrayLength(parentOffset, 1, element.Length);
+                }
+                else
+                {
+                    updateArrayLength(parentOffset, 0, element.Length);
+                }
+                parent = parent.Parent;
+            }
+            RefreshMem(pos);
         }
     }
 }

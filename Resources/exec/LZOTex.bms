@@ -1,6 +1,0 @@
-ComType lzo1x
-Endian little
-get BCOMP long
-get BUNCOMP long
-Clog "out.bin" 8 BCOMP BUNCOMP
-Print "Conversion done."

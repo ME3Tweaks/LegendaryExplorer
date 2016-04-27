@@ -140,6 +140,18 @@
     <Compile Include="Conditionals\CondEditor.Designer.cs">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\Interpreter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Interpreter\Interpreter.Designer.cs">
+      <DependentUpon>Interpreter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interpreter\InterpreterHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interpreter\InterpreterHost.Designer.cs">
+      <DependentUpon>InterpreterHost.cs</DependentUpon>
+    </Compile>
     <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
       <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
@@ -362,12 +374,6 @@
     </Compile>
     <Compile Include="DLLInjector\DLLInjector.Designer.cs">
       <DependentUpon>DLLInjector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter2\Interpreter2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interpreter2\Interpreter2.Designer.cs">
-      <DependentUpon>Interpreter2.cs</DependentUpon>
     </Compile>
     <Compile Include="LevelExplorer\Levelbase.cs">
       <SubType>Form</SubType>
@@ -725,6 +731,12 @@
     <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter\Interpreter.resx">
+      <DependentUpon>Interpreter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
+      <DependentUpon>InterpreterHost.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
@@ -752,9 +764,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter2\Interpreter2.resx">
-      <DependentUpon>Interpreter2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
       <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
