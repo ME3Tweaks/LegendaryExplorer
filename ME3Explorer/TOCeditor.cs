@@ -20,7 +20,6 @@ namespace ME3Explorer
         public int memsize = 0;
         public List<Inventory> content;
         public string lastsearch = ".pcc";
-        private Boolean automated = false; //Mod Manager 3 automator
 
         public TOCeditor()
         {

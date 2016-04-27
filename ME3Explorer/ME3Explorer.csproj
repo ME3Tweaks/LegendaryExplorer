@@ -70,6 +70,10 @@
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.14.1\lib\net40\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
@@ -443,12 +447,6 @@
     <Compile Include="PlotVarDB\PlotVarDB.Designer.cs">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlotVarDB\PlotVarEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlotVarDB\PlotVarEditor.Designer.cs">
-      <DependentUpon>PlotVarEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -519,12 +517,6 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Decompressor\Decompressor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Decompressor\Decompressor.Designer.cs">
-      <DependentUpon>Decompressor.cs</DependentUpon>
     </Compile>
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
       <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
@@ -755,9 +747,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Decompressor\Decompressor.resx">
-      <DependentUpon>Decompressor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
       <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -828,9 +817,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlotVarDB\PlotVarEditor.resx">
-      <DependentUpon>PlotVarEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -1000,6 +986,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SFARTOCbinUpdater\back2.jpg" />
+    <None Include="Resources\animation_explorer_64x64.bmp" />
     <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />
@@ -1051,7 +1038,6 @@
     <None Include="Resources\dlc_editor2_64x64.png" />
     <None Include="Resources\dlc_basiceditor_64x64.png" />
     <None Include="Resources\dialogue_editor_64x64.png" />
-    <None Include="Resources\decompressor_64x64.png" />
     <None Include="Resources\DDSConverter_64x64.png" />
     <None Include="Resources\conditionals_editor_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />

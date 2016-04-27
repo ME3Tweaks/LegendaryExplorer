@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +19,11 @@ namespace ME3Explorer.Unreal
         public byte[] header = new byte[headerSize];
         byte[] extraNamesList = null;
 
-        private uint magic      { get { return BitConverter.ToUInt32(header, 0); } }
-        private ushort lowVers  { get { return BitConverter.ToUInt16(header, 4); } }
+        private uint magic { get { return BitConverter.ToUInt32(header, 0); } }
+        private ushort lowVers { get { return BitConverter.ToUInt16(header, 4); } }
         private ushort highVers { get { return BitConverter.ToUInt16(header, 6); } }
-        private int nameSize    { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } // usually = 10
-        public uint flags       { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
+        private int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } // usually = 10
+        public uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
         public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
         public bool bDLCStored = false;
@@ -41,7 +41,7 @@ namespace ME3Explorer.Unreal
         }
         public bool Loaded = false;
 
-        int idxOffsets   { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
+        int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
         int NameCount
         {
             get { return BitConverter.ToInt32(header, idxOffsets); }
@@ -69,8 +69,8 @@ namespace ME3Explorer.Unreal
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
             }
         }
-        int ExportOffset { get { Debug.WriteLine("idxOffsets: "+idxOffsets+", offset for export offset: "+(idxOffsets+12)); return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
-        int ImportCount  { get { return BitConverter.ToInt32(header, idxOffsets + 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
+        int ExportOffset { get { Debug.WriteLine("idxOffsets: " + idxOffsets + ", offset for export offset: " + (idxOffsets + 12)); return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
+        int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
 
         int expInfoEndOffset { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int)); } }
@@ -118,14 +118,14 @@ namespace ME3Explorer.Unreal
             internal PCCObject pccRef;
 
             public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-            public int idxClassName   { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-            public int idxObjectName  { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public int idxLink        { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-            public int ObjectFlags    { get { return BitConverter.ToInt32(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(int)); } }
+            public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+            public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
+            public int ObjectFlags { get { return BitConverter.ToInt32(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(int)); } }
 
-            public string ClassName   { get { return pccRef.Names[idxClassName]; } }
+            public string ClassName { get { return pccRef.Names[idxClassName]; } }
             public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }
-            public string ObjectName  { get { return pccRef.Names[idxObjectName]; } }
+            public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
             public string PackageName
             {
                 get
@@ -189,19 +189,19 @@ namespace ME3Explorer.Unreal
             public PCCObject pccRef;
             public uint offset { get; set; }
 
-            public int idxClass        { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-            public int idxClassParent  { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
-            public int idxLink         { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-            public int idxPackageName  { get { return BitConverter.ToInt32(header, 8) - 1; } set { Buffer.BlockCopy(BitConverter.GetBytes(value + 1), 0, header, 8, sizeof(int)); } }
-            public int idxObjectName   { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
-            public int indexValue      { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-            public int idxArchtype     { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public long ObjectFlags    { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); } }
+            public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
+            public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
+            public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
+            public int idxPackageName { get { return BitConverter.ToInt32(header, 8) - 1; } set { Buffer.BlockCopy(BitConverter.GetBytes(value + 1), 0, header, 8, sizeof(int)); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
+            public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
+            public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); } }
 
-            public string ObjectName   { get { return pccRef.Names[idxObjectName]; } }
-            public string ClassName    { get { int val = idxClass; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
-            public string ClassParent  { get { int val = idxClassParent; if (val != 0)  return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
-            public string PackageName  { get { int val = idxPackageName; if (val >= 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Package"; } }
+            public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
+            public string ClassName { get { int val = idxClass; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
+            public string ClassParent { get { int val = idxClassParent; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
+            public string PackageName { get { int val = idxPackageName; if (val >= 0) return pccRef.Names[pccRef.Exports[val].idxObjectName]; else return "Package"; } }
             public string PackageFullName
             {
                 get
@@ -262,9 +262,9 @@ namespace ME3Explorer.Unreal
                     return s;
                 }
             }
-            public string ArchtypeName { get { int val = idxArchtype; if (val < 0)  return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
+            public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return pccRef.Names[pccRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return pccRef.Names[pccRef.Exports[val - 1].idxObjectName]; else return "None"; } }
 
-            public int DataSize   { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+            public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
             public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
             public int DataOffsetTmp;
             byte[] _data = null;
@@ -467,7 +467,7 @@ namespace ME3Explorer.Unreal
                     buffer = new byte[expInfoSize];
 
                     listsStream.Read(buffer, 0, buffer.Length);
-                    ExportEntry e = new ExportEntry(this, buffer, expInfoOffset);                    
+                    ExportEntry e = new ExportEntry(this, buffer, expInfoOffset);
                     //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize);
 
                     Exports.Add(e);
@@ -774,7 +774,7 @@ namespace ME3Explorer.Unreal
 
         public void addName(string name)
         {
-            if(!Names.Contains(name))
+            if (!Names.Contains(name))
                 Names.Add(name);
         }
 
@@ -800,7 +800,7 @@ namespace ME3Explorer.Unreal
 
             Exports.Add(exportEntry);
         }
-        
+
         /// <summary>
         /// This method is an alternate way of saving PCCs
         /// Instead of reconstructing the PCC from the data taken, it instead copies across the existing
@@ -817,9 +817,16 @@ namespace ME3Explorer.Unreal
             //Check whether compressed
             if (this.bCompressed)
             {
-                Decompressor decompress = new Decompressor();
-                decompress.Decompress(this.pccFileName);
-                decompress.Close();
+                string exeLoc = Path.GetDirectoryName(Application.ExecutablePath);
+                System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(exeLoc + "\\exec\\Decompress.exe", "\"" + this.pccFileName + "\"");
+                procStartInfo.WorkingDirectory = Path.GetDirectoryName(exeLoc + "\\exec\\Decompress.exe");
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                procStartInfo.CreateNoWindow = true;
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
                 //MessageBox.Show("Decompression complete");
             }
 
@@ -924,7 +931,7 @@ namespace ME3Explorer.Unreal
                     //Then move to the end and append the new data
                     //newPCCStream.Position = lastDataOffset;
                     newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
-                    
+
                     foreach (ExportEntry export in changedExports)
                     {
                         export.DataOffset = (int)newPCCStream.Position;
