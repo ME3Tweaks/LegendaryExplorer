@@ -275,6 +275,20 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static bool inheritsFrom(this PCCObject.IEntry entry, string baseClass)
+        {
+            string className = entry.ClassName;
+            while (Classes.ContainsKey(className))
+            {
+                if (className == baseClass)
+                {
+                    return true;
+                }
+                className = Classes[className].baseClass;
+            }
+            return false;
+        }
+
         #region Generating
         //call this method to regenerate ME3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.

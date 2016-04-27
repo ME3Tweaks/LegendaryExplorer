@@ -969,7 +969,7 @@ namespace ME3Explorer.SequenceObjects
             refreshView();
         }
 
-        public void RemoveOutlink(int linkconnection, int linkIndex)
+        public void RemoveOutlink(int linkconnection, int linkIndex, bool refresh = true)
         {
 
             byte[] buff = pcc.Exports[index].Data;
@@ -1021,10 +1021,13 @@ namespace ME3Explorer.SequenceObjects
                     }
                 }
             }
-            refreshView();
+            if (refresh)
+            {
+                refreshView();
+            }
         }
 
-        public void RemoveVarlink(int linkconnection, int linkIndex)
+        public void RemoveVarlink(int linkconnection, int linkIndex, bool refresh = true)
         {
             byte[] buff = pcc.Exports[index].Data;
             List<byte> ListBuff = new List<byte>(buff);
@@ -1075,7 +1078,10 @@ namespace ME3Explorer.SequenceObjects
                     }
                 }
             }
-            refreshView();
+            if (refresh)
+            {
+                refreshView();
+            }
         }
 
     }
@@ -1438,47 +1444,6 @@ namespace ME3Explorer.SequenceObjects
                         ((ArrayList)edge.Tag)[1] = InLinks[inputNum].node;
                 }
             }
-        }
-
-        public void AddInputLink()
-        {
-            int count = InLinks.Count;
-            InputLink l = new InputLink();
-            l.node = PPath.CreateRectangle(0, -4, 10, 8);
-            l.node.Brush = outputBrush;
-            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
-            l.node.AddInputEventListener(new InputDragHandler());
-            l.Desc = ":" + count;
-            l.index = count;
-            l.hasName = false;
-            InLinks.Add(l);
-
-            SText t2 = new SText(InLinks[count].Desc);
-            t2.X = 0;
-            if (count > 0)
-            {
-                t2.Y = InLinks[count - 1].node.Y + t2.Height;
-                box.Height += t2.Height;
-                bounds.Height += t2.Height;
-                varLinkBox.TranslateBy(0, t2.Height);
-            }
-            else
-            {
-                t2.Y = 8;
-                if (Outlinks.Count == 0)
-                {
-                    box.Height += t2.Height;
-                    bounds.Height += t2.Height;
-                    varLinkBox.TranslateBy(0, t2.Height);
-                }
-            }
-            t2.Pickable = false;
-            InLinks[count].node.X = -10;
-            InLinks[count].node.Y = t2.Y + t2.Height / 2 - 5;
-            t2.AddChild(InLinks[count].node);
-            inputLinkBox.AddChild(t2);
-            InvalidatePaint();
         }
 
         public class InputDragHandler : PDragEventHandler

@@ -40,6 +40,7 @@ namespace ME3Explorer
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            graphEditor.Camera.MouseDown += new PInputEventHandler(backMouseDown_Handler);
             zoomController = new ZoomController(graphEditor);
             
             SText.LoadFont();
@@ -503,15 +504,6 @@ namespace ME3Explorer
                     openInInterpEditorToolStripMenuItem.Visible = true;
                 else
                     openInInterpEditorToolStripMenuItem.Visible = false;
-                //add inputs
-                if (sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
-                {
-                    addInputLinkToolStripMenuItem.Enabled = true;
-                }
-                else
-                {
-                    addInputLinkToolStripMenuItem.Enabled = false;
-                }
                 //break links
                 breakLinksToolStripMenuItem.Enabled = false;
                 breakLinksToolStripMenuItem.DropDown = null;
@@ -572,11 +564,46 @@ namespace ME3Explorer
                     }
                     if (submenu.Items.Count > 0)
                     {
+                        temp = new ToolStripMenuItem("Break all Links");
+                        temp.Click += new EventHandler(removeAllLinks_handler);
+                        temp.Tag = sender;
+                        submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
                     }
                 }
             }
+        }
+
+        private void removeAllLinks_handler(object sender, EventArgs e)
+        {
+            SBox obj = (SBox)((ToolStripMenuItem)sender).Tag;
+            removeAllLinks(obj);
+        }
+
+        private void removeAllLinks(SBox obj)
+        {
+            for (int i = 0; i < obj.Outlinks.Count; i++)
+            {
+                if (obj.Outlinks[i].Links[0] != -1)
+                {
+                    for (int j = 0; j < obj.Outlinks[i].Links.Count; j++)
+                    {
+                        obj.RemoveOutlink(i, 0, false);
+                    }
+                }
+            }
+            for (int i = 0; i < obj.Varlinks.Count; i++)
+            {
+                if (obj.Varlinks[i].Links[0] != -1)
+                {
+                    for (int j = 0; j < obj.Varlinks[i].Links.Count; j++)
+                    {
+                        obj.RemoveVarlink(i, 0, false);
+                    }
+                }
+            }
+            RefreshView();
         }
 
         private void removeLink_handler(object sender, EventArgs e)
@@ -644,17 +671,7 @@ namespace ME3Explorer
             p.LoadFile(CurrentFile);
             p.listBox1.SelectedIndex = l;
         }
-
-        private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            SObj s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
-            if (s.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
-                ((SAction)s).AddInputLink();
-        }
-
+        
         private void addObjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentObjects == null)
@@ -669,23 +686,35 @@ namespace ME3Explorer
                 {
                     if (!CurrentObjects.Contains(i))
                     {
-                        byte[] buff = pcc.Exports[SequenceIndex].Data;
-                        List<byte> ListBuff = new List<byte>(buff);
-                        BitConverter.IsLittleEndian = true;
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[SequenceIndex]);
-                        for (int j = 0; j < p.Count(); j++)
+                        if (pcc.Exports[i].inheritsFrom("SequenceObject"))
                         {
-                            if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
+                            byte[] buff = pcc.Exports[i].Data;
+                            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.Exports[i], "ParentSequence");
+                            if (p != null)
                             {
-                                int count = BitConverter.ToInt32(p[j].raw, 24);
-                                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[j].raw, 16) + 4);
-                                byte[] countbuff = BitConverter.GetBytes(count + 1);
-                                for (int k = 0; k < 4; k++)
+                                byte[] val = BitConverter.GetBytes(SequenceIndex + 1);
+                                for (int j = 0; j < 4; j++)
                                 {
-                                    ListBuff[p[j].offsetval - 8 + k] = sizebuff[k];
-                                    ListBuff[p[j].offsetval + k] = countbuff[k];
+                                    buff[p.offsetval + j] = val[j];
                                 }
-                                ListBuff.InsertRange(p[j].offsetval + 4 + count * 4, BitConverter.GetBytes(i + 1));
+                                pcc.Exports[i].Data = buff;
+                            }
+                            //add to sequence
+                            buff = pcc.Exports[SequenceIndex].Data;
+                            List<byte> ListBuff = new List<byte>(buff);
+                            BitConverter.IsLittleEndian = true;
+                            p = PropertyReader.getPropOrNull(pcc, pcc.Exports[SequenceIndex], "SequenceObjects");
+                            if (p != null)
+                            {
+                                int count = BitConverter.ToInt32(p.raw, 24);
+                                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) + 4);
+                                byte[] countbuff = BitConverter.GetBytes(count + 1);
+                                for (int j = 0; j < 4; j++)
+                                {
+                                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
+                                    ListBuff[p.offsetval + j] = countbuff[j];
+                                }
+                                ListBuff.InsertRange(p.offsetval + 4 + count * 4, BitConverter.GetBytes(i + 1));
                                 pcc.Exports[SequenceIndex].Data = ListBuff.ToArray();
                                 SaveData s = new SaveData();
                                 s.index = i;
@@ -695,8 +724,12 @@ namespace ME3Explorer
                                 list.Add(s);
                                 saveView(false, list);
                                 LoadSequence(SequenceIndex, false);
-                                break;
-                            }
+                                removeAllLinks(Objects.First(x => x.Index == i) as SBox);
+                            } 
+                        }
+                        else
+                        {
+                            MessageBox.Show(i + " is not a sequence object.");
                         }
                     }
                     else
@@ -1058,6 +1091,14 @@ namespace ME3Explorer
             {
                 pcc.altSaveToFile(d.FileName, true);
                 MessageBox.Show("Done");
+            }
+        }
+
+        private void backMouseDown_Handler(object sender, PInputEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                contextMenuStrip2.Show(MousePosition);
             }
         }
     }

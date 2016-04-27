@@ -58,11 +58,12 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInPackageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInInterpEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addInputLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.breakLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -79,6 +80,7 @@
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -113,7 +115,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer2.Size = new System.Drawing.Size(445, 518);
-            this.splitContainer2.SplitterDistance = 380;
+            this.splitContainer2.SplitterDistance = 379;
             this.splitContainer2.TabIndex = 0;
             // 
             // graphEditor
@@ -125,7 +127,7 @@
             this.graphEditor.Location = new System.Drawing.Point(0, 0);
             this.graphEditor.Name = "graphEditor";
             this.graphEditor.RegionManagement = true;
-            this.graphEditor.Size = new System.Drawing.Size(445, 380);
+            this.graphEditor.Size = new System.Drawing.Size(445, 379);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
             this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
@@ -145,7 +147,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(445, 134);
+            this.splitContainer3.Size = new System.Drawing.Size(445, 135);
             this.splitContainer3.SplitterDistance = 221;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -158,7 +160,7 @@
             this.pg1.HelpVisible = false;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
-            this.pg1.Size = new System.Drawing.Size(219, 109);
+            this.pg1.Size = new System.Drawing.Size(219, 110);
             this.pg1.TabIndex = 0;
             this.pg1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pg1_PropertyValueChanged);
             // 
@@ -171,7 +173,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(220, 109);
+            this.treeView1.Size = new System.Drawing.Size(220, 110);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -271,8 +273,8 @@
             // addObjectsToolStripMenuItem
             // 
             this.addObjectsToolStripMenuItem.Name = "addObjectsToolStripMenuItem";
-            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.addObjectsToolStripMenuItem.Text = "Add Objects";
+            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectsToolStripMenuItem.Text = "Add Object";
             this.addObjectsToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
@@ -350,10 +352,9 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInPackageEditorToolStripMenuItem,
             this.openInInterpEditorToolStripMenuItem,
-            this.addInputLinkToolStripMenuItem,
             this.breakLinksToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -369,13 +370,6 @@
             this.openInInterpEditorToolStripMenuItem.Text = "Open in InterpViewer";
             this.openInInterpEditorToolStripMenuItem.Visible = false;
             this.openInInterpEditorToolStripMenuItem.Click += new System.EventHandler(this.openInInterpEditorToolStripMenuItem_Click);
-            // 
-            // addInputLinkToolStripMenuItem
-            // 
-            this.addInputLinkToolStripMenuItem.Name = "addInputLinkToolStripMenuItem";
-            this.addInputLinkToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.addInputLinkToolStripMenuItem.Text = "Add input link";
-            this.addInputLinkToolStripMenuItem.Click += new System.EventHandler(this.addInputLinkToolStripMenuItem_Click);
             // 
             // breakLinksToolStripMenuItem
             // 
@@ -407,6 +401,20 @@
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
             this.toolStripStatusLabel2.Text = " ";
+            // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addObjectToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(153, 48);
+            // 
+            // addObjectToolStripMenuItem
+            // 
+            this.addObjectToolStripMenuItem.Name = "addObjectToolStripMenuItem";
+            this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectToolStripMenuItem.Text = "Add Object";
+            this.addObjectToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
             // SequenceEditor
             // 
@@ -444,6 +452,7 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -470,7 +479,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem openInPackageEditorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addInputLinkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem breakLinksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addObjectsToolStripMenuItem;
@@ -484,5 +492,7 @@
 		private System.Windows.Forms.ToolStripMenuItem useGlobalSequenceRefSavesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadAlternateTLKToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePCCAsMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
     }
 }
