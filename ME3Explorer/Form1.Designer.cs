@@ -84,7 +84,6 @@
             this.animationExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.conditionalsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.codexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.decompressorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gUIDEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pAREditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -148,7 +147,7 @@
             this.tOCToolsToolStripMenuItem,
             this.utilitiesToolStripMenuItem});
             this.userToolsToolStripMenuItem.Name = "userToolsToolStripMenuItem";
-            this.userToolsToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.userToolsToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.userToolsToolStripMenuItem.Text = "User Tools";
             // 
             // assetExplorerToolStripMenuItem
@@ -189,7 +188,7 @@
             // 
             this.imageEngineToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.ImageEngine_icon_64x64;
             this.imageEngineToolStripMenuItem.Name = "imageEngineToolStripMenuItem";
-            this.imageEngineToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.imageEngineToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.imageEngineToolStripMenuItem.Text = "Image Engine";
             this.imageEngineToolStripMenuItem.Click += new System.EventHandler(this.imageEngineToolStripMenuItem_Click);
             // 
@@ -197,7 +196,7 @@
             // 
             this.texplorerToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.texplorer_64x64;
             this.texplorerToolStripMenuItem.Name = "texplorerToolStripMenuItem";
-            this.texplorerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.texplorerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.texplorerToolStripMenuItem.Text = "Texplorer";
             this.texplorerToolStripMenuItem.Click += new System.EventHandler(this.texplorerToolStripMenuItem_Click_1);
             // 
@@ -205,7 +204,7 @@
             // 
             this.tPFDDSToolsToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.TPFTools_64x64;
             this.tPFDDSToolsToolStripMenuItem.Name = "tPFDDSToolsToolStripMenuItem";
-            this.tPFDDSToolsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.tPFDDSToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tPFDDSToolsToolStripMenuItem.Text = "TPF/DDS Tools";
             this.tPFDDSToolsToolStripMenuItem.Click += new System.EventHandler(this.tPFDDSToolsToolStripMenuItem_Click);
             // 
@@ -222,7 +221,7 @@
             // 
             this.autoTOCToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.autotoc_64x64;
             this.autoTOCToolStripMenuItem.Name = "autoTOCToolStripMenuItem";
-            this.autoTOCToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.autoTOCToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.autoTOCToolStripMenuItem.Text = "Auto TOC";
             this.autoTOCToolStripMenuItem.Click += new System.EventHandler(this.autoTOCToolStripMenuItem_Click);
             // 
@@ -230,7 +229,7 @@
             // 
             this.dLCTOCBinUpdaterToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.SFARTOC_64x64;
             this.dLCTOCBinUpdaterToolStripMenuItem.Name = "dLCTOCBinUpdaterToolStripMenuItem";
-            this.dLCTOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.dLCTOCBinUpdaterToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.dLCTOCBinUpdaterToolStripMenuItem.Text = "SFAR TOC Updater";
             this.dLCTOCBinUpdaterToolStripMenuItem.Click += new System.EventHandler(this.dLCTOCbinUpdaterToolStripMenuItem_Click_1);
             // 
@@ -305,7 +304,6 @@
             this.animationExplorerToolStripMenuItem,
             this.conditionalsToolStripMenuItem,
             this.codexEditorToolStripMenuItem,
-            this.decompressorToolStripMenuItem,
             this.gUIDEditorToolStripMenuItem,
             this.levelExplorerToolStripMenuItem,
             this.pAREditorToolStripMenuItem,
@@ -313,7 +311,7 @@
             this.sequenceEditorToolStripMenuItem,
             this.soundplorerToolStripMenuItem});
             this.developerToolsToolStripMenuItem.Name = "developerToolsToolStripMenuItem";
-            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
+            this.developerToolsToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
             this.developerToolsToolStripMenuItem.Text = "Developer Tools";
             // 
             // packageEditorToolStripMenuItem
@@ -459,7 +457,7 @@
             // 
             this.dLCEditorToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.sfar_basiceditor_icon_64x64;
             this.dLCEditorToolStripMenuItem.Name = "dLCEditorToolStripMenuItem";
-            this.dLCEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.dLCEditorToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.dLCEditorToolStripMenuItem.Text = "SFAR Basic Editor";
             this.dLCEditorToolStripMenuItem.Click += new System.EventHandler(this.dLCEditorToolStripMenuItem_Click);
             // 
@@ -467,7 +465,7 @@
             // 
             this.dLCEditor2ToolStripMenuItem.Image = global::ME3Explorer.Properties.Resources.sfar_editor2_icon_64x64;
             this.dLCEditor2ToolStripMenuItem.Name = "dLCEditor2ToolStripMenuItem";
-            this.dLCEditor2ToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.dLCEditor2ToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.dLCEditor2ToolStripMenuItem.Text = "SFAR Editor 2";
             this.dLCEditor2ToolStripMenuItem.Click += new System.EventHandler(this.dLCEditor2ToolStripMenuItem_Click_1);
             // 
@@ -635,14 +633,6 @@
             this.codexEditorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
             this.codexEditorToolStripMenuItem.Text = "Codex Editor";
             this.codexEditorToolStripMenuItem.Click += new System.EventHandler(this.codexEditorToolStripMenuItem_Click);
-            // 
-            // decompressorToolStripMenuItem
-            // 
-            this.decompressorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("decompressorToolStripMenuItem.Image")));
-            this.decompressorToolStripMenuItem.Name = "decompressorToolStripMenuItem";
-            this.decompressorToolStripMenuItem.Size = new System.Drawing.Size(183, 30);
-            this.decompressorToolStripMenuItem.Text = "Decompressor";
-            this.decompressorToolStripMenuItem.Click += new System.EventHandler(this.decompressorToolStripMenuItem_Click);
             // 
             // gUIDEditorToolStripMenuItem
             // 
@@ -884,7 +874,7 @@
             this.versionToolStripMenuItem.Enabled = false;
             this.versionToolStripMenuItem.MergeIndex = 999;
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
             this.versionToolStripMenuItem.Text = "Version: ";
             // 
             // textureViewerToolStripMenuItem
@@ -964,7 +954,6 @@
         private System.Windows.Forms.ToolStripMenuItem textureViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem packageEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pCCRepackerToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem decompressorToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem conditionalsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sequenceEditorToolStripMenuItem;
         private System.ComponentModel.IContainer components;

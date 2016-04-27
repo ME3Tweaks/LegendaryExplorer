@@ -47,16 +47,6 @@ namespace ME3Explorer
                 IsDLCDone = true;
         }
 
-        private void decompressorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Decompressor decomp = new Decompressor();
-            decomp.MdiParent = this;
-            decomp.WindowState = FormWindowState.Maximized;
-            decomp.Show();
-
-            taskbar.AddTool(decomp, Properties.Resources.decompressor_64x64);
-        }
-
         private void conditionalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Conditionals con = new Conditionals();
