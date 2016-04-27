@@ -150,11 +150,11 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to compress does not exist:\n" + sourceFile, "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
+            System.Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
             try
             {
                 PCCObject pccObj = new PCCObject(sourceFile);
-                pccObj.saveToFile(outputFile, false);
+                pccObj.saveToFile(outputFile, true);
             }
             catch (Exception ex)
             {

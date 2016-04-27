@@ -102,10 +102,6 @@ namespace ME3Explorer
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
             string[] args = Environment.GetCommandLineArgs();
             handleCommandLineArgs(args);
-
-
-
-
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME3InstallDir))
                 ME3Directory.GamePath(Properties.Settings.Default.ME3InstallDir);
             if (!String.IsNullOrEmpty(Properties.Settings.Default.ME2InstallDir))
@@ -155,11 +151,14 @@ namespace ME3Explorer
             {
                 if (args.Count() != 3)
                 {
-
+                    MessageBox.Show("-sfarautotoc command line argument requires 1 parameter:\nSFARFILE.sfar", "Automated SFAR TOC Update Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(1);
+                    Application.Exit();
+                    return;
                 }
                 BitConverter.IsLittleEndian = true;
                 DLCPackage DLC = new DLCPackage(args[2]);
-                DLC.UpdateTOCbin();
+                DLC.UpdateTOCbin(true);
                 Environment.Exit(0);
                 Application.Exit();
                 return;
@@ -189,7 +188,7 @@ namespace ME3Explorer
                     Application.Exit();
                     return;
                 }
-                Environment.Exit(PCCRepack.autoDecompressPcc(args[2], args[3]));
+                Environment.Exit(PCCRepack.autoCompressPcc(args[2], args[3]));
                 Application.Exit();
                 return;
             }
