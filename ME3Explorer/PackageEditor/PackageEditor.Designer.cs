@@ -647,7 +647,7 @@
             this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
             this.interpreterTab.Size = new System.Drawing.Size(660, 418);
             this.interpreterTab.TabIndex = 6;
-            this.interpreterTab.Text = "Interpreter";
+            this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
             // 
             // interpreterControl

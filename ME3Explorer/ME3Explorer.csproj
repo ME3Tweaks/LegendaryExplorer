@@ -137,6 +137,12 @@
     <Compile Include="AboutME3Explorer.Designer.cs">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\AddPropertyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interpreter\AddPropertyDialog.Designer.cs">
+      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Conditionals\CondEditor.Designer.cs">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </Compile>
@@ -667,6 +673,9 @@
     </Compile>
     <EmbeddedResource Include="AboutME3Explorer.resx">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
+      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AFCExtract\AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>

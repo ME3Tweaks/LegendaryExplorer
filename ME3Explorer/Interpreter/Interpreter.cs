@@ -46,7 +46,9 @@ namespace ME3Explorer
             "ArrayProperty",
             "StrProperty",
             "StringRefProperty",
-            "DelegateProperty"//10
+            "DelegateProperty",//10
+            "None",
+            "BioMask4Property",
         };
 
         public enum nodeType
@@ -63,6 +65,8 @@ namespace ME3Explorer
             StrProperty = 8,
             StringRefProperty = 9,
             DelegateProperty = 10,
+            None,
+            BioMask4Property,
             
             ArrayLeafObject,
             ArrayLeafName,
@@ -108,7 +112,6 @@ namespace ME3Explorer
             DynamicByteProvider db = new DynamicByteProvider(pcc.Exports[Index].Data);
             hb1.ByteProvider = db;
             memory = pcc.Exports[Index].Data;
-            memsize = memory.Length;
             className = pcc.Exports[Index].ClassName;
             StartScan();
         }
@@ -121,6 +124,7 @@ namespace ME3Explorer
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
+            hidePropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
@@ -128,6 +132,7 @@ namespace ME3Explorer
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
             try
             {
                 GenerateTree(topLevelTree, topLevelHeaders);
@@ -135,6 +140,7 @@ namespace ME3Explorer
             catch (Exception)
             {
                 topLevelTree.Nodes.Add("PARSE ERROR");
+                addPropButton.Visible = false;
             }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
@@ -142,9 +148,17 @@ namespace ME3Explorer
             TreeNode[] nodes;
             if (expandedNodes != null)
             {
-                foreach (var item in expandedNodes)
+                int memDiff = memory.Length - memsize;
+                int selectedPos = Math.Abs(Convert.ToInt32(selectedNodeName));
+                int curPos = 0;
+                foreach (string item in expandedNodes)
                 {
-                    nodes = treeView1.Nodes.Find(item, true);
+                    curPos = Math.Abs(Convert.ToInt32(item));
+                    if (curPos > selectedPos)
+                    {
+                        curPos += memDiff;
+                    }
+                    nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
                     if(nodes.Length > 0)
                     {
                         foreach (var node in nodes)
@@ -164,7 +178,12 @@ namespace ME3Explorer
             {
                 treeView1.SelectedNode = nodes[0];
             }
+            else
+            {
+                treeView1.SelectedNode = treeView1.Nodes[0];
+            }
             treeView1.EndUpdate();
+            memsize = memory.Length;
         }
 
         public void GenerateTree(TreeNode localRoot, List<PropHeader> headersList)
@@ -207,7 +226,7 @@ namespace ME3Explorer
                                 tmp = readerpos;
                                 TreeNode n = new TreeNode(i.ToString());
                                 n.Tag = nodeType.ArrayLeafStruct;
-                                n.Name = pos.ToString();
+                                n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
                                 if (arrayListPropHeaders.Count > 0)
@@ -393,58 +412,19 @@ namespace ME3Explorer
                     readerpos += 4;
                 }
             }
-            //Doesn't have proper default properties because of inheritance from Vector
-            else if (structType.EndsWith("Plane"))
-            {
-                string[] labels = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 4; i++)
-                {
-                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, readerpos).ToString("0.0######"));
-                    node.Name = readerpos.ToString();
-                    node.Tag = nodeType.StructLeafFloat;
-                    t.Nodes.Add(node);
-                    readerpos += 4;
-                }
-            }
-            //Doesn't have proper default properties because of inheritance from ActorReference
-            else if (structType == "CoverReference")
-            {
-                node = new TreeNode(readerpos.ToString("X4") + ": SlotIdx : " + BitConverter.ToInt32(memory, readerpos));
-                node.Name = readerpos.ToString();
-                node.Tag = nodeType.StructLeafInt;
-                t.Nodes.Add(node);
-                readerpos += 4;
-                node = new TreeNode(readerpos.ToString("X4") + ": Direction : " + BitConverter.ToInt32(memory, readerpos));
-                node.Name = readerpos.ToString();
-                node.Tag = nodeType.StructLeafInt;
-                t.Nodes.Add(node);
-                readerpos += 4;
-
-                node = new TreeNode(readerpos.ToString("X4") + ": Guid : Guid");
-                node.Name = readerpos.ToString();
-                node.Tag = nodeType.StructLeafStruct;
-                GenerateSpecialStruct(node, "Guid", 20);
-                t.Nodes.Add(node);
-
-                int n = BitConverter.ToInt32(memory, readerpos);
-                node = new TreeNode(readerpos.ToString("X4") + ": Actor : " + n + " (" + pcc.getObjectName(n) + ")" );
-                node.Name = readerpos.ToString();
-                node.Tag = nodeType.StructLeafObject;
-                t.Nodes.Add(node);
-                readerpos += 4;
-            }
             else
             {
                 if (UnrealObjectInfo.Structs.ContainsKey(structType))
                 {
                     List<PropertyReader.Property> props;
+                    //memoize
                     if (defaultStructValues.ContainsKey(structType))
                     {
                         props = defaultStructValues[structType];
                     }
                     else
                     {
-                        props = PropertyReader.ReadProp(pcc, UnrealObjectInfo.getDefaultClassValue(pcc, structType), 0);
+                        props = PropertyReader.ReadProp(pcc, UnrealObjectInfo.getDefaultClassValue(pcc, structType, true), 0);
                         defaultStructValues.Add(structType, props);
                     }
                     for (int i = 0; i < props.Count; i++)
@@ -745,7 +725,7 @@ namespace ME3Explorer
                         {
                             readerpos = pos;
                             node2 = new TreeNode(i + ": (" + propInfo.reference + ")");
-                            node2.Name = pos.ToString();
+                            node2.Name = (-pos).ToString();
                             node2.Tag = nodeType.StructLeafStruct;
                             GenerateSpecialStruct(node2, propInfo.reference, 0);
                             node.Nodes.Add(node2);
@@ -793,7 +773,7 @@ namespace ME3Explorer
                     propInfo = UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(prop.Name));
                     s += propInfo.reference;
                     node = new TreeNode(s);
-                    node.Name = pos.ToString();
+                    node.Name = (-pos).ToString();
                     node.Tag = nodeType.StructLeafStruct;
                     readerpos = pos;
                     GenerateSpecialStruct(node, propInfo.reference, 0);
@@ -998,7 +978,7 @@ namespace ME3Explorer
                 {
                     continue;
                 }
-                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, Convert.ToInt32(node.Name)));
+                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, Math.Abs(Convert.ToInt32(node.Name))));
                 p = UnrealObjectInfo.getPropertyInfo(typeName, propname, isStruct);
                 typeName = p.reference;
                 isStruct = true;
@@ -1034,24 +1014,26 @@ namespace ME3Explorer
             }
             try
             {
-                int off = Convert.ToInt32(e.Node.Name);
+                int off = Math.Abs(Convert.ToInt32(e.Node.Name));
                 hb1.SelectionStart = off;
                 lastSetOffset = off;
                 hb1.SelectionLength = 1;
-                //Debug.WriteLine("Node offset: " + off);
-                if (e.Node.Tag != null && isArrayLeaf((nodeType)e.Node.Tag))
+                if (e.Node.Tag == null)
                 {
-                    LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
+                    LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
+                    return;
+                }
+                LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
+                if (isArrayLeaf(LAST_SELECTED_PROP_TYPE))
+                {
                     TryParseArrayLeaf(e.Node);
                 }
-                else if (e.Node.Tag != null && isStructLeaf((nodeType)e.Node.Tag))
+                else if (isStructLeaf(LAST_SELECTED_PROP_TYPE))
                 {
-                    LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
                     TryParseStructProperty(e.Node);
                 }
-                else if (e.Node.Tag != null && e.Node.Tag.Equals(nodeType.ArrayProperty))
+                else if (LAST_SELECTED_PROP_TYPE == nodeType.ArrayProperty)
                 {
-                    LAST_SELECTED_PROP_TYPE = nodeType.ArrayProperty;
                     addArrayElementButton.Visible = true;
                     proptext.Clear();
                     UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(getEnclosingType(e.Node.Parent), pcc.getNameEntry(BitConverter.ToInt32(memory, off)));
@@ -1097,25 +1079,24 @@ namespace ME3Explorer
                             propDropdown.Visible = true;
                             break;
                         case UnrealObjectInfo.ArrayType.Struct:
-                            string structType = getEnclosingType(e.Node);
-                            //TODO: make add element work for these too
-                            if (UnrealObjectInfo.ImmutableStructs.Contains(structType))
-                            {
-                                addArrayElementButton.Visible = false;
-                                return;
-                            }
-                            break;
                         default:
                             break;
                     }
                 }
+                else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
+                {
+                    addPropButton.Visible = true;
+                }
+                else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
+                {
+                    addPropButton.Visible = true;
+                }
                 else
                 {
                     TryParseProperty();
-                    LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Node name is not in correct format.");
                 //name is wrong, don't attempt to continue parsing.
@@ -1128,7 +1109,7 @@ namespace ME3Explorer
         {
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
-                moveUpButton.Visible = false;
+                moveUpButton.Visible = addPropButton.Visible = false;
         }
 
         private void TryParseProperty()
@@ -1429,26 +1410,26 @@ namespace ME3Explorer
                         if (byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos] = b;
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.StructLeafBool:
                         memory[pos] = (byte)propDropdown.SelectedIndex;
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     case nodeType.StructLeafFloat:
                         proptext.Text = CheckSeperator(proptext.Text);
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(f));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.StructLeafObject:
@@ -1457,13 +1438,13 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.StructLeafEnum:
                         i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     case nodeType.StructLeafName:
                         if (int.TryParse(proptext.Text, out i))
@@ -1475,7 +1456,7 @@ namespace ME3Explorer
                             }
                             WriteMem(pos, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
                             WriteMem(pos + 4, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.StructLeafStr:
@@ -1521,10 +1502,10 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Convert.ToInt32(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                 }
             }
@@ -1556,7 +1537,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos + 24, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case "NameProperty":
@@ -1569,7 +1550,7 @@ namespace ME3Explorer
                             }
                             WriteMem(pos + 24, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
                             WriteMem(pos + 28, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case "FloatProperty":
@@ -1577,24 +1558,24 @@ namespace ME3Explorer
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos + 24, BitConverter.GetBytes(f));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case "BoolProperty":
                         memory[pos + 24] = (byte)propDropdown.SelectedIndex;
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     case "ByteProperty":
                         if (propDropdown.Visible)
                         {
                             i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                             WriteMem(pos + 32, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         else if(byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos + 32] = b;
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case "StrProperty":
@@ -1642,10 +1623,10 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Convert.ToInt32(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                 }
             }
@@ -1671,7 +1652,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafFloat:
@@ -1680,19 +1661,19 @@ namespace ME3Explorer
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(f));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafByte:
                         if (byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos] = b;
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafBool:
                         memory[pos] = (byte)propDropdown.SelectedIndex;
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     case nodeType.ArrayLeafName:
                         if (int.TryParse(proptext.Text, out i))
@@ -1704,13 +1685,13 @@ namespace ME3Explorer
                             }
                             WriteMem(pos, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
                             WriteMem(pos + 4, BitConverter.GetBytes(i));
-                            RefreshMem();
+                            RefreshMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafEnum:
                         i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     case nodeType.ArrayLeafString:
                         string s = proptext.Text;
@@ -1754,10 +1735,10 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Convert.ToInt32(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
-                        RefreshMem();
+                        RefreshMem(pos);
                         break;
                     default:
                         return;
@@ -1784,8 +1765,8 @@ namespace ME3Explorer
 
                 byte[] removedBytes;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
-                int leafOffset = Convert.ToInt32(LAST_SELECTED_NODE.Name);
-                int parentOffset = Convert.ToInt32(parent.Name);
+                int leafOffset = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Name));
+                int parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
                 
                 int size;
                 switch (LAST_SELECTED_PROP_TYPE)
@@ -1824,7 +1805,7 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    parentOffset = Convert.ToInt32(parent.Name);
+                    parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
                     if (firstbubble)
                     {
                         memory = RemoveIndices(memory, leafOffset, size);
@@ -1837,7 +1818,14 @@ namespace ME3Explorer
                     }
                     parent = parent.Parent;
                 }
-                RefreshMem();
+                if (LAST_SELECTED_PROP_TYPE == nodeType.ArrayLeafStruct)
+                {
+                    RefreshMem(-pos);
+                }
+                else
+                {
+                    RefreshMem(pos);
+                }
                 return removedBytes;
             }
             catch (Exception ex)
@@ -1863,7 +1851,7 @@ namespace ME3Explorer
                 {
                     isLeaf = true;
                     leafOffset = pos;
-                    pos = Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name);
+                    pos = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name));
                     LAST_SELECTED_NODE = LAST_SELECTED_NODE.Parent;
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
@@ -1976,10 +1964,17 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Convert.ToInt32(parent.Name), 0, leafSize);
+                    updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, leafSize);
                     parent = parent.Parent;
                 }
-                RefreshMem();
+                if (isLeaf)
+                {
+                    RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -leafOffset : leafOffset);
+                }
+                else
+                {
+                    RefreshMem(pos); 
+                }
             }
             catch (Exception ex)
             {
@@ -2044,7 +2039,6 @@ namespace ME3Explorer
 
         private void RefreshMem(int? selectedNodePos = null)
         {
-            hidePropEditingControls();
             pcc.Exports[Index].Data = memory;
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
@@ -2145,16 +2139,25 @@ namespace ME3Explorer
             {
                 return;//user manually moved cursor
             }
-            byte[] element = deleteArrayLeaf();
             int pos;
+            TreeNode node;
             if (up)
             {
-                pos = Convert.ToInt32(LAST_SELECTED_NODE.PrevNode.Name);
+                node = LAST_SELECTED_NODE.PrevNode;
+                pos = Math.Abs(Convert.ToInt32(node.Name));
             }
             else
             {
-                pos = Convert.ToInt32(LAST_SELECTED_NODE.NextNode.Name);
+                node = LAST_SELECTED_NODE.NextNode;
+                pos = Math.Abs(Convert.ToInt32(node.Name));
+                //account for structs not neccesarily being the same size
+                if (node.Nodes.Count > 0)
+                {
+                    //position of element being moved down + size of struct below it
+                    pos = lastSetOffset + (Math.Abs(Convert.ToInt32(node.LastNode.Name)) + 8 - pos);
+                }
             }
+            byte[] element = deleteArrayLeaf();
             List<byte> memList = memory.ToList();
             memList.InsertRange(pos, element);
             memory = memList.ToArray();
@@ -2169,7 +2172,7 @@ namespace ME3Explorer
                     parent = parent.Parent;
                     continue;
                 }
-                parentOffset = Convert.ToInt32(parent.Name);
+                parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
                 if (firstbubble)
                 {
                     firstbubble = false;
@@ -2181,7 +2184,123 @@ namespace ME3Explorer
                 }
                 parent = parent.Parent;
             }
-            RefreshMem(pos);
+            if (node.Nodes.Count > 0)
+            {
+                RefreshMem(-pos);
+            }
+            else
+            {
+                RefreshMem(pos);
+            }
+        }
+
+        private void addPropButton_Click(object sender, EventArgs e)
+        {
+            List<string> props = PropertyReader.getPropList(pcc, pcc.Exports[Index]).Select(x => pcc.getNameEntry(x.Name)).ToList();
+            string prop = AddPropertyDialog.GetProperty(className, props);
+            if (prop != null)
+            {
+                UnrealObjectInfo.PropertyInfo info = UnrealObjectInfo.getPropertyInfo(className, prop);
+                List<byte> buff = new List<byte>();
+                //name
+                buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd(prop)));
+                buff.AddRange(new byte[4]);
+                //type
+                buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd(info.type.ToString())));
+                buff.AddRange(new byte[4]);
+
+                switch (info.type)
+                {
+                    case PropertyReader.Type.IntProperty:
+                    case PropertyReader.Type.StringRefProperty:
+                    case PropertyReader.Type.FloatProperty:
+                    case PropertyReader.Type.ObjectProperty:
+                    case PropertyReader.Type.ArrayProperty:
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(4));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        break;
+                    case PropertyReader.Type.NameProperty:
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(8));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd("None")));
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        break;
+                    case PropertyReader.Type.BoolProperty:
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.Add(0);
+                        break;
+                    case PropertyReader.Type.StrProperty:
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(6));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.AddRange(BitConverter.GetBytes(-1));
+                        buff.Add(0);
+                        buff.Add(0);
+                        break;
+                    case PropertyReader.Type.DelegateProperty:
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(12));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        buff.AddRange(BitConverter.GetBytes(0));
+                        break;
+                    case PropertyReader.Type.ByteProperty:
+                        if (info.reference == null)
+                        {
+                            //size
+                            buff.AddRange(BitConverter.GetBytes(1));
+                            buff.AddRange(new byte[4]);
+                            //value
+                            buff.Add(0);
+                        }
+                        else
+                        {
+                            //size
+                            buff.AddRange(BitConverter.GetBytes(8));
+                            buff.AddRange(new byte[4]);
+                            //enum Type
+                            buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd(info.reference)));
+                            buff.AddRange(new byte[4]);
+                            //value
+                            buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd("None")));
+                            buff.AddRange(new byte[4]);
+                        }
+                        break;
+                    case PropertyReader.Type.StructProperty:
+                        byte[] structBuff = UnrealObjectInfo.getDefaultClassValue(pcc, info.reference);
+                        if (structBuff == null)
+                        {
+                            return;
+                        }
+                        //size
+                        buff.AddRange(BitConverter.GetBytes(structBuff.Length));
+                        buff.AddRange(new byte[4]);
+                        //struct Type
+                        buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd(info.reference)));
+                        buff.AddRange(new byte[4]);
+                        //value
+                        buff.AddRange(structBuff);
+                        break;
+                    default:
+                        return;
+                }
+                int pos = Math.Abs(Convert.ToInt32(treeView1.Nodes[0].LastNode.Name));
+                List<byte> memlist = memory.ToList();
+                memlist.InsertRange(pos, buff);
+                memory = memlist.ToArray();
+                RefreshMem(pos);
+            }
         }
     }
 }

@@ -49,6 +49,7 @@ namespace ME3Explorer
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.addPropButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -72,7 +73,8 @@ namespace ME3Explorer
             this.addArrayElementButton,
             this.deleteArrayElementButton,
             this.moveUpButton,
-            this.moveDownButton});
+            this.moveDownButton,
+            this.addPropButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(992, 25);
@@ -260,6 +262,16 @@ namespace ME3Explorer
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // addPropButton
+            // 
+            this.addPropButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
+            this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addPropButton.Name = "addPropButton";
+            this.addPropButton.Size = new System.Drawing.Size(81, 19);
+            this.addPropButton.Text = "Add Property";
+            this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
+            // 
             // Interpreter
             // 
             this.ClientSize = new System.Drawing.Size(992, 398);
@@ -297,5 +309,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripSeparator expandSeparator;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
+        private System.Windows.Forms.ToolStripButton addPropButton;
     }
 }
