@@ -190,5 +190,17 @@ namespace ME3Explorer.Properties {
                 this["DisableDLCCheckOnStart"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PlotVarDBPath {
+            get {
+                return ((string)(this["PlotVarDBPath"]));
+            }
+            set {
+                this["PlotVarDBPath"] = value;
+            }
+        }
     }
 }

@@ -73,9 +73,15 @@ namespace ME3Explorer.PlotVarDB
             this.plotVarTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             entries = new List<PlotVarEntry>();
             string appPath = Application.StartupPath;
-            if (File.Exists(appPath + @"\plot.db"))
+            if (File.Exists(Properties.Settings.Default.PlotVarDBPath))
             {
-                loadDatabase(appPath + @"\plot.db");
+                loadDatabase(Properties.Settings.Default.PlotVarDBPath);
+            }
+            //load default plot.db
+            else if (File.Exists(appPath + @"\exec\defaultPlot.db"))
+            {
+                loadDatabase(appPath + @"\exec\defaultPlot.db");
+                status.Text = "Loaded Default Database";
             }
             else
             {
@@ -199,8 +205,10 @@ namespace ME3Explorer.PlotVarDB
         {
             commitTable();
             SaveFileDialog d = new SaveFileDialog();
+            d.FileName = "plot.db";
+            d.InitialDirectory = Application.StartupPath;
             d.Filter = "*.db|*.db";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 BitConverter.IsLittleEndian = true;
@@ -225,6 +233,7 @@ namespace ME3Explorer.PlotVarDB
                 }
                 fs.Close();
                 status.Text = "Saved DB to " + d.FileName;
+                Properties.Settings.Default.PlotVarDBPath = d.FileName;
             }
         }
 
@@ -396,7 +405,7 @@ namespace ME3Explorer.PlotVarDB
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.db|*.db";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 loadDatabase(d.FileName);
             }
@@ -589,7 +598,7 @@ namespace ME3Explorer.PlotVarDB
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.csv|*.csv";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 System.IO.StreamWriter stringWriter = new System.IO.StreamWriter(d.FileName);
                 var csv = new CsvWriter(stringWriter);
@@ -653,7 +662,7 @@ namespace ME3Explorer.PlotVarDB
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.csv|*.csv";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 commitTable();
                 System.IO.StreamReader stringreader = new System.IO.StreamReader(d.FileName);
@@ -779,7 +788,7 @@ namespace ME3Explorer.PlotVarDB
             var datagridview = sender as DataGridView;
 
             // Check to make sure the cell clicked is the cell containing the combobox 
-            if (datagridview.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn && validClick)
+            if (validClick && datagridview.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
             {
                 datagridview.BeginEdit(true);
                 ((ComboBox)datagridview.EditingControl).DroppedDown = true;
