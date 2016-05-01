@@ -74,7 +74,7 @@ namespace ME3LibWV.UnrealClasses
                 m.M44 = buff[3, 3];
                 Matrices.Add(m);
                 int idx = Entries[i];
-                if (idx >= 0 && idx < pcc.Exports.Count && pcc.GetObject(pcc.Exports[idx].idxClass) == "StaticMeshComponent")
+                if (idx >= 0 && idx < pcc.Exports.Count && pcc.getObjectName(pcc.Exports[idx].idxClass) == "StaticMeshComponent")
                     STMC[i] = new StaticMeshComponent(pcc, idx, m);
             }
         }
@@ -87,7 +87,7 @@ namespace ME3LibWV.UnrealClasses
         }
         public override TreeNode ToTree()
         {
-            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.GetObject(MyIndex + 1));
+            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1));
             t.Name = (MyIndex + 1).ToString();
             foreach (StaticMeshComponent stmc in STMC)
                 if (stmc != null)

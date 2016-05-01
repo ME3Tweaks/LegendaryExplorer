@@ -150,7 +150,7 @@ namespace ME3LibWV
                 s = Names[index];
             return s;
         }
-        public string GetObject(int uindex)
+        public string getObjectName(int uindex)
         {
             if (uindex == 0)
                 return "Class";
@@ -174,7 +174,7 @@ namespace ME3LibWV
                 uindex = Imports[-uindex - 1].idxLink;
             while (uindex != 0)
             {
-                s = GetObject(uindex) + "." + s;
+                s = getObjectName(uindex) + "." + s;
                 if (uindex > 0)
                     uindex = Exports[uindex - 1].idxLink;
                 else
@@ -234,11 +234,11 @@ namespace ME3LibWV
                 return "Class";
             if (uindex > 0)
             {
-                return GetObject(Exports[uindex - 1].idxClass);
+                return getObjectName(Exports[uindex - 1].idxClass);
             }
             else
             {
-                return GetObject(Imports[-uindex - 1].idxClass);
+                return getObjectName(Imports[-uindex - 1].idxClass);
             }
         }
         public int[] GetLinkList(int uindex)

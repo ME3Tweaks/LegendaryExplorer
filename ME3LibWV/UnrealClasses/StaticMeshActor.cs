@@ -71,7 +71,7 @@ namespace ME3LibWV.UnrealClasses
 
         public override TreeNode ToTree()
         {
-            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.GetObject(MyIndex + 1));
+            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1));
             t.Name = (MyIndex + 1).ToString();
             if (STMC != null)
                 t.Nodes.Add(STMC.ToTree());

@@ -22,9 +22,9 @@ namespace ME3Creator
             comboBox1.Items.Clear();
             comboBox2.Items.Clear();
             for (int i = 0; i < pcc.Header.ExportCount; i++)
-                comboBox1.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                comboBox1.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             for (int i = 0; i < pcc.Header.ImportCount; i++)
-                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.GetObject(-i - 1));
+                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.getObjectName(-i - 1));
             comboBox1.SelectedIndex = comboBox2.SelectedIndex = 0;
             if (index == 0)
                 r1.Checked = true;

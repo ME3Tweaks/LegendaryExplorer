@@ -89,6 +89,12 @@
     <Compile Include="Hexconverter.Designer.cs">
       <DependentUpon>Hexconverter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interpreter.Designer.cs">
+      <DependentUpon>Interpreter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Move.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Hexconverter.resx">
       <DependentUpon>Hexconverter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter.resx">
+      <DependentUpon>Interpreter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Move.resx">
       <DependentUpon>Move.cs</DependentUpon>
@@ -149,6 +158,10 @@
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
       <Project>{A8E1981A-0A8C-4C7A-9175-B5F0C085F639}</Project>
@@ -191,8 +204,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources\exec\ME3ObjectInfo.json" "$(ProjectDir)$(OutDir)\exec\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

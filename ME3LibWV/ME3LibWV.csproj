@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -48,6 +48,9 @@
       <HintPath>..\Libraries\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualC" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Libraries\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -159,6 +162,7 @@
     <Compile Include="UnrealClasses\StaticMeshCollectionActor.cs" />
     <Compile Include="UnrealClasses\StaticMeshComponent.cs" />
     <Compile Include="UnrealClasses\_DXRenderableObject.cs" />
+    <Compile Include="UnrealObjectInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -169,6 +173,12 @@
   <ItemGroup>
     <None Include="Default.dds" />
     <None Include="Select.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

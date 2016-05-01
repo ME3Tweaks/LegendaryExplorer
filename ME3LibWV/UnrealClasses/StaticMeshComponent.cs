@@ -63,7 +63,7 @@ namespace ME3LibWV.UnrealClasses
             MyMatrix *= Matrix.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
             MyMatrix *= Matrix.Translation(Translation);
             Matrix t = MyMatrix * ParentMatrix;
-            if (idxSTM > 0 && !pcc.GetObject(idxSTM).ToLower().Contains("volumetric") && !pcc.GetObject(idxSTM).ToLower().Contains("spheremesh"))
+            if (idxSTM > 0 && !pcc.getObjectName(idxSTM).ToLower().Contains("volumetric") && !pcc.getObjectName(idxSTM).ToLower().Contains("spheremesh"))
                 STM = new StaticMesh(pcc, idxSTM - 1, t);
         }
 
@@ -75,7 +75,7 @@ namespace ME3LibWV.UnrealClasses
 
         public override TreeNode ToTree()
         {
-            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.GetObject(MyIndex + 1));
+            TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1));
             t.Name = (MyIndex + 1).ToString();
             if (STM != null)
                 t.Nodes.Add(STM.ToTree());

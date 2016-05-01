@@ -32,6 +32,7 @@ namespace ME3Creator
         public Form1()
         {
             InitializeComponent();
+            UnrealObjectInfo.loadfromJSON();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,6 +58,7 @@ namespace ME3Creator
             if (pcc != null && pcc.Source != null)
                 pcc.Source.Close();
             pcc = new PCCPackage(path, true, false);
+            interpreter1.pcc = pcc;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -182,7 +184,7 @@ namespace ME3Creator
             listBox2.Items.Clear();
             listBox2.Visible = false;
             for (int i = 0; i < pcc.Header.ImportCount; i++)
-                listBox2.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(-i - 1) + pcc.GetObject(-i - 1));
+                listBox2.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(-i - 1) + pcc.getObjectName(-i - 1));
             listBox2.Visible = true;
             treeView2.Nodes.Clear();
             #endregion
@@ -190,7 +192,7 @@ namespace ME3Creator
             listBox3.Items.Clear();
             listBox3.Visible = false;
             for (int i = 0; i < pcc.Header.ExportCount; i++)
-                listBox3.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                listBox3.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             listBox3.Visible = true;
             treeView3.Nodes.Clear();
             #endregion
@@ -198,7 +200,7 @@ namespace ME3Creator
             listBox4.Items.Clear();
             listBox4.Visible = false;
             for (int i = 0; i < pcc.Header.ExportCount; i++)
-                listBox4.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                listBox4.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             listBox4.Visible = true;
             toolStripComboBox1.Items.Clear();
             Classes = new List<int>();
@@ -221,7 +223,7 @@ namespace ME3Creator
                 run = false;
                 for (int i = 0; i < Classes.Count - 1; i++)
                 {
-                    if (pcc.GetObject(Classes[i]).CompareTo(pcc.GetObject(Classes[i + 1])) > 0)
+                    if (pcc.getObjectName(Classes[i]).CompareTo(pcc.getObjectName(Classes[i + 1])) > 0)
                     {
                         int tmp = Classes[i];
                         Classes[i] = Classes[i + 1];
@@ -231,7 +233,7 @@ namespace ME3Creator
                 }
             }
             for (int i = 0; i < Classes.Count; i++)
-                toolStripComboBox1.Items.Add(pcc.GetObject(Classes[i]));
+                toolStripComboBox1.Items.Add(pcc.getObjectName(Classes[i]));
             toolStripComboBox1.SelectedIndex = 0;
             #endregion
             #region Exports3
@@ -244,7 +246,7 @@ namespace ME3Creator
                 t2 = t;
                 for (int j = 0; j < list.Length; j++)
                 {
-                    s = pcc.GetObject(list[j]);
+                    s = pcc.getObjectName(list[j]);
                     bool f = false;
                     foreach(TreeNode t3 in t2.Nodes)
                         if (t3.Text == s)
@@ -287,7 +289,7 @@ namespace ME3Creator
                 t2 = t;
                 for (int j = 0; j < list.Length; j++)
                 {
-                    s = pcc.GetObject(list[j]);
+                    s = pcc.getObjectName(list[j]);
                     bool f = false;
                     foreach (TreeNode t3 in t2.Nodes)
                         if (t3.Text == s)
@@ -355,7 +357,7 @@ namespace ME3Creator
             treeView6.Nodes.Clear();
             DXHelper.cam = new Vector3(0, 0, 0);
             for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.GetObject(pcc.Exports[i].idxClass) == "Level")
+                if (pcc.getObjectName(pcc.Exports[i].idxClass) == "Level")
                 {
                     
                     DXHelper.level = new ME3LibWV.UnrealClasses.Level(pcc, i);                    
@@ -387,10 +389,10 @@ namespace ME3Creator
                 comboBox1.Items.Add(i.ToString("d6") + " : " + pcc.Names[i]);
             comboBox2.Items.Clear();
             for (int i = 0; i < pcc.Exports.Count; i++)
-                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             comboBox3.Items.Clear();
             for (int i = 0; i < pcc.Imports.Count; i++)
-                comboBox3.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.GetObject(-i - 1));
+                comboBox3.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.getObjectName(-i - 1));
             if (comboBox1.Items.Count != 0)
                 comboBox1.SelectedIndex = 0;
             if (comboBox2.Items.Count != 0)
@@ -430,7 +432,7 @@ namespace ME3Creator
             treeView2.Nodes.Add("Unknown 1: 0x" + imp.Unk1.ToString("X8"));
             treeView2.Nodes.Add("Class: Index(" + imp.idxClass + ") = \"" + pcc.GetName(imp.idxClass) + "\"");
             treeView2.Nodes.Add("Unknown 2: 0x" + imp.Unk2.ToString("X8"));
-            treeView2.Nodes.Add("Link: Index(" + imp.idxLink + ") = \"" + pcc.GetObject(imp.idxLink) + "\"");
+            treeView2.Nodes.Add("Link: Index(" + imp.idxLink + ") = \"" + pcc.getObjectName(imp.idxLink) + "\"");
             treeView2.Nodes.Add("Name: Index(" + imp.idxName + ") = \"" + pcc.GetName(imp.idxName) + "\"");
             treeView2.Nodes.Add("Unknown 3: 0x" + imp.Unk3.ToString("X8"));
         }
@@ -442,9 +444,9 @@ namespace ME3Creator
                 return;
             PCCPackage.ExportEntry exp = pcc.Exports[n];
             treeView3.Nodes.Clear();
-            treeView3.Nodes.Add("Class: Index(" + exp.idxClass + ") = \"" + pcc.GetObject(exp.idxClass) + "\"");
-            treeView3.Nodes.Add("Parent: Index(" + exp.idxParent + ") = \"" + pcc.GetObject(exp.idxParent) + "\"");
-            treeView3.Nodes.Add("Link: Index(" + exp.idxLink + ") = \"" + pcc.GetObject(exp.idxLink) + "\"");
+            treeView3.Nodes.Add("Class: Index(" + exp.idxClass + ") = \"" + pcc.getObjectName(exp.idxClass) + "\"");
+            treeView3.Nodes.Add("Parent: Index(" + exp.idxParent + ") = \"" + pcc.getObjectName(exp.idxParent) + "\"");
+            treeView3.Nodes.Add("Link: Index(" + exp.idxLink + ") = \"" + pcc.getObjectName(exp.idxLink) + "\"");
             treeView3.Nodes.Add("Name: Index(" + exp.idxName + ") = \"" + pcc.GetName(exp.idxName) + "\"");
             treeView3.Nodes.Add("Index: 0x" + exp.Index.ToString("X8"));
             treeView3.Nodes.Add("Archetype: Index(" + exp.idxArchetype + ")");
@@ -473,7 +475,7 @@ namespace ME3Creator
             PCCPackage.ExportEntry exp = pcc.Exports[n];
             hb2.ByteProvider = new DynamicByteProvider(pcc.GetObjectData(n));            
             string s = "Flags (0x" + pcc.Exports[n].ObjectFlags.ToString("X8") + ") ";
-            s += "Class (" + pcc.GetObject(pcc.Exports[n].idxClass) + ")";
+            s += "Class (" + pcc.getObjectName(pcc.Exports[n].idxClass) + ")";
             labstate.Text = s;
             ReadProperties(n);
         }
@@ -507,16 +509,10 @@ namespace ME3Creator
 #endregion
         private void ReadProperties(int index)
         {
-            treeView5.Nodes.Clear();
             try
             {
-                PropMemory = pcc.GetObjectData(index);
-                PropReadPos = PropertyReader.detectStart(pcc, PropMemory, (uint)pcc.Exports[index].ObjectFlags);
-                List<PropHeader> l = ReadHeadersTillNone();
-                TreeNode t = new TreeNode("0000 : " + pcc.GetObject(index + 1));
-                t = GenerateTree(t, l);
-                t.Expand();
-                treeView5.Nodes.Add(t);
+                interpreter1.Index = index;
+                interpreter1.InitInterpreter();
             }
             catch (Exception ex)
             {
@@ -930,7 +926,7 @@ namespace ME3Creator
                 foreach (ME3LibWV.UnrealClasses._DXRenderableObject o in DXHelper.level.RenderObjects)
                     if (idx == o.MyIndex)
                     {
-                        string c = pcc.GetObject(pcc.Exports[idx].idxClass);
+                        string c = pcc.getObjectName(pcc.Exports[idx].idxClass);
                         switch (c)
                         {
                             case "StaticMeshActor":
@@ -1084,7 +1080,7 @@ namespace ME3Creator
                 int n = Convert.ToInt32(t.Name);
                 if (n > 0)
                 {
-                    string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+                    string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
                     switch(s)
                     {
                         case"StaticMeshActor":
@@ -1261,7 +1257,7 @@ namespace ME3Creator
             int n = Convert.ToInt32(t.Name);
             if (n < 0)
                 return;
-            string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+            string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
             switch (s)
             {
                 case "StaticMeshActor":
@@ -1272,7 +1268,7 @@ namespace ME3Creator
                     int m = Convert.ToInt32(t2.Name);
                     if (m < 0)
                         return;
-                    string s2 = pcc.GetObject(pcc.Exports[m - 1].idxClass);
+                    string s2 = pcc.getObjectName(pcc.Exports[m - 1].idxClass);
                     if (s2 != "Level")
                         return;
                     foreach(_DXRenderableObject o in DXHelper.level.RenderObjects)
@@ -1343,10 +1339,10 @@ namespace ME3Creator
             int m = Convert.ToInt32(t2.Name);
             if (m < 0)
                 return;
-            string s2 = pcc.GetObject(pcc.Exports[m - 1].idxClass);
+            string s2 = pcc.getObjectName(pcc.Exports[m - 1].idxClass);
             if (s2 != "Level")
                 return;
-            string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+            string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
             timer1.Enabled = false;
             switch (s)
             {
@@ -1427,7 +1423,7 @@ namespace ME3Creator
                 listBox5.Items.Clear();
                 listBox5.Visible=false;
                 for (int i = 0; i < importpcc.Exports.Count; i++)
-                    listBox5.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(i + 1) + importpcc.GetObject(i + 1));
+                    listBox5.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(i + 1) + importpcc.getObjectName(i + 1));
                 listBox5.Visible = true;
             }
         }
@@ -1452,7 +1448,7 @@ namespace ME3Creator
                 listBox6.Items.Clear();
                 listBox6.Visible = false;
                 for (int i = 0; i < importpcc.Imports.Count; i++)
-                    listBox6.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(-i - 1) + importpcc.GetObject(-i - 1));
+                    listBox6.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(-i - 1) + importpcc.getObjectName(-i - 1));
                 listBox6.Visible = true;
             }
         }
@@ -1526,7 +1522,7 @@ namespace ME3Creator
             {
                 foreach (PropertyReader.Property p in Props)
                 {
-                    PropertyReader.ImportProperty(pcc, importpcc, p, res);
+                    PropertyReader.ImportProperty(pcc, importpcc, p, importpcc.getObjectName(ex.idxClass), res);
                 }
             }
             catch (Exception exe) 
@@ -1538,7 +1534,7 @@ namespace ME3Creator
                 pcc.Header.NameCount = namecount;
                 MessageBox.Show("Error occured while trying to importing : " + exe.Message);
             }
-            if (importpcc.GetObject(ex.idxClass) == "SkeletalMesh")
+            if (importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
             {
                 SkeletalMesh skl = new SkeletalMesh(importpcc, n);
                 SkeletalMesh.BoneStruct bone;

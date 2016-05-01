@@ -40,7 +40,7 @@ namespace ME3LibWV.UnrealClasses
 
         public TreeNode ToTree()
         {
-            TreeNode t = new TreeNode("#E" + MyIndex.ToString("d6") + " : " + pcc.GetObject(MyIndex + 1) + "(" + pcc.GetObjectClass(MyIndex + 1) + ")");
+            TreeNode t = new TreeNode("#E" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1) + "(" + pcc.GetObjectClass(MyIndex + 1) + ")");
             t.Name = (MyIndex + 1).ToString();
             for (int i = 0; i < Objects.Count; i++)
             {
@@ -48,9 +48,9 @@ namespace ME3LibWV.UnrealClasses
                     continue;
                 TreeNode t2 = new TreeNode();
                 if (Objects[i] > 0)
-                    t2.Text = "#E" + (Objects[i] - 1).ToString("d6") + " : " + pcc.GetObject(Objects[i]) + "(" + pcc.GetObjectClass(Objects[i]) + ")";
+                    t2.Text = "#E" + (Objects[i] - 1).ToString("d6") + " : " + pcc.getObjectName(Objects[i]) + "(" + pcc.GetObjectClass(Objects[i]) + ")";
                 else
-                    t2.Text = "#I" + (-Objects[i] - 1).ToString("d6") + " : " + pcc.GetObject(Objects[i]) + "(" + pcc.GetObjectClass(Objects[i]) + ")";
+                    t2.Text = "#I" + (-Objects[i] - 1).ToString("d6") + " : " + pcc.getObjectName(Objects[i]) + "(" + pcc.GetObjectClass(Objects[i]) + ")";
                 t2.Name = Objects[i].ToString();
                 if (Objects[i] > 0 && pcc.GetObjectClass(Objects[i]) != "Sequence")
                     t2 = MakeSubObj(t2, Objects[i] - 1);
@@ -92,7 +92,7 @@ namespace ME3LibWV.UnrealClasses
                                         t3.Nodes.Add("Link Action : " + pcc.GetName(pp.Value.IntValue));
                                         break;
                                     case "LinkedOp":
-                                        t3.Nodes.Add("Linked Operation : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.GetObject(pp.Value.IntValue));
+                                        t3.Nodes.Add("Linked Operation : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.getObjectName(pp.Value.IntValue));
                                         break;
                                 }
                             }
@@ -123,7 +123,7 @@ namespace ME3LibWV.UnrealClasses
                                         t3.Nodes.Add("Link Action : " + pcc.GetName(pp.Value.IntValue));
                                         break;
                                     case "LinkedOp":
-                                        t3.Nodes.Add("Linked Operation : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.GetObject(pp.Value.IntValue));
+                                        t3.Nodes.Add("Linked Operation : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.getObjectName(pp.Value.IntValue));
                                         break;
                                     case "Links":
                                         t4 = new TreeNode("Links");
@@ -139,7 +139,7 @@ namespace ME3LibWV.UnrealClasses
                                                 switch (s3)
                                                 {
                                                     case "LinkedOp":
-                                                        res += "Linked Operation (" + ppp.Value.IntValue + " " + pcc.GetObjectPath(ppp.Value.IntValue) + pcc.GetObject(ppp.Value.IntValue) + ") ";
+                                                        res += "Linked Operation (" + ppp.Value.IntValue + " " + pcc.GetObjectPath(ppp.Value.IntValue) + pcc.getObjectName(ppp.Value.IntValue) + ") ";
                                                         break;
                                                     case "InputLinkIdx":
                                                         res += "Input Link Index(" + ppp.Value.IntValue + ")";
@@ -183,7 +183,7 @@ namespace ME3LibWV.UnrealClasses
                                         t3.Nodes.Add("Property Name : " + pcc.GetName(pp.Value.IntValue));
                                         break;
                                     case "ExpectedType":
-                                        t3.Nodes.Add("Expected Type : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.GetObject(pp.Value.IntValue));
+                                        t3.Nodes.Add("Expected Type : #" + pp.Value.IntValue + " " + pcc.GetObjectPath(pp.Value.IntValue) + pcc.getObjectName(pp.Value.IntValue));
                                         break;
                                     case "LinkedVariables":
                                         t4 = new TreeNode("Linked Variables");
@@ -191,7 +191,7 @@ namespace ME3LibWV.UnrealClasses
                                         for (int i2 = 0; i2 < count2; i2++)
                                         {
                                             int idx = BitConverter.ToInt32(pp.raw, 28 + i2 * 4);
-                                            t4.Nodes.Add("#" + i2.ToString() + " : #" + idx + " " + pcc.GetObjectPath(idx) + pcc.GetObject(idx));
+                                            t4.Nodes.Add("#" + i2.ToString() + " : #" + idx + " " + pcc.GetObjectPath(idx) + pcc.getObjectName(idx));
                                         }
                                         t3.Nodes.Add(t4);
                                         break;

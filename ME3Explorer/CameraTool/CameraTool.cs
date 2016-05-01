@@ -39,7 +39,7 @@ namespace ME3Explorer.CameraTool
             for (int i = 0; i < pcc.Exports.Count; i++)
             {
                 PCCPackage.ExportEntry e = pcc.Exports[i];
-                string c = pcc.GetObject(e.idxClass);
+                string c = pcc.getObjectName(e.idxClass);
                 if (c == "InterpData")
                 {
                     List<PropertyReader.Property> props = PropertyReader.ReadProp(pcc, e.Data, PropertyReader.detectStart(pcc, e.Data, (uint)e.ObjectFlags));
@@ -62,7 +62,7 @@ namespace ME3Explorer.CameraTool
             splitContainer1.BringToFront();
             listBox1.Items.Clear();
             foreach (int idx in Indexes)
-                listBox1.Items.Add(idx + " : " + pcc.GetObjectPath(idx + 1) + pcc.GetObject(idx + 1) + "(" + pcc.Exports[idx].Index + ")");
+                listBox1.Items.Add(idx + " : " + pcc.GetObjectPath(idx + 1) + pcc.getObjectName(idx + 1) + "(" + pcc.Exports[idx].Index + ")");
         }
 
         public void FreshTree(int n)
@@ -71,7 +71,7 @@ namespace ME3Explorer.CameraTool
             treeView1.Nodes.Clear();
             PCCPackage.ExportEntry e = pcc.Exports[n];
             List<PropertyReader.Property> props = PropertyReader.ReadProp(pcc, e.Data, PropertyReader.detectStart(pcc, e.Data, (uint)e.ObjectFlags));
-            TreeNode t = new TreeNode(n + " : " + pcc.GetObject(n + 1));
+            TreeNode t = new TreeNode(n + " : " + pcc.getObjectName(n + 1));
             int idx;
             foreach (PropertyReader.Property p in props)
                 switch (pcc.GetName(p.Name))
@@ -98,7 +98,7 @@ namespace ME3Explorer.CameraTool
                     case "ParentSequence":
                         idx = p.Value.IntValue;
                         if (idx > 0)
-                            t.Nodes.Add("Parent Sequence : " + idx + " (" + pcc.GetObject(idx) + ")");
+                            t.Nodes.Add("Parent Sequence : " + idx + " (" + pcc.getObjectName(idx) + ")");
                         break;
                 }
             treeView1.Nodes.Add(t);
@@ -107,7 +107,7 @@ namespace ME3Explorer.CameraTool
 
         public TreeNode MakeInterpGroupNode(int n)
         {
-            TreeNode res = new TreeNode(n + " : " + pcc.GetObject(n + 1));
+            TreeNode res = new TreeNode(n + " : " + pcc.getObjectName(n + 1));
             PCCPackage.ExportEntry e = pcc.Exports[n];
             List<PropertyReader.Property> props = PropertyReader.ReadProp(pcc, e.Data, PropertyReader.detectStart(pcc, e.Data, (uint)e.ObjectFlags));
             int idx;
@@ -146,7 +146,7 @@ namespace ME3Explorer.CameraTool
 
         public TreeNode MakeInterpTrackNode(int n)
         {
-            TreeNode res = new TreeNode(n + " : " + pcc.GetObject(n + 1));
+            TreeNode res = new TreeNode(n + " : " + pcc.getObjectName(n + 1));
             PCCPackage.ExportEntry e = pcc.Exports[n];
             List<PropertyReader.Property> props = PropertyReader.ReadProp(pcc, e.Data, PropertyReader.detectStart(pcc, e.Data, (uint)e.ObjectFlags));
             int pos, count;
@@ -294,7 +294,7 @@ namespace ME3Explorer.CameraTool
                 case "Object Property":
                     string s = " ";
                     if (p.Value.IntValue != 0)
-                        s = pcc.GetObject(p.Value.IntValue);
+                        s = pcc.getObjectName(p.Value.IntValue);
                     return new TreeNode(pcc.GetName(p.Name) + " (" + tp + ") : " + p.Value.IntValue + s);
                 case "Integer Property":
                     return new TreeNode(pcc.GetName(p.Name) + " (" + tp + ") : " + p.Value.IntValue);
@@ -358,8 +358,8 @@ namespace ME3Explorer.CameraTool
                 return;
             StringBuilder res = new StringBuilder();
             for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.GetObject(pcc.Exports[i].idxClass) == "CameraActor")
-                    res.Append(i + " : " + pcc.GetObject(i + 1) + "\n");
+                if (pcc.getObjectName(pcc.Exports[i].idxClass) == "CameraActor")
+                    res.Append(i + " : " + pcc.getObjectName(i + 1) + "\n");
             if (res.Length != 0)
                 MessageBox.Show(res.ToString());
         }
@@ -394,13 +394,13 @@ namespace ME3Explorer.CameraTool
                 int count = 0;
                 for (int i = 0; i < p.Exports.Count; i++)
                 {
-                    if (p.GetObject(p.Exports[i].idxClass) == "InterpData")
+                    if (p.getObjectName(p.Exports[i].idxClass) == "InterpData")
                     {
                         o.Indexes.Add(i);
                         string s = "";
                         if (count++ == 0)
                             s = "\n";
-                        KFreonLib.Debugging.DebugOutput.PrintLn(s + "found " + i + " : " + p.GetObjectPath(i + 1) + p.GetObject(i + 1), false);
+                        KFreonLib.Debugging.DebugOutput.PrintLn(s + "found " + i + " : " + p.GetObjectPath(i + 1) + p.getObjectName(i + 1), false);
                     }
                 }
                 if (o.Indexes.Count != 0)
@@ -500,7 +500,7 @@ namespace ME3Explorer.CameraTool
             PCCPackage p = new PCCPackage(OverView[n].filepath, false, false, true);
             listBox3.Items.Clear();
             foreach (int i in OverView[n].Indexes)
-                listBox3.Items.Add(i + " : " + p.GetObjectPath(i + 1) + p.GetObject(i + 1) + "(" + p.Exports[i].Index + ")");
+                listBox3.Items.Add(i + " : " + p.GetObjectPath(i + 1) + p.getObjectName(i + 1) + "(" + p.Exports[i].Index + ")");
         }
 
         private void openSelectedInterpDataInDetailViewToolStripMenuItem_Click(object sender, EventArgs e)

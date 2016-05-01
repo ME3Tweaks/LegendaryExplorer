@@ -87,13 +87,6 @@
             this.tabContent5 = new System.Windows.Forms.TabPage();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.listBox4 = new System.Windows.Forms.ListBox();
-            this.tabControl3 = new System.Windows.Forms.TabControl();
-            this.tabExRaw = new System.Windows.Forms.TabPage();
-            this.hb2 = new Be.Windows.Forms.HexBox();
-            this.status2 = new System.Windows.Forms.StatusStrip();
-            this.status4 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tabExProp = new System.Windows.Forms.TabPage();
-            this.treeView5 = new System.Windows.Forms.TreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labstate = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -159,6 +152,13 @@
             this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
             this.DebugOut = new System.Windows.Forms.RichTextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tabExProp = new System.Windows.Forms.TabPage();
+            this.tabExRaw = new System.Windows.Forms.TabPage();
+            this.status2 = new System.Windows.Forms.StatusStrip();
+            this.status4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.hb2 = new Be.Windows.Forms.HexBox();
+            this.tabControl3 = new System.Windows.Forms.TabControl();
+            this.interpreter1 = new ME3Creator.Interpreter();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -202,10 +202,6 @@
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
-            this.tabControl3.SuspendLayout();
-            this.tabExRaw.SuspendLayout();
-            this.status2.SuspendLayout();
-            this.tabExProp.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.tabContent6.SuspendLayout();
@@ -234,6 +230,10 @@
             this.splitContainer9.Panel2.SuspendLayout();
             this.splitContainer9.SuspendLayout();
             this.toolStrip4.SuspendLayout();
+            this.tabExProp.SuspendLayout();
+            this.tabExRaw.SuspendLayout();
+            this.status2.SuspendLayout();
+            this.tabControl3.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -857,85 +857,6 @@
             this.listBox4.Size = new System.Drawing.Size(444, 262);
             this.listBox4.TabIndex = 1;
             this.listBox4.SelectedIndexChanged += new System.EventHandler(this.listBox4_SelectedIndexChanged);
-            // 
-            // tabControl3
-            // 
-            this.tabControl3.Controls.Add(this.tabExRaw);
-            this.tabControl3.Controls.Add(this.tabExProp);
-            this.tabControl3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl3.Location = new System.Drawing.Point(0, 0);
-            this.tabControl3.Margin = new System.Windows.Forms.Padding(0);
-            this.tabControl3.Name = "tabControl3";
-            this.tabControl3.Padding = new System.Drawing.Point(0, 0);
-            this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(497, 262);
-            this.tabControl3.TabIndex = 0;
-            // 
-            // tabExRaw
-            // 
-            this.tabExRaw.Controls.Add(this.hb2);
-            this.tabExRaw.Controls.Add(this.status2);
-            this.tabExRaw.Location = new System.Drawing.Point(4, 22);
-            this.tabExRaw.Name = "tabExRaw";
-            this.tabExRaw.Padding = new System.Windows.Forms.Padding(3);
-            this.tabExRaw.Size = new System.Drawing.Size(489, 236);
-            this.tabExRaw.TabIndex = 0;
-            this.tabExRaw.Text = "Raw hex";
-            this.tabExRaw.UseVisualStyleBackColor = true;
-            // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(3, 3);
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(483, 208);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 2;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
-            this.hb2.SelectionStartChanged += new System.EventHandler(this.hb2_SelectionLengthChanged);
-            this.hb2.SelectionLengthChanged += new System.EventHandler(this.hb2_SelectionLengthChanged);
-            // 
-            // status2
-            // 
-            this.status2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.status4});
-            this.status2.Location = new System.Drawing.Point(3, 211);
-            this.status2.Name = "status2";
-            this.status2.Size = new System.Drawing.Size(483, 22);
-            this.status2.TabIndex = 1;
-            this.status2.Text = "statusStrip3";
-            // 
-            // status4
-            // 
-            this.status4.Name = "status4";
-            this.status4.Size = new System.Drawing.Size(98, 17);
-            this.status4.Text = "Nothing Selected";
-            // 
-            // tabExProp
-            // 
-            this.tabExProp.Controls.Add(this.treeView5);
-            this.tabExProp.Location = new System.Drawing.Point(4, 22);
-            this.tabExProp.Name = "tabExProp";
-            this.tabExProp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabExProp.Size = new System.Drawing.Size(489, 236);
-            this.tabExProp.TabIndex = 1;
-            this.tabExProp.Text = "Properties";
-            this.tabExProp.UseVisualStyleBackColor = true;
-            // 
-            // treeView5
-            // 
-            this.treeView5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView5.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeView5.Location = new System.Drawing.Point(3, 3);
-            this.treeView5.Name = "treeView5";
-            this.treeView5.Size = new System.Drawing.Size(483, 230);
-            this.treeView5.TabIndex = 2;
             // 
             // statusStrip1
             // 
@@ -1630,6 +1551,84 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // tabExProp
+            // 
+            this.tabExProp.Controls.Add(this.interpreter1);
+            this.tabExProp.Location = new System.Drawing.Point(4, 22);
+            this.tabExProp.Name = "tabExProp";
+            this.tabExProp.Padding = new System.Windows.Forms.Padding(3);
+            this.tabExProp.Size = new System.Drawing.Size(489, 236);
+            this.tabExProp.TabIndex = 1;
+            this.tabExProp.Text = "Properties";
+            this.tabExProp.UseVisualStyleBackColor = true;
+            // 
+            // tabExRaw
+            // 
+            this.tabExRaw.Controls.Add(this.hb2);
+            this.tabExRaw.Controls.Add(this.status2);
+            this.tabExRaw.Location = new System.Drawing.Point(4, 22);
+            this.tabExRaw.Name = "tabExRaw";
+            this.tabExRaw.Padding = new System.Windows.Forms.Padding(3);
+            this.tabExRaw.Size = new System.Drawing.Size(489, 236);
+            this.tabExRaw.TabIndex = 0;
+            this.tabExRaw.Text = "Raw hex";
+            this.tabExRaw.UseVisualStyleBackColor = true;
+            // 
+            // status2
+            // 
+            this.status2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.status4});
+            this.status2.Location = new System.Drawing.Point(3, 211);
+            this.status2.Name = "status2";
+            this.status2.Size = new System.Drawing.Size(483, 22);
+            this.status2.TabIndex = 1;
+            this.status2.Text = "statusStrip3";
+            // 
+            // status4
+            // 
+            this.status4.Name = "status4";
+            this.status4.Size = new System.Drawing.Size(98, 17);
+            this.status4.Text = "Nothing Selected";
+            // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(3, 3);
+            this.hb2.Name = "hb2";
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(483, 208);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 2;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
+            this.hb2.SelectionStartChanged += new System.EventHandler(this.hb2_SelectionLengthChanged);
+            this.hb2.SelectionLengthChanged += new System.EventHandler(this.hb2_SelectionLengthChanged);
+            // 
+            // tabControl3
+            // 
+            this.tabControl3.Controls.Add(this.tabExRaw);
+            this.tabControl3.Controls.Add(this.tabExProp);
+            this.tabControl3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl3.Location = new System.Drawing.Point(0, 0);
+            this.tabControl3.Margin = new System.Windows.Forms.Padding(0);
+            this.tabControl3.Name = "tabControl3";
+            this.tabControl3.Padding = new System.Drawing.Point(0, 0);
+            this.tabControl3.SelectedIndex = 0;
+            this.tabControl3.Size = new System.Drawing.Size(497, 262);
+            this.tabControl3.TabIndex = 0;
+            // 
+            // interpreter1
+            // 
+            this.interpreter1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreter1.Location = new System.Drawing.Point(3, 3);
+            this.interpreter1.Name = "interpreter1";
+            this.interpreter1.Size = new System.Drawing.Size(483, 230);
+            this.interpreter1.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1698,12 +1697,6 @@
             this.splitContainer5.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
-            this.tabControl3.ResumeLayout(false);
-            this.tabExRaw.ResumeLayout(false);
-            this.tabExRaw.PerformLayout();
-            this.status2.ResumeLayout(false);
-            this.status2.PerformLayout();
-            this.tabExProp.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
@@ -1739,6 +1732,12 @@
             this.splitContainer9.ResumeLayout(false);
             this.toolStrip4.ResumeLayout(false);
             this.toolStrip4.PerformLayout();
+            this.tabExProp.ResumeLayout(false);
+            this.tabExRaw.ResumeLayout(false);
+            this.tabExRaw.PerformLayout();
+            this.status2.ResumeLayout(false);
+            this.status2.PerformLayout();
+            this.tabControl3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1784,11 +1783,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControl3;
-        private System.Windows.Forms.TabPage tabExRaw;
-        private Be.Windows.Forms.HexBox hb2;
-        private System.Windows.Forms.TabPage tabExProp;
-        private System.Windows.Forms.TreeView treeView5;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripStatusLabel labstate;
@@ -1866,8 +1860,6 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.StatusStrip status2;
-        private System.Windows.Forms.ToolStripStatusLabel status4;
         private System.Windows.Forms.ToolStrip toolStrip7;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
@@ -1875,6 +1867,13 @@
         private System.Windows.Forms.ContextMenuStrip contextImportTable;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl3;
+        private System.Windows.Forms.TabPage tabExRaw;
+        private Be.Windows.Forms.HexBox hb2;
+        private System.Windows.Forms.StatusStrip status2;
+        private System.Windows.Forms.ToolStripStatusLabel status4;
+        private System.Windows.Forms.TabPage tabExProp;
+        private Interpreter interpreter1;
     }
 }
 
