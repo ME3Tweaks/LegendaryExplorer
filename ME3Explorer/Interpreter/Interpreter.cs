@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace ME3Explorer
 {
-    public partial class Interpreter : Control
+    public partial class Interpreter : UserControl
     {
         public event PropertyValueChangedEventHandler PropertyValueChanged;
 
@@ -97,6 +97,7 @@ namespace ME3Explorer
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
+        private const int HEXBOX_MAX_WIDTH = 650;
 
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
@@ -2117,12 +2118,6 @@ namespace ME3Explorer
             }
         }
 
-        private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
-        {
-            //hack to set max width for SplitContainer1
-            splitContainer1.Panel2MinSize = splitContainer1.Width - 650;
-        }
-
         private void moveUpButton_Click(object sender, EventArgs e)
         {
             moveElement(true);
@@ -2141,6 +2136,7 @@ namespace ME3Explorer
             }
             int pos;
             TreeNode node;
+            TreeNode parent = LAST_SELECTED_NODE.Parent;
             if (up)
             {
                 node = LAST_SELECTED_NODE.PrevNode;
@@ -2162,7 +2158,6 @@ namespace ME3Explorer
             memList.InsertRange(pos, element);
             memory = memList.ToArray();
             //bubble up size
-            TreeNode parent = LAST_SELECTED_NODE.Parent;
             bool firstbubble = true;
             int parentOffset;
             while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
@@ -2300,6 +2295,45 @@ namespace ME3Explorer
                 memlist.InsertRange(pos, buff);
                 memory = memlist.ToArray();
                 RefreshMem(pos);
+            }
+        }
+
+        private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
+        {
+            //hack to set max width for SplitContainer1
+            splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+        }
+
+        private void toggleHexWidthButton_Click(object sender, EventArgs e)
+        {
+            if (splitContainer1.SplitterDistance > splitContainer1.Panel1MinSize)
+            {
+                splitContainer1.SplitterDistance = splitContainer1.Panel1MinSize;
+            }
+            else
+            {
+                splitContainer1.SplitterDistance = HEXBOX_MAX_WIDTH;
+            }
+        }
+
+        private void hb1_SelectionChanged(object sender, EventArgs e)
+        {
+            int start = (int)hb1.SelectionStart;
+            int len = (int)hb1.SelectionLength;
+            int size = (int)hb1.ByteProvider.Length;
+            if (start != -1 && start + len <= size)
+            {
+                string s = "Start=0x" + start.ToString("X8") + " ";
+                if (len > 0)
+                {
+                    s += "Length=0x" + len.ToString("X8") + " ";
+                    s += "End=0x" + (start + len - 1).ToString("X8"); 
+                }
+                selectionStatus.Text = s;
+            }
+            else
+            {
+                selectionStatus.Text = "Nothing Selected";
             }
         }
     }

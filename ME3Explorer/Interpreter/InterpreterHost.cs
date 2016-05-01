@@ -23,6 +23,9 @@ namespace ME3Explorer
             interpreter1.InitInterpreter();
             toolStripStatusLabel1.Text = "Class: " + className + ", Export Index: " + index;
             toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
+            interpreter1.hb1.ReadOnly = true;
+            interpreter1.saveHexButton.Visible = false;
+            interpreter1.exportButton.Visible = true;
         }
 
         public new void Show()

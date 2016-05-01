@@ -1903,11 +1903,14 @@ namespace ME3Creator
             int start = (int)hb2.SelectionStart;
             int len = (int)hb2.SelectionLength;
             int size = (int)hb2.ByteProvider.Length;
-            if (start != -1 && start + len < size && len > 0)
+            if (start != -1 && start + len <= size)
             {
                 string s = "Start=0x" + start.ToString("X8") + " ";
-                s += "Length=0x" + len.ToString("X8") + " ";
-                s += "End=0x" + (start + len - 1).ToString("X8");
+                if (len > 0)
+                {
+                    s += "Length=0x" + len.ToString("X8") + " ";
+                    s += "End=0x" + (start + len - 1).ToString("X8");
+                }
                 status4.Text = s;
             }
             else

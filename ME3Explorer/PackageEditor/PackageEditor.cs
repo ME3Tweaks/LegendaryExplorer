@@ -45,10 +45,10 @@ namespace ME3Explorer
             LoadRecentList();
             RefreshRecent();
             tabControl1.TabPages.Remove(scriptTab);
-
-            saveHexChangesToolStripMenuItem.Enabled = false;
+            
             SetView(EXPORTS_VIEW);
             interpreterControl.PropertyValueChanged += InterpreterControl_PropertyValueChanged;
+            interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
         }
 
         public void LoadMostRecent()
@@ -413,14 +413,11 @@ namespace ME3Explorer
             int n;
             if (tabControl1.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
             {
-                saveHexChangesToolStripMenuItem.Enabled = true;
                 if (interpreterControl.treeView1.Nodes.Count > 0)
                 {
                     interpreterControl.treeView1.Nodes[0].Expand();
                 }
             }
-            else
-                saveHexChangesToolStripMenuItem.Enabled = false;
 
             if (tabControl1.SelectedTab == metaDataPage)
             {
@@ -893,7 +890,7 @@ namespace ME3Explorer
             MessageBox.Show("Done");
         }
 
-        private void saveHexChangesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveHexChangesButton_Click(object sender, EventArgs e)
         {
             int n;
             if (pcc == null || !GetSelected(out n) || n < 0)
@@ -1133,19 +1130,16 @@ namespace ME3Explorer
 
         public void Interpreter()
         {
-            //int n;
-            //if (pcc == null || !GetSelected(out n) || n < 0)
-            //{
-            //    return;
-            //}
-            //Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
-            //ip.Text = "Interpreter (Package Editor)";
-            //ip.MdiParent = this.MdiParent;
-            //ip.pcc = pcc;
-            //ip.Index = n;
-            //ip.InitInterpreter();
-            //ip.Show();
-            //taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
+            int n;
+            if (pcc == null || !GetSelected(out n) || n < 0)
+            {
+                return;
+            }
+            InterpreterHost ip = new InterpreterHost(pcc, n);
+            ip.Text = "Interpreter (Package Editor)";
+            ip.MdiParent = this.MdiParent;
+            ip.Show();
+            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -1652,6 +1646,11 @@ namespace ME3Explorer
             {
                 Clipboard.SetText(pcc.Names[listBox1.SelectedIndex]);
             }
+        }
+
+        private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            (new ME3Creator.Hexconverter()).Show();
         }
     }
 }

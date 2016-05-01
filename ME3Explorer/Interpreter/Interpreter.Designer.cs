@@ -32,10 +32,9 @@ namespace ME3Explorer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.expandSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.expandAllButton = new System.Windows.Forms.ToolStripButton();
-            this.collapseAllButton = new System.Windows.Forms.ToolStripButton();
+            this.exportButton = new System.Windows.Forms.ToolStripButton();
+            this.saveHexButton = new System.Windows.Forms.ToolStripButton();
+            this.toggleHexWidthButton = new System.Windows.Forms.ToolStripButton();
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.nameEntry = new System.Windows.Forms.ToolStripTextBox();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
@@ -46,24 +45,27 @@ namespace ME3Explorer
             this.deleteArrayElementButton = new System.Windows.Forms.ToolStripButton();
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
+            this.addPropButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.addPropButton = new System.Windows.Forms.ToolStripButton();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.selectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
             // 
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton2,
-            this.expandSeparator,
-            this.expandAllButton,
-            this.collapseAllButton,
+            this.exportButton,
+            this.saveHexButton,
+            this.toggleHexWidthButton,
             this.setValueSeparator,
             this.nameEntry,
             this.proptext,
@@ -81,40 +83,37 @@ namespace ME3Explorer
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripButton2
+            // exportButton
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(44, 22);
-            this.toolStripButton2.Text = "Export";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            this.exportButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.exportButton.Image = ((System.Drawing.Image)(resources.GetObject("exportButton.Image")));
+            this.exportButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.exportButton.Name = "exportButton";
+            this.exportButton.Size = new System.Drawing.Size(44, 22);
+            this.exportButton.Text = "Export";
+            this.exportButton.Visible = false;
+            this.exportButton.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // expandSeparator
+            // saveHexButton
             // 
-            this.expandSeparator.Name = "expandSeparator";
-            this.expandSeparator.Size = new System.Drawing.Size(6, 25);
+            this.saveHexButton.AutoToolTip = false;
+            this.saveHexButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.saveHexButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexButton.Image")));
+            this.saveHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveHexButton.Name = "saveHexButton";
+            this.saveHexButton.Size = new System.Drawing.Size(107, 22);
+            this.saveHexButton.Text = "Save Hex Changes";
+            this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
             // 
-            // expandAllButton
+            // toggleHexWidthButton
             // 
-            this.expandAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.expandAllButton.Image = ((System.Drawing.Image)(resources.GetObject("expandAllButton.Image")));
-            this.expandAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.expandAllButton.Name = "expandAllButton";
-            this.expandAllButton.Size = new System.Drawing.Size(66, 22);
-            this.expandAllButton.Text = "Expand All";
-            this.expandAllButton.Click += new System.EventHandler(this.expandAllButton_Click);
-            // 
-            // collapseAllButton
-            // 
-            this.collapseAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.collapseAllButton.Image = ((System.Drawing.Image)(resources.GetObject("collapseAllButton.Image")));
-            this.collapseAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.collapseAllButton.Name = "collapseAllButton";
-            this.collapseAllButton.Size = new System.Drawing.Size(73, 22);
-            this.collapseAllButton.Text = "Collapse All";
-            this.collapseAllButton.Click += new System.EventHandler(this.collapseAllButton_Click);
+            this.toggleHexWidthButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
+            this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toggleHexWidthButton.Name = "toggleHexWidthButton";
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(106, 22);
+            this.toggleHexWidthButton.Text = "Toggle Hex Width";
+            this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
             // setValueSeparator
             // 
@@ -213,6 +212,16 @@ namespace ME3Explorer
             this.moveDownButton.Visible = false;
             this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
             // 
+            // addPropButton
+            // 
+            this.addPropButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
+            this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addPropButton.Name = "addPropButton";
+            this.addPropButton.Size = new System.Drawing.Size(81, 19);
+            this.addPropButton.Text = "Add Property";
+            this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -228,7 +237,7 @@ namespace ME3Explorer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(992, 373);
+            this.splitContainer1.Size = new System.Drawing.Size(992, 351);
             this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -245,10 +254,12 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 373);
+            this.hb1.Size = new System.Drawing.Size(205, 351);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
+            this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
+            this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
             // 
             // treeView1
             // 
@@ -257,34 +268,42 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(783, 373);
+            this.treeView1.Size = new System.Drawing.Size(783, 351);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // addPropButton
+            // statusStrip1
             // 
-            this.addPropButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
-            this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 19);
-            this.addPropButton.Text = "Add Property";
-            this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectionStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 376);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(992, 22);
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // selectionStatus
+            // 
+            this.selectionStatus.Name = "selectionStatus";
+            this.selectionStatus.Size = new System.Drawing.Size(98, 17);
+            this.selectionStatus.Text = "Nothing Selected";
             // 
             // Interpreter
             // 
-            this.ClientSize = new System.Drawing.Size(992, 398);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.statusStrip1);
             this.Name = "Interpreter";
-            this.Text = "Interpreter";
+            this.Size = new System.Drawing.Size(992, 398);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -295,20 +314,21 @@ namespace ME3Explorer
         private System.Windows.Forms.SplitContainer splitContainer1;
         public Be.Windows.Forms.HexBox hb1;
         public System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripTextBox proptext;
         private System.Windows.Forms.ToolStripButton setPropertyButton;
         private System.Windows.Forms.ToolStripSeparator setValueSeparator;
-        private System.Windows.Forms.ToolStripButton expandAllButton;
-        private System.Windows.Forms.ToolStripButton collapseAllButton;
         private System.Windows.Forms.ToolStripButton deleteArrayElementButton;
         private System.Windows.Forms.ToolStripButton addArrayElementButton;
         private System.Windows.Forms.ToolStripComboBox propDropdown;
         private System.Windows.Forms.ToolStripTextBox nameEntry;
         private System.Windows.Forms.ToolStripLabel objectNameLabel;
-        private System.Windows.Forms.ToolStripSeparator expandSeparator;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
         private System.Windows.Forms.ToolStripButton addPropButton;
+        private System.Windows.Forms.ToolStripButton toggleHexWidthButton;
+        public System.Windows.Forms.ToolStripButton saveHexButton;
+        public System.Windows.Forms.ToolStripButton exportButton;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel selectionStatus;
     }
 }

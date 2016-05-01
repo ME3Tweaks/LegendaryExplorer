@@ -477,7 +477,6 @@ namespace ME3Explorer
             ip.Text = "Interpreter (SequenceEditor)";
             ip.MdiParent = this.MdiParent;
             ip.interpreter1.PropertyValueChanged += Interpreter_PropertyValueChanged;
-            ip.interpreter1.hb1.ReadOnly = true;
             ip.Show();
             taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
