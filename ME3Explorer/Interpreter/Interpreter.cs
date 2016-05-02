@@ -18,7 +18,7 @@ namespace ME3Explorer
     {
         public event PropertyValueChangedEventHandler PropertyValueChanged;
 
-        public PCCObject pcc;
+        public PCCObject Pcc { get { return pcc; } set {pcc = value; defaultStructValues.Clear(); } }
         public int Index;
         public string className;
         public byte[] memory;
@@ -99,6 +99,7 @@ namespace ME3Explorer
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
         private const int HEXBOX_MAX_WIDTH = 650;
 
+        private PCCObject pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         public Interpreter()

@@ -58,7 +58,7 @@ namespace ME3Creator
             if (pcc != null && pcc.Source != null)
                 pcc.Source.Close();
             pcc = new PCCPackage(path, true, false);
-            interpreter1.pcc = pcc;
+            interpreter1.Pcc = pcc;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)

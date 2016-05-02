@@ -79,7 +79,7 @@ namespace ME3Explorer
             {
                 currentFile = s;
                 pcc = new PCCObject(s);
-                interpreterControl.pcc = pcc;
+                interpreterControl.Pcc = pcc;
                 RefreshView();
                 InitStuff();
                 if (!isfromdlc)

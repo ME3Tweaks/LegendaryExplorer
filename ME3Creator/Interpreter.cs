@@ -17,7 +17,7 @@ namespace ME3Creator
     {
         public event PropertyValueChangedEventHandler PropertyValueChanged;
 
-        public PCCPackage pcc;
+        public PCCPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
         public int Index;
         public string className;
         public byte[] memory;
@@ -98,6 +98,7 @@ namespace ME3Creator
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
         private const int HEXBOX_MAX_WIDTH = 650;
 
+        private PCCPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         public Interpreter()

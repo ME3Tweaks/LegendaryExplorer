@@ -18,7 +18,7 @@ namespace ME3Explorer
         {
             InitializeComponent();
             string className = pcc.Exports[index].ClassName;
-            interpreter1.pcc = pcc;
+            interpreter1.Pcc = pcc;
             interpreter1.Index = index;
             interpreter1.InitInterpreter();
             toolStripStatusLabel1.Text = "Class: " + className + ", Export Index: " + index;
