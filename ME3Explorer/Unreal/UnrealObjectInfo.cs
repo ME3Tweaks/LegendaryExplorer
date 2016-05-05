@@ -178,41 +178,48 @@ namespace ME3Explorer.Unreal
 
         public static ArrayType getArrayType(PropertyInfo p)
         {
-            if (p.reference == "NameProperty")
+            if (p != null)
             {
-                return ArrayType.Name;
-            }
-            else if (Enums.ContainsKey(p.reference))
-            {
-                return ArrayType.Enum;
-            }
-            else if (p.reference == "BoolProperty")
-            {
-                return ArrayType.Bool;
-            }
-            else if (p.reference == "ByteProperty")
-            {
-                return ArrayType.Byte;
-            }
-            else if (p.reference == "StrProperty")
-            {
-                return ArrayType.String;
-            }
-            else if (p.reference == "FloatProperty")
-            {
-                return ArrayType.Float;
-            }
-            else if (p.reference == "IntProperty")
-            {
-                return ArrayType.Int;
-            }
-            else if (Structs.ContainsKey(p.reference))
-            {
-                return ArrayType.Struct;
+                if (p.reference == "NameProperty")
+                {
+                    return ArrayType.Name;
+                }
+                else if (Enums.ContainsKey(p.reference))
+                {
+                    return ArrayType.Enum;
+                }
+                else if (p.reference == "BoolProperty")
+                {
+                    return ArrayType.Bool;
+                }
+                else if (p.reference == "ByteProperty")
+                {
+                    return ArrayType.Byte;
+                }
+                else if (p.reference == "StrProperty")
+                {
+                    return ArrayType.String;
+                }
+                else if (p.reference == "FloatProperty")
+                {
+                    return ArrayType.Float;
+                }
+                else if (p.reference == "IntProperty")
+                {
+                    return ArrayType.Int;
+                }
+                else if (Structs.ContainsKey(p.reference))
+                {
+                    return ArrayType.Struct;
+                }
+                else
+                {
+                    return ArrayType.Object;
+                } 
             }
             else
             {
-                return ArrayType.Object;
+                return ArrayType.Int;
             }
         }
 
@@ -476,6 +483,8 @@ namespace ME3Explorer.Unreal
                     p.type = PropertyReader.Type.DelegateProperty;
                     break;
                 case "ObjectProperty":
+                case "ClassProperty":
+                case "ComponentProperty":
                     p.type = PropertyReader.Type.ObjectProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
@@ -528,9 +537,7 @@ namespace ME3Explorer.Unreal
                         p = null;
                     }
                     break;
-                case "ClassProperty":
                 case "InterfaceProperty":
-                case "ComponentProperty":
                 default:
                     p = null;
                     break;

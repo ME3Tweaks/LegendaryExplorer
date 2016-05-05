@@ -114,34 +114,43 @@ namespace ME3Explorer
 
         private void LoadSequences()
         {
-            int f = -1;
             treeView1.Nodes.Clear();
-
-            // Search for a main sequence.
+            Dictionary<string, TreeNode> prefabs = new Dictionary<string, TreeNode>();
             for (int i = 0; i < pcc.Exports.Count; i++)
-                if ((pcc.Exports[i].ObjectName == "Main_Sequence") &&
-                   pcc.Exports[i].ClassName == "Sequence")
-                    f = i;
-
-            if (f > -1)
             {
-                // Found a main sequence.  Add it and its children.
-                SeqTree = FindSequences(pcc, f);
-                treeView1.Nodes.Add(SeqTree);
+                if (pcc.Exports[i].ClassName == "Sequence" && !pcc.getObjectClass(pcc.Exports[i].idxLink).Contains("Sequence"))
+                {
+                    treeView1.Nodes.Add(FindSequences(pcc, i, !(pcc.Exports[i].ObjectName == "Main_Sequence")));
+                }
+                if (pcc.Exports[i].ClassName == "Prefab")
+                {
+                    prefabs.Add(pcc.Exports[i].ObjectName, new TreeNode(pcc.Exports[i].GetFullPath));
+                }
             }
-            else
+            if (prefabs.Count > 0)
             {
-                // No main sequence.  Try searching for others -- we may be in a dialogue-driving file (LOC_INT) which have no main sequence.
                 for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "Sequence") // (pcc.Exports[i].ObjectName == "Node_Data_Sequence") &&
+                {
+                    if (pcc.Exports[i].ClassName == "PrefabSequence" && pcc.getObjectClass(pcc.Exports[i].idxLink) == "Prefab")
                     {
-                        treeView1.Nodes.Add(FindSequences(pcc, i, true));
-                        f = -2; // Dirty flag so we don't display error message.  Yes, I am a lazy coder.
+                        string parentName = pcc.getObjectName(pcc.Exports[i].idxLink);
+                        if (prefabs.ContainsKey(parentName))
+                        {
+                            prefabs[parentName].Nodes.Add(FindSequences(pcc, i, false));
+                        }
                     }
+                }
+                foreach (var item in prefabs.Values)
+                {
+                    if (item.Nodes.Count > 0)
+                    {
+                        treeView1.Nodes.Add(item);
+                    }
+                }
             }
-            if (f == -1)
+            if (treeView1.Nodes.Count == 0)
             {
-                MessageBox.Show("No Main Sequence found!");
+                MessageBox.Show("No Sequences found!");
                 return;
             }
 
@@ -156,7 +165,7 @@ namespace ME3Explorer
                 for (int i = 0; i < seq.SequenceObjects.Count(); i++)
                     if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "Sequence" || pcc.Exports[seq.SequenceObjects[i] - 1].ClassName.StartsWith("PrefabSequence"))
                     {
-                        TreeNode t = FindSequences(pcc, seq.SequenceObjects[i] - 1, wantFullName);
+                        TreeNode t = FindSequences(pcc, seq.SequenceObjects[i] - 1, false);
                         ret.Nodes.Add(t);
                     }
                     else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
@@ -165,7 +174,7 @@ namespace ME3Explorer
                         var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
-                            TreeNode t = FindSequences(pcc, propSequenceReference.Value.IntValue - 1, wantFullName);
+                            TreeNode t = FindSequences(pcc, propSequenceReference.Value.IntValue - 1, false);
                             ret.Nodes.Add(t);
                         }
                     }
@@ -175,7 +184,10 @@ namespace ME3Explorer
         {
             if(autoSaveViewToolStripMenuItem.Checked)
                 saveView();
-            LoadSequence(Convert.ToInt32(e.Node.Name));
+            if (e.Node.Name != "")
+            {
+                LoadSequence(Convert.ToInt32(e.Node.Name));
+            }
         }
 
         public void RefreshView()
@@ -582,27 +594,30 @@ namespace ME3Explorer
 
         private void removeAllLinks(SBox obj)
         {
-            for (int i = 0; i < obj.Outlinks.Count; i++)
+            if (obj is SBox)
             {
-                if (obj.Outlinks[i].Links[0] != -1)
+                for (int i = 0; i < obj.Outlinks.Count; i++)
                 {
-                    for (int j = 0; j < obj.Outlinks[i].Links.Count; j++)
+                    if (obj.Outlinks[i].Links[0] != -1)
                     {
-                        obj.RemoveOutlink(i, 0, false);
+                        for (int j = 0; j < obj.Outlinks[i].Links.Count; j++)
+                        {
+                            obj.RemoveOutlink(i, 0, false);
+                        }
                     }
                 }
-            }
-            for (int i = 0; i < obj.Varlinks.Count; i++)
-            {
-                if (obj.Varlinks[i].Links[0] != -1)
+                for (int i = 0; i < obj.Varlinks.Count; i++)
                 {
-                    for (int j = 0; j < obj.Varlinks[i].Links.Count; j++)
+                    if (obj.Varlinks[i].Links[0] != -1)
                     {
-                        obj.RemoveVarlink(i, 0, false);
+                        for (int j = 0; j < obj.Varlinks[i].Links.Count; j++)
+                        {
+                            obj.RemoveVarlink(i, 0, false);
+                        }
                     }
                 }
+                RefreshView(); 
             }
-            RefreshView();
         }
 
         private void removeLink_handler(object sender, EventArgs e)
@@ -648,6 +663,7 @@ namespace ME3Explorer
                 if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
                     Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
                 File.WriteAllText(JSONpath, outputFile);
+                SavedPositions.Clear();
             }
             
         }
@@ -698,6 +714,7 @@ namespace ME3Explorer
                                 }
                                 pcc.Exports[i].Data = buff;
                             }
+                            pcc.Exports[i].idxLink = SequenceIndex + 1;
                             //add to sequence
                             buff = pcc.Exports[SequenceIndex].Data;
                             List<byte> ListBuff = new List<byte>(buff);

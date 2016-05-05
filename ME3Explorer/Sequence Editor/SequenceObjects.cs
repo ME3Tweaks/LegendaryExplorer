@@ -306,7 +306,7 @@ namespace ME3Explorer.SequenceObjects
                                 {
                                     return pcc.Exports[prop.Value.IntValue - 1].ObjectName;
                                 }
-                                else
+                                else if (prop.Value.IntValue < 0)
                                 {
                                     return pcc.Imports[-1 * prop.Value.IntValue - 1].ObjectName;
                                 }
