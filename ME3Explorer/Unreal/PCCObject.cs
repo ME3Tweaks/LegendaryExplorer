@@ -106,6 +106,7 @@ namespace ME3Explorer.Unreal
             string GetFullPath { get; }
             int idxLink { get; }
             int idxObjectName { get; }
+            int indexValue { get; }
             string ObjectName { get; }
             string PackageFullName { get; }
             string PackageName { get; }
@@ -119,9 +120,9 @@ namespace ME3Explorer.Unreal
 
             public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
             public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-            public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
             public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-            public int ObjectFlags { get { return BitConverter.ToInt32(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(int)); } }
+            public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+            public int indexValue { get { return BitConverter.ToInt32(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(int)); } }
 
             public string ClassName { get { return pccRef.Names[idxClassName]; } }
             public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }

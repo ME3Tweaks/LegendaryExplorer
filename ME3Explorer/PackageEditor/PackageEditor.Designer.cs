@@ -82,7 +82,6 @@
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -125,6 +124,9 @@
             this.hb2 = new Be.Windows.Forms.HexBox();
             this.scriptTab = new System.Windows.Forms.TabPage();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
+            this.interpreterControl = new ME3Explorer.Interpreter();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.saveHeaderHexChangesBtn = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -142,6 +144,7 @@
             this.metaDataPage.SuspendLayout();
             this.headerTab.SuspendLayout();
             this.scriptTab.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -384,7 +387,7 @@
             this.toolStripSeparator3,
             this.gotonumber,
             this.toolStripButton4});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1002, 25);
             this.toolStrip1.TabIndex = 1;
@@ -559,7 +562,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -570,7 +573,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1002, 420);
+            this.splitContainer1.Size = new System.Drawing.Size(1002, 444);
             this.splitContainer1.SplitterDistance = 330;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -581,7 +584,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(330, 420);
+            this.treeView1.Size = new System.Drawing.Size(330, 444);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -597,7 +600,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(330, 420);
+            this.listBox1.Size = new System.Drawing.Size(330, 444);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
@@ -614,7 +617,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(668, 420);
+            this.tabControl1.Size = new System.Drawing.Size(668, 444);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -624,7 +627,7 @@
             this.propertiesTab.Location = new System.Drawing.Point(4, 22);
             this.propertiesTab.Name = "propertiesTab";
             this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.propertiesTab.Size = new System.Drawing.Size(660, 394);
+            this.propertiesTab.Size = new System.Drawing.Size(660, 418);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.UseVisualStyleBackColor = true;
@@ -635,7 +638,7 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(654, 388);
+            this.propGrid.Size = new System.Drawing.Size(654, 412);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -649,14 +652,6 @@
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
-            // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
-            this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -683,7 +678,7 @@
             this.infoExportDataBox.Controls.Add(this.label7);
             this.infoExportDataBox.Location = new System.Drawing.Point(4, 240);
             this.infoExportDataBox.Name = "infoExportDataBox";
-            this.infoExportDataBox.Size = new System.Drawing.Size(626, 195);
+            this.infoExportDataBox.Size = new System.Drawing.Size(626, 219);
             this.infoExportDataBox.TabIndex = 1;
             this.infoExportDataBox.TabStop = false;
             this.infoExportDataBox.Text = "Export data";
@@ -936,7 +931,7 @@
             // 
             this.indexTextBox.Location = new System.Drawing.Point(82, 126);
             this.indexTextBox.Name = "indexTextBox";
-            this.indexTextBox.Size = new System.Drawing.Size(42, 20);
+            this.indexTextBox.Size = new System.Drawing.Size(87, 20);
             this.indexTextBox.TabIndex = 11;
             // 
             // indexLabel
@@ -1029,6 +1024,7 @@
             // headerTab
             // 
             this.headerTab.Controls.Add(this.hb2);
+            this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
             this.headerTab.Padding = new System.Windows.Forms.Padding(3);
@@ -1044,12 +1040,11 @@
             this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(3, 3);
+            this.hb2.Location = new System.Drawing.Point(3, 28);
             this.hb2.MinBytesPerLine = 16;
             this.hb2.Name = "hb2";
-            this.hb2.ReadOnly = true;
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(654, 412);
+            this.hb2.Size = new System.Drawing.Size(654, 387);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
@@ -1075,10 +1070,39 @@
             this.rtb1.Location = new System.Drawing.Point(3, 3);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(654, 436);
+            this.rtb1.Size = new System.Drawing.Size(654, 460);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
+            // 
+            // interpreterControl
+            // 
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Pcc = null;
+            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
+            this.interpreterControl.TabIndex = 0;
+            // 
+            // toolStrip2
+            // 
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveHeaderHexChangesBtn});
+            this.toolStrip2.Location = new System.Drawing.Point(3, 3);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(654, 25);
+            this.toolStrip2.TabIndex = 1;
+            this.toolStrip2.Text = "toolStrip2";
+            // 
+            // saveHeaderHexChangesBtn
+            // 
+            this.saveHeaderHexChangesBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.saveHeaderHexChangesBtn.Image = ((System.Drawing.Image)(resources.GetObject("saveHeaderHexChangesBtn.Image")));
+            this.saveHeaderHexChangesBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveHeaderHexChangesBtn.Name = "saveHeaderHexChangesBtn";
+            this.saveHeaderHexChangesBtn.Size = new System.Drawing.Size(107, 22);
+            this.saveHeaderHexChangesBtn.Text = "Save Hex Changes";
+            this.saveHeaderHexChangesBtn.Click += new System.EventHandler(this.saveHeaderHexChangesBtn_Click);
             // 
             // PackageEditor
             // 
@@ -1118,7 +1142,10 @@
             this.metaDataPage.ResumeLayout(false);
             this.metaDataPage.PerformLayout();
             this.headerTab.ResumeLayout(false);
+            this.headerTab.PerformLayout();
             this.scriptTab.ResumeLayout(false);
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1226,5 +1253,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
         private System.Windows.Forms.TabPage interpreterTab;
         private Interpreter interpreterControl;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripButton saveHeaderHexChangesBtn;
     }
 }

@@ -171,7 +171,7 @@ namespace ME3Explorer
                 LinkIdx = pcc.Imports[n].idxLink;
                 ArchetypeIdx = pcc.Imports[n].idxPackageFile;
 
-                archetypeLabel.Text = "Package";
+                archetypeLabel.Text = "Package File";
                 indexTextBox.Visible = indexLabel.Visible = false;
 
                 classComboBox.SelectedIndex = ClassIdx;
@@ -500,6 +500,7 @@ namespace ME3Explorer
                 superclassTextBox.Visible = superclassLabel.Visible = true;
                 textBox6.Visible = label6.Visible = true;
                 textBox5.Visible = label5.Visible = true;
+                textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = true;
                 textBox1.Text = pcc.Exports[n].ObjectName;
                 textBox2.Text = pcc.Exports[n].ClassName;
@@ -522,12 +523,12 @@ namespace ME3Explorer
                 superclassTextBox.Visible = superclassLabel.Visible = false;
                 textBox6.Visible = label6.Visible = false;
                 textBox5.Visible = label5.Visible = false;
+                textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = false;
                 textBox1.Text = pcc.Imports[n].ObjectName;
                 textBox2.Text = pcc.Imports[n].ClassName;
                 textBox3.Text = pcc.Imports[n].PackageFullName;
                 textBox4.Text = pcc.Imports[n].header.Length + " bytes";
-                textBox10.Text = "0x" + pcc.Imports[n].ObjectFlags.ToString("X16");
             }
         }
 
@@ -549,18 +550,8 @@ namespace ME3Explorer
 
         public void UpdateStatusIm(int n)
         {
-            toolStripStatusLabel1.Text = $"Class:{pcc.Imports[n].ClassName} Flags: 0x{pcc.Imports[n].ObjectFlags.ToString("X16")} Link: {pcc.Imports[n].idxLink} ";
+            toolStripStatusLabel1.Text = $"Class:{pcc.Imports[n].ClassName} Link: {pcc.Imports[n].idxLink} ";
             toolStripStatusLabel1.ToolTipText = "";
-            foreach (string row in UnrealFlags.flagdesc)
-            {
-                string[] t = row.Split(',');
-                long l = long.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
-                if ((l & pcc.Imports[n].ObjectFlags) != 0)
-                {
-                    toolStripStatusLabel1.Text += "[" + t[0].Trim() + "] ";
-                    toolStripStatusLabel1.ToolTipText += "[" + t[0].Trim() + "] : " + t[2].Trim() + "\n";
-                }
-            }
         }
 
         public void PreviewProps(int n)
@@ -930,7 +921,7 @@ namespace ME3Explorer
             }
             if (CurrentView == IMPORTS_VIEW)
             {
-                for (int i = start; i < pcc.Exports.Count; i++)
+                for (int i = start; i < pcc.Imports.Count; i++)
                     if (pcc.Imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
@@ -1151,8 +1142,11 @@ namespace ME3Explorer
         {
             if (gotonumber.Text == "")
                 return;
-            int n = Convert.ToInt32(gotonumber.Text);
-            goToNumber(n);
+            int n = 0;
+            if (int.TryParse(gotonumber.Text, out n))
+            {
+                goToNumber(n);
+            }
         }
 
         private void gotonumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -1161,8 +1155,11 @@ namespace ME3Explorer
             {
                 if (gotonumber.Text == "")
                     return;
-                int n = Convert.ToInt32(gotonumber.Text);
-                goToNumber(n);
+                int n = 0;
+                if (int.TryParse(gotonumber.Text, out n))
+                {
+                    goToNumber(n);
+                }
             }
         }
 
@@ -1651,6 +1648,28 @@ namespace ME3Explorer
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             (new ME3Creator.Hexconverter()).Show();
+        }
+
+        private void saveHeaderHexChangesBtn_Click(object sender, EventArgs e)
+        {
+            int n;
+            if (pcc == null || !GetSelected(out n) || n < 0)
+            {
+                return;
+            }
+            MemoryStream m = new MemoryStream();
+            IByteProvider provider = hb2.ByteProvider;
+            if (provider.Length != 0x44)
+            {
+                MessageBox.Show("Invalid hex length");
+                return;
+            }
+            for (int i = 0; i < provider.Length; i++)
+                m.WriteByte(provider.ReadByte(i));
+            pcc.Exports[n].header = m.ToArray();
+
+            RefreshView();
+            goToNumber(n);
         }
     }
 }
