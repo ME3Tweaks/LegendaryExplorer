@@ -2015,7 +2015,18 @@ namespace Be.Windows.Forms
             DataObject da = new DataObject();
 
             // set string buffer clipbard data
-            string sBuffer = System.Text.Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+            string sBuffer = "";
+            if (_keyInterpreter == _ki)
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    sBuffer += buffer[i].ToString("x2");
+                }
+            }
+            else
+            {
+                sBuffer = System.Text.Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+            }
             da.SetData(typeof(string), sBuffer);
 
             //set memorystream (BinaryData) clipboard data
