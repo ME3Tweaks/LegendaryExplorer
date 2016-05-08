@@ -30,6 +30,7 @@ namespace ME3Explorer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.exportButton = new System.Windows.Forms.ToolStripButton();
@@ -51,12 +52,16 @@ namespace ME3Explorer
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.selectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.nodeContextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -183,7 +188,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 22);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -194,7 +199,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -206,7 +211,7 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
@@ -218,7 +223,7 @@ namespace ME3Explorer
             this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
             this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 19);
+            this.addPropButton.Size = new System.Drawing.Size(81, 22);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
             // 
@@ -272,6 +277,7 @@ namespace ME3Explorer
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
             // statusStrip1
             // 
@@ -289,6 +295,28 @@ namespace ME3Explorer
             this.selectionStatus.Size = new System.Drawing.Size(98, 17);
             this.selectionStatus.Text = "Nothing Selected";
             // 
+            // nodeContextMenuStrip1
+            // 
+            this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.expandAllChildrenToolStripMenuItem,
+            this.collapseAllChildrenToolStripMenuItem});
+            this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
+            // 
+            // expandAllChildrenToolStripMenuItem
+            // 
+            this.expandAllChildrenToolStripMenuItem.Name = "expandAllChildrenToolStripMenuItem";
+            this.expandAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.expandAllChildrenToolStripMenuItem.Text = "Expand All Children";
+            this.expandAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.expandAllChildrenToolStripMenuItem_Click);
+            // 
+            // collapseAllChildrenToolStripMenuItem
+            // 
+            this.collapseAllChildrenToolStripMenuItem.Name = "collapseAllChildrenToolStripMenuItem";
+            this.collapseAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.collapseAllChildrenToolStripMenuItem.Text = "Collapse All Children";
+            this.collapseAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.collapseAllChildrenToolStripMenuItem_Click);
+            // 
             // Interpreter
             // 
             this.Controls.Add(this.splitContainer1);
@@ -304,6 +332,7 @@ namespace ME3Explorer
             this.splitContainer1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.nodeContextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -330,5 +359,8 @@ namespace ME3Explorer
         public System.Windows.Forms.ToolStripButton exportButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel selectionStatus;
+        private System.Windows.Forms.ContextMenuStrip nodeContextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
     }
 }

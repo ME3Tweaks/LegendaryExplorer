@@ -2337,5 +2337,27 @@ namespace ME3Explorer
                 selectionStatus.Text = "Nothing Selected";
             }
         }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                treeView1.SelectedNode = e.Node;
+                if (e.Node.Nodes.Count != 0)
+                {
+                    nodeContextMenuStrip1.Show(MousePosition); 
+                }
+            }
+        }
+
+        private void expandAllChildrenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.SelectedNode.ExpandAll();
+        }
+
+        private void collapseAllChildrenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.SelectedNode.Collapse(false);
+        }
     }
 }

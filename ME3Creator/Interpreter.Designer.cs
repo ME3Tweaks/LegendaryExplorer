@@ -30,6 +30,7 @@ namespace ME3Creator
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.nameEntry = new System.Windows.Forms.ToolStripTextBox();
@@ -42,7 +43,11 @@ namespace ME3Creator
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
+            this.nodeContextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -166,6 +171,29 @@ namespace ME3Creator
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            // 
+            // nodeContextMenuStrip1
+            // 
+            this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.expandAllChildrenToolStripMenuItem,
+            this.collapseAllChildrenToolStripMenuItem});
+            this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
+            // 
+            // expandAllChildrenToolStripMenuItem
+            // 
+            this.expandAllChildrenToolStripMenuItem.Name = "expandAllChildrenToolStripMenuItem";
+            this.expandAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.expandAllChildrenToolStripMenuItem.Text = "Expand All Children";
+            this.expandAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.expandAllChildrenToolStripMenuItem_Click);
+            // 
+            // collapseAllChildrenToolStripMenuItem
+            // 
+            this.collapseAllChildrenToolStripMenuItem.Name = "collapseAllChildrenToolStripMenuItem";
+            this.collapseAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.collapseAllChildrenToolStripMenuItem.Text = "Collapse All Children";
+            this.collapseAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.collapseAllChildrenToolStripMenuItem_Click);
             // 
             // Interpreter
             // 
@@ -175,6 +203,7 @@ namespace ME3Creator
             this.Size = new System.Drawing.Size(992, 398);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.nodeContextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,5 +221,8 @@ namespace ME3Creator
         private System.Windows.Forms.ToolStripLabel objectNameLabel;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
+        private System.Windows.Forms.ContextMenuStrip nodeContextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
     }
 }
