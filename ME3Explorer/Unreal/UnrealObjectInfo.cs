@@ -371,7 +371,8 @@ namespace ME3Explorer.Unreal
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
                             }
-                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !SequenceObjects.ContainsKey(objectName))
+                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") ||  objectName.Contains("SequenceLatentAction") ||
+                                objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !SequenceObjects.ContainsKey(objectName))
                             {
                                 SequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
                             }
