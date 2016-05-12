@@ -1061,6 +1061,13 @@ namespace ME3Explorer.Unreal
                 for (int i = 0; i < 4; i++)
                     nameHeader[i + 4] = nameOff[i];
                 newPCCStream.Write(nameHeader, 0, 8);
+                
+                //update the import list
+                newPCCStream.Seek(ImportOffset, SeekOrigin.Begin);
+                foreach (ImportEntry import in Imports)
+                {
+                    newPCCStream.Write(import.header, 0, import.header.Length);
+                }
 
                 //Finally, update the export list
                 newPCCStream.Seek(ExportOffset, SeekOrigin.Begin);

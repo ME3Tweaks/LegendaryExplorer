@@ -1225,15 +1225,26 @@ namespace ME3Explorer
             }
         }
 
-        private void altSavetestingToolStripMenuItem_Click(object sender, EventArgs e)
+        private void reconstructionSave_Click(object sender, EventArgs e)
         {
             if (pcc == null)
                 return;
+            if (pcc.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+            {
+                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Performing a reconstruction save will cause a crash when ME3 attempts to load this file.\n" +
+                    "Do you want to visit a forum thread with more information and a possible solution?",
+                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+                if (res == DialogResult.Yes)
+                {
+                    Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
+                }
+                return;
+            }
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.saveToFile(d.FileName, true);
+                pcc.saveByReconstructing(d.FileName);
                 MessageBox.Show("Done");
             }
         }
