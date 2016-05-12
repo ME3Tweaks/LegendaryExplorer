@@ -318,6 +318,19 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static Property getPropOrNull(PCCObject pcc, byte[] data, int start, string propName)
+        {
+            List<Property> props = ReadProp(pcc, data, 0);
+            foreach (Property prop in props)
+            {
+                if (pcc.getNameEntry(prop.Name) == propName)
+                {
+                    return prop;
+                }
+            }
+            return null;
+        }
+
         public static List<Property> getPropList(PCCObject pcc, PCCObject.ExportEntry export)
         {
             Application.DoEvents();

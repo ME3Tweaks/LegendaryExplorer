@@ -64,6 +64,7 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -273,7 +274,7 @@
             // addObjectsToolStripMenuItem
             // 
             this.addObjectsToolStripMenuItem.Name = "addObjectsToolStripMenuItem";
-            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectsToolStripMenuItem.Text = "Add Object";
             this.addObjectsToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
@@ -352,9 +353,10 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInPackageEditorToolStripMenuItem,
             this.openInInterpEditorToolStripMenuItem,
+            this.cloneToolStripMenuItem,
             this.breakLinksToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 114);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -407,14 +409,21 @@
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addObjectToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(135, 26);
             // 
             // addObjectToolStripMenuItem
             // 
             this.addObjectToolStripMenuItem.Name = "addObjectToolStripMenuItem";
-            this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             this.addObjectToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
+            // 
+            // cloneToolStripMenuItem
+            // 
+            this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.cloneToolStripMenuItem.Text = "Clone";
+            this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
             // SequenceEditor
             // 
@@ -494,5 +503,6 @@
         private System.Windows.Forms.ToolStripMenuItem savePCCAsMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
     }
 }

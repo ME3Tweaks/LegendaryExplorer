@@ -2053,7 +2053,7 @@ namespace ME3Explorer
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
             StartScan(expandedNodes, treeView1.TopNode.Name, selectedNodePos?.ToString());
-            PropertyValueChanged(this, new PropertyValueChangedEventArgs(null, null));
+            PropertyValueChanged?.Invoke(this, new PropertyValueChangedEventArgs(null, null));
         }
 
         private string CheckSeperator(string s)

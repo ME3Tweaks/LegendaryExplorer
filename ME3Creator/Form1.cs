@@ -1928,6 +1928,17 @@ namespace ME3Creator
             }
         }
 
+        private void editNameButton_Click(object sender, EventArgs e)
+        {
+            int n = listBox1.SelectedIndex;
+            if (pcc == null || n == -1 || newname.Text == "")
+            {
+                return;
+            }
+            pcc.Names[n] = newname.Text;
+            RefreshAll();
+        }
+
         private void cloneToolStripMenuItem1_Click(object sender, EventArgs e)
         {
 

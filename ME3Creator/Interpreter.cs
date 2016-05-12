@@ -804,7 +804,15 @@ namespace ME3Creator
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() +  " (" + pcc.getObjectName(idx) + ")";
+                    s += idx.ToString();
+                    try
+                    {
+                        s += " (" + pcc.getObjectName(idx) + ")";
+                    }
+                    catch (Exception)
+                    {
+                        s += "()";
+                    }
                     break;
                 case nodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);

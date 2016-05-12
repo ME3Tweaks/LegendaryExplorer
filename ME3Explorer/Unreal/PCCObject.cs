@@ -22,6 +22,7 @@ namespace ME3Explorer.Unreal
         private uint magic { get { return BitConverter.ToUInt32(header, 0); } }
         private ushort lowVers { get { return BitConverter.ToUInt16(header, 4); } }
         private ushort highVers { get { return BitConverter.ToUInt16(header, 6); } }
+        private uint HeaderLength { get { return BitConverter.ToUInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(uint)); } }
         private int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } // usually = 10
         public uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
@@ -72,6 +73,8 @@ namespace ME3Explorer.Unreal
         int ExportOffset { get { Debug.WriteLine("idxOffsets: " + idxOffsets + ", offset for export offset: " + (idxOffsets + 12)); return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
         int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
+        public uint FreeZoneStart { get { return BitConverter.ToUInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
+        public uint FreeZoneEnd { get { return BitConverter.ToUInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
 
         int expInfoEndOffset { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int)); } }
         int expDataBegOffset
@@ -197,7 +200,7 @@ namespace ME3Explorer.Unreal
             public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
             public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
             public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(long)); } }
+            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
 
             public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
             public string ClassName { get { int val = idxClass; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -276,7 +279,7 @@ namespace ME3Explorer.Unreal
                     // if data isn't loaded then fill it from pcc file (load-on-demand)
                     if (_data == null)
                     {
-                        pccRef.getData(DataOffset);
+                        pccRef.getData(DataOffset, this);
                     }
                     return _data;
                 }
@@ -317,6 +320,17 @@ namespace ME3Explorer.Unreal
                 // now creates new copies of referenced objects
                 newExport.header = (byte[])this.header.Clone();
                 newExport.Data = (byte[])this.Data.Clone();
+                int index = 0;
+                string name = ObjectName;
+                foreach (ExportEntry ent in pccRef.Exports)
+                {
+                    if (ObjectName == ent.ObjectName && ent.indexValue > index)
+                    {
+                        index = ent.indexValue;
+                    }
+                }
+                index++;
+                newExport.indexValue = index;
                 return newExport;
             }
         }
@@ -469,8 +483,7 @@ namespace ME3Explorer.Unreal
 
                     listsStream.Read(buffer, 0, buffer.Length);
                     ExportEntry e = new ExportEntry(this, buffer, expInfoOffset);
-                    //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize);
-
+                    //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize); 
                     Exports.Add(e);
                 }
             }
@@ -485,7 +498,7 @@ namespace ME3Explorer.Unreal
         ///     given export data offset, the function recovers it from the file.
         /// </summary>
         /// <param name="offset">offset position of desired export data</param>
-        private void getData(int offset)
+        private void getData(int offset, ExportEntry exp = null)
         {
             byte[] buffer;
             if (bCompressed)
@@ -515,8 +528,16 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                int expIndex = Exports.FindIndex(export => export.DataOffset <= offset && export.DataOffset + export.DataSize > offset);
-                ExportEntry expSelect = Exports[expIndex];
+                ExportEntry expSelect;
+                if (exp == null)
+                {
+                    int expIndex = Exports.FindIndex(export => export.DataOffset <= offset && export.DataOffset + export.DataSize > offset);
+                    expSelect = Exports[expIndex];
+                }
+                else
+                {
+                    expSelect = exp;
+                }
                 using (FileStream pccStream = File.OpenRead(pccFileName))
                 {
                     buffer = new byte[expSelect.DataSize];
@@ -695,6 +716,83 @@ namespace ME3Explorer.Unreal
             DebugOutput.PrintLn(Path.GetFileName(pccFileName) + " has been saved.");
         }
 
+        //an attempt to emulate ME3Creator's save method
+        public void saveByReconstructing(string path)
+        {
+            //load in all data
+            byte[] buff;
+            foreach (ExportEntry e in Exports)
+            {
+                buff = e.Data;
+            }
+
+            try
+            {
+                MemoryStream m = new MemoryStream();
+                m.WriteBytes(header);
+                //name table
+                NameOffset = (int)m.Position;
+                NameCount = Names.Count;
+                foreach (string s in Names)
+                {
+                    string text = s;
+                    if (!text.EndsWith("\0"))
+                    {
+                        text += "\0";
+                    }
+                    m.Write(BitConverter.GetBytes(-text.Length), 0, 4);
+                    foreach (char c in text)
+                    {
+                        m.WriteByte((byte)c);
+                        m.WriteByte(0);
+                    }
+                }
+                //import table
+                ImportOffset = (int)m.Position;
+                ImportCount = Imports.Count;
+                foreach (ImportEntry e in Imports)
+                {
+                    m.WriteBytes(e.header);
+                }
+                //export table
+                ExportOffset = (int)m.Position;
+                ExportCount = Exports.Count;
+                for (int i = 0; i < Exports.Count; i++)
+                {
+                    ExportEntry e = Exports[i];
+                    e.offset = (uint)m.Position;
+                    m.WriteBytes(e.header);
+                }
+                //freezone
+                int FreeZoneSize = (int)FreeZoneEnd - (int)FreeZoneStart;
+                FreeZoneStart = (uint)m.Position;
+                m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
+                FreeZoneEnd = HeaderLength = (uint)m.Position;
+                //export data
+                for (int i = 0; i < Exports.Count; i++)
+                {
+                    ExportEntry e = Exports[i];
+                    e.DataOffset = (int)m.Position;
+                    e.DataSize = e.Data.Length;
+                    m.WriteBytes(e.Data);
+                    long pos = m.Position;
+                    m.Seek(e.offset + 32, SeekOrigin.Begin);
+                    m.Write(BitConverter.GetBytes(e.DataSize), 0, 4);
+                    m.Write(BitConverter.GetBytes(e.DataOffset), 0, 4);
+                    m.Seek(pos, SeekOrigin.Begin);
+                }
+                //update header
+                m.Seek(0, SeekOrigin.Begin);
+                m.WriteBytes(header);
+
+                File.WriteAllBytes(path, m.ToArray());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("PCC Save error:\n" + ex.Message);
+            }
+        }
+
         public string getNameEntry(int index)
         {
             if (!isName(index))
@@ -787,7 +885,7 @@ namespace ME3Explorer.Unreal
             Imports.Add(importEntry);
         }
 
-        public void addExport(PCCObject.ExportEntry exportEntry)
+        public void addExport(ExportEntry exportEntry)
         {
             if (exportEntry.pccRef != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
@@ -795,11 +893,13 @@ namespace ME3Explorer.Unreal
             exportEntry.hasChanged = true;
 
             //changing data offset in order to append it at the end of the file
-            ExportEntry lastExport = Exports.Find(export => export.DataOffset == Exports.Max(entry => entry.DataOffset));
+            int maxOffset = Exports.Max(entry => entry.DataOffset);
+            ExportEntry lastExport = Exports.Find(export => export.DataOffset == maxOffset);
             int lastOffset = lastExport.DataOffset + lastExport.Data.Length;
             exportEntry.DataOffset = lastOffset;
 
             Exports.Add(exportEntry);
+            ExportCount = Exports.Count;
         }
 
         /// <summary>

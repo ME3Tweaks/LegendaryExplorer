@@ -2016,7 +2016,7 @@ namespace Be.Windows.Forms
 
             // set string buffer clipbard data
             string sBuffer = "";
-            if (_keyInterpreter == _ki)
+            if (_keyInterpreter == _ki && buffer.Length < 2000)
             {
                 for (int i = 0; i < buffer.Length; i++)
                 {

@@ -110,5 +110,25 @@ namespace Gibbed.IO
         {
             stream.Write(data, 0, data.Length);
         }
+
+        //added by SirCxyrtyx
+        /// <summary>
+        /// Overwrites a portion of an array starting at offset with the contents of another array.
+        /// </summary>
+        /// <typeparam name="T">Content of array.</typeparam>
+        /// <param name="dest">Array to write to</param>
+        /// <param name="offset">Start index in dest</param>
+        /// <param name="source">data to write to dest</param>
+        public static void OverwriteRange<T>(this T[] dest, int offset, T[] source)
+        {
+            if (offset + source.Length > dest.Length)
+            {
+                throw new IndexOutOfRangeException("Attempt to write past the end of the array.");
+            }
+            for (int i = 0; i < source.Length; i++)
+            {
+                dest[offset + i] = source[i];
+            }
+        }
     }
 }

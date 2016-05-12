@@ -22,6 +22,7 @@ using UMD.HCIL.GraphEditor;
 
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
+using Gibbed.IO;
 
 
 namespace ME3Explorer
@@ -64,8 +65,11 @@ namespace ME3Explorer
             public float X;
             public float Y;
         }
-        
+
+        private const int CLONED_SEQREF_MAGIC = 0x05edf619;
+
         private bool selectedByNode;
+        private bool haveCloned;
         private int selectedIndex;
         private ZoomController zoomController;
         public TreeNode SeqTree;
@@ -98,6 +102,7 @@ namespace ME3Explorer
             try
             {
                 pcc = new PCCObject(fileName);
+                haveCloned = false;
                 CurrentFile = fileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
                 LoadSequences();
@@ -155,6 +160,10 @@ namespace ME3Explorer
             }
 
             treeView1.ExpandAll();
+            if (treeView1.Nodes.Count > 0)
+            {
+                treeView1.TopNode = treeView1.Nodes[0];
+            }
         }
         public TreeNode FindSequences(PCCObject pcc, int index, bool wantFullName = false)
         {
@@ -218,7 +227,13 @@ namespace ME3Explorer
         private void SetupJSON(int index)
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(pcc.Exports[index].ObjectName, @"[<>:""/\\|?*]", "");
-            if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && pcc.Exports[index].PackageFullName.Contains("SequenceReference"))
+            bool isClonedSeqRef = false;
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.Exports[index], "DefaultViewZoom");
+            if (p != null && p.Value.IntValue == CLONED_SEQREF_MAGIC)
+            {
+                isClonedSeqRef = true;
+            }
+            if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && pcc.Exports[index].PackageFullName.Contains("SequenceReference") && !isClonedSeqRef)
             {
                 JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + pcc.Exports[index].PackageFullName.Substring(pcc.Exports[index].PackageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON";
                 RefOrRefChild = true;
@@ -226,7 +241,7 @@ namespace ME3Explorer
             else
             {
 
-                JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + SequenceIndex + objectName + ".JSON";
+                JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + index + objectName + ".JSON";
                 RefOrRefChild = false;
             }
         }
@@ -460,19 +475,6 @@ namespace ME3Explorer
             }
         }
 
-        private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pcc == null)
-                return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == DialogResult.OK)
-            {
-                pcc.altSaveToFile(d.FileName, true);
-                MessageBox.Show("Done");
-            }
-        }
-
         private void interpretToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
@@ -703,45 +705,7 @@ namespace ME3Explorer
                     {
                         if (pcc.Exports[i].inheritsFrom("SequenceObject"))
                         {
-                            byte[] buff = pcc.Exports[i].Data;
-                            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.Exports[i], "ParentSequence");
-                            if (p != null)
-                            {
-                                byte[] val = BitConverter.GetBytes(SequenceIndex + 1);
-                                for (int j = 0; j < 4; j++)
-                                {
-                                    buff[p.offsetval + j] = val[j];
-                                }
-                                pcc.Exports[i].Data = buff;
-                            }
-                            pcc.Exports[i].idxLink = SequenceIndex + 1;
-                            //add to sequence
-                            buff = pcc.Exports[SequenceIndex].Data;
-                            List<byte> ListBuff = new List<byte>(buff);
-                            BitConverter.IsLittleEndian = true;
-                            p = PropertyReader.getPropOrNull(pcc, pcc.Exports[SequenceIndex], "SequenceObjects");
-                            if (p != null)
-                            {
-                                int count = BitConverter.ToInt32(p.raw, 24);
-                                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) + 4);
-                                byte[] countbuff = BitConverter.GetBytes(count + 1);
-                                for (int j = 0; j < 4; j++)
-                                {
-                                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
-                                    ListBuff[p.offsetval + j] = countbuff[j];
-                                }
-                                ListBuff.InsertRange(p.offsetval + 4 + count * 4, BitConverter.GetBytes(i + 1));
-                                pcc.Exports[SequenceIndex].Data = ListBuff.ToArray();
-                                SaveData s = new SaveData();
-                                s.index = i;
-                                s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
-                                s.Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2;
-                                List<SaveData> list = new List<SaveData>();
-                                list.Add(s);
-                                saveView(false, list);
-                                LoadSequence(SequenceIndex, false);
-                                removeAllLinks(Objects.First(x => x.Index == i) as SBox);
-                            } 
+                            addObjectToSequence(i);
                         }
                         else
                         {
@@ -761,6 +725,52 @@ namespace ME3Explorer
             else
             {
                 MessageBox.Show(result + " is not an integer.");
+            }
+        }
+
+        private void addObjectToSequence(int index, bool removeLinks = true)
+        {
+            byte[] buff = pcc.Exports[index].Data;
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.Exports[index], "ParentSequence");
+            if (p != null)
+            {
+                byte[] val = BitConverter.GetBytes(SequenceIndex + 1);
+                for (int j = 0; j < 4; j++)
+                {
+                    buff[p.offsetval + j] = val[j];
+                }
+                pcc.Exports[index].Data = buff;
+            }
+            pcc.Exports[index].idxLink = SequenceIndex + 1;
+            //add to sequence
+            buff = pcc.Exports[SequenceIndex].Data;
+            List<byte> ListBuff = new List<byte>(buff);
+            BitConverter.IsLittleEndian = true;
+            p = PropertyReader.getPropOrNull(pcc, pcc.Exports[SequenceIndex], "SequenceObjects");
+            if (p != null)
+            {
+                int count = BitConverter.ToInt32(p.raw, 24);
+                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) + 4);
+                byte[] countbuff = BitConverter.GetBytes(count + 1);
+                for (int j = 0; j < 4; j++)
+                {
+                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
+                    ListBuff[p.offsetval + j] = countbuff[j];
+                }
+                ListBuff.InsertRange(p.offsetval + 4 + count * 4, BitConverter.GetBytes(index + 1));
+                pcc.Exports[SequenceIndex].Data = ListBuff.ToArray();
+                SaveData s = new SaveData();
+                s.index = index;
+                s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
+                s.Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2;
+                List<SaveData> list = new List<SaveData>();
+                list.Add(s);
+                saveView(false, list);
+                LoadSequence(SequenceIndex, false);
+                if (removeLinks)
+                {
+                    removeAllLinks(Objects.First(x => x.Index == index) as SBox); 
+                }
             }
         }
 
@@ -1093,7 +1103,14 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            if (haveCloned)
+            {
+                pcc.saveByReconstructing(pcc.pccFileName);
+            }
+            else
+            {
+                pcc.altSaveToFile(pcc.pccFileName, true);
+            }
             MessageBox.Show("Done");
         }
 
@@ -1105,7 +1122,14 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.altSaveToFile(d.FileName, true);
+                if (haveCloned)
+                {
+                    pcc.saveByReconstructing(d.FileName);
+                }
+                else
+                {
+                    pcc.altSaveToFile(d.FileName, true);
+                }
                 MessageBox.Show("Done");
             }
         }
@@ -1115,6 +1139,440 @@ namespace ME3Explorer
             if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip2.Show(MousePosition);
+            }
+        }
+
+        private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = CurrentObjects[listBox1.SelectedIndex];
+            if (n == -1)
+                return;
+            treeView1.Enabled = false;
+            graphEditor.updating = true;
+            cloneObject(n);
+            graphEditor.updating = false;
+            graphEditor.Invalidate();
+            treeView1.Enabled = true;
+        }
+
+        private void cloneObject(int n, bool topLevel = true)
+        {
+            PCCObject.ExportEntry exp = pcc.Exports[n].Clone();
+            //needs to have the same index to work properly
+            if (exp.ClassName == "SeqVar_External")
+            {
+                exp.indexValue = pcc.Exports[n].indexValue;
+            }
+            pcc.addExport(exp);
+            haveCloned = true;
+            int expIndex = pcc.Exports.Count - 1;
+            addObjectToSequence(expIndex, topLevel);
+            if (exp.ClassName == "Sequence")
+            {
+                int originalSequenceIndex = SequenceIndex;
+                PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, exp, "SequenceObjects");
+                if (p == null)
+                {
+                    return;
+                }
+
+                //store original list of sequence objects;
+                List<int> oldObjects = new List<int>();
+                int count = BitConverter.ToInt32(p.raw, 24);
+                if (count == 0)
+                {
+                    return;
+                }
+                for (int i = 0; i < count; i++)
+                    oldObjects.Add(BitConverter.ToInt32(p.raw, 28 + i * 4) - 1);
+
+                //refresh list of sequences and select just-cloned one
+                LoadSequences();
+                TreeNode[] nodes = treeView1.Nodes.Find(expIndex.ToString(), true);
+                if (nodes.Length == 0)
+                {
+                    throw new Exception();
+                }
+                treeView1.SelectedNode = nodes[0];
+                Application.DoEvents();
+               SaveData[] positions = new SaveData[SavedPositions.Count];
+                SavedPositions.CopyTo(positions); 
+
+                //clone all children
+                int index = 0;
+                for (int i = 0; i < count; i++)
+                {
+                    index = oldObjects[i];
+                    cloneObject(index, false);
+                }
+
+                //remove old objects
+                List<byte> memList = exp.Data.ToList();
+                byte[] buff = BitConverter.GetBytes(4 + count * 4);
+                for (int i = 0; i < 4; i++)
+                {
+                    memList[p.offsetval - 8 + i] = buff[i];
+                }
+                buff = BitConverter.GetBytes(count);
+                for (int i = 0; i < 4; i++)
+                {
+                    memList[p.offsetval + i] = buff[i];
+                }
+                memList.RemoveRange(p.offsetval + 4, 4 * count);
+                exp.Data = memList.ToArray();
+
+                //restore saved positions and refresh sequence
+                SavedPositions = positions.ToList();
+                LoadSequence(SequenceIndex, false);
+
+                //for non-reference sequences, map saved positions to new objects
+                if (!RefOrRefChild)
+                {
+                    SetupJSON(n);
+                    if (File.Exists(JSONpath))
+                    {
+                        SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
+                        if (SavedPositions.Count > 0 && SavedPositions[0].absoluteIndex == false)
+                        {
+                            try
+                            {
+                                SavedPositions = SavedPositions.Select((x, i) =>
+                                {
+                                    SaveData d = new SaveData();
+                                    d.X = x.X;
+                                    d.Y = x.Y;
+                                    d.index = CurrentObjects[oldObjects.IndexOf(x.index)];
+                                    return d;
+                                }).ToList();
+                            }
+                            catch (Exception)
+                            {
+                                SavedPositions = null;
+                            }
+                            finally
+                            {
+                                LoadSequence(SequenceIndex, false);
+                            }
+                        }
+                    } 
+                }
+
+                #region re-linking
+                //re-point children's links to new objects
+                byte[] data;
+                foreach (int objIndex in CurrentObjects)
+                {
+                    p = PropertyReader.getPropOrNull(pcc, pcc.Exports[objIndex], "OutputLinks");
+                    if (p != null)
+                    {
+                        data = pcc.Exports[objIndex].Data;
+                        int pos = 28;
+                        int linkCount = BitConverter.ToInt32(p.raw, 24);
+                        for (int i = 0; i < linkCount; i++)
+                        {
+                            List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                            for (int j = 0; j < p2.Count(); j++)
+                            {
+                                pos += p2[j].raw.Length;
+                                if (pcc.getNameEntry(p2[j].Name) == "Links")
+                                {
+                                    int count2 = BitConverter.ToInt32(p2[j].raw, 24);
+                                    if (count2 != 0)
+                                    {
+                                        for (int k = 0; k < count2; k += 1)
+                                        {
+                                            List<PropertyReader.Property> p3 = PropertyReader.ReadProp(pcc, p2[j].raw, 28 + k * 64);
+                                            buff = BitConverter.GetBytes(CurrentObjects[oldObjects.IndexOf(p3[0].Value.IntValue - 1)] + 1);
+                                            data.OverwriteRange(p.offsetval - 24 + pos - p2[j].raw.Length + p3[0].offsetval, buff);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        pcc.Exports[objIndex].Data = data;
+                    }
+                    p = PropertyReader.getPropOrNull(pcc, pcc.Exports[objIndex], "VariableLinks");
+                    if (p != null)
+                    {
+                        data = pcc.Exports[objIndex].Data;
+                        int pos = 28;
+                        int linkCount = BitConverter.ToInt32(p.raw, 24);
+                        for (int j = 0; j < count; j++)
+                        {
+                            List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                            for (int i = 0; i < p2.Count(); i++)
+                            {
+                                pos += p2[i].raw.Length;
+                                if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables")
+                                {
+                                    int count2 = BitConverter.ToInt32(p2[i].raw, 24);
+                                    if (count2 != 0)
+                                    {
+                                        for (int k = 0; k < count2; k += 1)
+                                        {
+                                            buff = BitConverter.GetBytes(CurrentObjects[oldObjects.IndexOf(BitConverter.ToInt32(p2[i].raw, 28 + k * 4) - 1)] + 1);
+                                            data.OverwriteRange(p.offsetval - 24 + pos + 28 + k * 4 - p2[i].raw.Length, buff);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        pcc.Exports[objIndex].Data = data;
+                    }
+                    p = PropertyReader.getPropOrNull(pcc, pcc.Exports[objIndex], "EventLinks");
+                    if (p != null)
+                    {
+                        data = pcc.Exports[objIndex].Data;
+                        int pos = 28;
+                        int linkCount = BitConverter.ToInt32(p.raw, 24);
+                        for (int j = 0; j < count; j++)
+                        {
+                            List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                            for (int i = 0; i < p2.Count(); i++)
+                            {
+                                pos += p2[i].raw.Length;
+                                if (pcc.getNameEntry(p2[i].Name) == "LinkedEvents")
+                                {
+                                    int count2 = BitConverter.ToInt32(p2[i].raw, 24);
+                                    if (count2 != 0)
+                                    {
+                                        for (int k = 0; k < count2; k += 1)
+                                        {
+                                            buff = BitConverter.GetBytes(CurrentObjects[oldObjects.IndexOf(BitConverter.ToInt32(p2[i].raw, 28 + k * 4) - 1)] + 1);
+                                            data.OverwriteRange(p.offsetval - 24 + pos + 28 + k * 4 - p2[i].raw.Length, buff);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        pcc.Exports[objIndex].Data = data;
+                    }
+                }
+
+                //re-point sequence links to new objects
+                int oldObj = 0;
+                int newObj = 0;
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex], "InputLinks");
+                if (p != null)
+                {
+                    data = pcc.Exports[expIndex].Data;
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkedOp")
+                            {
+                                oldObj = p2[j].Value.IntValue;
+                                if (oldObj != 0)
+                                {
+                                    newObj = CurrentObjects[oldObjects.IndexOf(oldObj - 1)];
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(newObj + 1));
+                                    //set index for LinkAction property
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 60, BitConverter.GetBytes(pcc.Exports[newObj].indexValue));
+                                }
+                            }
+                        }
+                    }
+                    pcc.Exports[expIndex].Data = data;
+                }
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex], "OutputLinks");
+                if (p != null)
+                {
+                    data = pcc.Exports[expIndex].Data;
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkedOp")
+                            {
+                                oldObj = p2[j].Value.IntValue;
+                                if (oldObj != 0)
+                                {
+                                    newObj = CurrentObjects[oldObjects.IndexOf(oldObj - 1)];
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(newObj + 1));
+                                    //set index for LinkAction property
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 32, BitConverter.GetBytes(pcc.Exports[newObj].indexValue));
+                                }
+                            }
+                        }
+                    }
+                    pcc.Exports[expIndex].Data = data;
+                }
+                #endregion
+
+                //reselect original sequence
+                LoadSequences();
+                nodes = treeView1.Nodes.Find(originalSequenceIndex.ToString(), true);
+                if (nodes.Length == 0)
+                {
+                    throw new Exception();
+                }
+                treeView1.SelectedNode = nodes[0];
+                Application.DoEvents();
+            }
+            else if (exp.ClassName == "SequenceReference")
+            {
+                int originalSequenceIndex = SequenceIndex;
+                bool temp = useGlobalSequenceRefSavesToolStripMenuItem.Checked;
+                useGlobalSequenceRefSavesToolStripMenuItem.Checked = false;
+
+                //set OSequenceReference to new sequence
+                PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, exp, "oSequenceReference");
+                if (p == null || p.Value.IntValue == 0)
+                {
+                    return;
+                } 
+                exp.Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(expIndex + 1 + 1));
+
+                //clone sequence
+                cloneObject(p.Value.IntValue - 1, false);
+
+                //remove cloned sequence from SeqRef's parent's sequenceobjects
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[SequenceIndex], "SequenceObjects");
+                List<byte> memList = pcc.Exports[SequenceIndex].Data.ToList();
+                int count = BitConverter.ToInt32(pcc.Exports[SequenceIndex].Data, p.offsetval) - 1;
+                byte[] buff = BitConverter.GetBytes(4 + count * 4);
+                for (int i = 0; i < 4; i++)
+                {
+                    memList[p.offsetval - 8 + i] = buff[i];
+                }
+                buff = BitConverter.GetBytes(count);
+                for (int i = 0; i < 4; i++)
+                {
+                    memList[p.offsetval + i] = buff[i];
+                }
+                memList.RemoveRange(p.offsetval + 4 + (count * 4), 4);
+                pcc.Exports[SequenceIndex].Data = memList.ToArray();
+
+                //set SequenceReference's linked name indices
+                List<int> inputIndices = new List<int>();
+                List<int> outputIndices = new List<int>();
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex + 1], "InputLinks");
+                if (p != null)
+                {
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
+                            {
+                                inputIndices.Add(p2[j].Value.NameValue.count);
+                            }
+                        }
+                    }
+                }
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex + 1], "OutputLinks");
+                if (p != null)
+                {
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
+                            {
+                                outputIndices.Add(p2[j].Value.NameValue.count);
+                            }
+                        }
+                    }
+                }
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex], "InputLinks");
+                if (p != null)
+                {
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
+                            {
+                                pcc.Exports[expIndex].Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(inputIndices[i]));
+                            }
+                        }
+                    }
+                }
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex], "OutputLinks");
+                if (p != null)
+                {
+                    int pos = 28;
+                    int linkCount = BitConverter.ToInt32(p.raw, 24);
+                    for (int i = 0; i < linkCount; i++)
+                    {
+                        List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
+                        for (int j = 0; j < p2.Count(); j++)
+                        {
+                            pos += p2[j].raw.Length;
+                            if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
+                            {
+                                pcc.Exports[expIndex].Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(outputIndices[i]));
+                            }
+                        }
+                    }
+                }
+
+
+                //set new Sequence's link and ParentSequence prop to SeqRef
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex + 1], "ParentSequence");
+                if (p == null)
+                {
+                    throw new Exception();
+                }
+                pcc.Exports[expIndex + 1].Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(expIndex + 1));
+                pcc.Exports[expIndex + 1].idxLink = expIndex + 1;
+
+                //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
+                //ugly, but it should work
+                p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex + 1], "DefaultViewZoom");
+                if (p != null)
+                {
+                    pcc.Exports[expIndex + 1].Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
+                }
+                else
+                {
+                    p = PropertyReader.getPropOrNull(pcc, pcc.Exports[expIndex + 1], "None");
+                    memList = pcc.Exports[expIndex + 1].Data.ToList();
+                    memList.InsertRange(p.offsetval, BitConverter.GetBytes(pcc.FindNameOrAdd("DefaultViewZoom")));
+                    memList.InsertRange(p.offsetval + 4, new byte[4]);
+                    memList.InsertRange(p.offsetval + 8, BitConverter.GetBytes(pcc.FindNameOrAdd("FloatProperty")));
+                    memList.InsertRange(p.offsetval + 12, new byte[4]);
+                    memList.InsertRange(p.offsetval + 16, BitConverter.GetBytes(4));
+                    memList.InsertRange(p.offsetval + 20, new byte[4]);
+                    memList.InsertRange(p.offsetval + 24, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
+                    pcc.Exports[expIndex + 1].Data = memList.ToArray();
+                }
+                
+                useGlobalSequenceRefSavesToolStripMenuItem.Checked = temp;
+
+                if (topLevel)
+                {
+                    //reselect original sequence
+                    LoadSequences();
+                    TreeNode[] nodes = treeView1.Nodes.Find(originalSequenceIndex.ToString(), true);
+                    if (nodes.Length == 0)
+                    {
+                        throw new Exception();
+                    }
+                    treeView1.SelectedNode = nodes[0];
+                    Application.DoEvents();
+                }
             }
         }
     }
