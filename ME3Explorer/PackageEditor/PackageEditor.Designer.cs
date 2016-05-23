@@ -215,7 +215,7 @@
             this.altSavetestingToolStripMenuItem.Name = "altSavetestingToolStripMenuItem";
             this.altSavetestingToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.altSavetestingToolStripMenuItem.Text = "Reconstruction Save";
-            this.altSavetestingToolStripMenuItem.ToolTipText = "Save changes by reconstruction the PCC";
+            this.altSavetestingToolStripMenuItem.ToolTipText = "Save changes by reconstructing the PCC";
             this.altSavetestingToolStripMenuItem.Click += new System.EventHandler(this.reconstructionSave_Click);
             // 
             // saveIntoDLCToolStripMenuItem

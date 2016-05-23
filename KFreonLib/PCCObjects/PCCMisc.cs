@@ -118,17 +118,6 @@ namespace KFreonLib.PCCObjects
 
 
         /// <summary>
-        /// Decompresses a PCC using external tool.
-        /// </summary>
-        /// <param name="path">Path to PCC.</param>
-        public static void PCCDecompress(string path)
-        {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            KFreonLib.Misc.Methods.RunShell(loc + "\\exec\\Decompress.exe", "\"" + path + "\"");
-        }
-
-
-        /// <summary>
         /// Searches for PCC by name in a certain game specified by PathInclDLC. Can also use expID to narrow search if required. Return name of PCC, empty if not found.
         /// </summary>
         /// <param name="pccname">Name of PCC to search for.</param>

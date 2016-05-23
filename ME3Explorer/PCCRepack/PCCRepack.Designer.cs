@@ -70,7 +70,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PCCRepack";
             this.Text = "PCC Repacker";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PCCRepack_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

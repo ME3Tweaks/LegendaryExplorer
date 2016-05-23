@@ -548,176 +548,13 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        /// <summary>
-        ///     save PCCObject to original file.
-        /// </summary>
-        /// <param name="saveCompress">set true if you want a zlib compressed pcc file.</param>
-        public void saveToFile(bool saveCompress)
-        {
-            saveToFile(null, saveCompress);
-        }
-
-
-        /// <summary>
-        ///     save PCCObject to file.
-        /// </summary>
-        /// <param name="newFileName">set full path + file name.</param>
-        /// <param name="saveCompress">set true if you want a zlib compressed pcc file.</param>
-        public void saveToFile(string newFileName = null, bool saveCompress = false)
-        {
-            bool bOverwriteFile = false;
-
-            if (string.IsNullOrWhiteSpace(newFileName) || newFileName == pccFileName)
-            {
-                bOverwriteFile = true;
-                newFileName = Path.GetFullPath(pccFileName) + ".tmp";
-            }
-
-            if (bDLCStored)
-                saveCompress = false;
-
-            using (MemoryStream newPccStream = new MemoryStream())
-            {
-                //ME3Explorer.DebugOutput.Clear();
-                DebugOutput.PrintLn("Saving file...");
-
-                DebugOutput.PrintLn("writing names list...");
-
-                // this condition needs a deeper check. todo...
-                if (bExtraNamesList)
-                {
-                    //MessageBox.Show("sono dentro, dimensione extranamelist: " + extraNamesList.Length + " bytes");
-                    newPccStream.Seek(headerSize, SeekOrigin.Begin);
-                    newPccStream.Write(extraNamesList, 0, extraNamesList.Length);
-                }
-
-                //writing names list
-                newPccStream.Seek(NameOffset, SeekOrigin.Begin);
-                NameCount = Names.Count;
-                foreach (string name in Names)
-                {
-                    newPccStream.WriteValueS32(-(name.Length + 1));
-                    newPccStream.WriteString(name + "\0", (uint)(name.Length + 1) * 2, Encoding.Unicode);
-                }
-
-                DebugOutput.PrintLn("writing imports list...");
-
-                //writing import infos
-                ImportOffset = (int)newPccStream.Position;
-                ImportCount = Imports.Count;
-                foreach (ImportEntry import in Imports)
-                    newPccStream.Write(import.header, 0, import.header.Length);
-
-                //updating general export infos
-                ExportOffset = (int)newPccStream.Position;
-                ExportCount = Exports.Count;
-                expInfoEndOffset = ExportOffset + Exports.Sum(export => export.header.Length);
-                expDataBegOffset = expInfoEndOffset;
-
-                // WV code stuff...
-                DebugOutput.PrintLn("writing export data...");
-                int counter = 0;
-                int breaker = Exports.Count / 100;
-                if (breaker == 0)
-                    breaker = 1;
-
-                //updating general export infos
-                ExportOffset = (int)newPccStream.Position;
-                ExportCount = Exports.Count;
-                expInfoEndOffset = ExportOffset + Exports.Sum(export => export.header.Length);
-                if (expDataBegOffset < expInfoEndOffset)
-                    expDataBegOffset = expInfoEndOffset;
-
-                //writing export data
-                /*newPccStream.Seek(expDataBegOffset, SeekOrigin.Begin);
-                foreach (ExportEntry export in Exports)
-                {
-                    //updating info values
-                    export.DataSize = export.Data.Length;
-                    export.DataOffset = (int)newPccStream.Position;
-
-                    //writing data
-                    newPccStream.Write(export.Data, 0, export.Data.Length);
-                }*/
-                //writing export data
-                List<ExportEntry> unchangedExports = Exports.Where(export => !export.hasChanged || (export.hasChanged && export.Data.Length <= export.DataSize)).ToList();
-                List<ExportEntry> changedExports = Exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
-
-                foreach (ExportEntry export in unchangedExports)
-                {
-                    newPccStream.Seek(export.DataOffset, SeekOrigin.Begin);
-                    //updating info values
-                    export.DataSize = export.Data.Length;
-                    export.DataOffset = (int)newPccStream.Position;
-
-                    //writing data
-                    newPccStream.Write(export.Data, 0, export.Data.Length);
-                }
-
-                ExportEntry lastExport = unchangedExports.Find(export => export.DataOffset == unchangedExports.Max(maxExport => maxExport.DataOffset));
-                int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
-
-                newPccStream.Seek(lastDataOffset, SeekOrigin.Begin);
-                foreach (ExportEntry export in changedExports)
-                {
-                    //updating info values
-                    export.DataSize = export.Data.Length;
-                    export.DataOffset = (int)newPccStream.Position;
-
-                    //writing data
-                    newPccStream.Write(export.Data, 0, export.Data.Length);
-                }
-
-                //if (Exports.Any(x => x.Data == null))
-                //    throw new Exception("values null!!");
-
-                //writing export info
-                newPccStream.Seek(ExportOffset, SeekOrigin.Begin);
-                foreach (ExportEntry export in Exports)
-                {
-                    newPccStream.Write(export.header, 0, export.header.Length);
-                }
-                /*foreach (ExportEntry export in unchangedExports)
-                {
-                    newPccStream.Write(export.info, 0, export.info.Length);
-                }
-                foreach (ExportEntry export in changedExports)
-                {
-                    newPccStream.Write(export.info, 0, export.info.Length);
-                }*/
-
-                DebugOutput.PrintLn("writing header file...");
-
-                //writing header
-                bCompressed = false;
-                newPccStream.Seek(0, SeekOrigin.Begin);
-                newPccStream.Write(header, 0, header.Length);
-                newPccStream.Seek(0, SeekOrigin.Begin);
-
-                if (saveCompress)
-                {
-                    DebugOutput.PrintLn("compressing in zlib format, it may take a while...");
-                    PCCHandler.CompressAndSave(newPccStream, newFileName);
-                }
-                else
-                {
-                    using (FileStream outputStream = File.Create(newFileName))
-                    {
-                        newPccStream.CopyTo(outputStream);
-                    }
-                }
-            }
-
-            if (bOverwriteFile)
-            {
-                File.Delete(pccFileName);
-                File.Move(newFileName, pccFileName);
-            }
-            DebugOutput.PrintLn(Path.GetFileName(pccFileName) + " has been saved.");
-        }
-
         //an attempt to emulate ME3Creator's save method
-        public void saveByReconstructing(string path)
+        /// <summary>
+        ///     save PCCObject to file by reconstruction from data
+        /// </summary>
+        /// <param name="path">full path + file name.</param>
+        /// <param name="compress">true if you want a zlib compressed pcc file.</param>
+        public void saveByReconstructing(string path, bool compress = false)
         {
             //load in all data
             byte[] buff;
@@ -728,6 +565,7 @@ namespace ME3Explorer.Unreal
 
             try
             {
+                this.bCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
                 //name table
@@ -785,7 +623,14 @@ namespace ME3Explorer.Unreal
                 m.Seek(0, SeekOrigin.Begin);
                 m.WriteBytes(header);
 
-                File.WriteAllBytes(path, m.ToArray());
+                if (compress)
+                {
+                    PCCHandler.CompressAndSave(m, path);
+                }
+                else
+                {
+                    File.WriteAllBytes(path, m.ToArray()); 
+                }
             }
             catch (Exception ex)
             {
@@ -915,22 +760,7 @@ namespace ME3Explorer.Unreal
             string rtValues = "";
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
 
-            //Check whether compressed
-            if (this.bCompressed)
-            {
-                string exeLoc = Path.GetDirectoryName(Application.ExecutablePath);
-                System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(exeLoc + "\\exec\\Decompress.exe", "\"" + this.pccFileName + "\"");
-                procStartInfo.WorkingDirectory = Path.GetDirectoryName(exeLoc + "\\exec\\Decompress.exe");
-                procStartInfo.RedirectStandardOutput = true;
-                procStartInfo.UseShellExecute = false;
-                procStartInfo.CreateNoWindow = true;
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = procStartInfo;
-                proc.Start();
-                proc.WaitForExit();
-                //MessageBox.Show("Decompression complete");
-            }
-
+            
             //Get info
             expInfoEndOffset = ExportOffset + Exports.Sum(export => export.header.Length);
             if (expDataBegOffset < expInfoEndOffset)
@@ -955,7 +785,6 @@ namespace ME3Explorer.Unreal
             //ExportEntry lastExport = unchangedExports.Find(export => export.DataOffset == unchangedExports.Max(maxExport => maxExport.DataOffset));
             ExportEntry lastExport = Exports.Find(export => export.DataOffset == Exports.Max(maxExport => maxExport.DataOffset));
             int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
-            byte[] oldPCC = new byte[lastDataOffset];
             //byte[] oldName;
 
             if (!attemptOverwrite)
@@ -981,27 +810,18 @@ namespace ME3Explorer.Unreal
             }
 
 
-            using (FileStream oldPccStream = new FileStream(this.pccFileName, FileMode.Open))
+            byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
+            if (this.bCompressed)
             {
-                //Read the original data up to the last export
-                oldPccStream.Read(oldPCC, 0, lastDataOffset);
-                #region Unused code
-                /* Maybe implement this if I want to directly copy the names across.
-                 * Not useful at this time
-                if (NameOffset == 0x8E)
+                oldPCC = PCCHandler.Decompress(pccFileName).Take(lastDataOffset).ToArray();
+            }
+            else
+            {
+                using (FileStream oldPccStream = new FileStream(this.pccFileName, FileMode.Open))
                 {
-                    oldName = new byte[ImportOffset - 0x8E];
-                    oldPccStream.Seek(0x8E, SeekOrigin.Begin);
-                    oldPccStream.Read(oldName, 0, (int)oldPccStream.Length - lastDataOffset);
+                    //Read the original data up to the last export
+                    oldPccStream.Read(oldPCC, 0, lastDataOffset);
                 }
-                else
-                {
-                    oldName = new byte[oldPccStream.Length - lastDataOffset];
-                    oldPccStream.Seek(lastDataOffset, SeekOrigin.Begin);
-                    oldPccStream.Read(oldName, 0, (int)oldPccStream.Length - lastDataOffset);
-                }
-                 * */
-                #endregion
             }
             //Start writing the new file
             using (FileStream newPCCStream = new FileStream(newFileName, FileMode.Create))

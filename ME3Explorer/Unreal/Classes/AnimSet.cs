@@ -252,7 +252,7 @@ namespace ME3Explorer.Unreal.Classes
                 ans.SaveChanges();
                 pos += inf.KeyQuotum;
             }
-            pcc.saveToFile();
+            pcc.altSaveToFile(pcc.pccFileName, true);
             return true;
         }
 

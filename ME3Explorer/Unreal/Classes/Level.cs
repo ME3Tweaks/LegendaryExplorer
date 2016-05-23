@@ -219,7 +219,7 @@ namespace ME3Explorer.Unreal.Classes
             foreach (WwiseEnvironmentVolume wev in WEV)
                 wev.SaveChanges();
             DebugOutput.PrintLn("Saving \"" + Path.GetFileName(pcc.pccFileName) + "\" ..."); 
-            pcc.saveToFile();
+            pcc.altSaveToFile(pcc.pccFileName, true);
         }
 
         public void CreateModJobs()

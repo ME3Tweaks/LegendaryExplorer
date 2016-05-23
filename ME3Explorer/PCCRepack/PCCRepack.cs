@@ -26,35 +26,27 @@ namespace ME3Explorer
                 string backupFile = fileName + ".bak";
                 if (File.Exists(fileName))
                 {
-                    DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
                     try
                     {
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            File.Copy(fileName, backupFile);
-                        }
-
                         PCCObject pccObj = new PCCObject(fileName);
-                        pccObj.saveToFile(true);
-
-                        //PCCObject pccFile = new PCCObject();
-                        //pccFile.LoadFile(fileName);
-                        /*main function that compress the file
-                        PCCHandler.CompressAndSave(pccFile.SaveFile(),fileName);*/
-                        /*byte[] buffer;
-                        using (FileStream inputStream = File.OpenRead(fileName))
+                        if (pccObj.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
                         {
-                            buffer = new byte[inputStream.Length];
-                            inputStream.Read(buffer, 0, buffer.Length);
+                            var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
+                                "Do you want to visit a forum thread with more information and a possible solution?",
+                                "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+                            if (res == DialogResult.Yes)
+                            {
+                                System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
+                            }
+                            return;
                         }
+                        DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes)
                         {
                             File.Copy(fileName, backupFile);
                         }
 
-                        //main function that compress the file
-                        PCCHandler.CompressAndSave(buffer,fileName);*/
-
+                        pccObj.saveByReconstructing(fileName, true);
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully compressed.", "Succeed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -80,25 +72,16 @@ namespace ME3Explorer
                 string backupFile = fileName + ".bak";
                 if (File.Exists(fileName))
                 {
-                    DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
                     try
                     {
+                        DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes)
                         {
                             File.Copy(fileName, backupFile);
                         }
 
-                        /*PCCObject pccObj = new PCCObject();
-                        pccObj.LoadFile(fileName);
-                        pccObj.SaveFile(fileName);*/
-                        //main function that compress the file
-                        /*byte[] buffer = PCCHandler.Decompress(fileName);
-                        FileStream outputStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-                        outputStream.Write(buffer, 0, buffer.Length);
-                        outputStream.Dispose();*/
-
                         PCCObject pccObj = new PCCObject(fileName);
-                        pccObj.saveToFile(false);
+                        pccObj.saveByReconstructing(fileName);
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -126,15 +109,15 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to decompress does not exist:\n" + sourceFile, "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            System.Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
+            Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
             try
             {
                 PCCObject pccObj = new PCCObject(sourceFile);
-                pccObj.saveToFile(outputFile, false);
+                pccObj.saveByReconstructing(outputFile);
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Error:\n" + ex.Message);
+                Console.WriteLine("Error:\n" + ex.Message);
                 return 1;
             }
             return 0;
@@ -150,23 +133,22 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to compress does not exist:\n" + sourceFile, "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            System.Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
+            Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
             try
             {
                 PCCObject pccObj = new PCCObject(sourceFile);
-                pccObj.saveToFile(outputFile, true);
+                if (pccObj.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+                {
+                    throw new Exception("Cannot compress files with a SeekFreeShaderCache");
+                }
+                pccObj.saveByReconstructing(outputFile, true);
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Error:\n" + ex.Message);
+                Console.WriteLine("Error:\n" + ex.Message);
                 return 1;
             }
             return 0;
-        }
-
-        private void PCCRepack_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
         }
     }
 }
