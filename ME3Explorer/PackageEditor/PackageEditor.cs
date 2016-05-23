@@ -31,6 +31,7 @@ namespace ME3Explorer
 
         public PropGrid pg;
         private string currentFile;
+        private bool haveCloned;
 
         private List<int> ClassNames;
 
@@ -79,6 +80,9 @@ namespace ME3Explorer
             {
                 currentFile = s;
                 pcc = new PCCObject(s);
+                haveCloned = false;
+                appendSaveMenuItem.Enabled = true;
+                appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
                 interpreterControl.Pcc = pcc;
                 RefreshView();
                 InitStuff();
@@ -860,7 +864,7 @@ namespace ME3Explorer
             Preview();
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void appendSaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (pcc == null)
                 return;
@@ -877,7 +881,14 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            if (haveCloned)
+            {
+                pcc.saveByReconstructing(pcc.pccFileName);
+            }
+            else
+            {
+                pcc.altSaveToFile(pcc.pccFileName, true); 
+            }
             MessageBox.Show("Done");
         }
 
@@ -1643,6 +1654,10 @@ namespace ME3Explorer
             {
                 if (CurrentView == NAMES_VIEW)
                 {
+                    nameContextMenuStrip1.Show(MousePosition);
+                }
+                else
+                {
                     contextMenuStrip1.Show(MousePosition);
                 }
             }
@@ -1681,6 +1696,120 @@ namespace ME3Explorer
 
             RefreshView();
             goToNumber(n);
+        }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                treeView1.SelectedNode = e.Node;
+                //isn't root
+                if (e.Node.Name.Length > 0)
+                {
+                    //disable clone tree on nodes with no children
+                    cloneTreeToolStripMenuItem.Enabled = e.Node.Nodes.Count != 0;
+                    nodeContextMenuStrip1.Show(MousePosition);
+                }
+            }
+        }
+
+        private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!pcc.canClone())
+            {
+                return;
+            }
+            int n = 0;
+            if (GetSelected(out n))
+            {
+                haveCloned = true;
+                appendSaveMenuItem.Enabled = false;
+                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning has occured.";
+
+                if (n >= 0)
+                {
+                    PCCObject.ExportEntry ent = pcc.Exports[n].Clone();
+                    pcc.addExport(ent);
+                    RefreshView();
+                    goToNumber(pcc.Exports.Count - 1); 
+                }
+                else
+                {
+                    PCCObject.ImportEntry ent = pcc.Imports[-n - 1].Clone();
+                    pcc.addImport(ent);
+                    RefreshView();
+                    goToNumber(CurrentView == TREE_VIEW ? -pcc.Imports.Count : pcc.Imports.Count - 1);
+                }
+            }
+        }
+
+        private void cloneTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!pcc.canClone())
+            {
+                return;
+            }
+            int n = 0;
+            if (GetSelected(out n))
+            {
+                int nextIndex;
+                haveCloned = true;
+                appendSaveMenuItem.Enabled = false;
+                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning has occured.";
+
+                TreeNode rootNode = treeView1.SelectedNode;
+                if (n >= 0)
+                {
+                    nextIndex = pcc.Exports.Count;
+                    PCCObject.ExportEntry exp = pcc.Exports[n].Clone();
+                    pcc.addExport(exp);
+
+                    n = nextIndex + 1;
+                }
+                else
+                {
+                    nextIndex = -pcc.Imports.Count - 1;
+                    PCCObject.ImportEntry imp = pcc.Imports[-n - 1].Clone();
+                    pcc.addImport(imp);
+
+                    n = nextIndex;
+                }
+                cloneTree(n, rootNode);
+
+                RefreshView();
+                goToNumber(nextIndex);
+            }
+        }
+
+        private void cloneTree(int n, TreeNode rootNode)
+        {
+            int index;
+            int nextIndex;
+            if (rootNode.Nodes.Count > 0)
+            {
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    index = Convert.ToInt32(node.Name);
+                    if (index >= 0)
+                    {
+                        nextIndex = pcc.Exports.Count + 1;
+                        PCCObject.ExportEntry exp = pcc.Exports[index].Clone();
+                        exp.idxLink = n;
+                        pcc.addExport(exp);
+                    }
+                    else
+                    {
+                        nextIndex = -pcc.Imports.Count - 1;
+                        PCCObject.ImportEntry imp = pcc.Imports[-index - 1].Clone();
+                        imp.idxLink = n;
+                        pcc.addImport(imp);
+                    }
+                    if (node.Nodes.Count > 0)
+                    {
+                        cloneTree(nextIndex, node);
+                    }
+                }
+            }
         }
     }
 }

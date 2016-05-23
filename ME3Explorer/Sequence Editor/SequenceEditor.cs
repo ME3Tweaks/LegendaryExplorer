@@ -1144,20 +1144,13 @@ namespace ME3Explorer
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!pcc.canClone())
+            {
+                return;
+            }
             int n = CurrentObjects[listBox1.SelectedIndex];
             if (n == -1)
                 return;
-            if (pcc.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
-            {
-                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Cloning will cause a crash when ME3 attempts to load this file.\n" +
-                    "Do you want to visit a forum thread with more information and a possible solution?",
-                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
-                if (res == DialogResult.Yes)
-                {
-                    System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
-                }
-                return;
-            }
             treeView1.Enabled = false;
             graphEditor.updating = true;
             cloneObject(n);

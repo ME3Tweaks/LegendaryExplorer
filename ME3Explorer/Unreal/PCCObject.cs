@@ -109,7 +109,6 @@ namespace ME3Explorer.Unreal
             string GetFullPath { get; }
             int idxLink { get; }
             int idxObjectName { get; }
-            int indexValue { get; }
             string ObjectName { get; }
             string PackageFullName { get; }
             string PackageName { get; }
@@ -125,7 +124,6 @@ namespace ME3Explorer.Unreal
             public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
             public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
             public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public int indexValue { get { return BitConverter.ToInt32(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(int)); } }
 
             public string ClassName { get { return pccRef.Names[idxClassName]; } }
             public string PackageFile { get { return pccRef.Names[idxPackageFile] + ".pcc"; } }
@@ -185,9 +183,16 @@ namespace ME3Explorer.Unreal
                 header = new byte[ImportEntry.byteSize];
                 importData.Read(header, 0, header.Length);
             }
+
+            public ImportEntry Clone()
+            {
+                ImportEntry newImport = (ImportEntry)MemberwiseClone();
+                newImport.header = (byte[])this.header.Clone();
+                return newImport;
+            }
         }
 
-        public class ExportEntry : IEntry, ICloneable // class containing info about export entry (header info + data)
+        public class ExportEntry : IEntry // class containing info about export entry (header info + data)
         {
             internal byte[] header; // holds data about export header, not the export data.
             public PCCObject pccRef;
@@ -309,11 +314,6 @@ namespace ME3Explorer.Unreal
                 // TODO: Complete member initialization
             }
 
-            object ICloneable.Clone()
-            {
-                return this.Clone();
-            }
-
             public ExportEntry Clone()
             {
                 ExportEntry newExport = (ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
@@ -324,7 +324,7 @@ namespace ME3Explorer.Unreal
                 string name = ObjectName;
                 foreach (ExportEntry ent in pccRef.Exports)
                 {
-                    if (ObjectName == ent.ObjectName && ent.indexValue > index)
+                    if (name == ent.ObjectName && ent.indexValue > index)
                     {
                         index = ent.indexValue;
                     }
@@ -728,6 +728,7 @@ namespace ME3Explorer.Unreal
                 throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
 
             Imports.Add(importEntry);
+            ImportCount = Imports.Count;
         }
 
         public void addExport(ExportEntry exportEntry)
@@ -933,6 +934,22 @@ namespace ME3Explorer.Unreal
             str += "\nExport Offset: " + this.ExportOffset;
             return str;
 
+        }
+
+        public bool canClone()
+        {
+            if (Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+            {
+                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Cloning will cause a crash when ME3 attempts to load this file.\n" +
+                    "Do you want to visit a forum thread with more information and a possible solution?",
+                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+                if (res == DialogResult.Yes)
+                {
+                    Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
+                }
+                return false;
+            }
+            return true;
         }
     }
 }
