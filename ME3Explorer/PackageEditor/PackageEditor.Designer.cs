@@ -129,9 +129,9 @@
             this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.interpreterControl = new ME3Explorer.Interpreter();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -586,6 +586,7 @@
             // 
             // treeView1
             // 
+            this.treeView1.AllowDrop = true;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.HideSelection = false;
@@ -594,8 +595,12 @@
             this.treeView1.Size = new System.Drawing.Size(330, 444);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
+            this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            this.treeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView1_DragDrop);
+            this.treeView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeView1_DragEnter);
+            this.treeView1.DragOver += new System.Windows.Forms.DragEventHandler(this.treeView1_DragOver);
             // 
             // listBox1
             // 
@@ -1125,6 +1130,20 @@
             this.cloneTreeToolStripMenuItem.Text = "Clone Tree";
             this.cloneTreeToolStripMenuItem.Click += new System.EventHandler(this.cloneTreeToolStripMenuItem_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cloneToolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(106, 26);
+            // 
+            // cloneToolStripMenuItem1
+            // 
+            this.cloneToolStripMenuItem1.Name = "cloneToolStripMenuItem1";
+            this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
+            this.cloneToolStripMenuItem1.Text = "Clone";
+            this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
             // interpreterControl
             // 
             this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1133,20 +1152,6 @@
             this.interpreterControl.Pcc = null;
             this.interpreterControl.Size = new System.Drawing.Size(654, 412);
             this.interpreterControl.TabIndex = 0;
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cloneToolStripMenuItem1});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
-            // 
-            // cloneToolStripMenuItem1
-            // 
-            this.cloneToolStripMenuItem1.Name = "cloneToolStripMenuItem1";
-            this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.cloneToolStripMenuItem1.Text = "Clone";
-            this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 

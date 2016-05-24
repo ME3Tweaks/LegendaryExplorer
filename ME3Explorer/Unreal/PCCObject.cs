@@ -89,7 +89,7 @@ namespace ME3Explorer.Unreal
 
         int headerEnd;
 
-        public List<string> Names { get; private set; }
+        public List<string> Names { get; set; }
         public List<ImportEntry> Imports { get; private set; }
         public List<ExportEntry> Exports { get; private set; }
 

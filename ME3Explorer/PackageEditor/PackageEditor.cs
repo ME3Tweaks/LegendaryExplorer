@@ -10,10 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using Be.Windows.Forms;
 using ME3Explorer.Unreal.Classes;
-using AmaroK86.ImageFormat;
 using KFreonLib.MEDirectories;
-using KFreonLib.PCCObjects;
-using KFreonLib.Textures;
 using UsefulThings;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -84,6 +81,7 @@ namespace ME3Explorer
                 appendSaveMenuItem.Enabled = true;
                 appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
                 interpreterControl.Pcc = pcc;
+                treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
                 if (!isfromdlc)
@@ -1755,7 +1753,7 @@ namespace ME3Explorer
                 int nextIndex;
                 haveCloned = true;
                 appendSaveMenuItem.Enabled = false;
-                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning has occured.";
+                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning or importing has occured.";
 
                 TreeNode rootNode = treeView1.SelectedNode;
                 if (n >= 0)
@@ -1808,6 +1806,211 @@ namespace ME3Explorer
                     {
                         cloneTree(nextIndex, node);
                     }
+                }
+            }
+        }
+
+        private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Copy);
+        }
+
+        private void treeView1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+
+        private void treeView1_DragDrop(object sender, DragEventArgs e)
+        {
+            TreeNode sourceNode;
+
+            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            {
+                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                sourceNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                if (DestinationNode.TreeView != sourceNode.TreeView)
+                {
+                    if (!pcc.canClone())
+                    {
+                        return;
+                    }
+                    haveCloned = true;
+                    appendSaveMenuItem.Enabled = false;
+                    appendSaveMenuItem.ToolTipText = "This method cannot be used if importing has occured.";
+
+                    PCCObject importpcc = sourceNode.TreeView.Tag as PCCObject;
+                    int n = Convert.ToInt32(sourceNode.Name);
+                    int link;
+                    if (DestinationNode.Name == "")
+                    {
+                        link = 0;
+                    }
+                    else
+                    {
+                        link = Convert.ToInt32(DestinationNode.Name);
+                        link = link >= 0 ? link + 1 : link;
+                    }
+                    int nextIndex;
+                    if (n >= 0)
+                    {
+                        if(!importExport(importpcc, n, link))
+                        {
+                            return;
+                        }
+                        nextIndex = pcc.Exports.Count;
+                    }
+                    else
+                    {
+                        importImport(importpcc, -n - 1, link);
+                        nextIndex = -pcc.Imports.Count;
+                    }
+                    if (sourceNode.Nodes.Count > 0)
+                    {
+                        importTree(sourceNode, importpcc, nextIndex);
+                    }
+
+                    RefreshView();
+                    goToNumber(n >= 0 ? pcc.Exports.Count - 1 : -pcc.Imports.Count);
+                }
+            }
+        }
+
+        private bool importTree(TreeNode sourceNode, PCCObject importpcc, int n)
+        {
+            int nextIndex;
+            int index;
+            foreach (TreeNode node in sourceNode.Nodes)
+            {
+                index = Convert.ToInt32(node.Name);
+                if (index >= 0)
+                {
+                    if(!importExport(importpcc, index, n))
+                    {
+                        return false;
+                    }
+                    nextIndex = pcc.Exports.Count;
+                }
+                else
+                {
+                    importImport(importpcc, -index - 1, n);
+                    nextIndex = -pcc.Imports.Count;
+                }
+                if (node.Nodes.Count > 0)
+                {
+                    if(!importTree(node, importpcc, nextIndex))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void importImport(PCCObject importpcc, int n, int link)
+        {
+            PCCObject.ImportEntry imp = importpcc.Imports[n];
+            PCCObject.ImportEntry nimp = new PCCObject.ImportEntry(pcc, imp.header);
+            nimp.idxLink = link;
+            nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
+            nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
+            nimp.idxPackageFile = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageFile));
+            pcc.addImport(nimp);
+        }
+
+        private bool importExport(PCCObject importpcc, int n, int link)
+        {
+            PCCObject.ExportEntry ex = importpcc.Exports[n];
+            PCCObject.ExportEntry nex = new PCCObject.ExportEntry();
+            byte[] idata = ex.Data;
+            List<PropertyReader.Property> Props = PropertyReader.getPropList(importpcc, ex);
+            int start = PropertyReader.detectStart(importpcc, idata, (uint)importpcc.Exports[n].ObjectFlags);
+            int end = start;
+            if (Props.Count != 0)
+            {
+                end = Props[Props.Count - 1].offend;
+            }
+            MemoryStream res = new MemoryStream();
+            if (((uint)importpcc.Exports[n].ObjectFlags & 0x02000000) != 0)
+            {
+                byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
+                res.Write(stackdummy, 0, stackdummy.Length);
+            }
+            else
+            {
+                res.Write(new byte[start], 0, start);
+            }
+            //store copy of names list in case something goes wrong
+            List<string> names = pcc.Names.ToList();
+            try
+            {
+                foreach (PropertyReader.Property p in Props)
+                {
+                    PropertyReader.ImportProperty(pcc, importpcc, p, importpcc.getObjectName(ex.idxClass), res);
+                }
+            }
+            catch (Exception exception)
+            {
+                //restore namelist
+                pcc.Names = names;
+                MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
+                return false;
+            }
+            if (importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
+            {
+                SkeletalMesh skl = new SkeletalMesh(importpcc, n);
+                SkeletalMesh.BoneStruct bone;
+                for (int i = 0; i < skl.Bones.Count; i++)
+                {
+                    bone = skl.Bones[i];
+                    string s = importpcc.getNameEntry(bone.Name);
+                    bone.Name = pcc.FindNameOrAdd(s);
+                    skl.Bones[i] = bone;
+                }
+                SkeletalMesh.TailNamesStruct tailName;
+                for (int i = 0; i < skl.TailNames.Count; i++)
+                {
+                    tailName = skl.TailNames[i];
+                    string s = importpcc.getNameEntry(tailName.Name);
+                    tailName.Name = pcc.FindNameOrAdd(s);
+                    skl.TailNames[i] = tailName;
+                }
+                SerializingContainer container = new SerializingContainer(res);
+                container.isLoading = false;
+                skl.Serialize(container);
+            }
+            else
+            {
+                for (int i = end; i < idata.Length; i++)
+                    res.WriteByte(idata[i]);
+            }
+            nex.header = (byte[])ex.header.Clone();
+            nex.Data = res.ToArray();
+            nex.DataSize = nex.Data.Length;
+            nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
+            nex.idxLink = link;
+            nex.idxArchtype = nex.idxClass = nex.idxClassParent = 0;
+            nex.pccRef = pcc;
+            pcc.addExport(nex);
+            return true;
+        }
+
+        private void treeView1_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            {
+                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                if (DestinationNode != null && DestinationNode.TreeView != NewNode.TreeView)
+                {
+                    treeView1.SelectedNode = DestinationNode;
+                    e.Effect = DragDropEffects.Copy;
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.None;
                 }
             }
         }
