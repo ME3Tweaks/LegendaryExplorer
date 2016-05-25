@@ -74,6 +74,10 @@
       <HintPath>..\packages\CsvHelper.2.14.1\lib\net40\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
@@ -158,6 +162,131 @@
     <Compile Include="Interpreter\InterpreterHost.Designer.cs">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="ME1\DialogEditor\AddReply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\DialogEditor\AddReply.Designer.cs">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\DialogEditor\DialogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\DialogEditor\DialogEditor.Designer.cs">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\Helper\LZOHelper.cs" />
+    <Compile Include="MiniLZO.cs" />
+    <Compile Include="ME1\HuffmanCompression.cs" />
+    <Compile Include="ME1\Interpreter2\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\Interpreter2\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\ITalkFile.cs" />
+    <Compile Include="ME1\PCCEditor\PCCEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\PCCEditor\PCCEditor.Designer.cs">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\SaveGameEditor\SaveEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\SaveGameEditor\SaveEditor.Designer.cs">
+      <DependentUpon>SaveEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\SaveGameOperator\SaveGame.cs" />
+    <Compile Include="ME1\SaveGameOperator\SaveGameOperator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\SaveGameOperator\SaveGameOperator.Designer.cs">
+      <DependentUpon>SaveGameOperator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\Sequence Editor\SequenceObjects.cs" />
+    <Compile Include="ME1\Talkfiles.cs" />
+    <Compile Include="ME1\TlkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME1\TlkManager.designer.cs">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME1\Unreal\BitConverter.cs" />
+    <Compile Include="ME1\Unreal\Classes\BioConversation.cs" />
+    <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
+    <Compile Include="ME1\Unreal\Classes\Sequence.cs" />
+    <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
+    <Compile Include="ME1\Unreal\PCCObject.cs" />
+    <Compile Include="ME1\Unreal\PropertyReader.cs" />
+    <Compile Include="ME1\Unreal\PropGrid.cs" />
+    <Compile Include="ME1\Unreal\UnrealFlags.cs" />
+    <Compile Include="ME1\Unreal\UnrealObjectInfo.cs" />
+    <Compile Include="ME2\DialogEditor\AddReply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\DialogEditor\AddReply.Designer.cs">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\DialogEditor\DialogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\DialogEditor\DialogEditor.Designer.cs">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\Helper\SaltLZOHelper.cs" />
+    <Compile Include="ME2\Interpreter2\Interpreter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\Interpreter2\Interpreter2.Designer.cs">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\PCCEditor\PCCEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\PCCEditor\PCCEditor.Designer.cs">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\Sequence Editor\SequenceObjects.cs" />
+    <Compile Include="ME2\TlkManager\TalkFile.cs" />
+    <Compile Include="ME2\TlkManager\TalkFiles.cs" />
+    <Compile Include="ME2\TlkManager\TlkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\TlkManager\TlkManager.Designer.cs">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\Unreal\BitConverter.cs" />
+    <Compile Include="ME2\Unreal\Classes\BioConversation.cs" />
+    <Compile Include="ME2\Unreal\Classes\Sequence.cs" />
+    <Compile Include="ME2\Unreal\PCCObject.cs" />
+    <Compile Include="ME2\Unreal\PropertyReader.cs" />
+    <Compile Include="ME2\Unreal\PropGrid.cs" />
+    <Compile Include="ME2\Unreal\UnrealFlags.cs" />
+    <Compile Include="ME2\Unreal\UnrealObjectInfo.cs" />
     <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
       <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
@@ -740,6 +869,54 @@
     <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\DialogEditor\DialogEditor.resx">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\Interpreter2\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\PCCEditor\PCCEditor.resx">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\SaveGameEditor\SaveEditor.resx">
+      <DependentUpon>SaveEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\SaveGameOperator\SaveGameOperator.resx">
+      <DependentUpon>SaveGameOperator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME1\TlkManager.resx">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\DialogEditor\AddReply.resx">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\DialogEditor\DialogEditor.resx">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\DialogEditor\InputComboBox.resx">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\Interpreter2\Interpreter2.resx">
+      <DependentUpon>Interpreter2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\PCCEditor\PCCEditor.resx">
+      <DependentUpon>PCCEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\Sequence Editor\SequenceEditor.resx">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\TlkManager\TlkManager.resx">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
@@ -948,14 +1125,6 @@
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ME1Explorer\ME1Explorer.csproj">
-      <Project>{7F42E08B-02A9-4469-97F2-2D60F27DEA5B}</Project>
-      <Name>ME1Explorer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ME2Explorer\ME2Explorer.csproj">
-      <Project>{AFA017ED-5E32-459C-A204-8D9C6C1657FC}</Project>
-      <Name>ME2Explorer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ME3Creator\ME3Creator.csproj">
       <Project>{5aba4120-7379-479e-be61-c452c10a1810}</Project>
       <Name>ME3Creator</Name>
@@ -995,7 +1164,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SFARTOCbinUpdater\back2.jpg" />
-    <None Include="Resources\animation_explorer_64x64.bmp" />
+    <None Include="ME2\Resources\dialogue_editor_64x64.png" />
+    <None Include="ME2\Resources\package_editor_64x64.png" />
+    <None Include="ME2\Resources\sequence_editor_64x64.png" />
+    <None Include="ME2\Resources\sequence_editor_icon.ico" />
+    <None Include="ME2\Resources\TLKManager_icon_64x64.png" />
     <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />
