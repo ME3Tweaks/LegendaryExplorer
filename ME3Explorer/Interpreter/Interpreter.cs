@@ -395,7 +395,6 @@ namespace ME3Explorer
         }
 
         //structs that are serialized down to just their values.
-        //TODO: write a general deserializer for these instead of a bunch of bespoke ones that don't even cover all the cases.
         private void GenerateSpecialStruct(TreeNode t, string structType, int size)
         {
             TreeNode node;
@@ -426,7 +425,17 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        props = PropertyReader.ReadProp(pcc, UnrealObjectInfo.getDefaultClassValue(pcc, structType, true), 0);
+                        byte[] defaultValue = UnrealObjectInfo.getDefaultClassValue(pcc, structType, true);
+                        if (defaultValue == null)
+                        {
+                            //just prints the raw hex since there's no telling what it actually is
+                            node = new TreeNode(readerpos.ToString("X4") + ": " + memory.Skip(readerpos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")));
+                            node.Tag = nodeType.Unknown;
+                            t.Nodes.Add(node);
+                            readerpos += size;
+                            return;
+                        }
+                        props = PropertyReader.ReadProp(pcc, defaultValue, 0);
                         defaultStructValues.Add(structType, props);
                     }
                     for (int i = 0; i < props.Count; i++)
