@@ -575,7 +575,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Operator";
             this.Text = "Coalesced Operator";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Operator_FormClosing);
             this.Load += new System.EventHandler(this.Operator_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

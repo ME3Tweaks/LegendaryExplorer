@@ -130,9 +130,6 @@
   <data name="MenuExit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="shader" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\shader.fx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="asset_explorer_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\asset_explorer_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

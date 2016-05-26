@@ -1139,7 +1139,6 @@ namespace ME3Explorer
             ip.Text = "Interpreter (Package Editor)";
             ip.MdiParent = this.MdiParent;
             ip.Show();
-            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

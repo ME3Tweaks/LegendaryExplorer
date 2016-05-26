@@ -122,10 +122,5 @@ namespace ME3Explorer
             }
             MessageBox.Show("Done.");
         }
-
-        private void BIKExtract_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-        }
     }
 }

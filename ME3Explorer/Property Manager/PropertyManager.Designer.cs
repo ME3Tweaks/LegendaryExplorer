@@ -256,7 +256,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PropertyManager";
             this.Text = "Property Manager";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PropertyManager_FormClosing);
             this.Load += new System.EventHandler(this.PropertyManager_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

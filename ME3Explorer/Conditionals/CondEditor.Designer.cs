@@ -204,7 +204,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CondEditor";
             this.Text = "Condition Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CondEditor_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

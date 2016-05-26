@@ -806,11 +806,6 @@ namespace ME3Explorer
 
         }
 
-        private void Conditionals_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-        }
-
         private void editExpressionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;

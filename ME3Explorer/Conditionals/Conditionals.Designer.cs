@@ -230,7 +230,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Conditionals";
             this.Text = "Conditionals Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Conditionals_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);

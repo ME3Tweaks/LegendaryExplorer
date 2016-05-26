@@ -602,11 +602,6 @@ namespace ME3Explorer
             p.listBox1.SelectedIndex = l;
         }
 
-        private void AssetExplorer_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-        }
-
         private void removeTopImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
 

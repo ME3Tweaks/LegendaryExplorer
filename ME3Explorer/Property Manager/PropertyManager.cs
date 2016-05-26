@@ -290,10 +290,5 @@ namespace ME3Explorer
             UPR.Definitions.Add(c);
             RefreshView();
         }
-
-        private void PropertyManager_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-        }
     }
 }

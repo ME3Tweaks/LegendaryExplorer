@@ -617,12 +617,6 @@ namespace ME3Explorer.Coalesced_Operator
 
         }
 
-        private void Operator_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-            DebugOutput.PrintLn("Closed Operator.");
-        }
-
     }
 }
 

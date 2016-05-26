@@ -1,20 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3F331CEF-807F-4D38-9123-1B65E6871701}</ProjectGuid>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60E91B60-FCEE-4B36-967E-4022D8A54F2F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ME3Explorer</RootNamespace>
     <AssemblyName>ME3Explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,23 +26,23 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -52,20 +51,31 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icons\me3exp_favicon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
-    <StartupObject>ME3Explorer.Program</StartupObject>
+    <StartupObject>ME3Explorer.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup />
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
       <Private>True</Private>
@@ -113,19 +123,11 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UsefulThings, Version=1.5.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UsefulCSharpThings.1.5.6.0\lib\net45\UsefulThings.dll</HintPath>
@@ -135,11 +137,392 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
     <Compile Include="AboutME3Explorer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AboutME3Explorer.Designer.cs">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DirectXGlobal.cs" />
+    <Compile Include="InitialDLCExtractor.xaml.cs">
+      <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MiniLZO.cs" />
+    <Compile Include="Property Dumper\PropDumper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Property Dumper\PropDumper.Designer.cs">
+      <DependentUpon>PropDumper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Property Manager\PropertyManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Property Manager\PropertyManager.Designer.cs">
+      <DependentUpon>PropertyManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Property Manager\TreeViewSerializer.cs" />
+    <Compile Include="Property Manager\UPropertyReader.cs" />
+    <Compile Include="Propertydb\PropertyDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Propertydb\PropertyDB.Designer.cs">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PSAViewer\PSAViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PSAViewer\PSAViewer.Designer.cs">
+      <DependentUpon>PSAViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PSKViewer\PSKViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PSKViewer\PSKViewer.Designer.cs">
+      <DependentUpon>PSKViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QuestMapEditor\QMapEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuestMapEditor\QMapEditor.Designer.cs">
+      <DependentUpon>QMapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptDB\ScriptDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScriptDB\ScriptDB.Designer.cs">
+      <DependentUpon>ScriptDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
+      <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sequence Editor\SequenceObjects.cs" />
+    <Compile Include="SFARBasicEditor\SFARBasicEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SFARBasicEditor\SFARBasicEditor.Designer.cs">
+      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SFAREditor2\SFAREditor2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
+      <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.Designer.cs">
+      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Soundplorer\DirectReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Soundplorer\DirectReplace.Designer.cs">
+      <DependentUpon>DirectReplace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Soundplorer\Soundplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Soundplorer\Soundplorer.Designer.cs">
+      <DependentUpon>Soundplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SubtitleScanner\FileHelpers.cs" />
+    <Compile Include="SubtitleScanner\SubtitleScanner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
+      <DependentUpon>SubtitleScanner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texplorer\KFreonListErrorBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texplorer\KFreonListErrorBox.Designer.cs">
+      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texplorer\KFreonSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
+      <DependentUpon>KFreonSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texplorer\Texplorer2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texplorer\Texplorer2.Designer.cs">
+      <DependentUpon>Texplorer2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Texplorer\TexplorerFirstTimeSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Texplorer\TexplorerFirstTimeSetup.Designer.cs">
+      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TlkEditor\TlkEditor.xaml.cs">
+      <DependentUpon>TlkEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
+      <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TlkEditor\TLKEditorDebugTools.cs" />
+    <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
+      <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TlkManager\TalkFiles.cs" />
+    <Compile Include="TlkManager\TlkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TlkManager\TlkManager.Designer.cs">
+      <DependentUpon>TlkManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TOCeditor.cs" />
+    <Compile Include="TPFTools\KFreonTPFTools3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
+      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UDKConverter\UDKConverter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UDKConverter\UDKConverter.Designer.cs">
+      <DependentUpon>UDKConverter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UECodeEditor\OPCodes.cs" />
+    <Compile Include="UECodeEditor\OPCodeTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UECodeEditor\OPCodeTable.Designer.cs">
+      <DependentUpon>OPCodeTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UECodeEditor\UECodeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UECodeEditor\UECodeEditor.Designer.cs">
+      <DependentUpon>UECodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Unreal\BitConverter.cs" />
+    <Compile Include="Unreal\Bytecode.cs" />
+    <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
+    <Compile Include="Unreal\Classes\AnimSequence.cs" />
+    <Compile Include="Unreal\Classes\AnimSet.cs" />
+    <Compile Include="Unreal\Classes\AnimTree.cs" />
+    <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
+    <Compile Include="Unreal\Classes\BioConversation.cs" />
+    <Compile Include="Unreal\Classes\BioPathPoint.cs" />
+    <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
+    <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
+    <Compile Include="Unreal\Classes\BlockingVolume.cs" />
+    <Compile Include="Unreal\Classes\BrushComponent.cs" />
+    <Compile Include="Unreal\Classes\CoverLink.cs" />
+    <Compile Include="Unreal\Classes\CoverSlotMarker.cs" />
+    <Compile Include="Unreal\Classes\DecalActor.cs" />
+    <Compile Include="Unreal\Classes\DecalComponent.cs" />
+    <Compile Include="Unreal\Classes\Emitter.cs" />
+    <Compile Include="Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="Unreal\Classes\Function.cs" />
+    <Compile Include="Unreal\Classes\InterpActor.cs" />
+    <Compile Include="Unreal\Classes\Level.cs" />
+    <Compile Include="Unreal\Classes\LightVolume.cs" />
+    <Compile Include="Unreal\Classes\MantleMarker.cs" />
+    <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
+    <Compile Include="Unreal\Classes\PathNode.cs" />
+    <Compile Include="Unreal\Classes\Sequence.cs" />
+    <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
+    <Compile Include="Unreal\Classes\SkeletalMeshOld.cs" />
+    <Compile Include="Unreal\Classes\SplineActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMesh.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshCollectionActor.cs" />
+    <Compile Include="Unreal\Classes\StaticMeshComponent.cs" />
+    <Compile Include="Unreal\Classes\TargetPoint.cs" />
+    <Compile Include="Unreal\Classes\Texture2D.cs" />
+    <Compile Include="Unreal\Classes\TextureGroup.cs" />
+    <Compile Include="Unreal\Classes\WwiseAmbientSound.cs" />
+    <Compile Include="Unreal\Classes\WwiseAudioVolume.cs" />
+    <Compile Include="Unreal\Classes\WwiseBank.cs" />
+    <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
+    <Compile Include="Unreal\Classes\WwiseStream.cs" />
+    <Compile Include="Unreal\DLCPackage.cs" />
+    <Compile Include="Unreal\Helper3DS.cs" />
+    <Compile Include="Unreal\HuffmanCompression.cs" />
+    <Compile Include="Unreal\PCCHandler.cs" />
+    <Compile Include="Unreal\PCCObject.cs" />
+    <Compile Include="Unreal\PropertyReader.cs" />
+    <Compile Include="Unreal\PropGrid.cs" />
+    <Compile Include="Unreal\PSAFile.cs" />
+    <Compile Include="Unreal\PSKFile.cs" />
+    <Compile Include="Unreal\SerializingContainer.cs" />
+    <Compile Include="Unreal\TalkFile.cs" />
+    <Compile Include="Unreal\TOCBinFile.cs" />
+    <Compile Include="Unreal\UnrealFlags.cs" />
+    <Compile Include="Unreal\UnrealObjectInfo.cs" />
+    <Compile Include="WwiseBankViewer\WwiseViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
+      <DependentUpon>WwiseViewer.cs</DependentUpon>
+    </Compile>
+    <Page Include="InitialDLCExtractor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="AFCExtract\AFCExtract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AFCExtract\AFCExtract.Designer.cs">
+      <DependentUpon>AFCExtract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnimationExplorer\AnimationExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnimationExplorer\AnimationExplorer.Designer.cs">
+      <DependentUpon>AnimationExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Asset Explorer\AssetExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Asset Explorer\AssetExplorer.Designer.cs">
+      <DependentUpon>AssetExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoTOC\AutoTOC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoTOC\AutoTOC.Designer.cs">
+      <DependentUpon>AutoTOC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="batchrenamer\BatchRenamer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="batchrenamer\BatchRenamer.Designer.cs">
+      <DependentUpon>BatchRenamer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BIKExtract\BIKExtract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BIKExtract\BIKExtract.Designer.cs">
+      <DependentUpon>BIKExtract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraTool\CameraTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraTool\CameraTool.Designer.cs">
+      <DependentUpon>CameraTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClassViewer\ClassViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClassViewer\ClassViewer.Designer.cs">
+      <DependentUpon>ClassViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
+      <DependentUpon>CoalEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Editor\FileWrapper.cs" />
+    <Compile Include="Coalesced Editor\Setup.cs" />
+    <Compile Include="Coalesced Operator\advancedGraphics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\advancedGraphics.Designer.cs">
+      <DependentUpon>advancedGraphics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Operator\Keybinder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\Keybinder.Designer.cs">
+      <DependentUpon>Keybinder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Operator\opClass.cs" />
+    <Compile Include="Coalesced Operator\Operator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Operator\Operator.Designer.cs">
+      <DependentUpon>Operator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Codex Editor\CodexEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Codex Editor\CodexEditor.Designer.cs">
+      <DependentUpon>CodexEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Conditionals\CondEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Conditionals\CondEditor.Designer.cs">
+      <DependentUpon>CondEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Conditionals\Conditionals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Conditionals\Conditionals.Designer.cs">
+      <DependentUpon>Conditionals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\AddReply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\AddReply.Designer.cs">
+      <DependentUpon>AddReply.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\DialogEditor.Designer.cs">
+      <DependentUpon>DialogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditor\DialogVis.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\DialogVisObjects.cs" />
+    <Compile Include="DialogEditor\InputComboBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+      <DependentUpon>InputComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLLInjector\DLLInjector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLLInjector\DLLInjector.Designer.cs">
+      <DependentUpon>DLLInjector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
+      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpEditor\InterpEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InterpEditor\InterpEditor.Designer.cs">
+      <DependentUpon>InterpEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpEditor\InterpTracks.cs" />
+    <Compile Include="InterpEditor\Timeline.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Interpreter\AddPropertyDialog.cs">
       <SubType>Form</SubType>
@@ -147,11 +530,8 @@
     <Compile Include="Interpreter\AddPropertyDialog.Designer.cs">
       <DependentUpon>AddPropertyDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Conditionals\CondEditor.Designer.cs">
-      <DependentUpon>CondEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interpreter\Interpreter.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Interpreter\Interpreter.Designer.cs">
       <DependentUpon>Interpreter.cs</DependentUpon>
@@ -162,6 +542,53 @@
     <Compile Include="Interpreter\InterpreterHost.Designer.cs">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Language Selector\Language Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Language Selector\Language Selector.Designer.cs">
+      <DependentUpon>Language Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\Levelbase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\Levelbase.Designer.cs">
+      <DependentUpon>Levelbase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.Designer.cs">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
+    <Compile Include="LevelExplorer\ME3LevelExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\ME3LevelExplorer.Designer.cs">
+      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TlkEditor\TlkEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="ME1\DialogEditor\AddReply.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,7 +608,6 @@
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="ME1\Helper\LZOHelper.cs" />
-    <Compile Include="MiniLZO.cs" />
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Interpreter2\Interpreter2.cs">
       <SubType>Form</SubType>
@@ -287,262 +713,6 @@
     <Compile Include="ME2\Unreal\PropGrid.cs" />
     <Compile Include="ME2\Unreal\UnrealFlags.cs" />
     <Compile Include="ME2\Unreal\UnrealObjectInfo.cs" />
-    <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
-      <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AFCExtract\AFCExtract.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AFCExtract\AFCExtract.Designer.cs">
-      <DependentUpon>AFCExtract.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AnimationExplorer\AnimationExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AnimationExplorer\AnimationExplorer.Designer.cs">
-      <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Explorer\AssetExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Explorer\AssetExplorer.Designer.cs">
-      <DependentUpon>AssetExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AutoTOC\AutoTOC.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AutoTOC\AutoTOC.Designer.cs">
-      <DependentUpon>AutoTOC.cs</DependentUpon>
-    </Compile>
-    <Compile Include="batchrenamer\BatchRenamer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="batchrenamer\BatchRenamer.Designer.cs">
-      <DependentUpon>BatchRenamer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BIKExtract\BIKExtract.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BIKExtract\BIKExtract.Designer.cs">
-      <DependentUpon>BIKExtract.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CameraTool\CameraTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CameraTool\CameraTool.Designer.cs">
-      <DependentUpon>CameraTool.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ClassViewer\ClassViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ClassViewer\ClassViewer.Designer.cs">
-      <DependentUpon>ClassViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
-      <DependentUpon>CoalEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Editor\FileWrapper.cs" />
-    <Compile Include="Coalesced Editor\Setup.cs" />
-    <Compile Include="Coalesced Operator\advancedGraphics.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\advancedGraphics.designer.cs">
-      <DependentUpon>advancedGraphics.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Operator\Keybinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\Keybinder.Designer.cs">
-      <DependentUpon>Keybinder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Operator\opClass.cs" />
-    <Compile Include="Coalesced Operator\Operator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\Operator.Designer.cs">
-      <DependentUpon>Operator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Codex Editor\CodexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Codex Editor\CodexEditor.Designer.cs">
-      <DependentUpon>CodexEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Modmaker\CreateJobFromPCCDiff.xaml.cs">
-      <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DialogEditor\AddReply.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\AddReply.Designer.cs">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DialogEditor\DialogEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\DialogEditor.Designer.cs">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DialogEditor\DialogVis.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\DialogVisObjects.cs" />
-    <Compile Include="DialogEditor\InputComboBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
-      <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SFAREditor2\SFAREditor2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
-      <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.Designer.cs">
-      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
-      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="InitialDLCExtractor.xaml.cs">
-      <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="InterpEditor\InterpEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InterpEditor\InterpEditor.Designer.cs">
-      <DependentUpon>InterpEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="InterpEditor\InterpTracks.cs" />
-    <Compile Include="InterpEditor\Timeline.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.Designer.cs">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
-      <DependentUpon>KFreonSearchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TOCeditor.cs" />
-    <Compile Include="TPFTools\KFreonTPFTools3.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.Designer.cs">
-      <DependentUpon>ModMaker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PAREditor\PAREditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PAREditor\PAREditor.Designer.cs">
-      <DependentUpon>PAREditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PackageEditor\DLCDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageEditor\DLCDialog.Designer.cs">
-      <DependentUpon>DLCDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Unreal\UnrealObjectInfo.cs" />
-    <Compile Include="Sequence Editor\SequenceObjects.cs" />
-    <Compile Include="SubtitleScanner\FileHelpers.cs" />
-    <Compile Include="SubtitleScanner\SubtitleScanner.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
-      <DependentUpon>SubtitleScanner.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TlkManager\TalkFiles.cs" />
-    <Compile Include="Texplorer\Texplorer2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\Texplorer2.Designer.cs">
-      <DependentUpon>Texplorer2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.Designer.cs">
-      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TlkManager\TlkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TlkManager\TlkManager.Designer.cs">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Unreal\Classes\BioConversation.cs" />
-    <Compile Include="Unreal\Classes\FaceFXAnimSet.cs" />
-    <Compile Include="Unreal\DLCPackage.cs" />
-    <Compile Include="DLLInjector\DLLInjector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DLLInjector\DLLInjector.Designer.cs">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LevelExplorer\Levelbase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\Levelbase.Designer.cs">
-      <DependentUpon>Levelbase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DirectXGlobal.cs" />
-    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.Designer.cs">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
-    <Compile Include="LevelExplorer\ME3LevelExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\ME3LevelExplorer.Designer.cs">
-      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Material Viewer\MaterialPreview.cs" />
-    <Compile Include="Material Viewer\MaterialViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Material Viewer\MaterialViewer.Designer.cs">
-      <DependentUpon>MaterialViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Material Viewer\Shader Code.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Material Viewer\Shader Code.Designer.cs">
-      <DependentUpon>Shader Code.cs</DependentUpon>
-    </Compile>
     <Compile Include="Meshplorer2\Meshplorer2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -570,107 +740,32 @@
     </Compile>
     <Compile Include="Meshplorer\MeshPlorerOptions.cs" />
     <Compile Include="Meshplorer\Preview3D.cs" />
-    <Compile Include="Meshplorer\UDKCopy.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Meshplorer\UDKCopy.Designer.cs">
-      <DependentUpon>UDKCopy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlotVarDB\PlotVarDB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlotVarDB\PlotVarDB.Designer.cs">
-      <DependentUpon>PlotVarDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Property Dumper\PropDumper.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Property Dumper\PropDumper.Designer.cs">
-      <DependentUpon>PropDumper.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Propertydb\PropertyDB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Propertydb\PropertyDB.Designer.cs">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PSAViewer\PSAViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PSAViewer\PSAViewer.Designer.cs">
-      <DependentUpon>PSAViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PSKViewer\PSKViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PSKViewer\PSKViewer.Designer.cs">
-      <DependentUpon>PSKViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="QuestMapEditor\QMapEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="QuestMapEditor\QMapEditor.Designer.cs">
-      <DependentUpon>QMapEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptDB\ScriptDB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ScriptDB\ScriptDB.Designer.cs">
-      <DependentUpon>ScriptDB.cs</DependentUpon>
-    </Compile>
     <Compile Include="Meshplorer\Select Material.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Meshplorer\Select Material.Designer.cs">
       <DependentUpon>Select Material.cs</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\DirectReplace.cs">
+    <Compile Include="Meshplorer\UDKCopy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Soundplorer\DirectReplace.Designer.cs">
-      <DependentUpon>DirectReplace.cs</DependentUpon>
+    <Compile Include="Meshplorer\UDKCopy.Designer.cs">
+      <DependentUpon>UDKCopy.cs</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\Soundplorer.cs">
+    <Compile Include="Modmaker\CreateJobFromPCCDiff.xaml.cs">
+      <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modmaker\ModMaker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Soundplorer\Soundplorer.Designer.cs">
-      <DependentUpon>Soundplorer.cs</DependentUpon>
+    <Compile Include="Modmaker\ModMaker.Designer.cs">
+      <DependentUpon>ModMaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="taskbar.cs" />
-    <Compile Include="Conditionals\CondEditor.cs">
+    <Compile Include="PackageEditor\DLCDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Conditionals\Conditionals.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Conditionals\Conditionals.Designer.cs">
-      <DependentUpon>Conditionals.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TlkEditor\TLKEditorDebugTools.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
-      <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Unreal\HuffmanCompression.cs" />
-    <Compile Include="Language Selector\Language Selector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Language Selector\Language Selector.Designer.cs">
-      <DependentUpon>Language Selector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SFARBasicEditor\SFARBasicEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SFARBasicEditor\SFARBasicEditor.Designer.cs">
-      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TlkEditor\TlkEditor.xaml.cs">
-      <DependentUpon>TlkEditor.xaml</DependentUpon>
+    <Compile Include="PackageEditor\DLCDialog.Designer.cs">
+      <DependentUpon>DLCDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\PackageEditor.cs">
       <SubType>Form</SubType>
@@ -678,133 +773,39 @@
     <Compile Include="PackageEditor\PackageEditor.Designer.cs">
       <DependentUpon>PackageEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="PAREditor\PAREditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PAREditor\PAREditor.Designer.cs">
+      <DependentUpon>PAREditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="PCCRepack\PCCRepack.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PCCRepack\PCCRepack.Designer.cs">
       <DependentUpon>PCCRepack.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Property Manager\PropertyManager.cs">
+    <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Property Manager\PropertyManager.Designer.cs">
-      <DependentUpon>PropertyManager.cs</DependentUpon>
+    <Compile Include="PlotVarDB\PlotVarDB.Designer.cs">
+      <DependentUpon>PlotVarDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sequence Editor\SequenceEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.cs" />
-    <Compile Include="Unreal\TalkFile.cs" />
-    <Compile Include="Property Manager\TreeViewSerializer.cs" />
-    <Compile Include="UDKConverter\UDKConverter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UDKConverter\UDKConverter.Designer.cs">
-      <DependentUpon>UDKConverter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UECodeEditor\OPCodes.cs" />
-    <Compile Include="UECodeEditor\OPCodeTable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UECodeEditor\OPCodeTable.Designer.cs">
-      <DependentUpon>OPCodeTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UECodeEditor\UECodeEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UECodeEditor\UECodeEditor.Designer.cs">
-      <DependentUpon>UECodeEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UnrealHelper\AFCFile.cs" />
-    <Compile Include="UnrealHelper\ImageFile.cs" />
-    <Compile Include="UnrealHelper\UMaterial.cs" />
-    <Compile Include="UnrealHelper\UMath.cs" />
-    <Compile Include="UnrealHelper\PCCFile.cs" />
-    <Compile Include="UnrealHelper\Preview3D.cs" />
-    <Compile Include="UnrealHelper\PSKFile.cs" />
-    <Compile Include="UnrealHelper\TFCFile.cs" />
-    <Compile Include="UnrealHelper\UDecalActor.cs" />
-    <Compile Include="UnrealHelper\UDecalComponent.cs" />
-    <Compile Include="UnrealHelper\UInterpActor.cs" />
-    <Compile Include="UnrealHelper\ULevel.cs" />
-    <Compile Include="UnrealHelper\UnknownObject.cs" />
-    <Compile Include="UnrealHelper\UnrealObject.cs" />
-    <Compile Include="Property Manager\UPropertyReader.cs" />
-    <Compile Include="UnrealHelper\USkelMesh.cs" />
-    <Compile Include="UnrealHelper\UStaticMesh.cs" />
-    <Compile Include="UnrealHelper\UStaticMeshActor.cs" />
-    <Compile Include="UnrealHelper\UStaticMeshCollectionActor.cs" />
-    <Compile Include="UnrealHelper\UStaticMeshComponent.cs" />
-    <Compile Include="UnrealHelper\UTexture2D.cs" />
-    <Compile Include="UnrealHelper\UWwiseStream.cs" />
-    <Compile Include="Unreal\BitConverter.cs" />
-    <Compile Include="Unreal\Bytecode.cs" />
-    <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
-    <Compile Include="Unreal\Classes\AnimSequence.cs" />
-    <Compile Include="Unreal\Classes\AnimSet.cs" />
-    <Compile Include="Unreal\Classes\AnimTree.cs" />
-    <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
-    <Compile Include="Unreal\Classes\BioPathPoint.cs" />
-    <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
-    <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
-    <Compile Include="Unreal\Classes\BlockingVolume.cs" />
-    <Compile Include="Unreal\Classes\BrushComponent.cs" />
-    <Compile Include="Unreal\Classes\CoverLink.cs" />
-    <Compile Include="Unreal\Classes\CoverSlotMarker.cs" />
-    <Compile Include="Unreal\Classes\DecalActor.cs" />
-    <Compile Include="Unreal\Classes\DecalComponent.cs" />
-    <Compile Include="Unreal\Classes\Emitter.cs" />
-    <Compile Include="Unreal\Classes\Function.cs" />
-    <Compile Include="Unreal\Classes\InterpActor.cs" />
-    <Compile Include="Unreal\Classes\Level.cs" />
-    <Compile Include="Unreal\Classes\LightVolume.cs" />
-    <Compile Include="Unreal\Classes\MantleMarker.cs" />
-    <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
-    <Compile Include="Unreal\Classes\PathNode.cs" />
-    <Compile Include="Unreal\Classes\Sequence.cs" />
-    <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\SkeletalMeshOld.cs" />
-    <Compile Include="Unreal\Classes\SplineActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMesh.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshCollectionActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshComponent.cs" />
-    <Compile Include="Unreal\Classes\TargetPoint.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Unreal\Classes\TextureGroup.cs" />
-    <Compile Include="Unreal\Classes\WwiseAmbientSound.cs" />
-    <Compile Include="Unreal\Classes\WwiseAudioVolume.cs" />
-    <Compile Include="Unreal\Classes\WwiseBank.cs" />
-    <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
-    <Compile Include="Unreal\Classes\WwiseStream.cs" />
-    <Compile Include="Unreal\Helper3DS.cs" />
-    <Compile Include="Unreal\PCCHandler.cs" />
-    <Compile Include="Unreal\PCCObject.cs" />
-    <Compile Include="Unreal\PropertyReader.cs" />
-    <Compile Include="Unreal\PropGrid.cs" />
-    <Compile Include="Unreal\PSAFile.cs" />
-    <Compile Include="Unreal\PSKFile.cs" />
-    <Compile Include="Unreal\SerializingContainer.cs" />
-    <Compile Include="Unreal\TOCBinFile.cs" />
-    <Compile Include="Unreal\UnrealFlags.cs" />
-    <Compile Include="WwiseBankViewer\WwiseViewer.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
-      <DependentUpon>WwiseViewer.cs</DependentUpon>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="AboutME3Explorer.resx">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
-      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AFCExtract\AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>
@@ -863,11 +864,41 @@
     <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
+      <DependentUpon>DLLInjector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
+      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
+      <DependentUpon>InterpEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpEditor\Timeline.resx">
+      <DependentUpon>Timeline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
+      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\Interpreter.resx">
       <DependentUpon>Interpreter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Language Selector\Language Selector.resx">
+      <DependentUpon>Language Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
+      <DependentUpon>Levelbase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
+      <DependentUpon>Leveleditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
+      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
@@ -917,59 +948,6 @@
     <EmbeddedResource Include="ME2\TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
-      <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SFARTOCbinUpdater\SFARTOCbinUpdater.resx">
-      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
-      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
-      <DependentUpon>InterpEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InterpEditor\Timeline.resx">
-      <DependentUpon>Timeline.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language Selector\Language Selector.resx">
-      <DependentUpon>Language Selector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SFARBasicEditor\SFARBasicEditor.resx">
-      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
-      <DependentUpon>Levelbase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
-      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Material Viewer\MaterialViewer.resx">
-      <DependentUpon>MaterialViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Material Viewer\Shader Code.resx">
-      <DependentUpon>Shader Code.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </EmbeddedResource>
@@ -982,14 +960,14 @@
     <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
       <DependentUpon>Meshplorer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\Select Material.resx">
+      <DependentUpon>Select Material.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modmaker\ModMaker.resx">
       <DependentUpon>ModMaker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PAREditor\PAREditor.resx">
-      <DependentUpon>PAREditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageEditor\DLCDialog.resx">
       <DependentUpon>DLCDialog.cs</DependentUpon>
@@ -997,6 +975,9 @@
     <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PAREditor\PAREditor.resx">
+      <DependentUpon>PAREditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
@@ -1009,19 +990,14 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Property Dumper\PropDumper.resx">
       <DependentUpon>PropDumper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Property Manager\PropertyManager.resx">
       <DependentUpon>PropertyManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
       <DependentUpon>PSAViewer.cs</DependentUpon>
@@ -1035,11 +1011,18 @@
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Meshplorer\Select Material.resx">
-      <DependentUpon>Select Material.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
       <DependentUpon>SequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SFARBasicEditor\SFARBasicEditor.resx">
+      <DependentUpon>SFARBasicEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
+      <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SFARTOCbinUpdater\SFARTOCbinUpdater.resx">
+      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>
@@ -1050,6 +1033,9 @@
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
+      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Texplorer\Texplorer2.resx">
       <DependentUpon>Texplorer2.cs</DependentUpon>
     </EmbeddedResource>
@@ -1058,6 +1044,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
+      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UDKConverter\UDKConverter.resx">
       <DependentUpon>UDKConverter.cs</DependentUpon>
@@ -1071,46 +1060,15 @@
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <None Include="Resources\shader.fx" />
-    <None Include="Icons\asset_explorer_64x64.png" />
-    <None Include="Icons\audio_extract_64x64.png" />
-    <None Include="Icons\autotoc_64x64.png" />
-    <None Include="Icons\backup_64x64.png" />
-    <None Include="Icons\batch_rename_64x64.png" />
-    <None Include="Icons\BIK_movie_64x64.png" />
-    <None Include="Icons\DDSConverter_64x64.png" />
-    <None Include="Icons\lang_select_64x64.png" />
-    <None Include="Icons\me1exp_64x64.png" />
-    <None Include="Icons\me1exp_icon.png" />
-    <None Include="Icons\me2exp_64x64.png" />
-    <None Include="Icons\me2exp_icon.png" />
-    <None Include="Icons\me3exp_newbanner.png" />
-    <None Include="Icons\me3exp_smallbanner_v1.png" />
-    <None Include="Icons\me3exp_smallbanner_v2.png" />
-    <None Include="Icons\modmaker_64x64.png" />
-    <None Include="Icons\plot_DB_64x64.png" />
-    <None Include="Icons\SFARTOC_64x64.png" />
-    <None Include="Icons\texplorer_64x64.png" />
-    <None Include="Icons\TPFTools_64x64.png" />
-    <None Include="Icons\udk_explorer_64x64.png" />
-    <None Include="Icons\placeholder_64x64.png" />
-    <None Include="Resources\Back.png" />
-    <Content Include="Icons\interpreter_icon.ico" />
-    <Content Include="Icons\interp_viewer_icon.ico" />
-    <Content Include="Icons\TLKManager_icon.ico" />
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
@@ -1134,7 +1092,7 @@
       <Name>ME3LibWV</Name>
     </ProjectReference>
     <ProjectReference Include="..\ME3VanillaMaker\ME3VanillaMaker.csproj">
-      <Project>{2D2226F5-75D2-4AEE-9799-EAAB9FC931AF}</Project>
+      <Project>{2d2226f5-75d2-4aee-9799-eaab9fc931af}</Project>
       <Name>ME3VanillaMaker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
@@ -1146,145 +1104,157 @@
       <Name>SaltTPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
-      <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
+      <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
       <Name>Gibbed.IO</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
-      <Project>{681DB2CE-E3EB-4110-AC50-F53EACA66E99}</Project>
+      <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
-      <Project>{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}</Project>
+      <Project>{b6c4d3b4-1267-48d5-8c3b-c86ff3e517a9}</Project>
       <Name>SevenZip</Name>
     </ProjectReference>
     <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
-      <Project>{F660E850-DA7A-41A6-AE77-4AB4F21D8F33}</Project>
+      <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>
       <Name>UDKExplorer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UDKLibWV\UDKLibWV.csproj">
+      <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
+      <Name>UDKLibWV</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SFARTOCbinUpdater\back2.jpg" />
-    <None Include="ME2\Resources\dialogue_editor_64x64.png" />
-    <None Include="ME2\Resources\package_editor_64x64.png" />
-    <None Include="ME2\Resources\sequence_editor_64x64.png" />
-    <None Include="ME2\Resources\sequence_editor_icon.ico" />
-    <None Include="ME2\Resources\TLKManager_icon_64x64.png" />
-    <Content Include="TlkEditor\icon.png" />
-    <None Include="Resources\folder.png" />
-    <None Include="Resources\document-save.png" />
-    <None Include="Resources\info.ico" />
-    <None Include="Resources\help-browser.png" />
-    <None Include="Icons\texplorer.ico" />
-    <None Include="Resources\Image1.bmp" />
-    <Content Include="Icons\me3exp_favicon.ico" />
-    <None Include="Resources\camera_tool_64x64.png" />
-    <None Include="Resources\codex_editor_64x64.png" />
-    <None Include="Resources\coalesced_operator_64x64.png" />
-    <None Include="Resources\coalesced_editor_64x64.png" />
-    <None Include="Resources\class_viewer_64x64.png" />
-    <None Include="Resources\asset_explorer_64x64.png" />
-    <None Include="Resources\animation_explorer_64x64.png" />
-    <None Include="Resources\wwisebank_editor_64x64.png" />
-    <None Include="Resources\ue_codeeditor_64x64.png" />
-    <None Include="Resources\udk_converter_64x64.png" />
-    <None Include="Resources\TLK_editor_64x64.png" />
-    <None Include="Resources\subtitle_scanner_64x64.png" />
-    <None Include="Resources\soundplorer_64x64.png" />
-    <None Include="Resources\sequence_editor_64x64.png" />
-    <None Include="Resources\script_database_64x64.png" />
-    <None Include="Resources\script_compiler_64x64.png" />
-    <None Include="Resources\save_gameoperator_64x64.png" />
-    <None Include="Resources\save_gameeditor_64x64.png" />
-    <None Include="Resources\questmap_editor_64x64.png" />
-    <None Include="Resources\psk_viewer_64x64.png" />
-    <None Include="Resources\psa_viewer_64x64.png" />
-    <None Include="Resources\property_manager_64x64.png" />
-    <None Include="Resources\property_dumper_64x64.png" />
-    <None Include="Resources\property_database_64x64.png" />
-    <None Include="Resources\pcc_repacker_64x64.png" />
-    <None Include="Resources\pcceditor2_64x64.png" />
-    <None Include="Resources\PAR_editor_64x64.png" />
-    <None Include="Resources\package_editor_64x64.png" />
-    <None Include="Resources\meshplorer_64x64.png" />
-    <None Include="Resources\meshplorer2_64x64.png" />
-    <None Include="Resources\me3exp_favicon_64x64.png" />
-    <None Include="Resources\me3creator_64x64.png" />
-    <None Include="Resources\me2exp_64x64.png" />
-    <None Include="Resources\me1exp_64x64.png" />
-    <None Include="Resources\material_viewer_64x64.png" />
-    <None Include="Resources\level_explorer_64x64.png" />
-    <None Include="Resources\level_editor_64x64.png" />
-    <None Include="Resources\level_database_64x64.png" />
-    <None Include="Resources\GUIDcache_editor_64x64.png" />
-    <None Include="Resources\fxa_editor_64x64.png" />
-    <None Include="Resources\dlc_editor2_64x64.png" />
-    <None Include="Resources\dlc_basiceditor_64x64.png" />
-    <None Include="Resources\dialogue_editor_64x64.png" />
-    <None Include="Resources\DDSConverter_64x64.png" />
-    <None Include="Resources\conditionals_editor_64x64.png" />
+    <Resource Include="Icons\asset_explorer_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\audio_extract_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\autotoc_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\backup_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\batch_rename_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\BIK_movie_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\DDSConverter_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\interpreter_icon.ico" />
+    <Resource Include="Icons\interp_viewer_icon.ico" />
+    <Resource Include="Icons\me3exp_favicon.ico" />
+    <Resource Include="Icons\TLKManager_icon.ico" />
+    <Resource Include="Resources\About_icon.ico" />
+    <Resource Include="Resources\close_icon.ico" />
+    <Resource Include="Resources\create_mods_icon.ico" />
+    <Resource Include="Resources\install_mods_icon.ico" />
+    <Resource Include="Resources\logo_OFF.png" />
+    <Resource Include="Resources\logo_ON.png" />
+    <Resource Include="Resources\minimize_icon.ico" />
+    <Resource Include="Resources\resize_icon.ico" />
+    <Resource Include="Resources\taskbar.ico" />
+    <Resource Include="TlkEditor\icon.png" />
+    <Resource Include="SFARTOCbinUpdater\back2.jpg" />
+    <Resource Include="Resources\wwisebank_editor_64x64.png" />
+    <Resource Include="Resources\ue_codeeditor_64x64.png" />
+    <Resource Include="Resources\udk_converter_64x64.png" />
+    <Resource Include="Resources\TLKManager_icon_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />
-    <None Include="Resources\ImageEngine_icon_64x64.png" />
-    <None Include="Resources\interp_viewer_icon_64x64.png" />
-    <None Include="Resources\sfar_basiceditor_icon.ico" />
-    <None Include="Resources\sfar_basiceditor_icon_64x64.png" />
-    <None Include="Resources\sfar_editor2_icon_64x64.png" />
-    <None Include="Resources\interpreter_icon_64x64.png" />
-    <None Include="Resources\TLKManager_icon_64x64.png" />
+    <Resource Include="Resources\TLK_editor_64x64.png" />
+    <Resource Include="Resources\subtitle_scanner_64x64.png" />
+    <Resource Include="Resources\soundplorer_64x64.png" />
+    <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
+    <Resource Include="Resources\sfar_basiceditor_icon_64x64.png" />
+    <Resource Include="Resources\sfar_basiceditor_icon.ico" />
+    <Resource Include="Resources\sequence_editor_64x64.png" />
+    <Resource Include="Resources\script_database_64x64.png" />
+    <Resource Include="Resources\script_compiler_64x64.png" />
+    <Resource Include="Resources\save_gameoperator_64x64.png" />
+    <Resource Include="Resources\save_gameeditor_64x64.png" />
+    <Resource Include="Resources\questmap_editor_64x64.png" />
+    <Resource Include="Resources\psk_viewer_64x64.png" />
+    <Resource Include="Resources\psa_viewer_64x64.png" />
+    <Resource Include="Resources\property_manager_64x64.png" />
+    <Resource Include="Resources\property_dumper_64x64.png" />
+    <Resource Include="Resources\property_database_64x64.png" />
+    <Resource Include="Resources\pcceditor2_64x64.png" />
+    <Resource Include="Resources\pcc_repacker_64x64.png" />
+    <Resource Include="Resources\PAR_editor_64x64.png" />
+    <Resource Include="Resources\package_editor_64x64.png" />
+    <Resource Include="Resources\meshplorer2_64x64.png" />
+    <Resource Include="Resources\meshplorer_64x64.png" />
+    <Resource Include="Resources\me3exp_favicon_64x64.png" />
+    <Resource Include="Resources\me3creator_64x64.png" />
+    <Resource Include="Resources\me2exp_64x64.png" />
+    <Resource Include="Resources\me1exp_64x64.png" />
+    <Resource Include="Resources\material_viewer_64x64.png" />
+    <Resource Include="Resources\level_explorer_64x64.png" />
+    <Resource Include="Resources\level_editor_64x64.png" />
+    <Resource Include="Resources\level_database_64x64.png" />
+    <Resource Include="Resources\interpreter_icon_64x64.png" />
+    <Resource Include="Resources\interp_viewer_icon_64x64.png" />
+    <Resource Include="Resources\info.ico" />
+    <Resource Include="Resources\ImageEngine_icon_64x64.png" />
+    <Resource Include="Resources\Image1.bmp" />
+    <Resource Include="Resources\help-browser.png" />
+    <Resource Include="Resources\GUIDcache_editor_64x64.png" />
+    <Resource Include="Resources\fxa_editor_64x64.png" />
+    <Resource Include="Resources\folder.png" />
+    <Resource Include="Resources\document-save.png" />
+    <Resource Include="Resources\dlc_editor2_64x64.png" />
+    <Resource Include="Resources\dlc_basiceditor_64x64.png" />
+    <Resource Include="Resources\dialogue_editor_64x64.png" />
+    <Resource Include="Resources\DDSConverter_64x64.png" />
+    <Resource Include="Resources\conditionals_editor_64x64.png" />
+    <Resource Include="Resources\codex_editor_64x64.png" />
+    <Resource Include="Resources\coalesced_operator_64x64.png" />
+    <Resource Include="Resources\coalesced_editor_64x64.png" />
+    <Resource Include="Resources\class_viewer_64x64.png" />
+    <Resource Include="Resources\camera_tool_64x64.png" />
+    <Resource Include="Resources\Back.png" />
+    <Resource Include="Resources\asset_explorer_64x64.png" />
+    <Resource Include="Resources\animation_explorer_64x64.png" />
+    <Resource Include="ME2\Resources\TLKManager_icon_64x64.png" />
+    <Resource Include="ME2\Resources\sequence_editor_icon.ico" />
+    <Resource Include="ME2\Resources\sequence_editor_64x64.png" />
+    <Resource Include="ME2\Resources\package_editor_64x64.png" />
+    <Resource Include="ME2\Resources\dialogue_editor_64x64.png" />
+    <Resource Include="Icons\udk_explorer_64x64.png" />
+    <Resource Include="Icons\TPFTools_64x64.png" />
+    <Resource Include="Icons\texplorer_64x64.png" />
+    <Resource Include="Icons\texplorer.ico" />
+    <Resource Include="Icons\SFARTOC_64x64.png" />
+    <Resource Include="Icons\plot_DB_64x64.png" />
+    <Resource Include="Icons\placeholder_64x64.png" />
+    <Resource Include="Icons\modmaker_64x64.png" />
+    <Resource Include="Icons\me3exp_smallbanner_v2.png" />
+    <Resource Include="Icons\me3exp_smallbanner_v1.png" />
+    <Resource Include="Icons\me3exp_newbanner.png" />
+    <Resource Include="Icons\me2exp_icon.png" />
+    <Resource Include="Icons\me2exp_64x64.png" />
+    <Resource Include="Icons\me1exp_icon.png" />
+    <Resource Include="Icons\me1exp_64x64.png" />
+    <Resource Include="Icons\lang_select_64x64.png" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="InitialDLCExtractor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="TlkEditor\TlkEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
       <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.WinFx.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"

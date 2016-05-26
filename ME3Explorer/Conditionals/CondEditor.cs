@@ -1072,11 +1072,6 @@ namespace ME3Explorer
             cond.ReplaceData(Code, currnr);
         }
 
-        private void CondEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
-        }
-
         private void compileAndReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!Compile())

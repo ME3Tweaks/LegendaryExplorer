@@ -448,9 +448,6 @@ namespace ME3Explorer
             if (!Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews"))
                 Directory.CreateDirectory(ME3Directory.cookedPath + @"\SequenceViews");
             File.WriteAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
-
-          
-            taskbar.RemoveTool(this);
         }
 
         private void saveViewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -492,7 +489,6 @@ namespace ME3Explorer
             ip.MdiParent = this.MdiParent;
             ip.interpreter1.PropertyValueChanged += Interpreter_PropertyValueChanged;
             ip.Show();
-            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         private void Interpreter_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -684,7 +680,6 @@ namespace ME3Explorer
             p.MdiParent = this.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            taskbar.AddTool(p, Properties.Resources.package_editor_64x64);
             p.LoadFile(CurrentFile);
             p.listBox1.SelectedIndex = l;
         }
@@ -1049,7 +1044,6 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadPCC(CurrentFile);
-            taskbar.AddTool(p, Properties.Resources.interp_viewer_icon_64x64);
             if (pcc.Exports[Objects[listBox1.SelectedIndex].Index].ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
@@ -1079,7 +1073,6 @@ namespace ME3Explorer
             TlkManager tm = new TlkManager();
             tm.InitTlkManager();
             tm.Show();
-            taskbar.AddTool(tm, Properties.Resources.TLKManager_icon_64x64);
         }
 
         private void SequenceEditor_DragDrop(object sender, DragEventArgs e)

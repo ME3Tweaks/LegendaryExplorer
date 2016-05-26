@@ -535,7 +535,6 @@ namespace ME3Explorer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            taskbar.RemoveTool(this);
             //exit immediately if no files were loaded
             if (dlcBase == null)
                 return;
