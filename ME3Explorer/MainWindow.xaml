@@ -5,8 +5,119 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="ME3Explorer" Height="450" Width="150" WindowStyle="None" Icon="Icons/me3exp_favicon.ico" ResizeMode="CanMinimize" Background="#CC232E43" Foreground="{x:Null}" AllowsTransparency="True">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="Command_CanExecute" Executed="CloseCommand_Executed" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="Command_CanExecute" Executed="MaximizeCommand_Executed" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="Command_CanExecute" Executed="MinimizeCommand_Executed" />
+    </Window.CommandBindings>
+
+    <StackPanel>
+        <DockPanel Height="24">
+            <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource BorderlessButton}" HorizontalContentAlignment="Right">
+                <Image Source="Resources/close_icon.ico" Height="12" Width="12"></Image>
+            </Button>
+            <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="15" Style="{DynamicResource BorderlessButton}">
+                <Image Source="Resources/minimize_icon.ico" Height="12" Width="12"></Image>
+            </Button>
+            <Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"  Width="15" Style="{DynamicResource BorderlessButton}" HorizontalContentAlignment="Right">
+                <Image Source="Resources/resize_icon.ico" Height="12" Width="12"></Image>
+            </Button>
+            <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
+        </DockPanel>
+        <Image Source="Resources/logo_OFF.png" />
+        <DockPanel Height="24" Background="#FFFDFDFD">
+            <DockPanel.Resources>
+                <Style x:Key="VersioningBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
+                    <Setter Property="Width" Value="24"/>
+                    <Setter Property="Height" Value="24"/>
+                    <Setter Property="Background" Value="#FFC1C1C1"/>
+                </Style>
+            </DockPanel.Resources>
+            <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}">
+                <Image Source="Resources/About_icon.ico" Width="16" Height="16" />
+            </Button>
+            <Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}">
+                <Image Width="16" Height="16" Source="Resources/About_icon.ico" />
+            </Button>
+            <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        </DockPanel>
+        <StackPanel Height="320" Background="#7210192A">
+            <StackPanel.Resources>
+                <SolidColorBrush x:Key="ButtonColor" Color="#FFFDFDFD"/>
+                <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
+                <Style x:Key="MainMenuButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
+                    <Setter Property="Background" Value="Transparent"></Setter>
+                    <Setter Property="Padding" Value="0,14,0,0"/>
+                    <Style.Resources>
+                        <Style TargetType="{x:Type Label}" >
+                            <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#Titillium Web"/>
+                            <Setter Property="FontSize" Value="19"/>
+                            <Setter Property="Foreground" Value="{StaticResource ButtonColor}"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource HighlightColor}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="{x:Type Line}" >
+                            <Setter Property="Stroke" Value="{StaticResource ButtonColor}"/>
+                            <Setter Property="StrokeThickness" Value="2"/>
+                            <Setter Property="X2" Value="{Binding Width, RelativeSource={RelativeSource Self}}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                    <Setter Property="Stroke" Value="{StaticResource HighlightColor}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="{x:Type Rectangle}" >
+                            <Setter Property="Fill" Value="{StaticResource ButtonColor}"/>
+                            <Setter Property="Margin" Value="0,6,0,0"/>
+                            <Setter Property="Height" Value="48"/>
+                            <Setter Property="Width" Value="48"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                    <Setter Property="Fill" Value="{StaticResource HighlightColor}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </StackPanel.Resources>
+            <Button Style="{StaticResource MainMenuButton}">
+                <StackPanel>
+                    <Label>INSTALL MODS</Label>
+                    <Line Width="85"/>
+                    <Rectangle>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/install_mods_icon.ico"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource MainMenuButton}">
+                <StackPanel>
+                    <Label>CREATE MODS</Label>
+                    <Line Width="90"/>
+                    <Rectangle>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/create_mods_icon.ico"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource MainMenuButton}">
+                <StackPanel>
+                    <Label>TASK PANE</Label>
+                    <Line Width="73"/>
+                    <Rectangle>
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="Resources/taskbar.ico"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </StackPanel>
 </Window>

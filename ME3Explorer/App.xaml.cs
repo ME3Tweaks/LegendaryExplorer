@@ -9,6 +9,8 @@ namespace ME3Explorer
     /// </summary>
     public partial class App : Application
     {
+        public static string Version { get { return "v" + GetVersion(); } }
+
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
