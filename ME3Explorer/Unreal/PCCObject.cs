@@ -807,8 +807,8 @@ namespace ME3Explorer.Unreal
                 changedExports = Exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
                 replaceExports = Exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
             }
-            //ExportEntry lastExport = unchangedExports.Find(export => export.DataOffset == unchangedExports.Max(maxExport => maxExport.DataOffset));
-            ExportEntry lastExport = Exports.Find(export => export.DataOffset == Exports.Max(maxExport => maxExport.DataOffset));
+            int max = Exports.Max(maxExport => maxExport.DataOffset);
+            ExportEntry lastExport = Exports.Find(export => export.DataOffset == max);
             int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
             //byte[] oldName;
 
