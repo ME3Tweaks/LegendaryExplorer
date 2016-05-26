@@ -168,7 +168,7 @@ namespace ME3Explorer.GUIDCacheEditor
             }
             pcc.Exports[0].Data = m.ToArray();
             pcc.Exports[0].hasChanged = true;
-            pcc.altSaveToFile(pcc.pccFileName, true, 30); //weird header!
+            pcc.appendSave(pcc.pccFileName, true, 30); //weird header!
             MessageBox.Show("Done.");
             RefreshLists();
         }

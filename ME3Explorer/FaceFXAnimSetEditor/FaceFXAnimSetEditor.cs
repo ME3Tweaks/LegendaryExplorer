@@ -98,7 +98,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
         {
             if (pcc == null)
                 return;
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.save();
             MessageBox.Show("Done.");
         }
 

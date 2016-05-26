@@ -870,7 +870,7 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.altSaveToFile(d.FileName, true);
+                pcc.appendSave(d.FileName, true);
                 MessageBox.Show("Done");
             }
         }
@@ -879,14 +879,7 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            if (haveCloned)
-            {
-                pcc.saveByReconstructing(pcc.pccFileName);
-            }
-            else
-            {
-                pcc.altSaveToFile(pcc.pccFileName, true); 
-            }
+            pcc.save();
             MessageBox.Show("Done");
         }
 
@@ -1545,7 +1538,7 @@ namespace ME3Explorer
                     m.Write(BitConverter.GetBytes((int)import.Length), 0, 4);
                     m.Write(import, 0, import.Length);
                     pcc.Exports[n].Data = m.ToArray();
-                    pcc.altSaveToFile(pcc.pccFileName, true);
+                    pcc.save();
                     Preview();
                     MessageBox.Show("Done.");
                 }
@@ -1600,7 +1593,7 @@ namespace ME3Explorer
                 {
                     DLCPackage p = dlc.dlc;
                     string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\data.pcc";
-                    pcc.altSaveToFile(path, true);
+                    pcc.save(path);
                     byte[] buff = File.ReadAllBytes(path);
                     p.ReplaceEntry(buff, dlc.Objects[result]);
                     MessageBox.Show("Done.");

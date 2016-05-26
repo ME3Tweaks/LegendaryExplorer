@@ -216,7 +216,7 @@ namespace ME3Explorer.WwiseBankViewer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                pcc.altSaveToFile(d.FileName, true);
+                pcc.save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }

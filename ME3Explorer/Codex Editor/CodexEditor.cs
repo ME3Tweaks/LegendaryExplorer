@@ -130,7 +130,7 @@ namespace ME3Explorer.Codex_Editor
                             buff[entry.offset + i * 4 + j] = tmp[j];
                     }
                 pcc.Exports[0].Data = buff;
-                pcc.altSaveToFile(pcc.pccFileName, true);
+                pcc.save();
                 MessageBox.Show("Done");
             }
         }

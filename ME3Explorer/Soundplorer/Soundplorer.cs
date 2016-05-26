@@ -210,7 +210,7 @@ namespace ME3Explorer
                             buff[i] = w.memory[i];
                         ex.Data = buff;
                         Status.Text = "Saving...";
-                        pcc.altSaveToFile(CurrentFile, true);
+                        pcc.save(CurrentFile);
                         Status.Text = "Ready";
                         MessageBox.Show("Done");
                     }
@@ -222,7 +222,7 @@ namespace ME3Explorer
         {
             if (pcc != null)
                 if (CurrentFile != "")
-                    pcc.altSaveToFile(CurrentFile, true);
+                    pcc.save(CurrentFile);
         }
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
