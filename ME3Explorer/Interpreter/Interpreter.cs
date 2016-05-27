@@ -139,9 +139,9 @@ namespace ME3Explorer
             {
                 GenerateTree(topLevelTree, topLevelHeaders);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR");
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
                 addPropButton.Visible = false;
             }
             treeView1.Nodes.Add(topLevelTree);
@@ -194,7 +194,7 @@ namespace ME3Explorer
             {
                 if (readerpos > memory.Length)
                 {
-                    throw new Exception();
+                    throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
                 }
                 nodeType type = getType(pcc.getNameEntry(header.type));
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
@@ -231,17 +231,19 @@ namespace ME3Explorer
                                 n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
-                                if (arrayListPropHeaders.Count > 0)
+                                if (info != null && (UnrealObjectInfo.isImmutable(info.reference) || arrayListPropHeaders.Count == 0))
+                                {
+                                    readerpos = pos;
+                                    GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
+                                    tmp = readerpos;
+                                }
+                                else if (arrayListPropHeaders.Count > 0)
                                 {
                                     GenerateTree(n, arrayListPropHeaders); 
                                 }
                                 else
                                 {
-                                    if (info != null)
-                                    {
-                                        GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
-                                        tmp = readerpos;
-                                    }
+                                    throw new Exception($"at position {readerpos.ToString("X4")}. Could not read element {i} of ArrayProperty {pcc.getNameEntry(header.name)}");
                                 }
                                 t.LastNode.Remove();
                                 t.Nodes.Add(n);
@@ -258,7 +260,7 @@ namespace ME3Explorer
                                 pos = header.offset + 28 + i;
                                 if (pos > memory.Length)
                                 {
-                                    throw new Exception();
+                                    throw new Exception(": tried to read past bounds of Export Data");
                                 }
                                 int val = BitConverter.ToInt32(memory, pos);
                                 string s = pos.ToString("X4") + "|" + count + ": ";
@@ -621,7 +623,7 @@ namespace ME3Explorer
         {
             if (pos > memory.Length)
             {
-                throw new Exception();
+                throw new Exception(": tried to read past bounds of Export Data");
             }
             int n;
             TreeNode node;
@@ -792,8 +794,9 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     break;
                 case PropertyReader.Type.DelegateProperty:
+                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Delegate property of Immutable struct");
                 case PropertyReader.Type.Unknown:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unkown property of Immutable struct");
                 case PropertyReader.Type.None:
                 default:
                     break;
@@ -889,7 +892,7 @@ namespace ME3Explorer
             while (run)
             {
                 PropHeader p = new PropHeader();
-                if (readerpos > memory.Length)
+                if (readerpos > memory.Length || readerpos < 0)
                 {
                     //nothing else to interpret.
                     run = false;
@@ -2331,13 +2334,18 @@ namespace ME3Explorer
             int start = (int)hb1.SelectionStart;
             int len = (int)hb1.SelectionLength;
             int size = (int)hb1.ByteProvider.Length;
-            if (start != -1 && start + len <= size)
+            if (memory != null && start != -1 && start + len <= size)
             {
-                string s = "Start=0x" + start.ToString("X8") + " ";
+                string s = $"Byte: {memory[start]}";
+                if (start <= memory.Length - 4)
+                {
+                    s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                }
+                s += $" | Start=0x{start.ToString("X8")} ";
                 if (len > 0)
                 {
-                    s += "Length=0x" + len.ToString("X8") + " ";
-                    s += "End=0x" + (start + len - 1).ToString("X8"); 
+                    s += $"Length=0x{len.ToString("X8")} ";
+                    s += $"End=0x{(start + len - 1).ToString("X8")}"; 
                 }
                 selectionStatus.Text = s;
             }

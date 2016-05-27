@@ -29,7 +29,7 @@ namespace ME3Explorer
                     try
                     {
                         PCCObject pccObj = new PCCObject(fileName);
-                        if (pccObj.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+                        if (!pccObj.canReconstruct)
                         {
                             var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
                                 "Do you want to visit a forum thread with more information and a possible solution?",
@@ -137,7 +137,7 @@ namespace ME3Explorer
             try
             {
                 PCCObject pccObj = new PCCObject(sourceFile);
-                if (pccObj.Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+                if (!pccObj.canReconstruct)
                 {
                     throw new Exception("Cannot compress files with a SeekFreeShaderCache");
                 }

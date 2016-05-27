@@ -106,7 +106,8 @@ namespace ME1Explorer
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.decreaseHeaderSizeButton = new System.Windows.Forms.Button();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -123,6 +124,7 @@ namespace ME1Explorer
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // openPccToolStripMenuItem
@@ -593,8 +595,8 @@ namespace ME1Explorer
             // 
             // scriptTab
             // 
-            this.scriptTab.Controls.Add(this.decreaseHeaderSizeButton);
             this.scriptTab.Controls.Add(this.scriptTextBox);
+            this.scriptTab.Controls.Add(this.toolStrip2);
             this.scriptTab.Location = new System.Drawing.Point(4, 22);
             this.scriptTab.Name = "scriptTab";
             this.scriptTab.Padding = new System.Windows.Forms.Padding(3);
@@ -606,9 +608,9 @@ namespace ME1Explorer
             // scriptTextBox
             // 
             this.scriptTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scriptTextBox.Location = new System.Drawing.Point(3, 3);
+            this.scriptTextBox.Location = new System.Drawing.Point(3, 28);
             this.scriptTextBox.Name = "scriptTextBox";
-            this.scriptTextBox.Size = new System.Drawing.Size(531, 426);
+            this.scriptTextBox.Size = new System.Drawing.Size(531, 401);
             this.scriptTextBox.TabIndex = 0;
             this.scriptTextBox.Text = "Script will load here...";
             // 
@@ -671,7 +673,7 @@ namespace ME1Explorer
             this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton7.Size = new System.Drawing.Size(62, 22);
             this.toolStripButton7.Text = "Tree View";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
@@ -745,7 +747,7 @@ namespace ME1Explorer
             this.goToButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.goToButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.goToButton.Name = "goToButton";
-            this.goToButton.Size = new System.Drawing.Size(49, 22);
+            this.goToButton.Size = new System.Drawing.Size(50, 22);
             this.goToButton.Text = "GoTo #";
             this.goToButton.Click += new System.EventHandler(this.goToButton_Click);
             // 
@@ -849,15 +851,25 @@ namespace ME1Explorer
             this.replaceWithBINToolStripMenuItem.Text = "Replace With BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
-            // decreaseHeaderSizeButton
+            // toolStrip2
             // 
-            this.decreaseHeaderSizeButton.Location = new System.Drawing.Point(19, 351);
-            this.decreaseHeaderSizeButton.Name = "decreaseHeaderSizeButton";
-            this.decreaseHeaderSizeButton.Size = new System.Drawing.Size(231, 23);
-            this.decreaseHeaderSizeButton.TabIndex = 1;
-            this.decreaseHeaderSizeButton.Text = "Decrease header size";
-            this.decreaseHeaderSizeButton.UseVisualStyleBackColor = true;
-            this.decreaseHeaderSizeButton.Click += new System.EventHandler(this.decreaseHeaderSizeButton_Click);
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton4});
+            this.toolStrip2.Location = new System.Drawing.Point(3, 3);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(531, 25);
+            this.toolStrip2.TabIndex = 2;
+            this.toolStrip2.Text = "toolStrip2";
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(122, 22);
+            this.toolStripButton4.Text = "Decrease Header Size";
+            this.toolStripButton4.Click += new System.EventHandler(this.decreaseHeaderSizeButton_Click);
             // 
             // PCCEditor
             // 
@@ -887,12 +899,15 @@ namespace ME1Explorer
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.scriptTab.ResumeLayout(false);
+            this.scriptTab.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -975,6 +990,7 @@ namespace ME1Explorer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage scriptTab;
         private System.Windows.Forms.RichTextBox scriptTextBox;
-        private System.Windows.Forms.Button decreaseHeaderSizeButton;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
     }
 }
