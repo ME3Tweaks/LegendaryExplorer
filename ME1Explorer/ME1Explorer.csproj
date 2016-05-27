@@ -156,11 +156,13 @@
     <Compile Include="TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\Bytecode.cs" />
     <Compile Include="Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="Unreal\Classes\TalkFile.cs" />
     <Compile Include="Unreal\Classes\BioConversation.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Classes\Sequence.cs" />
+    <Compile Include="Unreal\Function.cs" />
     <Compile Include="Unreal\PCCObject.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />

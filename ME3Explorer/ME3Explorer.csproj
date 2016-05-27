@@ -147,7 +147,7 @@
       <DependentUpon>CondEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Interpreter\Interpreter.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Interpreter\Interpreter.Designer.cs">
       <DependentUpon>Interpreter.cs</DependentUpon>

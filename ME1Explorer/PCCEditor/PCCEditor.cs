@@ -11,6 +11,8 @@ using ME1Explorer.Unreal;
 using System.IO;
 using Gibbed.IO;
 using ME1Explorer.Unreal.Classes;
+using System.Diagnostics;
+using System.Collections;
 
 namespace ME1Explorer
 {
@@ -25,6 +27,7 @@ namespace ME1Explorer
         public List<int> ClassNames;
         public PropGrid pg;
         public List<string> RFiles;
+        private int headerdiff;
 
         public PCCEditor()
         {
@@ -40,8 +43,43 @@ namespace ME1Explorer
                     loadPCC();
                 }
             }
+            /*List<String> items = new List<String>();
+            string[] files = Directory.GetFiles(@"D:\Origin Games\Mass Effect\BioGame\", "*.*", SearchOption.AllDirectories);
+
+            foreach (string file in files)
+            {
+                string file2 = file.ToLower();
+                if (!file2.EndsWith("u") && !file2.EndsWith("upk") && !file2.EndsWith("sfm")) {
+                    continue;
+                }
+                Console.WriteLine(file2);
+
+                pcc = new PCCObject(file2);
+                //loadPCC();
+                foreach (PCCObject.ExportEntry exp in pcc.Exports)
+                {
+                    if (exp.ClassName == "Function")
+                    {
+                        Function f = new Function(exp.Data,
+                            pcc);
+                        if ((f.GetFlagInt() & 0x00000200) > 0)
+                        {
+                            items.Add(exp.PackageFullName + "." + exp.ObjectName);
+                        }
+                    }
+                }
+            }
+
+            string s = "Nothing...";
+            items = new List<String>(items.Distinct().ToArray());
+            foreach (String item in items)
+            {
+                s += item + "\n";
+            }
+            Clipboard.SetText(s);
+            dumpBytecodeTable();*/
         }
-        
+
         public new void Show()
         {
             base.Show();
@@ -181,6 +219,25 @@ namespace ME1Explorer
             treeView1.EndUpdate();
         }
 
+        public void dumpBytecodeTable()
+        {
+            string output = "";
+            foreach (PCCObject.ExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "Function")
+                {
+                    Function f = new Function(exp.Data,
+                        pcc);
+                    if (f.GetNatIdx() > 0)
+                    {
+                        output += "NATIVE_" + exp.ObjectName;
+                        output += " = 0x" + f.GetNatIdx().ToString("X2") + ",\n";
+                    }
+                }
+            }
+            File.WriteAllText("natives.txt", output);
+        }
+
 
         private TreeNode AddPathToTree(TreeNode t, List<int> LinkList)
         {
@@ -273,6 +330,7 @@ namespace ME1Explorer
             PreviewRaw();
             PreviewProps();
             int n = GetSelected();
+            PreviewScript(n);
 
             if ((CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW) && n != -1)
             {
@@ -283,6 +341,27 @@ namespace ME1Explorer
                 comboBox2.SelectedIndex = pcc.Exports[n].idxClass + off;
                 comboBox3.SelectedIndex = pcc.Exports[n].idxLink + off;
                 hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].header);
+            }
+        }
+
+        private void PreviewScript(int n)
+        {
+            if (pcc.Exports[n].ClassName == "Function")
+            {
+                if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+                {
+                    tabControl1.TabPages.Add(scriptTab);
+                }
+                Function func = new Function(pcc.Exports[n].Data, pcc);
+                try { scriptTextBox.Text = "ME1 Script decompiling is not fully functional. The below script may not be fully correct.\n\n"+func.ToRawText(); }
+                catch (Exception e)
+                {
+                    scriptTextBox.Text = "Error decompiling script. ME1 Script decompiling is still under development...\n\n" + e.ToString();
+                }
+            }
+            else if (tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+            {
+                tabControl1.TabPages.Remove(scriptTab);
             }
         }
 
@@ -662,6 +741,31 @@ namespace ME1Explorer
             }
         }
 
-        
+        private void decreaseHeaderSizeButton_Click(object sender, EventArgs e)
+        {
+            PreviewScriptReduceHeader(GetSelected());
+        }
+
+        private void PreviewScriptReduceHeader(int n)
+        {
+            if (pcc.Exports[n].ClassName == "Function")
+            {
+
+                Function func = new Function(pcc.Exports[n].Data, pcc);
+                headerdiff--;
+                func.headerdiff = headerdiff;
+                func.GetFlagInt();
+                Debug.WriteLine("Header diff is now " + headerdiff);
+                try { scriptTextBox.Text = func.ToRawText(); }
+                catch (Exception e)
+                {
+                    scriptTextBox.Text = "Error decompiling script. ME1 Script decompiling is still under development...\n\n" + e.ToString();
+                }
+            }
+            else if (tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+            {
+                tabControl1.TabPages.Remove(scriptTab);
+            }
+        }
     }
 }
