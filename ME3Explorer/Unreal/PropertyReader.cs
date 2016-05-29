@@ -877,7 +877,8 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty":
                     size = BitConverter.ToInt32(p.raw, 16);
                     count = BitConverter.ToInt32(p.raw, 24);
-                    UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name), inStruct);
+                    UnrealObjectInfo.PropertyInfo info = UnrealObjectInfo.getPropertyInfo(className, name, inStruct);
+                    UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(info);
                     pos = 28;
                     List<Property> AllProps = new List<Property>();
 
@@ -903,7 +904,7 @@ namespace ME3Explorer.Unreal
                     m.Write(BitConverter.GetBytes(size), 0, 4);
                     m.Write(new byte[4], 0, 4);
                     m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0)
+                    if (AllProps.Count != 0 && (info == null || !UnrealObjectInfo.isImmutable(info.reference)))
                     {
                         foreach (Property pp in AllProps)
                             ImportProperty(pcc, importpcc, pp, className, m, inStruct);
