@@ -27,7 +27,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
@@ -52,18 +52,48 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
         }
 
-        public void FaceFXRefresh()
+        private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
             if (FaceFX == null)
                 return;
+            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
+            nameAllNodes(treeView1.Nodes);
             treeView2.Nodes.Clear();
             treeView2.Nodes.Add(FaceFX.DataToTree());
+            nameAllNodes(treeView2.Nodes);
+            TreeNode[] nodes;
+            if (expandedNodes != null)
+            {
+                foreach (string item in expandedNodes)
+                {
+                    nodes = treeView2.Nodes.Find(item, true);
+                    if (nodes.Length > 0)
+                    {
+                        foreach (var node in nodes)
+                        {
+                            node.Expand();
+                        }
+                    }
+                }
+            }
+            nodes = treeView2.Nodes.Find(topNodeName, true);
+            if (nodes.Length > 0)
+            {
+                treeView2.TopNode = nodes[0];
+            }
+        }
+
+        private void nameAllNodes(TreeNodeCollection Nodes)
+        {
+            List<TreeNode> allNodes = Nodes.Cast<TreeNode>().ToList();
+            //flatten tree of nodes into list.
+            for (int i = 0; i < allNodes.Count(); i++)
+            {
+                allNodes[i].Name = i.ToString();
+                allNodes.AddRange(allNodes[i].Nodes.Cast<TreeNode>());
+            }
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -71,12 +101,8 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
             FaceFX = new FaceFXAnimSet(pcc, Objects[n]);
-            treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(FaceFX.HeaderToTree());
-            treeView2.Nodes.Clear();
-            treeView2.Nodes.Add(FaceFX.DataToTree());
+            FaceFXRefresh(n);
         }
 
         private void recreateAndDumpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -87,7 +113,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             SaveFileDialog d = new SaveFileDialog();
             d.FileName = pcc.Exports[Objects[n]].ObjectName + ".fxa";
             d.Filter = "*.fxa|*.fxa";
-            if(d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if(d.ShowDialog() == DialogResult.OK)
             {
                 FaceFX.DumpToFile(d.FileName);
                 MessageBox.Show("Done.");
@@ -226,7 +252,17 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 }
                 FaceFX.Data.Data[entidx] = d;
             }
-            FaceFXRefresh();
+            int n = listBox1.SelectedIndex;
+            if (n == -1)
+                return;
+            List<TreeNode> allNodes = treeView2.Nodes.Cast<TreeNode>().ToList();
+            //flatten tree of nodes into list.
+            for (int j = 0; j < allNodes.Count(); j++)
+            {
+                allNodes.AddRange(allNodes[j].Nodes.Cast<TreeNode>());
+            }
+            var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
+            FaceFXRefresh(n, expandedNodes, treeView2.TopNode.Name);
         }
 
         private void cloneEntryToolStripMenuItem_Click(object sender, EventArgs e)
