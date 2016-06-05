@@ -149,7 +149,6 @@ namespace UDKExplorer.UDK.Classes
 
         private int GetPropertyEnd(int n)
         {
-            BitConverter.IsLittleEndian = true;
             int pos = 0x00;
             try
             {
@@ -206,7 +205,6 @@ namespace UDKExplorer.UDK.Classes
         private TreeNode GetProperties(int n)
         {
             TreeNode res = new TreeNode("Properties");
-            BitConverter.IsLittleEndian = true;
             int pos = 0x00;
             try
             {

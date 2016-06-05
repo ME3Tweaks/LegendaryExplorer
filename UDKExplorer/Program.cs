@@ -15,7 +15,7 @@ namespace UDKExplorer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new UDKExplorer());
+            Application.Run(new MainWindow());
         }
     }
 }

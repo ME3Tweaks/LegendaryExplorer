@@ -348,7 +348,7 @@ namespace ME3Explorer
 
         private void switchToUDKExplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            UDKExplorer.UDKExplorer ex = new UDKExplorer.UDKExplorer();
+            UDKExplorer.MainWindow ex = new UDKExplorer.MainWindow();
             ex.Show();
         }
 

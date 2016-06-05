@@ -169,7 +169,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\UDKLibWV\UDKLibWV.csproj">
-      <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
+      <Project>{40FB6624-5444-43DC-8B73-863A3D91E1F3}</Project>
       <Name>UDKLibWV</Name>
     </ProjectReference>
   </ItemGroup>

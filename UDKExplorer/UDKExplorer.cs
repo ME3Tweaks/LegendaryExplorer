@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace UDKExplorer
 {
-    public partial class UDKExplorer : Form
+    public partial class MainWindow : Form
     {
         private int childFormNumber = 0;
 
-        public UDKExplorer()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -96,7 +96,7 @@ namespace UDKExplorer
 
         private void packageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UDKEditor.UDKEditor ed = new UDKEditor.UDKEditor();
+            PackageEditor ed = new PackageEditor();
             ed.MdiParent = this;
             ed.Show();
             ed.WindowState = FormWindowState.Maximized;
