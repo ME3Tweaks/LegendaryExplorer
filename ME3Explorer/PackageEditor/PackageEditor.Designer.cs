@@ -46,6 +46,7 @@
             this.faceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportFaceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,6 +83,7 @@
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
+            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -131,7 +133,6 @@
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -263,7 +264,8 @@
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
             this.editBlockingVolToolStripMenuItem,
-            this.faceFXToolStripMenuItem});
+            this.faceFXToolStripMenuItem,
+            this.editInCurveEditorToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -272,14 +274,14 @@
             // 
             this.hexConverterToolStripMenuItem.AutoToolTip = true;
             this.hexConverterToolStripMenuItem.Name = "hexConverterToolStripMenuItem";
-            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.hexConverterToolStripMenuItem.Text = "Hex Converter";
             this.hexConverterToolStripMenuItem.Click += new System.EventHandler(this.hexConverterToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.ToolTipText = "Add a name to the name table";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
@@ -287,7 +289,7 @@
             // editInInterpreterToolStripMenuItem
             // 
             this.editInInterpreterToolStripMenuItem.Name = "editInInterpreterToolStripMenuItem";
-            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editInInterpreterToolStripMenuItem.Text = "Edit in Interpreter";
             this.editInInterpreterToolStripMenuItem.ToolTipText = "Open this export in the interpreter";
             this.editInInterpreterToolStripMenuItem.Click += new System.EventHandler(this.editInInterpreterToolStripMenuItem_Click);
@@ -295,14 +297,14 @@
             // replaceWithBINToolStripMenuItem
             // 
             this.replaceWithBINToolStripMenuItem.Name = "replaceWithBINToolStripMenuItem";
-            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
             // editBlockingVolToolStripMenuItem
             // 
             this.editBlockingVolToolStripMenuItem.Name = "editBlockingVolToolStripMenuItem";
-            this.editBlockingVolToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.editBlockingVolToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editBlockingVolToolStripMenuItem.Text = "Edit Blocking Vol";
             this.editBlockingVolToolStripMenuItem.Visible = false;
             this.editBlockingVolToolStripMenuItem.Click += new System.EventHandler(this.editBlockingVolToolStripMenuItem_Click);
@@ -313,7 +315,7 @@
             this.exportFaceFXToolStripMenuItem,
             this.importToolStripMenuItem});
             this.faceFXToolStripMenuItem.Name = "faceFXToolStripMenuItem";
-            this.faceFXToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.faceFXToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.faceFXToolStripMenuItem.Text = "FaceFX";
             // 
             // exportFaceFXToolStripMenuItem
@@ -329,6 +331,13 @@
             this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // editInCurveEditorToolStripMenuItem
+            // 
+            this.editInCurveEditorToolStripMenuItem.Name = "editInCurveEditorToolStripMenuItem";
+            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
+            this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
             // 
             // modjobsToolStripMenuItem
             // 
@@ -394,7 +403,7 @@
             this.toolStripSeparator3,
             this.gotonumber,
             this.toolStripButton4});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1002, 25);
             this.toolStrip1.TabIndex = 1;
@@ -569,7 +578,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -580,7 +589,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1002, 444);
+            this.splitContainer1.Size = new System.Drawing.Size(1002, 420);
             this.splitContainer1.SplitterDistance = 330;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -592,7 +601,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(330, 444);
+            this.treeView1.Size = new System.Drawing.Size(330, 420);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -613,7 +622,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(330, 444);
+            this.listBox1.Size = new System.Drawing.Size(330, 420);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
@@ -630,7 +639,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(668, 444);
+            this.tabControl1.Size = new System.Drawing.Size(668, 420);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -640,7 +649,7 @@
             this.propertiesTab.Location = new System.Drawing.Point(4, 22);
             this.propertiesTab.Name = "propertiesTab";
             this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.propertiesTab.Size = new System.Drawing.Size(660, 418);
+            this.propertiesTab.Size = new System.Drawing.Size(660, 394);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.UseVisualStyleBackColor = true;
@@ -651,7 +660,7 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(654, 412);
+            this.propGrid.Size = new System.Drawing.Size(654, 388);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -661,10 +670,19 @@
             this.interpreterTab.Location = new System.Drawing.Point(4, 22);
             this.interpreterTab.Name = "interpreterTab";
             this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpreterTab.Size = new System.Drawing.Size(660, 418);
+            this.interpreterTab.Size = new System.Drawing.Size(660, 394);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
+            // 
+            // interpreterControl
+            // 
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Pcc = null;
+            this.interpreterControl.Size = new System.Drawing.Size(654, 388);
+            this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -672,7 +690,7 @@
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(660, 418);
+            this.infoTab.Size = new System.Drawing.Size(660, 394);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
@@ -935,7 +953,7 @@
             this.metaDataPage.Location = new System.Drawing.Point(4, 22);
             this.metaDataPage.Name = "metaDataPage";
             this.metaDataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.metaDataPage.Size = new System.Drawing.Size(660, 418);
+            this.metaDataPage.Size = new System.Drawing.Size(660, 394);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.UseVisualStyleBackColor = true;
@@ -1041,7 +1059,7 @@
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
             this.headerTab.Padding = new System.Windows.Forms.Padding(3);
-            this.headerTab.Size = new System.Drawing.Size(660, 418);
+            this.headerTab.Size = new System.Drawing.Size(660, 394);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.UseVisualStyleBackColor = true;
@@ -1057,7 +1075,7 @@
             this.hb2.MinBytesPerLine = 16;
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(654, 387);
+            this.hb2.Size = new System.Drawing.Size(654, 363);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
@@ -1088,7 +1106,7 @@
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(4, 22);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(660, 418);
+            this.scriptTab.Size = new System.Drawing.Size(660, 394);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
             this.scriptTab.UseVisualStyleBackColor = true;
@@ -1143,15 +1161,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
-            this.interpreterControl.TabIndex = 0;
             // 
             // PackageEditor
             // 
@@ -1311,5 +1320,6 @@
         private System.Windows.Forms.ToolStripMenuItem cloneTreeToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem editInCurveEditorToolStripMenuItem;
     }
 }

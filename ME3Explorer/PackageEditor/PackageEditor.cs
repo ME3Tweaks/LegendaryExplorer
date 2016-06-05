@@ -2007,5 +2007,15 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void editInCurveEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = 0;
+            if (GetSelected(out n) && n >= 0)
+            {
+                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc, n);
+                c.Show();
+            }
+        }
     }
 }

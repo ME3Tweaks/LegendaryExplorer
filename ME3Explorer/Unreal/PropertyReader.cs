@@ -320,7 +320,7 @@ namespace ME3Explorer.Unreal
 
         public static Property getPropOrNull(PCCObject pcc, byte[] data, int start, string propName)
         {
-            List<Property> props = ReadProp(pcc, data, 0);
+            List<Property> props = ReadProp(pcc, data, start);
             foreach (Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == propName)
@@ -506,6 +506,23 @@ namespace ME3Explorer.Unreal
                     break;
             }
             return pg;
+        }
+
+        public static List<List<Property>> ReadStructArrayProp(PCCObject pcc, Property p)
+        {
+            List<List<Property>> res = new List<List<Property>>();
+            int pos = 28;
+            int linkCount = BitConverter.ToInt32(p.raw, 24);
+            for (int i = 0; i < linkCount; i++)
+            {
+                List<Property> p2 = ReadProp(pcc, p.raw, pos);
+                for (int j = 0; j < p2.Count(); j++)
+                {
+                    pos += p2[j].raw.Length;
+                }
+                res.Add(p2);
+            }
+            return res;
         }
 
         public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)

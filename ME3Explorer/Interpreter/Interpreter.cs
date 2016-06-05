@@ -1981,14 +1981,7 @@ namespace ME3Explorer
                     updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, leafSize);
                     parent = parent.Parent;
                 }
-                if (isLeaf)
-                {
-                    RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -leafOffset : leafOffset);
-                }
-                else
-                {
-                    RefreshMem(pos); 
-                }
+                RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -offset : offset);
             }
             catch (Exception ex)
             {

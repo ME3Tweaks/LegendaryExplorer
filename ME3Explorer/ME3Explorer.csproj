@@ -109,6 +109,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -137,6 +138,18 @@
     <Compile Include="AboutME3Explorer.Designer.cs">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="CurveEd\Anchor.cs" />
+    <Compile Include="CurveEd\BezierSegment.cs" />
+    <Compile Include="CurveEd\Curve.cs" />
+    <Compile Include="CurveEd\CurveEditor.xaml.cs">
+      <DependentUpon>CurveEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\CurveGraph.xaml.cs">
+      <DependentUpon>CurveGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\FloatEventArgs.cs" />
+    <Compile Include="CurveEd\Handle.cs" />
+    <Compile Include="CurveEd\InterpCurve.cs" />
     <Compile Include="Interpreter\AddPropertyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -665,6 +678,7 @@
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
+    <Compile Include="WPFExtensions.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -931,6 +945,7 @@
     <None Include="Icons\udk_explorer_64x64.png" />
     <None Include="Icons\placeholder_64x64.png" />
     <None Include="Resources\Back.png" />
+    <Resource Include="Resources\KismetFont.ttf" />
     <Content Include="Icons\interpreter_icon.ico" />
     <Content Include="Icons\interp_viewer_icon.ico" />
     <Content Include="Icons\TLKManager_icon.ico" />
@@ -995,7 +1010,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SFARTOCbinUpdater\back2.jpg" />
-    <None Include="Resources\animation_explorer_64x64.bmp" />
     <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />
@@ -1062,6 +1076,14 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CurveEd\CurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CurveEd\CurveGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
