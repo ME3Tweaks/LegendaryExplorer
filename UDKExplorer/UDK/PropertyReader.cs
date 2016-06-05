@@ -743,7 +743,7 @@ namespace UDKExplorer.UDK
         {
             if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
-                return 30;
+                return 26;
             }
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);

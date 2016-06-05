@@ -16,6 +16,7 @@ namespace UDKExplorer
         public MainWindow()
         {
             InitializeComponent();
+            ME3LibWV.UnrealObjectInfo.loadfromJSON();
         }
 
         private void ShowNewForm(object sender, EventArgs e)

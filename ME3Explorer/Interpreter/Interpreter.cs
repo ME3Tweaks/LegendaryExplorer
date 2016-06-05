@@ -255,6 +255,16 @@ namespace ME3Explorer
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
                             int count = 0;
                             int pos;
+                            if (header.size > 1000 && arrayType == UnrealObjectInfo.ArrayType.Byte)
+                            {
+                                TreeNode node = new TreeNode();
+                                node.Name = (header.offset + 28).ToString();
+                                node.Tag = nodeType.Unknown;
+                                node.Text = "Large binary data array. Skipping Parsing";
+                                t.Nodes.Add(node);
+                                localRoot.Nodes.Add(t);
+                                continue;
+                            }
                             for (int i = 0; i < (header.size - 4); count++)
                             {
                                 pos = header.offset + 28 + i;
