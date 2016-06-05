@@ -541,7 +541,7 @@ namespace ME3Explorer
             foreach (string row in UnrealFlags.flagdesc)
             {
                 string[] t = row.Split(',');
-                long l = long.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
+                ulong l = ulong.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
                 if ((l & pcc.Exports[n].ObjectFlags) != 0)
                 {
                     toolStripStatusLabel1.Text += "[" + t[0].Trim() + "] ";
@@ -1917,14 +1917,14 @@ namespace ME3Explorer
             PCCObject.ExportEntry nex = new PCCObject.ExportEntry();
             byte[] idata = ex.Data;
             List<PropertyReader.Property> Props = PropertyReader.getPropList(importpcc, ex);
-            int start = PropertyReader.detectStart(importpcc, idata, (uint)importpcc.Exports[n].ObjectFlags);
+            int start = PropertyReader.detectStart(importpcc, idata, importpcc.Exports[n].ObjectFlags);
             int end = start;
             if (Props.Count != 0)
             {
                 end = Props[Props.Count - 1].offend;
             }
             MemoryStream res = new MemoryStream();
-            if (((uint)importpcc.Exports[n].ObjectFlags & 0x02000000) != 0)
+            if ((importpcc.Exports[n].ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};

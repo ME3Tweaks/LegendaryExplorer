@@ -757,9 +757,9 @@ namespace ME3Explorer.Unreal
             return v;
         }
         
-        public static int detectStart(PCCObject pcc, byte[] raw, long flags)
+        public static int detectStart(PCCObject pcc, byte[] raw, ulong flags)
         {
-            if ((flags & (long)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 return 30;
             }
