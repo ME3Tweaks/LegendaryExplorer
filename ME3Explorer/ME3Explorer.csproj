@@ -351,12 +351,6 @@
     <Compile Include="PAREditor\PAREditor.Designer.cs">
       <DependentUpon>PAREditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\DLCDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageEditor\DLCDialog.Designer.cs">
-      <DependentUpon>DLCDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Unreal\UnrealObjectInfo.cs" />
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
@@ -413,19 +407,6 @@
     </Compile>
     <Compile Include="LevelExplorer\ME3LevelExplorer.Designer.cs">
       <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Material Viewer\MaterialPreview.cs" />
-    <Compile Include="Material Viewer\MaterialViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Material Viewer\MaterialViewer.Designer.cs">
-      <DependentUpon>MaterialViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Material Viewer\Shader Code.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Material Viewer\Shader Code.Designer.cs">
-      <DependentUpon>Shader Code.cs</DependentUpon>
     </Compile>
     <Compile Include="Meshplorer2\Meshplorer2.cs">
       <SubType>Form</SubType>
@@ -801,12 +782,6 @@
     <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
       <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Material Viewer\MaterialViewer.resx">
-      <DependentUpon>MaterialViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Material Viewer\Shader Code.resx">
-      <DependentUpon>Shader Code.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </EmbeddedResource>
@@ -827,9 +802,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PAREditor\PAREditor.resx">
       <DependentUpon>PAREditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PackageEditor\DLCDialog.resx">
-      <DependentUpon>DLCDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
       <DependentUpon>PackageEditor.cs</DependentUpon>

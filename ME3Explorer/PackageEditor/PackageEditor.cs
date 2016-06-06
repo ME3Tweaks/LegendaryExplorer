@@ -32,10 +32,6 @@ namespace ME3Explorer
 
         private List<int> ClassNames;
 
-        public bool IsFromDLC = false;
-        public string DLCPath;
-        public string inDLCFilename;
-
 
         public PackageEditor()
         {
@@ -71,7 +67,7 @@ namespace ME3Explorer
             }
         }
 
-        public void LoadFile(string s, bool isfromdlc = false)
+        public void LoadFile(string s)
         {
             try
             {
@@ -84,11 +80,7 @@ namespace ME3Explorer
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
-                if (!isfromdlc)
-                    status2.Text = "@" + Path.GetFileName(s);
-                else
-                    status2.Text = "@" + inDLCFilename;
-                IsFromDLC = isfromdlc;
+                status2.Text = "@" + Path.GetFileName(s);
             }
             catch (Exception e)
             {
@@ -1304,62 +1296,27 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (!IsFromDLC)
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "*.bin|*.bin";
+            if (d.ShowDialog() == DialogResult.OK)
             {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.bin|*.bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                    byte[] buff = new byte[fs.Length];
-                    int cnt;
-                    int sum = 0;
-                    while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
-                    fs.Close();
-                    KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                    string currfile = Path.GetFileName(pcc.pccFileName);
-                    mj.data = buff;
-                    mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + n + " with " + buff.Length + " bytes of data";
-                    string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                    string template = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
-                    template = template.Replace("**m1**", n.ToString());
-                    template = template.Replace("**m2**", currfile);
-                    mj.Script = template;
-                    KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                    MessageBox.Show("Done");
-                }
-            }
-            else
-            {
-                if (DLCPath == null || DLCPath == "" || inDLCFilename == null || inDLCFilename == "")
-                    return;
-                string s1 = DLCPath;
-                string s2 = Path.GetDirectoryName(s1);
-                string s3 = Path.GetDirectoryName(s2);
-                string s4 = Path.GetDirectoryName(s3);
-                string DLCp = DLCPath.Substring(s4.Length + 1);                
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.bin|*.bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                    byte[] buff = new byte[fs.Length];
-                    int cnt;
-                    int sum = 0;
-                    while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
-                    fs.Close();
-                    KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                    mj.data = buff;
-                    mj.Name = "Binary Replacement for file \"" + inDLCFilename + "\" in Object #" + n + " with " + buff.Length + " bytes of data";
-                    string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                    string template = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary3DLC.txt");
-                    template = template.Replace("**m1**", n.ToString());
-                    template = template.Replace("**m2**", inDLCFilename);
-                    template = template.Replace("**m3**", DLCp.Replace("\\", "\\\\"));
-                    mj.Script = template;
-                    KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                    MessageBox.Show("Done");
-                }
+                FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
+                byte[] buff = new byte[fs.Length];
+                int cnt;
+                int sum = 0;
+                while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
+                fs.Close();
+                KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
+                string currfile = Path.GetFileName(pcc.pccFileName);
+                mj.data = buff;
+                mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + n + " with " + buff.Length + " bytes of data";
+                string loc = Path.GetDirectoryName(Application.ExecutablePath);
+                string template = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
+                template = template.Replace("**m1**", n.ToString());
+                template = template.Replace("**m2**", currfile);
+                mj.Script = template;
+                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
+                MessageBox.Show("Done");
             }
         }
 
@@ -1370,55 +1327,9 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (!IsFromDLC)
-            {
-                KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.pccFileName, CopyArray(pcc.Exports[n].Data));
-                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                MessageBox.Show("Done");
-            }
-            else
-            {
-                if (DLCPath == null || DLCPath == "" || inDLCFilename == null || inDLCFilename == "")
-                    return;
-                string s1 = DLCPath;
-                string s2 = Path.GetDirectoryName(s1);
-                string s3 = Path.GetDirectoryName(s2);
-                string s4 = Path.GetDirectoryName(s3);
-                string DLCp = DLCPath.Substring(s4.Length + 1);
-                KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
-                mj.data = CopyArray(pcc.Exports[n].Data);
-                mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + n + " with " + pcc.Exports[n].Data.Length + " bytes of data";
-                string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary3DLC.txt");
-                template = template.Replace("**m1**", n.ToString());
-                template = template.Replace("**m2**", inDLCFilename);
-                template = template.Replace("**m3**", DLCp.Replace("\\", "\\\\"));
-                mj.Script = template;
-                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                MessageBox.Show("Done");
-            }
-        }
-
-
-        /// <summary>
-        /// Generates script for replacing objects with DLC pathing fix
-        /// </summary>
-        /// <param name="n">Index in object to replace.</param>
-        /// <param name="currfile">Name of pcc to replace.</param>
-        /// <param name="pccPath">Full path of pcc to replace.</param>
-        /// <returns>Script for Modmaker.</returns>
-        public static string GenerateObjectReplaceScript(int n, string currfile, string pccPath)
-        {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            string template = File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
-            template = template.Replace("**m1**", n.ToString());
-            template = template.Replace("**m2**", currfile);
-
-
-            //KFreon
-            
-            return template;
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.pccFileName, CopyArray(pcc.Exports[n].Data));
+            KFreonLib.Scripting.ModMaker.JobList.Add(mj);
+            MessageBox.Show("Done");
         }
 
         public byte[] CopyArray(byte[] raw)
@@ -1542,63 +1453,6 @@ namespace ME3Explorer
                     Preview();
                     MessageBox.Show("Done.");
                 }
-            }
-        }
-
-        private void loadFromDLCToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.sfar|*.sfar";
-            if (d.ShowDialog() == DialogResult.OK)
-            {
-                DLCDialog dlc = new DLCDialog();
-                dlc.Init(d.FileName);
-                dlc.Show();
-                while (dlc != null && dlc.Result == null)
-                    Application.DoEvents();
-                int result = (int)dlc.Result;
-                if (result != -1)
-                {
-                    DLCPackage p = dlc.dlc;
-                    string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\data.pcc";
-                    DLCPath = d.FileName;
-                    inDLCFilename = dlc.listBox1.Items[result].ToString();
-                    FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-                    MemoryStream mem = p.DecompressEntry(dlc.Objects[result]);
-                    fs.Write(mem.ToArray(), 0, (int)mem.Length);
-                    fs.Close();
-                    
-                    LoadFile(path, true);
-                }
-                dlc.Close();
-                
-            }
-        }
-
-        private void saveIntoDLCToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!IsFromDLC || inDLCFilename == null || inDLCFilename.Length == 0 || DLCPath == null || DLCPath.Length == 0)
-                return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.sfar|*.sfar";
-            if (d.ShowDialog() == DialogResult.OK)
-            {
-                DLCDialog dlc = new DLCDialog();
-                dlc.Init(d.FileName);
-                dlc.Show();
-                while (dlc != null && dlc.Result == null)
-                    Application.DoEvents();
-                int result = (int)dlc.Result;
-                if (result != -1)
-                {
-                    DLCPackage p = dlc.dlc;
-                    string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\data.pcc";
-                    pcc.save(path);
-                    byte[] buff = File.ReadAllBytes(path);
-                    p.ReplaceEntry(buff, dlc.Objects[result]);
-                    MessageBox.Show("Done.");
-                }
-                dlc.Close();
             }
         }
 

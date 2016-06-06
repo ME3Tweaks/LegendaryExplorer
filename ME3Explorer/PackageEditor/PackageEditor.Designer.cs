@@ -29,11 +29,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadFromDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appendSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reconstructionSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveIntoDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scanForCoalescedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,11 +171,9 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadToolStripMenuItem,
-            this.loadFromDLCToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.appendSaveMenuItem,
             this.reconstructionSaveMenuItem,
-            this.saveIntoDLCToolStripMenuItem,
             this.scanForCoalescedValuesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.recentToolStripMenuItem});
@@ -192,14 +188,6 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
-            // 
-            // loadFromDLCToolStripMenuItem
-            // 
-            this.loadFromDLCToolStripMenuItem.Name = "loadFromDLCToolStripMenuItem";
-            this.loadFromDLCToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.loadFromDLCToolStripMenuItem.Text = "Load from DLC (SFAR)";
-            this.loadFromDLCToolStripMenuItem.ToolTipText = "Load a PCC from a DLC SFAR file";
-            this.loadFromDLCToolStripMenuItem.Click += new System.EventHandler(this.loadFromDLCToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -225,14 +213,6 @@
             this.reconstructionSaveMenuItem.Text = "Save As (reconstruct)";
             this.reconstructionSaveMenuItem.ToolTipText = "Save changes by reconstructing the PCC";
             this.reconstructionSaveMenuItem.Click += new System.EventHandler(this.reconstructionSave_Click);
-            // 
-            // saveIntoDLCToolStripMenuItem
-            // 
-            this.saveIntoDLCToolStripMenuItem.Name = "saveIntoDLCToolStripMenuItem";
-            this.saveIntoDLCToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.saveIntoDLCToolStripMenuItem.Text = "Save into DLC (SFAR)";
-            this.saveIntoDLCToolStripMenuItem.ToolTipText = "Save changes and place file into DLC SFAR file. Uses the Alt Saving method";
-            this.saveIntoDLCToolStripMenuItem.Click += new System.EventHandler(this.saveIntoDLCToolStripMenuItem_Click);
             // 
             // scanForCoalescedValuesToolStripMenuItem
             // 
@@ -670,7 +650,7 @@
             this.interpreterTab.Location = new System.Drawing.Point(4, 22);
             this.interpreterTab.Name = "interpreterTab";
             this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpreterTab.Size = new System.Drawing.Size(660, 394);
+            this.interpreterTab.Size = new System.Drawing.Size(660, 418);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
@@ -681,7 +661,7 @@
             this.interpreterControl.Location = new System.Drawing.Point(3, 3);
             this.interpreterControl.Name = "interpreterControl";
             this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(654, 388);
+            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
             this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
@@ -690,7 +670,7 @@
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(660, 394);
+            this.infoTab.Size = new System.Drawing.Size(660, 418);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
@@ -953,7 +933,7 @@
             this.metaDataPage.Location = new System.Drawing.Point(4, 22);
             this.metaDataPage.Name = "metaDataPage";
             this.metaDataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.metaDataPage.Size = new System.Drawing.Size(660, 394);
+            this.metaDataPage.Size = new System.Drawing.Size(660, 418);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.UseVisualStyleBackColor = true;
@@ -1059,7 +1039,7 @@
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
             this.headerTab.Padding = new System.Windows.Forms.Padding(3);
-            this.headerTab.Size = new System.Drawing.Size(660, 394);
+            this.headerTab.Size = new System.Drawing.Size(660, 418);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.UseVisualStyleBackColor = true;
@@ -1075,7 +1055,7 @@
             this.hb2.MinBytesPerLine = 16;
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(654, 363);
+            this.hb2.Size = new System.Drawing.Size(654, 387);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
@@ -1287,8 +1267,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportFaceFXToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel status2;
         private System.Windows.Forms.TabPage headerTab;
-        private System.Windows.Forms.ToolStripMenuItem loadFromDLCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveIntoDLCToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
