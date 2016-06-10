@@ -310,7 +310,6 @@ namespace ME3Explorer
             if (t == null || t.Parent == null || t.Parent.Text != "FileEntries")
                 return;
             int n = t.Index;
-            hb1.ByteProvider = new DynamicByteProvider(DLC.DecompressEntry(n).ToArray());
         }
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -692,11 +691,6 @@ namespace ME3Explorer
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void hb1_Click(object sender, EventArgs e)
         {
 
         }
