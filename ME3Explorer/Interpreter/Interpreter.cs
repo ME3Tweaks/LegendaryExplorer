@@ -126,7 +126,7 @@ namespace ME3Explorer
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
-            hidePropEditingControls();
+            resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
@@ -1028,7 +1028,7 @@ namespace ME3Explorer
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
-            hidePropEditingControls();
+            resetPropEditingControls();
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
@@ -1129,11 +1129,14 @@ namespace ME3Explorer
             }
         }
 
-        private void hidePropEditingControls()
+        private void resetPropEditingControls()
         {
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
+            nameEntry.AutoCompleteCustomSource.Clear();
+            nameEntry.Clear();
+            proptext.Clear();
         }
 
         private void TryParseProperty()
@@ -2337,24 +2340,30 @@ namespace ME3Explorer
             int start = (int)hb1.SelectionStart;
             int len = (int)hb1.SelectionLength;
             int size = (int)hb1.ByteProvider.Length;
-            if (memory != null && start != -1 && start + len <= size)
+            try
             {
-                string s = $"Byte: {memory[start]}";
-                if (start <= memory.Length - 4)
+                if (memory != null && start != -1 && start + len <= size)
                 {
-                    s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                    string s = $"Byte: {memory[start]}";
+                    if (start <= memory.Length - 4)
+                    {
+                        s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                    }
+                    s += $" | Start=0x{start.ToString("X8")} ";
+                    if (len > 0)
+                    {
+                        s += $"Length=0x{len.ToString("X8")} ";
+                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                    }
+                    selectionStatus.Text = s;
                 }
-                s += $" | Start=0x{start.ToString("X8")} ";
-                if (len > 0)
+                else
                 {
-                    s += $"Length=0x{len.ToString("X8")} ";
-                    s += $"End=0x{(start + len - 1).ToString("X8")}"; 
+                    selectionStatus.Text = "Nothing Selected";
                 }
-                selectionStatus.Text = s;
             }
-            else
+            catch (Exception)
             {
-                selectionStatus.Text = "Nothing Selected";
             }
         }
 

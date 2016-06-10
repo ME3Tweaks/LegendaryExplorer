@@ -133,8 +133,8 @@ namespace ME3Explorer.CurveEd
                     }
                     if (Name == "EulerTrack")
                     {
-                        Curves.Add(new Curve("Pitch", x));
-                        Curves.Add(new Curve("Roll", y));
+                        Curves.Add(new Curve("Roll", x));
+                        Curves.Add(new Curve("Pitch", y));
                         Curves.Add(new Curve("Yaw", z));
                     }
                     else

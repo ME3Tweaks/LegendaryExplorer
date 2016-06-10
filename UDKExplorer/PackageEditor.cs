@@ -60,7 +60,7 @@ namespace UDKExplorer
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.udk|*.udk";
+            d.Filter = "*.udk;*.upk|*.udk;*.upk";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -847,7 +847,7 @@ namespace UDKExplorer
             if (udk == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.udk|*.udk";
+            d.Filter = "*.udk;*.upk|*.udk;*.upk";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 udk.appendSave(d.FileName, true);
@@ -1224,7 +1224,7 @@ namespace UDKExplorer
                 return;
             }
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.udk|*.udk";
+            d.Filter = "*.udk;*.upk|*.udk;*.upk";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 udk.saveByReconstructing(d.FileName);
@@ -1426,7 +1426,7 @@ namespace UDKExplorer
 
         private void PackageEditor_DragDrop(object sender, DragEventArgs e)
         {
-            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".udk")).ToList();
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList().Where(f => f.EndsWith(".udk") || f.EndsWith(".upk")).ToList();
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
