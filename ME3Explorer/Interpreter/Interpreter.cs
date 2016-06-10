@@ -151,11 +151,11 @@ namespace ME3Explorer
             if (expandedNodes != null)
             {
                 int memDiff = memory.Length - memsize;
-                int selectedPos = Math.Abs(Convert.ToInt32(selectedNodeName));
+                int selectedPos = getPosFromNode(selectedNodeName);
                 int curPos = 0;
                 foreach (string item in expandedNodes)
                 {
-                    curPos = Math.Abs(Convert.ToInt32(item));
+                    curPos = getPosFromNode(item);
                     if (curPos > selectedPos)
                     {
                         curPos += memDiff;
@@ -1002,7 +1002,7 @@ namespace ME3Explorer
                 {
                     continue;
                 }
-                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, Math.Abs(Convert.ToInt32(node.Name))));
+                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, getPosFromNode(node.Name)));
                 p = UnrealObjectInfo.getPropertyInfo(typeName, propname, isStruct);
                 typeName = p.reference;
                 isStruct = true;
@@ -1038,7 +1038,7 @@ namespace ME3Explorer
             }
             try
             {
-                int off = Math.Abs(Convert.ToInt32(e.Node.Name));
+                int off = getPosFromNode(e.Node.Name);
                 hb1.SelectionStart = off;
                 lastSetOffset = off;
                 hb1.SelectionLength = 1;
@@ -1529,7 +1529,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1650,7 +1650,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1762,7 +1762,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1792,8 +1792,8 @@ namespace ME3Explorer
 
                 byte[] removedBytes;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
-                int leafOffset = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Name));
-                int parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                int leafOffset = getPosFromNode(LAST_SELECTED_NODE.Name);
+                int parentOffset = getPosFromNode(parent.Name);
                 
                 int size;
                 switch (LAST_SELECTED_PROP_TYPE)
@@ -1832,7 +1832,7 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                    parentOffset = getPosFromNode(parent.Name);
                     if (firstbubble)
                     {
                         memory = RemoveIndices(memory, leafOffset, size);
@@ -1878,7 +1878,7 @@ namespace ME3Explorer
                 {
                     isLeaf = true;
                     leafOffset = pos;
-                    pos = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name));
+                    pos = getPosFromNode(LAST_SELECTED_NODE.Parent.Name);
                     LAST_SELECTED_NODE = LAST_SELECTED_NODE.Parent;
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
@@ -1968,10 +1968,21 @@ namespace ME3Explorer
                         leafSize = 4 + stringBuff.Count;
                         break;
                     case UnrealObjectInfo.ArrayType.Struct:
-                        byte[] buff = UnrealObjectInfo.getDefaultClassValue(pcc, getEnclosingType(LAST_SELECTED_NODE));
-                        if (buff == null)
+                        byte[] buff;
+                        if (LAST_SELECTED_NODE.Nodes.Count == 0)
                         {
-                            return;
+                            buff = UnrealObjectInfo.getDefaultClassValue(pcc, getEnclosingType(LAST_SELECTED_NODE));
+                            if (buff == null)
+                            {
+                                return;
+                            }
+                        }
+                        //clone struct if existing
+                        else
+                        {
+                            int startOff = getPosFromNode(LAST_SELECTED_NODE.LastNode);
+                            int length = getPosFromNode(LAST_SELECTED_NODE.NextNode) - startOff;
+                            buff = memory.Skip(startOff).Take(length).ToArray();
                         }
                         memList.InsertRange(offset, buff);
                         leafSize = buff.Length;
@@ -1991,7 +2002,7 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, leafSize);
+                    updateArrayLength(getPosFromNode(parent.Name), 0, leafSize);
                     parent = parent.Parent;
                 }
                 RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -offset : offset);
@@ -2159,17 +2170,17 @@ namespace ME3Explorer
             if (up)
             {
                 node = LAST_SELECTED_NODE.PrevNode;
-                pos = Math.Abs(Convert.ToInt32(node.Name));
+                pos = getPosFromNode(node.Name);
             }
             else
             {
                 node = LAST_SELECTED_NODE.NextNode;
-                pos = Math.Abs(Convert.ToInt32(node.Name));
+                pos = getPosFromNode(node.Name);
                 //account for structs not neccesarily being the same size
                 if (node.Nodes.Count > 0)
                 {
                     //position of element being moved down + size of struct below it
-                    pos = lastSetOffset + (Math.Abs(Convert.ToInt32(node.LastNode.Name)) + 8 - pos);
+                    pos = lastSetOffset + (getPosFromNode(node.LastNode.Name) + 8 - pos);
                 }
             }
             byte[] element = deleteArrayLeaf();
@@ -2186,7 +2197,7 @@ namespace ME3Explorer
                     parent = parent.Parent;
                     continue;
                 }
-                parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                parentOffset = getPosFromNode(parent.Name);
                 if (firstbubble)
                 {
                     firstbubble = false;
@@ -2309,7 +2320,7 @@ namespace ME3Explorer
                     default:
                         return;
                 }
-                int pos = Math.Abs(Convert.ToInt32(treeView1.Nodes[0].LastNode.Name));
+                int pos = getPosFromNode(treeView1.Nodes[0].LastNode.Name);
                 List<byte> memlist = memory.ToList();
                 memlist.InsertRange(pos, buff);
                 memory = memlist.ToArray();
@@ -2387,6 +2398,16 @@ namespace ME3Explorer
         private void collapseAllChildrenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.SelectedNode.Collapse(false);
+        }
+
+        private int getPosFromNode(TreeNode t)
+        {
+            return getPosFromNode(t.Name);
+        }
+
+        private int getPosFromNode(string s)
+        {
+            return Math.Abs(Convert.ToInt32(s));
         }
     }
 }
