@@ -113,7 +113,15 @@ namespace ME3Explorer
             {
                 Stop();
                 w = new WwiseStream(pcc, index);
-                string path = getPathToAFC();
+                string path;
+                if (w.IsPCCStored)
+                {
+                    path = pcc.pccFileName;
+                }
+                else
+                {
+                    path = getPathToAFC();
+                }
                 if (path != "")
                 {
                     Status.Text = "Loading...";
@@ -175,7 +183,15 @@ namespace ME3Explorer
                     d.FileName = ex.ObjectName.Substring(0, ex.ObjectName.Length - 4);
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    string path = getPathToAFC();
+                    string path;
+                    if (w.IsPCCStored)
+                    {
+                        path = pcc.pccFileName;
+                    }
+                    else
+                    {
+                        path = getPathToAFC();
+                    }
                     if (path != "")
                     {
                         Status.Text = "Exporting...";
@@ -194,21 +210,32 @@ namespace ME3Explorer
                 return;
             int index = ObjectIndexes[n];
             PCCObject.ExportEntry ex = pcc.Exports[index];
+            if (w.IsPCCStored)
+            {
+                //TODO: enable replacing of PCC-stored sounds
+                MessageBox.Show("Cannot replace pcc-stored sounds.");
+                return;
+            }
             if (ex.ClassName == "WwiseStream")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.wav|*.wav";
-                if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (d.ShowDialog() == DialogResult.OK)
                 {
-                    string path = getPathToAFC();
+                    string path;
+                    if (w.IsPCCStored)
+                    {
+                        path = pcc.pccFileName;
+                    }
+                    else
+                    {
+                        path = getPathToAFC();
+                    }
                     if (path != "")
                     {
                         Status.Text = "Importing...";
                         w.ImportFromFile(d.FileName, path);
-                        byte[] buff = new byte[w.memsize];
-                        for (int i = 0; i < w.memsize; i++)
-                            buff[i] = w.memory[i];
-                        ex.Data = buff;
+                        ex.Data = (byte[])w.memory.Clone();
                         Status.Text = "Saving...";
                         pcc.save(CurrentFile);
                         Status.Text = "Ready";
@@ -227,6 +254,11 @@ namespace ME3Explorer
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (w.IsPCCStored)
+            {
+                MessageBox.Show("Cannot do an afc replace on a pcc-stored sound.");
+                return;
+            }
             DirectReplace dr = new DirectReplace();
             dr.MdiParent = this.MdiParent;
             dr.Show();
