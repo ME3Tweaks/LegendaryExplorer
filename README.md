@@ -11,7 +11,7 @@ Users who have more advanced needs may find the changes in the latest revisions 
 For documentation on how to use the product, [check out the wiki](http://me3explorer.wikia.com).
 
 ##Contributing
-To contribute to this project, you can submit bug reports, make feature requests, or comtribute code by forking the project and submiting pull requests. [You can see our contributing guidelines on the github wiki](https://github.com/ME3Explorer/ME3Explorer/wiki/Contributing).
+To contribute to this project, you can submit bug reports, make feature requests, or contribute code by forking the project and submiting pull requests. [You can see our contributing guidelines on the github wiki](https://github.com/ME3Explorer/ME3Explorer/wiki/Contributing).
 
 Visual Studio 2015 is required to build this project, as it uses C# 6 features.
 
