@@ -931,6 +931,10 @@
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
+      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
+      <Name>HexConverter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
@@ -982,6 +986,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SFARTOCbinUpdater\back2.jpg" />
+    <None Include="Resources\hexconverter_icon64x64.png" />
     <Content Include="TlkEditor\icon.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\document-save.png" />

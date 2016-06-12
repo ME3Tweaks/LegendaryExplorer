@@ -1511,7 +1511,11 @@ namespace ME3Explorer
 
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            (new ME3Creator.Hexconverter()).Show();
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + @"\HexConverter.exe"))
+            {
+                Process.Start(loc + @"\HexConverter.exe");
+            }
         }
 
         private void saveHeaderHexChangesBtn_Click(object sender, EventArgs e)

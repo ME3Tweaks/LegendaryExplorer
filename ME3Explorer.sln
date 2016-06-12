@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piccolo", "Piccolo\Piccolo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDKLibWV", "UDKLibWV\UDKLibWV.csproj", "{40FB6624-5444-43DC-8B73-863A3D91E1F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexConverter", "HexConverter\HexConverter.csproj", "{BC67F053-755A-45E9-B157-8B063F1F6509}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -264,6 +266,22 @@ Global
 		{40FB6624-5444-43DC-8B73-863A3D91E1F3}.Release|x64.Build.0 = Release|Any CPU
 		{40FB6624-5444-43DC-8B73-863A3D91E1F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{40FB6624-5444-43DC-8B73-863A3D91E1F3}.Release|x86.Build.0 = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|x64.Build.0 = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|x64.ActiveCfg = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|x64.Build.0 = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC67F053-755A-45E9-B157-8B063F1F6509}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3LibWV.UnrealClasses;
 using UDKLibWV;
+using System.Diagnostics;
 
 namespace ME3Creator
 {
@@ -1407,8 +1408,11 @@ namespace ME3Creator
 
         private void toolStripButton9_Click(object sender, EventArgs e)
         {
-            Hexconverter h = new Hexconverter();
-            h.Show();
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + @"\HexConverter.exe"))
+            {
+                Process.Start(loc + @"\HexConverter.exe");
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
