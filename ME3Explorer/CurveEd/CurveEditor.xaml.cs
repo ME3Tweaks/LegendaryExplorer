@@ -119,6 +119,11 @@ namespace ME3Explorer.CurveEd
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            Commit();
+        }
+
+        private void Commit()
+        {
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             foreach (var p in props)
             {
@@ -133,6 +138,18 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
+        }
+
+        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = InterpCurveTracks.Count > 0;
+        }
+
+        private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Commit();
+            pcc.save();
+            MessageBox.Show("Done");
         }
     }
 }

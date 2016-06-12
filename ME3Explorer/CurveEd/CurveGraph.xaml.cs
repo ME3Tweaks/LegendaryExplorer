@@ -22,7 +22,10 @@ namespace ME3Explorer.CurveEd
     public partial class CurveGraph : UserControl
     {
         private const int LINE_SPACING = 50;
-        
+
+        private bool dragging = false;
+        private Point dragPos;
+
         public event RoutedPropertyChangedEventHandler<CurvePoint> SelectedPointChanged;
 
         public Curve SelectedCurve
@@ -149,12 +152,12 @@ namespace ME3Explorer.CurveEd
             return VerticalScale * (y - VerticalOffset);
         }
 
-        public double globalX(double x)
+        public double unrealX(double x)
         {
             return x / HorizontalScale + HorizontalOffset;
         }
 
-        public double globalY(double y)
+        public double unrealY(double y)
         {
             return y / VerticalScale + VerticalOffset;
         }
@@ -169,7 +172,12 @@ namespace ME3Explorer.CurveEd
                 float timeSpan = points.Last().InVal - points.First().InVal;
                 timeSpan = timeSpan > 0 ? timeSpan : 2;
                 HorizontalOffset = Math.Round(points.First().InVal - Math.Ceiling(timeSpan * 0.1));
-                HorizontalScale = graph.ActualWidth / Math.Ceiling(timeSpan * 1.2);
+                double hSpan = Math.Ceiling(timeSpan * 1.2);
+                if (hSpan + HorizontalOffset <= timeSpan)
+                {
+                    hSpan += 1;
+                }
+                HorizontalScale = graph.ActualWidth / hSpan;
 
                 float max = points.Max(x => x.OutVal);
                 float min = points.Min(x => x.OutVal);
@@ -186,8 +194,8 @@ namespace ME3Explorer.CurveEd
 
             int numXLines = Convert.ToInt32(Math.Ceiling(ActualWidth / LINE_SPACING));
             int numYLines = Convert.ToInt32(Math.Ceiling(ActualHeight / LINE_SPACING));
-            double upperXBound = globalX(ActualWidth);
-            double upperYBound = globalY(ActualHeight);
+            double upperXBound = unrealX(ActualWidth);
+            double upperYBound = unrealY(ActualHeight);
             double lineXSpacing = (upperXBound - HorizontalOffset) / numXLines;
             int xGranularity = lineXSpacing > 0.75 ? 1 : (lineXSpacing > 0.25 ? 2 : 10);
             lineXSpacing = Math.Ceiling(lineXSpacing * xGranularity) / xGranularity;
@@ -330,12 +338,52 @@ namespace ME3Explorer.CurveEd
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Paint();
+            Paint(true);
         }
 
         public void invokeSelectedPointChanged()
         {
             SelectedPointChanged?.Invoke(this, new RoutedPropertyChangedEventArgs<CurvePoint>(null, SelectedPoint));
+        }
+
+        private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            VerticalScale *= 1 + ((double)e.Delta / 4000);
+            //VerticalOffset += (graph.ActualHeight / VerticalScale) * 0.1 * Math.Sign(e.Delta);
+            Paint();
+        }
+
+        private void graph_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource == graph && e.RightButton == MouseButtonState.Released)
+            {
+                dragging = true;
+                dragPos = e.GetPosition(graph);
+                Cursor = Cursors.ScrollNS;
+            }
+        }
+
+        private void graph_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            dragging = false;
+            Cursor = Cursors.Arrow;
+        }
+
+        private void graph_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (dragging)
+            {
+                Point newPos = e.GetPosition(graph);
+                double yDiff = newPos.Y - dragPos.Y;
+                VerticalOffset += yDiff / VerticalScale;
+                Paint();
+                dragPos = newPos;
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Anchor a = ((sender as MenuItem).Parent as ContextMenu).Tag as Anchor;
         }
     }
 

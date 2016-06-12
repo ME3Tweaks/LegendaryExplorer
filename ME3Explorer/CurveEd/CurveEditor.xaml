@@ -8,7 +8,15 @@
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.CurveEd.CurveEditor"
              mc:Ignorable="d" 
              d:DesignHeight="297.789" d:DesignWidth="600.737" Closing="Window_Closing">
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+    </Window.CommandBindings>
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Command="Save"/>
+            </MenuItem>
+        </Menu>
         <Border  DockPanel.Dock="Top" BorderThickness="0,0,0,2" BorderBrush="#FF606060" >
             <StackPanel Orientation="Horizontal" Background="#FF404040" >
                 <StackPanel.Resources>

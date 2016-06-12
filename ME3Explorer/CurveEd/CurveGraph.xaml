@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="444.472" SizeChanged="UserControl_SizeChanged" ClipToBounds="True">
+             d:DesignHeight="300" d:DesignWidth="444.472" SizeChanged="UserControl_SizeChanged" ClipToBounds="True" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
         <SolidColorBrush x:Key="CurveStrokeBrush" Color="#FFC6037D"/>
         <Style TargetType="{x:Type local:BezierSegment}">
@@ -87,6 +88,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Canvas x:Name="graph" Background="#FF3B3B3B">
+    <Canvas x:Name="graph" Background="#FF3B3B3B" PreviewMouseDown="graph_MouseDown" PreviewMouseUp="graph_MouseUp" PreviewMouseMove="graph_MouseMove">
     </Canvas>
 </UserControl>

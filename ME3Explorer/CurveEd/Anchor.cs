@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ME3Explorer.CurveEd
@@ -36,7 +37,7 @@ namespace ME3Explorer.CurveEd
             Anchor a = sender as Anchor;
             if (a?.graph != null)
             {
-                a.point.Value.OutVal = Convert.ToSingle(a.graph.globalY((double)e.NewValue));
+                a.point.Value.OutVal = Convert.ToSingle(a.graph.unrealY((double)e.NewValue));
             }
         }
 
@@ -132,6 +133,7 @@ namespace ME3Explorer.CurveEd
             Y = graph.localY(point.Value.OutVal);
             this.DragDelta += OnDragDelta;
             this.DragStarted += OnDragStarted;
+            this.MouseDown += Anchor_MouseDown;
 
             leftHandle = new Handle(this, true);
             graph.graph.Children.Add(leftHandle);
@@ -142,10 +144,39 @@ namespace ME3Explorer.CurveEd
             rightBez = null;
         }
 
+        private void Anchor_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                ContextMenu cm = new ContextMenu();
+                MenuItem setTime = new MenuItem();
+                setTime.Header = "Set Time";
+                setTime.Click += SetTime_Click;
+                cm.Items.Add(setTime);
+                cm.PlacementTarget = sender as Anchor;
+                cm.IsOpen = true;
+            }
+        }
+
+        private void SetTime_Click(object sender, RoutedEventArgs e)
+        {
+            float prev = point.Previous?.Value.InVal ?? float.MinValue;
+            float next = point.Next?.Value.InVal ?? float.MaxValue;
+            string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter time between {prev} and {next}");
+            float result = 0;
+            if (float.TryParse(res, out result) && result > prev && result < next)
+            {
+                point.Value.InVal = result;
+                X = graph.localX(result);
+                graph.Paint(true);
+            }
+        }
+
         private void OnDragStarted(object sender, DragStartedEventArgs e)
         {
             IsSelected = true;
             graph.SelectedPoint = point.Value;
+            
         }
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)

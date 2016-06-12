@@ -158,18 +158,18 @@ namespace ME3Explorer.CurveEd
             }
             foreach (var curve in Curves)
             {
-                curve.InterpModeChanged += Curve_InterpModeChanged;
+                curve.SharedValueChanged += Curve_SharedValueChanged;
             }
         }
 
-        private bool updatingInterpMode = false;
-        private void Curve_InterpModeChanged(object sender, EventArgs e)
+        private bool updatingSharedValue = false;
+        private void Curve_SharedValueChanged(object sender, EventArgs e)
         {
-            if (updatingInterpMode)
+            if (updatingSharedValue)
             {
                 return;
             }
-            updatingInterpMode = true;
+            updatingSharedValue = true;
             Curve c = sender as Curve;
             foreach (var curve in Curves)
             {
@@ -178,10 +178,11 @@ namespace ME3Explorer.CurveEd
                     for (int i = 0; i < curve.CurvePoints.Count; i++)
                     {
                         curve.CurvePoints.ElementAt(i).InterpMode = c.CurvePoints.ElementAt(i).InterpMode;
+                        curve.CurvePoints.ElementAt(i).InVal = c.CurvePoints.ElementAt(i).InVal;
                     }
                 }
             }
-            updatingInterpMode = false;
+            updatingSharedValue = false;
         }
 
         public byte[] Serialize()

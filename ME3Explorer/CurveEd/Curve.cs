@@ -22,7 +22,7 @@ namespace ME3Explorer.CurveEd
 
     public class CurvePoint : INotifyPropertyChanged
     {
-        public float InVal;
+        private float inVal;
         public float OutVal;
         public float ArriveTangent;
         public float LeaveTangent;
@@ -42,11 +42,24 @@ namespace ME3Explorer.CurveEd
         }
         #endregion
 
-        public event EventHandler InterpModeChanged;
+        public event EventHandler SharedValueChanged;
 
-        protected void OnInterpModeChanged(EventArgs e)
+        protected void OnSharedValueChanged(EventArgs e)
         {
-            InterpModeChanged?.Invoke(this, e);
+            SharedValueChanged?.Invoke(this, e);
+        }
+        public float InVal
+        {
+            get { return inVal; }
+            set
+            {
+                if (value != inVal)
+                {
+                    inVal = value;
+                    OnPropertyChanged();
+                    OnSharedValueChanged(EventArgs.Empty);
+                }
+            }
         }
 
         public CurveMode InterpMode
@@ -58,7 +71,7 @@ namespace ME3Explorer.CurveEd
                 {
                     interpMode = value;
                     OnPropertyChanged();
-                    OnInterpModeChanged(EventArgs.Empty);
+                    OnSharedValueChanged(EventArgs.Empty);
                 }
             }
         }
@@ -79,7 +92,7 @@ namespace ME3Explorer.CurveEd
 
         public LinkedList<CurvePoint> CurvePoints;
 
-        public event EventHandler InterpModeChanged;
+        public event EventHandler SharedValueChanged;
 
         public Curve(string name, LinkedList<CurvePoint> points)
         {
@@ -87,13 +100,13 @@ namespace ME3Explorer.CurveEd
             CurvePoints = points;
             foreach (var point in points)
             {
-                point.InterpModeChanged += Point_InterpModeChanged;
+                point.SharedValueChanged += Point_SharedValueChanged;
             }
         }
 
-        private void Point_InterpModeChanged(object sender, EventArgs e)
+        private void Point_SharedValueChanged(object sender, EventArgs e)
         {
-            InterpModeChanged?.Invoke(this, e);
+            SharedValueChanged?.Invoke(this, e);
         }
 
         public Curve()
