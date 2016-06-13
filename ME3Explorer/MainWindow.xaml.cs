@@ -20,6 +20,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool CICOpen = false;
 
         public MainWindow()
         {
@@ -52,6 +53,23 @@ namespace ME3Explorer
             {
                 this.DragMove();
             }
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            (new AboutME3Explorer()).Show();
+        }
+
+        private void Debug_Click(object sender, RoutedEventArgs e)
+        {
+            KFreonLib.Debugging.DebugOutput.StartDebugger("ME3Explorer Main Window");
+        }
+        
+        private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            CICOpen = !CICOpen;
+            Image img = sender as Image;
+            img.Source = (ImageSource)img.FindResource(CICOpen ? "LogoOnImage" : "LogoOffImage");
         }
     }
 }

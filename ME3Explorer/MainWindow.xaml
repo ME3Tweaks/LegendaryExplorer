@@ -14,38 +14,65 @@
 
     <StackPanel>
         <DockPanel Height="24">
-            <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource BorderlessButton}" HorizontalContentAlignment="Right">
-                <Image Source="Resources/close_icon.ico" Height="12" Width="12"></Image>
+            <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource WindowManagementButton}">
+                <Image Source="Resources/close_icon.ico"/>
             </Button>
-            <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="15" Style="{DynamicResource BorderlessButton}">
+            <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
                 <Image Source="Resources/minimize_icon.ico" Height="12" Width="12"></Image>
             </Button>
-            <Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"  Width="15" Style="{DynamicResource BorderlessButton}" HorizontalContentAlignment="Right">
+            <Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
                 <Image Source="Resources/resize_icon.ico" Height="12" Width="12"></Image>
             </Button>
             <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
         </DockPanel>
-        <Image Source="Resources/logo_OFF.png" />
-        <DockPanel Height="24" Background="#FFFDFDFD">
+        <Image Source="{DynamicResource LogoOffImage}" Opacity="0.8" MouseDown="Logo_MouseDown">
+            <Image.Resources>
+                <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_OFF.png"/>
+                <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_ON.png"/>
+                <Style TargetType="Image">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Resources>
+        </Image>
+        <DockPanel Height="24">
             <DockPanel.Resources>
                 <Style x:Key="VersioningBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
                     <Setter Property="Width" Value="24"/>
                     <Setter Property="Height" Value="24"/>
-                    <Setter Property="Background" Value="#FFC1C1C1"/>
+                    <Setter Property="Background" Value="#A3C1C1C1"/>
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <Rectangle Name="rect1" Fill="#FFf5f5f5" Height="16" Width="16">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="{Binding Path=Source}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                        <Setter TargetName="rect1" Property="Fill" Value="{StaticResource HighlightColor}"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DockPanel.Resources>
-            <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}">
-                <Image Source="Resources/About_icon.ico" Width="16" Height="16" />
+            <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}" Click="About_Click">
+                <Image Source="Resources/About_icon.ico"/>
             </Button>
-            <Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}">
-                <Image Width="16" Height="16" Source="Resources/About_icon.ico" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}" Click="Debug_Click">
+                <Image Source="Resources/bug_icon.ico" />
             </Button>
-            <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         </DockPanel>
         <StackPanel Height="320" Background="#7210192A">
             <StackPanel.Resources>
                 <SolidColorBrush x:Key="ButtonColor" Color="#FFFDFDFD"/>
-                <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
                 <Style x:Key="MainMenuButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
                     <Setter Property="Background" Value="Transparent"></Setter>
                     <Setter Property="Padding" Value="0,14,0,0"/>

@@ -5,10 +5,12 @@
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.App"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
 
         <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="1"/>
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -31,6 +33,24 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        <Style x:Key="WindowManagementButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Rectangle Name="rect1" Fill="#FFD9D9D9" Height="12" Width="12">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{Binding Path=Source}"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                <Setter TargetName="rect1" Property="Fill" Value="White"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>
