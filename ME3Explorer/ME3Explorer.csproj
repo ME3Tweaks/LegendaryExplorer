@@ -283,6 +283,10 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="TOCeditor.cs" />
+    <Compile Include="Tool.cs" />
+    <Compile Include="ToolPanel.xaml.cs">
+      <DependentUpon>ToolPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TPFTools\KFreonTPFTools3.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -587,6 +591,10 @@
     <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -1067,6 +1075,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\TitilliumWeb-Regular.ttf" />
+    <Resource Include="Resources\TitilliumWeb-Italic.ttf" />
     <Resource Include="Resources\Hack-Bold.ttf" />
     <Resource Include="Resources\TitilliumWeb-SemiBold.ttf" />
   </ItemGroup>
@@ -1259,6 +1269,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bug_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\search.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\left_arrow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\right_arrow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\folder.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\settings.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
