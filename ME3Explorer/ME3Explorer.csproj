@@ -299,7 +299,7 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="TOCeditor.cs" />
-    <Compile Include="Tool.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
     </Compile>
@@ -1083,6 +1083,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\TitilliumWeb-Light.ttf" />
     <Resource Include="Resources\TitilliumWeb-Regular.ttf" />
     <Resource Include="Resources\TitilliumWeb-Italic.ttf" />
     <Resource Include="Resources\Hack-Bold.ttf" />
@@ -1154,7 +1155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\asset_explorer_64x64.png" />
-    <None Include="Resources\hexconverter_icon64x64.png" />
+    <Resource Include="Resources\hexconverter_icon64x64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\audio_extract_64x64.png" />

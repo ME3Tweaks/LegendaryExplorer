@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ME3Explorer"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="ME3Explorer.MainWindow"
         mc:Ignorable="d"
-        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="Icons/me3exp_favicon.ico" ResizeMode="CanMinimize" Background="#CC232E43" Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width">
+        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="Icons/me3exp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width">
     <Window.Resources>
         <System:Double x:Key="MainPanelWidth">650</System:Double>
         <Storyboard x:Key="sbSlideOutPanel">
@@ -77,7 +77,7 @@
                                     </Rectangle>
                                     <DataTemplate.Triggers>
                                         <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
-                                            <Setter TargetName="rect1" Property="Fill" Value="{StaticResource HighlightColor}"/>
+                                            <Setter TargetName="rect1" Property="Fill" Value="#FF10192A"/>
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>
@@ -187,7 +187,7 @@
                         <Grid Margin="17,0,0,0">
                             <Grid.Resources>
                                 <Style TargetType="{x:Type Label}">
-                                    <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-SemiBold}"/>
+                                    <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
                                     <Setter Property="FontSize" Value="18"/>
                                     <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
                                     <Setter Property="Cursor" Value="Hand"/>
@@ -250,7 +250,7 @@
                                                 <Setter Property="Fill" Value="{x:Null}"/>
                                             </Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
+                                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Light}"/>
                                                 <Setter Property="FontSize" Value="18"/>
                                                 <Setter Property="Foreground" Value="#FFF9F9F9"/>
                                             </Style>
@@ -259,7 +259,7 @@
                                         <Setter Property="Margin" Value="0,5,0,0"/>
                                     </Style>
                                 </StackPanel.Resources>
-                                <TextBlock Text="Settings" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="20" Foreground="{DynamicResource LabelTextBrush}" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock Text="Settings" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="20" Foreground="{DynamicResource LabelTextBrush}" RenderTransformOrigin="0.5,0.5">
                                     <TextBlock.RenderTransform>
                                         <TranslateTransform Y="-1.5"/>
                                     </TextBlock.RenderTransform>

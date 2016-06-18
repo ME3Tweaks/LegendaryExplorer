@@ -9,20 +9,22 @@
              d:DesignHeight="204" d:DesignWidth="620" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}">
     <Border Background="#7210192A">
         <StackPanel Orientation="Vertical" Margin="6,0">
-            <StackPanel Orientation="Horizontal" Height="30">
-                <TextBlock Text="{Binding Category}" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="20" 
+            <DockPanel Height="30">
+                <TextBlock Text="{Binding Category}" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="20" 
                            Foreground="{DynamicResource LabelTextBrush}" RenderTransformOrigin="0.5,0.5" Margin="0,0,5,0">
                     <TextBlock.RenderTransform>
                         <TranslateTransform Y="-1.5"/>
                     </TextBlock.RenderTransform>
                 </TextBlock>
-                <Button x:Name="backButton" Style="{StaticResource BorderlessButton}" Opacity="0.85" Visibility="Collapsed" Click="backButton_Click">
-                    <Image Source="Resources/left_arrow.ico" Width="16" Height="16"/>
-                </Button>
-                <Button x:Name="forwardButton" Style="{StaticResource BorderlessButton}" Margin="0" Opacity="0.85" Visibility="Collapsed" Click="forwardButton_Click">
-                    <Image Source="Resources/right_arrow.ico" Width="16" Height="16"/>
-                </Button>
-            </StackPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Button x:Name="backButton" Style="{StaticResource BorderlessButton}" Opacity="0.85" Click="backButton_Click" Visibility="Collapsed">
+                        <Image Source="Resources/left_arrow.ico" Width="16" Height="16"/>
+                    </Button>
+                    <Button x:Name="forwardButton" Style="{StaticResource BorderlessButton}" Margin="0" Opacity="0.85" Click="forwardButton_Click" Visibility="Collapsed">
+                        <Image Source="Resources/right_arrow.ico" Width="16" Height="16"/>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
             <Rectangle Fill="#A3FBFBFB" Height="2"/>
             <ItemsControl x:Name="ToolList" Margin="{Binding ItemControlMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ToolPanel}}}">
                 <ItemsControl.ItemsPanel>

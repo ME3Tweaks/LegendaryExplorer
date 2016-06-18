@@ -24,8 +24,30 @@ namespace ME3Explorer
         public static void InitializeTools()
         {
             List<Tool> list = new List<Tool>();
-            
+
             #region Utilities
+            list.Add(new Tool
+            {
+                name = "Hex Converter",
+                icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
+                open = () =>
+                {
+                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                    if (File.Exists(loc + "\\HexConverter.exe"))
+                        Process.Start(loc + "\\HexConverter.exe");
+                },
+                tags = new List<string> { "utility" }
+            });
+            list.Add(new Tool
+            {
+                name = "Image Engine",
+                icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
+                open = () =>
+                {
+                    (new CSharpImageLibrary.MainWindow()).Show();
+                },
+                tags = new List<string> { "utility", "dds", "texture", "convert" }
+            });
             list.Add(new Tool
             {
                 name = "Audio Extractor",
@@ -57,16 +79,6 @@ namespace ME3Explorer
                         Process.Start(loc + "\\ME3VanillaMaker.exe");
                 },
                 tags = new List<string> { "utility", "vanilla" }
-            });
-            list.Add(new Tool
-            {
-                name = "Image Engine",
-                icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
-                open = () =>
-                {
-                    (new CSharpImageLibrary.MainWindow()).Show();
-                },
-                tags = new List<string> { "utility", "dds", "texture", "convert" }
             });
             list.Add(new Tool
             {
@@ -211,6 +223,66 @@ namespace ME3Explorer
                     (new SequenceEditor()).Show();
                 },
                 tags = new List<string> { "developer", "kismet" }
+            });
+            list.Add(new Tool
+            {
+                name = "Coalesced Editor",
+                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                open = () =>
+                {
+                    (new Coalesced_Editor.CoalEditor()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
+            list.Add(new Tool
+            {
+                name = "Coalesced Operator",
+                icon = Application.Current.FindResource("iconCoalescedOperator") as ImageSource,
+                open = () =>
+                {
+                    (new Coalesced_Operator.Operator()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
+            list.Add(new Tool
+            {
+                name = "Camera Tool",
+                icon = Application.Current.FindResource("iconCameraTool") as ImageSource,
+                open = () =>
+                {
+                    (new CameraTool.CamTool()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
+            list.Add(new Tool
+            {
+                name = "Dialogue Editor",
+                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+                open = () =>
+                {
+                    (new DialogEditor.DialogEditor()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
+            list.Add(new Tool
+            {
+                name = "FaceFXAnimSet Editor",
+                icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
+                open = () =>
+                {
+                    (new FaceFXAnimSetEditor.FaceFXAnimSetEditor()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
+            list.Add(new Tool
+            {
+                name = "Interp Viewer",
+                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+                open = () =>
+                {
+                    (new InterpEditor.InterpEditor()).Show();
+                },
+                tags = new List<string> { "developer" }
             });
             #endregion
 

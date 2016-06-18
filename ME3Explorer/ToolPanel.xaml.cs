@@ -80,8 +80,10 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public void setToolList(IEnumerable<Tool> list)
+        public void setToolList(IEnumerable<Tool> enumerable)
         {
+            List<Tool> list = enumerable.ToList();
+            list.Sort((x, y) => x.name.CompareTo(y.name));
             tools = list;
             index = 0;
             updateContents();

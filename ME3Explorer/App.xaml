@@ -6,6 +6,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <FontFamily x:Key="TitilliumWeb-Italic">/ME3Explorer;component/Resources/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="TitilliumWeb-Light">/ME3Explorer;component/Resources/TitilliumWeb-Light.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-SemiBold">/ME3Explorer;component/Resources/TitilliumWeb-SemiBold.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-Regular">/ME3Explorer;component/Resources/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
 
@@ -83,6 +84,7 @@
             </Style.Triggers>
         </Style>
 
+        <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_icon64x64.png"/>
         <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
         <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
@@ -101,6 +103,12 @@
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
         <BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>
         <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
+        <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64x64.png"/>
+        <BitmapImage x:Key="iconCoalescedOperator" UriSource="Resources/coalesced_operator_64x64.png"/>
+        <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
+        <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
+        <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
+        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
     </Application.Resources>
 </Application>
