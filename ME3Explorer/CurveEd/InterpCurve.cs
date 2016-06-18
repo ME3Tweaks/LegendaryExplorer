@@ -201,6 +201,9 @@ namespace ME3Explorer.CurveEd
                         {
                             switch (pcc.getNameEntry(p.Name))
                             {
+                                case "InVal":
+                                    res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).InVal));
+                                    break;
                                 case "OutVal":
                                     res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).OutVal));
                                     break;
@@ -213,8 +216,6 @@ namespace ME3Explorer.CurveEd
                                 case "InterpMode":
                                     res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(pcc.FindNameOrAdd(Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString())));
                                     break;
-                                //changing time not supported
-                                case "InVal":
                                 default:
                                     break;
                             }
@@ -228,6 +229,9 @@ namespace ME3Explorer.CurveEd
                         {
                             switch (pcc.getNameEntry(p.Name))
                             {
+                                case "InVal":
+                                    res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).InVal));
+                                    break;
                                 case "OutVal":
                                     res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).OutVal));
                                     res.OverwriteRange(p.offsetval + 44, BitConverter.GetBytes(Curves[1].CurvePoints.ElementAt(i).OutVal));
@@ -246,8 +250,6 @@ namespace ME3Explorer.CurveEd
                                 case "InterpMode":
                                     res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(pcc.FindNameOrAdd(Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString())));
                                     break;
-                                //changing time not supported
-                                case "InVal":
                                 default:
                                     break;
                             }
