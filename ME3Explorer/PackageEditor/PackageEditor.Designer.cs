@@ -29,11 +29,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadFromDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appendSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reconstructionSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveIntoDLCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scanForCoalescedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +44,7 @@
             this.faceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportFaceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,6 +81,7 @@
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
+            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -131,7 +131,6 @@
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -172,11 +171,9 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadToolStripMenuItem,
-            this.loadFromDLCToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.appendSaveMenuItem,
             this.reconstructionSaveMenuItem,
-            this.saveIntoDLCToolStripMenuItem,
             this.scanForCoalescedValuesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.recentToolStripMenuItem});
@@ -191,14 +188,6 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
-            // 
-            // loadFromDLCToolStripMenuItem
-            // 
-            this.loadFromDLCToolStripMenuItem.Name = "loadFromDLCToolStripMenuItem";
-            this.loadFromDLCToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.loadFromDLCToolStripMenuItem.Text = "Load from DLC (SFAR)";
-            this.loadFromDLCToolStripMenuItem.ToolTipText = "Load a PCC from a DLC SFAR file";
-            this.loadFromDLCToolStripMenuItem.Click += new System.EventHandler(this.loadFromDLCToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -224,14 +213,6 @@
             this.reconstructionSaveMenuItem.Text = "Save As (reconstruct)";
             this.reconstructionSaveMenuItem.ToolTipText = "Save changes by reconstructing the PCC";
             this.reconstructionSaveMenuItem.Click += new System.EventHandler(this.reconstructionSave_Click);
-            // 
-            // saveIntoDLCToolStripMenuItem
-            // 
-            this.saveIntoDLCToolStripMenuItem.Name = "saveIntoDLCToolStripMenuItem";
-            this.saveIntoDLCToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.saveIntoDLCToolStripMenuItem.Text = "Save into DLC (SFAR)";
-            this.saveIntoDLCToolStripMenuItem.ToolTipText = "Save changes and place file into DLC SFAR file. Uses the Alt Saving method";
-            this.saveIntoDLCToolStripMenuItem.Click += new System.EventHandler(this.saveIntoDLCToolStripMenuItem_Click);
             // 
             // scanForCoalescedValuesToolStripMenuItem
             // 
@@ -263,7 +244,8 @@
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
             this.editBlockingVolToolStripMenuItem,
-            this.faceFXToolStripMenuItem});
+            this.faceFXToolStripMenuItem,
+            this.editInCurveEditorToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -272,14 +254,14 @@
             // 
             this.hexConverterToolStripMenuItem.AutoToolTip = true;
             this.hexConverterToolStripMenuItem.Name = "hexConverterToolStripMenuItem";
-            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.hexConverterToolStripMenuItem.Text = "Hex Converter";
             this.hexConverterToolStripMenuItem.Click += new System.EventHandler(this.hexConverterToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.ToolTipText = "Add a name to the name table";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
@@ -287,7 +269,7 @@
             // editInInterpreterToolStripMenuItem
             // 
             this.editInInterpreterToolStripMenuItem.Name = "editInInterpreterToolStripMenuItem";
-            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editInInterpreterToolStripMenuItem.Text = "Edit in Interpreter";
             this.editInInterpreterToolStripMenuItem.ToolTipText = "Open this export in the interpreter";
             this.editInInterpreterToolStripMenuItem.Click += new System.EventHandler(this.editInInterpreterToolStripMenuItem_Click);
@@ -295,14 +277,14 @@
             // replaceWithBINToolStripMenuItem
             // 
             this.replaceWithBINToolStripMenuItem.Name = "replaceWithBINToolStripMenuItem";
-            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
             // editBlockingVolToolStripMenuItem
             // 
             this.editBlockingVolToolStripMenuItem.Name = "editBlockingVolToolStripMenuItem";
-            this.editBlockingVolToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.editBlockingVolToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editBlockingVolToolStripMenuItem.Text = "Edit Blocking Vol";
             this.editBlockingVolToolStripMenuItem.Visible = false;
             this.editBlockingVolToolStripMenuItem.Click += new System.EventHandler(this.editBlockingVolToolStripMenuItem_Click);
@@ -313,7 +295,7 @@
             this.exportFaceFXToolStripMenuItem,
             this.importToolStripMenuItem});
             this.faceFXToolStripMenuItem.Name = "faceFXToolStripMenuItem";
-            this.faceFXToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.faceFXToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.faceFXToolStripMenuItem.Text = "FaceFX";
             // 
             // exportFaceFXToolStripMenuItem
@@ -329,6 +311,13 @@
             this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // editInCurveEditorToolStripMenuItem
+            // 
+            this.editInCurveEditorToolStripMenuItem.Name = "editInCurveEditorToolStripMenuItem";
+            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
+            this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
             // 
             // modjobsToolStripMenuItem
             // 
@@ -665,6 +654,15 @@
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
+            // 
+            // interpreterControl
+            // 
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Pcc = null;
+            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
+            this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -1095,15 +1093,13 @@
             // 
             // rtb1
             // 
-            this.rtb1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtb1.DetectUrls = false;
+            this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtb1.Location = new System.Drawing.Point(3, 3);
+            this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(654, 484);
+            this.rtb1.Size = new System.Drawing.Size(660, 418);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -1143,15 +1139,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(654, 412);
-            this.interpreterControl.TabIndex = 0;
             // 
             // PackageEditor
             // 
@@ -1280,8 +1267,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportFaceFXToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel status2;
         private System.Windows.Forms.TabPage headerTab;
-        private System.Windows.Forms.ToolStripMenuItem loadFromDLCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveIntoDLCToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
@@ -1311,5 +1296,6 @@
         private System.Windows.Forms.ToolStripMenuItem cloneTreeToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem editInCurveEditorToolStripMenuItem;
     }
 }

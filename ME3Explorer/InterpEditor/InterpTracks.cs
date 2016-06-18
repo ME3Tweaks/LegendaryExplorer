@@ -304,12 +304,14 @@ namespace ME3Explorer.InterpEditor
         private void listEntry_MouseDown(object sender, PInputEventArgs e)
         {
             e.Handled = true;
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 ContextMenuStrip menu = new ContextMenuStrip();
                 ToolStripMenuItem openInPCCEd = new ToolStripMenuItem("Open in Package Editor");
                 openInPCCEd.Click += openInPCCEd_Click;
-                menu.Items.AddRange(new ToolStripItem[] { openInPCCEd });
+                ToolStripMenuItem openInCurveEd = new ToolStripMenuItem("Open in Curve Editor");
+                openInCurveEd.Click += OpenInCurveEd_Click;
+                menu.Items.AddRange(new ToolStripItem[] { openInPCCEd, openInCurveEd });
                 menu.Show(Cursor.Position);
             }
             //Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
@@ -321,6 +323,12 @@ namespace ME3Explorer.InterpEditor
             //ip.Dispose();
             ToTree();
             AdditionalToTree();
+        }
+
+        private void OpenInCurveEd_Click(object sender, EventArgs e)
+        {
+            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc, index);
+            c.Show();
         }
 
         private void openInPCCEd_Click(object sender, EventArgs e)

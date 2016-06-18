@@ -27,6 +27,7 @@ namespace ME3Explorer.Unreal
         public uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
         public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
+        public bool canReconstruct { get { return !Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
         public bool bDLCStored = false;
         public bool bExtraNamesList { get { return extraNamesList != null; } }
         public bool bCompressed
@@ -205,7 +206,7 @@ namespace ME3Explorer.Unreal
             public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
             public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
             public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public long ObjectFlags { get { return BitConverter.ToInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
+            public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
 
             public string ObjectName { get { return pccRef.Names[idxObjectName]; } }
             public string ClassName { get { int val = idxClass; if (val != 0) return pccRef.Names[pccRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -548,7 +549,30 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        //an attempt to emulate ME3Creator's save method
+        /// <summary>
+        ///     save PCC to same file by reconstruction if possible, append if not
+        /// </summary>
+        public void save()
+        {
+            save(pccFileName);
+        }
+
+        /// <summary>
+        ///     save PCC by reconstruction if possible, append if not
+        /// </summary>
+        /// <param name="path">full path + file name.</param>
+        public void save(string path)
+        {
+            if (canReconstruct)
+            {
+                saveByReconstructing(path);
+            }
+            else
+            {
+                appendSave(path, true);
+            }
+        }
+        
         /// <summary>
         ///     save PCCObject to file by reconstruction from data
         /// </summary>
@@ -756,7 +780,7 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="newFileName">The filename to write to</param>
         /// <param name="attemptOverwrite">Do you wish to attempt to overwrite the existing export</param>
-        public string altSaveToFile(string newFileName, bool attemptOverwrite, int HeadeNameOffset = 34)
+        public string appendSave(string newFileName, bool attemptOverwrite, int HeadeNameOffset = 34)
         {
             string rtValues = "";
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
@@ -783,8 +807,8 @@ namespace ME3Explorer.Unreal
                 changedExports = Exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
                 replaceExports = Exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
             }
-            //ExportEntry lastExport = unchangedExports.Find(export => export.DataOffset == unchangedExports.Max(maxExport => maxExport.DataOffset));
-            ExportEntry lastExport = Exports.Find(export => export.DataOffset == Exports.Max(maxExport => maxExport.DataOffset));
+            int max = Exports.Max(maxExport => maxExport.DataOffset);
+            ExportEntry lastExport = Exports.Find(export => export.DataOffset == max);
             int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
             //byte[] oldName;
 
@@ -938,7 +962,7 @@ namespace ME3Explorer.Unreal
 
         public bool canClone()
         {
-            if (Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"))
+            if (!canReconstruct)
             {
                 var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Cloning will cause a crash when ME3 attempts to load this file.\n" +
                     "Do you want to visit a forum thread with more information and a possible solution?",

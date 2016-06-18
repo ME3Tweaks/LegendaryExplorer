@@ -1096,14 +1096,7 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            if (haveCloned)
-            {
-                pcc.saveByReconstructing(pcc.pccFileName);
-            }
-            else
-            {
-                pcc.altSaveToFile(pcc.pccFileName, true);
-            }
+            pcc.save();
             MessageBox.Show("Done");
         }
 
@@ -1115,14 +1108,7 @@ namespace ME3Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                if (haveCloned)
-                {
-                    pcc.saveByReconstructing(d.FileName);
-                }
-                else
-                {
-                    pcc.altSaveToFile(d.FileName, true);
-                }
+                pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }

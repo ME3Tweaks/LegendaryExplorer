@@ -166,5 +166,13 @@ namespace ME3Explorer.InterpEditor
             KFreonLib.Debugging.DebugOutput.PrintLn("*****************");
             KFreonLib.Debugging.DebugOutput.PrintLn("Done");
         }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            pcc.save();
+            MessageBox.Show("Done");
+        }
     }
 }

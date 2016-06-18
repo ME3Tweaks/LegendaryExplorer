@@ -81,9 +81,14 @@ namespace ME3Explorer.Unreal
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
-        public static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+        private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "NavReference",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+
+        public static bool isImmutable(string structName)
+        {
+            return ImmutableStructs.Contains(structName);
+        }
 
         #region struct default values
         private static byte[] CoverReferenceDefault = { 
@@ -272,7 +277,15 @@ namespace ME3Explorer.Unreal
             {
                 bool isImmutable = ImmutableStructs.Contains(className);
                 ClassInfo info = Structs[className];
-                PCCObject importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                PCCObject importPCC;
+                try
+                {
+                    importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
                 byte[] buff;
                 //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
                 //thus, I have hardcoded what those default values should be 
@@ -311,7 +324,15 @@ namespace ME3Explorer.Unreal
             else if (Classes.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
-                PCCObject importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                PCCObject importPCC;
+                try
+                {
+                    importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
                 PCCObject.ExportEntry entry = pcc.Exports[info.exportIndex + 1];
                 List<PropertyReader.Property> Props = PropertyReader.getPropList(importPCC, entry);
                 MemoryStream m = new MemoryStream(entry.DataSize - 4);

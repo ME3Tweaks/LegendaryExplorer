@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ME1Explorer
 {
@@ -76,6 +76,8 @@ namespace ME1Explorer
             this.label12 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.hb2 = new Be.Windows.Forms.HexBox();
+            this.scriptTab = new System.Windows.Forms.TabPage();
+            this.scriptTextBox = new System.Windows.Forms.RichTextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -104,6 +106,8 @@ namespace ME1Explorer
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -116,15 +120,17 @@ namespace ME1Explorer
             this.infoHeaderBox.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.scriptTab.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.openPccToolStripMenuItem.Text = "Open Pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
@@ -137,14 +143,14 @@ namespace ME1Explorer
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(444, 434);
+            this.listBox1.Size = new System.Drawing.Size(444, 458);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -155,7 +161,7 @@ namespace ME1Explorer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(993, 434);
+            this.splitContainer1.Size = new System.Drawing.Size(993, 458);
             this.splitContainer1.SplitterDistance = 444;
             this.splitContainer1.TabIndex = 7;
             // 
@@ -165,7 +171,7 @@ namespace ME1Explorer
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(444, 434);
+            this.treeView1.Size = new System.Drawing.Size(444, 458);
             this.treeView1.TabIndex = 2;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -177,11 +183,12 @@ namespace ME1Explorer
             this.tabControl1.Controls.Add(this.infoTab);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.scriptTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(545, 434);
+            this.tabControl1.Size = new System.Drawing.Size(545, 458);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage2
@@ -190,7 +197,7 @@ namespace ME1Explorer
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(537, 408);
+            this.tabPage2.Size = new System.Drawing.Size(537, 432);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Properties";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -201,7 +208,7 @@ namespace ME1Explorer
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(531, 402);
+            this.propGrid.Size = new System.Drawing.Size(531, 426);
             this.propGrid.TabIndex = 0;
             // 
             // tabPage1
@@ -210,7 +217,7 @@ namespace ME1Explorer
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(537, 408);
+            this.tabPage1.Size = new System.Drawing.Size(537, 432);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hex Editor";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -225,7 +232,7 @@ namespace ME1Explorer
             this.hexBox1.Location = new System.Drawing.Point(3, 3);
             this.hexBox1.Name = "hexBox1";
             this.hexBox1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexBox1.Size = new System.Drawing.Size(531, 402);
+            this.hexBox1.Size = new System.Drawing.Size(531, 426);
             this.hexBox1.StringViewVisible = true;
             this.hexBox1.TabIndex = 1;
             this.hexBox1.UseFixedBytesPerLine = true;
@@ -237,7 +244,7 @@ namespace ME1Explorer
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(537, 408);
+            this.infoTab.Size = new System.Drawing.Size(537, 432);
             this.infoTab.TabIndex = 4;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
@@ -256,7 +263,7 @@ namespace ME1Explorer
             this.infoExportDataBox.Controls.Add(this.label7);
             this.infoExportDataBox.Location = new System.Drawing.Point(4, 240);
             this.infoExportDataBox.Name = "infoExportDataBox";
-            this.infoExportDataBox.Size = new System.Drawing.Size(503, 185);
+            this.infoExportDataBox.Size = new System.Drawing.Size(503, 209);
             this.infoExportDataBox.TabIndex = 1;
             this.infoExportDataBox.TabStop = false;
             this.infoExportDataBox.Text = "Export data";
@@ -495,7 +502,7 @@ namespace ME1Explorer
             this.tabPage3.Controls.Add(this.label12);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(537, 408);
+            this.tabPage3.Size = new System.Drawing.Size(537, 432);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Meta Data Editor";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -565,7 +572,7 @@ namespace ME1Explorer
             this.tabPage4.Controls.Add(this.hb2);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(537, 408);
+            this.tabPage4.Size = new System.Drawing.Size(537, 432);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Header Raw";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -580,11 +587,32 @@ namespace ME1Explorer
             this.hb2.Location = new System.Drawing.Point(0, 0);
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(537, 408);
+            this.hb2.Size = new System.Drawing.Size(537, 432);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 1;
             this.hb2.UseFixedBytesPerLine = true;
             this.hb2.VScrollBarVisible = true;
+            // 
+            // scriptTab
+            // 
+            this.scriptTab.Controls.Add(this.scriptTextBox);
+            this.scriptTab.Controls.Add(this.toolStrip2);
+            this.scriptTab.Location = new System.Drawing.Point(4, 22);
+            this.scriptTab.Name = "scriptTab";
+            this.scriptTab.Padding = new System.Windows.Forms.Padding(3);
+            this.scriptTab.Size = new System.Drawing.Size(537, 432);
+            this.scriptTab.TabIndex = 5;
+            this.scriptTab.Text = "Script";
+            this.scriptTab.UseVisualStyleBackColor = true;
+            // 
+            // scriptTextBox
+            // 
+            this.scriptTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scriptTextBox.Location = new System.Drawing.Point(3, 28);
+            this.scriptTextBox.Name = "scriptTextBox";
+            this.scriptTextBox.Size = new System.Drawing.Size(531, 401);
+            this.scriptTextBox.TabIndex = 0;
+            this.scriptTextBox.Text = "Script will load here...";
             // 
             // toolStrip1
             // 
@@ -604,7 +632,7 @@ namespace ME1Explorer
             this.toolStripSeparator4,
             this.goToTextBox,
             this.goToButton});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(993, 25);
             this.toolStrip1.TabIndex = 5;
@@ -772,14 +800,14 @@ namespace ME1Explorer
             // savePccToolStripMenuItem
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.savePccToolStripMenuItem.Text = "Save Pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.DropDownOpening += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpening);
@@ -823,6 +851,26 @@ namespace ME1Explorer
             this.replaceWithBINToolStripMenuItem.Text = "Replace With BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
+            // toolStrip2
+            // 
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton4});
+            this.toolStrip2.Location = new System.Drawing.Point(3, 3);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(531, 25);
+            this.toolStrip2.TabIndex = 2;
+            this.toolStrip2.Text = "toolStrip2";
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(122, 22);
+            this.toolStripButton4.Text = "Decrease Header Size";
+            this.toolStripButton4.Click += new System.EventHandler(this.decreaseHeaderSizeButton_Click);
+            // 
             // PCCEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -850,12 +898,16 @@ namespace ME1Explorer
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.scriptTab.ResumeLayout(false);
+            this.scriptTab.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -936,5 +988,9 @@ namespace ME1Explorer
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage scriptTab;
+        private System.Windows.Forms.RichTextBox scriptTextBox;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
     }
 }

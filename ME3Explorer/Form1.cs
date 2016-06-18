@@ -348,7 +348,7 @@ namespace ME3Explorer
 
         private void switchToUDKExplorerToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            UDKExplorer.UDKExplorer ex = new UDKExplorer.UDKExplorer();
+            UDKExplorer.MainWindow ex = new UDKExplorer.MainWindow();
             ex.Show();
         }
 
@@ -828,6 +828,15 @@ namespace ME3Explorer
                     ME2Directory.GamePath(changer.PathME2);
                     ME3Directory.GamePath(changer.PathME3);
                 }
+            }
+        }
+
+        private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + @"\HexConverter.exe"))
+            {
+                Process.Start(loc + @"\HexConverter.exe");
             }
         }
     }

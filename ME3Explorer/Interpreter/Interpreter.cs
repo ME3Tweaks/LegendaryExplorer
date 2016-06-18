@@ -126,7 +126,7 @@ namespace ME3Explorer
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
-            hidePropEditingControls();
+            resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
@@ -139,9 +139,9 @@ namespace ME3Explorer
             {
                 GenerateTree(topLevelTree, topLevelHeaders);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR");
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
                 addPropButton.Visible = false;
             }
             treeView1.Nodes.Add(topLevelTree);
@@ -151,11 +151,11 @@ namespace ME3Explorer
             if (expandedNodes != null)
             {
                 int memDiff = memory.Length - memsize;
-                int selectedPos = Math.Abs(Convert.ToInt32(selectedNodeName));
+                int selectedPos = getPosFromNode(selectedNodeName);
                 int curPos = 0;
                 foreach (string item in expandedNodes)
                 {
-                    curPos = Math.Abs(Convert.ToInt32(item));
+                    curPos = getPosFromNode(item);
                     if (curPos > selectedPos)
                     {
                         curPos += memDiff;
@@ -194,7 +194,7 @@ namespace ME3Explorer
             {
                 if (readerpos > memory.Length)
                 {
-                    throw new Exception();
+                    throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
                 }
                 nodeType type = getType(pcc.getNameEntry(header.type));
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
@@ -231,17 +231,19 @@ namespace ME3Explorer
                                 n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
-                                if (arrayListPropHeaders.Count > 0)
+                                if (info != null && (UnrealObjectInfo.isImmutable(info.reference) || arrayListPropHeaders.Count == 0))
+                                {
+                                    readerpos = pos;
+                                    GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
+                                    tmp = readerpos;
+                                }
+                                else if (arrayListPropHeaders.Count > 0)
                                 {
                                     GenerateTree(n, arrayListPropHeaders); 
                                 }
                                 else
                                 {
-                                    if (info != null)
-                                    {
-                                        GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
-                                        tmp = readerpos;
-                                    }
+                                    throw new Exception($"at position {readerpos.ToString("X4")}. Could not read element {i} of ArrayProperty {pcc.getNameEntry(header.name)}");
                                 }
                                 t.LastNode.Remove();
                                 t.Nodes.Add(n);
@@ -253,12 +255,22 @@ namespace ME3Explorer
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
                             int count = 0;
                             int pos;
+                            if (header.size > 1000 && arrayType == UnrealObjectInfo.ArrayType.Byte)
+                            {
+                                TreeNode node = new TreeNode();
+                                node.Name = (header.offset + 28).ToString();
+                                node.Tag = nodeType.Unknown;
+                                node.Text = "Large binary data array. Skipping Parsing";
+                                t.Nodes.Add(node);
+                                localRoot.Nodes.Add(t);
+                                continue;
+                            }
                             for (int i = 0; i < (header.size - 4); count++)
                             {
                                 pos = header.offset + 28 + i;
                                 if (pos > memory.Length)
                                 {
-                                    throw new Exception();
+                                    throw new Exception(": tried to read past bounds of Export Data");
                                 }
                                 int val = BitConverter.ToInt32(memory, pos);
                                 string s = pos.ToString("X4") + "|" + count + ": ";
@@ -395,7 +407,6 @@ namespace ME3Explorer
         }
 
         //structs that are serialized down to just their values.
-        //TODO: write a general deserializer for these instead of a bunch of bespoke ones that don't even cover all the cases.
         private void GenerateSpecialStruct(TreeNode t, string structType, int size)
         {
             TreeNode node;
@@ -426,7 +437,17 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        props = PropertyReader.ReadProp(pcc, UnrealObjectInfo.getDefaultClassValue(pcc, structType, true), 0);
+                        byte[] defaultValue = UnrealObjectInfo.getDefaultClassValue(pcc, structType, true);
+                        if (defaultValue == null)
+                        {
+                            //just prints the raw hex since there's no telling what it actually is
+                            node = new TreeNode(readerpos.ToString("X4") + ": " + memory.Skip(readerpos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")));
+                            node.Tag = nodeType.Unknown;
+                            t.Nodes.Add(node);
+                            readerpos += size;
+                            return;
+                        }
+                        props = PropertyReader.ReadProp(pcc, defaultValue, 0);
                         defaultStructValues.Add(structType, props);
                     }
                     for (int i = 0; i < props.Count; i++)
@@ -612,7 +633,7 @@ namespace ME3Explorer
         {
             if (pos > memory.Length)
             {
-                throw new Exception();
+                throw new Exception(": tried to read past bounds of Export Data");
             }
             int n;
             TreeNode node;
@@ -783,8 +804,9 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     break;
                 case PropertyReader.Type.DelegateProperty:
+                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Delegate property of Immutable struct");
                 case PropertyReader.Type.Unknown:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unkown property of Immutable struct");
                 case PropertyReader.Type.None:
                 default:
                     break;
@@ -880,7 +902,7 @@ namespace ME3Explorer
             while (run)
             {
                 PropHeader p = new PropHeader();
-                if (readerpos > memory.Length)
+                if (readerpos > memory.Length || readerpos < 0)
                 {
                     //nothing else to interpret.
                     run = false;
@@ -980,7 +1002,7 @@ namespace ME3Explorer
                 {
                     continue;
                 }
-                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, Math.Abs(Convert.ToInt32(node.Name))));
+                propname = pcc.getNameEntry(BitConverter.ToInt32(memory, getPosFromNode(node.Name)));
                 p = UnrealObjectInfo.getPropertyInfo(typeName, propname, isStruct);
                 typeName = p.reference;
                 isStruct = true;
@@ -1006,7 +1028,7 @@ namespace ME3Explorer
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             LAST_SELECTED_NODE = e.Node;
-            hidePropEditingControls();
+            resetPropEditingControls();
             if (e.Node.Name == "")
             {
                 Debug.WriteLine("This node is not parsable.");
@@ -1016,7 +1038,7 @@ namespace ME3Explorer
             }
             try
             {
-                int off = Math.Abs(Convert.ToInt32(e.Node.Name));
+                int off = getPosFromNode(e.Node.Name);
                 hb1.SelectionStart = off;
                 lastSetOffset = off;
                 hb1.SelectionLength = 1;
@@ -1107,11 +1129,14 @@ namespace ME3Explorer
             }
         }
 
-        private void hidePropEditingControls()
+        private void resetPropEditingControls()
         {
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
+            nameEntry.AutoCompleteCustomSource.Clear();
+            nameEntry.Clear();
+            proptext.Clear();
         }
 
         private void TryParseProperty()
@@ -1504,7 +1529,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1625,7 +1650,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1737,7 +1762,7 @@ namespace ME3Explorer
                                 parent = parent.Parent;
                                 continue;
                             }
-                            updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, (stringBuff.Count + 4) - oldSize);
+                            updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
                         RefreshMem(pos);
@@ -1767,8 +1792,8 @@ namespace ME3Explorer
 
                 byte[] removedBytes;
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
-                int leafOffset = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Name));
-                int parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                int leafOffset = getPosFromNode(LAST_SELECTED_NODE.Name);
+                int parentOffset = getPosFromNode(parent.Name);
                 
                 int size;
                 switch (LAST_SELECTED_PROP_TYPE)
@@ -1807,7 +1832,7 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                    parentOffset = getPosFromNode(parent.Name);
                     if (firstbubble)
                     {
                         memory = RemoveIndices(memory, leafOffset, size);
@@ -1853,7 +1878,7 @@ namespace ME3Explorer
                 {
                     isLeaf = true;
                     leafOffset = pos;
-                    pos = Math.Abs(Convert.ToInt32(LAST_SELECTED_NODE.Parent.Name));
+                    pos = getPosFromNode(LAST_SELECTED_NODE.Parent.Name);
                     LAST_SELECTED_NODE = LAST_SELECTED_NODE.Parent;
                 }
                 int size = BitConverter.ToInt32(memory, pos + 16);
@@ -1943,10 +1968,21 @@ namespace ME3Explorer
                         leafSize = 4 + stringBuff.Count;
                         break;
                     case UnrealObjectInfo.ArrayType.Struct:
-                        byte[] buff = UnrealObjectInfo.getDefaultClassValue(pcc, getEnclosingType(LAST_SELECTED_NODE));
-                        if (buff == null)
+                        byte[] buff;
+                        if (LAST_SELECTED_NODE.Nodes.Count == 0)
                         {
-                            return;
+                            buff = UnrealObjectInfo.getDefaultClassValue(pcc, getEnclosingType(LAST_SELECTED_NODE));
+                            if (buff == null)
+                            {
+                                return;
+                            }
+                        }
+                        //clone struct if existing
+                        else
+                        {
+                            int startOff = getPosFromNode(LAST_SELECTED_NODE.LastNode);
+                            int length = getPosFromNode(LAST_SELECTED_NODE.NextNode) - startOff;
+                            buff = memory.Skip(startOff).Take(length).ToArray();
                         }
                         memList.InsertRange(offset, buff);
                         leafSize = buff.Length;
@@ -1966,17 +2002,10 @@ namespace ME3Explorer
                         parent = parent.Parent;
                         continue;
                     }
-                    updateArrayLength(Math.Abs(Convert.ToInt32(parent.Name)), 0, leafSize);
+                    updateArrayLength(getPosFromNode(parent.Name), 0, leafSize);
                     parent = parent.Parent;
                 }
-                if (isLeaf)
-                {
-                    RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -leafOffset : leafOffset);
-                }
-                else
-                {
-                    RefreshMem(pos); 
-                }
+                RefreshMem(arrayType == UnrealObjectInfo.ArrayType.Struct ? -offset : offset);
             }
             catch (Exception ex)
             {
@@ -2141,17 +2170,17 @@ namespace ME3Explorer
             if (up)
             {
                 node = LAST_SELECTED_NODE.PrevNode;
-                pos = Math.Abs(Convert.ToInt32(node.Name));
+                pos = getPosFromNode(node.Name);
             }
             else
             {
                 node = LAST_SELECTED_NODE.NextNode;
-                pos = Math.Abs(Convert.ToInt32(node.Name));
+                pos = getPosFromNode(node.Name);
                 //account for structs not neccesarily being the same size
                 if (node.Nodes.Count > 0)
                 {
                     //position of element being moved down + size of struct below it
-                    pos = lastSetOffset + (Math.Abs(Convert.ToInt32(node.LastNode.Name)) + 8 - pos);
+                    pos = lastSetOffset + (getPosFromNode(node.LastNode.Name) + 8 - pos);
                 }
             }
             byte[] element = deleteArrayLeaf();
@@ -2168,7 +2197,7 @@ namespace ME3Explorer
                     parent = parent.Parent;
                     continue;
                 }
-                parentOffset = Math.Abs(Convert.ToInt32(parent.Name));
+                parentOffset = getPosFromNode(parent.Name);
                 if (firstbubble)
                 {
                     firstbubble = false;
@@ -2291,7 +2320,7 @@ namespace ME3Explorer
                     default:
                         return;
                 }
-                int pos = Math.Abs(Convert.ToInt32(treeView1.Nodes[0].LastNode.Name));
+                int pos = getPosFromNode(treeView1.Nodes[0].LastNode.Name);
                 List<byte> memlist = memory.ToList();
                 memlist.InsertRange(pos, buff);
                 memory = memlist.ToArray();
@@ -2322,19 +2351,30 @@ namespace ME3Explorer
             int start = (int)hb1.SelectionStart;
             int len = (int)hb1.SelectionLength;
             int size = (int)hb1.ByteProvider.Length;
-            if (start != -1 && start + len <= size)
+            try
             {
-                string s = "Start=0x" + start.ToString("X8") + " ";
-                if (len > 0)
+                if (memory != null && start != -1 && start + len <= size)
                 {
-                    s += "Length=0x" + len.ToString("X8") + " ";
-                    s += "End=0x" + (start + len - 1).ToString("X8"); 
+                    string s = $"Byte: {memory[start]}";
+                    if (start <= memory.Length - 4)
+                    {
+                        s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                    }
+                    s += $" | Start=0x{start.ToString("X8")} ";
+                    if (len > 0)
+                    {
+                        s += $"Length=0x{len.ToString("X8")} ";
+                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                    }
+                    selectionStatus.Text = s;
                 }
-                selectionStatus.Text = s;
+                else
+                {
+                    selectionStatus.Text = "Nothing Selected";
+                }
             }
-            else
+            catch (Exception)
             {
-                selectionStatus.Text = "Nothing Selected";
             }
         }
 
@@ -2358,6 +2398,16 @@ namespace ME3Explorer
         private void collapseAllChildrenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1.SelectedNode.Collapse(false);
+        }
+
+        private int getPosFromNode(TreeNode t)
+        {
+            return getPosFromNode(t.Name);
+        }
+
+        private int getPosFromNode(string s)
+        {
+            return Math.Abs(Convert.ToInt32(s));
         }
     }
 }

@@ -124,6 +124,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Deployment" />
@@ -152,10 +154,24 @@
     <Compile Include="InitialDLCExtractor.xaml.cs">
       <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1\Unreal\Bytecode.cs" />
+    <Compile Include="ME1\Unreal\Function.cs" />
     <Compile Include="MiniLZO.cs" />
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CurveEd\Anchor.cs" />
+    <Compile Include="CurveEd\BezierSegment.cs" />
+    <Compile Include="CurveEd\Curve.cs" />
+    <Compile Include="CurveEd\CurveEditor.xaml.cs">
+      <DependentUpon>CurveEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\CurveGraph.xaml.cs">
+      <DependentUpon>CurveGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\FloatEventArgs.cs" />
+    <Compile Include="CurveEd\Handle.cs" />
+    <Compile Include="CurveEd\InterpCurve.cs" />
     <Compile Include="Property Dumper\PropDumper.Designer.cs">
       <DependentUpon>PropDumper.cs</DependentUpon>
     </Compile>
@@ -368,6 +384,7 @@
     <Compile Include="Unreal\TOCBinFile.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\UnrealObjectInfo.cs" />
+    <Compile Include="WPFExtensions.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -770,12 +787,6 @@
     <Compile Include="Modmaker\ModMaker.Designer.cs">
       <DependentUpon>ModMaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\DLCDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageEditor\DLCDialog.Designer.cs">
-      <DependentUpon>DLCDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="PackageEditor\PackageEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -978,9 +989,6 @@
     <EmbeddedResource Include="Modmaker\ModMaker.resx">
       <DependentUpon>ModMaker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PackageEditor\DLCDialog.resx">
-      <DependentUpon>DLCDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1084,6 +1092,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\KismetFont.ttf" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
       <Project>{9010228E-4393-47E2-9DEE-FB5090A1D1AB}</Project>
       <Name>AmaroK86Lib</Name>
@@ -1091,6 +1102,10 @@
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
+      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
+      <Name>HexConverter</Name>
     </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
@@ -1139,6 +1154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\asset_explorer_64x64.png" />
+    <None Include="Resources\hexconverter_icon64x64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\audio_extract_64x64.png" />
@@ -1254,6 +1270,14 @@
     <Resource Include="Icons\me1exp_icon.png" />
     <Resource Include="Icons\me1exp_64x64.png" />
     <Resource Include="Icons\lang_select_64x64.png" />
+    <Page Include="CurveEd\CurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CurveEd\CurveGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

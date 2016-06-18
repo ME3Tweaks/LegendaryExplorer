@@ -94,7 +94,6 @@ namespace UDKExplorer.Meshplorer
                 byte[] buff = new byte[4];
                 for (int i = 0; i < 4; i++)
                     buff[i] = hb1.ByteProvider.ReadByte(hb1.SelectionStart + i);
-                BitConverter.IsLittleEndian = true;
                 toolStripStatusLabel1.Text += " Values at Selectionstart : " + BitConverter.ToInt32(buff, 0) + "(INT) " + BitConverter.ToSingle(buff, 0) + "f(FLOAT)";
             }
         }

@@ -181,7 +181,7 @@ namespace ME3Explorer.QuestMapEditor
                     m.Write(BitConverter.GetBytes(e.Values[j]), 0, 4);
             }
             pcc.Exports[3].Data = m.ToArray();
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.save();
             MessageBox.Show("Done");
         }
     }

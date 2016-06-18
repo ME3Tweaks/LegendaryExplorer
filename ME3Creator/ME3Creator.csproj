@@ -83,12 +83,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Hexconverter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Hexconverter.Designer.cs">
-      <DependentUpon>Hexconverter.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interpreter.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -117,9 +111,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Hexconverter.resx">
-      <DependentUpon>Hexconverter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter.resx">
       <DependentUpon>Interpreter.cs</DependentUpon>
@@ -159,6 +150,10 @@
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
+      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
+      <Name>HexConverter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
@@ -169,7 +164,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\UDKLibWV\UDKLibWV.csproj">
-      <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
+      <Project>{40FB6624-5444-43DC-8B73-863A3D91E1F3}</Project>
       <Name>UDKLibWV</Name>
     </ProjectReference>
   </ItemGroup>

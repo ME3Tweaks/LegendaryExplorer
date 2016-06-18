@@ -682,7 +682,7 @@ namespace ME3Explorer.Meshplorer2
             mem.Write(pcc.Exports[en.Index].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             pcc.Exports[en.Index].Data = mem.ToArray();
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.save();
             if (!en.isDLC)
                 MessageBox.Show("Done");
             else

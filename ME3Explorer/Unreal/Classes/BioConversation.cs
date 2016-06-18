@@ -771,7 +771,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
             m.Write(BitConverter.GetBytes((int)0), 0, 4);
             pcc.Exports[MyIndex].Data = m.ToArray();
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.save();
         }
     }
 }

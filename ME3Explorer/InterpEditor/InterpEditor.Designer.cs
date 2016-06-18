@@ -34,6 +34,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAlternateTlkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -80,7 +81,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPCCToolStripMenuItem,
-            this.loadAlternateTlkToolStripMenuItem});
+            this.loadAlternateTlkToolStripMenuItem,
+            this.saveToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -98,6 +100,13 @@
             this.loadAlternateTlkToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.loadAlternateTlkToolStripMenuItem.Text = "Manage Loaded TLKs";
             this.loadAlternateTlkToolStripMenuItem.Click += new System.EventHandler(this.loadAlternateTlkToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -144,7 +153,7 @@
             this.vScrollBar1.LargeChange = 100;
             this.vScrollBar1.Location = new System.Drawing.Point(0, 0);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 350);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 349);
             this.vScrollBar1.SmallChange = 10;
             this.vScrollBar1.TabIndex = 4;
             // 
@@ -172,7 +181,7 @@
             // 
             this.hScrollBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.hScrollBar1.LargeChange = 100;
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 350);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 349);
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.Size = new System.Drawing.Size(812, 17);
             this.hScrollBar1.SmallChange = 10;
@@ -203,7 +212,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(565, 144);
+            this.treeView1.Size = new System.Drawing.Size(565, 145);
             this.treeView1.TabIndex = 7;
             this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             // 
@@ -212,7 +221,7 @@
             this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView2.Location = new System.Drawing.Point(0, 0);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(243, 144);
+            this.treeView2.Size = new System.Drawing.Size(243, 145);
             this.treeView2.TabIndex = 7;
             // 
             // splitContainer1
@@ -228,7 +237,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView2);
-            this.splitContainer1.Size = new System.Drawing.Size(812, 144);
+            this.splitContainer1.Size = new System.Drawing.Size(812, 145);
             this.splitContainer1.SplitterDistance = 565;
             this.splitContainer1.TabIndex = 8;
             // 
@@ -249,7 +258,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
             this.splitContainer2.Size = new System.Drawing.Size(812, 515);
-            this.splitContainer2.SplitterDistance = 367;
+            this.splitContainer2.SplitterDistance = 366;
             this.splitContainer2.TabIndex = 9;
             // 
             // timeline
@@ -261,7 +270,7 @@
             this.timeline.Location = new System.Drawing.Point(17, 0);
             this.timeline.Name = "timeline";
             this.timeline.RegionManagement = true;
-            this.timeline.Size = new System.Drawing.Size(795, 350);
+            this.timeline.Size = new System.Drawing.Size(795, 349);
             this.timeline.TabIndex = 2;
             this.timeline.Text = "timeline1";
             // 
@@ -319,5 +328,6 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ToolStripButton InterpTrackScan;
         private System.Windows.Forms.ToolStripMenuItem loadAlternateTlkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
     }
 }

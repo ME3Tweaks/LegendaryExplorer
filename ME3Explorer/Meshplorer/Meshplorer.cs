@@ -295,7 +295,7 @@ namespace ME3Explorer.Meshplorer
                     int idx =Objects[n].index;
                     PCCObject.ExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
-                    pcc.altSaveToFile(CurrFile, true);
+                    pcc.save(CurrFile);
                     MessageBox.Show("Done.");
                     timer1.Enabled = true;
                 }
@@ -313,7 +313,7 @@ namespace ME3Explorer.Meshplorer
                     int idx = Objects[n].index;
                     PCCObject.ExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
-                    pcc.altSaveToFile(CurrFile, true);
+                    pcc.save(CurrFile);
                     MessageBox.Show("Done.");
                     rtb1.Visible = false;
                     timer1.Enabled = true;
@@ -586,7 +586,7 @@ namespace ME3Explorer.Meshplorer
                 mem.Write(pcc.Exports[exp].Data, 0, end);
                 mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
                 pcc.Exports[exp].Data = mem.ToArray();
-                pcc.altSaveToFile(pcc.pccFileName, true);
+                pcc.save();
                 MessageBox.Show("Done");
             }
         }
@@ -611,7 +611,7 @@ namespace ME3Explorer.Meshplorer
             mem.Write(pcc.Exports[idx].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             pcc.Exports[idx].Data = mem.ToArray();
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.save();
             MessageBox.Show("Done");
         }
     }

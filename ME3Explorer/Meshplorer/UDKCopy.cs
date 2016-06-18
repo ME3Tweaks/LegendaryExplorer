@@ -169,7 +169,7 @@ namespace ME3Explorer.Meshplorer
             mem.Write(MPOpt.pcc.Exports[MPOpt.SelectedObject].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             MPOpt.pcc.Exports[MPOpt.SelectedObject].Data = mem.ToArray();
-            MPOpt.pcc.altSaveToFile(MPOpt.pcc.pccFileName, true);
+            MPOpt.pcc.save();
             //SaveFileDialog d = new SaveFileDialog();
             //d.Filter = "*.bin|*.bin";
             //if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)

@@ -320,7 +320,7 @@ namespace ME3Explorer.Unreal
 
         public static Property getPropOrNull(PCCObject pcc, byte[] data, int start, string propName)
         {
-            List<Property> props = ReadProp(pcc, data, 0);
+            List<Property> props = ReadProp(pcc, data, start);
             foreach (Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == propName)
@@ -506,6 +506,23 @@ namespace ME3Explorer.Unreal
                     break;
             }
             return pg;
+        }
+
+        public static List<List<Property>> ReadStructArrayProp(PCCObject pcc, Property p)
+        {
+            List<List<Property>> res = new List<List<Property>>();
+            int pos = 28;
+            int linkCount = BitConverter.ToInt32(p.raw, 24);
+            for (int i = 0; i < linkCount; i++)
+            {
+                List<Property> p2 = ReadProp(pcc, p.raw, pos);
+                for (int j = 0; j < p2.Count(); j++)
+                {
+                    pos += p2[j].raw.Length;
+                }
+                res.Add(p2);
+            }
+            return res;
         }
 
         public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
@@ -740,9 +757,9 @@ namespace ME3Explorer.Unreal
             return v;
         }
         
-        public static int detectStart(PCCObject pcc, byte[] raw, long flags)
+        public static int detectStart(PCCObject pcc, byte[] raw, ulong flags)
         {
-            if ((flags & (long)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 return 30;
             }
@@ -877,7 +894,8 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty":
                     size = BitConverter.ToInt32(p.raw, 16);
                     count = BitConverter.ToInt32(p.raw, 24);
-                    UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name), inStruct);
+                    UnrealObjectInfo.PropertyInfo info = UnrealObjectInfo.getPropertyInfo(className, name, inStruct);
+                    UnrealObjectInfo.ArrayType arrayType = UnrealObjectInfo.getArrayType(info);
                     pos = 28;
                     List<Property> AllProps = new List<Property>();
 
@@ -903,7 +921,7 @@ namespace ME3Explorer.Unreal
                     m.Write(BitConverter.GetBytes(size), 0, 4);
                     m.Write(new byte[4], 0, 4);
                     m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0)
+                    if (AllProps.Count != 0 && (info == null || !UnrealObjectInfo.isImmutable(info.reference)))
                     {
                         foreach (Property pp in AllProps)
                             ImportProperty(pcc, importpcc, pp, className, m, inStruct);

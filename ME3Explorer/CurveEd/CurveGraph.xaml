@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="ME3Explorer.CurveEd.CurveGraph"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="444.472" SizeChanged="UserControl_SizeChanged" ClipToBounds="True" MouseWheel="UserControl_MouseWheel">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="CurveStrokeBrush" Color="#FFC6037D"/>
+        <Style TargetType="{x:Type local:BezierSegment}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
+        </Style>
+        <Style TargetType="{x:Type Line}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="{DynamicResource CurveStrokeBrush}"/>
+        </Style>
+        <Style x:Key="HandleLine" TargetType="{x:Type Line}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="White"/>
+            <Setter Property="Panel.ZIndex" Value="1"/>
+        </Style>
+        <Style x:Key="BaseLine" TargetType="{x:Type Line}">
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="#FF9C9C9C"/>
+        </Style>
+        <Style x:Key="HorizontalLine" TargetType="{x:Type Line}" BasedOn="{StaticResource BaseLine}">
+            <Setter Property="X2" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+        </Style>
+        <Style x:Key="VerticalLine" TargetType="{x:Type Line}" BasedOn="{StaticResource BaseLine}">
+            <Setter Property="Y2" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#FFE0E0E0"/>
+            <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#FFF Hero"/>
+            <Setter Property="FontSize" Value="8"/>
+        </Style>
+        <Style TargetType="{x:Type local:Anchor}">
+            <Setter Property="Canvas.Bottom" Value="{Binding Path=Y, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Canvas.Left" Value="{Binding Path=X, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Panel.ZIndex" Value="2"/>
+            <Setter Property="Background" Value="{DynamicResource CurveStrokeBrush}"/>
+            <Setter Property="BorderBrush" Value="#FFB00000"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Fill="{TemplateBinding Background}" 
+                                 Width="7" Height="7"
+                                 Stroke="{TemplateBinding BorderBrush}">
+                        </Rectangle>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="-3.5" Y="3.5"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF9FF06"/>
+                    <Setter Property="BorderBrush" Value="#FFEF070A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type local:Handle}">
+            <Setter Property="Canvas.Bottom" Value="{Binding Path=Y, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Canvas.Left" Value="{Binding Path=X, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Panel.ZIndex" Value="2"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Fill="{TemplateBinding Background}" 
+                                 Width="7" Height="7"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="-3.5" Y="3.5"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Canvas x:Name="graph" Background="#FF3B3B3B" PreviewMouseDown="graph_MouseDown" PreviewMouseUp="graph_MouseUp" PreviewMouseMove="graph_MouseMove">
+    </Canvas>
+</UserControl>
