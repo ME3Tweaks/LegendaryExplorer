@@ -49,9 +49,7 @@ namespace ME3Explorer
         // Using a DependencyProperty as the backing store for ItemControlMargin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemControlMarginProperty =
             DependencyProperty.Register("ItemControlMargin", typeof(Thickness), typeof(ToolPanel), new PropertyMetadata(new Thickness(0)));
-
-
-
+        
         public int Rows
         {
             get { return (int)GetValue(RowsProperty); }
@@ -72,22 +70,26 @@ namespace ME3Explorer
         public static readonly DependencyProperty ColumnsProperty =
             DependencyProperty.Register("Columns", typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
 
+        public int viewCapacity { get { return Rows * Columns; } }
 
-
+        private int index;
+        private IEnumerable<Tool> tools;
 
         public ToolPanel()
         {
             InitializeComponent();
         }
 
+        public void setToolList(IEnumerable<Tool> list)
+        {
+            tools = list;
+            index = 0;
+            updateContents();
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Button b = sender as Button;
-            if (b != null)
-            {
-                Tool t = (Tool)b.DataContext;
-                t.open();
-            }
+            ((sender as Button)?.DataContext as Tool)?.open();
         }
 
         private void Button_GotFocus(object sender, RoutedEventArgs e)
@@ -128,6 +130,39 @@ namespace ME3Explorer
                 {
                     img.Opacity = 0.85;
                 }
+            }
+        }
+
+        private void backButton_Click(object sender, RoutedEventArgs e)
+        {
+            index -= viewCapacity;
+            updateContents();
+        }
+
+        private void forwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            index += viewCapacity;
+            updateContents();
+        }
+
+        private void updateContents()
+        {
+            ToolList.ItemsSource = tools.Skip(index).Take(viewCapacity);
+            if (tools.Count() > index + viewCapacity)
+            {
+                forwardButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                forwardButton.Visibility = Visibility.Collapsed;
+            }
+            if (index > 0)
+            {
+                backButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                backButton.Visibility = Visibility.Collapsed;
             }
         }
     }

@@ -29,8 +29,8 @@ namespace ME3Explorer
         {
             InitializeComponent();
             Tools.InitializeTools();
-            utilitiesPanel.ToolList.ItemsSource = Tools.items.Where(x => x.tags.Contains("utility"));
-            favoritesPanel.ToolList.ItemsSource = Tools.items.Where(x => x.tags.Contains("developer"));
+            utilitiesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
+            favoritesPanel.setToolList(Tools.items.Where(x => !x.tags.Contains("utility")));
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
