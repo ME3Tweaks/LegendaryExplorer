@@ -20,6 +20,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
+using ME3Explorer.Packages;
 
 namespace ME2Explorer.SequenceObjects
 {
@@ -27,7 +28,7 @@ namespace ME2Explorer.SequenceObjects
 
     public abstract class SObj : PNode
     {
-        public PCCObject pcc;
+        public ME2Package pcc;
         public GraphEditor g;
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
@@ -47,7 +48,7 @@ namespace ME2Explorer.SequenceObjects
         protected Pen outlinePen;
         protected SText comment;
 
-        public SObj(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+        public SObj(int idx, float x, float y, ME2Package p, GraphEditor grapheditor)
             : base()
         {
             pcc = p;
@@ -61,7 +62,7 @@ namespace ME2Explorer.SequenceObjects
             this.Pickable = true;
         }
 
-        public SObj(int idx, float x, float y, PCCObject p)
+        public SObj(int idx, float x, float y, ME2Package p)
             : base()
         {
             pcc = p;
@@ -162,7 +163,7 @@ namespace ME2Explorer.SequenceObjects
         protected PPath shape;
         public string Value { get { return val.Text; } set { val.Text = value; } }
 
-        public SVar(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+        public SVar(int idx, float x, float y, ME2Package p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
             string s = pcc.Exports[index].ObjectName;
@@ -310,7 +311,7 @@ namespace ME2Explorer.SequenceObjects
                                 }
                                 else
                                 {
-                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].Name;
+                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].ObjectName;
                                 }
                             }
                         }
@@ -436,13 +437,13 @@ namespace ME2Explorer.SequenceObjects
         public List<OutputLink> Outlinks;
         public List<VarLink> Varlinks;
 
-        public SBox(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+        public SBox(int idx, float x, float y, ME2Package p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
             
         }
 
-        public SBox(int idx, float x, float y, PCCObject p)
+        public SBox(int idx, float x, float y, ME2Package p)
             : base(idx, x, y, p)
         {
             
@@ -1105,7 +1106,7 @@ namespace ME2Explorer.SequenceObjects
 
     public class SEvent : SBox
     {
-        public SEvent(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+        public SEvent(int idx, float x, float y, ME2Package p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
@@ -1224,7 +1225,7 @@ namespace ME2Explorer.SequenceObjects
         protected float originalX;
         protected float originalY;
 
-        public SAction(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
+        public SAction(int idx, float x, float y, ME2Package p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
             GetVarLinks();
@@ -1233,7 +1234,7 @@ namespace ME2Explorer.SequenceObjects
             originalY = y;
         }
 
-        public SAction(int idx, float x, float y, PCCObject p)
+        public SAction(int idx, float x, float y, ME2Package p)
             : base(idx, x, y, p)
         {
             GetVarLinks();
@@ -1335,7 +1336,7 @@ namespace ME2Explorer.SequenceObjects
                     if(prop.Value.IntValue > 0)
                         s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
                     else
-                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].Name + "\"";
+                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].ObjectName + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)

@@ -157,6 +157,12 @@
     <Compile Include="ME1\Unreal\Bytecode.cs" />
     <Compile Include="ME1\Unreal\Function.cs" />
     <Compile Include="MiniLZO.cs" />
+    <Compile Include="Packages\ExportEntry.cs" />
+    <Compile Include="Packages\IEntry.cs" />
+    <Compile Include="Packages\IMEPackage.cs" />
+    <Compile Include="Packages\ImportEntry.cs" />
+    <Compile Include="Packages\ME1Package.cs" />
+    <Compile Include="Packages\ME2Package.cs" />
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -309,12 +315,6 @@
     <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </Compile>
-    <Compile Include="UDKConverter\UDKConverter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UDKConverter\UDKConverter.Designer.cs">
-      <DependentUpon>UDKConverter.cs</DependentUpon>
-    </Compile>
     <Compile Include="UECodeEditor\OPCodes.cs" />
     <Compile Include="UECodeEditor\OPCodeTable.cs">
       <SubType>Form</SubType>
@@ -374,7 +374,7 @@
     <Compile Include="Unreal\Helper3DS.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Unreal\PCCHandler.cs" />
-    <Compile Include="Unreal\PCCObject.cs" />
+    <Compile Include="Packages\ME3Package.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\PSAFile.cs" />
@@ -633,7 +633,6 @@
     <Compile Include="ME1\DialogEditor\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME1\Helper\LZOHelper.cs" />
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Interpreter2\Interpreter2.cs">
       <SubType>Form</SubType>
@@ -680,7 +679,6 @@
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\Sequence.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
-    <Compile Include="ME1\Unreal\PCCObject.cs" />
     <Compile Include="ME1\Unreal\PropertyReader.cs" />
     <Compile Include="ME1\Unreal\PropGrid.cs" />
     <Compile Include="ME1\Unreal\UnrealFlags.cs" />
@@ -703,7 +701,7 @@
     <Compile Include="ME2\DialogEditor\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME2\Helper\SaltLZOHelper.cs" />
+    <Compile Include="Packages\SaltLZOHelper.cs" />
     <Compile Include="ME2\Interpreter2\Interpreter2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -734,7 +732,6 @@
     <Compile Include="ME2\Unreal\BitConverter.cs" />
     <Compile Include="ME2\Unreal\Classes\BioConversation.cs" />
     <Compile Include="ME2\Unreal\Classes\Sequence.cs" />
-    <Compile Include="ME2\Unreal\PCCObject.cs" />
     <Compile Include="ME2\Unreal\PropertyReader.cs" />
     <Compile Include="ME2\Unreal\PropGrid.cs" />
     <Compile Include="ME2\Unreal\UnrealFlags.cs" />
@@ -1064,9 +1061,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UDKConverter\UDKConverter.resx">
-      <DependentUpon>UDKConverter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UECodeEditor\OPCodeTable.resx">
       <DependentUpon>OPCodeTable.cs</DependentUpon>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -107,7 +108,7 @@ namespace ME3Explorer.Propertydb
                                     + "\"");
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     pb2.Maximum = pcc.Exports.Count();
                     {
                         pb1.Value = i;

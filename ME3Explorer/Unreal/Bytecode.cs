@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
@@ -17,7 +18,7 @@ namespace ME3Explorer.Unreal
             public bool stop;
         }
 
-        public static PCCObject pcc;
+        public static ME3Package pcc;
         public static byte[] memory;
         public static int memsize;
         #region NormalToken
@@ -341,7 +342,7 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static string ToRawText(byte[]raw,PCCObject Pcc,bool debug = false)
+        public static string ToRawText(byte[]raw,ME3Package Pcc,bool debug = false)
         {
             BitConverter.IsLittleEndian = true;
             string s = "";

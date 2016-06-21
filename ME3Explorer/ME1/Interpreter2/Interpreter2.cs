@@ -7,12 +7,13 @@ using Be.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using System.Diagnostics;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Interpreter2
 {
     public partial class Interpreter2 : Form
     {
-        public PCCObject pcc;
+        public ME1Package pcc;
         public int Index;
         public byte[] memory;
         public int memsize;
@@ -111,7 +112,7 @@ namespace ME1Explorer.Interpreter2
         {
             base.Show();
             toolStripStatusLabel1.Text = "Class: " + pcc.Exports[Index].ClassName + ", Index: " + Index;
-            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
+            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.fileName);
             StartScan();
         }
 

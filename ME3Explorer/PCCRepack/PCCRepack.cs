@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
@@ -28,7 +29,7 @@ namespace ME3Explorer
                 {
                     try
                     {
-                        PCCObject pccObj = new PCCObject(fileName);
+                        ME3Package pccObj = new ME3Package(fileName);
                         if (!pccObj.canReconstruct)
                         {
                             var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
@@ -80,7 +81,7 @@ namespace ME3Explorer
                             File.Copy(fileName, backupFile);
                         }
 
-                        PCCObject pccObj = new PCCObject(fileName);
+                        ME3Package pccObj = new ME3Package(fileName);
                         pccObj.saveByReconstructing(fileName);
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -112,7 +113,7 @@ namespace ME3Explorer
             Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
             try
             {
-                PCCObject pccObj = new PCCObject(sourceFile);
+                ME3Package pccObj = new ME3Package(sourceFile);
                 pccObj.saveByReconstructing(outputFile);
             }
             catch (Exception ex)
@@ -136,7 +137,7 @@ namespace ME3Explorer
             Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
             try
             {
-                PCCObject pccObj = new PCCObject(sourceFile);
+                ME3Package pccObj = new ME3Package(sourceFile);
                 if (!pccObj.canReconstruct)
                 {
                     throw new Exception("Cannot compress files with a SeekFreeShaderCache");

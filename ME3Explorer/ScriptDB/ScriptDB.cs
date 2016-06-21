@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
 
@@ -47,9 +48,9 @@ namespace ME3Explorer.ScriptDB
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     int count2 = 0;
-                    foreach (PCCObject.ExportEntry ent in pcc.Exports)
+                    foreach (ME3ExportEntry ent in pcc.Exports)
                     {
                         if (ent.ClassName == "Function")
                         {

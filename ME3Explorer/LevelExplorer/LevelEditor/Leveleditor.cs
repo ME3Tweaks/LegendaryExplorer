@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
@@ -20,7 +21,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         public SceneManager SceneMan = new SceneManager();
         public bool MoveWASD = true;
         public bool FocusOnClick = true;
-        public PCCObject pcc;
+        public ME3Package pcc;
 
         public Leveleditor()
         {

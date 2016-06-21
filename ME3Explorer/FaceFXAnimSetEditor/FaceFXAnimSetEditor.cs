@@ -9,12 +9,13 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Be.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.FaceFXAnimSetEditor
 {
     public partial class FaceFXAnimSetEditor : Form
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<int> Objects;
         public FaceFXAnimSet FaceFX;
 
@@ -31,7 +32,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    pcc = new ME3Package(d.FileName);
                     Objects = new List<int>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "FaceFXAnimSet")

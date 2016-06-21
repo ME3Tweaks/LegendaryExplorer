@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Media;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -13,7 +14,7 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public PCCObject pcc;
+        public ME3Package pcc;
         int Index;
         public List<PropertyReader.Property> props;
         public SoundPlayer sp;
@@ -30,7 +31,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
         
-        public WwiseStream(PCCObject Pcc, int index)
+        public WwiseStream(ME3Package Pcc, int index)
         {
             pcc = Pcc;
             Index = index;

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using ME3Explorer;
 using lib3ds.Net;
 using KFreonLib.Debugging;
@@ -16,7 +17,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class Level
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int Index;
         public byte[] memory;
         public int memlength;
@@ -47,7 +48,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Level(PCCObject Pcc, int index, bool SimpleRead = false)
+        public Level(ME3Package Pcc, int index, bool SimpleRead = false)
         {
             memory = Pcc.Exports[index].Data;
             memlength = memory.Length;
@@ -98,7 +99,7 @@ namespace ME3Explorer.Unreal.Classes
                 if(pcc.isExport(idx))
                 {
                     Objects.Add(idx);
-                    PCCObject.ExportEntry e = pcc.Exports[idx];
+                    ME3ExportEntry e = pcc.Exports[idx];
                     switch (e.ClassName)
                     {
                         case "SplineActor":
@@ -218,7 +219,7 @@ namespace ME3Explorer.Unreal.Classes
                 wav.SaveChanges();
             foreach (WwiseEnvironmentVolume wev in WEV)
                 wev.SaveChanges();
-            DebugOutput.PrintLn("Saving \"" + Path.GetFileName(pcc.pccFileName) + "\" ..."); 
+            DebugOutput.PrintLn("Saving \"" + Path.GetFileName(pcc.fileName) + "\" ..."); 
             pcc.save();
         }
 
@@ -595,7 +596,7 @@ namespace ME3Explorer.Unreal.Classes
                 int index = Objects[i];
                 if (index > 0)
                 {
-                    PCCObject.ExportEntry e = pcc.Exports[index];
+                    ME3ExportEntry e = pcc.Exports[index];
                     DebugOutput.PrintLn((i + 1) + " / " + Objects.Count + " : \"" + e.ObjectName + "\" - \"" + e.ClassName + "\"");
                     switch (e.ClassName)
                     {
@@ -721,7 +722,7 @@ namespace ME3Explorer.Unreal.Classes
                 int index = Objects[i];
                 if (index > 0)
                 {
-                    PCCObject.ExportEntry e = pcc.Exports[index];
+                    ME3ExportEntry e = pcc.Exports[index];
                     DebugOutput.PrintLn((i + 1) + " / " + Objects.Count + " : \"" + e.ObjectName + "\" - \"" + e.ClassName + "\"");
                     switch (e.ClassName)
                     {

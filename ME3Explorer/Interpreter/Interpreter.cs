@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 using System.Diagnostics;
 
@@ -18,7 +19,7 @@ namespace ME3Explorer
     {
         public event PropertyValueChangedEventHandler PropertyValueChanged;
 
-        public PCCObject Pcc { get { return pcc; } set {pcc = value; defaultStructValues.Clear(); } }
+        public ME3Package Pcc { get { return pcc; } set {pcc = value; defaultStructValues.Clear(); } }
         public int Index;
         public string className;
         public byte[] memory;
@@ -99,7 +100,7 @@ namespace ME3Explorer
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
         private const int HEXBOX_MAX_WIDTH = 650;
 
-        private PCCObject pcc;
+        private ME3Package pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         public Interpreter()
@@ -1477,7 +1478,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
-                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.pccFileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                             {
                                 break;
                             }
@@ -1571,7 +1572,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
-                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.pccFileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                             {
                                 break;
                             }
@@ -1706,7 +1707,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
-                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.pccFileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                             {
                                 break;
                             }
@@ -1937,7 +1938,7 @@ namespace ME3Explorer
                             return; //not valid
                         }
                         if (!pcc.Names.Contains(nameEntry.Text) &&
-                            DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.pccFileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                            DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                         {
                             return;
                         }

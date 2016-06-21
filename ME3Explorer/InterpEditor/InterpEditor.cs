@@ -1,18 +1,17 @@
-﻿using KFreonLib.MEDirectories;
-using ME3Explorer.SequenceObjects;
-using ME3Explorer.Unreal;
-using System;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
+using System.IO;
 using System.Windows.Forms;
+using KFreonLib.MEDirectories;
+using ME3Explorer.SequenceObjects;
 using ME3LibWV;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.InterpEditor
 {
     public partial class InterpEditor : Form
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public string CurrentFile;
         public List<int> objects;
 
@@ -42,7 +41,7 @@ namespace ME3Explorer.InterpEditor
         {
             try
             {
-                pcc = new PCCObject(fileName);
+                pcc = new ME3Package(fileName);
                 objects.Clear();
                 CurrentFile = fileName;
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -83,7 +82,6 @@ namespace ME3Explorer.InterpEditor
 
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-
         }
 
         private void loadAlternateTlkToolStripMenuItem_Click(object sender, EventArgs e)

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -59,11 +60,11 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
 
-        public DecalComponent(PCCObject Pcc, int Index)
+        public DecalComponent(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ME1Explorer.Unreal;
 using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Unreal
 {
@@ -110,7 +111,7 @@ namespace ME1Explorer.Unreal
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
-            PCCObject pcc;
+            ME1Package pcc;
             string path = ME1Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             string objectName;
@@ -118,7 +119,7 @@ namespace ME1Explorer.Unreal
             {
                 if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
                 {
-                    pcc = new PCCObject(files[i]);
+                    pcc = new ME1Package(files[i]);
                     for (int j = 0; j < pcc.Exports.Count; j++)
                     {
                         if (pcc.Exports[j].ClassName == "Enum")
@@ -149,11 +150,11 @@ namespace ME1Explorer.Unreal
             MessageBox.Show("Done");
         }
 
-        private static ClassInfo generateClassInfo(int index, PCCObject pcc)
+        private static ClassInfo generateClassInfo(int index, ME1Package pcc)
         {
             ClassInfo info = new ClassInfo();
             info.baseClass = pcc.Exports[index].ClassParent;
-            foreach (PCCObject.ExportEntry entry in pcc.Exports)
+            foreach (ME1ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
@@ -172,7 +173,7 @@ namespace ME1Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(int index, PCCObject pcc)
+        private static void generateEnumValues(int index, ME1Package pcc)
         {
             string enumName = pcc.Exports[index].ObjectName;
             if (!Enums.ContainsKey(enumName))
@@ -188,7 +189,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(PCCObject pcc, PCCObject.ExportEntry entry)
+        private static PropertyInfo getProperty(ME1Package pcc, ME1ExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

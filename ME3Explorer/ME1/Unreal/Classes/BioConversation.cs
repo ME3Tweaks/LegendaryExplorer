@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Unreal.Classes
 {
     public class BioConversation
     {
-        public PCCObject pcc;
+        public ME1Package pcc;
         public int MyIndex;
         public int Unk1;
         public int TlkFileSet;
@@ -61,7 +62,7 @@ namespace ME1Explorer.Unreal.Classes
             public bool NonTextline;
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, ITalkFile talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, ITalkFile talk, ME1Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -132,7 +133,7 @@ namespace ME1Explorer.Unreal.Classes
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, ITalkFile talk, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, ITalkFile talk, ME1Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -163,7 +164,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public BioConversation(PCCObject Pcc, int Index)
+        public BioConversation(ME1Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
@@ -785,7 +786,7 @@ namespace ME1Explorer.Unreal.Classes
                         break;
                 }
             pcc.Exports[MyIndex].Data = m.ToArray();
-            pcc.SaveToFile(pcc.pccFileName);
+            pcc.save(pcc.fileName);
         }
     }
 }

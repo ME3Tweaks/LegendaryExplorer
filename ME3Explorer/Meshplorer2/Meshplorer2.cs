@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using AmaroK86.MassEffect3;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
@@ -84,7 +85,7 @@ namespace ME3Explorer.Meshplorer2
                                             }
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
-                                            PCCObject pcc = new PCCObject(loc + "temp\\" + filename);
+                                            ME3Package pcc = new ME3Package(loc + "temp\\" + filename);
                                             for (int i = 0; i < pcc.Exports.Count; i++)
                                                 if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
                                                     pcc.Exports[i].ClassName == "StaticMesh")
@@ -130,7 +131,7 @@ namespace ME3Explorer.Meshplorer2
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
                             pcc.Exports[i].ClassName == "StaticMesh")
@@ -348,7 +349,7 @@ namespace ME3Explorer.Meshplorer2
                         EntryStruct en = Entries[i];
                         if (!en.isDLC)
                         {
-                            PCCObject pcc = new PCCObject(ME3Directory.cookedPath + en.Filename);
+                            ME3Package pcc = new ME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
                                 Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -389,7 +390,7 @@ namespace ME3Explorer.Meshplorer2
                                         {
                                             try
                                             {
-                                                PCCObject pcc = new PCCObject(loc + filename);
+                                                ME3Package pcc = new ME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
                                                     Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -510,7 +511,7 @@ namespace ME3Explorer.Meshplorer2
             TreeNode t1 = treeView1.SelectedNode;
             if (t1 == null || t1.Parent == null || t1.Name == "")
                 return;
-            PCCObject pcc = new PCCObject();
+            ME3Package pcc = null;
             SkeletalMesh skm = new SkeletalMesh();
             EntryStruct en;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\";
@@ -522,7 +523,7 @@ namespace ME3Explorer.Meshplorer2
                 en = Entries[o];                
                 if (!en.isDLC)
                 {
-                    pcc = new PCCObject(ME3Directory.cookedPath + en.Filename);
+                    pcc = new ME3Package(ME3Directory.cookedPath + en.Filename);
                     if (en.isSkeletal)
                     {
                         skm = new SkeletalMesh(pcc, en.Index);
@@ -554,7 +555,7 @@ namespace ME3Explorer.Meshplorer2
                                 {
                                     try
                                     {
-                                        pcc = new PCCObject(loc + "dlc.pcc");
+                                        pcc = new ME3Package(loc + "dlc.pcc");
                                         if (en.isSkeletal)
                                         {
                                             skm = new SkeletalMesh(pcc, en.Index);
@@ -580,7 +581,7 @@ namespace ME3Explorer.Meshplorer2
             }
             else
                 return;
-            if (!skm.Loaded || !pcc.Loaded)
+            if (!skm.Loaded || pcc == null)
                 return;
             SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[0];
             UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);

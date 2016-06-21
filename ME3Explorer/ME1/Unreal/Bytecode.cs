@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ME1Explorer;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Unreal
 {
@@ -14,7 +15,7 @@ namespace ME1Explorer.Unreal
             public bool stop;
         }
 
-        public static PCCObject pcc;
+        public static ME1Package pcc;
         public static byte[] memory;
         public static int memsize;
         #region NormalToken
@@ -78,7 +79,7 @@ namespace ME1Explorer.Unreal
         private const int EX_EqualEqual_DelDel = 0x3B;
         private const int EX_NotEqual_DelDel = 0x3C;
 
-        public static string ToRawText(byte[] raw, PCCObject Pcc, bool debug, int headerdiff)
+        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug, int headerdiff)
         {
             ME1Explorer.BitConverter.IsLittleEndian = true;
             string s = "";
@@ -321,7 +322,7 @@ namespace ME1Explorer.Unreal
             NATIVE_SaveConfig = 0x218,
         };
 
-        public static string ToRawText(byte[] raw, PCCObject Pcc, bool debug = false)
+        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug = false)
         {
             ME1Explorer.BitConverter.IsLittleEndian = true;
             string s = "";

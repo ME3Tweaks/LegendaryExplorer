@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -11,7 +12,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<PropertyReader.Property> props;
         public List<byte[]> Chunks;
         public List<byte[]> HIRCObjects;
@@ -19,7 +20,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] didx_data;
         public byte[] data_data;
 
-        public WwiseBank(PCCObject Pcc, int Index)
+        public WwiseBank(ME3Package Pcc, int Index)
         {
             BitConverter.IsLittleEndian = true;
             MyIndex = Index;

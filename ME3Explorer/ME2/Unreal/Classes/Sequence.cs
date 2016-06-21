@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME2Explorer.Unreal.Classes
 {
     public class Sequence
     {
-        public PCCObject pcc;
+        public ME2Package pcc;
         public int index;
         public byte[] memory;
         public int memsize;
         public List<PropertyReader.Property> props;
         public List<int> SequenceObjects;
 
-        public Sequence(PCCObject Pcc, int export)
+        public Sequence(ME2Package Pcc, int export)
         {
             pcc = Pcc;
             memory = pcc.Exports[export].Data;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -594,7 +595,7 @@ namespace ME3Explorer.Unreal.Classes
         public int Unk2;
         public List<int> Unk3;
 
-        public PCCObject Owner;
+        public ME3Package Owner;
         public int MyIndex;
         public bool Loaded = false;
         private int ReadEnd;
@@ -606,7 +607,7 @@ namespace ME3Explorer.Unreal.Classes
             Loaded = true;
         }
 
-        public SkeletalMesh(PCCObject pcc, int Index)
+        public SkeletalMesh(ME3Package pcc, int Index)
         {
             Loaded = true;
             MyIndex = Index;

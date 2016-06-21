@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -14,7 +15,7 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -147,7 +148,7 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion 
 
-        public SkeletalMeshOld(PCCObject Pcc, int index)
+        public SkeletalMeshOld(ME3Package Pcc, int index)
         {
             pcc = Pcc;
             memory = pcc.Exports[index].Data;

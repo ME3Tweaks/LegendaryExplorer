@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Unreal.Classes
 {
     public class BioTlkFileSet : ITalkFile
     {
         public List<TalkFile> talkFiles;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public int index;
         public int selectedTLK;
         public string Name { get { return index != -1 ? (pcc.Exports[index].ObjectName  + "."): null; } }
 
-        public BioTlkFileSet(PCCObject _pcc)
+        public BioTlkFileSet(ME1Package _pcc)
         {
             pcc = _pcc;
             index = -1;
-            for (int i = 0; i < pcc.ExportCount; i++)
+            for (int i = 0; i < pcc.Exports.Count; i++)
             {
                 if (pcc.Exports[i].ClassName == "BioTlkFileSet")
                 {
@@ -33,7 +34,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public BioTlkFileSet(PCCObject _pcc, int _index)
+        public BioTlkFileSet(ME1Package _pcc, int _index)
         {
             pcc = _pcc;
             index = _index;

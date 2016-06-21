@@ -10,6 +10,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -51,7 +52,7 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
 
@@ -60,7 +61,7 @@ namespace ME3Explorer.Unreal.Classes
         public CustomVertex.PositionColored[] BrushMesh;
         public bool isSelected;
 
-        public BrushComponent(PCCObject Pcc, int Index)
+        public BrushComponent(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;

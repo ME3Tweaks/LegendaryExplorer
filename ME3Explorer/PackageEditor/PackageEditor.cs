@@ -14,12 +14,13 @@ using KFreonLib.MEDirectories;
 using UsefulThings;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
     public partial class PackageEditor : Form
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int CurrentView;
         public const int NAMES_VIEW = 0;
         public const int IMPORTS_VIEW = 1;
@@ -28,7 +29,6 @@ namespace ME3Explorer
 
         public PropGrid pg;
         private string currentFile;
-        private bool haveCloned;
 
         private List<int> ClassNames;
 
@@ -72,8 +72,7 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                pcc = new PCCObject(s);
-                haveCloned = false;
+                pcc = new ME3Package(s);
                 appendSaveMenuItem.Enabled = true;
                 appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
                 interpreterControl.Pcc = pcc;
@@ -115,7 +114,7 @@ namespace ME3Explorer
             }
             Classes.Add("0 : Class");
             int count = 1;
-            foreach (PCCObject.ExportEntry exp in pcc.Exports)
+            foreach (ME3ExportEntry exp in pcc.Exports)
             {
                 Classes.Add((count++) + " : " + exp.ObjectName);
             }
@@ -265,7 +264,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < pcc.Imports.Count; i++)
                 {
-                    string importStr = i.ToString() + " (0x" + (pcc.ImportOffset + (i * PCCObject.ImportEntry.
+                    string importStr = i.ToString() + " (0x" + (pcc.ImportOffset + (i * ME3ImportEntry.
                         byteSize)).ToString("X4") + "): (" + pcc.Imports[i].PackageFile + ") ";
                     if (pcc.Imports[i].PackageFullName != "Class" && pcc.Imports[i].PackageFullName != "Package")
                     {
@@ -329,7 +328,7 @@ namespace ME3Explorer
                 int importsOffset = pcc.Exports.Count;
                 int link;
                 List<TreeNode> nodeList = new List<TreeNode>(pcc.Exports.Count + pcc.Imports.Count + 1);
-                TreeNode node = new TreeNode(pcc.pccFileName);
+                TreeNode node = new TreeNode(pcc.fileName);
                 node.Tag = true;
                 nodeList.Add(node);
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -621,7 +620,7 @@ namespace ME3Explorer
             {
                 name = parent.Label;
             }
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME3ExportEntry ent = pcc.Exports[n];
             List<Unreal.PropertyReader.Property> p = Unreal.PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
@@ -1299,7 +1298,7 @@ namespace ME3Explorer
                 while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
                 fs.Close();
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
+                string currfile = Path.GetFileName(pcc.fileName);
                 mj.data = buff;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + n + " with " + buff.Length + " bytes of data";
                 string loc = Path.GetDirectoryName(Application.ExecutablePath);
@@ -1319,7 +1318,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.pccFileName, CopyArray(pcc.Exports[n].Data));
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.fileName, CopyArray(pcc.Exports[n].Data));
             KFreonLib.Scripting.ModMaker.JobList.Add(mj);
             MessageBox.Show("Done");
         }
@@ -1563,20 +1562,19 @@ namespace ME3Explorer
             int n = 0;
             if (GetSelected(out n))
             {
-                haveCloned = true;
                 appendSaveMenuItem.Enabled = false;
                 appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning has occured.";
 
                 if (n >= 0)
                 {
-                    PCCObject.ExportEntry ent = pcc.Exports[n].Clone();
+                    ME3ExportEntry ent = pcc.Exports[n].Clone();
                     pcc.addExport(ent);
                     RefreshView();
                     goToNumber(pcc.Exports.Count - 1); 
                 }
                 else
                 {
-                    PCCObject.ImportEntry ent = pcc.Imports[-n - 1].Clone();
+                    ME3ImportEntry ent = pcc.Imports[-n - 1].Clone();
                     pcc.addImport(ent);
                     RefreshView();
                     goToNumber(CurrentView == TREE_VIEW ? -pcc.Imports.Count : pcc.Imports.Count - 1);
@@ -1594,7 +1592,6 @@ namespace ME3Explorer
             if (GetSelected(out n))
             {
                 int nextIndex;
-                haveCloned = true;
                 appendSaveMenuItem.Enabled = false;
                 appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning or importing has occured.";
 
@@ -1602,7 +1599,7 @@ namespace ME3Explorer
                 if (n >= 0)
                 {
                     nextIndex = pcc.Exports.Count;
-                    PCCObject.ExportEntry exp = pcc.Exports[n].Clone();
+                    ME3ExportEntry exp = pcc.Exports[n].Clone();
                     pcc.addExport(exp);
 
                     n = nextIndex + 1;
@@ -1610,7 +1607,7 @@ namespace ME3Explorer
                 else
                 {
                     nextIndex = -pcc.Imports.Count - 1;
-                    PCCObject.ImportEntry imp = pcc.Imports[-n - 1].Clone();
+                    ME3ImportEntry imp = pcc.Imports[-n - 1].Clone();
                     pcc.addImport(imp);
 
                     n = nextIndex;
@@ -1634,14 +1631,14 @@ namespace ME3Explorer
                     if (index >= 0)
                     {
                         nextIndex = pcc.Exports.Count + 1;
-                        PCCObject.ExportEntry exp = pcc.Exports[index].Clone();
+                        ME3ExportEntry exp = pcc.Exports[index].Clone();
                         exp.idxLink = n;
                         pcc.addExport(exp);
                     }
                     else
                     {
                         nextIndex = -pcc.Imports.Count - 1;
-                        PCCObject.ImportEntry imp = pcc.Imports[-index - 1].Clone();
+                        ME3ImportEntry imp = pcc.Imports[-index - 1].Clone();
                         imp.idxLink = n;
                         pcc.addImport(imp);
                     }
@@ -1678,11 +1675,10 @@ namespace ME3Explorer
                     {
                         return;
                     }
-                    haveCloned = true;
                     appendSaveMenuItem.Enabled = false;
                     appendSaveMenuItem.ToolTipText = "This method cannot be used if importing has occured.";
 
-                    PCCObject importpcc = sourceNode.TreeView.Tag as PCCObject;
+                    ME3Package importpcc = sourceNode.TreeView.Tag as ME3Package;
                     int n = Convert.ToInt32(sourceNode.Name);
                     int link;
                     if (DestinationNode.Name == "")
@@ -1719,7 +1715,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool importTree(TreeNode sourceNode, PCCObject importpcc, int n)
+        private bool importTree(TreeNode sourceNode, ME3Package importpcc, int n)
         {
             int nextIndex;
             int index;
@@ -1750,10 +1746,10 @@ namespace ME3Explorer
             return true;
         }
 
-        private void importImport(PCCObject importpcc, int n, int link)
+        private void importImport(ME3Package importpcc, int n, int link)
         {
-            PCCObject.ImportEntry imp = importpcc.Imports[n];
-            PCCObject.ImportEntry nimp = new PCCObject.ImportEntry(pcc, imp.header);
+            ME3ImportEntry imp = importpcc.Imports[n];
+            ME3ImportEntry nimp = new ME3ImportEntry(pcc, imp.header);
             nimp.idxLink = link;
             nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
@@ -1761,10 +1757,10 @@ namespace ME3Explorer
             pcc.addImport(nimp);
         }
 
-        private bool importExport(PCCObject importpcc, int n, int link)
+        private bool importExport(ME3Package importpcc, int n, int link)
         {
-            PCCObject.ExportEntry ex = importpcc.Exports[n];
-            PCCObject.ExportEntry nex = new PCCObject.ExportEntry();
+            ME3ExportEntry ex = importpcc.Exports[n];
+            ME3ExportEntry nex = new ME3ExportEntry();
             byte[] idata = ex.Data;
             List<PropertyReader.Property> Props = PropertyReader.getPropList(importpcc, ex);
             int start = PropertyReader.detectStart(importpcc, idata, importpcc.Exports[n].ObjectFlags);
@@ -1834,7 +1830,7 @@ namespace ME3Explorer
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
             nex.idxArchtype = nex.idxClass = nex.idxClassParent = 0;
-            nex.pccRef = pcc;
+            nex.fileRef = pcc;
             pcc.addExport(nex);
             return true;
         }

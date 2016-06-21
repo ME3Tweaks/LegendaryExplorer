@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gibbed.IO;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.CurveEd
 {
@@ -22,12 +23,12 @@ namespace ME3Explorer.CurveEd
     /// </summary>
     public partial class CurveEditor : Window
     {
-        private PCCObject pcc;
+        private ME3Package pcc;
         private int index;
 
         public List<InterpCurve> InterpCurveTracks;
 
-        public CurveEditor(PCCObject _pcc, int Index)
+        public CurveEditor(ME3Package _pcc, int Index)
         {
             InitializeComponent();
             pcc = _pcc;

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
@@ -305,7 +306,7 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static Property getPropOrNull(PCCObject pcc, PCCObject.ExportEntry export, string propName)
+        public static Property getPropOrNull(ME3Package pcc, ME3ExportEntry export, string propName)
         {
             List<Property> props = getPropList(pcc, export);
             foreach (Property prop in props)
@@ -318,7 +319,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static Property getPropOrNull(PCCObject pcc, byte[] data, int start, string propName)
+        public static Property getPropOrNull(ME3Package pcc, byte[] data, int start, string propName)
         {
             List<Property> props = ReadProp(pcc, data, start);
             foreach (Property prop in props)
@@ -331,7 +332,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<Property> getPropList(PCCObject pcc, PCCObject.ExportEntry export)
+        public static List<Property> getPropList(ME3Package pcc, ME3ExportEntry export)
         {
             Application.DoEvents();
             int start = detectStart(pcc, export.Data, export.ObjectFlags);
@@ -356,7 +357,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static string PropertyToText(Property p,PCCObject pcc)
+        public static string PropertyToText(Property p,ME3Package pcc)
         {
             string s = "";
             s = "Name: " + pcc.Names[p.Name];
@@ -396,7 +397,7 @@ namespace ME3Explorer.Unreal
             return s;
         }
 
-        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, ME3Package pcc)
         {
             string cat = p.TypeVal.ToString();
             CustomProperty pg;
@@ -508,7 +509,7 @@ namespace ME3Explorer.Unreal
             return pg;
         }
 
-        public static List<List<Property>> ReadStructArrayProp(PCCObject pcc, Property p)
+        public static List<List<Property>> ReadStructArrayProp(ME3Package pcc, Property p)
         {
             List<List<Property>> res = new List<List<Property>>();
             int pos = 28;
@@ -525,7 +526,7 @@ namespace ME3Explorer.Unreal
             return res;
         }
 
-        public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
+        public static List<Property> ReadProp(ME3Package pcc, byte[] raw, int start)
         {
             Property p;
             PropertyValue v;
@@ -704,7 +705,7 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
-        private static Type getType(PCCObject pcc, int type)
+        private static Type getType(ME3Package pcc, int type)
         {
             switch (pcc.getNameEntry(type))
             {
@@ -725,7 +726,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
+        private static PropertyValue ReadValue(ME3Package pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
             switch (pcc.Names[type])
@@ -757,7 +758,7 @@ namespace ME3Explorer.Unreal
             return v;
         }
         
-        public static int detectStart(PCCObject pcc, byte[] raw, ulong flags)
+        public static int detectStart(ME3Package pcc, byte[] raw, ulong flags)
         {
             if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
@@ -773,7 +774,7 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
-        public static void ImportProperty(PCCObject pcc, PCCObject importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
+        public static void ImportProperty(ME3Package pcc, ME3Package importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
         {
             string name = importpcc.getNameEntry(p.Name);
             int idxname = pcc.FindNameOrAdd(name);
@@ -946,7 +947,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void ImportImmutableProperty(PCCObject pcc, PCCObject importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
+        public static void ImportImmutableProperty(ME3Package pcc, ME3Package importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
         {
             string name = importpcc.getNameEntry(p.Name);
             int idxname = pcc.FindNameOrAdd(name);

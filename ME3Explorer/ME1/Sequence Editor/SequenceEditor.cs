@@ -22,7 +22,7 @@ using UMD.HCIL.GraphEditor;
 
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
-
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
@@ -72,7 +72,7 @@ namespace ME1Explorer
         private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public List<int> CurrentObjects;
         public List<SObj> Objects;
         private List<SaveData> SavedPositions;
@@ -91,7 +91,7 @@ namespace ME1Explorer
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
+                pcc = new ME1Package(d.FileName);
                 CurrentFile = d.FileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
                 LoadSequences();
@@ -137,7 +137,7 @@ namespace ME1Explorer
 
             treeView1.ExpandAll();
         }
-        public TreeNode FindSequences(PCCObject pcc, int index, bool wantFullName = false, bool refSeq = false)
+        public TreeNode FindSequences(ME1Package pcc, int index, bool wantFullName = false, bool refSeq = false)
         {
             string objectName = "";
             if (refSeq)
@@ -486,10 +486,10 @@ namespace ME1Explorer
             if (pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "ME1 Package File|*." + pcc.pccFileName.Split('.')[pcc.pccFileName.Split('.').Length - 1];
+            d.Filter = "ME1 Package File|*." + pcc.fileName.Split('.')[pcc.fileName.Split('.').Length - 1];
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.SaveToFile(d.FileName);
+                pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -659,7 +659,7 @@ namespace ME1Explorer
                 return;
             PCCEditor p = new PCCEditor();
             p.Show();
-            p.pcc = new PCCObject(CurrentFile);
+            p.pcc = new ME1Package(CurrentFile);
             p.loadPCC();
             p.listBox1SelectIndex(l);
         }
@@ -761,7 +761,7 @@ namespace ME1Explorer
                     m = i;
             if (m == -1)
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME1ExportEntry ent = pcc.Exports[n];
             byte[] buff2;
             switch (p[m].TypeVal)
             {

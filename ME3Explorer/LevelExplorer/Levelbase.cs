@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -83,10 +84,10 @@ namespace ME3Explorer.LevelExplorer
                 DebugOutput.PrintLn(i + "/" + (files.Length - 1) + " Scanning : " + Path.GetFileName(file));
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     for (int j = 0; j < pcc.Exports.Count(); j++)
                     {
-                        PCCObject.ExportEntry e = pcc.Exports[j];
+                        ME3ExportEntry e = pcc.Exports[j];
                         if (e.ClassName == "Level")
                         {
                             Level l = new Level(pcc, j, true);
@@ -152,7 +153,7 @@ namespace ME3Explorer.LevelExplorer
 
                 try
                 {
-                    PCCObject pcc = new PCCObject(l.filepath);
+                    ME3Package pcc = new ME3Package(l.filepath);
                     Level lev = new Level(pcc, l.index, true);
                     string s = "";
                     s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";

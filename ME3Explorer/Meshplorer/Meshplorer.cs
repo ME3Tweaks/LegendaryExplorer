@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using Be;
 using Be.Windows;
 using Be.Windows.Forms;
@@ -24,7 +25,7 @@ namespace ME3Explorer.Meshplorer
             public int index;
         }
 
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<NameEntry> Objects;
         public List<int> Materials;
         public int MeshplorerMode = 0; //0=PCC,1=PSK
@@ -66,7 +67,7 @@ namespace ME3Explorer.Meshplorer
         {
             try
             {
-                pcc = new PCCObject(path);
+                pcc = new ME3Package(path);
                 MeshplorerMode = 0;
                 CurrFile = path;
                 Materials = new List<int>();
@@ -293,7 +294,7 @@ namespace ME3Explorer.Meshplorer
                     stm.ImportFromPsk(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx =Objects[n].index;
-                    PCCObject.ExportEntry en = pcc.Exports[idx];
+                    ME3ExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
                     pcc.save(CurrFile);
                     MessageBox.Show("Done.");
@@ -311,7 +312,7 @@ namespace ME3Explorer.Meshplorer
                     skmold.ImportFromPsk(d.FileName, getLOD());
                     byte[] buff = skmold.Serialize();
                     int idx = Objects[n].index;
-                    PCCObject.ExportEntry en = pcc.Exports[idx];
+                    ME3ExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
                     pcc.save(CurrFile);
                     MessageBox.Show("Done.");

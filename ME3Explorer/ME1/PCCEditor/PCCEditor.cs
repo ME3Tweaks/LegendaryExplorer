@@ -13,6 +13,7 @@ using Gibbed.IO;
 using ME1Explorer.Unreal.Classes;
 using System.Diagnostics;
 using System.Collections;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
@@ -23,7 +24,7 @@ namespace ME1Explorer
         public const int IMPORTS_VIEW = 1;
         public const int EXPORTS_VIEW = 2;
         public const int TREE_VIEW = 3;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public List<int> ClassNames;
         public PropGrid pg;
         public List<string> RFiles;
@@ -39,7 +40,7 @@ namespace ME1Explorer
                 int index = RFiles.Count - 1;
                 if (File.Exists(RFiles[index]))
                 {
-                    pcc = new PCCObject(RFiles[index]);
+                    pcc = new ME1Package(RFiles[index]);
                     loadPCC();
                 }
             }
@@ -83,7 +84,7 @@ namespace ME1Explorer
         public new void Show()
         {
             base.Show();
-            this.Text = "Package Editor (" + Path.GetFileName(pcc?.fullname) + ")";
+            this.Text = "Package Editor (" + Path.GetFileName(pcc?.fileName) + ")";
         }
 
         private void openPccToolStripMenuItem_Click(object sender, EventArgs e)
@@ -94,7 +95,7 @@ namespace ME1Explorer
             {
                 AddRecent(d.FileName);
                 SaveRecentList();
-                pcc = new PCCObject(d.FileName);
+                pcc = new ME1Package(d.FileName);
                 loadPCC();
             }
         }
@@ -114,7 +115,7 @@ namespace ME1Explorer
             classCombo.Items.AddRange(names.ToArray());
             classCombo.EndUpdate();
             RefreshView();
-            status2.Text = "@" + Path.GetFileName(Path.GetFileName(pcc.fullname));
+            status2.Text = "@" + Path.GetFileName(Path.GetFileName(pcc.fileName));
         }
 
         public void listBox1SelectIndex(int i)
@@ -171,12 +172,12 @@ namespace ME1Explorer
                 listBox1.Visible = false;
                 treeView1.Visible = true;
                 treeView1.Nodes.Clear();
-                TreeNode t = new TreeNode(pcc.pccFileName);
+                TreeNode t = new TreeNode(pcc.fileName);
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
 
                     //cloneObjectToolStripMenuItem.Enabled = true;
-                    PCCObject.ExportEntry e = pcc.Exports[i];
+                    ME1ExportEntry e = pcc.Exports[i];
                     List<int> LinkList = new List<int>();
                     LinkList.Add(i + 1);
                     int Link = e.idxLink;
@@ -186,7 +187,7 @@ namespace ME1Explorer
                         if (Link > 0)
                             Link = pcc.Exports[Link - 1].idxLink;
                         else
-                            Link = pcc.Imports[-Link - 1].link;
+                            Link = pcc.Imports[-Link - 1].idxLink;
                     }
                     t = AddPathToTree(t, LinkList);
                 }
@@ -194,17 +195,17 @@ namespace ME1Explorer
                 {
 
                     //cloneObjectToolStripMenuItem.Enabled = true;
-                    PCCObject.ImportEntry e = pcc.Imports[i];
+                    ME1ImportEntry e = pcc.Imports[i];
                     List<int> LinkList = new List<int>();
                     LinkList.Add(-(i + 1));
-                    int Link = e.link;
+                    int Link = e.idxLink;
                     while (Link != 0)
                     {
                         LinkList.Add(Link);
                         if (Link > 0)
                             Link = pcc.Exports[Link - 1].idxLink;
                         else
-                            Link = pcc.Imports[-Link - 1].link;
+                            Link = pcc.Imports[-Link - 1].idxLink;
                     }
                     t = AddPathToTree(t, LinkList);
                 }
@@ -222,7 +223,7 @@ namespace ME1Explorer
         public void dumpBytecodeTable()
         {
             string output = "";
-            foreach (PCCObject.ExportEntry exp in pcc.Exports)
+            foreach (ME1ExportEntry exp in pcc.Exports)
             {
                 if (exp.ClassName == "Function")
                 {
@@ -311,10 +312,10 @@ namespace ME1Explorer
             if (pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "ME1 Package File|*." + pcc.pccFileName.Split('.')[pcc.pccFileName.Split('.').Length - 1];
+            d.Filter = "ME1 Package File|*." + pcc.fileName.Split('.')[pcc.fileName.Split('.').Length - 1];
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.SaveToFile(d.FileName);
+                pcc.save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -397,7 +398,7 @@ namespace ME1Explorer
                 Classes.Add(-(i + 1) + " : " + pcc.Imports[i].ObjectName);
             Classes.Add("0 : Class");
             int count = 1;
-            foreach (PCCObject.ExportEntry exp in pcc.Exports)
+            foreach (ME1ExportEntry exp in pcc.Exports)
                 Classes.Add((count++) + " : " + exp.ObjectName);
             count = 0;
             foreach (string s in pcc.Names)
@@ -444,7 +445,7 @@ namespace ME1Explorer
             int n = GetSelected();
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME1ExportEntry ent = pcc.Exports[n];
             hexBox1.ByteProvider = new DynamicByteProvider(ent.Data);
             Status.Text = ent.ClassName + " Offset: " + ent.DataOffset + " - " + (ent.DataOffset + ent.DataSize);
         }
@@ -473,7 +474,7 @@ namespace ME1Explorer
             int n = GetSelected();
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME1ExportEntry ent = pcc.Exports[n];
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
             d.FileName = ent.ObjectName + ".bin";
@@ -642,7 +643,7 @@ namespace ME1Explorer
             string s = sender.ToString();
             try
             {
-                pcc = new PCCObject(s);
+                pcc = new ME1Package(s);
                 loadPCC();
             }
             catch (Exception ex)
@@ -667,7 +668,7 @@ namespace ME1Explorer
             MemoryStream m = new MemoryStream();
             for (int i = 0; i < hexBox1.ByteProvider.Length; i++)
                 m.WriteByte(hexBox1.ByteProvider.ReadByte(i));
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME1ExportEntry ent = pcc.Exports[n];
             ent.Data = m.ToArray();
             ent.hasChanged = true;
             pcc.Exports[n] = ent;

@@ -9,13 +9,14 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.DialogEditor
 {
     public partial class DialogEditor : Form
     {
         public BioConversation Dialog;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<int> Objs;
 
         public DialogEditor()
@@ -37,7 +38,7 @@ namespace ME3Explorer.DialogEditor
         {
             try
             {
-                pcc = new PCCObject(fileName);
+                pcc = new ME3Package(fileName);
                 Objs = new List<int>();
                 for (int i = 0; i < pcc.Exports.Count; i++)
                     if (pcc.Exports[i].ClassName == "BioConversation")

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gibbed.IO;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -21,13 +22,13 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        PCCObject pccRef;
+        ME3Package pccRef;
         uint firstVal;
         uint otherVal;
 
         public List<ByteProp> enumTextureGroups { get; private set; }
 
-        public TextureGroup(PCCObject pccObj, byte[] data)
+        public TextureGroup(ME3Package pccObj, byte[] data)
         {
             enumTextureGroups = new List<ByteProp>();
             pccRef = pccObj;

@@ -12,6 +12,7 @@ using Microsoft.DirectX.Direct3D;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -20,7 +21,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int index;
         public int memsize;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -172,7 +173,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public StaticMesh(PCCObject Pcc, int Index)
+        public StaticMesh(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             index = Index;
@@ -1932,7 +1933,7 @@ namespace ME3Explorer.Unreal.Classes
                 selm.Objects = new List<int>();
                 for(int j =0;j<pcc.Exports.Count;j++)
                 {
-                    PCCObject.ExportEntry e =pcc.Exports[j];
+                    ME3ExportEntry e =pcc.Exports[j];
                     if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
                     {
                         selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);

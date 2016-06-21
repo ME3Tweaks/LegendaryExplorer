@@ -9,6 +9,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
@@ -20,7 +21,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         public struct Levelfile
         {
             public string path;
-            public PCCObject pcc;
+            public ME3Package pcc;
             public Level level;
         }
 
@@ -108,10 +109,10 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             {
                 Levelfile l = new Levelfile();
                 l.path = path;
-                l.pcc = new PCCObject(path);
+                l.pcc = new ME3Package(path);
                 for (int i = 0; i < l.pcc.Exports.Count; i++)
                 {
-                    PCCObject.ExportEntry e = l.pcc.Exports[i];
+                    ME3ExportEntry e = l.pcc.Exports[i];
                     if (e.ClassName == "Level")
                     {
                         DebugOutput.Clear();

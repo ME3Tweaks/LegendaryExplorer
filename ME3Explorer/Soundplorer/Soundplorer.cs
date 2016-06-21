@@ -10,13 +10,14 @@ using System.Windows.Forms;
 using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer
 {
     public partial class Soundplorer : Form
     {
-        PCCObject pcc;
+        ME3Package pcc;
         public string CurrentFile;
         public List<int> ObjectIndexes;
         WwiseStream w;
@@ -42,7 +43,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    pcc = new ME3Package(d.FileName);
                     CurrentFile = d.FileName;
                     afcPath = "";
                     LoadObjects();
@@ -62,7 +63,7 @@ namespace ME3Explorer
             ObjectIndexes = new List<int>();
             for(int i=0;i<pcc.Exports.Count;i++)            
             {
-                PCCObject.ExportEntry e = pcc.Exports[i];
+                ME3ExportEntry e = pcc.Exports[i];
                 Status.Text = "Scan object " + i + " / " + pcc.Exports.Count;
                 if (e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream")
                 {
@@ -82,7 +83,7 @@ namespace ME3Explorer
             rtb1.Visible = true;
             hb1.Visible = false;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            ME3ExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 w = new WwiseStream(pcc, index);                
@@ -108,7 +109,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            ME3ExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 Stop();
@@ -116,7 +117,7 @@ namespace ME3Explorer
                 string path;
                 if (w.IsPCCStored)
                 {
-                    path = pcc.pccFileName;
+                    path = pcc.fileName;
                 }
                 else
                 {
@@ -174,7 +175,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            ME3ExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 SaveFileDialog d = new SaveFileDialog();
@@ -186,7 +187,7 @@ namespace ME3Explorer
                     string path;
                     if (w.IsPCCStored)
                     {
-                        path = pcc.pccFileName;
+                        path = pcc.fileName;
                     }
                     else
                     {
@@ -209,7 +210,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            ME3ExportEntry ex = pcc.Exports[index];
             if (w.IsPCCStored)
             {
                 //TODO: enable replacing of PCC-stored sounds
@@ -225,7 +226,7 @@ namespace ME3Explorer
                     string path;
                     if (w.IsPCCStored)
                     {
-                        path = pcc.pccFileName;
+                        path = pcc.fileName;
                     }
                     else
                     {
@@ -267,7 +268,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            ME3ExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 dr.textBox3.Text = w.DataOffset.ToString();

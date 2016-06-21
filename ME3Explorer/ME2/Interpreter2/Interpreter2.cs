@@ -9,12 +9,13 @@ using ME2Explorer.Unreal.Classes;
 using System.Diagnostics;
 
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME2Explorer.Interpreter2
 {
     public partial class Interpreter2 : Form
     {
-        public PCCObject pcc;
+        public ME2Package pcc;
         public int Index;
         public byte[] memory;
         public int memsize;
@@ -94,7 +95,7 @@ namespace ME2Explorer.Interpreter2
         {
             base.Show();
             toolStripStatusLabel1.Text = "Class: " + pcc.Exports[Index].ClassName + ", Index: " + Index;
-            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.pccFileName);
+            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.fileName);
             StartScan();
         }
 
@@ -190,7 +191,7 @@ namespace ME2Explorer.Interpreter2
                                         {
                                             if (pcc.Imports.Count > value)
                                             {
-                                                s += pcc.Imports[value].Name + " [IMPORT " + value + "]";
+                                                s += pcc.Imports[value].ObjectName + " [IMPORT " + value + "]";
                                             }
                                             else
                                             {

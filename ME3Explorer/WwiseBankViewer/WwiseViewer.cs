@@ -9,13 +9,14 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using Be.Windows.Forms;
 
 namespace ME3Explorer.WwiseBankViewer
 {
     public partial class WwiseViewer : Form
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<int> objects;
         public WwiseBank bank;
 
@@ -32,7 +33,7 @@ namespace ME3Explorer.WwiseBankViewer
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    pcc = new ME3Package(d.FileName);
                     objects = new List<int>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "WwiseBank")

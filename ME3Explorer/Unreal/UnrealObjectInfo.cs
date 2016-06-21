@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
@@ -271,16 +272,16 @@ namespace ME3Explorer.Unreal
             return null;
         }
         
-        public static byte[] getDefaultClassValue(PCCObject pcc, string className, bool fullProps = false)
+        public static byte[] getDefaultClassValue(ME3Package pcc, string className, bool fullProps = false)
         {
             if (Structs.ContainsKey(className))
             {
                 bool isImmutable = ImmutableStructs.Contains(className);
                 ClassInfo info = Structs[className];
-                PCCObject importPCC;
+                ME3Package importPCC;
                 try
                 {
-                    importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    importPCC = new ME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
                 }
                 catch (Exception)
                 {
@@ -324,16 +325,16 @@ namespace ME3Explorer.Unreal
             else if (Classes.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
-                PCCObject importPCC;
+                ME3Package importPCC;
                 try
                 {
-                    importPCC = new PCCObject(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    importPCC = new ME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
                 }
                 catch (Exception)
                 {
                     return null;
                 }
-                PCCObject.ExportEntry entry = pcc.Exports[info.exportIndex + 1];
+                ME3ExportEntry entry = pcc.Exports[info.exportIndex + 1];
                 List<PropertyReader.Property> Props = PropertyReader.getPropList(importPCC, entry);
                 MemoryStream m = new MemoryStream(entry.DataSize - 4);
                 foreach (PropertyReader.Property p in Props)
@@ -350,7 +351,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(this PCCObject.IEntry entry, string baseClass)
+        public static bool inheritsFrom(this IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -369,7 +370,7 @@ namespace ME3Explorer.Unreal
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
-            PCCObject pcc;
+            ME3Package pcc;
             string path = ME3Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
             string objectName;
@@ -378,7 +379,7 @@ namespace ME3Explorer.Unreal
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    pcc = new PCCObject(files[i]);
+                    pcc = new ME3Package(files[i]);
                     for (int j = 0; j < pcc.Exports.Count; j++)
                     {
                         if (pcc.Exports[j].ClassName == "Enum")
@@ -415,7 +416,7 @@ namespace ME3Explorer.Unreal
             MessageBox.Show("Done");
         }
 
-        private static SequenceObjectInfo generateSequenceObjectInfo(int i, PCCObject pcc)
+        private static SequenceObjectInfo generateSequenceObjectInfo(int i, ME3Package pcc)
         {
             SequenceObjectInfo info = new SequenceObjectInfo();
             PropertyReader.Property inputLinks = PropertyReader.getPropOrNull(pcc, pcc.Exports[i + 1], "InputLinks");
@@ -436,13 +437,13 @@ namespace ME3Explorer.Unreal
             return info;
         }
 
-        private static ClassInfo generateClassInfo(int index, PCCObject pcc)
+        private static ClassInfo generateClassInfo(int index, ME3Package pcc)
         {
             ClassInfo info = new ClassInfo();
             info.baseClass = pcc.Exports[index].ClassParent;
             info.exportIndex = index;
-            info.pccPath = new string(pcc.pccFileName.Skip(pcc.pccFileName.LastIndexOf("BIOGame") + 8).ToArray());
-            foreach (PCCObject.ExportEntry entry in pcc.Exports)
+            info.pccPath = new string(pcc.fileName.Skip(pcc.fileName.LastIndexOf("BIOGame") + 8).ToArray());
+            foreach (ME3ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
@@ -461,7 +462,7 @@ namespace ME3Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(int index, PCCObject pcc)
+        private static void generateEnumValues(int index, ME3Package pcc)
         {
             string enumName = pcc.Exports[index].ObjectName;
             if (!Enums.ContainsKey(enumName))
@@ -478,7 +479,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(PCCObject pcc, PCCObject.ExportEntry entry)
+        private static PropertyInfo getProperty(ME3Package pcc, ME3ExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

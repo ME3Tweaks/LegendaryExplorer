@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
@@ -23,7 +24,7 @@ namespace ME1Explorer
             string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
             try
             {
-                PCCObject pcc = new PCCObject(path);
+                ME1Package pcc = new ME1Package(path);
                 tlkList.Add(new TalkFile(pcc, 0));
             }
             catch (Exception)

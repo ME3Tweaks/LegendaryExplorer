@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
+using ME3Explorer.Packages;
 
 namespace ME2Explorer.Unreal
 {
@@ -129,7 +130,7 @@ namespace ME2Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(PCCObject pcc, byte[] raw)
+        public static List<Property> getPropList(ME2Package pcc, byte[] raw)
         {
             Application.DoEvents();
             int start = detectStart(pcc, raw);
@@ -154,7 +155,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static string PropertyToText(Property p, PCCObject pcc)
+        public static string PropertyToText(Property p, ME2Package pcc)
         {
             string s = "";
             s = "Name: " + p.Name;
@@ -194,7 +195,7 @@ namespace ME2Explorer.Unreal
             return s;
         }
 
-        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, ME2Package pcc)
         {
             string cat = p.TypeVal.ToString();
             CustomProperty pg;
@@ -242,7 +243,7 @@ namespace ME2Explorer.Unreal
             return pg;
         }
 
-        public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
+        public static List<Property> ReadProp(ME2Package pcc, byte[] raw, int start)
         {
             Property p;
             PropertyValue v;
@@ -433,7 +434,7 @@ namespace ME2Explorer.Unreal
             return result;
         }
 
-        private static Type getType(PCCObject pcc, int type)
+        private static Type getType(ME2Package pcc, int type)
         {
             switch (pcc.getNameEntry(type))
             {
@@ -454,7 +455,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
+        private static PropertyValue ReadValue(ME2Package pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
             switch (pcc.getNameEntry(type))
@@ -479,7 +480,7 @@ namespace ME2Explorer.Unreal
             return v;
         }
 
-        public static int detectStart(PCCObject pcc, byte[] raw)
+        public static int detectStart(ME2Package pcc, byte[] raw)
         {
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);
@@ -548,7 +549,7 @@ namespace ME2Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(PCCObject pcc, byte[] raw)
+        public static List<Property> getPropList(ME2Package pcc, byte[] raw)
         {
             Application.DoEvents();
             int start = detectStart(pcc, raw);
@@ -573,7 +574,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static string PropertyToText(Property p, PCCObject pcc)
+        public static string PropertyToText(Property p, ME2Package pcc)
         {
             string s = "";
             s = "Name: " + pcc.Names[p.Name];
@@ -613,7 +614,7 @@ namespace ME2Explorer.Unreal
             return s;
         }
 
-        public static CustomProperty PropertyToGrid(Property p, PCCObject pcc)
+        public static CustomProperty PropertyToGrid(Property p, ME2Package pcc)
         {
             string cat = p.TypeVal.ToString();
             CustomProperty pg;
@@ -660,7 +661,7 @@ namespace ME2Explorer.Unreal
             return pg;
         }
 
-        public static List<Property> ReadProp(PCCObject pcc, byte[] raw, int start)
+        public static List<Property> ReadProp(ME2Package pcc, byte[] raw, int start)
         {
             Property p;
             PropertyValue v;
@@ -818,7 +819,7 @@ namespace ME2Explorer.Unreal
             return result;
         }
 
-        private static Type getType(PCCObject pcc, int type)
+        private static Type getType(ME2Package pcc, int type)
         {
             switch (pcc.getNameEntry(type))
             {
@@ -839,7 +840,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        private static PropertyValue ReadValue(PCCObject pcc, byte[] raw, int start, int type)
+        private static PropertyValue ReadValue(ME2Package pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
             switch (pcc.Names[type])
@@ -864,7 +865,7 @@ namespace ME2Explorer.Unreal
             return v;
         }
 
-        public static int detectStart(PCCObject pcc, byte[] raw)
+        public static int detectStart(ME2Package pcc, byte[] raw)
         {
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);
@@ -880,9 +881,9 @@ namespace ME2Explorer.Unreal
             }
             return result;
         }
-        public static int detectStart(PCCObject pcc, byte[] raw, long flags)
+        public static int detectStart(ME2Package pcc, byte[] raw, ulong flags)
         {
-            if ((flags & (long)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 return 30;
             }

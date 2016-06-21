@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class Function
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] memory;
         public byte[] script;
         public int memsize;
@@ -30,7 +31,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, PCCObject Pcc)
+        public Function(byte[] raw, ME3Package Pcc)
         {
             pcc = Pcc;
             memory = raw;

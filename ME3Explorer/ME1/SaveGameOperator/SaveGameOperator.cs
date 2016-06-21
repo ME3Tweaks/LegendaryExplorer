@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME1Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.SaveGameOperator
 {
@@ -36,7 +37,7 @@ namespace ME1Explorer.SaveGameOperator
         public void LoadData()
         {
             Save.ExtractME1Package(0, "temp.upk");
-            PCCObject pcc = new PCCObject("temp.upk");
+            ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
             List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, buff);
@@ -66,7 +67,7 @@ namespace ME1Explorer.SaveGameOperator
         public void SaveData()
         {
             Save.ExtractME1Package(0, "temp.upk");
-            PCCObject pcc = new PCCObject("temp.upk");
+            ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
             List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, buff);
@@ -96,7 +97,7 @@ namespace ME1Explorer.SaveGameOperator
                 }
             }
             pcc.Exports[1].Data = buff;
-            pcc.SaveToFile("temp.upk");
+            pcc.save("temp.upk");
             Save.ImportME1Package(0, "temp.upk");
             File.Delete("temp.upk");
             v = Convert.ToInt32(textBox5.Text);

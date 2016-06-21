@@ -10,13 +10,14 @@ using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
     public partial class AddReply : Form
     {
         public BioConversation.EntryListReplyListStruct res;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public int state = 0;
 
         public AddReply()

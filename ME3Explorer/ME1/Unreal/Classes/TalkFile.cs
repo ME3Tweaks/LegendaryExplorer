@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -56,7 +57,7 @@ namespace ME1Explorer.Unreal.Classes
         private int tlkSetIndex;
 
         public TLKStringRef[] StringRefs;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public int index;
 
         public int LangRef
@@ -73,7 +74,7 @@ namespace ME1Explorer.Unreal.Classes
 
 
         #region Constructors
-        public TalkFile(PCCObject _pcc, int _index)
+        public TalkFile(ME1Package _pcc, int _index)
         {
             pcc = _pcc;
             index = _index;
@@ -81,7 +82,7 @@ namespace ME1Explorer.Unreal.Classes
             LoadTlkData();
         }
 
-        public TalkFile(PCCObject _pcc, int _index, bool _male, int _langRef, int _tlkSetIndex)
+        public TalkFile(ME1Package _pcc, int _index, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;
             index = _index;
@@ -91,7 +92,7 @@ namespace ME1Explorer.Unreal.Classes
             LoadTlkData();
         }
 
-        public TalkFile(PCCObject _pcc)
+        public TalkFile(ME1Package _pcc)
         {
             pcc = _pcc;
             index = pcc.FindExp("tlk");
@@ -114,7 +115,7 @@ namespace ME1Explorer.Unreal.Classes
                     data = "\"" + StringRefs[i].Data + "\"";
                     if (withFileName)
                     {
-                        data += " (" + Path.GetFileName(pcc.fullname) + " -> " + BioTlkSetName +  Name + ")";
+                        data += " (" + Path.GetFileName(pcc.fileName) + " -> " + BioTlkSetName +  Name + ")";
                     }
                     break;
                 }
@@ -125,7 +126,7 @@ namespace ME1Explorer.Unreal.Classes
         #region IEquatable
         public bool Equals(TalkFile other)
         {
-            return (other?.index == index && other.pcc.fullname == pcc.fullname);
+            return (other?.index == index && other.pcc.fileName == pcc.fileName);
         }
 
         public override bool Equals(object obj)

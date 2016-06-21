@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -31,6 +32,8 @@ namespace ME3Explorer
             Tools.InitializeTools();
             utilitiesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
             favoritesPanel.setToolList(Tools.items.Where(x => !x.tags.Contains("utility")));
+            System.Windows.Forms.Application.EnableVisualStyles();
+            WindowsFormsHost.EnableWindowsFormsInterop();
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)

@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.QuestMapEditor
@@ -26,7 +27,7 @@ namespace ME3Explorer.QuestMapEditor
             public QMapEntryStruct[] List2;
         }
 
-        PCCObject pcc;
+        ME3Package pcc;
         QMapStruct QuestMap;
         public QMapEditor()
         {
@@ -50,7 +51,7 @@ namespace ME3Explorer.QuestMapEditor
             }
             try
             {
-                pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
+                pcc = new ME3Package(pathcook + "SFXGameInfoSP_SF.pcc");
                 GetEntries();
                 RefreshTree();
             }

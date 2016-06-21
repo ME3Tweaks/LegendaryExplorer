@@ -6,12 +6,13 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] memory;
         public int memsize;
         public int index;
@@ -25,7 +26,7 @@ namespace ME3Explorer.Unreal.Classes
             public Texture Texture;
         }
 
-        public MaterialInstanceConstant(PCCObject Pcc,int Idx)
+        public MaterialInstanceConstant(ME3Package Pcc,int Idx)
         {
             BitConverter.IsLittleEndian = true;
             pcc = Pcc;

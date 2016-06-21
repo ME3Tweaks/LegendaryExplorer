@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class FaceFXAnimSet
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] Memory;
         public int MyIndex;
         public int ReadEnd;
@@ -72,7 +73,7 @@ namespace ME3Explorer.Unreal.Classes
         public FaceFXAnimSet()
         {
         }
-        public FaceFXAnimSet(PCCObject Pcc, int Index)
+        public FaceFXAnimSet(ME3Package Pcc, int Index)
         {
             BitConverter.IsLittleEndian = true;
             pcc = Pcc;

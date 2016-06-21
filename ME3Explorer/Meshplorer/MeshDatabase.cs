@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -56,13 +57,13 @@ namespace ME3Explorer.Meshplorer
                 DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     DBEntry ent = new DBEntry();
                     ent.filename = Path.GetFileName(file);
                     ent.Objects = new List<ObjInf>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                     {
-                        PCCObject.ExportEntry ex = pcc.Exports[i];
+                        ME3ExportEntry ex = pcc.Exports[i];
                         ObjInf obj;
                         switch (ex.ClassName)
                         {

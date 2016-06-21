@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -17,7 +18,7 @@ namespace ME3Explorer.Property_Dumper
     public partial class PropDumper : Form
     {
 
-        PCCObject pcc;
+        ME3Package pcc;
 
         public PropDumper()
         {
@@ -32,7 +33,7 @@ namespace ME3Explorer.Property_Dumper
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    pcc = new ME3Package(d.FileName);
                     LetsDump();
                 }
                 catch (Exception ex)
@@ -51,7 +52,7 @@ namespace ME3Explorer.Property_Dumper
             string t = "";
             for (int i = 0; i < pcc.Exports.Count; i++)
             {
-                PCCObject.ExportEntry e = pcc.Exports[i];
+                ME3ExportEntry e = pcc.Exports[i];
                 string s = "Properties for Object #" + i + " \"" + e.ObjectName + "\" :\n\n";
                 List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, e);
                 foreach (PropertyReader.Property prop in p)
@@ -74,7 +75,7 @@ namespace ME3Explorer.Property_Dumper
             pb1.Value = 0;
         }
 
-        public string DumpArray(PCCObject pcc,byte [] raw, int pos, string s, int depth)
+        public string DumpArray(ME3Package pcc,byte [] raw, int pos, string s, int depth)
         {
             string res = "";
             List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, raw, pos);
@@ -130,13 +131,13 @@ namespace ME3Explorer.Property_Dumper
 
                         while (pause)
                             Application.DoEvents();
-                        pcc = new PCCObject(files[i]);
+                        pcc = new ME3Package(files[i]);
                         pb1.Maximum = pcc.Exports.Count;
                         pb2.Value = i;
                         string s = "String references for file " + files[i] + "\n";
                         for (int j = 0; j < pcc.Exports.Count; j++)
                         {
-                            PCCObject.ExportEntry ent = pcc.Exports[j];
+                            ME3ExportEntry ent = pcc.Exports[j];
                             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
 
                             for (int k = 0; k < p.Count; k++)
@@ -246,13 +247,13 @@ namespace ME3Explorer.Property_Dumper
                 {
                     while (pause)
                         Application.DoEvents();
-                    pcc = new PCCObject(files[i]);
+                    pcc = new ME3Package(files[i]);
                     DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
                     pb1.Maximum = pcc.Exports.Count;
                     pb2.Value = i;
                     for (int j = 0; j < pcc.Exports.Count; j++)
                     {
-                        PCCObject.ExportEntry ent = pcc.Exports[j];
+                        ME3ExportEntry ent = pcc.Exports[j];
                         if (ent.ClassName == classname)
                         {
                             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);

@@ -4,12 +4,13 @@ using System.Windows.Forms;
 using System.IO;
 
 using ME1Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
     public partial class TlkManager : Form
     {
-        public List<PCCObject> packages;
+        public List<ME1Package> packages;
         public List<BioTlkFileSet> tlkFileSets;
         public TalkFiles selectedTlks;
 
@@ -27,26 +28,26 @@ namespace ME1Explorer
                 saveToFileButton.Visible = true;
                 saveToFileToolStripMenuItem.Visible = true;
                 replaceWithFileButton.Visible = true;
-                packages = new List<PCCObject>();
+                packages = new List<ME1Package>();
                 tlkFileSets = new List<BioTlkFileSet>();
             }
         }
 
         public void InitTlkManager(TalkFiles tlks)
         {
-            packages = new List<PCCObject>();
+            packages = new List<ME1Package>();
             tlkFileSets = new List<BioTlkFileSet>();
             selectedTlks = tlks;
             
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.fullname) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.fileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
             }
         }
 
-        public void InitTlkManager(PCCObject pcc, BioTlkFileSet tlkSet, TalkFiles tlks = null)
+        public void InitTlkManager(ME1Package pcc, BioTlkFileSet tlkSet, TalkFiles tlks = null)
         {
-            packages = new List<PCCObject>();
+            packages = new List<ME1Package>();
             tlkFileSets = new List<BioTlkFileSet>();
             selectedTlks = tlks ?? new TalkFiles();
 
@@ -71,7 +72,7 @@ namespace ME1Explorer
             }
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.fullname) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.fileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
             }
         }
 
@@ -81,9 +82,9 @@ namespace ME1Explorer
             int selectedTlkSet = bioTlkSetBox.SelectedIndex;
             int selectedTlkFile = tlkFileBox.SelectedIndex;
             fileBox.Items.Clear();
-            foreach (PCCObject pcc in packages)
+            foreach (ME1Package pcc in packages)
             {
-                fileBox.Items.Add(Path.GetFileName(pcc.pccFileName));
+                fileBox.Items.Add(Path.GetFileName(pcc.fileName));
             }
             fileBox.SelectedIndex = selectedFile;
             Application.DoEvents();
@@ -98,7 +99,7 @@ namespace ME1Explorer
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                packages.Add(new PCCObject(d.FileName));
+                packages.Add(new ME1Package(d.FileName));
                 refreshFileBox();
             }
         }
@@ -112,9 +113,9 @@ namespace ME1Explorer
             {
                 return;
             }
-            PCCObject pcc = packages[n];
+            ME1Package pcc = packages[n];
             tlkFileSets.Clear();
-            for (int i = 0; i < pcc.ExportCount; i++)
+            for (int i = 0; i < pcc.Exports.Count; i++)
             {
                 if(pcc.Exports[i].ClassName == "BioTlkFileSet")
                 {
@@ -127,7 +128,7 @@ namespace ME1Explorer
             if(tlkFileSets.Count == 0)
             {
                 BioTlkFileSet tlkSet = new BioTlkFileSet(pcc);
-                for (int i = 0; i < pcc.ExportCount; i++)
+                for (int i = 0; i < pcc.Exports.Count; i++)
                 {
                     if (pcc.Exports[i].ClassName == "BioTlkFile")
                     {
@@ -176,7 +177,7 @@ namespace ME1Explorer
             if (!selectedTlks.tlkList.Contains(tlk))
             {
                 selectedTlks.tlkList.Add(tlk);
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlk.pcc.fullname) + " -> " + tlkFileSets[bioTlkSetBox.SelectedIndex].Name + tlk.Name);
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlk.pcc.fileName) + " -> " + tlkFileSets[bioTlkSetBox.SelectedIndex].Name + tlk.Name);
             }
         }
 
@@ -281,9 +282,9 @@ namespace ME1Explorer
                 compressor.replaceTlkwithFile(tlk.pcc, tlk.index);
                 MessageBox.Show("Done");
             }
-            n = packages.FindIndex(x => tlk.pcc.pccFileName == x.pccFileName);
+            n = packages.FindIndex(x => tlk.pcc.fileName == x.fileName);
             packages.RemoveAt(n);
-            packages.Insert(n, new PCCObject(tlk.pcc.pccFileName));
+            packages.Insert(n, new ME1Package(tlk.pcc.fileName));
             refreshFileBox();
         }
     }

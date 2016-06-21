@@ -7,6 +7,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
@@ -33,7 +34,7 @@ namespace ME3Explorer.Unreal.Classes
             public ImageSize imgSize;
         }
 
-        PCCObject pccRef;
+        ME3Package pccRef;
         public const string className = "Texture2D";
         public string texName { get; private set; }
         public string arcName { get; private set; }
@@ -48,13 +49,13 @@ namespace ME3Explorer.Unreal.Classes
         public Dictionary<string,PropertyReader.Property> properties;
         public List<ImageInfo> imgList { get; private set; } // showable image list
 
-        public Texture2D(PCCObject pccObj, int texIdx)
+        public Texture2D(ME3Package pccObj, int texIdx)
         {
             pccRef = pccObj;
             // check if texIdx is an Export index and a Texture2D class
             if (pccObj.isExport(texIdx) && (pccObj.Exports[texIdx].ClassName == className))
             {
-                PCCObject.ExportEntry expEntry = pccObj.Exports[texIdx];
+                ME3ExportEntry expEntry = pccObj.Exports[texIdx];
                 properties = new Dictionary<string, PropertyReader.Property>();
                 byte[] rawData = (byte[])expEntry.Data.Clone();
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData, expEntry.ObjectFlags);

@@ -13,6 +13,7 @@ using AmaroK86.ImageFormat;
 using KFreonLib.Textures;
 using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
+using ME3Explorer.Packages;
 
 
 namespace ME3Explorer
@@ -33,13 +34,13 @@ namespace ME3Explorer
         public class ClipboardDependency
         {
             public string Name;
-            public PCCObject.ImportEntry classimp;
+            public Packages.ME3ImportEntry classimp;
             public ClipboardDependency child;
         }
 
         public struct Clipboard
         {
-            public PCCObject.ExportEntry entry;
+            public Packages.ME3ExportEntry entry;
             public ClipboardDependency dep; //for class
             public string Name;
             public bool isFilled;
@@ -144,7 +145,7 @@ namespace ME3Explorer
             TreeNode root = TV1.Nodes.Add(pcc.pccFileName, pcc.pccFileName);
             root.ImageIndex = 1;
 
-            foreach (ME3ExportEntry exportEntry in pcc.Exports)
+            foreach (KFreonLib.PCCObjects.ME3ExportEntry exportEntry in pcc.Exports)
             {
                 string[] pathChunks = (exportEntry.PackageFullName).Split('.');
 
@@ -435,7 +436,7 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(new PCCObject(pcc.pccFileName), index);
+                WwiseStream w = new WwiseStream(new ME3Package(pcc.pccFileName), index);
                 w.ExtractToFile(pathCooked,pcc.Exports[index].ObjectName);
             }
         }
@@ -448,7 +449,7 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                w = new WwiseStream(new PCCObject(pcc.pccFileName), index);
+                w = new WwiseStream(new ME3Package(pcc.pccFileName), index);
                 w.Play(pathCooked);
             }
         }

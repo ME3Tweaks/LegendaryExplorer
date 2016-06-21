@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Unreal;
 using Gibbed.IO;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.CurveEd
 {
@@ -36,7 +37,7 @@ namespace ME3Explorer.CurveEd
     public class InterpCurve
     {
 
-        private PCCObject pcc;
+        private ME3Package pcc;
         private PropertyReader.Property prop;
         private CurveType curveType;
 
@@ -44,7 +45,7 @@ namespace ME3Explorer.CurveEd
         public ObservableCollection<Curve> Curves { get; set; }
 
 
-        public InterpCurve(PCCObject _pcc, PropertyReader.Property p)
+        public InterpCurve(ME3Package _pcc, PropertyReader.Property p)
         {
             pcc = _pcc;
             prop = p;

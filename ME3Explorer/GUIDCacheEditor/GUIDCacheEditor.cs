@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.GUIDCacheEditor
@@ -23,7 +24,7 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public List<PropertyReader.Property> props;
         public List<GuidEntry> GUIDs;
-        public PCCObject pcc;
+        public ME3Package pcc;
         
         public GUIDCacheEditor()
         {
@@ -40,7 +41,7 @@ namespace ME3Explorer.GUIDCacheEditor
             BitConverter.IsLittleEndian = true;
             try
             {
-                pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
+                pcc = new ME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
                 ReadGUIDs(pcc.Exports[0]);
                 RefreshLists();
             }
@@ -50,7 +51,7 @@ namespace ME3Explorer.GUIDCacheEditor
             }
         }
 
-        public void ReadGUIDs(PCCObject.ExportEntry export)
+        public void ReadGUIDs(ME3ExportEntry export)
         {
             props = PropertyReader.getPropList(pcc, export);
             byte[] buff = export.Data;
@@ -168,7 +169,7 @@ namespace ME3Explorer.GUIDCacheEditor
             }
             pcc.Exports[0].Data = m.ToArray();
             pcc.Exports[0].hasChanged = true;
-            pcc.appendSave(pcc.pccFileName, true, 30); //weird header!
+            pcc.appendSave(pcc.fileName, true, 30); //weird header!
             MessageBox.Show("Done.");
             RefreshLists();
         }

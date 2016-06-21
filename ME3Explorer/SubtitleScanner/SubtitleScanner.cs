@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using UsefulThings;
@@ -86,7 +87,7 @@ namespace ME3Explorer.SubtitleScanner
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
+                    ME3Package pcc = new ME3Package(file);
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "BioConversation")
                         {
@@ -164,7 +165,7 @@ namespace ME3Explorer.SubtitleScanner
                     DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                     try
                     {
-                        PCCObject pcc = new PCCObject(file);
+                        ME3Package pcc = new ME3Package(file);
                         for (int i = 0; i < pcc.Exports.Count; i++)
                             if (pcc.Exports[i].ClassName == "BioConversation")
                             {
@@ -252,7 +253,7 @@ namespace ME3Explorer.SubtitleScanner
                                 DebugOutput.PrintLn(" " + j.ToString("d4") + " / " + dlc.Files.Length.ToString("d4") + " : opening " + Path.GetFileName(filename),true);
                                 MemoryStream mem = dlc.DecompressEntry(j);
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
-                                PCCObject pcc = new PCCObject("temp.pcc");
+                                ME3Package pcc = new ME3Package("temp.pcc");
                                 for (int i = 0; i < pcc.Exports.Count; i++)
                                     if (pcc.Exports[i].ClassName == "BioConversation")
                                     {

@@ -9,6 +9,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Util;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.InterpEditor
 {
@@ -151,7 +152,7 @@ namespace ME3Explorer.InterpEditor
         public TreeView tree1;
         public TreeView tree2;
 
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int index;
 
         public List<InterpGroup> InterpGroups;
@@ -185,7 +186,7 @@ namespace ME3Explorer.InterpEditor
             //AddChild(seperationLine);
         }
 
-        public void LoadInterpData(int idx, PCCObject pccobject)
+        public void LoadInterpData(int idx, ME3Package pccobject)
         {
             TimeScale.RemoveAllChildren();
             TimeScale.Width = 3600;
@@ -365,7 +366,7 @@ namespace ME3Explorer.InterpEditor
             }
         }
         
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int index;
 
         public List<InterpTrack> InterpTracks;
@@ -429,7 +430,7 @@ namespace ME3Explorer.InterpEditor
             }
         }
 
-        public InterpGroup(int idx, PCCObject pccobj)
+        public InterpGroup(int idx, ME3Package pccobj)
             : base()
         {
             index = idx;
@@ -655,7 +656,7 @@ namespace ME3Explorer.InterpEditor
                         addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
-                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/ME3Explorer/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.pccFileName.Substring(pcc.pccFileName.LastIndexOf(@"\")));
+                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/ME3Explorer/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.fileName.Substring(pcc.fileName.LastIndexOf(@"\")));
                         break;
                 }
             }
@@ -695,7 +696,7 @@ namespace ME3Explorer.InterpEditor
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadFile(pcc.pccFileName);
+            p.LoadFile(pcc.fileName);
             p.listBox1.SelectedIndex = index;
         }
 
@@ -747,7 +748,7 @@ namespace ME3Explorer.InterpEditor
             public float fTime;
             public bool bPreloadFired;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + fTime);
                 root.Nodes.Add("pObject : " + pObject);
@@ -763,7 +764,7 @@ namespace ME3Explorer.InterpEditor
         public float m_fSceneLength;
         public float m_fPlayRate = 1;
 
-        public SFXSceneGroup(int idx, PCCObject pccobj)
+        public SFXSceneGroup(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using lib3ds.Net;
@@ -71,14 +72,14 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public StaticMeshComponent STMC;
         public Matrix MyMatrix;
         public bool isEdited = false;
 
-        public InterpActor(PCCObject Pcc, int Index)
+        public InterpActor(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
@@ -399,7 +400,7 @@ namespace ME3Explorer.Unreal.Classes
                     DebugOutput.PrintLn(MyIndex + " : cant find rotation property");
                 }
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
+                string currfile = Path.GetFileName(pcc.fileName);
                 mj.data = data;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
                 string lc = Path.GetDirectoryName(Application.ExecutablePath);

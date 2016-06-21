@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Codex_Editor
 {
@@ -21,7 +22,7 @@ namespace ME3Explorer.Codex_Editor
             public int[] Values;
         }
 
-        PCCObject pcc;
+        ME3Package pcc;
         List<EntryStruct> CodexMap;
 
         public CodexEditor()
@@ -46,7 +47,7 @@ namespace ME3Explorer.Codex_Editor
             }
             try
             {
-                pcc = new PCCObject(pathcook + "SFXGameInfoSP_SF.pcc");
+                pcc = new ME3Package(pathcook + "SFXGameInfoSP_SF.pcc");
             }
             catch (Exception ex)
             {

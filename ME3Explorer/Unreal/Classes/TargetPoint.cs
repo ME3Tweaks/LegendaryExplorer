@@ -11,6 +11,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
@@ -53,7 +54,7 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public Matrix MyMatrix;
@@ -62,7 +63,7 @@ namespace ME3Explorer.Unreal.Classes
         public bool isSelected = false;
         public bool isEdited = false;
 
-        public TargetPoint(PCCObject Pcc, int Index)
+        public TargetPoint(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
@@ -233,7 +234,7 @@ namespace ME3Explorer.Unreal.Classes
                     DebugOutput.PrintLn(MyIndex + " : cant find location property");
                 }
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
+                string currfile = Path.GetFileName(pcc.fileName);
                 mj.data = data;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
                 string lc = Path.GetDirectoryName(Application.ExecutablePath);

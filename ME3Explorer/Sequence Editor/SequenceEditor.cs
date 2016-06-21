@@ -12,6 +12,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using ME3Explorer.SequenceObjects;
 
 using UMD.HCIL.Piccolo;
@@ -74,7 +75,7 @@ namespace ME3Explorer
         private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<int> CurrentObjects;
         public List<SObj> Objects;
         private List<SaveData> SavedPositions;
@@ -101,7 +102,7 @@ namespace ME3Explorer
         {
             try
             {
-                pcc = new PCCObject(fileName);
+                pcc = new ME3Package(fileName);
                 haveCloned = false;
                 CurrentFile = fileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
@@ -165,7 +166,7 @@ namespace ME3Explorer
                 treeView1.TopNode = treeView1.Nodes[0];
             }
         }
-        public TreeNode FindSequences(PCCObject pcc, int index, bool wantFullName = false)
+        public TreeNode FindSequences(ME3Package pcc, int index, bool wantFullName = false)
         {
             TreeNode ret = new TreeNode("#" + index.ToString() + ": " + (wantFullName ? pcc.Exports[index].GetFullPath : pcc.Exports[index].ObjectName));
             ret.Name = index.ToString();
@@ -793,7 +794,7 @@ namespace ME3Explorer
             {
                 name = parent.Label;
             }
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME3ExportEntry ent = pcc.Exports[n];
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
@@ -1140,7 +1141,7 @@ namespace ME3Explorer
 
         private void cloneObject(int n, bool topLevel = true)
         {
-            PCCObject.ExportEntry exp = pcc.Exports[n].Clone();
+            ME3ExportEntry exp = pcc.Exports[n].Clone();
             //needs to have the same index to work properly
             if (exp.ClassName == "SeqVar_External")
             {

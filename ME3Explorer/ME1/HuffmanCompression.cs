@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
@@ -80,7 +81,7 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        public void replaceTlkwithFile(PCCObject pcc, int Index)
+        public void replaceTlkwithFile(ME1Package pcc, int Index)
         {
             BitConverter.IsLittleEndian = true;
 
@@ -149,7 +150,7 @@ namespace ME1Explorer
 
             byte[] buff = m.ToArray();
             pcc.Exports[Index].Data = buff;
-            pcc.SaveToFile(pcc.pccFileName); 
+            pcc.save(pcc.fileName); 
         }
 
         /// <summary>

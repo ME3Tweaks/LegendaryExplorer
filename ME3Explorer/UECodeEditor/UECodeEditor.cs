@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using Be;
+using ME3Explorer.Packages;
 using Be.Windows.Forms;
 
 namespace ME3Explorer.UECodeEditor
@@ -16,7 +16,7 @@ namespace ME3Explorer.UECodeEditor
     public partial class UECodeEditor : Form
     {
         public List<int> Objects;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] memory;
 
         public UECodeEditor()
@@ -36,7 +36,7 @@ namespace ME3Explorer.UECodeEditor
         {
             try
             {
-                pcc = new PCCObject(path);
+                pcc = new ME3Package(path);
                 Objects = new List<int>();
                 for (int i = 0; i < pcc.Exports.Count; i++)
                     if (pcc.Exports[i].ClassName == "Function")

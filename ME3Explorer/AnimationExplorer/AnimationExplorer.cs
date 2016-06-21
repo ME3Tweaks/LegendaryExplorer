@@ -11,12 +11,13 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.AnimationExplorer
 {
     public partial class AnimationExplorer : Form
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<AnimTree> AT;
         public List<AnimSet> AS;
         public List<string> filenames = new List<string>();
@@ -38,7 +39,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             try
             {
-                pcc = new PCCObject(s);
+                pcc = new ME3Package(s);
                 AT = new List<AnimTree>();
                 AS = new List<AnimSet>();
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -78,10 +79,10 @@ namespace ME3Explorer.AnimationExplorer
             {
                 try
                 {
-                    PCCObject _pcc = new PCCObject(file);
+                    ME3Package _pcc = new ME3Package(file);
                     DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
                     bool found = false;
-                    foreach (PCCObject.ExportEntry ex in _pcc.Exports)
+                    foreach (ME3ExportEntry ex in _pcc.Exports)
                         if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
                         {
                             DebugOutput.PrintLn("Found Animation!");

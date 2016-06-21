@@ -22,6 +22,7 @@ using UMD.HCIL.GraphEditor;
 
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME2Explorer
 {
@@ -62,7 +63,7 @@ namespace ME2Explorer
         private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
-        public PCCObject pcc;
+        public ME2Package pcc;
         public List<int> CurrentObjects;
         public List<SObj> Objects;
         private List<SaveData> SavedPositions;
@@ -81,7 +82,7 @@ namespace ME2Explorer
             d.Filter = "PCC Files(*.pcc)|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc = new PCCObject(d.FileName);
+                pcc = new ME2Package(d.FileName);
                 CurrentFile = d.FileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
                 LoadSequences();
@@ -127,7 +128,7 @@ namespace ME2Explorer
 
             treeView1.ExpandAll();
         }
-        public TreeNode FindSequences(PCCObject pcc, int index, bool wantFullName = false, bool refSeq = false)
+        public TreeNode FindSequences(ME2Package pcc, int index, bool wantFullName = false, bool refSeq = false)
         {
             string objectName = "";
             if (refSeq)
@@ -475,7 +476,7 @@ namespace ME2Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.SaveToFile(d.FileName);
+                pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -644,7 +645,7 @@ namespace ME2Explorer
             if (l == -1)
                 return;
             PCCEditor p = new PCCEditor();
-            p.pcc = new PCCObject(CurrentFile);
+            p.pcc = new ME2Package(CurrentFile);
             p.loadPCC();
             p.listBox1SelectIndex(l);
         }
@@ -746,7 +747,7 @@ namespace ME2Explorer
                     m = i;
             if (m == -1)
                 return;
-            PCCObject.ExportEntry ent = pcc.Exports[n];
+            ME2ExportEntry ent = pcc.Exports[n];
             byte[] buff2;
             switch (p[m].TypeVal)
             {

@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class BioConversation
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int MyIndex;
         public int Unk1;
         public byte[] Memory;
@@ -61,7 +62,7 @@ namespace ME3Explorer.Unreal.Classes
             public bool AlwaysHideSubtitle;
             public int GUIStyleType;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, ME3Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -138,7 +139,7 @@ namespace ME3Explorer.Unreal.Classes
             public int GUIStyleType;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, PCCObject pcc)
+            public TreeNode ToTree(int MyIndex, ME3Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -172,7 +173,7 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public BioConversation(PCCObject Pcc, int Index)
+        public BioConversation(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;

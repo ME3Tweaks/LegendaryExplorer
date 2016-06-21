@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME1Explorer
 {
@@ -18,7 +19,7 @@ namespace ME1Explorer
         public TalkFiles tlkFiles;
         public ITalkFile tlkFile;
         public BioConversation Dialog;
-        public PCCObject pcc;
+        public ME1Package pcc;
         public List<int> Objs;
 
         public void InitBioTlkFileSet()
@@ -43,7 +44,7 @@ namespace ME1Explorer
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    pcc = new ME1Package(d.FileName);
                     manageTLKSetToolStripMenuItem.Enabled = true;
                     InitBioTlkFileSet();
                     Objs = new List<int>();
