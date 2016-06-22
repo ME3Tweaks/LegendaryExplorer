@@ -6,7 +6,7 @@ namespace ME3Explorer.Packages
     public class ME3ImportEntry : IImportEntry
     {
         public const int byteSize = 28;
-        internal byte[] header = new byte[byteSize];
+        public byte[] header { get; set; }
         internal ME3Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
@@ -76,7 +76,7 @@ namespace ME3Explorer.Packages
             importData.Read(header, 0, header.Length);
         }
 
-        public ME3ImportEntry Clone()
+        public IImportEntry Clone()
         {
             ME3ImportEntry newImport = (ME3ImportEntry)MemberwiseClone();
             newImport.header = (byte[])header.Clone();
@@ -86,7 +86,7 @@ namespace ME3Explorer.Packages
 
     public class ME2ImportEntry : IImportEntry
     {
-        public byte[] header;
+        public byte[] header { get; set; }
         public ME2Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
@@ -143,11 +143,24 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
+
+        public ME2ImportEntry(ME2Package pccFile, byte[] importData)
+        {
+            fileRef = pccFile;
+            header = (byte[])importData.Clone();
+        }
+
+        public IImportEntry Clone()
+        {
+            ME2ImportEntry newImport = (ME2ImportEntry)MemberwiseClone();
+            newImport.header = (byte[])header.Clone();
+            return newImport;
+        }
     }
 
     public class ME1ImportEntry : IImportEntry
     {
-        public byte[] header;
+        public byte[] header { get; set; }
         public ME1Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
@@ -203,6 +216,19 @@ namespace ME3Explorer.Packages
                 s += ObjectName;
                 return s;
             }
+        }
+
+        public ME1ImportEntry(ME1Package pccFile, byte[] importData)
+        {
+            fileRef = pccFile;
+            header = (byte[])importData.Clone();
+        }
+
+        public IImportEntry Clone()
+        {
+            ME1ImportEntry newImport = (ME1ImportEntry)MemberwiseClone();
+            newImport.header = (byte[])header.Clone();
+            return newImport;
         }
     }
 }

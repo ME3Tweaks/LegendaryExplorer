@@ -47,13 +47,11 @@ namespace ME1Explorer.Unreal.Classes
 
         public int GetNatIdx()
         {
-            BitConverter.IsLittleEndian = true;
             return BitConverter.ToInt16(memory, memsize - 15);
         }
 
         public int GetFlagInt()
         {
-            BitConverter.IsLittleEndian = true;
             return BitConverter.ToInt32(memory, memsize - 12);
         }
 
@@ -76,7 +74,6 @@ namespace ME1Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            BitConverter.IsLittleEndian = true;
             ReadHeader();
             script = new byte[memsize - 44];
             for (int i = 44; i < memsize; i++)

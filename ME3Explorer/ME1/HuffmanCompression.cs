@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -83,8 +84,6 @@ namespace ME1Explorer
 
         public void replaceTlkwithFile(ME1Package pcc, int Index)
         {
-            BitConverter.IsLittleEndian = true;
-
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
 

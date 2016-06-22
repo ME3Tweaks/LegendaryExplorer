@@ -4,7 +4,7 @@ namespace ME3Explorer.Packages
 {
     public class ME3ExportEntry : IExportEntry
     {
-        internal byte[] header;
+        public byte[] header { get; set; }
         public ME3Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
         public uint headerOffset { get; set; }
@@ -20,6 +20,7 @@ namespace ME3Explorer.Packages
         public string ObjectName { get { return fileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
         public string ClassParent { get { int val = idxClassParent; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
+        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return fileRef.getNameEntry(fileRef.getEntry(val).idxObjectName); else return "None"; } }
 
         public string PackageName
         {
@@ -64,9 +65,7 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
-
-        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return fileRef.getNameEntry(fileRef.getEntry(val).idxObjectName); else return "None"; } }
-
+        
         public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
         public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
         public int DataOffsetTmp;
@@ -84,16 +83,7 @@ namespace ME3Explorer.Packages
                 return _data;
             }
 
-            set { _data = value; hasChanged = true; }
-        }
-
-        public bool likelyCoalescedVal
-        {
-            get
-            {
-                return (Data.Length < 25) ? false : (Data[25] == 64); //0x40
-            }
-            set { }
+            set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
 
         public bool hasChanged { get; internal set; }
@@ -106,12 +96,12 @@ namespace ME3Explorer.Packages
             hasChanged = false;
         }
 
-        public ME3ExportEntry()
+        public ME3ExportEntry(ME3Package pccFile)
         {
-            // TODO: Complete member initialization
+            fileRef = pccFile;
         }
 
-        public ME3ExportEntry Clone()
+        public IExportEntry Clone()
         {
             ME3ExportEntry newExport = (ME3ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
                                                                                // now creates new copies of referenced objects
@@ -134,7 +124,7 @@ namespace ME3Explorer.Packages
 
     public class ME2ExportEntry : IExportEntry
     {
-        internal byte[] header;
+        public byte[] header { get; set; }
         public ME2Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
@@ -203,11 +193,36 @@ namespace ME3Explorer.Packages
         {
             get { return _data; }
 
-            set { _data = value; hasChanged = true; }
+            set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
 
         public bool hasChanged { get; internal set; }
         public uint headerOffset { get; set; }
+
+        public ME2ExportEntry(ME2Package pccFile)
+        {
+            fileRef = pccFile;
+        }
+
+        public IExportEntry Clone()
+        {
+            ME2ExportEntry newExport = (ME2ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
+                                                                               // now creates new copies of referenced objects
+            newExport.header = (byte[])this.header.Clone();
+            newExport.Data = (byte[])this.Data.Clone();
+            int index = 0;
+            string name = ObjectName;
+            foreach (ME2ExportEntry ent in fileRef.Exports)
+            {
+                if (name == ent.ObjectName && ent.indexValue > index)
+                {
+                    index = ent.indexValue;
+                }
+            }
+            index++;
+            newExport.indexValue = index;
+            return newExport;
+        }
     }
 
     public class ME1ExportEntry : IExportEntry
@@ -215,7 +230,7 @@ namespace ME3Explorer.Packages
         public ME1Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
-        internal byte[] header; //Properties, not raw data
+        public byte[] header { get; set; }
         public uint headerOffset { get; set; }
         public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
         public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
@@ -228,19 +243,19 @@ namespace ME3Explorer.Packages
         public string ObjectName { get { return fileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
         public string ClassParent { get { int val = idxClassParent; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
+        public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return fileRef.Names[fileRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return fileRef.Names[fileRef.Exports[val].idxObjectName]; else return "None"; } }
 
         public string PackageName
         {
             get
             {
-                string temppack = PackageFullName;
-                if (temppack == "." || String.IsNullOrEmpty(PackageFullName))
-                    return "";
-                temppack = temppack.Remove(temppack.Length - 1);
-                if (temppack.Split('.').Length > 1)
-                    return temppack.Split('.')[temppack.Split('.').Length - 1];
-                else
-                    return temppack.Split('.')[0];
+                int val = idxLink;
+                if (val != 0)
+                {
+                    IEntry entry = fileRef.getEntry(val);
+                    return fileRef.Names[entry.idxObjectName];
+                }
+                else return "Package";
             }
         }
 
@@ -261,9 +276,7 @@ namespace ME3Explorer.Packages
                 return result;
             }
         }
-
-        public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return fileRef.Names[fileRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return fileRef.Names[fileRef.Exports[val].idxObjectName]; else return "None"; } }
-
+        
         public string GetFullPath
         {
             get
@@ -284,9 +297,34 @@ namespace ME3Explorer.Packages
         {
             get { return _data; }
 
-            set { _data = value; hasChanged = true; }
+            set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
 
         public bool hasChanged { get; internal set; }
+
+        public ME1ExportEntry(ME1Package file)
+        {
+            fileRef = file;
+        }
+
+        public IExportEntry Clone()
+        {
+            ME1ExportEntry newExport = (ME1ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
+                                                                               // now creates new copies of referenced objects
+            newExport.header = (byte[])this.header.Clone();
+            newExport.Data = (byte[])this.Data.Clone();
+            int index = 0;
+            string name = ObjectName;
+            foreach (ME1ExportEntry ent in fileRef.Exports)
+            {
+                if (name == ent.ObjectName && ent.indexValue > index)
+                {
+                    index = ent.indexValue;
+                }
+            }
+            index++;
+            newExport.indexValue = index;
+            return newExport;
+        }
     }
 }

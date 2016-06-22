@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using System;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -174,9 +176,8 @@ namespace ME1Explorer.Unreal.Classes
 
         private void ReadData()
         {
-            BitConverter.IsLittleEndian = true;
             Unk1 = BitConverter.ToInt32(Memory, 0);
-            Props = PropertyReader.getPropList(pcc, Memory);
+            Props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
             TlkFileSet = Props[FindPropByName("m_oTlkFileSet")].Value.IntValue;
             ReadStartingList();
             ReadEntryList();

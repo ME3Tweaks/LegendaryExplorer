@@ -4,39 +4,23 @@ using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 using System.Threading.Tasks;
-using ME1Explorer.Unreal;
+using ME2Explorer.Unreal;
 using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
-namespace ME1Explorer.Unreal
+namespace ME2Explorer.Unreal
 {
-    public static class UnrealObjectInfo
+    public static class ME2UnrealObjectInfo
     {
-        public class PropertyInfo
-        {
-            public PropertyReader.Type type;
-            public string reference;
-        }
-
-        public class ClassInfo
-        {
-            public Dictionary<string, PropertyInfo> properties;
-            public string baseClass; 
-
-            public ClassInfo()
-            {
-                properties = new Dictionary<string, PropertyInfo>();
-            }
-        }
-
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
         public static void loadfromJSON()
         {
-            string path = Application.StartupPath + "//exec//ME1ObjectInfo.json";
+            string path = Application.StartupPath + "//exec//ME2ObjectInfo.json";
 
             try
             {
@@ -106,20 +90,134 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false)
+        {
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            if (p == null)
+            {
+                p = getPropertyInfo(className, propName, !inStruct);
+            }
+            return getArrayType(p);
+        }
+
+        public static ArrayType getArrayType(PropertyInfo p)
+        {
+            if (p != null)
+            {
+                if (p.reference == "NameProperty")
+                {
+                    return ArrayType.Name;
+                }
+                else if (Enums.ContainsKey(p.reference))
+                {
+                    return ArrayType.Enum;
+                }
+                else if (p.reference == "BoolProperty")
+                {
+                    return ArrayType.Bool;
+                }
+                else if (p.reference == "ByteProperty")
+                {
+                    return ArrayType.Byte;
+                }
+                else if (p.reference == "StrProperty")
+                {
+                    return ArrayType.String;
+                }
+                else if (p.reference == "FloatProperty")
+                {
+                    return ArrayType.Float;
+                }
+                else if (p.reference == "IntProperty")
+                {
+                    return ArrayType.Int;
+                }
+                else if (Structs.ContainsKey(p.reference))
+                {
+                    return ArrayType.Struct;
+                }
+                else
+                {
+                    return ArrayType.Object;
+                }
+            }
+            else
+            {
+                return ArrayType.Int;
+            }
+        }
+
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
+        {
+            if (className.StartsWith("Default__"))
+            {
+                className = className.Substring(9);
+            }
+            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            {
+                ClassInfo info = temp[className];
+                //look in class properties
+                if (info.properties.ContainsKey(propName))
+                {
+                    return info.properties[propName];
+                }
+                //look in structs
+                else
+                {
+                    foreach (PropertyInfo p in info.properties.Values)
+                    {
+                        if (p.type == PropertyReader.Type.StructProperty || p.type == PropertyReader.Type.ArrayProperty)
+                        {
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true);
+                            if (val != null)
+                            {
+                                return val;
+                            }
+                        }
+                    }
+                }
+                //look in base class
+                if (temp.ContainsKey(info.baseClass))
+                {
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct);
+                    if (val != null)
+                    {
+                        return val;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static bool inheritsFrom(this ME2ExportEntry entry, string baseClass)
+        {
+            string className = entry.ClassName;
+            while (Classes.ContainsKey(className))
+            {
+                if (className == baseClass)
+                {
+                    return true;
+                }
+                className = Classes[className].baseClass;
+            }
+            return false;
+        }
+
         #region Generating
-        //call this method to regenerate ME1ObjectInfo.json
+        //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
-            ME1Package pcc;
-            string path = ME1Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            ME2Package pcc;
+            string path = ME2Directory.gamePath;
+            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
             string objectName;
             for (int i = 0; i < files.Length; i++)
             {
-                if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
+                if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    pcc = new ME1Package(files[i]);
+                    pcc = new ME2Package(files[i]);
                     for (int j = 0; j < pcc.Exports.Count; j++)
                     {
                         if (pcc.Exports[j].ClassName == "Enum")
@@ -146,15 +244,15 @@ namespace ME1Explorer.Unreal
                     }
                 }
             }
-            File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
+            File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
             MessageBox.Show("Done");
         }
 
-        private static ClassInfo generateClassInfo(int index, ME1Package pcc)
+        private static ClassInfo generateClassInfo(int index, ME2Package pcc)
         {
             ClassInfo info = new ClassInfo();
             info.baseClass = pcc.Exports[index].ClassParent;
-            foreach (ME1ExportEntry entry in pcc.Exports)
+            foreach (ME2ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
@@ -173,7 +271,7 @@ namespace ME1Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(int index, ME1Package pcc)
+        private static void generateEnumValues(int index, ME2Package pcc)
         {
             string enumName = pcc.Exports[index].ObjectName;
             if (!Enums.ContainsKey(enumName))
@@ -189,7 +287,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(ME1Package pcc, ME1ExportEntry entry)
+        private static PropertyInfo getProperty(ME2Package pcc, ME2ExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

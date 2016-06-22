@@ -23,6 +23,7 @@ using UMD.HCIL.GraphEditor;
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME2Explorer
 {
@@ -133,9 +134,9 @@ namespace ME2Explorer
             string objectName = "";
             if (refSeq)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
                 for (int i = 0; i < p.Count(); i++)
-                    if (p[i].Name == "ObjName")
+                    if (pcc.getNameEntry(p[i].Name) == "ObjName")
                     {
                         objectName = p[i].Value.StringValue;
                         break;
@@ -157,7 +158,7 @@ namespace ME2Explorer
                     }
                     else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
                     {
-                        var props = SaltPropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1].Data);
+                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1]);
                         var propSequenceReference = props.FirstOrDefault(p => p.Name.Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -209,9 +210,9 @@ namespace ME2Explorer
                 {
                     if (pcc.Exports[pcc.Exports[idx].idxLink - 1].ClassName == "SequenceReference")
                     {
-                        List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
+                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[idx]);
                         for (int i = 0; i < p.Count(); i++)
-                            if (p[i].Name == "ObjName")
+                            if (pcc.getNameEntry(p[i].Name) == "ObjName")
                             {
                                 ObjName = p[i].Value.StringValue;
                                 goto LoopOver;
@@ -391,8 +392,7 @@ namespace ME2Explorer
             switch (pcc.Exports[n].ClassName)
             {
                 default:
-                    byte[] buff = pcc.Exports[n].Data;
-                    p = PropertyReader.getPropList(pcc, buff);
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     break;
             }
             pg = new PropGrid();
@@ -644,10 +644,9 @@ namespace ME2Explorer
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
-            PCCEditor p = new PCCEditor();
-            p.pcc = new ME2Package(CurrentFile);
-            p.loadPCC();
-            p.listBox1SelectIndex(l);
+            ME3Explorer.PackageEditor p = new ME3Explorer.PackageEditor();
+            p.LoadFile(CurrentFile);
+            p.listBox1.SelectedIndex = l;
         }
 
         private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -674,10 +673,8 @@ namespace ME2Explorer
                 {
                     if (!CurrentObjects.Contains(i))
                     {
-                        byte[] buff = pcc.Exports[SequenceIndex].Data;
-                        List<byte> ListBuff = new List<byte>(buff);
-                        BitConverter.IsLittleEndian = true;
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+                        List<byte> ListBuff = new List<byte>(pcc.Exports[SequenceIndex].Data);
+                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[SequenceIndex]);
                         for (int j = 0; j < p.Count(); j++)
                         {
                             if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
@@ -739,8 +736,7 @@ namespace ME2Explorer
             {
                 name = parent.Label;
             }
-            byte[] buff = pcc.Exports[n].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.Names[p[i].Name] == name)

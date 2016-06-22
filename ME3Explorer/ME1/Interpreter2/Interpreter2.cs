@@ -8,6 +8,7 @@ using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using System.Diagnostics;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer.Interpreter2
 {
@@ -87,7 +88,7 @@ namespace ME1Explorer.Interpreter2
             // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
             if (editorTalkset == null)
             {
-                PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc, pcc.Exports[Index].Data).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
+                PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc, pcc.Exports[Index]).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
                 if(tlkSetRef != null)
                 {
                     tlkset = new BioTlkFileSet(pcc, tlkSetRef.Value.IntValue - 1);
@@ -120,7 +121,6 @@ namespace ME1Explorer.Interpreter2
         {
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
-            BitConverter.IsLittleEndian = true;
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             topLevelTree = GenerateTree(topLevelTree, topLevelHeaders);
@@ -133,7 +133,6 @@ namespace ME1Explorer.Interpreter2
         public TreeNode Scan()
         {
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
-            BitConverter.IsLittleEndian = true;
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode t = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             return GenerateTree(t, topLevelHeaders);
@@ -639,7 +638,7 @@ namespace ME1Explorer.Interpreter2
                         {
                             try
                             {
-                                List<string> values = UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
+                                List<string> values = ME1UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
                                 if (values != null)
                                 {
                                     enumDropdown.Items.Clear();

@@ -15,10 +15,10 @@ namespace ME3Explorer
 {
     public partial class InterpreterHost : Form
     {
-        public InterpreterHost(ME3Package pcc, int index)
+        public InterpreterHost(IMEPackage pcc, int index)
         {
             InitializeComponent();
-            string className = pcc.Exports[index].ClassName;
+            string className = pcc.IExports[index].ClassName;
             interpreter1.Pcc = pcc;
             interpreter1.Index = index;
             interpreter1.InitInterpreter();

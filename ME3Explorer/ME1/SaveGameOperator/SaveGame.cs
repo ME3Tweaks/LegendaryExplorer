@@ -34,7 +34,6 @@ namespace ME1Explorer
                 m.Write(buff, 0, len);
                 fs.Close();
                 complete = m;
-                BitConverter.IsLittleEndian = true;
                 m.Seek(8, SeekOrigin.Begin);
                 int off = ReadInt(m);
                 int len2 = len - off;
@@ -141,7 +140,6 @@ namespace ME1Explorer
             fs3.Close();
             zipfile = new MemoryStream(buff);
             File.Delete("temp.zip");
-            BitConverter.IsLittleEndian = true;
             MemoryStream m = new MemoryStream();
             complete.Seek(8, SeekOrigin.Begin);
             int off = ReadInt(complete);

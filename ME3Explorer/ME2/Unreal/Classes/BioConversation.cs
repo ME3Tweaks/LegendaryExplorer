@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using ME3Explorer;
 
 namespace ME2Explorer.Unreal.Classes
 {
@@ -11,7 +13,7 @@ namespace ME2Explorer.Unreal.Classes
         public int MyIndex;
         public int Unk1;
         public byte[] Memory;
-        public List<SaltPropertyReader.Property> Props;
+        public List<PropertyReader.Property> Props;
         public List<int> StartingList;
         public List<SpeakerListStruct> SpeakerList;
         public List<int> MaleFaceSets;
@@ -175,7 +177,7 @@ namespace ME2Explorer.Unreal.Classes
         {
             BitConverter.IsLittleEndian = true;
             Unk1 = BitConverter.ToInt32(Memory, 0);
-            Props = SaltPropertyReader.getPropList(pcc, Memory);
+            Props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
             ReadStartingList();
             ReadEntryList();
             ReadReplyList();
@@ -189,7 +191,7 @@ namespace ME2Explorer.Unreal.Classes
         {
             int res = -1;
             for (int i = 0; i < Props.Count; i++)
-                if (Props[i].Name == name)
+                if (pcc.getNameEntry(Props[i].Name) == name)
                     res = i;
             return res;
         }
@@ -217,11 +219,11 @@ namespace ME2Explorer.Unreal.Classes
             int pos = 0x1C;
             for (int i = 0; i < count; i++)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.ReadProp(pcc, buff, pos);
+                List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 EntryListStuct e = new EntryListStuct();
-                foreach (SaltPropertyReader.Property pp in p)
+                foreach (PropertyReader.Property pp in p)
                 {
-                    switch (pp.Name)
+                    switch (pcc.getNameEntry(pp.Name))
                     {
                         case"ReplyListNew":
                             byte[] buff2 = pp.raw;
@@ -230,10 +232,10 @@ namespace ME2Explorer.Unreal.Classes
                             e.ReplyList = new List<EntryListReplyListStruct>();
                             for (int j = 0; j < count2; j++)
                             {
-                                List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, buff2, pos2);
+                                List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, buff2, pos2);
                                 EntryListReplyListStruct r = new EntryListReplyListStruct();
-                                foreach(SaltPropertyReader.Property ppp in p2)
-                                    switch (ppp.Name)
+                                foreach(PropertyReader.Property ppp in p2)
+                                    switch (pcc.getNameEntry(ppp.Name))
                                     {
                                         case "sParaphrase":
                                             r.Paraphrase = ppp.Value.StringValue; 
@@ -332,11 +334,11 @@ namespace ME2Explorer.Unreal.Classes
             int pos = 0x1C;
             for (int i = 0; i < count; i++)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.ReadProp(pcc, buff, pos);
+                List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 ReplyListStruct e = new ReplyListStruct();
-                foreach (SaltPropertyReader.Property pp in p)
+                foreach (PropertyReader.Property pp in p)
                 {
-                    switch (pp.Name)
+                    switch (pcc.getNameEntry(pp.Name))
                     {
                         case "EntryList":
                             byte[] buff2 = pp.raw;
@@ -420,7 +422,7 @@ namespace ME2Explorer.Unreal.Classes
             int pos = 0x1C;
             for (int i = 0; i < count; i++)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.ReadProp(pcc, buff, pos);
+                List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 SpeakerListStruct sp = new SpeakerListStruct();
                 sp.SpeakerTag = p[0].Value.IntValue;
                 sp.Text = pcc.getNameEntry(sp.SpeakerTag);
@@ -440,7 +442,7 @@ namespace ME2Explorer.Unreal.Classes
             int pos = 0x1C;
             for (int i = 0; i < count; i++)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.ReadProp(pcc, buff, pos);
+                List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 ScriptListStruct sd = new ScriptListStruct();
                 sd.ScriptTag = p[0].Value.IntValue;
                 sd.Text = pcc.getNameEntry(sd.ScriptTag);
@@ -692,8 +694,8 @@ namespace ME2Explorer.Unreal.Classes
                 return;
             MemoryStream m = new MemoryStream();
             m.Write(BitConverter.GetBytes(Unk1), 0, 4);
-            foreach(SaltPropertyReader.Property p in Props)
-                switch (p.Name)
+            foreach(PropertyReader.Property p in Props)
+                switch (pcc.getNameEntry(p.Name))
                 {
                     case "m_StartingList":
                         m.Write(p.raw, 0, 0x10);

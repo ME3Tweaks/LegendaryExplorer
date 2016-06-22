@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
+using ME3Explorer;
 
 namespace ME2Explorer
 {

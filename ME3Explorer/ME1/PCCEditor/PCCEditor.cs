@@ -14,6 +14,7 @@ using ME1Explorer.Unreal.Classes;
 using System.Diagnostics;
 using System.Collections;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer
 {
@@ -415,7 +416,7 @@ namespace ME1Explorer
             int n = GetSelected();
             if (n == -1 || !(CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW))
                 return;
-            List<SaltPropertyReader.Property> p;
+            List<PropertyReader.Property> p;
             //propGrid.Visible = true;
             //hb1.Visible = false;
             //rtb1.Visible = false;
@@ -423,8 +424,7 @@ namespace ME1Explorer
             switch (pcc.Exports[n].ClassName)
             {
                 default:
-                    byte[] buff = pcc.Exports[n].Data;
-                    p = SaltPropertyReader.getPropList(pcc, buff);
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     break;
             }
             pg = new PropGrid();
@@ -434,7 +434,7 @@ namespace ME1Explorer
             pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.Exports[n].DataOffset, typeof(int), true, true));
             pg.Add(new CustomProperty("Data Size", "_Meta", pcc.Exports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
-                pg.Add(SaltPropertyReader.PropertyToGrid(p[l], pcc));
+                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
             propGrid.Refresh();
             propGrid.ExpandAllGridItems();
             //UpdateStatusEx(n);
@@ -587,7 +587,6 @@ namespace ME1Explorer
             string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\ME1PCCEditorHistory.log";
             if (File.Exists(path))
             {
-                BitConverter.IsLittleEndian = true;
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 byte[] buff = new byte[4]; ;
                 fs.Read(buff, 0, 4);
@@ -624,7 +623,6 @@ namespace ME1Explorer
             if (File.Exists(path))
                 File.Delete(path);
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            BitConverter.IsLittleEndian = true;
             byte[] buff = BitConverter.GetBytes(RFiles.Count);
             fs.Write(buff, 0, 4);
             for (int i = 0; i < RFiles.Count; i++)

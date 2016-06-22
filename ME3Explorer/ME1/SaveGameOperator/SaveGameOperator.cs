@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer.SaveGameOperator
 {
@@ -25,9 +26,8 @@ namespace ME1Explorer.SaveGameOperator
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.MassEffectSave|*.MassEffectSave";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
-                BitConverter.IsLittleEndian = true;
                 Save = new SaveGame(d.FileName);
                 Save.Loaded = true;
                 LoadData();
@@ -40,10 +40,10 @@ namespace ME1Explorer.SaveGameOperator
             ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, buff);
-            foreach (SaltPropertyReader.Property p in props)
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[1]);
+            foreach (PropertyReader.Property p in props)
             {
-                string name = p.Name;
+                string name = pcc.getNameEntry(p.Name);
                 switch (name)
                 {
                     case "m_nResourceCredits":
@@ -70,12 +70,12 @@ namespace ME1Explorer.SaveGameOperator
             ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[1]);
             int v;
             float f;
-            foreach (SaltPropertyReader.Property p in props)
+            foreach (PropertyReader.Property p in props)
             {
-                string name = p.Name;
+                string name = pcc.getNameEntry(p.Name);
                 switch (name)
                 {
                     case "m_nResourceCredits":

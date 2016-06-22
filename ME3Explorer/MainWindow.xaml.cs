@@ -32,8 +32,6 @@ namespace ME3Explorer
             Tools.InitializeTools();
             utilitiesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
             favoritesPanel.setToolList(Tools.items.Where(x => !x.tags.Contains("utility")));
-            System.Windows.Forms.Application.EnableVisualStyles();
-            WindowsFormsHost.EnableWindowsFormsInterop();
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)

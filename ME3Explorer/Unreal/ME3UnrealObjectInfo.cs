@@ -11,61 +11,8 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
-    public static class UnrealObjectInfo
+    public static class ME3UnrealObjectInfo
     {
-        public enum ArrayType
-        {
-            Object,
-            Name,
-            Enum,
-            Struct,
-            Bool,
-            String,
-            Float,
-            Int,
-            Byte,
-        }
-
-        public class PropertyInfo
-        {
-            public PropertyReader.Type type;
-            public string reference;
-        }
-
-        //public struct NameReference
-        //{
-        //    string name;
-        //    int index;
-        //}
-
-        //public class DefaultValue
-        //{
-        //    int intValue;
-        //    float floatValue;
-        //    NameReference nameValue;
-        //    bool boolValue;
-        //    byte byteValue;
-        //    string stringValue;
-        //    Dictionary<string, DefaultValue> structValue;
-        //    List<NameReference> nameArrayValue;
-        //    List<string> stringArrayValue;
-        //    List<bool> boolArrayValue;
-        //    List<Dictionary<string, DefaultValue>> structArrayValue;
-        //}
-
-        public class ClassInfo
-        {
-            public Dictionary<string, PropertyInfo> properties;
-            public string baseClass;
-            //Relative to BIOGame
-            public string pccPath;
-            public int exportIndex;
-
-            public ClassInfo()
-            {
-                properties = new Dictionary<string, PropertyInfo>();
-            }
-        }
 
         public class SequenceObjectInfo
         {
@@ -351,7 +298,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(this IEntry entry, string baseClass)
+        public static bool inheritsFrom(this ME3ExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))

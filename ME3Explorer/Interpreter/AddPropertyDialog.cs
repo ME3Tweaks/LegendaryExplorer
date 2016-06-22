@@ -23,7 +23,7 @@ namespace ME3Explorer
         private void classListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string className = classListBox.SelectedItem as string;
-            List<string> props = UnrealObjectInfo.Classes[className].properties.Keys.Except(extantProps).ToList();
+            List<string> props = ME3UnrealObjectInfo.Classes[className].properties.Keys.Except(extantProps).ToList();
             props.Sort();
             propListBox.DataSource = props;
         }
@@ -37,10 +37,10 @@ namespace ME3Explorer
         {
             string temp = className;
             List<string> classes = new List<string>();
-            while (UnrealObjectInfo.Classes.ContainsKey(temp) && temp != "Object")
+            while (ME3UnrealObjectInfo.Classes.ContainsKey(temp) && temp != "Object")
             {
                 classes.Add(temp);
-                temp = UnrealObjectInfo.Classes[temp].baseClass;
+                temp = ME3UnrealObjectInfo.Classes[temp].baseClass;
             }
             classes.Reverse();
             AddPropertyDialog prompt = new AddPropertyDialog();

@@ -2,31 +2,75 @@
 
 namespace ME3Explorer.Packages
 {
+    public enum MEGame
+    {
+        ME1 = 1,
+        ME2,
+        ME3,
+    }
+
+    public enum ArrayType
+    {
+        Object,
+        Name,
+        Enum,
+        Struct,
+        Bool,
+        String,
+        Float,
+        Int,
+        Byte,
+    }
+
+    public class PropertyInfo
+    {
+        public Unreal.PropertyReader.Type type;
+        public string reference;
+    }
+
+    public class ClassInfo
+    {
+        public Dictionary<string, PropertyInfo> properties;
+        public string baseClass;
+        //Relative to BIOGame
+        public string pccPath;
+        public int exportIndex;
+
+        public ClassInfo()
+        {
+            properties = new Dictionary<string, PropertyInfo>();
+        }
+    }
+
     public interface IMEPackage
     {
         bool bCompressed { get; set; }
         bool canReconstruct { get; }
-        List<IExportEntry> IExports { get; }
-        string fileName { get; }
-        int ImportOffset { get; set; }
-        List<IImportEntry> IImports { get; }
         bool isModified { get; }
+        int ImportOffset { get; set; }
+        List<IExportEntry> IExports { get; }
+        List<IImportEntry> IImports { get; }
+        List<string> Names { get; set; }
+        MEGame game { get; }
+        string fileName { get; }
 
-        void addExport(IExportEntry exportEntry);
-        void addImport(IImportEntry importEntry);
-        void addName(string name);
         bool canClone();
-        int findName(string nameToFind);
-        int FindNameOrAdd(string name);
-        string getClassName(int index);
-        IEntry getEntry(int index);
-        string getNameEntry(int index);
-        string getObjectClass(int index);
-        string getObjectName(int index);
         bool isExport(int index);
         bool isImport(int index);
         bool isName(int index);
+        IEntry getEntry(int index);
+        int findName(string nameToFind);
+        int FindNameOrAdd(string name);
+        string appendSave(string newFileName, bool attemptOverwrite = true, int HeaderNameOffset = 34);
+        string getClassName(int index);
+        string getNameEntry(int index);
+        string getObjectClass(int index);
+        string getObjectName(int index);
+        void addExport(IExportEntry exportEntry);
+        void addImport(IImportEntry importEntry);
+        void addName(string name);
         void save();
         void save(string path);
+        void saveByReconstructing(string path);
     }
 }

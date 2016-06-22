@@ -48,8 +48,7 @@ namespace ME1Explorer.SaveGameEditor
                 m.Write(buff, 0, len);
                 fs.Close();
                 Save = new SaveGame();
-                Save.complete = m;
-                BitConverter.IsLittleEndian = true;                
+                Save.complete = m;             
                 m.Seek(8, SeekOrigin.Begin);
                 int off = ReadInt(m);
                 int len2 = len - off;
@@ -116,7 +115,7 @@ namespace ME1Explorer.SaveGameEditor
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.MassEffectSave|*.MassEffectSave";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 byte[] buff;
@@ -141,7 +140,6 @@ namespace ME1Explorer.SaveGameEditor
                 fs3.Close();
                 Save.zipfile = new MemoryStream(buff);
                 File.Delete("temp.zip");
-                BitConverter.IsLittleEndian = true;
                 MemoryStream m = new MemoryStream();
                 Save.complete.Seek(8, SeekOrigin.Begin);
                 int off = ReadInt(Save.complete);

@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME2Explorer.Interpreter2
 {
@@ -103,7 +104,6 @@ namespace ME2Explorer.Interpreter2
         {
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
-            BitConverter.IsLittleEndian = true;
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             topLevelTree = GenerateTree(topLevelTree, topLevelHeaders);
@@ -116,7 +116,6 @@ namespace ME2Explorer.Interpreter2
         public TreeNode Scan()
         {
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.Exports[Index].ObjectFlags);
-            BitConverter.IsLittleEndian = true;
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode t = new TreeNode("0000 : " + pcc.Exports[Index].ObjectName);
             return GenerateTree(t, topLevelHeaders);
@@ -622,7 +621,7 @@ namespace ME2Explorer.Interpreter2
                         {
                             try
                             {
-                                List<string> values = UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
+                                List<string> values = ME2UnrealObjectInfo.getEnumfromProp(pcc.Exports[Index].ClassName, pcc.getNameEntry(BitConverter.ToInt32(memory, pos)));
                                 if (values != null)
                                 {
                                     enumDropdown.Items.Clear();

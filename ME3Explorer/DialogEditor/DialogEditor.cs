@@ -339,7 +339,7 @@ namespace ME3Explorer.DialogEditor
                         rp.IsMajorDecision = (result == "1");
                         break;
                     case "ReplyType":
-                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EReplyTypes"), pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
+                        result = InputComboBox.GetValue("Please select new value", ME3UnrealObjectInfo.getEnumValues("EReplyTypes"), pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
                         if (result == "") return;
                         rp.ReplyTypeValue= pcc.FindNameOrAdd(result);
                         break;
@@ -419,7 +419,7 @@ namespace ME3Explorer.DialogEditor
                         rp.AlwaysHideSubtitle = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME3UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
                         if (result == "") return;
                         rp.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
@@ -625,7 +625,7 @@ namespace ME3Explorer.DialogEditor
                         el.AlwaysHideSubtitle = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(el.GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME3UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(el.GUIStyleValue));
                         if (result == "") return;
                         el.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
@@ -650,7 +650,7 @@ namespace ME3Explorer.DialogEditor
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new StringRef value for \"refParaphrase\"", "ME3Explorer", rpe.refParaphrase.ToString(), 0, 0);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.refParaphrase = i;
-                    result = InputComboBox.GetValue("Please select new value for \"Category\"", UnrealObjectInfo.getEnumValues("EReplyCategory"), pcc.getNameEntry(rpe.CategoryValue));
+                    result = InputComboBox.GetValue("Please select new value for \"Category\"", ME3UnrealObjectInfo.getEnumValues("EReplyCategory"), pcc.getNameEntry(rpe.CategoryValue));
                     if (result == "") return;
                     rpe.CategoryValue = pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;

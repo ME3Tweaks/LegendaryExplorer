@@ -191,14 +191,18 @@ namespace ME3Explorer
             r.Close();
         }
 
-        public String findDataById(int strRefID)
+        public string findDataById(int strRefID, bool withFileName = false)
         {
-            String data = "No Data";
+            string data = "No Data";
             for (int i = 0; i < StringRefs.Count; i++)
             {
                 if (StringRefs[i].StringID == strRefID)
                 {
                     data = "\"" + StringRefs[i].Data + "\"";
+                    if (withFileName)
+                    {
+                        data += " (" + name + ")";
+                    }
                     break;
                 }
             }

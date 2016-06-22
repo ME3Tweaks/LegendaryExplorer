@@ -1141,7 +1141,7 @@ namespace ME3Explorer
 
         private void cloneObject(int n, bool topLevel = true)
         {
-            ME3ExportEntry exp = pcc.Exports[n].Clone();
+            ME3ExportEntry exp = pcc.Exports[n].Clone() as ME3ExportEntry;
             //needs to have the same index to work properly
             if (exp.ClassName == "SeqVar_External")
             {

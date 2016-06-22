@@ -32,7 +32,6 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appendSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reconstructionSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.scanForCoalescedValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +80,7 @@
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
+            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -130,7 +130,6 @@
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -173,7 +172,6 @@
             this.saveToolStripMenuItem,
             this.appendSaveMenuItem,
             this.reconstructionSaveMenuItem,
-            this.scanForCoalescedValuesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -183,7 +181,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -192,7 +190,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -200,7 +198,7 @@
             // appendSaveMenuItem
             // 
             this.appendSaveMenuItem.Name = "appendSaveMenuItem";
-            this.appendSaveMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.appendSaveMenuItem.Size = new System.Drawing.Size(185, 22);
             this.appendSaveMenuItem.Text = "Save As (append)";
             this.appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
             this.appendSaveMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -208,29 +206,20 @@
             // reconstructionSaveMenuItem
             // 
             this.reconstructionSaveMenuItem.Name = "reconstructionSaveMenuItem";
-            this.reconstructionSaveMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.reconstructionSaveMenuItem.Size = new System.Drawing.Size(185, 22);
             this.reconstructionSaveMenuItem.Text = "Save As (reconstruct)";
             this.reconstructionSaveMenuItem.ToolTipText = "Save changes by reconstructing the PCC";
             this.reconstructionSaveMenuItem.Click += new System.EventHandler(this.reconstructionSave_Click);
             // 
-            // scanForCoalescedValuesToolStripMenuItem
-            // 
-            this.scanForCoalescedValuesToolStripMenuItem.Name = "scanForCoalescedValuesToolStripMenuItem";
-            this.scanForCoalescedValuesToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.scanForCoalescedValuesToolStripMenuItem.Text = "Scan for Coalesced Values";
-            this.scanForCoalescedValuesToolStripMenuItem.ToolTipText = "Enable/Disable scanning exports for Coalesced flag. Turning this on will make all" +
-    " export data be loaded, which make take a long time.";
-            this.scanForCoalescedValuesToolStripMenuItem.Click += new System.EventHandler(this.scanForCoalescedValuesToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(208, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -653,6 +642,15 @@
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
+            // 
+            // interpreterControl
+            // 
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Pcc = null;
+            this.interpreterControl.Size = new System.Drawing.Size(654, 388);
+            this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -1130,15 +1128,6 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(654, 388);
-            this.interpreterControl.TabIndex = 0;
-            // 
             // PackageEditor
             // 
             this.AllowDrop = true;
@@ -1270,7 +1259,6 @@
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
         private Be.Windows.Forms.HexBox hb2;
-        private System.Windows.Forms.ToolStripMenuItem scanForCoalescedValuesToolStripMenuItem;
         private System.Windows.Forms.TextBox superclassTextBox;
         private System.Windows.Forms.Label superclassLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;

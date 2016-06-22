@@ -14,6 +14,7 @@ namespace ME3Explorer.Packages
 {
     public class ME3Package : IMEPackage
     {
+        public MEGame game { get { return MEGame.ME3; } }
         public string fileName { get; private set; }
 
         static int headerSize = 0x8E;
@@ -93,7 +94,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return Exports.Cast<IExportEntry>().ToList();
+                return Exports.ToList<IExportEntry>();
             }
         }
 
@@ -101,7 +102,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return Imports.Cast<IImportEntry>().ToList();
+                return Imports.ToList<IImportEntry>();
             }
         }
 
@@ -119,7 +120,7 @@ namespace ME3Explorer.Packages
         ///     PCCObject class constructor. It also load namelist, importlist and exportinfo (not exportdata) from pcc file
         /// </summary>
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
-        public ME3Package(string pccFilePath, bool fullFileInMemory = false)
+        public ME3Package(string pccFilePath)
         {
             fileName = Path.GetFullPath(pccFilePath);
             using (FileStream pccStream = File.OpenRead(fileName))
@@ -313,13 +314,23 @@ namespace ME3Explorer.Packages
                 appendSave(path, true);
             }
         }
-        
+
         /// <summary>
         ///     save PCCObject to file by reconstruction from data
         /// </summary>
         /// <param name="path">full path + file name.</param>
         /// <param name="compress">true if you want a zlib compressed pcc file.</param>
-        public void saveByReconstructing(string path, bool compress = false)
+        public void saveByReconstructing(string path)
+        {
+            saveByReconstructing(path, false);
+        }
+
+        /// <summary>
+        ///     save PCCObject to file by reconstruction from data
+        /// </summary>
+        /// <param name="path">full path + file name.</param>
+        /// <param name="compress">true if you want a zlib compressed pcc file.</param>
+        public void saveByReconstructing(string path, bool compress)
         {
             try
             {
@@ -383,7 +394,7 @@ namespace ME3Explorer.Packages
 
                 if (compress)
                 {
-                    PCCHandler.CompressAndSave(m, path);
+                    MEPackageHandler.CompressAndSave(m, path);
                 }
                 else
                 {
@@ -462,7 +473,7 @@ namespace ME3Explorer.Packages
             byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
             if (this.bCompressed)
             {
-                oldPCC = PCCHandler.Decompress(fileName).Take(lastDataOffset).ToArray();
+                oldPCC = MEPackageHandler.Decompress(fileName).Take(lastDataOffset).ToArray();
             }
             else
             {

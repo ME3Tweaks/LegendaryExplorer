@@ -21,6 +21,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME2Explorer.SequenceObjects
 {
@@ -83,11 +84,10 @@ namespace ME2Explorer.SequenceObjects
         protected string GetComment(int index)
         {
             string res = "";
-            byte[] buff = pcc.Exports[index].Data;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (p[i].Name == "m_aObjComment")
+                if (pcc.getNameEntry(p[i].Name) == "m_aObjComment")
                 {
                     f = i;
                     break;
@@ -95,7 +95,6 @@ namespace ME2Explorer.SequenceObjects
             if (f != -1)
             {
                 byte[] buff2 = p[f].raw;
-                BitConverter.IsLittleEndian = true;
                 int count = BitConverter.ToInt32(buff2, 24);
                 int pos = 28;
                 for (int i = 0; i < count; i++)
@@ -186,10 +185,10 @@ namespace ME2Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (SaltPropertyReader.Property prop in props)
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            foreach (PropertyReader.Property prop in props)
             {
-                if (prop.Name == "VarName" || prop.Name == "varName")
+                if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
                 {
                     SText VarName = new SText(prop.Value.StringValue, Color.Red, false);
                     VarName.Pickable = false;
@@ -209,8 +208,8 @@ namespace ME2Explorer.SequenceObjects
         {
             try
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-                SaltPropertyReader.Property property;
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+                PropertyReader.Property property;
                 switch (type)
                 {
                     case VarTypes.Int:
@@ -260,9 +259,9 @@ namespace ME2Explorer.SequenceObjects
                             if (property != null)
                                 return "Plot Float\n#" + property.Value.IntValue;
                         }
-                        foreach (SaltPropertyReader.Property prop in p)
+                        foreach (PropertyReader.Property prop in p)
                         {
-                            if (prop.Name == "FloatValue")
+                            if (pcc.getNameEntry(prop.Name) == "FloatValue")
                             {
                                 return BitConverter.ToSingle(prop.raw, 24).ToString();
                             }
@@ -297,13 +296,13 @@ namespace ME2Explorer.SequenceObjects
                     case VarTypes.Object:
                         if (pcc.Exports[index].ObjectName == "SeqVar_Player")
                             return "Player";
-                        foreach (SaltPropertyReader.Property prop in p)
+                        foreach (PropertyReader.Property prop in p)
                         {
-                            if (prop.Name == "m_sObjectTagToFind")
+                            if (pcc.getNameEntry(prop.Name) == "m_sObjectTagToFind")
                             {
                                 return prop.Value.StringValue;
                             }
-                            else if (prop.Name == "ObjValue")
+                            else if (pcc.getNameEntry(prop.Name) == "ObjValue")
                             {
                                 if (prop.Value.IntValue > 0)
                                 {
@@ -317,35 +316,35 @@ namespace ME2Explorer.SequenceObjects
                         }
                         return "???";
                     case VarTypes.StrRef:
-                        foreach (SaltPropertyReader.Property prop in p)
+                        foreach (PropertyReader.Property prop in p)
                         {
-                            if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
+                            if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
                             {
                                 return TalkFiles.findDataById(prop.Value.IntValue);
                             }
                         }
                         return "???";
                     case VarTypes.String:
-                        foreach (SaltPropertyReader.Property prop in p)
+                        foreach (PropertyReader.Property prop in p)
                         {
-                            if (prop.Name == "StrValue")
+                            if (pcc.getNameEntry(prop.Name) == "StrValue")
                             {
                                 return prop.Value.StringValue;
                             }
                         }
                         return "???";
                     case VarTypes.Extern:
-                        foreach (SaltPropertyReader.Property prop in p)
+                        foreach (PropertyReader.Property prop in p)
                         {
-                            if (prop.Name == "FindVarName")//Named Variable
+                            if (pcc.getNameEntry(prop.Name) == "FindVarName")//Named Variable
                             {
                                 return "< " + prop.Value.IntValue + " >";
                             }
-                            else if (prop.Name == "NameValue")//SeqVar_Name
+                            else if (pcc.getNameEntry(prop.Name) == "NameValue")//SeqVar_Name
                             {
                                 return prop.Value.StringValue;
                             }
-                            else if (prop.Name == "VariableLabel")//External
+                            else if (pcc.getNameEntry(prop.Name) == "VariableLabel")//External
                             {
                                 return "Extern:\n" + prop.Value.StringValue;
                             }
@@ -523,11 +522,10 @@ namespace ME2Explorer.SequenceObjects
         protected void GetVarLinks()
         {
             Varlinks = new List<VarLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (p[i].Name == "VariableLinks")
+                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
                 {
                     f = i;
                     break;
@@ -536,16 +534,15 @@ namespace ME2Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
                 int count = BitConverter.ToInt32(global, 24);
                 VarLink l = new VarLink();
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
                         pos += p2[i].raw.Length;
-                        if (p2[i].Name == "LinkedVariables")
+                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables")
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             l.Links = new List<int>();
@@ -564,17 +561,17 @@ namespace ME2Explorer.SequenceObjects
                                 l.offsets.Add(-1);
                             }
                         }
-                        else if (p2[i].Name == "ExpectedType")
+                        else if (pcc.getNameEntry(p2[i].Name) == "ExpectedType")
                         {
                             l.type = getType(pcc.GetClass(p2[i].Value.IntValue));
                         }
-                        else if (p2[i].Name == "LinkDesc")
+                        else if (pcc.getNameEntry(p2[i].Name) == "LinkDesc")
                         {
                             l.Desc = p2[i].Value.StringValue;
                             if (l.Desc.EndsWith("\0"))
                                 l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
                         }
-                        else if (p2[i].Name == "bWriteable")
+                        else if (pcc.getNameEntry(p2[i].Name) == "bWriteable")
                         {
                             l.writeable = p2[i].Value.IntValue == 1;
                             if (l.writeable)
@@ -613,11 +610,10 @@ namespace ME2Explorer.SequenceObjects
         protected void GetOutputLinks()
         {
             Outlinks = new List<OutputLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (p[i].Name == "OutputLinks")
+                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
                 {
                     f = i;
                     break;
@@ -626,15 +622,14 @@ namespace ME2Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
                         pos += p2[i].raw.Length;
-                        string nm = p2[i].Name;
+                        string nm = pcc.getNameEntry(p2[i].Name);
                         if (nm == "Links")
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
@@ -649,7 +644,7 @@ namespace ME2Explorer.SequenceObjects
                                     l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
                                 for (int k = 0; k < count2; k += 1)
                                 {
-                                    List<SaltPropertyReader.Property> p3 = SaltPropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
+                                    List<PropertyReader.Property> p3 = PropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
                                     l.Links.Add(p3[0].Value.IntValue - 1);
                                     l.InputIndices.Add(p3[1].Value.IntValue);
                                     l.offsets.Add(pos + p3[0].offsetval - p2[i].raw.Length);
@@ -805,8 +800,7 @@ namespace ME2Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            byte[] buff = this.pcc.Exports[start.Index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
+            List<byte> ListBuff = new List<byte>(pcc.Exports[start.Index].Data);
             OutputLink link = new OutputLink();
             bool firstLink = false;
             foreach (OutputLink l in start.Outlinks)
@@ -844,12 +838,11 @@ namespace ME2Explorer.SequenceObjects
             }
             if (inputIndex == -1)
                 return;
-            BitConverter.IsLittleEndian = true;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[start.Index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (p[i].Name == "OutputLinks")
+                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 64);
@@ -868,10 +861,10 @@ namespace ME2Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
+                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 52);
@@ -915,8 +908,7 @@ namespace ME2Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            byte[] buff = pcc.Exports[start.Index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
+            List<byte> ListBuff = new List<byte>(pcc.Exports[start.Index].Data);
             VarLink link = new VarLink();
             bool firstLink = false;
             foreach (VarLink l in start.Varlinks)
@@ -942,12 +934,11 @@ namespace ME2Explorer.SequenceObjects
             }
             if(link.Links == null)
                 return;
-            BitConverter.IsLittleEndian = true;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[start.Index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (p[i].Name == "VariableLinks")
+                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
                 {
                     
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 4);
@@ -966,10 +957,10 @@ namespace ME2Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for(int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
+                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             if (firstLink)
                                 link.offsets.Add(pos + 28);
@@ -995,16 +986,13 @@ namespace ME2Explorer.SequenceObjects
 
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
-
-            byte[] buff = pcc.Exports[index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            BitConverter.IsLittleEndian = true;
+            List<byte> ListBuff = new List<byte>(pcc.Exports[index].Data);
             OutputLink link = Outlinks[linkconnection];
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (p[i].Name == "OutputLinks")
+                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 64);
@@ -1023,10 +1011,10 @@ namespace ME2Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
+                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1050,15 +1038,13 @@ namespace ME2Explorer.SequenceObjects
 
         public void RemoveVarlink(int linkconnection, int linkIndex)
         {
-            byte[] buff = pcc.Exports[index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            BitConverter.IsLittleEndian = true;
+            List<byte> ListBuff = new List<byte>(pcc.Exports[index].Data);
             VarLink link = Varlinks[linkconnection];
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
-                if (p[i].Name == "VariableLinks")
+                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
                 {
 
                     byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 4);
@@ -1077,10 +1063,10 @@ namespace ME2Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     for (int i = 0; i < p2.Count(); i++)
                     {
-                        if (p2[i].Name == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
+                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
                         {
                             int count2 = BitConverter.ToInt32(p2[i].raw, 24);
                             byte[] countbuff = BitConverter.GetBytes(count2 - 1);
@@ -1160,12 +1146,12 @@ namespace ME2Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (SaltPropertyReader.Property prop in props)
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            foreach (PropertyReader.Property prop in props)
             {
-                if (prop.Name.Contains("EventName") || prop.Name == "sScriptName")
+                if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
                     s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
+                else if (pcc.getNameEntry(prop.Name) == "InputLabel" || pcc.getNameEntry(prop.Name) == "sEvent")
                     s += "\n\"" + prop.Value.StringValue + "\"";
             }
             float tW = GetTitleBox(s, w);
@@ -1323,16 +1309,16 @@ namespace ME2Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (SaltPropertyReader.Property prop in props)
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            foreach (PropertyReader.Property prop in props)
             {
-                if (prop.Name == "oSequenceReference")
+                if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
                     s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
-                else if (prop.Name == "EventName" || prop.Name == "StateName")
+                else if (pcc.getNameEntry(prop.Name) == "EventName" || pcc.getNameEntry(prop.Name) == "StateName")
                     s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
+                else if (pcc.getNameEntry(prop.Name) == "OutputLabel" || pcc.getNameEntry(prop.Name) == "m_sMovieName")
                     s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (prop.Name == "m_pEffect")
+                else if (pcc.getNameEntry(prop.Name) == "m_pEffect")
                     if(prop.Value.IntValue > 0)
                         s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
                     else
@@ -1368,11 +1354,10 @@ namespace ME2Explorer.SequenceObjects
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            byte[] buff = pcc.Exports[index].Data;
-            List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
-                if (p[i].Name == "InputLinks")
+                if (pcc.getNameEntry(p[i].Name) == "InputLinks")
                 {
                     f = i;
                     break;
@@ -1381,11 +1366,10 @@ namespace ME2Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
-                    List<SaltPropertyReader.Property> p2 = SaltPropertyReader.ReadProp(pcc, global, pos);
+                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
                     InputLink l = new InputLink();
                     l.Desc = p2[0].Value.StringValue;
                     l.hasName = true;

@@ -1394,7 +1394,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 try
                 {
-                    List<string> inputLinks = UnrealObjectInfo.getSequenceObjectInfo(pcc.Exports[index].ClassName)?.inputLinks;
+                    List<string> inputLinks = ME3UnrealObjectInfo.getSequenceObjectInfo(pcc.Exports[index].ClassName)?.inputLinks;
                     if (inputLinks != null)
                     {
                         for (int i = 0; i < inputLinks.Count; i++)

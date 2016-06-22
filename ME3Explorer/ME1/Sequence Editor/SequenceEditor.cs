@@ -23,6 +23,7 @@ using UMD.HCIL.GraphEditor;
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer
 {
@@ -142,9 +143,9 @@ namespace ME1Explorer
             string objectName = "";
             if (refSeq)
             {
-                List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
                 for (int i = 0; i < p.Count(); i++)
-                    if (p[i].Name == "ObjName")
+                    if (pcc.getNameEntry(p[i].Name) == "ObjName")
                     {
                         objectName = p[i].Value.StringValue;
                         break;
@@ -166,7 +167,7 @@ namespace ME1Explorer
                     }
                     else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
                     {
-                        var props = SaltPropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1].Data);
+                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1]);
                         var propSequenceReference = props.FirstOrDefault(p => p.Name.Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -234,9 +235,9 @@ namespace ME1Explorer
                 {
                     if (pcc.Exports[pcc.Exports[idx].idxLink - 1].ClassName == "SequenceReference")
                     {
-                        List<SaltPropertyReader.Property> p = SaltPropertyReader.getPropList(pcc, pcc.Exports[idx].Data);
+                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[idx]);
                         for (int i = 0; i < p.Count(); i++)
-                            if (p[i].Name == "ObjName")
+                            if (pcc.getNameEntry(p[i].Name) == "ObjName")
                             {
                                 ObjName = p[i].Value.StringValue;
                                 goto LoopOver;
@@ -305,14 +306,14 @@ namespace ME1Explorer
                     savedInfo = SavedPositions.First(p => index == p.index);
             }
 
-            List<SaltPropertyReader.Property> props = SaltPropertyReader.getPropList(pcc, pcc.Exports[index].Data);
-            foreach (SaltPropertyReader.Property prop in props)
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            foreach (PropertyReader.Property prop in props)
             {
-                if (prop.Name == "ObjPosX")
+                if (pcc.getNameEntry(prop.Name) == "ObjPosX")
                 {
                     x = prop.Value.IntValue;
                 }
-                else if (prop.Name == "ObjPosY")
+                else if (pcc.getNameEntry(prop.Name) == "ObjPosY")
                     y = prop.Value.IntValue;
             }
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
@@ -404,8 +405,7 @@ namespace ME1Explorer
             switch (pcc.Exports[n].ClassName)
             {
                 default:
-                    byte[] buff = pcc.Exports[n].Data;
-                    p = PropertyReader.getPropList(pcc, buff);
+                    p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
                     break;
             }
             pg = new PropGrid();
@@ -688,10 +688,8 @@ namespace ME1Explorer
                 {
                     if (!CurrentObjects.Contains(i))
                     {
-                        byte[] buff = pcc.Exports[SequenceIndex].Data;
-                        List<byte> ListBuff = new List<byte>(buff);
-                        BitConverter.IsLittleEndian = true;
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+                        List<byte> ListBuff = new List<byte>(pcc.Exports[SequenceIndex].Data);
+                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[SequenceIndex]);
                         for (int j = 0; j < p.Count(); j++)
                         {
                             if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
@@ -753,8 +751,7 @@ namespace ME1Explorer
             {
                 name = parent.Label;
             }
-            byte[] buff = pcc.Exports[n].Data;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, buff);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.Names[p[i].Name] == name)

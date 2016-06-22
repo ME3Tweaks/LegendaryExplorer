@@ -20,13 +20,13 @@ namespace ME3Explorer
 {
     public partial class PackageEditor : Form
     {
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int CurrentView;
         public const int NAMES_VIEW = 0;
         public const int IMPORTS_VIEW = 1;
         public const int EXPORTS_VIEW = 2;
         public const int TREE_VIEW = 3;
-
+        private const string fileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
         public PropGrid pg;
         private string currentFile;
 
@@ -58,7 +58,7 @@ namespace ME3Explorer
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            d.Filter = fileFilter;
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -72,7 +72,7 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                pcc = new ME3Package(s);
+                pcc = MEPackageHandler.OpenMEPackage(s);
                 appendSaveMenuItem.Enabled = true;
                 appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
                 interpreterControl.Pcc = pcc;
@@ -108,19 +108,21 @@ namespace ME3Explorer
             linkComboBox.Items.Clear();
             archetypeComboBox.Items.Clear();
             List<string> Classes = new List<string>();
-            for (int i = pcc.Imports.Count - 1; i >= 0; i--)
+            List<IImportEntry> imports = pcc.IImports;
+            for (int i = imports.Count - 1; i >= 0; i--)
             {
-                Classes.Add(-(i + 1) + " : " + pcc.Imports[i].ObjectName);
+                Classes.Add(-(i + 1) + " : " + imports[i].ObjectName);
             }
             Classes.Add("0 : Class");
             int count = 1;
-            foreach (ME3ExportEntry exp in pcc.Exports)
+            List<IExportEntry> exports = pcc.IExports;
+            foreach (IExportEntry exp in exports)
             {
                 Classes.Add((count++) + " : " + exp.ObjectName);
             }
             count = 0;
             
-            int off = pcc.Imports.Count;
+            int off = imports.Count;
             if (n >= 0)
             {
                 foreach (string s in pcc.Names)
@@ -131,11 +133,11 @@ namespace ME3Explorer
                     linkComboBox.Items.Add(s);
                     archetypeComboBox.Items.Add(s);
                 }
-                NameIdx = pcc.Exports[n].idxObjectName;
-                ClassIdx = pcc.Exports[n].idxClass;
-                LinkIdx = pcc.Exports[n].idxLink;
-                IndexIdx = pcc.Exports[n].indexValue;
-                ArchetypeIdx = pcc.Exports[n].idxArchtype;
+                NameIdx = pcc.IExports[n].idxObjectName;
+                ClassIdx = pcc.IExports[n].idxClass;
+                LinkIdx = pcc.IExports[n].idxLink;
+                IndexIdx = pcc.IExports[n].indexValue;
+                ArchetypeIdx = pcc.IExports[n].idxArchtype;
 
                 archetypeLabel.Text = "Archetype";
                 indexTextBox.Visible = indexLabel.Visible = true;
@@ -159,10 +161,10 @@ namespace ME3Explorer
                     archetypeComboBox.Items.Add(count + " : " + s);
                     count++;
                 }
-                NameIdx = pcc.Imports[n].idxObjectName;
-                ClassIdx = pcc.Imports[n].idxClassName;
-                LinkIdx = pcc.Imports[n].idxLink;
-                ArchetypeIdx = pcc.Imports[n].idxPackageFile;
+                NameIdx = imports[n].idxObjectName;
+                ClassIdx = imports[n].idxClassName;
+                LinkIdx = imports[n].idxLink;
+                ArchetypeIdx = imports[n].idxPackageFile;
 
                 archetypeLabel.Text = "Package File";
                 indexTextBox.Visible = indexLabel.Visible = false;
@@ -195,9 +197,10 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             ClassNames = new List<int>();
-            for (int i = 0; i < pcc.Exports.Count; i++)
+            List<IExportEntry> exports = pcc.IExports;
+            for (int i = 0; i < exports.Count; i++)
             {
-                ClassNames.Add(pcc.Exports[i].idxClass);
+                ClassNames.Add(exports[i].idxClass);
             }
             List<string> names = ClassNames.Distinct().Select(x => pcc.getClassName(x)).ToList();
             names.Sort();
@@ -246,6 +249,8 @@ namespace ME3Explorer
             listBox1.BeginUpdate();
             treeView1.BeginUpdate();
             listBox1.Items.Clear();
+            List<IImportEntry> imports = pcc.IImports;
+            List<IExportEntry> exports = pcc.IExports;
             if (pcc == null)
             {
                 listBox1.Visible = true;
@@ -257,20 +262,20 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
                 {
-                    listBox1.Items.Add(i.ToString() + " : " + pcc.Names[i]);
+                    listBox1.Items.Add(i.ToString() + " : " + pcc.getNameEntry(i));
                 }
             }
             if (CurrentView == IMPORTS_VIEW)
             {
-                for (int i = 0; i < pcc.Imports.Count; i++)
+                for (int i = 0; i < imports.Count; i++)
                 {
                     string importStr = i.ToString() + " (0x" + (pcc.ImportOffset + (i * ME3ImportEntry.
-                        byteSize)).ToString("X4") + "): (" + pcc.Imports[i].PackageFile + ") ";
-                    if (pcc.Imports[i].PackageFullName != "Class" && pcc.Imports[i].PackageFullName != "Package")
+                        byteSize)).ToString("X4") + "): (" + imports[i].PackageFile + ") ";
+                    if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
                     {
-                        importStr += pcc.Imports[i].PackageFullName + ".";
+                        importStr += imports[i].PackageFullName + ".";
                     }
-                    importStr += pcc.Imports[i].ObjectName;
+                    importStr += imports[i].ObjectName;
                     listBox1.Items.Add(importStr);
                 }
             }
@@ -278,73 +283,69 @@ namespace ME3Explorer
             if (CurrentView == EXPORTS_VIEW)
             {
                 string PackageFullName, ClassName;
-                List<string> exports = new List<string>(pcc.Exports.Count);
-                for (int i = 0; i < pcc.Exports.Count; i++)
+                List<string> exps = new List<string>(exports.Count);
+                for (int i = 0; i < exports.Count; i++)
                 {
                     s = "";
-                    if (scanningCoalescedBits && pcc.Exports[i].likelyCoalescedVal)
-                    {
-                        s += "[C] ";
-                    }
-                    PackageFullName = pcc.Exports[i].PackageFullName;
+                    PackageFullName = exports[i].PackageFullName;
                     if (PackageFullName != "Class" && PackageFullName != "Package")
                         s += PackageFullName + ".";
-                    s += pcc.Exports[i].ObjectName;
-                    ClassName = pcc.Exports[i].ClassName;
+                    s += exports[i].ObjectName;
+                    ClassName = exports[i].ClassName;
                     if (ClassName == "ObjectProperty" || ClassName == "StructProperty")
                     {
                         //attempt to find type
-                        byte[] data = pcc.Exports[i].Data;
+                        byte[] data = exports[i].Data;
                         int importindex = BitConverter.ToInt32(data, data.Length - 4);
                         if (importindex < 0)
                         {
                             //import
                             importindex *= -1;
                             if (importindex > 0) importindex--;
-                            if (importindex <= pcc.Imports.Count)
+                            if (importindex <= imports.Count)
                             {
-                                s += " (" + pcc.Imports[importindex].ObjectName + ")";
+                                s += " (" + imports[importindex].ObjectName + ")";
                             }
                         }
                         else
                         {
                             //export
                             if (importindex > 0) importindex--;
-                            if (importindex <= pcc.Exports.Count)
+                            if (importindex <= exports.Count)
                             {
-                                s += " [" + pcc.Exports[importindex].ObjectName + "]";
+                                s += " [" + exports[importindex].ObjectName + "]";
                             }
                         }
                     }
-                    exports.Add(i.ToString() + " : " + s);
+                    exps.Add(i.ToString() + " : " + s);
                 }
-                listBox1.Items.AddRange(exports.ToArray());
+                listBox1.Items.AddRange(exps.ToArray());
             }
             if (CurrentView == TREE_VIEW)
             {
                 listBox1.Visible = false;
                 treeView1.Visible = true;
                 treeView1.Nodes.Clear();
-                int importsOffset = pcc.Exports.Count;
+                int importsOffset = exports.Count;
                 int link;
-                List<TreeNode> nodeList = new List<TreeNode>(pcc.Exports.Count + pcc.Imports.Count + 1);
+                List<TreeNode> nodeList = new List<TreeNode>(exports.Count + imports.Count + 1);
                 TreeNode node = new TreeNode(pcc.fileName);
                 node.Tag = true;
                 nodeList.Add(node);
-                for (int i = 0; i < pcc.Exports.Count; i++)
+                for (int i = 0; i < exports.Count; i++)
                 {
-                    node = new TreeNode($"(Exp){i} : {pcc.Exports[i].ObjectName}({pcc.Exports[i].ClassName})");
+                    node = new TreeNode($"(Exp){i} : {exports[i].ObjectName}({exports[i].ClassName})");
                     node.Name = i.ToString();
                     nodeList.Add(node);
                 }
-                for (int i = 0; i < pcc.Imports.Count; i++)
+                for (int i = 0; i < imports.Count; i++)
                 {
-                    node = new TreeNode($"(Imp){i} : {pcc.Imports[i].ObjectName}({pcc.Imports[i].ClassName})");
+                    node = new TreeNode($"(Imp){i} : {imports[i].ObjectName}({imports[i].ClassName})");
                     node.Name = (-i - 1).ToString();
                     nodeList.Add(node);
                 }
                 int curIndex;
-                for (int i = 1; i <= pcc.Exports.Count; i++)
+                for (int i = 1; i <= exports.Count; i++)
                 {
                     node = nodeList[i];
                     curIndex = i;
@@ -357,7 +358,7 @@ namespace ME3Explorer
                         node = nodeList[link];
                     }
                 }
-                for (int i = 1; i <= pcc.Imports.Count; i++)
+                for (int i = 1; i <= imports.Count; i++)
                 {
                     node = nodeList[i + importsOffset];
                     curIndex = -i;
@@ -442,20 +443,28 @@ namespace ME3Explorer
                     {
                         tabControl1.TabPages.Insert(1, interpreterTab);
                     }
-                    if (pcc.Exports[n].ClassName == "Function")
+                    if (pcc.IExports[n].ClassName == "Function" && pcc.game != MEGame.ME2)
                     {
                         if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
                         {
                             tabControl1.TabPages.Add(scriptTab);
                         }
-                        Function func = new Function(pcc.Exports[n].Data, pcc);
-                        rtb1.Text = func.ToRawText();
+                        if (pcc.game == MEGame.ME3)
+                        {
+                            Function func = new Function(pcc.IExports[n].Data, pcc as ME3Package);
+                            rtb1.Text = func.ToRawText();
+                        }
+                        else
+                        {
+                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(pcc.IExports[n].Data, pcc as ME1Package);
+                            rtb1.Text = func.ToRawText();
+                        }
                     }
                     else if (tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
                     {
                         tabControl1.TabPages.Remove(scriptTab);
                     }
-                    hb2.ByteProvider = new DynamicByteProvider(pcc.Exports[n].header);
+                    hb2.ByteProvider = new DynamicByteProvider(pcc.IExports[n].header);
                     if (!isRefresh)
                     {
                         interpreterControl.Index = n;
@@ -467,7 +476,7 @@ namespace ME3Explorer
                 else
                 {
                     n = -n - 1;
-                    hb2.ByteProvider = new DynamicByteProvider(pcc.Imports[n].header);
+                    hb2.ByteProvider = new DynamicByteProvider(pcc.IImports[n].header);
                     UpdateStatusIm(n);
                     if (tabControl1.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
@@ -495,19 +504,19 @@ namespace ME3Explorer
                 textBox5.Visible = label5.Visible = true;
                 textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = true;
-                textBox1.Text = pcc.Exports[n].ObjectName;
-                textBox2.Text = pcc.Exports[n].ClassName;
-                superclassTextBox.Text = pcc.Exports[n].ClassParent;
-                textBox3.Text = pcc.Exports[n].PackageFullName;
-                textBox4.Text = pcc.Exports[n].header.Length + " bytes";
-                textBox5.Text = pcc.Exports[n].indexValue.ToString();
-                textBox6.Text = pcc.Exports[n].ArchtypeName;
-                if (pcc.Exports[n].idxArchtype != 0)
-                    textBox6.Text += " (" + ((pcc.Exports[n].idxArchtype < 0) ? "imported" : "local") + " class) " + pcc.Exports[n].idxArchtype;
-                textBox10.Text = "0x" + pcc.Exports[n].ObjectFlags.ToString("X16");
-                textBox7.Text = pcc.Exports[n].DataSize + " bytes";
-                textBox8.Text = "0x" + pcc.Exports[n].DataOffset.ToString("X8");
-                textBox9.Text = pcc.Exports[n].DataOffset.ToString();
+                textBox1.Text = pcc.IExports[n].ObjectName;
+                textBox2.Text = pcc.IExports[n].ClassName;
+                superclassTextBox.Text = pcc.IExports[n].ClassParent;
+                textBox3.Text = pcc.IExports[n].PackageFullName;
+                textBox4.Text = pcc.IExports[n].header.Length + " bytes";
+                textBox5.Text = pcc.IExports[n].indexValue.ToString();
+                textBox6.Text = pcc.IExports[n].ArchtypeName;
+                if (pcc.IExports[n].idxArchtype != 0)
+                    textBox6.Text += " (" + ((pcc.IExports[n].idxArchtype < 0) ? "imported" : "local") + " class) " + pcc.IExports[n].idxArchtype;
+                textBox10.Text = "0x" + pcc.IExports[n].ObjectFlags.ToString("X16");
+                textBox7.Text = pcc.IExports[n].DataSize + " bytes";
+                textBox8.Text = "0x" + pcc.IExports[n].DataOffset.ToString("X8");
+                textBox9.Text = pcc.IExports[n].DataOffset.ToString();
             }
             else
             {
@@ -518,22 +527,22 @@ namespace ME3Explorer
                 textBox5.Visible = label5.Visible = false;
                 textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = false;
-                textBox1.Text = pcc.Imports[n].ObjectName;
-                textBox2.Text = pcc.Imports[n].ClassName;
-                textBox3.Text = pcc.Imports[n].PackageFullName;
-                textBox4.Text = pcc.Imports[n].header.Length + " bytes";
+                textBox1.Text = pcc.IImports[n].ObjectName;
+                textBox2.Text = pcc.IImports[n].ClassName;
+                textBox3.Text = pcc.IImports[n].PackageFullName;
+                textBox4.Text = pcc.IImports[n].header.Length + " bytes";
             }
         }
 
         public void UpdateStatusEx(int n)        
         {
-            toolStripStatusLabel1.Text = $"Class:{pcc.Exports[n].ClassName} Flags: 0x{pcc.Exports[n].ObjectFlags.ToString("X16")}";
+            toolStripStatusLabel1.Text = $"Class:{pcc.IExports[n].ClassName} Flags: 0x{pcc.IExports[n].ObjectFlags.ToString("X16")}";
             toolStripStatusLabel1.ToolTipText = "";
             foreach (string row in UnrealFlags.flagdesc)
             {
                 string[] t = row.Split(',');
                 ulong l = ulong.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
-                if ((l & pcc.Exports[n].ObjectFlags) != 0)
+                if ((l & pcc.IExports[n].ObjectFlags) != 0)
                 {
                     toolStripStatusLabel1.Text += "[" + t[0].Trim() + "] ";
                     toolStripStatusLabel1.ToolTipText += "[" + t[0].Trim() + "] : " + t[2].Trim() + "\n";
@@ -543,21 +552,21 @@ namespace ME3Explorer
 
         public void UpdateStatusIm(int n)
         {
-            toolStripStatusLabel1.Text = $"Class:{pcc.Imports[n].ClassName} Link: {pcc.Imports[n].idxLink} ";
+            toolStripStatusLabel1.Text = $"Class:{pcc.IImports[n].ClassName} Link: {pcc.IImports[n].idxLink} ";
             toolStripStatusLabel1.ToolTipText = "";
         }
 
         public void PreviewProps(int n)
         {
-            List<Unreal.PropertyReader.Property> p = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[n]);
             pg = new PropGrid();
             propGrid.SelectedObject = pg;
-            pg.Add(new CustomProperty("Name", "_Meta", pcc.Exports[n].ObjectName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Class", "_Meta", pcc.Exports[n].ClassName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.Exports[n].DataOffset, typeof(int), true, true));
-            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.Exports[n].DataSize, typeof(int), true, true));
+            pg.Add(new CustomProperty("Name", "_Meta", pcc.IExports[n].ObjectName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Class", "_Meta", pcc.IExports[n].ClassName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.IExports[n].DataOffset, typeof(int), true, true));
+            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.IExports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
-                pg.Add(Unreal.PropertyReader.PropertyToGrid(p[l], pcc));            
+                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));            
             propGrid.Refresh();
             propGrid.ExpandAllGridItems();
         }
@@ -616,41 +625,41 @@ namespace ME3Explorer
             {
                 parentVal = parent.Value.GetType();
             }
-            if (name == "nameindex" || name == "index" ||  parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
+            if (name == "nameindex" || name == "index" ||  parentVal == typeof(ColorProp) || parentVal == typeof(VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
             {
                 name = parent.Label;
             }
-            ME3ExportEntry ent = pcc.Exports[n];
-            List<Unreal.PropertyReader.Property> p = Unreal.PropertyReader.getPropList(pcc, ent);
+            IExportEntry ent = pcc.IExports[n];
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
-                if (pcc.Names[p[i].Name] == name)
+                if (pcc.getNameEntry(p[i].Name) == name)
                     m = i;
             if (m == -1)
                 return;
             byte[] buff2;
             switch (p[m].TypeVal)
             {
-                case Unreal.PropertyReader.Type.BoolProperty:
+                case PropertyReader.Type.BoolProperty:
                     byte res = 0;
                     if ((bool)e.ChangedItem.Value == true)
                         res = 1;
                     ent.Data[p[m].offsetval] = res;
                     break;
-                case Unreal.PropertyReader.Type.FloatProperty:
+                case PropertyReader.Type.FloatProperty:
                     buff2 = BitConverter.GetBytes((float)e.ChangedItem.Value);
                     for (int i = 0; i < 4; i++)
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
-                case Unreal.PropertyReader.Type.IntProperty:
-                case Unreal.PropertyReader.Type.StringRefProperty:                
+                case PropertyReader.Type.IntProperty:
+                case PropertyReader.Type.StringRefProperty:                
                     int newv = Convert.ToInt32(e.ChangedItem.Value);
                     int oldv = Convert.ToInt32(e.OldValue);
                     buff2 = BitConverter.GetBytes(newv);
                     for (int i = 0; i < 4; i++)
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
-                case Unreal.PropertyReader.Type.StrProperty:
+                case PropertyReader.Type.StrProperty:
                     string s = Convert.ToString(e.ChangedItem.Value);
                     int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
                     List<byte> stringBuff = new List<byte>(s.Length * 2);
@@ -684,8 +693,8 @@ namespace ME3Explorer
                     }
                     ent.Data = buff2;
                     break;
-                case Unreal.PropertyReader.Type.StructProperty:
-                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.ColorProp))
+                case PropertyReader.Type.StructProperty:
+                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(ColorProp))
                     {
                         switch (e.ChangedItem.Label)
                         {
@@ -708,7 +717,7 @@ namespace ME3Explorer
                         listBox1.SelectedIndex = -1;
                         listBox1.SelectedIndex = t;
                     }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.VectorProp))
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(VectorProp))
                     {
                         int offset = 0;
                         switch (e.ChangedItem.Label)
@@ -820,8 +829,8 @@ namespace ME3Explorer
                         }
                     }
                     break;
-                case Unreal.PropertyReader.Type.ByteProperty:
-                case Unreal.PropertyReader.Type.NameProperty:
+                case PropertyReader.Type.ByteProperty:
+                case PropertyReader.Type.NameProperty:
                     if (e.ChangedItem.Value.GetType() == typeof(int))
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
@@ -833,7 +842,7 @@ namespace ME3Explorer
                         listBox1.SelectedIndex = t;
                     }
                     break;
-                case Unreal.PropertyReader.Type.ObjectProperty:
+                case PropertyReader.Type.ObjectProperty:
                     if (e.ChangedItem.Value.GetType() == typeof(int))
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
@@ -848,7 +857,7 @@ namespace ME3Explorer
                 default:
                     return;
             }
-            pcc.Exports[n] = ent;
+            pcc.IExports[n] = ent;
             propGrid.ExpandAllGridItems();
             Preview();
         }
@@ -858,7 +867,8 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            string extension = Path.GetExtension(pcc.fileName);
+            d.Filter = $"*{extension}|*{extension}";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.appendSave(d.FileName, true);
@@ -885,7 +895,7 @@ namespace ME3Explorer
             IByteProvider provider = interpreterControl.hb1.ByteProvider;
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
-            pcc.Exports[n].Data = m.ToArray();
+            pcc.IExports[n].Data = m.ToArray();
 
             Preview();
         }
@@ -906,7 +916,7 @@ namespace ME3Explorer
             if (CurrentView == NAMES_VIEW)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
-                    if (pcc.Names[i].ToLower().Contains(searchBox.Text.ToLower()))
+                    if (pcc.getNameEntry(i).ToLower().Contains(searchBox.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -914,8 +924,9 @@ namespace ME3Explorer
             }
             if (CurrentView == IMPORTS_VIEW)
             {
-                for (int i = start; i < pcc.Imports.Count; i++)
-                    if (pcc.Imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
+                List<IImportEntry> imports = pcc.IImports;
+                for (int i = start; i < imports.Count; i++)
+                    if (imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -923,8 +934,9 @@ namespace ME3Explorer
             }
             if (CurrentView == EXPORTS_VIEW)
             {
-                for (int i = start; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
+                List<IExportEntry> exports = pcc.IExports;
+                for (int i = start; i < exports.Count; i++)
+                    if (exports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -947,8 +959,9 @@ namespace ME3Explorer
                 start = 0;
             else
                 start = n + 1;
-            for (int i = start; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == cls)
+            List<IExportEntry> exports = pcc.IExports;
+            for (int i = start; i < exports.Count; i++)
+                if (exports[i].ClassName == cls)
                 {
                     listBox1.SelectedIndex = i;
                     break;
@@ -967,7 +980,6 @@ namespace ME3Explorer
         }
 
         public List<string> RFiles;
-        private bool scanningCoalescedBits;
 
         private void LoadRecentList()
         {
@@ -1089,14 +1101,14 @@ namespace ME3Explorer
             {
                 return;
             }
-            List<Unreal.PropertyReader.Property> prop = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+            List<PropertyReader.Property> prop = PropertyReader.getPropList(pcc, pcc.IExports[n]);
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
-            d.FileName = pcc.Exports[n].ObjectName + ".bin";
+            d.FileName = pcc.IExports[n].ObjectName + ".bin";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                byte[] buff = pcc.Exports[n].Data;
+                byte[] buff = pcc.IExports[n].Data;
                 int start = 0;
                 if (prop.Count > 0)
                     start = prop[prop.Count - 1].offend;
@@ -1159,7 +1171,7 @@ namespace ME3Explorer
         {
             if (CurrentView == TREE_VIEW)
             {
-                if(n >= -pcc.Imports.Count && n < pcc.Exports.Count)
+                if(n >= -pcc.IImports.Count && n < pcc.IExports.Count)
                 {
                     TreeNode[] nodes = treeView1.Nodes.Find(n.ToString(), true);
                     if (nodes.Length > 0)
@@ -1190,7 +1202,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                fs.Write(pcc.Exports[n].Data, 0, pcc.Exports[n].Data.Length);
+                fs.Write(pcc.IExports[n].Data, 0, pcc.IExports[n].Data.Length);
                 fs.Close();
                 MessageBox.Show("Done.");
             }
@@ -1212,7 +1224,7 @@ namespace ME3Explorer
                 for (int i = 0; i < fs.Length; i++)
                     buff[i] = (byte)fs.ReadByte();
                 fs.Close();
-                pcc.Exports[n].Data = buff;
+                pcc.IExports[n].Data = buff;
                 MessageBox.Show("Done.");
             }
         }
@@ -1226,7 +1238,8 @@ namespace ME3Explorer
                 return;
             }
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            string extension = Path.GetExtension(pcc.fileName);
+            d.Filter = $"*{extension}|*{extension}";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.saveByReconstructing(d.FileName);
@@ -1241,10 +1254,10 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName.Contains("BlockingVolume") || pcc.Exports[n].ClassName.Contains("SFXDoor"))
+            if (pcc.IExports[n].ClassName.Contains("BlockingVolume") || pcc.IExports[n].ClassName.Contains("SFXDoor"))
             {
-                List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
-                foreach (Unreal.PropertyReader.Property p in props)
+                List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[n]);
+                foreach (PropertyReader.Property p in props)
                 {
                     if (pcc.getNameEntry(p.Name) == "location")
                     {
@@ -1262,7 +1275,7 @@ namespace ME3Explorer
                         x = Convert.ToSingle(nx);
                         y = Convert.ToSingle(ny);
                         z = Convert.ToSingle(nz);
-                        byte[] buff = pcc.Exports[n].Data;
+                        byte[] buff = pcc.IExports[n].Data;
                         int offset = p.offend - 12;
                         byte[] tmp = BitConverter.GetBytes(x);
                         for (int i = 0; i < 4; i++)
@@ -1273,7 +1286,7 @@ namespace ME3Explorer
                         tmp = BitConverter.GetBytes(z);
                         for (int i = 0; i < 4; i++)
                             buff[offset + i + 8] = tmp[i];
-                        pcc.Exports[n].Data = buff;
+                        pcc.IExports[n].Data = buff;
                         MessageBox.Show("Done.");
                     }
                 }
@@ -1318,7 +1331,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.fileName, CopyArray(pcc.Exports[n].Data));
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.fileName, CopyArray(pcc.IExports[n].Data));
             KFreonLib.Scripting.ModMaker.JobList.Add(mj);
             MessageBox.Show("Done");
         }
@@ -1340,7 +1353,7 @@ namespace ME3Explorer
         private void button4_Click(object sender, EventArgs e)
         {
             int NameIdx, ClassIdx, LinkIdx, IndexIdx, ArchetypeIdx;
-            int off = pcc.Imports.Count;
+            int off = pcc.IImports.Count;
 
             int n;
             if (pcc == null || !GetSelected(out n) ||
@@ -1365,11 +1378,11 @@ namespace ME3Explorer
                     MessageBox.Show("Cannot link an object to itself!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                pcc.Exports[n].idxObjectName = NameIdx;
-                pcc.Exports[n].idxClass = ClassIdx;
-                pcc.Exports[n].idxLink = LinkIdx;
-                pcc.Exports[n].indexValue = IndexIdx;
-                pcc.Exports[n].idxArchtype = ArchetypeIdx;
+                pcc.IExports[n].idxObjectName = NameIdx;
+                pcc.IExports[n].idxClass = ClassIdx;
+                pcc.IExports[n].idxLink = LinkIdx;
+                pcc.IExports[n].indexValue = IndexIdx;
+                pcc.IExports[n].idxArchtype = ArchetypeIdx;
             }
             else
             {
@@ -1381,10 +1394,10 @@ namespace ME3Explorer
                     return;
                 }
                 n = -n - 1;
-                pcc.Imports[n].idxObjectName = NameIdx;
-                pcc.Imports[n].idxClassName = ClassIdx;
-                pcc.Imports[n].idxLink = LinkIdx;
-                pcc.Imports[n].idxPackageFile = ArchetypeIdx;
+                pcc.IImports[n].idxObjectName = NameIdx;
+                pcc.IImports[n].idxClassName = ClassIdx;
+                pcc.IImports[n].idxLink = LinkIdx;
+                pcc.IImports[n].idxPackageFile = ArchetypeIdx;
                 n = -n - 1;
             }
             RefreshView();
@@ -1398,15 +1411,15 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "FaceFXAsset" || pcc.Exports[n].ClassName == "FaceFXAnimSet")
+            if (pcc.IExports[n].ClassName == "FaceFXAsset" || pcc.IExports[n].ClassName == "FaceFXAnimSet")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.fxa|*.fxa";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = pcc.IExports[n].Data;
                     BitConverter.IsLittleEndian = true;
-                    List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[n]);
                     int start = props[props.Count - 1].offend;
                     int len = BitConverter.ToInt32(buff, start);
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -1424,22 +1437,22 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "FaceFXAsset" || pcc.Exports[n].ClassName == "FaceFXAnimSet")
+            if (pcc.IExports[n].ClassName == "FaceFXAsset" || pcc.IExports[n].ClassName == "FaceFXAnimSet")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.fxa|*.fxa";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = pcc.IExports[n].Data;
                     BitConverter.IsLittleEndian = true;
-                    List<Unreal.PropertyReader.Property> props = Unreal.PropertyReader.getPropList(pcc, pcc.Exports[n]);
+                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[n]);
                     int start = props[props.Count - 1].offend;
                     MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
                     byte[] import = File.ReadAllBytes(d.FileName);
                     m.Write(BitConverter.GetBytes((int)import.Length), 0, 4);
                     m.Write(import, 0, import.Length);
-                    pcc.Exports[n].Data = m.ToArray();
+                    pcc.IExports[n].Data = m.ToArray();
                     pcc.save();
                     Preview();
                     MessageBox.Show("Done.");
@@ -1456,13 +1469,6 @@ namespace ME3Explorer
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             Preview();
-        }
-
-        private void scanForCoalescedValuesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            scanningCoalescedBits = !scanningCoalescedBits;
-            scanForCoalescedValuesToolStripMenuItem.Checked = scanningCoalescedBits;
-            RefreshView();
         }
 
         private void PackageEditor_DragEnter(object sender, DragEventArgs e)
@@ -1503,7 +1509,7 @@ namespace ME3Explorer
         {
             if (CurrentView == NAMES_VIEW && listBox1.SelectedIndex != -1)
             {
-                Clipboard.SetText(pcc.Names[listBox1.SelectedIndex]);
+                Clipboard.SetText(pcc.getNameEntry(listBox1.SelectedIndex));
             }
         }
 
@@ -1532,7 +1538,7 @@ namespace ME3Explorer
             }
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
-            pcc.Exports[n].header = m.ToArray();
+            pcc.IExports[n].header = m.ToArray();
 
             RefreshView();
             goToNumber(n);
@@ -1567,17 +1573,17 @@ namespace ME3Explorer
 
                 if (n >= 0)
                 {
-                    ME3ExportEntry ent = pcc.Exports[n].Clone();
+                    IExportEntry ent = pcc.IExports[n].Clone();
                     pcc.addExport(ent);
                     RefreshView();
-                    goToNumber(pcc.Exports.Count - 1); 
+                    goToNumber(pcc.IExports.Count - 1); 
                 }
                 else
                 {
-                    ME3ImportEntry ent = pcc.Imports[-n - 1].Clone();
+                    IImportEntry ent = pcc.IImports[-n - 1].Clone();
                     pcc.addImport(ent);
                     RefreshView();
-                    goToNumber(CurrentView == TREE_VIEW ? -pcc.Imports.Count : pcc.Imports.Count - 1);
+                    goToNumber(CurrentView == TREE_VIEW ? -pcc.IImports.Count : pcc.IImports.Count - 1);
                 }
             }
         }
@@ -1598,16 +1604,16 @@ namespace ME3Explorer
                 TreeNode rootNode = treeView1.SelectedNode;
                 if (n >= 0)
                 {
-                    nextIndex = pcc.Exports.Count;
-                    ME3ExportEntry exp = pcc.Exports[n].Clone();
+                    nextIndex = pcc.IExports.Count;
+                    IExportEntry exp = pcc.IExports[n].Clone();
                     pcc.addExport(exp);
 
                     n = nextIndex + 1;
                 }
                 else
                 {
-                    nextIndex = -pcc.Imports.Count - 1;
-                    ME3ImportEntry imp = pcc.Imports[-n - 1].Clone();
+                    nextIndex = -pcc.IImports.Count - 1;
+                    IImportEntry imp = pcc.IImports[-n - 1].Clone();
                     pcc.addImport(imp);
 
                     n = nextIndex;
@@ -1630,15 +1636,15 @@ namespace ME3Explorer
                     index = Convert.ToInt32(node.Name);
                     if (index >= 0)
                     {
-                        nextIndex = pcc.Exports.Count + 1;
-                        ME3ExportEntry exp = pcc.Exports[index].Clone();
+                        nextIndex = pcc.IExports.Count + 1;
+                        IExportEntry exp = pcc.IExports[index].Clone();
                         exp.idxLink = n;
                         pcc.addExport(exp);
                     }
                     else
                     {
-                        nextIndex = -pcc.Imports.Count - 1;
-                        ME3ImportEntry imp = pcc.Imports[-index - 1].Clone();
+                        nextIndex = -pcc.IImports.Count - 1;
+                        IImportEntry imp = pcc.IImports[-index - 1].Clone();
                         imp.idxLink = n;
                         pcc.addImport(imp);
                     }
@@ -1671,14 +1677,14 @@ namespace ME3Explorer
                 sourceNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
                 if (DestinationNode.TreeView != sourceNode.TreeView)
                 {
-                    if (!pcc.canClone())
+                    IMEPackage importpcc = sourceNode.TreeView.Tag as IMEPackage;
+                    if (!pcc.canClone() || importpcc == null || importpcc.game != pcc.game)
                     {
                         return;
                     }
                     appendSaveMenuItem.Enabled = false;
                     appendSaveMenuItem.ToolTipText = "This method cannot be used if importing has occured.";
-
-                    ME3Package importpcc = sourceNode.TreeView.Tag as ME3Package;
+                    
                     int n = Convert.ToInt32(sourceNode.Name);
                     int link;
                     if (DestinationNode.Name == "")
@@ -1697,12 +1703,12 @@ namespace ME3Explorer
                         {
                             return;
                         }
-                        nextIndex = pcc.Exports.Count;
+                        nextIndex = pcc.IExports.Count;
                     }
                     else
                     {
                         importImport(importpcc, -n - 1, link);
-                        nextIndex = -pcc.Imports.Count;
+                        nextIndex = -pcc.IImports.Count;
                     }
                     if (sourceNode.Nodes.Count > 0)
                     {
@@ -1710,12 +1716,12 @@ namespace ME3Explorer
                     }
 
                     RefreshView();
-                    goToNumber(n >= 0 ? pcc.Exports.Count - 1 : -pcc.Imports.Count);
+                    goToNumber(n >= 0 ? pcc.IExports.Count - 1 : -pcc.IImports.Count);
                 }
             }
         }
 
-        private bool importTree(TreeNode sourceNode, ME3Package importpcc, int n)
+        private bool importTree(TreeNode sourceNode, IMEPackage importpcc, int n)
         {
             int nextIndex;
             int index;
@@ -1728,12 +1734,12 @@ namespace ME3Explorer
                     {
                         return false;
                     }
-                    nextIndex = pcc.Exports.Count;
+                    nextIndex = pcc.IExports.Count;
                 }
                 else
                 {
                     importImport(importpcc, -index - 1, n);
-                    nextIndex = -pcc.Imports.Count;
+                    nextIndex = -pcc.IImports.Count;
                 }
                 if (node.Nodes.Count > 0)
                 {
@@ -1746,10 +1752,22 @@ namespace ME3Explorer
             return true;
         }
 
-        private void importImport(ME3Package importpcc, int n, int link)
+        private void importImport(IMEPackage importpcc, int n, int link)
         {
-            ME3ImportEntry imp = importpcc.Imports[n];
-            ME3ImportEntry nimp = new ME3ImportEntry(pcc, imp.header);
+            IImportEntry imp = importpcc.IImports[n];
+            IImportEntry nimp = null;
+            switch (pcc.game)
+            {
+                case MEGame.ME1:
+                    nimp = new ME1ImportEntry(pcc as ME1Package, imp.header);
+                    break;
+                case MEGame.ME2:
+                    nimp = new ME2ImportEntry(pcc as ME2Package, imp.header);
+                    break;
+                case MEGame.ME3:
+                    nimp = new ME3ImportEntry(pcc as ME3Package, imp.header);
+                    break;
+            }
             nimp.idxLink = link;
             nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
@@ -1757,20 +1775,32 @@ namespace ME3Explorer
             pcc.addImport(nimp);
         }
 
-        private bool importExport(ME3Package importpcc, int n, int link)
+        private bool importExport(IMEPackage importpcc, int n, int link)
         {
-            ME3ExportEntry ex = importpcc.Exports[n];
-            ME3ExportEntry nex = new ME3ExportEntry();
+            IExportEntry ex = importpcc.IExports[n];
+            IExportEntry nex = null;
+            switch (pcc.game)
+            {
+                case MEGame.ME1:
+                    nex = new ME1ExportEntry(pcc as ME1Package);
+                    break;
+                case MEGame.ME2:
+                    nex = new ME2ExportEntry(pcc as ME2Package);
+                    break;
+                case MEGame.ME3:
+                    nex = new ME3ExportEntry(pcc as ME3Package);
+                    break;
+            }
             byte[] idata = ex.Data;
             List<PropertyReader.Property> Props = PropertyReader.getPropList(importpcc, ex);
-            int start = PropertyReader.detectStart(importpcc, idata, importpcc.Exports[n].ObjectFlags);
+            int start = PropertyReader.detectStart(importpcc, idata, importpcc.IExports[n].ObjectFlags);
             int end = start;
             if (Props.Count != 0)
             {
                 end = Props[Props.Count - 1].offend;
             }
             MemoryStream res = new MemoryStream();
-            if ((importpcc.Exports[n].ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((importpcc.IExports[n].ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
@@ -1796,9 +1826,9 @@ namespace ME3Explorer
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;
             }
-            if (importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
+            if (importpcc.game == MEGame.ME3 && importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
             {
-                SkeletalMesh skl = new SkeletalMesh(importpcc, n);
+                SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
                 SkeletalMesh.BoneStruct bone;
                 for (int i = 0; i < skl.Bones.Count; i++)
                 {
@@ -1826,11 +1856,9 @@ namespace ME3Explorer
             }
             nex.header = (byte[])ex.header.Clone();
             nex.Data = res.ToArray();
-            nex.DataSize = nex.Data.Length;
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
             nex.idxArchtype = nex.idxClass = nex.idxClassParent = 0;
-            nex.fileRef = pcc;
             pcc.addExport(nex);
             return true;
         }
@@ -1857,9 +1885,9 @@ namespace ME3Explorer
         private void editInCurveEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = 0;
-            if (GetSelected(out n) && n >= 0)
+            if (GetSelected(out n) && n >= 0 && pcc.game == MEGame.ME3)
             {
-                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc, n);
+                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc as ME3Package, n);
                 c.Show();
             }
         }

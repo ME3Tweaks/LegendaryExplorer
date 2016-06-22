@@ -1,43 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ME3Explorer.Packages
+﻿namespace ME3Explorer.Packages
 {
     public interface IEntry
     {
+        byte[] header { get; set; }
+        IMEPackage FileRef { get; }
+        int idxLink { get; set; }
+        int idxObjectName { get; set; }
         string ClassName { get; }
         string GetFullPath { get; }
-        int idxLink { get; }
-        int idxObjectName { get; }
         string ObjectName { get; }
         string PackageFullName { get; }
         string PackageName { get; }
-        IMEPackage FileRef { get; }
     }
-    
+
     public interface IImportEntry : IEntry
     {
         int idxClassName { get; set; }
         int idxPackageFile { get; set; }
         string PackageFile { get; }
+
+        IImportEntry Clone();
     }
 
     public interface IExportEntry : IEntry
     {
-        string ArchtypeName { get; }
-        string ClassParent { get; }
+        bool hasChanged { get; }
         byte[] Data { get; set; }
         int DataOffset { get; }
         int DataSize { get; }
-        bool hasChanged { get; }
         int idxArchtype { get; set; }
         int idxClass { get; set; }
         int idxClassParent { get; set; }
         int indexValue { get; set; }
-        ulong ObjectFlags { get; set; }
+        string ArchtypeName { get; }
+        string ClassParent { get; }
         uint headerOffset { get; set; }
+        ulong ObjectFlags { get; set; }
+
+        IExportEntry Clone();
     }
 }

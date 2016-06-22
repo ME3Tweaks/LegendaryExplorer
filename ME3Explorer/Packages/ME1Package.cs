@@ -13,6 +13,7 @@ namespace ME3Explorer.Packages
 {
     public class ME1Package : IMEPackage
     {
+        public MEGame game { get { return MEGame.ME1;} }
         public string fileName { get; private set; }
         public byte[] header;
         private uint magic { get { return BitConverter.ToUInt32(header, 0); } }
@@ -54,7 +55,7 @@ namespace ME3Explorer.Packages
         private ME1ExportEntry LastExport;
         
         public MemoryStream listsStream;
-        public List<string> Names;
+        public List<string> Names { get; set; }
         public List<ME1ImportEntry> Imports;
         public List<ME1ExportEntry> Exports;
 
@@ -172,9 +173,7 @@ namespace ME3Explorer.Packages
             fs.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
-                ME1ImportEntry import = new ME1ImportEntry();
-                import.header = fs.ReadBytes(28);
-                import.fileRef = this;
+                ME1ImportEntry import = new ME1ImportEntry(this, fs.ReadBytes(28));
                 Imports.Add(import);
             }
         }
@@ -189,8 +188,7 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < ExportCount; i++)
             {
                 long start = fs.Position;
-                ME1ExportEntry exp = new ME1ExportEntry();
-                exp.fileRef = this;
+                ME1ExportEntry exp = new ME1ExportEntry(this);
                 exp.headerOffset = (uint)start;
 
                 fs.Seek(40, SeekOrigin.Current);

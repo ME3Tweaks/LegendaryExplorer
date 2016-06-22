@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ME3Explorer"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.App"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml" Startup="Application_Startup">
     <Application.Resources>
         <FontFamily x:Key="TitilliumWeb-Italic">/ME3Explorer;component/Resources/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-Light">/ME3Explorer;component/Resources/TitilliumWeb-Light.ttf#Titillium Web</FontFamily>
