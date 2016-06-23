@@ -40,7 +40,7 @@ namespace ME3Explorer
             RefreshRecent();
             tabControl1.TabPages.Remove(scriptTab);
             
-            SetView(EXPORTS_VIEW);
+            SetView(TREE_VIEW) ;
             interpreterControl.PropertyValueChanged += InterpreterControl_PropertyValueChanged;
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
         }

@@ -25,6 +25,49 @@ namespace ME3Explorer
         {
             List<Tool> list = new List<Tool>();
 
+            #region Install Mods
+            list.Add(new Tool
+            {
+                name = "Modmaker",
+                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
+                open = () =>
+                {
+                    (new ModMaker()).Show();
+                },
+                tags = new List<string> { "user" }
+            });
+            list.Add(new Tool
+            {
+                name = "TPF Tools",
+                icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
+                open = () =>
+                {
+                    (new KFreonTPFTools3()).Show();
+                },
+                tags = new List<string> { "user" }
+            });
+            list.Add(new Tool
+            {
+                name = "AutoTOC",
+                icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
+                open = () =>
+                {
+                    (new AutoTOC.AutoTOC()).Show();
+                },
+                tags = new List<string> { "user" }
+            });
+            list.Add(new Tool
+            {
+                name = "SFAR TOC Updater",
+                icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
+                open = () =>
+                {
+                    (new SFARTOCbinUpdater()).Show();
+                },
+                tags = new List<string> { "user", "dlc" }
+            });
+            #endregion
+
             #region Utilities
             list.Add(new Tool
             {
@@ -100,9 +143,6 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" }
             });
-            #endregion
-            
-            #region Install Mods
             list.Add(new Tool
             {
                 name = "Asset Explorer",
@@ -113,37 +153,7 @@ namespace ME3Explorer
                     assExp.Show();
                     assExp.LoadMe();
                 },
-                tags = new List<string> { "user" }
-            });
-            list.Add(new Tool
-            {
-                name = "Modmaker",
-                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
-                open = () =>
-                {
-                    (new ModMaker()).Show();
-                },
-                tags = new List<string> { "user" }
-            });
-            list.Add(new Tool
-            {
-                name = "Texplorer",
-                icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Texplorer2()).Show();
-                },
-                tags = new List<string> { "user" }
-            });
-            list.Add(new Tool
-            {
-                name = "TPF Tools",
-                icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
-                open = () =>
-                {
-                    (new KFreonTPFTools3()).Show();
-                },
-                tags = new List<string> { "user" }
+                tags = new List<string> { "utlity" }
             });
             list.Add(new Tool
             {
@@ -153,31 +163,21 @@ namespace ME3Explorer
                 {
                     (new PlotVarDB.PlotVarDB()).Show();
                 },
-                tags = new List<string> { "user" }
-            });
-            list.Add(new Tool
-            {
-                name = "AutoTOC",
-                icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
-                open = () =>
-                {
-                    (new AutoTOC.AutoTOC()).Show();
-                },
-                tags = new List<string> { "user" }
-            });
-            list.Add(new Tool
-            {
-                name = "SFAR TOC Updater",
-                icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
-                open = () =>
-                {
-                    (new SFARTOCbinUpdater()).Show();
-                },
-                tags = new List<string> { "user", "dlc" }
+                tags = new List<string> { "utility" }
             });
             #endregion
 
             #region Create Mods
+            list.Add(new Tool
+            {
+                name = "Texplorer",
+                icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Texplorer2()).Show();
+                },
+                tags = new List<string> { "developer" }
+            });
             list.Add(new Tool
             {
                 name = "Package Editor",

@@ -1160,8 +1160,6 @@
     <Resource Include="Resources\close_icon.ico" />
     <Resource Include="Resources\create_mods_icon.ico" />
     <Resource Include="Resources\install_mods_icon.ico" />
-    <Resource Include="Resources\logo_OFF.png" />
-    <Resource Include="Resources\logo_ON.png" />
     <Resource Include="Resources\minimize_icon.ico" />
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
@@ -1275,16 +1273,22 @@
     <Resource Include="Resources\search.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\folder.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\left_arrow.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\right_arrow.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\folder.ico" />
+    <Resource Include="Resources\settings.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\settings.ico" />
+    <Resource Include="Resources\logo_ON.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\logo_OFF.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
