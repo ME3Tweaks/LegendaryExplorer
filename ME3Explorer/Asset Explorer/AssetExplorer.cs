@@ -600,7 +600,7 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadFile(currentPCC);
-            p.listBox1.SelectedIndex = l;
+            p.goToNumber(l);
         }
 
         private void removeTopImageToolStripMenuItem_Click(object sender, EventArgs e)

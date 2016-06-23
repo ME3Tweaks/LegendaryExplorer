@@ -312,6 +312,23 @@ namespace ME3Explorer.Unreal
             return false;
         }
 
+        public static bool inheritsFrom(this IExportEntry entry, string baseClass)
+        {
+            if (entry is ME1ExportEntry)
+            {
+                return (entry as ME1ExportEntry).inheritsFrom(baseClass);
+            }
+            else if (entry is ME2ExportEntry)
+            {
+                return (entry as ME2ExportEntry).inheritsFrom(baseClass);
+            }
+            else if (entry is ME3ExportEntry)
+            {
+                return (entry as ME3ExportEntry).inheritsFrom(baseClass);
+            }
+            return false;
+        }
+
         #region Generating
         //call this method to regenerate ME3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.

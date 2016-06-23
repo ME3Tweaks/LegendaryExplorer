@@ -280,7 +280,6 @@ namespace ME3Explorer.Unreal
             public int Name;
             public Type TypeVal;
             public int Size;
-            public int i;
             public int offsetval;
             public int offend;
             public PropertyValue Value;
@@ -382,7 +381,7 @@ namespace ME3Explorer.Unreal
                 case Type.StrProperty:
                     if (p.Value.StringValue.Length == 0)
                         break;
-                    s += " Value: " + p.Value.StringValue.Substring(0,p.Value.StringValue.Length - 1);
+                    s += " Value: " + p.Value.StringValue;
                     break;
             }
             return s;
@@ -534,8 +533,7 @@ namespace ME3Explorer.Unreal
             p.Name = name;
             if (pcc.getNameEntry(name) == "None")
             {
-                p.TypeVal = Type.None;
-                p.i = 0;                
+                p.TypeVal = Type.None;         
                 p.offsetval = pos;
                 p.Size = 8;
                 p.Value = new PropertyValue();
@@ -602,19 +600,21 @@ namespace ME3Explorer.Unreal
                     if (count < 0)
                     {
                         count *= -1;
-                        for (int i = 0; i < count; i++)
+                        for (int i = 1; i < count; i++)
                         {
                             s += (char)raw[pos];
                             pos += 2;
                         }
+                        pos += 2;
                     }
                     else
                     {
-                        for (int i = 0; i < count; i++)
+                        for (int i = 1; i < count; i++)
                         {
                             s += (char)raw[pos];
                             pos++;
                         }
+                        pos++;
                     }
                     v.StringValue = s;
                     p.Value = v;
@@ -887,7 +887,7 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue;
+                    name2 = p.Value.StringValue + '\0';
                     if (p.Value.len < 0)
                     {
                         m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
@@ -1038,7 +1038,7 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue;
+                    name2 = p.Value.StringValue + '\0';
                     m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
                     foreach (char c in name2)
                     {

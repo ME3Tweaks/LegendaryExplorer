@@ -1548,7 +1548,7 @@ namespace ME3Explorer
                         byte[] buff = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier + 4);
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];
-                        buff = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier == 1 ? 1 : -1);
+                        buff = BitConverter.GetBytes((s.Count() + 1) * (stringMultiplier == 1 ? 1 : -1));
                         for (int j = 0; j < 4; j++)
                             memory[offset + j] = buff[j];
                         buff = new byte[memory.Length - oldLength + stringBuff.Count];
@@ -1695,7 +1695,7 @@ namespace ME3Explorer
                         byte[] buff = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier + 4);
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];
-                        buff = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier == 1 ? 1 : -1);
+                        buff = BitConverter.GetBytes((s.Count() + 1) * (stringMultiplier == 1 ? 1 : -1));
                         for (int j = 0; j < 4; j++)
                             memory[offset + j] = buff[j];
                         buff = new byte[memory.Length - oldLength + stringBuff.Count];

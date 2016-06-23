@@ -9,25 +9,21 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class Sequence
     {
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int index;
-        public byte[] memory;
-        public int memsize;
         public List<PropertyReader.Property> props;
         public List<int> SequenceObjects;
 
-        public Sequence(ME3Package Pcc, int export)
+        public Sequence(IMEPackage Pcc, int export)
         {
             pcc = Pcc;
-            memory = pcc.Exports[export].Data;
-            memsize = pcc.Exports[export].Data.Length;
             index = export;
             Deserialize();
         }
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
             getSequenceObjects();
         }
 

@@ -26,7 +26,6 @@ namespace ME3Explorer
         public const int IMPORTS_VIEW = 1;
         public const int EXPORTS_VIEW = 2;
         public const int TREE_VIEW = 3;
-        private const string fileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
         public PropGrid pg;
         private string currentFile;
 
@@ -58,7 +57,7 @@ namespace ME3Explorer
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = fileFilter;
+            d.Filter = App.FileFilter;
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -661,23 +660,40 @@ namespace ME3Explorer
                     break;
                 case PropertyReader.Type.StrProperty:
                     string s = Convert.ToString(e.ChangedItem.Value);
-                    int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
-                    List<byte> stringBuff = new List<byte>(s.Length * 2);
-                    for (int i = 0; i < s.Length; i++)
+                    int stringMultiplier = 1;
+                    int oldLength = BitConverter.ToInt32(ent.Data, p[m].offsetval);
+                    if (oldLength < 0)
                     {
-                        stringBuff.AddRange(BitConverter.GetBytes(s[i]));
+                        stringMultiplier = 2;
+                        oldLength *= -2;
+                    }
+                    int oldSize = 4 + oldLength;
+                    List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier);
+                    if (stringMultiplier == 2)
+                    {
+                        for (int j = 0; j < s.Length; j++)
+                        {
+                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                        }
+                        stringBuff.Add(0);
+                    }
+                    else
+                    {
+                        for (int j = 0; j < s.Length; j++)
+                        {
+                            stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
+                        }
                     }
                     stringBuff.Add(0);
-                    stringBuff.Add(0);
-                    buff2 = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval -8 + i] = buff2[i];
-                    buff2 = BitConverter.GetBytes(-(s.LongCount() + 1));
-                    for (int i = 0; i < 8; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    buff2 = new byte[ent.Data.Length - (oldLength * 2) + stringBuff.Count];
+                    buff2 = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier + 4);
+                    for (int j = 0; j < 4; j++)
+                        ent.Data[p[m].offsetval - 8 + j] = buff2[j];
+                    buff2 = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier == 1 ? 1 : -1);
+                    for (int j = 0; j < 4; j++)
+                        ent.Data[p[m].offsetval + j] = buff2[j];
+                    buff2 = new byte[ent.Data.Length - oldLength + stringBuff.Count];
                     int startLength = p[m].offsetval + 4;
-                    int startLength2 = startLength + (oldLength * 2);
+                    int startLength2 = startLength + oldLength;
                     for (int i = 0; i < startLength; i++)
                     {
                         buff2[i] = ent.Data[i];
@@ -1167,7 +1183,7 @@ namespace ME3Explorer
             }
         }
 
-        private void goToNumber(int n)
+        public void goToNumber(int n)
         {
             if (CurrentView == TREE_VIEW)
             {

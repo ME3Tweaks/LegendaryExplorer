@@ -697,7 +697,7 @@ namespace ME3Explorer.InterpEditor
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadFile(pcc.fileName);
-            p.listBox1.SelectedIndex = index;
+            p.goToNumber(index);
         }
 
         public void addTrack(InterpTrack t)
