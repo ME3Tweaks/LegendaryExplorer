@@ -31,7 +31,7 @@ namespace ME3Explorer
             InitializeComponent();
             Tools.InitializeTools();
             installModspanel.setToolList(Tools.items.Where(x => x.tags.Contains("user")));
-            favoritesPanel.setToolList(Tools.items.Where(x => !x.tags.Contains("user")));
+            favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)

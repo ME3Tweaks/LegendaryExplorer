@@ -77,7 +77,7 @@ namespace ME3Explorer.SequenceObjects
         protected string GetComment(int index)
         {
             string res = "";
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "m_aObjComment")
@@ -164,7 +164,7 @@ namespace ME3Explorer.SequenceObjects
         public SVar(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
-            string s = pcc.IExports[index].ObjectName;
+            string s = pcc.getExport(index).ObjectName;
             s = s.Replace("BioSeqVar_", "");
             s = s.Replace("SFXSeqVar_", "");
             s = s.Replace("SeqVar_", "");
@@ -184,7 +184,7 @@ namespace ME3Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
@@ -207,12 +207,12 @@ namespace ME3Explorer.SequenceObjects
         {
             try
             {
-                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
                 PropertyReader.Property property;
                 switch (type)
                 {
                     case VarTypes.Int:
-                        if (pcc.IExports[index].ObjectName == "BioSeqVar_StoryManagerInt")
+                        if (pcc.getExport(index).ObjectName == "BioSeqVar_StoryManagerInt")
                         {
                             property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
                             if (property != null)
@@ -238,7 +238,7 @@ namespace ME3Explorer.SequenceObjects
                         else
                             return "0";
                     case VarTypes.Float:
-                        if (pcc.IExports[index].ObjectName == "BioSeqVar_StoryManagerFloat")
+                        if (pcc.getExport(index).ObjectName == "BioSeqVar_StoryManagerFloat")
                         {
                             property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
                             if (property != null)
@@ -267,7 +267,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "0.00";
                     case VarTypes.Bool:
-                        if (pcc.IExports[index].ObjectName == "BioSeqVar_StoryManagerBool")
+                        if (pcc.getExport(index).ObjectName == "BioSeqVar_StoryManagerBool")
                         {
                             property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
                             if (property != null)
@@ -293,7 +293,7 @@ namespace ME3Explorer.SequenceObjects
                         else
                             return "False";
                     case VarTypes.Object:
-                        if (pcc.IExports[index].ObjectName == "SeqVar_Player")
+                        if (pcc.getExport(index).ObjectName == "SeqVar_Player")
                             return "Player";
                         foreach (PropertyReader.Property prop in p)
                         {
@@ -406,10 +406,10 @@ namespace ME3Explorer.SequenceObjects
         public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
-            string s = pcc.IExports[index].ObjectName;
+            string s = pcc.getExport(index).ObjectName;
             float w = 0;
             float h = 0;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "SizeX")
@@ -577,7 +577,7 @@ namespace ME3Explorer.SequenceObjects
         protected void GetVarLinks()
         {
             Varlinks = new List<VarLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
@@ -657,7 +657,7 @@ namespace ME3Explorer.SequenceObjects
         protected void GetOutputLinks()
         {
             Outlinks = new List<OutputLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
                 if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
@@ -844,7 +844,7 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            List<byte> ListBuff = new List<byte>(pcc.IExports[start.Index].Data);
+            List<byte> ListBuff = new List<byte>(pcc.getExport(start.Index).Data);
             OutputLink link = new OutputLink();
             bool firstLink = false;
             foreach (OutputLink l in start.Outlinks)
@@ -883,7 +883,7 @@ namespace ME3Explorer.SequenceObjects
             if (inputIndex == -1)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[start.Index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(start.Index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -939,7 +939,7 @@ namespace ME3Explorer.SequenceObjects
                             m.Write(BitConverter.GetBytes(pcc.findName("None")), 0, 4); //name: None
                             m.Write(BitConverter.GetBytes((int)0), 0, 4);
                             ListBuff.InsertRange(p[f].offsetval + pos + 4 + count2 * 64, m.ToArray());
-                            pcc.IExports[start.Index].Data = ListBuff.ToArray();
+                            pcc.getExport(start.Index).Data = ListBuff.ToArray();
                             j = count; //break outer loop
                             break;
                         }
@@ -953,7 +953,7 @@ namespace ME3Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            List<byte> ListBuff = new List<byte>(pcc.IExports[start.Index].Data);
+            List<byte> ListBuff = new List<byte>(pcc.getExport(start.Index).Data);
             VarLink link = new VarLink();
             bool firstLink = false;
             foreach (VarLink l in start.Varlinks)
@@ -980,7 +980,7 @@ namespace ME3Explorer.SequenceObjects
             if(link.Links == null)
                 return;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[start.Index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(start.Index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -1019,7 +1019,7 @@ namespace ME3Explorer.SequenceObjects
                                 ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
                             }
                             ListBuff.InsertRange(p[f].offsetval + pos + 4 + count2 * 4, BitConverter.GetBytes(end.Index + 1));
-                            pcc.IExports[start.Index].Data = ListBuff.ToArray();
+                            pcc.getExport(start.Index).Data = ListBuff.ToArray();
                             j = count; //break outer loop
                             break;
                         }
@@ -1032,10 +1032,10 @@ namespace ME3Explorer.SequenceObjects
 
         public void RemoveOutlink(int linkconnection, int linkIndex, bool refresh = true)
         {
-            List<byte> ListBuff = new List<byte>(pcc.IExports[index].Data);
+            List<byte> ListBuff = new List<byte>(pcc.getExport(index).Data);
             BitConverter.IsLittleEndian = true;
             OutputLink link = Outlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -1072,7 +1072,7 @@ namespace ME3Explorer.SequenceObjects
                                 ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
                             }
                             ListBuff.RemoveRange(p[f].offsetval + pos + 4 + linkIndex * 64, 64);
-                            pcc.IExports[index].Data = ListBuff.ToArray();
+                            pcc.getExport(index).Data = ListBuff.ToArray();
                             j = count; //break outer loop
                             break;
                         }
@@ -1088,10 +1088,10 @@ namespace ME3Explorer.SequenceObjects
 
         public void RemoveVarlink(int linkconnection, int linkIndex, bool refresh = true)
         {
-            List<byte> ListBuff = new List<byte>(pcc.IExports[index].Data);
+            List<byte> ListBuff = new List<byte>(pcc.getExport(index).Data);
             BitConverter.IsLittleEndian = true;
             VarLink link = Varlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
             {
@@ -1128,7 +1128,7 @@ namespace ME3Explorer.SequenceObjects
                                 ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
                             }
                             ListBuff.RemoveRange(p[f].offsetval + pos + 4 + linkIndex * 4, 4);
-                            pcc.IExports[index].Data = ListBuff.ToArray();
+                            pcc.getExport(index).Data = ListBuff.ToArray();
                             j = count; //break outer loop
                             break;
                         }
@@ -1150,7 +1150,7 @@ namespace ME3Explorer.SequenceObjects
             : base(idx, x, y, p, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
-            string s = pcc.IExports[index].ObjectName;
+            string s = pcc.getExport(index).ObjectName;
             s = s.Replace("BioSeqEvt_", "");
             s = s.Replace("SFXSeqEvt_", "");
             s = s.Replace("SeqEvt_", "");
@@ -1200,7 +1200,7 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
@@ -1311,7 +1311,7 @@ namespace ME3Explorer.SequenceObjects
                     y = originalY; 
             }
             outlinePen = new Pen(Color.Black);
-            string s = pcc.IExports[index].ObjectName;
+            string s = pcc.getExport(index).ObjectName;
             s = s.Replace("BioSeqAct_", "");
             s = s.Replace("SFXSeqAct_", "");
             s = s.Replace("SeqAct_", "");
@@ -1373,7 +1373,7 @@ namespace ME3Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
@@ -1383,10 +1383,10 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (prop.Value.IntValue > 0)
                             {
-                                string seqName = pcc.IExports[prop.Value.IntValue - 1].ObjectName;
+                                string seqName = pcc.getExport(prop.Value.IntValue - 1).ObjectName;
                                 if (seqName == "Sequence")
                                 {
-                                    PropertyReader.Property prop2 = PropertyReader.getPropOrNull(pcc, pcc.IExports[prop.Value.IntValue - 1], "ObjName");
+                                    PropertyReader.Property prop2 = PropertyReader.getPropOrNull(pcc, pcc.getExport(prop.Value.IntValue - 1), "ObjName");
                                     if (prop2 != null)
                                     {
                                         seqName = prop2.Value.StringValue;
@@ -1396,13 +1396,13 @@ namespace ME3Explorer.SequenceObjects
                             }
                             else
                             {
-                                s += "\n\"" + pcc.IImports[-prop.Value.IntValue - 1].ObjectName + "\"";
+                                s += "\n\"" + pcc.getImport(-prop.Value.IntValue - 1).ObjectName + "\"";
                             }
                         }
                     }
                     else
                     {
-                        s += "\n\"" + pcc.IExports[prop.Value.IntValue - 1].ObjectName + "\""; 
+                        s += "\n\"" + pcc.getExport(prop.Value.IntValue - 1).ObjectName + "\""; 
                     }
                 }
                 else if (pcc.getNameEntry(prop.Name) == "EventName" || pcc.getNameEntry(prop.Name) == "StateName")
@@ -1411,9 +1411,9 @@ namespace ME3Explorer.SequenceObjects
                     s += "\n\"" + prop.Value.StringValue + "\"";
                 else if (pcc.getNameEntry(prop.Name) == "m_pEffect")
                     if (prop.Value.IntValue > 0)
-                        s += "\n\"" + pcc.IExports[prop.Value.IntValue - 1].ObjectName + "\"";
+                        s += "\n\"" + pcc.getExport(prop.Value.IntValue - 1).ObjectName + "\"";
                     else
-                        s += "\n\"" + pcc.IImports[-prop.Value.IntValue - 1].ObjectName + "\"";
+                        s += "\n\"" + pcc.getImport(-prop.Value.IntValue - 1).ObjectName + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1445,13 +1445,13 @@ namespace ME3Explorer.SequenceObjects
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.IExports[index]);
-            if (pcc.IExports[index].ClassName == "SequenceReference")
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(index));
+            if (pcc.getExport(index).ClassName == "SequenceReference")
             {
-                PropertyReader.Property prop = PropertyReader.getPropOrNull(pcc, pcc.IExports[index], "oSequenceReference");
+                PropertyReader.Property prop = PropertyReader.getPropOrNull(pcc, pcc.getExport(index), "oSequenceReference");
                 if (prop != null)
                 {
-                    p = PropertyReader.getPropList(pcc, pcc.IExports[prop.Value.IntValue - 1]);
+                    p = PropertyReader.getPropList(pcc, pcc.getExport(prop.Value.IntValue - 1));
                 }
             }
             int f = -1;
@@ -1488,7 +1488,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 try
                 {
-                    List<string> inputLinks = ME3UnrealObjectInfo.getSequenceObjectInfo(pcc.IExports[index].ClassName)?.inputLinks;
+                    List<string> inputLinks = ME3UnrealObjectInfo.getSequenceObjectInfo(pcc.getExport(index).ClassName)?.inputLinks;
                     if (inputLinks != null)
                     {
                         for (int i = 0; i < inputLinks.Count; i++)

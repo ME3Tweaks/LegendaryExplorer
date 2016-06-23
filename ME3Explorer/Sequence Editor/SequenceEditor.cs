@@ -126,24 +126,24 @@ namespace ME3Explorer
         {
             treeView1.Nodes.Clear();
             Dictionary<string, TreeNode> prefabs = new Dictionary<string, TreeNode>();
-            for (int i = 0; i < pcc.IExports.Count; i++)
+            for (int i = 0; i < pcc.ExportCount; i++)
             {
-                if (pcc.IExports[i].ClassName == "Sequence" && !pcc.getObjectClass(pcc.IExports[i].idxLink).Contains("Sequence"))
+                if (pcc.getExport(i).ClassName == "Sequence" && !pcc.getObjectClass(pcc.getExport(i).idxLink).Contains("Sequence"))
                 {
-                    treeView1.Nodes.Add(FindSequences(pcc, i, !(pcc.IExports[i].ObjectName == "Main_Sequence")));
+                    treeView1.Nodes.Add(FindSequences(pcc, i, !(pcc.getExport(i).ObjectName == "Main_Sequence")));
                 }
-                if (pcc.IExports[i].ClassName == "Prefab")
+                if (pcc.getExport(i).ClassName == "Prefab")
                 {
-                    prefabs.Add(pcc.IExports[i].ObjectName, new TreeNode(pcc.IExports[i].GetFullPath));
+                    prefabs.Add(pcc.getExport(i).ObjectName, new TreeNode(pcc.getExport(i).GetFullPath));
                 }
             }
             if (prefabs.Count > 0)
             {
-                for (int i = 0; i < pcc.IExports.Count; i++)
+                for (int i = 0; i < pcc.ExportCount; i++)
                 {
-                    if (pcc.IExports[i].ClassName == "PrefabSequence" && pcc.getObjectClass(pcc.IExports[i].idxLink) == "Prefab")
+                    if (pcc.getExport(i).ClassName == "PrefabSequence" && pcc.getObjectClass(pcc.getExport(i).idxLink) == "Prefab")
                     {
-                        string parentName = pcc.getObjectName(pcc.IExports[i].idxLink);
+                        string parentName = pcc.getObjectName(pcc.getExport(i).idxLink);
                         if (prefabs.ContainsKey(parentName))
                         {
                             prefabs[parentName].Nodes.Add(FindSequences(pcc, i, false));
@@ -172,19 +172,23 @@ namespace ME3Explorer
         }
         public TreeNode FindSequences(IMEPackage pcc, int index, bool wantFullName = false)
         {
-            TreeNode ret = new TreeNode("#" + index.ToString() + ": " + (wantFullName ? pcc.IExports[index].GetFullPath : pcc.IExports[index].ObjectName));
+            TreeNode ret = new TreeNode("#" + index.ToString() + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
             ret.Name = index.ToString();
             Sequence seq = new Sequence(pcc, index);
             if (seq.SequenceObjects != null)
+            {
+                IExportEntry exportEntry;
                 for (int i = 0; i < seq.SequenceObjects.Count(); i++)
-                    if (pcc.IExports[seq.SequenceObjects[i] - 1].ClassName == "Sequence" || pcc.IExports[seq.SequenceObjects[i] - 1].ClassName.StartsWith("PrefabSequence"))
+                {
+                    exportEntry = pcc.getExport(seq.SequenceObjects[i] - 1);
+                    if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
                         TreeNode t = FindSequences(pcc, seq.SequenceObjects[i] - 1, false);
                         ret.Nodes.Add(t);
                     }
-                    else if (pcc.IExports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
+                    else if (exportEntry.ClassName == "SequenceReference")
                     {
-                        var props = PropertyReader.getPropList(pcc, pcc.IExports[seq.SequenceObjects[i] - 1]);
+                        var props = PropertyReader.getPropList(pcc, exportEntry);
                         var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -192,6 +196,8 @@ namespace ME3Explorer
                             ret.Nodes.Add(t);
                         }
                     }
+                }
+            }
             return ret;
         }
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -216,7 +222,7 @@ namespace ME3Explorer
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
             SequenceIndex = index;
-            toolStripStatusLabel2.Text = "\t#" + SequenceIndex + pcc.IExports[index].ObjectName;
+            toolStripStatusLabel2.Text = "\t#" + SequenceIndex + pcc.getExport(index).ObjectName;
             GetProperties(SequenceIndex);
             GetObjects(SequenceIndex);
             SetupJSON(index);
@@ -232,15 +238,15 @@ namespace ME3Explorer
 
         private void SetupJSON(int index)
         {
-            string objectName = System.Text.RegularExpressions.Regex.Replace(pcc.IExports[index].ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = System.Text.RegularExpressions.Regex.Replace(pcc.getExport(index).ObjectName, @"[<>:""/\\|?*]", "");
             bool isClonedSeqRef = false;
-            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.IExports[index], "DefaultViewZoom");
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.getExport(index), "DefaultViewZoom");
             if (p != null && p.Value.IntValue == CLONED_SEQREF_MAGIC)
             {
                 isClonedSeqRef = true;
             }
 
-            string packageFullName = pcc.IExports[index].PackageFullName;
+            string packageFullName = pcc.getExport(index).PackageFullName;
             if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
             {
                 if (pcc.game == MEGame.ME3)
@@ -249,15 +255,15 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    string packageName = pcc.IExports[index].PackageFullName.Substring(pcc.IExports[index].PackageFullName.LastIndexOf("SequenceReference"));
+                    string packageName = pcc.getExport(index).PackageFullName.Substring(pcc.getExport(index).PackageFullName.LastIndexOf("SequenceReference"));
                     packageName = packageName.Replace("SequenceReference", "");
                     int idx = index;
                     string ObjName = "";
                     while (idx > 0)
                     {
-                        if (pcc.IExports[pcc.IExports[idx].idxLink - 1].ClassName == "SequenceReference")
+                        if (pcc.getExport(pcc.getExport(idx).idxLink - 1).ClassName == "SequenceReference")
                         {
-                            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[idx]);
+                            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(idx));
                             for (int i = 0; i < props.Count(); i++)
                                 if (pcc.getNameEntry(props[i].Name) == "ObjName")
                                 {
@@ -265,7 +271,7 @@ namespace ME3Explorer
                                     goto LoopOver;
                                 }
                         }
-                        idx = pcc.IExports[idx].idxLink - 1;
+                        idx = pcc.getExport(idx).idxLink - 1;
 
                     }
                     LoopOver:
@@ -336,7 +342,7 @@ namespace ME3Explorer
         public float StartPosVars;
         public void LoadObject(int index)
         {
-            string s = pcc.IExports[index].ObjectName;
+            string s = pcc.getExport(index).ObjectName;
             int x = 0, y = 0;
             SaveData savedInfo = new SaveData(-1);
             if (SavedPositions.Count > 0)
@@ -346,7 +352,7 @@ namespace ME3Explorer
                 else
                     savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
             }
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.IExports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "ObjPosX")
@@ -393,11 +399,11 @@ namespace ME3Explorer
                     }
                 }
             }
-            else if (pcc.IExports[index].ClassName == "SequenceFrame" && pcc.game == MEGame.ME1)
+            else if (pcc.getExport(index).ClassName == "SequenceFrame" && pcc.game == MEGame.ME1)
             {
                 Objects.Add(new SFrame(index, x, y, pcc, graphEditor));
             }
-            else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.IExports[index].ClassName == "Sequence" || pcc.IExports[index].ClassName == "SequenceReference")
+            else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
                 if (pcc.game == MEGame.ME1)
                 {
@@ -418,7 +424,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
-                    if (pcc.IExports[CurrentObjects[i]].ObjectName.StartsWith("BioSeqEvt_ConvNode"))
+                    if (pcc.getExport(CurrentObjects[i]).ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         Objects[i].SetOffset(StartPosDialog, 600);//Startconv event
                         InterpIndex = CurrentObjects.IndexOf(((SEvent)Objects[i]).Outlinks[0].Links[0]);
@@ -497,24 +503,24 @@ namespace ME3Explorer
                 {
                     int m = seq.SequenceObjects[i] - 1;
                     CurrentObjects.Add(m);
-                    listBox1.Items.Add("#" + m.ToString() + " :" + pcc.IExports[m].ObjectName + " class: " + pcc.IExports[m].ClassName);
+                    listBox1.Items.Add("#" + m.ToString() + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
                 }
         }
         public void GetProperties(int n)
         {
             List<PropertyReader.Property> p;
-            switch (pcc.IExports[n].ClassName)
+            switch (pcc.getExport(n).ClassName)
             {
                 default:
-                    p = PropertyReader.getPropList(pcc, pcc.IExports[n]);
+                    p = PropertyReader.getPropList(pcc, pcc.getExport(n));
                     break;
             }
             pg = new PropGrid();
             pg1.SelectedObject = pg;
-            pg.Add(new CustomProperty("Name", "_Meta", pcc.IExports[n].ObjectName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Class", "_Meta", pcc.IExports[n].ClassName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.IExports[n].DataOffset, typeof(int), true, true));
-            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.IExports[n].DataSize, typeof(int), true, true));
+            pg.Add(new CustomProperty("Name", "_Meta", pcc.getExport(n).ObjectName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Class", "_Meta", pcc.getExport(n).ClassName, typeof(string), true, true));
+            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.getExport(n).DataOffset, typeof(int), true, true));
+            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.getExport(n).DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
                 pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
             pg1.Refresh();
@@ -614,7 +620,7 @@ namespace ME3Explorer
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
-                string className = pcc.IExports[((SObj)sender).Index].ClassName;
+                string className = pcc.getExport(((SObj)sender).Index).ClassName;
                 if (className == "SeqAct_Interp" || className == "InterpData")
                     openInInterpEditorToolStripMenuItem.Visible = true;
                 else
@@ -800,11 +806,11 @@ namespace ME3Explorer
             int i;
             if (int.TryParse(result, out i))
             {
-                if(i < pcc.IExports.Count)
+                if(i < pcc.ExportCount)
                 {
                     if (!CurrentObjects.Contains(i))
                     {
-                        if (pcc.IExports[i].inheritsFrom("SequenceObject"))
+                        if (pcc.getExport(i).inheritsFrom("SequenceObject"))
                         {
                             addObjectToSequence(i);
                         }
@@ -831,8 +837,8 @@ namespace ME3Explorer
 
         private void addObjectToSequence(int index, bool removeLinks = true)
         {
-            byte[] buff = pcc.IExports[index].Data;
-            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.IExports[index], "ParentSequence");
+            byte[] buff = pcc.getExport(index).Data;
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.getExport(index), "ParentSequence");
             if (p != null)
             {
                 byte[] val = BitConverter.GetBytes(SequenceIndex + 1);
@@ -840,14 +846,14 @@ namespace ME3Explorer
                 {
                     buff[p.offsetval + j] = val[j];
                 }
-                pcc.IExports[index].Data = buff;
+                pcc.getExport(index).Data = buff;
             }
-            pcc.IExports[index].idxLink = SequenceIndex + 1;
+            pcc.getExport(index).idxLink = SequenceIndex + 1;
             //add to sequence
-            buff = pcc.IExports[SequenceIndex].Data;
+            buff = pcc.getExport(SequenceIndex).Data;
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
-            p = PropertyReader.getPropOrNull(pcc, pcc.IExports[SequenceIndex], "SequenceObjects");
+            p = PropertyReader.getPropOrNull(pcc, pcc.getExport(SequenceIndex), "SequenceObjects");
             if (p != null)
             {
                 int count = BitConverter.ToInt32(p.raw, 24);
@@ -859,7 +865,7 @@ namespace ME3Explorer
                     ListBuff[p.offsetval + j] = countbuff[j];
                 }
                 ListBuff.InsertRange(p.offsetval + 4 + count * 4, BitConverter.GetBytes(index + 1));
-                pcc.IExports[SequenceIndex].Data = ListBuff.ToArray();
+                pcc.getExport(SequenceIndex).Data = ListBuff.ToArray();
                 SaveData s = new SaveData();
                 s.index = index;
                 s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
@@ -899,7 +905,7 @@ namespace ME3Explorer
             {
                 name = parent.Label;
             }
-            IExportEntry ent = pcc.IExports[n];
+            IExportEntry ent = pcc.getExport(n);
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
@@ -1142,7 +1148,6 @@ namespace ME3Explorer
                 default:
                     return;
             }
-            pcc.IExports[n] = ent;
             pg1.ExpandAllGridItems();
             RefreshView();
         }
@@ -1165,7 +1170,7 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadPCC(CurrentFile);
-            if (pcc.IExports[Objects[listBox1.SelectedIndex].Index].ObjectName == "InterpData")
+            if (pcc.getExport(Objects[listBox1.SelectedIndex].Index).ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
                 p.loadInterpData(n);
@@ -1281,14 +1286,14 @@ namespace ME3Explorer
 
         private void cloneObject(int n, bool topLevel = true)
         {
-            IExportEntry exp = pcc.IExports[n].Clone();
+            IExportEntry exp = pcc.getExport(n).Clone();
             //needs to have the same index to work properly
             if (exp.ClassName == "SeqVar_External")
             {
-                exp.indexValue = pcc.IExports[n].indexValue;
+                exp.indexValue = pcc.getExport(n).indexValue;
             }
             pcc.addExport(exp);
-            int expIndex = pcc.IExports.Count - 1;
+            int expIndex = pcc.ExportCount - 1;
             addObjectToSequence(expIndex, topLevel);
             if (exp.ClassName == "Sequence")
             {
@@ -1385,10 +1390,10 @@ namespace ME3Explorer
                 byte[] data;
                 foreach (int objIndex in CurrentObjects)
                 {
-                    p = PropertyReader.getPropOrNull(pcc, pcc.IExports[objIndex], "OutputLinks");
+                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "OutputLinks");
                     if (p != null)
                     {
-                        data = pcc.IExports[objIndex].Data;
+                        data = pcc.getExport(objIndex).Data;
                         int pos = 28;
                         int linkCount = BitConverter.ToInt32(p.raw, 24);
                         for (int i = 0; i < linkCount; i++)
@@ -1412,12 +1417,12 @@ namespace ME3Explorer
                                 }
                             }
                         }
-                        pcc.IExports[objIndex].Data = data;
+                        pcc.getExport(objIndex).Data = data;
                     }
-                    p = PropertyReader.getPropOrNull(pcc, pcc.IExports[objIndex], "VariableLinks");
+                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "VariableLinks");
                     if (p != null)
                     {
-                        data = pcc.IExports[objIndex].Data;
+                        data = pcc.getExport(objIndex).Data;
                         int pos = 28;
                         int linkCount = BitConverter.ToInt32(p.raw, 24);
                         for (int j = 0; j < count; j++)
@@ -1440,12 +1445,12 @@ namespace ME3Explorer
                                 }
                             }
                         }
-                        pcc.IExports[objIndex].Data = data;
+                        pcc.getExport(objIndex).Data = data;
                     }
-                    p = PropertyReader.getPropOrNull(pcc, pcc.IExports[objIndex], "EventLinks");
+                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "EventLinks");
                     if (p != null)
                     {
-                        data = pcc.IExports[objIndex].Data;
+                        data = pcc.getExport(objIndex).Data;
                         int pos = 28;
                         int linkCount = BitConverter.ToInt32(p.raw, 24);
                         for (int j = 0; j < count; j++)
@@ -1468,17 +1473,17 @@ namespace ME3Explorer
                                 }
                             }
                         }
-                        pcc.IExports[objIndex].Data = data;
+                        pcc.getExport(objIndex).Data = data;
                     }
                 }
 
                 //re-point sequence links to new objects
                 int oldObj = 0;
                 int newObj = 0;
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex], "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "InputLinks");
                 if (p != null)
                 {
-                    data = pcc.IExports[expIndex].Data;
+                    data = pcc.getExport(expIndex).Data;
                     int pos = 28;
                     int linkCount = BitConverter.ToInt32(p.raw, 24);
                     for (int i = 0; i < linkCount; i++)
@@ -1495,17 +1500,17 @@ namespace ME3Explorer
                                     newObj = CurrentObjects[oldObjects.IndexOf(oldObj - 1)];
                                     data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(newObj + 1));
                                     //set index for LinkAction property
-                                    data.OverwriteRange(p.offsetval - 24 + pos - 60, BitConverter.GetBytes(pcc.IExports[newObj].indexValue));
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 60, BitConverter.GetBytes(pcc.getExport(newObj).indexValue));
                                 }
                             }
                         }
                     }
-                    pcc.IExports[expIndex].Data = data;
+                    pcc.getExport(expIndex).Data = data;
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex], "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "OutputLinks");
                 if (p != null)
                 {
-                    data = pcc.IExports[expIndex].Data;
+                    data = pcc.getExport(expIndex).Data;
                     int pos = 28;
                     int linkCount = BitConverter.ToInt32(p.raw, 24);
                     for (int i = 0; i < linkCount; i++)
@@ -1522,12 +1527,12 @@ namespace ME3Explorer
                                     newObj = CurrentObjects[oldObjects.IndexOf(oldObj - 1)];
                                     data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(newObj + 1));
                                     //set index for LinkAction property
-                                    data.OverwriteRange(p.offsetval - 24 + pos - 32, BitConverter.GetBytes(pcc.IExports[newObj].indexValue));
+                                    data.OverwriteRange(p.offsetval - 24 + pos - 32, BitConverter.GetBytes(pcc.getExport(newObj).indexValue));
                                 }
                             }
                         }
                     }
-                    pcc.IExports[expIndex].Data = data;
+                    pcc.getExport(expIndex).Data = data;
                 }
                 #endregion
 
@@ -1559,9 +1564,9 @@ namespace ME3Explorer
                 cloneObject(p.Value.IntValue - 1, false);
 
                 //remove cloned sequence from SeqRef's parent's sequenceobjects
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[SequenceIndex], "SequenceObjects");
-                List<byte> memList = pcc.IExports[SequenceIndex].Data.ToList();
-                int count = BitConverter.ToInt32(pcc.IExports[SequenceIndex].Data, p.offsetval) - 1;
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(SequenceIndex), "SequenceObjects");
+                List<byte> memList = pcc.getExport(SequenceIndex).Data.ToList();
+                int count = BitConverter.ToInt32(pcc.getExport(SequenceIndex).Data, p.offsetval) - 1;
                 byte[] buff = BitConverter.GetBytes(4 + count * 4);
                 for (int i = 0; i < 4; i++)
                 {
@@ -1573,12 +1578,12 @@ namespace ME3Explorer
                     memList[p.offsetval + i] = buff[i];
                 }
                 memList.RemoveRange(p.offsetval + 4 + (count * 4), 4);
-                pcc.IExports[SequenceIndex].Data = memList.ToArray();
+                pcc.getExport(SequenceIndex).Data = memList.ToArray();
 
                 //set SequenceReference's linked name indices
                 List<int> inputIndices = new List<int>();
                 List<int> outputIndices = new List<int>();
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex + 1], "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "InputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1596,7 +1601,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex + 1], "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "OutputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1614,7 +1619,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex], "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "InputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1627,12 +1632,12 @@ namespace ME3Explorer
                             pos += p2[j].raw.Length;
                             if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
                             {
-                                pcc.IExports[expIndex].Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(inputIndices[i]));
+                                pcc.getExport(expIndex).Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(inputIndices[i]));
                             }
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex], "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "OutputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1645,7 +1650,7 @@ namespace ME3Explorer
                             pos += p2[j].raw.Length;
                             if (pcc.getNameEntry(p2[j].Name) == "LinkAction")
                             {
-                                pcc.IExports[expIndex].Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(outputIndices[i]));
+                                pcc.getExport(expIndex).Data.OverwriteRange(p.offsetval - 24 + pos - 4, BitConverter.GetBytes(outputIndices[i]));
                             }
                         }
                     }
@@ -1653,25 +1658,25 @@ namespace ME3Explorer
 
 
                 //set new Sequence's link and ParentSequence prop to SeqRef
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex + 1], "ParentSequence");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "ParentSequence");
                 if (p == null)
                 {
                     throw new Exception();
                 }
-                pcc.IExports[expIndex + 1].Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(expIndex + 1));
-                pcc.IExports[expIndex + 1].idxLink = expIndex + 1;
+                pcc.getExport(expIndex + 1).Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(expIndex + 1));
+                pcc.getExport(expIndex + 1).idxLink = expIndex + 1;
 
                 //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
                 //ugly, but it should work
-                p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex + 1], "DefaultViewZoom");
+                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "DefaultViewZoom");
                 if (p != null)
                 {
-                    pcc.IExports[expIndex + 1].Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
+                    pcc.getExport(expIndex + 1).Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
                 }
                 else
                 {
-                    p = PropertyReader.getPropOrNull(pcc, pcc.IExports[expIndex + 1], "None");
-                    memList = pcc.IExports[expIndex + 1].Data.ToList();
+                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "None");
+                    memList = pcc.getExport(expIndex + 1).Data.ToList();
                     memList.InsertRange(p.offsetval, BitConverter.GetBytes(pcc.FindNameOrAdd("DefaultViewZoom")));
                     memList.InsertRange(p.offsetval + 4, new byte[4]);
                     memList.InsertRange(p.offsetval + 8, BitConverter.GetBytes(pcc.FindNameOrAdd("FloatProperty")));
@@ -1679,7 +1684,7 @@ namespace ME3Explorer
                     memList.InsertRange(p.offsetval + 16, BitConverter.GetBytes(4));
                     memList.InsertRange(p.offsetval + 20, new byte[4]);
                     memList.InsertRange(p.offsetval + 24, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
-                    pcc.IExports[expIndex + 1].Data = memList.ToArray();
+                    pcc.getExport(expIndex + 1).Data = memList.ToArray();
                 }
                 
                 useGlobalSequenceRefSavesToolStripMenuItem.Checked = temp;

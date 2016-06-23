@@ -47,7 +47,9 @@ namespace ME3Explorer.Packages
         bool bCompressed { get; set; }
         bool canReconstruct { get; }
         bool isModified { get; }
-        int ImportOffset { get; set; }
+        int ExportCount { get; }
+        int ImportCount { get; }
+        int ImportOffset { get; }
         List<IExportEntry> IExports { get; }
         List<IImportEntry> IImports { get; }
         List<string> Names { get; set; }
@@ -56,7 +58,9 @@ namespace ME3Explorer.Packages
 
         bool canClone();
         bool isExport(int index);
+        IExportEntry getExport(int index);
         bool isImport(int index);
+        IImportEntry getImport(int index);
         bool isName(int index);
         IEntry getEntry(int index);
         int findName(string nameToFind);

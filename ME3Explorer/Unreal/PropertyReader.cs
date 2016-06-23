@@ -397,10 +397,8 @@ namespace ME3Explorer.Unreal
                 case Type.BoolProperty :
                     pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, (p.Value.IntValue == 1), typeof(bool), false, true);
                     break;
-                case Type.FloatProperty:
-                    byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
-                    float f = BitConverter.ToSingle(buff, 0);
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, f, typeof(float), false, true);
+                case Type.FloatProperty: 
+                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.FloatValue, typeof(float), false, true);
                     break;
                 case Type.ByteProperty:
                     if (p.Size != 8)

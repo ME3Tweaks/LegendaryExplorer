@@ -38,12 +38,12 @@ namespace ME3Explorer.Packages
         }
         private int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
         private int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
-        private int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
+        public int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
         private int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
-        private int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
+        public int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
+        public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
         private int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
-        private int Generator { get { return BitConverter.ToInt32(header, nameSize + 64); } }
+        private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
         public int ExportDataEnd
         {
@@ -63,14 +63,14 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return Exports.Cast<IExportEntry>().ToList();
+                return Exports.ToList<IExportEntry>();
             }
         }
         public List<IImportEntry> IImports
         {
             get
             {
-                return Imports.Cast<IImportEntry>().ToList();
+                return Imports.ToList<IImportEntry>();
             }
         }
 
@@ -95,8 +95,8 @@ namespace ME3Explorer.Packages
             tempStream.Seek(12, SeekOrigin.Begin);
             int tempNameSize = tempStream.ReadValueS32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
-            int tempGenerator = tempStream.ReadValueS32();
-            tempStream.Seek(36 + tempGenerator * 12, SeekOrigin.Current);
+            int tempGenerations = tempStream.ReadValueS32();
+            tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
             int tempPos = (int)tempStream.Position + 4;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
@@ -244,18 +244,19 @@ namespace ME3Explorer.Packages
         /// <param name="compress">true if you want a zlib compressed pcc file.</param>
         public void saveByReconstructing(string path)
         {
-            //load in all data
-            byte[] buff;
-            foreach (ME1ExportEntry e in Exports)
-            {
-                buff = e.Data;
-            }
-
             try
             {
                 this.bCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
+
+                // Set numblocks to zero
+                m.WriteValueS32(0);
+                //Write the magic number (What is this?)
+                m.WriteBytes(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
+                // Write 4 bytes of 0
+                m.WriteValueS32(0);
+
                 //name table
                 NameOffset = (int)m.Position;
                 NameCount = Names.Count;
@@ -694,6 +695,16 @@ namespace ME3Explorer.Packages
                 return false;
             }
             return true;
+        }
+
+        public IExportEntry getExport(int index)
+        {
+            return Exports[index];
+        }
+
+        public IImportEntry getImport(int index)
+        {
+            return Imports[index];
         }
     }
 }

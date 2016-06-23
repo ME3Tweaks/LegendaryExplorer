@@ -116,17 +116,17 @@ namespace ME3Explorer
 
         public void InitInterpreter(BioTlkFileSet editorTlkSet = null)
         {
-            DynamicByteProvider db = new DynamicByteProvider(pcc.IExports[Index].Data);
+            DynamicByteProvider db = new DynamicByteProvider(pcc.getExport(Index).Data);
             hb1.ByteProvider = db;
-            memory = pcc.IExports[Index].Data;
-            className = pcc.IExports[Index].ClassName;
+            memory = pcc.getExport(Index).Data;
+            className = pcc.getExport(Index).ClassName;
 
             if (pcc.game == MEGame.ME1)
             {
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
                 {
-                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc, pcc.IExports[Index]).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
+                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc, pcc.getExport(Index)).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
                     if (tlkSetRef != null)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value.IntValue - 1);
@@ -156,10 +156,10 @@ namespace ME3Explorer
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            readerpos = PropertyReader.detectStart(pcc, memory, pcc.IExports[Index].ObjectFlags);
+            readerpos = PropertyReader.detectStart(pcc, memory, pcc.getExport(Index).ObjectFlags);
             BitConverter.IsLittleEndian = true;
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            TreeNode topLevelTree = new TreeNode("0000 : " + pcc.IExports[Index].ObjectName);
+            TreeNode topLevelTree = new TreeNode("0000 : " + pcc.getExport(Index).ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
@@ -323,9 +323,9 @@ namespace ME3Explorer
                                         value--; //0-indexed
                                         if (isImport)
                                         {
-                                            if (pcc.IImports.Count > value)
+                                            if (pcc.ImportCount > value)
                                             {
-                                                s += pcc.IImports[value].ObjectName + " [IMPORT " + value + "]";
+                                                s += pcc.getImport(value).ObjectName + " [IMPORT " + value + "]";
                                             }
                                             else
                                             {
@@ -334,9 +334,9 @@ namespace ME3Explorer
                                         }
                                         else
                                         {
-                                            if (pcc.IExports.Count > value)
+                                            if (pcc.ExportCount > value)
                                             {
-                                                s += pcc.IExports[value].ObjectName + " [EXPORT " + value + "]";
+                                                s += pcc.getExport(value).ObjectName + " [EXPORT " + value + "]";
                                             }
                                             else
                                             {
@@ -908,10 +908,6 @@ namespace ME3Explorer
                     {
                         if (p.size == 1)
                         {
-                            if (Debugger.IsAttached)
-                            {
-                                Debugger.Break();
-                            }
                             val = memory[p.offset + 24];
                             s += val.ToString();
                         }
@@ -1024,7 +1020,7 @@ namespace ME3Explorer
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.txt|*.txt";
-            d.FileName = pcc.IExports[Index].ObjectName + ".txt";
+            d.FileName = pcc.getExport(Index).ObjectName + ".txt";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -2055,7 +2051,7 @@ namespace ME3Explorer
 
         private void RefreshMem(int? selectedNodePos = null)
         {
-            pcc.IExports[Index].Data = memory;
+            pcc.getExport(Index).Data = memory;
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
             List<TreeNode> allNodes = treeView1.Nodes.Cast<TreeNode>().ToList();
@@ -2206,7 +2202,7 @@ namespace ME3Explorer
 
         private void addPropButton_Click(object sender, EventArgs e)
         {
-            List<string> props = PropertyReader.getPropList(pcc, pcc.IExports[Index]).Select(x => pcc.getNameEntry(x.Name)).ToList();
+            List<string> props = PropertyReader.getPropList(pcc, pcc.getExport(Index)).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props);
             if (prop != null)
             {

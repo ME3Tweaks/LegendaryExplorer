@@ -60,18 +60,18 @@ namespace ME3Explorer.Packages
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 100, sizeof(int));
             }
         }
-        private int ExportCount
+        public int ExportCount
         {
             get { return BitConverter.ToInt32(header, idxOffsets + 8); }
-            set
+            private set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 8, sizeof(int));
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
             }
         }
         private int ExportOffset { get { Debug.WriteLine("idxOffsets: " + idxOffsets + ", offset for export offset: " + (idxOffsets + 12)); return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
-        private int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
+        public int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
+        public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
         private uint FreeZoneStart { get { return BitConverter.ToUInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
         private uint FreeZoneEnd { get { return BitConverter.ToUInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
 
@@ -743,6 +743,16 @@ namespace ME3Explorer.Packages
                 return false;
             }
             return true;
+        }
+
+        public IExportEntry getExport(int index)
+        {
+            return Exports[index];
+        }
+
+        public IImportEntry getImport(int index)
+        {
+            return Imports[index];
         }
     }
 }

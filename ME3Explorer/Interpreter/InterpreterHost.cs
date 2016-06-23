@@ -18,7 +18,7 @@ namespace ME3Explorer
         public InterpreterHost(IMEPackage pcc, int index)
         {
             InitializeComponent();
-            string className = pcc.IExports[index].ClassName;
+            string className = pcc.getExport(index).ClassName;
             interpreter1.Pcc = pcc;
             interpreter1.Index = index;
             interpreter1.InitInterpreter();
