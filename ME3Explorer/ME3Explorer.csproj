@@ -150,6 +150,9 @@
     <Compile Include="CurveEd\FloatEventArgs.cs" />
     <Compile Include="CurveEd\Handle.cs" />
     <Compile Include="CurveEd\InterpCurve.cs" />
+    <Compile Include="FaceFXAnimSetEditor\FaceFXEditor.xaml.cs">
+      <DependentUpon>FaceFXEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interpreter\AddPropertyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -659,7 +662,7 @@
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
-    <Compile Include="WPFExtensions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1058,6 +1061,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CurveEd\CurveGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FaceFXAnimSetEditor\FaceFXEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

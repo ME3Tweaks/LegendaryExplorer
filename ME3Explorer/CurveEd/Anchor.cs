@@ -153,6 +153,25 @@ namespace ME3Explorer.CurveEd
                 setTime.Header = "Set Time";
                 setTime.Click += SetTime_Click;
                 cm.Items.Add(setTime);
+                switch (point.Value.InterpMode)
+                {
+                    case CurveMode.CIM_CurveAuto:
+                    case CurveMode.CIM_CurveUser:
+                    case CurveMode.CIM_CurveAutoClamped:
+                        MenuItem breakTangents = new MenuItem();
+                        breakTangents.Header = "Break Tangents";
+                        breakTangents.Click += BreakTangents_Click;
+                        cm.Items.Add(breakTangents);
+                        break;
+                    case CurveMode.CIM_CurveBreak:
+                        MenuItem flattenTangents = new MenuItem();
+                        flattenTangents.Header = "Flatten Tangents";
+                        flattenTangents.Click += FlattenTangents_Click;
+                        cm.Items.Add(flattenTangents);
+                        break;
+                    default:
+                        break;
+                }
                 cm.PlacementTarget = sender as Anchor;
                 cm.IsOpen = true;
             }
@@ -170,6 +189,20 @@ namespace ME3Explorer.CurveEd
                 X = graph.localX(result);
                 graph.Paint(true);
             }
+        }
+
+        private void BreakTangents_Click(object sender, RoutedEventArgs e)
+        {
+            point.Value.InterpMode = CurveMode.CIM_CurveBreak;
+            graph.invokeSelectedPointChanged();
+        }
+
+        private void FlattenTangents_Click(object sender, RoutedEventArgs e)
+        {
+            point.Value.LeaveTangent = point.Value.ArriveTangent = 0;
+            point.Value.InterpMode = CurveMode.CIM_CurveAutoClamped;
+            graph.invokeSelectedPointChanged();
+            graph.Paint();
         }
 
         private void OnDragStarted(object sender, DragStartedEventArgs e)

@@ -346,7 +346,7 @@ namespace ME1Explorer
 
         private void PreviewScript(int n)
         {
-            if (pcc.Exports[n].ClassName == "Function")
+            if (n >= 0 && pcc.Exports[n].ClassName == "Function")
             {
                 if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
                 {

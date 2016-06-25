@@ -171,13 +171,21 @@ namespace ME3Explorer.CurveEd
             {
                 float timeSpan = points.Last().InVal - points.First().InVal;
                 timeSpan = timeSpan > 0 ? timeSpan : 2;
-                HorizontalOffset = Math.Round(points.First().InVal - Math.Ceiling(timeSpan * 0.1));
+                HorizontalOffset = Math.Round(points.First().InVal - (timeSpan * 0.2));
                 double hSpan = Math.Ceiling(timeSpan * 1.2);
                 if (hSpan + HorizontalOffset <= timeSpan)
                 {
                     hSpan += 1;
                 }
                 HorizontalScale = graph.ActualWidth / hSpan;
+                if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                 {
+                    HorizontalOffset = points.First().InVal - (hSpan / 10);
+                }
+                else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
+                {
+                    HorizontalOffset += hSpan / 10;
+                }
 
                 float max = points.Max(x => x.OutVal);
                 float min = points.Min(x => x.OutVal);

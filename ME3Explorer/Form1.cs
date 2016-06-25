@@ -839,5 +839,12 @@ namespace ME3Explorer
                 Process.Start(loc + @"\HexConverter.exe");
             }
         }
+
+        private void faceFXAnimSetEditor2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FaceFXAnimSetEditor.FaceFXEditor f = new FaceFXAnimSetEditor.FaceFXEditor();
+            ElementHost.EnableModelessKeyboardInterop(f);
+            f.Show();
+        }
     }
 }

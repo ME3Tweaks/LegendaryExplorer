@@ -31,4 +31,40 @@ namespace ME3Explorer
             bound.SetBinding(boundProp, b);
         }
     }
+
+    public static class ListExtensions
+    {
+        public static int FindOrAdd<T>(this List<T> list, T element)
+        {
+            int idx = list.IndexOf(element);
+            if (idx == -1)
+            {
+                list.Add(element);
+                idx = list.Count - 1;
+            }
+            return idx;
+        }
+        
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
+        {
+            foreach (T element in first)
+            {
+                yield return element;
+            }
+            yield return second;
+        }
+
+        /// <summary>
+        /// Searches for the specified object and returns the index of its first occurence, or -1 if it is not found
+        /// </summary>
+        /// <param name="array">The one-dimensional array to search</param>
+        /// <param name="value">The object to locate in <paramref name="array" /></param>
+        /// <typeparam name="T">The type of the elements of the array.</typeparam>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="array" /> is null.</exception>
+        public static int IndexOf<T>(this T[] array, T value)
+        {
+            return Array.IndexOf(array, value);
+        }
+    }
 }

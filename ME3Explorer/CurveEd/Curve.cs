@@ -84,6 +84,22 @@ namespace ME3Explorer.CurveEd
             LeaveTangent = leaveTangent;
             InterpMode = interpMode;
         }
+
+        public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent)
+        {
+            InVal = inVal;
+            OutVal = outVal;
+            ArriveTangent = arriveTangent;
+            LeaveTangent = leaveTangent;
+            if (arriveTangent == leaveTangent)
+            {
+                interpMode = CurveMode.CIM_CurveUser;
+            }
+            else
+            {
+                interpMode = CurveMode.CIM_CurveBreak;
+            }
+        }
     }
 
     public class Curve
