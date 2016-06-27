@@ -144,7 +144,6 @@ namespace KFreonLib.Scripting
 
         private void ScriptCompiler_FormClosing(object sender, FormClosingEventArgs e)
         {
-            taskbar.RemoveTool(this);
         }
 
     }

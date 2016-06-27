@@ -236,16 +236,6 @@ namespace ME3Explorer
             });
             list.Add(new Tool
             {
-                name = "Coalesced Operator",
-                icon = Application.Current.FindResource("iconCoalescedOperator") as ImageSource,
-                open = () =>
-                {
-                    (new Coalesced_Operator.Operator()).Show();
-                },
-                tags = new List<string> { "developer" }
-            });
-            list.Add(new Tool
-            {
                 name = "Camera Tool",
                 icon = Application.Current.FindResource("iconCameraTool") as ImageSource,
                 open = () =>

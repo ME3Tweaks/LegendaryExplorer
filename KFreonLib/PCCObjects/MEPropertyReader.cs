@@ -209,55 +209,6 @@ namespace KFreonLib.PCCObjects
             return s;
         }
 
-        public static CustomProperty PropertyToGrid(Property p, IPCCObject pcc)
-        {
-            string cat = p.TypeVal.ToString();
-            CustomProperty pg;
-            switch (p.TypeVal)
-            {
-                case Type.BoolProperty:
-                    pg = new CustomProperty(p.Name, cat, (p.Value.IntValue == 1), typeof(bool), false, true);
-                    break;
-                case Type.FloatProperty:
-                    byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
-                    float f = BitConverter.ToSingle(buff, 0);
-                    pg = new CustomProperty(p.Name, cat, f, typeof(float), false, true);
-                    break;
-                case Type.ByteProperty:
-                case Type.NameProperty:
-                    NameProp pp = new NameProp();
-                    pp.name = pcc.GetName(p.Value.IntValue);
-                    pp.nameindex = p.Value.IntValue;
-                    pg = new CustomProperty(p.Name, cat, pp, typeof(NameProp), false, true);
-                    break;
-                case Type.ObjectProperty:
-                    ObjectProp ppo = new ObjectProp();
-                    ppo.name = pcc.getObjectName(p.Value.IntValue);
-                    //ppo.name = pcc.GetName(pcc.Exports[p.Value.IntValue].name);
-                    ppo.nameindex = p.Value.IntValue;
-                    pg = new CustomProperty(p.Name, cat, ppo, typeof(ObjectProp), false, true);
-                    break;
-                case Type.StructProperty:
-                    StructProp ppp = new StructProp();
-                    ppp.name = pcc.GetName(p.Value.IntValue);
-                    ppp.nameindex = p.Value.IntValue;
-                    byte[] buf = new byte[p.Value.Array.Count()];
-                    for (int i = 0; i < p.Value.Array.Count(); i++)
-                        buf[i] = (byte)p.Value.Array[i].IntValue;
-                    List<int> buf2 = new List<int>();
-                    for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                        buf2.Add(BitConverter.ToInt32(buf, i * 4));
-                    ppp.data = buf2.ToArray();
-                    pg = new CustomProperty(p.Name, cat, ppp, typeof(StructProp), false, true);
-                    break;
-                default:
-                    pg = new CustomProperty(p.Name, cat, p.Value.IntValue, typeof(int), false, true);
-                    break;
-            }
-            return pg;
-        }
-
-
         public static List<Property> ReadProp(IPCCObject pcc, byte[] raw, int start)
         {
             Property p;
@@ -781,53 +732,6 @@ namespace KFreonLib.PCCObjects
                     break;
             }
             return s;
-        }
-
-        public static CustomProperty PropertyToGrid(Property p, IPCCObject pcc)
-        {
-            string cat = p.TypeVal.ToString();
-            CustomProperty pg;
-            switch (p.TypeVal)
-            {
-                case Type.BoolProperty:
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, (p.Value.IntValue == 1), typeof(bool), false, true);
-                    break;
-                case Type.FloatProperty:
-                    byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
-                    float f = BitConverter.ToSingle(buff, 0);
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, f, typeof(float), false, true);
-                    break;
-                case Type.ByteProperty:
-                case Type.NameProperty:
-                    NameProp pp = new NameProp();
-                    pp.name = pcc.GetName(p.Value.IntValue);
-                    pp.nameindex = p.Value.IntValue;
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, pp, typeof(NameProp), false, true);
-                    break;
-                case Type.ObjectProperty:
-                    ObjectProp ppo = new ObjectProp();
-                    ppo.name = pcc.getObjectName(p.Value.IntValue);
-                    ppo.nameindex = p.Value.IntValue;
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, ppo, typeof(ObjectProp), false, true);
-                    break;
-                case Type.StructProperty:
-                    StructProp ppp = new StructProp();
-                    ppp.name = pcc.GetName(p.Value.IntValue);
-                    ppp.nameindex = p.Value.IntValue;
-                    byte[] buf = new byte[p.Value.Array.Count()];
-                    for (int i = 0; i < p.Value.Array.Count(); i++)
-                        buf[i] = (byte)p.Value.Array[i].IntValue;
-                    List<int> buf2 = new List<int>();
-                    for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                        buf2.Add(BitConverter.ToInt32(buf, i * 4));
-                    ppp.data = buf2.ToArray();
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, ppp, typeof(StructProp), false, true);
-                    break;
-                default:
-                    pg = new CustomProperty(pcc.Names[p.Name], cat, p.Value.IntValue, typeof(int), false, true);
-                    break;
-            }
-            return pg;
         }
 
         public static List<Property> ReadProp(IPCCObject pcc, byte[] raw, int start)

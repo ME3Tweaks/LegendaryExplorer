@@ -150,6 +150,14 @@
     <Compile Include="AboutME3Explorer.Designer.cs">
       <DependentUpon>AboutME3Explorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
+      <DependentUpon>CoalEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Coalesced Editor\FileWrapper.cs" />
+    <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
     <Compile Include="InitialDLCExtractor.xaml.cs">
       <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
@@ -206,12 +214,6 @@
     </Compile>
     <Compile Include="PSKViewer\PSKViewer.Designer.cs">
       <DependentUpon>PSKViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="QuestMapEditor\QMapEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="QuestMapEditor\QMapEditor.Designer.cs">
-      <DependentUpon>QMapEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ScriptDB\ScriptDB.cs">
       <SubType>Form</SubType>
@@ -314,19 +316,6 @@
     </Compile>
     <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UECodeEditor\OPCodes.cs" />
-    <Compile Include="UECodeEditor\OPCodeTable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UECodeEditor\OPCodeTable.Designer.cs">
-      <DependentUpon>OPCodeTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UECodeEditor\UECodeEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UECodeEditor\UECodeEditor.Designer.cs">
-      <DependentUpon>UECodeEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
@@ -450,33 +439,6 @@
     </Compile>
     <Compile Include="ClassViewer\ClassViewer.Designer.cs">
       <DependentUpon>ClassViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
-      <DependentUpon>CoalEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Editor\FileWrapper.cs" />
-    <Compile Include="Coalesced Editor\Setup.cs" />
-    <Compile Include="Coalesced Operator\advancedGraphics.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\advancedGraphics.Designer.cs">
-      <DependentUpon>advancedGraphics.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Operator\Keybinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\Keybinder.Designer.cs">
-      <DependentUpon>Keybinder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Operator\opClass.cs" />
-    <Compile Include="Coalesced Operator\Operator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Operator\Operator.Designer.cs">
-      <DependentUpon>Operator.cs</DependentUpon>
     </Compile>
     <Compile Include="Codex Editor\CodexEditor.cs">
       <SubType>Form</SubType>
@@ -806,15 +768,6 @@
     <EmbeddedResource Include="Coalesced Editor\CoalEditor.resx">
       <DependentUpon>CoalEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Coalesced Operator\advancedGraphics.resx">
-      <DependentUpon>advancedGraphics.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Coalesced Operator\Keybinder.resx">
-      <DependentUpon>Keybinder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Coalesced Operator\Operator.resx">
-      <DependentUpon>Operator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Codex Editor\CodexEditor.resx">
       <DependentUpon>CodexEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -954,9 +907,6 @@
     <EmbeddedResource Include="PSKViewer\PSKViewer.resx">
       <DependentUpon>PSKViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="QuestMapEditor\QMapEditor.resx">
-      <DependentUpon>QMapEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -996,12 +946,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UECodeEditor\OPCodeTable.resx">
-      <DependentUpon>OPCodeTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UECodeEditor\UECodeEditor.resx">
-      <DependentUpon>UECodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>

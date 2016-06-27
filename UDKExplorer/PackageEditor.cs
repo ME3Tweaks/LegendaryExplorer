@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Be.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-//using KFreonLib.Misc;
+//using ME3LibWV;
 using UDKExplorer.UDK;
 using UDKExplorer.UDK.Classes;
 
@@ -25,7 +25,7 @@ namespace UDKExplorer
         public const int EXPORTS_VIEW = 2;
         public const int TREE_VIEW = 3;
 
-        public KFreonLib.Misc.PropGrid pg;
+        public ME3LibWV.PropGrid pg;
         private string currentFile;
         private bool haveCloned;
 
@@ -540,12 +540,12 @@ namespace UDKExplorer
         public void PreviewProps(int n)
         {
             List<PropertyReader.Property> p = PropertyReader.getPropList(udk, udk.Exports[n]);
-            pg = new KFreonLib.Misc.PropGrid();
+            pg = new ME3LibWV.PropGrid();
             propGrid.SelectedObject = pg;
-            pg.Add(new KFreonLib.Misc.CustomProperty("Name", "_Meta", udk.Exports[n].ObjectName, typeof(string), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Class", "_Meta", udk.Exports[n].ClassName, typeof(string), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Data Offset", "_Meta", udk.Exports[n].DataOffset, typeof(int), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Data Size", "_Meta", udk.Exports[n].DataSize, typeof(int), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Name", "_Meta", udk.Exports[n].ObjectName, typeof(string), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Class", "_Meta", udk.Exports[n].ClassName, typeof(string), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Data Offset", "_Meta", udk.Exports[n].DataOffset, typeof(int), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Data Size", "_Meta", udk.Exports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
                 pg.Add(PropertyReader.PropertyToGrid(p[l], udk));            
             propGrid.Refresh();

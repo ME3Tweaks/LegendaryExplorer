@@ -2487,7 +2487,6 @@ namespace ME3Explorer
                 DebugOutput.PrintLn("-----Execution of TPF/DDS Tools closing...-----");
                 CurrentInstance = null;
                 SaveProperties();
-                taskbar.RemoveTool(this);
             }
         }
 
