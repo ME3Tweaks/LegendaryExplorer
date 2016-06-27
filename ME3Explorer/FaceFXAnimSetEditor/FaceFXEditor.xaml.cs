@@ -108,12 +108,20 @@ namespace ME3Explorer.FaceFXAnimSetEditor
         {
             SaveChanges();
 
+            animationListBox.ItemsSource = null;
+            lineText.Text = null;
+
             if (e.AddedItems.Count != 1)
             {
                 return;
             }
             selectedLine = (FaceFXAnimSet.FaceFXLine)e.AddedItems[0];
             updateAnimListBox();
+            int tlkID = 0;
+            if (int.TryParse(selectedLine.ID, out tlkID))
+            {
+                lineText.Text = TalkFiles.findDataById(tlkID);
+            }
         }
 
         private void updateAnimListBox()
@@ -144,7 +152,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
 
         private void SaveChanges()
         {
-            if (selectedLine != null)
+            if (selectedLine != null && animationListBox.ItemsSource != null)
             {
                 List<CurvePoint> curvePoints = new List<CurvePoint>();
                 List<FaceFXAnimSet.NameRef> animations = new List<FaceFXAnimSet.NameRef>();
@@ -176,16 +184,25 @@ namespace ME3Explorer.FaceFXAnimSetEditor
 
         private void linesListBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0, 0)))
             {
                 System.Windows.Vector diff = dragStart - e.GetPosition(null);
                 if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (!(e.OriginalSource is ScrollViewer) && linesListBox.SelectedItem != null)
+                    try
                     {
-                        SaveChanges();
-                        FaceFXAnimSet.FaceFXLine d = (linesListBox.SelectedItem as FaceFXAnimSet.FaceFXLine).Clone();
-                        DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new { line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
+                        dragStart = new Point(0, 0);
+                        if (!(e.OriginalSource is ScrollViewer) && linesListBox.SelectedItem != null)
+                        {
+                            SaveChanges();
+                            FaceFXAnimSet.FaceFXLine d = (linesListBox.SelectedItem as FaceFXAnimSet.FaceFXLine).Clone();
+                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new { line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
                     }
                 }
             }
@@ -230,13 +247,14 @@ namespace ME3Explorer.FaceFXAnimSetEditor
 
         private void animationListBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0,0)))
             {
                 System.Windows.Vector diff = dragStart - e.GetPosition(null);
                 if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     try
                     {
+                        dragStart = new Point(0,0);
                         if (!(e.OriginalSource is ScrollViewer) && animationListBox.SelectedItem != null)
                         {
                             SaveChanges();

@@ -1864,7 +1864,7 @@ namespace ME3Explorer
             int n = 0;
             if (GetSelected(out n) && n >= 0)
             {
-                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc, n);
+                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.Exports[n]);
                 c.Show();
             }
         }

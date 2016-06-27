@@ -88,6 +88,32 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Canvas x:Name="graph" Background="#FF3B3B3B" PreviewMouseDown="graph_MouseDown" PreviewMouseUp="graph_MouseUp" PreviewMouseMove="graph_MouseMove">
+    <Canvas>
+        <Canvas x:Name="graph" Background="#FF3B3B3B" PreviewMouseDown="graph_MouseDown" PreviewMouseUp="graph_MouseUp" PreviewMouseMove="graph_MouseMove"
+                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+        <Grid Canvas.Right="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="X"/>
+            <Label Content="Y" Grid.Row="1"/>
+            <TextBox x:Name="xTextBox" />
+            <TextBox x:Name="yTextBox"  Grid.Row="1"/>
+            <Grid.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="Grid.Column" Value="1"/>
+                    <Setter Property="Background" Value="#FFB8B8B8"/>
+                    <Setter Property="BorderBrush" Value="{x:Null}"/>
+                    <EventSetter Event="PreviewTextInput" Handler="TextBox_PreviewTextInput"/>
+                    <EventSetter Event="TextChanged" Handler="TextBox_TextChanged"/>
+                </Style>
+            </Grid.Resources>
+        </Grid>
     </Canvas>
 </UserControl>

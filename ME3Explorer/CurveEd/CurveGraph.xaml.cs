@@ -369,6 +369,35 @@ namespace ME3Explorer.CurveEd
                 dragPos = e.GetPosition(graph);
                 Cursor = Cursors.ScrollNS;
             }
+            else if (e.OriginalSource == graph && e.ChangedButton == MouseButton.Right)
+            {
+                ContextMenu cm = new ContextMenu();
+                MenuItem addKey = new MenuItem();
+                addKey.Header = "Add Key";
+                addKey.Click += AddKey_Click;
+                addKey.Tag = e.GetPosition(graph);
+                cm.Items.Add(addKey);
+                cm.PlacementTarget = sender as Canvas;
+                cm.IsOpen = true;
+            }
+        }
+
+        private void AddKey_Click(object sender, RoutedEventArgs e)
+        {
+            Point pos = (Point)(sender as MenuItem).Tag;
+            double inVal = unrealX(pos.X);
+            LinkedListNode<CurvePoint> node;
+            try
+            {
+                node = SelectedCurve.CurvePoints.Find(SelectedCurve.CurvePoints.First(x => x.InVal > inVal));
+                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node.Value.InterpMode), node);
+            }
+            catch (Exception)
+            {
+                node = SelectedCurve.CurvePoints.Last;
+                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node.Value.InterpMode), node, false);
+            }
+            Paint(true);
         }
 
         private void graph_MouseUp(object sender, MouseButtonEventArgs e)
@@ -392,6 +421,52 @@ namespace ME3Explorer.CurveEd
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Anchor a = ((sender as MenuItem).Parent as ContextMenu).Tag as Anchor;
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            TextBox b = sender as TextBox;
+            string result;
+            if (b.IsSelectionActive)
+            {
+                result = b.Text.Remove(b.SelectionStart, b.SelectionLength).Insert(b.SelectionStart, e.Text);
+            }
+            else
+            {
+                result = b.Text.Insert(b.CaretIndex, e.Text);
+            }
+            float f = 0;
+            if (!float.TryParse(result, out f))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox b = sender as TextBox;
+            double d = 0;
+            //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
+            if (double.TryParse(b.Text, out d) && b.IsFocused && b.IsKeyboardFocused && !KFreonLib.Misc.Methods.FindInStack("Anchor"))
+            {
+                Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
+                if (a != null && b.Name == "xTextBox")
+                {
+                    float next = a.point.Next?.Value.InVal ?? float.MaxValue;
+                    float prev = a.point.Previous?.Value.InVal ?? float.MinValue;
+                    if (d > prev && d < next)
+                    {
+                        a.point.Value.InVal = (float)d;
+                        a.X = localX(d);
+                        Paint(true);
+                    }
+                }
+                else if (a != null && b.Name == "yTextBox")
+                {
+                    a.Y = localY(d);
+                    Paint(true);
+                }
+            }
         }
     }
 

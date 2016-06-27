@@ -38,6 +38,14 @@ namespace ME3Explorer.CurveEd
             if (a?.graph != null)
             {
                 a.point.Value.OutVal = Convert.ToSingle(a.graph.unrealY((double)e.NewValue));
+                if (a.IsSelected)
+                {
+                    string val = a.point.Value.OutVal.ToString("0.###");
+                    if (!a.graph.yTextBox.Text.isNumericallyEqual(val))
+                    {
+                        a.graph.yTextBox.Text = val;
+                    } 
+                }
             }
         }
 
@@ -66,12 +74,20 @@ namespace ME3Explorer.CurveEd
             Anchor a = sender as Anchor;
             if (a != null)
             {
-                if ((bool)e.NewValue == false)
+                //selected
+                if ((bool)e.NewValue)
                 {
-                    a.leftHandle.Visibility = a.rightHandle.Visibility = Visibility.Hidden;
-                }
-                else
-                {
+                    string val = a.point.Value.InVal.ToString("0.###");
+                    if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
+                    {
+                        a.graph.xTextBox.Text = val;
+                    }
+                    val = a.point.Value.OutVal.ToString("0.###");
+                    if (!a.graph.yTextBox.Text.isNumericallyEqual(val))
+                    {
+                        a.graph.yTextBox.Text = val;
+                    }
+
                     //left handle
                     if (a.point.Previous != null)
                     {
@@ -111,12 +127,17 @@ namespace ME3Explorer.CurveEd
                             default:
                                 a.rightHandle.Visibility = Visibility.Hidden;
                                 break;
-                        } 
+                        }
                     }
                     else
                     {
                         a.rightHandle.Visibility = Visibility.Hidden;
                     }
+                }
+                //unselected
+                else
+                {
+                    a.leftHandle.Visibility = a.rightHandle.Visibility = Visibility.Hidden;
                 }
             }
         }
@@ -153,6 +174,10 @@ namespace ME3Explorer.CurveEd
                 setTime.Header = "Set Time";
                 setTime.Click += SetTime_Click;
                 cm.Items.Add(setTime);
+                MenuItem setValue = new MenuItem();
+                setValue.Header = "Set Value";
+                setValue.Click += SetValue_Click;
+                cm.Items.Add(setValue);
                 switch (point.Value.InterpMode)
                 {
                     case CurveMode.CIM_CurveAuto:
@@ -172,21 +197,50 @@ namespace ME3Explorer.CurveEd
                     default:
                         break;
                 }
+                MenuItem deleteKey = new MenuItem();
+                deleteKey.Header = "Delete Key";
+                deleteKey.Click += DeleteKey_Click;
+                cm.Items.Add(deleteKey);
                 cm.PlacementTarget = sender as Anchor;
                 cm.IsOpen = true;
             }
+        }
+
+        private void DeleteKey_Click(object sender, RoutedEventArgs e)
+        {
+            if (point.Previous != null)
+            {
+                graph.SelectedPoint = point.Previous.Value;
+            }
+            else if (point.Next != null)
+            {
+                graph.SelectedPoint = point.Next.Value;
+            }
+            graph.SelectedCurve.RemovePoint(point);
+            graph.Paint();
         }
 
         private void SetTime_Click(object sender, RoutedEventArgs e)
         {
             float prev = point.Previous?.Value.InVal ?? float.MinValue;
             float next = point.Next?.Value.InVal ?? float.MaxValue;
-            string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter time between {prev} and {next}");
+            string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
             float result = 0;
             if (float.TryParse(res, out result) && result > prev && result < next)
             {
                 point.Value.InVal = result;
                 X = graph.localX(result);
+                graph.Paint(true);
+            }
+        }
+
+        private void SetValue_Click(object sender, RoutedEventArgs e)
+        {
+            string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter new value", "Set Value", point.Value.OutVal.ToString());
+            float result = 0;
+            if (float.TryParse(res, out result))
+            {
+                Y = graph.localY(result);
                 graph.Paint(true);
             }
         }
@@ -209,7 +263,6 @@ namespace ME3Explorer.CurveEd
         {
             IsSelected = true;
             graph.SelectedPoint = point.Value;
-            
         }
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)

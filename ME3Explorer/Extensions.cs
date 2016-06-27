@@ -32,7 +32,7 @@ namespace ME3Explorer
         }
     }
 
-    public static class ListExtensions
+    public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)
         {
@@ -65,6 +65,48 @@ namespace ME3Explorer
         public static int IndexOf<T>(this T[] array, T value)
         {
             return Array.IndexOf(array, value);
+        }
+
+        public static int IndexOf<T>(this LinkedList<T> list, LinkedListNode<T> node)
+        {
+            LinkedListNode<T> temp = list.First;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (node == temp)
+                {
+                    return i;
+                }
+                temp = temp.Next;
+            }
+            return -1;
+        }
+
+        public static void RemoveAt<T>(this LinkedList<T> list, int index)
+        {
+            list.Remove(list.NodeAt(index));
+        }
+
+        public static LinkedListNode<T> NodeAt<T>(this LinkedList<T> list, int index)
+        {
+            LinkedListNode<T> temp = list.First;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i == index)
+                {
+                    return temp;
+                }
+                temp = temp.Next;
+            }
+            throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public static class StringExtensions
+    {
+        public static bool isNumericallyEqual(this string first, string second)
+        {
+            double a = 0, b = 0;
+            return double.TryParse(first, out a) && double.TryParse(second, out b) && a == b;
         }
     }
 }

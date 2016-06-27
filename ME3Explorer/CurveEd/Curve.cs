@@ -110,6 +110,8 @@ namespace ME3Explorer.CurveEd
 
         public event EventHandler SharedValueChanged;
 
+        public event EventHandler<Tuple<bool, int>> ListModified;
+
         public Curve(string name, LinkedList<CurvePoint> points)
         {
             Name = name;
@@ -123,6 +125,27 @@ namespace ME3Explorer.CurveEd
         private void Point_SharedValueChanged(object sender, EventArgs e)
         {
             SharedValueChanged?.Invoke(this, e);
+        }
+
+        public void RemovePoint(LinkedListNode<CurvePoint> p)
+        {
+            int index = CurvePoints.IndexOf(p);
+            CurvePoints.Remove(p);
+            ListModified?.Invoke(this, new Tuple<bool, int>(false, index));
+        }
+
+        public void AddPoint(CurvePoint newPoint, LinkedListNode<CurvePoint> relTo, bool before = true)
+        {
+            LinkedListNode<CurvePoint> addedNode;
+            if (before)
+            {
+                addedNode = CurvePoints.AddBefore(relTo, newPoint);
+            }
+            else
+            {
+                addedNode = CurvePoints.AddAfter(relTo, newPoint);
+            }
+            ListModified?.Invoke(this, new Tuple<bool, int>(true, CurvePoints.IndexOf(addedNode)));
         }
 
         public Curve()

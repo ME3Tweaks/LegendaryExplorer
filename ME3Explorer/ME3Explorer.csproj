@@ -147,7 +147,6 @@
     <Compile Include="CurveEd\CurveGraph.xaml.cs">
       <DependentUpon>CurveGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CurveEd\FloatEventArgs.cs" />
     <Compile Include="CurveEd\Handle.cs" />
     <Compile Include="CurveEd\InterpCurve.cs" />
     <Compile Include="FaceFXAnimSetEditor\FaceFXEditor.xaml.cs">

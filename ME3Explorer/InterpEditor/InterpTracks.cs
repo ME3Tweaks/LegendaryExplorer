@@ -327,7 +327,7 @@ namespace ME3Explorer.InterpEditor
 
         private void OpenInCurveEd_Click(object sender, EventArgs e)
         {
-            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc, index);
+            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.Exports[index]);
             c.Show();
         }
 

@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Gibbed.IO;
 
 namespace ME3Explorer.Unreal
 {
@@ -1074,6 +1076,106 @@ namespace ME3Explorer.Unreal
                 case "DelegateProperty":
                     throw new NotImplementedException(type);
             }
+        }
+
+        public static void WritePropHeader(this Stream stream, PCCObject pcc, string propName, Type type, int size)
+        {
+            stream.WriteValueS32(pcc.FindNameOrAdd(propName));
+            stream.WriteValueS32(0);
+            stream.WriteValueS32(pcc.FindNameOrAdd(type.ToString()));
+            stream.WriteValueS32(0);
+            stream.WriteValueS32(size);
+            stream.WriteValueS32(0);
+        }
+
+        public static void WriteNoneProperty(this Stream stream, PCCObject pcc)
+        {
+            stream.WriteValueS32(pcc.FindNameOrAdd("None"));
+            stream.WriteValueS32(0);
+        }
+
+        public static void WriteStructProperty(this Stream stream, PCCObject pcc, string propName, string structName, byte[] value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.StructProperty, value.Length);
+            stream.WriteValueS32(pcc.FindNameOrAdd(structName));
+            stream.WriteValueS32(0);
+            stream.WriteBytes(value);
+        }
+
+        public static void WriteIntProperty(this Stream stream, PCCObject pcc, string propName, int value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.IntProperty, 4);
+            stream.WriteValueS32(value);
+        }
+
+        public static void WriteFloatProperty(this Stream stream, PCCObject pcc, string propName, float value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.FloatProperty, 4);
+            stream.WriteValueF32(value);
+        }
+
+        public static void WriteObjectProperty(this Stream stream, PCCObject pcc, string propName, int value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.ObjectProperty, 4);
+            stream.WriteValueS32(value);
+        }
+
+        public static void WriteNameProperty(this Stream stream, PCCObject pcc, string propName, string value, int index = 0)
+        {
+            stream.WritePropHeader(pcc, propName, Type.NameProperty, 8);
+            stream.WriteValueF32(pcc.FindNameOrAdd(value));
+            stream.WriteValueS32(index);
+        }
+
+        public static void WriteBoolProperty(this Stream stream, PCCObject pcc, string propName, bool value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.BoolProperty, 0);
+            stream.WriteValueB8(value);
+        }
+
+        public static void WriteByteProperty(this Stream stream, PCCObject pcc, string propName, byte value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.ByteProperty, 1);
+            stream.WriteByte(value);
+        }
+
+        public static void WriteByteProperty(this Stream stream, PCCObject pcc, string propName, string enumName, string enumValue, int index = 0)
+        {
+            stream.WritePropHeader(pcc, propName, Type.ByteProperty, 8);
+            stream.WriteValueS32(pcc.FindNameOrAdd(enumName));
+            stream.WriteValueS32(0);
+            stream.WriteValueS32(pcc.FindNameOrAdd(enumValue));
+            stream.WriteValueS32(index);
+        }
+
+        public static void WriteArrayProperty(this Stream stream, PCCObject pcc, string propName, int count, byte[] value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.ArrayProperty, 4 + value.Length);
+            stream.WriteValueS32(count);
+            stream.WriteBytes(value);
+        }
+
+        public static void WriteStringProperty(this Stream stream, PCCObject pcc, string propName, string value)
+        {
+            int strLen = (value.Length + 1) * 2;
+            stream.WritePropHeader(pcc, propName, Type.StrProperty, strLen + 4);
+            stream.WriteValueS32(strLen);
+            stream.WriteStringZ(value);
+        }
+
+        public static void WriteStringRefProperty(this Stream stream, PCCObject pcc, string propName, int value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.StringRefProperty, 4);
+            stream.WriteValueS32(value);
+        }
+
+        public static void WriteStructPropVector(this Stream stream, PCCObject pcc, string propName, float x, float y, float z)
+        {
+            MemoryStream m = new MemoryStream(12);
+            m.WriteValueF32(x);
+            m.WriteValueF32(y);
+            m.WriteValueF32(z);
+            stream.WriteStructProperty(pcc, propName, "Vector", m.ToArray());
         }
     }
 }

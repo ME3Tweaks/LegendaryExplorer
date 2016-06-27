@@ -23,18 +23,18 @@ namespace ME3Explorer.CurveEd
     public partial class CurveEditor : Window
     {
         private PCCObject pcc;
-        private int index;
+        private PCCObject.ExportEntry expEntry;
 
         public List<InterpCurve> InterpCurveTracks;
 
-        public CurveEditor(PCCObject _pcc, int Index)
+        public CurveEditor(PCCObject.ExportEntry exp)
         {
             InitializeComponent();
-            pcc = _pcc;
-            index = Index;
+            expEntry = exp;
+            pcc = expEntry.pccRef;
             InterpCurveTracks = new List<InterpCurve>();
 
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, expEntry);
             CurveType throwaway = CurveType.InterpCurveVector;
             foreach (var p in props)
             {
@@ -62,6 +62,10 @@ namespace ME3Explorer.CurveEd
 
         private void graph_SelectedPointChanged(object sender, RoutedPropertyChangedEventArgs<CurvePoint> e)
         {
+            if (e.NewValue == null)
+            {
+                return;
+            }
             switch (e.NewValue.InterpMode)
             {
                 case CurveMode.CIM_Linear:
@@ -124,7 +128,8 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, expEntry);
+            int diff = 0;
             foreach (var p in props)
             {
                 if (p.TypeVal == PropertyReader.Type.StructProperty)
@@ -133,7 +138,13 @@ namespace ME3Explorer.CurveEd
                     {
                         if (pcc.getNameEntry(p.Name) == item.Name)
                         {
-                            pcc.Exports[index].Data.OverwriteRange(p.offsetval - 24, item.Serialize());
+                            int offset = p.offsetval - 24 + diff;
+                            List<byte> data = expEntry.Data.ToList();
+                            data.RemoveRange(offset, p.raw.Length);
+                            byte[] newVal = item.Serialize();
+                            data.InsertRange(offset, newVal);
+                            expEntry.Data = data.ToArray();
+                            diff = newVal.Length - p.raw.Length;
                         }
                     }
                 }

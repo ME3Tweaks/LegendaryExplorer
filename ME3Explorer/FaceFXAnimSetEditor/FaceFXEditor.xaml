@@ -18,21 +18,21 @@
                 <MenuItem Header="_Save" Command="Save"/>
             </MenuItem>
         </Menu>
-        <ToolBar x:Name="toolBar"  VerticalAlignment="Top" DockPanel.Dock="Top">
-            <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463">
+        <ToolBar x:Name="toolBar" Background="#FFF7F7F7" DockPanel.Dock="Top">
+            <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding GetFullPath}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button Content="Load" Click="LoadButton_Click"/>
-            <Separator Margin="2,2,90,2"/>
+            <Button Content="Load" Click="LoadButton_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1"/>
         </ToolBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="326"/>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="310"/>
+                <ColumnDefinition Width="170"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -71,6 +71,13 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <curveEd:CurveGraph x:Name="graph" DockPanel.Dock="Right"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <curveEd:CurveGraph x:Name="graph" DockPanel.Dock="Right"/>
+            <TextBlock x:Name="lineText" Grid.Row="1"/>
+        </Grid>
     </DockPanel>
 </Window>
