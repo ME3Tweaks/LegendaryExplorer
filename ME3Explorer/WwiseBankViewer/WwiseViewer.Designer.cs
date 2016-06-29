@@ -82,7 +82,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(863, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -180,7 +179,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -190,7 +189,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(863, 529);
+            this.splitContainer1.Size = new System.Drawing.Size(863, 505);
             this.splitContainer1.SplitterDistance = 363;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -203,7 +202,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(363, 529);
+            this.listBox1.Size = new System.Drawing.Size(363, 505);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -216,7 +215,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(496, 529);
+            this.tabControl1.Size = new System.Drawing.Size(496, 505);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -225,7 +224,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 503);
+            this.tabPage1.Size = new System.Drawing.Size(488, 479);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RAW";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -240,7 +239,7 @@
             this.hb1.Location = new System.Drawing.Point(3, 3);
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(482, 497);
+            this.hb1.Size = new System.Drawing.Size(482, 473);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;

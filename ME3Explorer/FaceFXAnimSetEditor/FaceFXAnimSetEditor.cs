@@ -34,8 +34,9 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 {
                     pcc = new ME3Package(d.FileName);
                     Objects = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    for (int i = 0; i < Exports.Count; i++)
+                        if (Exports[i].ClassName == "FaceFXAnimSet")
                             Objects.Add(i);
                     ListRefresh();
                 }

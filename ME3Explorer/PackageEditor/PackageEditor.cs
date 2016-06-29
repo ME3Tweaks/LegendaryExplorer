@@ -24,7 +24,7 @@ namespace ME3Explorer
         public int CurrentView;
         public const int NAMES_VIEW = 0;
         public const int IMPORTS_VIEW = 1;
-        public const int EXPORTS_VIEW = 2;
+        public const int Exports_VIEW = 2;
         public const int TREE_VIEW = 3;
         public PropGrid pg;
         private string currentFile;
@@ -107,15 +107,15 @@ namespace ME3Explorer
             linkComboBox.Items.Clear();
             archetypeComboBox.Items.Clear();
             List<string> Classes = new List<string>();
-            List<IImportEntry> imports = pcc.IImports;
+            IReadOnlyList<IImportEntry> imports = pcc.Imports;
             for (int i = imports.Count - 1; i >= 0; i--)
             {
                 Classes.Add(-(i + 1) + " : " + imports[i].ObjectName);
             }
             Classes.Add("0 : Class");
             int count = 1;
-            List<IExportEntry> exports = pcc.IExports;
-            foreach (IExportEntry exp in exports)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            foreach (IExportEntry exp in Exports)
             {
                 Classes.Add((count++) + " : " + exp.ObjectName);
             }
@@ -196,10 +196,10 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             ClassNames = new List<int>();
-            List<IExportEntry> exports = pcc.IExports;
-            for (int i = 0; i < exports.Count; i++)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
             {
-                ClassNames.Add(exports[i].idxClass);
+                ClassNames.Add(Exports[i].idxClass);
             }
             List<string> names = ClassNames.Distinct().Select(x => pcc.getClassName(x)).ToList();
             names.Sort();
@@ -232,7 +232,7 @@ namespace ME3Explorer
                     Button3.Checked = false;
                     Button5.Checked = true;
                     break;
-                case EXPORTS_VIEW:
+                case Exports_VIEW:
                 default:
                     Button1.Checked = false;
                     Button2.Checked = false;
@@ -252,8 +252,8 @@ namespace ME3Explorer
             listBox1.BeginUpdate();
             treeView1.BeginUpdate();
             listBox1.Items.Clear();
-            List<IImportEntry> imports = pcc.IImports;
-            List<IExportEntry> exports = pcc.IExports;
+            IReadOnlyList<IImportEntry> imports = pcc.Imports;
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             if (CurrentView == NAMES_VIEW)
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
@@ -276,22 +276,22 @@ namespace ME3Explorer
                 }
             }
             string s;
-            if (CurrentView == EXPORTS_VIEW)
+            if (CurrentView == Exports_VIEW)
             {
                 string PackageFullName, ClassName;
-                List<string> exps = new List<string>(exports.Count);
-                for (int i = 0; i < exports.Count; i++)
+                List<string> exps = new List<string>(Exports.Count);
+                for (int i = 0; i < Exports.Count; i++)
                 {
                     s = "";
-                    PackageFullName = exports[i].PackageFullName;
+                    PackageFullName = Exports[i].PackageFullName;
                     if (PackageFullName != "Class" && PackageFullName != "Package")
                         s += PackageFullName + ".";
-                    s += exports[i].ObjectName;
-                    ClassName = exports[i].ClassName;
+                    s += Exports[i].ObjectName;
+                    ClassName = Exports[i].ClassName;
                     if (ClassName == "ObjectProperty" || ClassName == "StructProperty")
                     {
                         //attempt to find type
-                        byte[] data = exports[i].Data;
+                        byte[] data = Exports[i].Data;
                         int importindex = BitConverter.ToInt32(data, data.Length - 4);
                         if (importindex < 0)
                         {
@@ -307,9 +307,9 @@ namespace ME3Explorer
                         {
                             //export
                             if (importindex > 0) importindex--;
-                            if (importindex <= exports.Count)
+                            if (importindex <= Exports.Count)
                             {
-                                s += " [" + exports[importindex].ObjectName + "]";
+                                s += " [" + Exports[importindex].ObjectName + "]";
                             }
                         }
                     }
@@ -322,15 +322,15 @@ namespace ME3Explorer
                 listBox1.Visible = false;
                 treeView1.Visible = true;
                 treeView1.Nodes.Clear();
-                int importsOffset = exports.Count;
+                int importsOffset = Exports.Count;
                 int link;
-                List<TreeNode> nodeList = new List<TreeNode>(exports.Count + imports.Count + 1);
+                List<TreeNode> nodeList = new List<TreeNode>(Exports.Count + imports.Count + 1);
                 TreeNode node = new TreeNode(pcc.fileName);
                 node.Tag = true;
                 nodeList.Add(node);
-                for (int i = 0; i < exports.Count; i++)
+                for (int i = 0; i < Exports.Count; i++)
                 {
-                    node = new TreeNode($"(Exp){i} : {exports[i].ObjectName}({exports[i].ClassName})");
+                    node = new TreeNode($"(Exp){i} : {Exports[i].ObjectName}({Exports[i].ClassName})");
                     node.Name = i.ToString();
                     nodeList.Add(node);
                 }
@@ -341,7 +341,7 @@ namespace ME3Explorer
                     nodeList.Add(node);
                 }
                 int curIndex;
-                for (int i = 1; i <= exports.Count; i++)
+                for (int i = 1; i <= Exports.Count; i++)
                 {
                     node = nodeList[i];
                     curIndex = i;
@@ -381,7 +381,7 @@ namespace ME3Explorer
                 
         private void Button3_Click(object sender, EventArgs e)
         {
-            SetView(EXPORTS_VIEW);
+            SetView(Exports_VIEW);
             RefreshView();
         }
 
@@ -422,7 +422,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (CurrentView == IMPORTS_VIEW || CurrentView == EXPORTS_VIEW || CurrentView == TREE_VIEW)
+            if (CurrentView == IMPORTS_VIEW || CurrentView == Exports_VIEW || CurrentView == TREE_VIEW)
             {
                 tabControl1_SelectedIndexChanged(null, null);
                 PreviewInfo(n);
@@ -579,7 +579,7 @@ namespace ME3Explorer
                 n = Convert.ToInt32(treeView1.SelectedNode.Name);
                 return true;
             }
-            else if (CurrentView == EXPORTS_VIEW && listBox1.SelectedItem != null)
+            else if (CurrentView == Exports_VIEW && listBox1.SelectedItem != null)
             {
                 n = listBox1.SelectedIndex;
                 return true;
@@ -936,7 +936,7 @@ namespace ME3Explorer
             }
             if (CurrentView == IMPORTS_VIEW)
             {
-                List<IImportEntry> imports = pcc.IImports;
+                IReadOnlyList<IImportEntry> imports = pcc.Imports;
                 for (int i = start; i < imports.Count; i++)
                     if (imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
@@ -944,11 +944,11 @@ namespace ME3Explorer
                         break;
                     }
             }
-            if (CurrentView == EXPORTS_VIEW)
+            if (CurrentView == Exports_VIEW)
             {
-                List<IExportEntry> exports = pcc.IExports;
-                for (int i = start; i < exports.Count; i++)
-                    if (exports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = start; i < Exports.Count; i++)
+                    if (Exports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -961,7 +961,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = listBox1.SelectedIndex;
-            if (CurrentView != EXPORTS_VIEW)
+            if (CurrentView != Exports_VIEW)
                 return;
             if (combo1.SelectedIndex == -1)
                 return;
@@ -971,9 +971,9 @@ namespace ME3Explorer
                 start = 0;
             else
                 start = n + 1;
-            List<IExportEntry> exports = pcc.IExports;
-            for (int i = start; i < exports.Count; i++)
-                if (exports[i].ClassName == cls)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = start; i < Exports.Count; i++)
+                if (Exports[i].ClassName == cls)
                 {
                     listBox1.SelectedIndex = i;
                     break;
@@ -1066,7 +1066,7 @@ namespace ME3Explorer
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name", "ME3 Explorer", "", 0, 0);
             if (result != "")
             {
-                pcc.Names.Add(result);
+                int idx = pcc.FindNameOrAdd(result);
                 if (CurrentView == NAMES_VIEW)
                 {
                     int scrollTo = listBox1.TopIndex + 1;
@@ -1075,13 +1075,13 @@ namespace ME3Explorer
                     listBox1.SelectedIndex = selected;
                     listBox1.TopIndex = scrollTo;
                 }
-                byte[] buff = BitConverter.GetBytes(pcc.Names.Count - 1);
+                byte[] buff = BitConverter.GetBytes(idx);
                 string s = "";
                 for (int i = 0; i < 4; i++)
                 {
                     s += buff[i].ToString("X2");
                 }
-                MessageBox.Show("\"" + result + "\" added at index " + (pcc.Names.Count - 1) + " (" + s + ")");
+                MessageBox.Show("\"" + result + "\" at index " + (idx) + " (" + s + ")");
             }
         }
 
@@ -1834,7 +1834,7 @@ namespace ME3Explorer
             catch (Exception exception)
             {
                 //restore namelist
-                pcc.Names = names;
+                pcc.setNames(names);
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;
             }

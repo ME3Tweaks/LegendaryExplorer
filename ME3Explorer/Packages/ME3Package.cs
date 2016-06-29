@@ -27,8 +27,8 @@ namespace ME3Explorer.Packages
         private int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } // usually = 10
         private uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
-        public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
-        public bool canReconstruct { get { return !Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
+        public bool isModified { get { return exports.Any(entry => entry.hasChanged == true); } }
+        public bool canReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
         public bool bCompressed
         {
             get { return (flags & 0x02000000) != 0; }
@@ -86,23 +86,24 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public List<string> Names { get; set; }
-        public List<ME3ImportEntry> Imports { get; private set; }
-        public List<ME3ExportEntry> Exports { get; private set; }
+        private List<string> names;
+        private List<ME3ImportEntry> imports;
+        private List<ME3ExportEntry> exports;
 
-        public List<IExportEntry> IExports
+        public IReadOnlyList<string> Names { get { return names; } }
+        public IReadOnlyList<IExportEntry> Exports
         {
             get
             {
-                return Exports.ToList<IExportEntry>();
+                return exports;
             }
         }
 
-        public List<IImportEntry> IImports
+        public IReadOnlyList<IImportEntry> Imports
         {
             get
             {
-                return Imports.ToList<IImportEntry>();
+                return imports;
             }
         }
 
@@ -125,9 +126,9 @@ namespace ME3Explorer.Packages
             fileName = Path.GetFullPath(pccFilePath);
             using (FileStream pccStream = File.OpenRead(fileName))
             {
-                Names = new List<string>();
-                Imports = new List<ME3ImportEntry>();
-                Exports = new List<ME3ExportEntry>();
+                names = new List<string>();
+                imports = new List<ME3ImportEntry>();
+                exports = new List<ME3ExportEntry>();
 
                 pccStream.Read(header, 0, header.Length);
                 if (magic != ZBlock.magic &&
@@ -190,7 +191,7 @@ namespace ME3Explorer.Packages
                     int strLength = listsStream.ReadValueS32();
                     string str = listsStream.ReadString(strLength * -2, true, Encoding.Unicode);
                     //Debug.WriteLine("Read name "+i+" "+str+" length: " + strLength+", offset: "+currOffset);
-                    Names.Add(str);
+                    names.Add(str);
                 }
                 //Debug.WriteLine("Names done. Current offset: "+listsStream.Position);
                 //Debug.WriteLine("Import Offset: " + ImportOffset);
@@ -204,7 +205,7 @@ namespace ME3Explorer.Packages
 
                     long offset = listsStream.Position;
                     ME3ImportEntry e = new ME3ImportEntry(this, listsStream);
-                    Imports.Add(e);
+                    imports.Add(e);
                     //Debug.WriteLine("Read import " + i + " " + e.ObjectName + ", offset: " + offset);
                 };
 
@@ -225,11 +226,11 @@ namespace ME3Explorer.Packages
                     listsStream.Read(buffer, 0, buffer.Length);
                     ME3ExportEntry e = new ME3ExportEntry(this, buffer, expInfoOffset);
                     //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize); 
-                    Exports.Add(e);
+                    exports.Add(e);
                 }
                 //load in all data
                 byte[] buff;
-                foreach (ME3ExportEntry e in Exports)
+                foreach (ME3ExportEntry e in exports)
                 {
                     buff = e.Data;
                 }
@@ -259,7 +260,7 @@ namespace ME3Explorer.Packages
                 }
 
                 // fill all the exports data extracted from the uncBlock
-                foreach (IExportEntry expInfo in Exports)
+                foreach (IExportEntry expInfo in exports)
                 {
                     if (expInfo.DataOffset >= selected.uncOffset && expInfo.DataOffset + expInfo.DataSize <= selected.uncOffset + selected.uncSize)
                     {
@@ -274,8 +275,8 @@ namespace ME3Explorer.Packages
                 IExportEntry expSelect;
                 if (exp == null)
                 {
-                    int expIndex = Exports.FindIndex(export => export.DataOffset <= offset && export.DataOffset + export.DataSize > offset);
-                    expSelect = Exports[expIndex];
+                    int expIndex = exports.FindIndex(export => export.DataOffset <= offset && export.DataOffset + export.DataSize > offset);
+                    expSelect = exports[expIndex];
                 }
                 else
                 {
@@ -339,8 +340,8 @@ namespace ME3Explorer.Packages
                 m.WriteBytes(header);
                 //name table
                 NameOffset = (int)m.Position;
-                NameCount = Names.Count;
-                foreach (string s in Names)
+                NameCount = names.Count;
+                foreach (string s in names)
                 {
                     string text = s;
                     if (!text.EndsWith("\0"))
@@ -356,17 +357,17 @@ namespace ME3Explorer.Packages
                 }
                 //import table
                 ImportOffset = (int)m.Position;
-                ImportCount = Imports.Count;
-                foreach (ME3ImportEntry e in Imports)
+                ImportCount = imports.Count;
+                foreach (ME3ImportEntry e in imports)
                 {
                     m.WriteBytes(e.header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
-                ExportCount = Exports.Count;
-                for (int i = 0; i < Exports.Count; i++)
+                ExportCount = exports.Count;
+                for (int i = 0; i < exports.Count; i++)
                 {
-                    ME3ExportEntry e = Exports[i];
+                    ME3ExportEntry e = exports[i];
                     e.headerOffset = (uint)m.Position;
                     m.WriteBytes(e.header);
                 }
@@ -376,9 +377,9 @@ namespace ME3Explorer.Packages
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
                 FreeZoneEnd = HeaderLength = (uint)m.Position;
                 //export data
-                for (int i = 0; i < Exports.Count; i++)
+                for (int i = 0; i < exports.Count; i++)
                 {
-                    ME3ExportEntry e = Exports[i];
+                    ME3ExportEntry e = exports[i];
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
@@ -422,35 +423,35 @@ namespace ME3Explorer.Packages
 
 
             //Get info
-            expInfoEndOffset = ExportOffset + Exports.Sum(export => export.header.Length);
+            expInfoEndOffset = ExportOffset + exports.Sum(export => export.header.Length);
             if (expDataBegOffset < expInfoEndOffset)
                 expDataBegOffset = expInfoEndOffset;
-            //List<ExportEntry> unchangedExports = Exports.Where(export => !export.hasChanged || (export.hasChanged && export.Data.Length <= export.DataSize)).ToList();
-            List<ME3ExportEntry> unchangedExports = Exports.Where(export => !export.hasChanged).ToList();
-            List<ME3ExportEntry> changedExports;
-            List<ME3ExportEntry> replaceExports = null;
+            //List<ExportEntry> unchangedexports = exports.Where(export => !export.hasChanged || (export.hasChanged && export.Data.Length <= export.DataSize)).ToList();
+            List<ME3ExportEntry> unchangedexports = exports.Where(export => !export.hasChanged).ToList();
+            List<ME3ExportEntry> changedexports;
+            List<ME3ExportEntry> replaceexports = null;
             if (!attemptOverwrite)
             {
                 //If not trying to overwrite, then select all exports that have been changed
-                changedExports = Exports.Where(export => export.hasChanged).ToList();
-                //MessageBox.Show("No changed exports = " + changedExports.Count);
+                changedexports = exports.Where(export => export.hasChanged).ToList();
+                //MessageBox.Show("No changed exports = " + changedexports.Count);
                 //throw new NullReferenceException();
             }
             else
             {
                 //If we are trying to overwrite, then split up the exports that have been changed that can and can't overwrite the originals
-                changedExports = Exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
-                replaceExports = Exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
+                changedexports = exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
+                replaceexports = exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
             }
-            int max = Exports.Max(maxExport => maxExport.DataOffset);
-            ME3ExportEntry lastExport = Exports.Find(export => export.DataOffset == max);
+            int max = exports.Max(maxExport => maxExport.DataOffset);
+            ME3ExportEntry lastExport = exports.Find(export => export.DataOffset == max);
             int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
             //byte[] oldName;
 
             if (!attemptOverwrite)
             {
                 int offset = ExportOffset;
-                foreach (ME3ExportEntry export in Exports)
+                foreach (ME3ExportEntry export in exports)
                 {
                     if (!export.hasChanged)
                     {
@@ -465,7 +466,7 @@ namespace ME3Explorer.Packages
                     stream.Seek(0, SeekOrigin.End);
                     rtValues += stream.Position + " ";
                     //throw new FileNotFoundException();
-                    stream.Write(changedExports[0].header, 32, 8);
+                    stream.Write(changedexports[0].header, 32, 8);
                 }
             }
 
@@ -492,7 +493,7 @@ namespace ME3Explorer.Packages
                 if (!attemptOverwrite)
                 {
                     //If we're not trying to overwrite then just append all the changed exports
-                    foreach (ME3ExportEntry export in changedExports)
+                    foreach (ME3ExportEntry export in changedexports)
                     {
                         export.DataOffset = (int)newPCCStream.Position;
                         export.DataSize = export.Data.Length;
@@ -502,7 +503,7 @@ namespace ME3Explorer.Packages
                 else
                 {
                     //If we are then move to each offset and overwrite the data with the new exports
-                    foreach (ME3ExportEntry export in replaceExports)
+                    foreach (ME3ExportEntry export in replaceexports)
                     {
                         //newPCCStream.Position = export.DataOffset;
                         newPCCStream.Seek(export.DataOffset, SeekOrigin.Begin);
@@ -513,7 +514,7 @@ namespace ME3Explorer.Packages
                     //newPCCStream.Position = lastDataOffset;
                     newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
 
-                    foreach (ME3ExportEntry export in changedExports)
+                    foreach (ME3ExportEntry export in changedexports)
                     {
                         export.DataOffset = (int)newPCCStream.Position;
                         export.DataSize = export.Data.Length;
@@ -522,9 +523,9 @@ namespace ME3Explorer.Packages
                 }
                 //Set the new nameoffset and namecounts
                 NameOffset = (int)newPCCStream.Position;
-                NameCount = Names.Count;
+                NameCount = names.Count;
                 //Then write out the namelist
-                foreach (string name in Names)
+                foreach (string name in names)
                 {
                     newPCCStream.WriteValueS32(-(name.Length + 1));
                     newPCCStream.WriteString(name + "\0", (uint)(name.Length + 1) * 2, Encoding.Unicode);
@@ -544,14 +545,14 @@ namespace ME3Explorer.Packages
 
                 //update the import list
                 newPCCStream.Seek(ImportOffset, SeekOrigin.Begin);
-                foreach (ME3ImportEntry import in Imports)
+                foreach (ME3ImportEntry import in imports)
                 {
                     newPCCStream.Write(import.header, 0, import.header.Length);
                 }
 
                 //Finally, update the export list
                 newPCCStream.Seek(ExportOffset, SeekOrigin.Begin);
-                foreach (ME3ExportEntry export in Exports)
+                foreach (ME3ExportEntry export in exports)
                 {
                     newPCCStream.Write(export.header, 0, export.header.Length);
                 }
@@ -562,7 +563,7 @@ namespace ME3Explorer.Packages
                     {
                         stream.Seek(0, SeekOrigin.End);
                         rtValues += stream.Position + " ";
-                        stream.Write(changedExports[0].header, 32, 8);
+                        stream.Write(changedexports[0].header, 32, 8);
                     }
                 }
             }
@@ -573,24 +574,24 @@ namespace ME3Explorer.Packages
         {
             if (!isName(index))
                 return "";
-            return Names[index];
+            return names[index];
         }
 
         public string getObjectName(int index)
         {
             if (index > 0 && index <= ExportCount)
-                return Exports[index - 1].ObjectName;
+                return exports[index - 1].ObjectName;
             if (-index > 0 && -index <= ImportCount)
-                return Imports[-index - 1].ObjectName;
+                return imports[-index - 1].ObjectName;
             return "";
         }
 
         public string getObjectClass(int index)
         {
             if (index > 0 && index <= ExportCount)
-                return Exports[index - 1].ClassName;
+                return exports[index - 1].ClassName;
             if (-index > 0 && -index <= ImportCount)
-                return Imports[-index - 1].ClassName;
+                return imports[-index - 1].ClassName;
             return "";
         }
 
@@ -599,11 +600,11 @@ namespace ME3Explorer.Packages
             string s = "";
             if (index > 0)
             {
-                s = Names[Exports[index - 1].idxObjectName];
+                s = names[exports[index - 1].idxObjectName];
             }
             if (index < 0)
             {
-                s = Names[Imports[index * -1 - 1].idxObjectName];
+                s = names[imports[index * -1 - 1].idxObjectName];
             }
             if (index == 0)
             {
@@ -619,38 +620,38 @@ namespace ME3Explorer.Packages
         public IEntry getEntry(int index)
         {
             if (index > 0 && index <= ExportCount)
-                return Exports[index - 1];
+                return exports[index - 1];
             if (-index > 0 && -index <= ImportCount)
-                return Imports[-index - 1];
+                return imports[-index - 1];
             return null;
         }
 
         public bool isName(int index)
         {
-            return (index >= 0 && index < Names.Count);
+            return (index >= 0 && index < names.Count);
         }
         public bool isImport(int index)
         {
-            return (index >= 0 && index < Imports.Count);
+            return (index >= 0 && index < imports.Count);
         }
         public bool isExport(int index)
         {
-            return (index >= 0 && index < Exports.Count);
+            return (index >= 0 && index < exports.Count);
         }
 
         public int FindNameOrAdd(string name)
         {
-            for (int i = 0; i < Names.Count; i++)
-                if (Names[i] == name)
+            for (int i = 0; i < names.Count; i++)
+                if (names[i] == name)
                     return i;
-            Names.Add(name);
-            return Names.Count - 1;
+            names.Add(name);
+            return names.Count - 1;
         }
 
         public void addName(string name)
         {
-            if (!Names.Contains(name))
-                Names.Add(name);
+            if (!names.Contains(name))
+                names.Add(name);
         }
 
         public void addImport(IImportEntry importEntry)
@@ -670,8 +671,8 @@ namespace ME3Explorer.Packages
             if (importEntry.fileRef != this)
                 throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
 
-            Imports.Add(importEntry);
-            ImportCount = Imports.Count;
+            imports.Add(importEntry);
+            ImportCount = imports.Count;
         }
 
         public void addExport(IExportEntry exportEntry)
@@ -694,13 +695,13 @@ namespace ME3Explorer.Packages
             exportEntry.hasChanged = true;
 
             //changing data offset in order to append it at the end of the file
-            int maxOffset = Exports.Max(entry => entry.DataOffset);
-            ME3ExportEntry lastExport = Exports.Find(export => export.DataOffset == maxOffset);
+            int maxOffset = exports.Max(entry => entry.DataOffset);
+            ME3ExportEntry lastExport = exports.Find(export => export.DataOffset == maxOffset);
             int lastOffset = lastExport.DataOffset + lastExport.Data.Length;
             exportEntry.DataOffset = lastOffset;
 
-            Exports.Add(exportEntry);
-            ExportCount = Exports.Count;
+            exports.Add(exportEntry);
+            ExportCount = exports.Count;
         }
 
         /// <summary>
@@ -711,7 +712,7 @@ namespace ME3Explorer.Packages
         /// <returns></returns>
         public int findName(string nameToFind)
         {
-            for (int i = 0; i < Names.Count; i++)
+            for (int i = 0; i < names.Count; i++)
             {
                 if (String.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
@@ -747,12 +748,17 @@ namespace ME3Explorer.Packages
 
         public IExportEntry getExport(int index)
         {
-            return Exports[index];
+            return exports[index];
         }
 
         public IImportEntry getImport(int index)
         {
-            return Imports[index];
+            return imports[index];
+        }
+
+        public void setNames(List<string> list)
+        {
+            names = list;
         }
     }
 }

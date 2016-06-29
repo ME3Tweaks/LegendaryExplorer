@@ -46,13 +46,14 @@ namespace ME3Explorer.Property_Dumper
         public void LetsDump()
         {
             pb1.Minimum = 0;
-            pb1.Maximum = pcc.Exports.Count;
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            pb1.Maximum = Exports.Count;
             rtb1.Text = "";
             int count = 0;
             string t = "";
-            for (int i = 0; i < pcc.Exports.Count; i++)
+            for (int i = 0; i < Exports.Count; i++)
             {
-                ME3ExportEntry e = pcc.Exports[i];
+                IExportEntry e = Exports[i];
                 string s = "Properties for Object #" + i + " \"" + e.ObjectName + "\" :\n\n";
                 List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, e);
                 foreach (PropertyReader.Property prop in p)
@@ -63,7 +64,7 @@ namespace ME3Explorer.Property_Dumper
                 {                    
                     count = 0;
                     pb1.Value = i;
-                    Status.Text = "State : " + i + " / " + pcc.Exports.Count;
+                    Status.Text = "State : " + i + " / " + Exports.Count;
                     Application.DoEvents();
                 }
             }
@@ -132,12 +133,13 @@ namespace ME3Explorer.Property_Dumper
                         while (pause)
                             Application.DoEvents();
                         pcc = new ME3Package(files[i]);
-                        pb1.Maximum = pcc.Exports.Count;
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        pb1.Maximum = Exports.Count;
                         pb2.Value = i;
                         string s = "String references for file " + files[i] + "\n";
-                        for (int j = 0; j < pcc.Exports.Count; j++)
+                        for (int j = 0; j < Exports.Count; j++)
                         {
-                            ME3ExportEntry ent = pcc.Exports[j];
+                            IExportEntry ent = Exports[j];
                             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
 
                             for (int k = 0; k < p.Count; k++)
@@ -168,7 +170,7 @@ namespace ME3Explorer.Property_Dumper
                             {
                                 count = 0;
                                 pb1.Value = j;
-                                Status.Text = "State : " + j + " / " + pcc.Exports.Count;
+                                Status.Text = "State : " + j + " / " + Exports.Count;
                                 if (count2++ > 10)
                                 {
                                     count2 = 0;
@@ -249,11 +251,12 @@ namespace ME3Explorer.Property_Dumper
                         Application.DoEvents();
                     pcc = new ME3Package(files[i]);
                     DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
-                    pb1.Maximum = pcc.Exports.Count;
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    pb1.Maximum = Exports.Count;
                     pb2.Value = i;
-                    for (int j = 0; j < pcc.Exports.Count; j++)
+                    for (int j = 0; j < Exports.Count; j++)
                     {
-                        ME3ExportEntry ent = pcc.Exports[j];
+                        IExportEntry ent = Exports[j];
                         if (ent.ClassName == classname)
                         {
                             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
@@ -275,7 +278,7 @@ namespace ME3Explorer.Property_Dumper
                         if (j % 500 == 0)
                         {
                             pb1.Value = j;
-                            Status.Text = "State : " + j + " / " + pcc.Exports.Count;
+                            Status.Text = "State : " + j + " / " + Exports.Count;
                             string s = "Possible properties found so far for class \"" + classname + "\":\n";
                             for (int k = 0; k < Names.Count(); k++)
                                 s += Types[k] + " : \"" + Names[k] + "\" first found: " + First[k] + "\n";

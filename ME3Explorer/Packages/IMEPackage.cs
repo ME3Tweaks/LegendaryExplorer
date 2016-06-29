@@ -50,9 +50,9 @@ namespace ME3Explorer.Packages
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }
-        List<IExportEntry> IExports { get; }
-        List<IImportEntry> IImports { get; }
-        List<string> Names { get; set; }
+        IReadOnlyList<IExportEntry> Exports { get; }
+        IReadOnlyList<IImportEntry> Imports { get; }
+        IReadOnlyList<string> Names { get; }
         MEGame game { get; }
         string fileName { get; }
 
@@ -73,6 +73,7 @@ namespace ME3Explorer.Packages
         void addExport(IExportEntry exportEntry);
         void addImport(IImportEntry importEntry);
         void addName(string name);
+        void setNames(List<string> list);
         void save();
         void save(string path);
         void saveByReconstructing(string path);

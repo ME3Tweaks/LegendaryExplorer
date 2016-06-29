@@ -110,9 +110,10 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
                 Levelfile l = new Levelfile();
                 l.path = path;
                 l.pcc = new ME3Package(path);
-                for (int i = 0; i < l.pcc.Exports.Count; i++)
+                IReadOnlyList<IExportEntry> Exports = l.pcc.Exports;
+                for (int i = 0; i < Exports.Count; i++)
                 {
-                    ME3ExportEntry e = l.pcc.Exports[i];
+                    IExportEntry e = Exports[i];
                     if (e.ClassName == "Level")
                     {
                         DebugOutput.Clear();
@@ -260,7 +261,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             return s;
         }
 
-        public void ExportScene3DS(string path)
+        public void Exportscene3DS(string path)
         {
             Lib3dsFile f = Helper3DS.EmptyFile();
             foreach (Levelfile l in Levels)

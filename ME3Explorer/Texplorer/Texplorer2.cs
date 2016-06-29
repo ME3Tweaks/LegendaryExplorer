@@ -939,7 +939,7 @@ namespace ME3Explorer
             {
                 using (PCCObjects.IPCCObject temppcc = PCCObjects.Creation.CreatePCCObject(filename, WhichGame))
                 {
-                    // KFreon:  Search the exports list for viable texture types
+                    // KFreon:  Search the Exports list for viable texture types
                     for (int i = 0; i < temppcc.Exports.Count; i++)
                     {
                         //TreeTexInfo tex = KFreonFormsLib.Miscextra.GenerateTexStruct(temppcc, i, WhichGame, pathBIOGame, ExecFolder, allpccs);

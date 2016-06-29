@@ -11,8 +11,6 @@ using Microsoft.DirectX;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
-using Be;
-using Be.Windows;
 using Be.Windows.Forms;
 
 
@@ -71,8 +69,9 @@ namespace ME3Explorer.Meshplorer
                 MeshplorerMode = 0;
                 CurrFile = path;
                 Materials = new List<int>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "Material" || pcc.Exports[i].ClassName == "MaterialInstanceConstant")
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = 0; i < Exports.Count; i++)
+                    if (Exports[i].ClassName == "Material" || Exports[i].ClassName == "MaterialInstanceConstant")
                         Materials.Add(i);
                 RefreshList1();
             }
@@ -86,23 +85,24 @@ namespace ME3Explorer.Meshplorer
         {
             listBox1.Items.Clear();
             toolStripComboBox1.Items.Clear();
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             foreach (int index in Materials)
-                toolStripComboBox1.Items.Add("#" + index + " : " + pcc.Exports[index].ObjectName);
+                toolStripComboBox1.Items.Add("#" + index + " : " + Exports[index].ObjectName);
             Objects = new List<NameEntry>();
-            for (int i = 0; i < pcc.Exports.Count(); i++)
+            for (int i = 0; i < Exports.Count(); i++)
             {
-                if (pcc.Exports[i].ClassName == "StaticMesh")
+                if (Exports[i].ClassName == "StaticMesh")
                 {
                     NameEntry n = new NameEntry();
                     n.index = i;
-                    listBox1.Items.Add("StM#" + i + " : " + pcc.Exports[i].ObjectName);
+                    listBox1.Items.Add("StM#" + i + " : " + Exports[i].ObjectName);
                     Objects.Add(n);
                 }
-                if (pcc.Exports[i].ClassName == "SkeletalMesh")
+                if (Exports[i].ClassName == "SkeletalMesh")
                 {
                     NameEntry n = new NameEntry();
                     n.index = i;
-                    listBox1.Items.Add("SkM#" + i + " : " + pcc.Exports[i].ObjectName);
+                    listBox1.Items.Add("SkM#" + i + " : " + Exports[i].ObjectName);
                     Objects.Add(n);
                 }
             }
@@ -294,7 +294,7 @@ namespace ME3Explorer.Meshplorer
                     stm.ImportFromPsk(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx =Objects[n].index;
-                    ME3ExportEntry en = pcc.Exports[idx];
+                    IExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
                     pcc.save(CurrFile);
                     MessageBox.Show("Done.");
@@ -312,7 +312,7 @@ namespace ME3Explorer.Meshplorer
                     skmold.ImportFromPsk(d.FileName, getLOD());
                     byte[] buff = skmold.Serialize();
                     int idx = Objects[n].index;
-                    ME3ExportEntry en = pcc.Exports[idx];
+                    IExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
                     pcc.save(CurrFile);
                     MessageBox.Show("Done.");

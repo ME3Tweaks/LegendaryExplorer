@@ -87,7 +87,7 @@ namespace ME3Explorer.LevelExplorer
                     ME3Package pcc = new ME3Package(file);
                     for (int j = 0; j < pcc.Exports.Count(); j++)
                     {
-                        ME3ExportEntry e = pcc.Exports[j];
+                        IExportEntry e = pcc.Exports[j];
                         if (e.ClassName == "Level")
                         {
                             Level l = new Level(pcc, j, true);

@@ -109,13 +109,14 @@ namespace ME3Explorer.Propertydb
                 try
                 {
                     ME3Package pcc = new ME3Package(file);
-                    pb2.Maximum = pcc.Exports.Count();
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    pb2.Maximum = Exports.Count();
                     {
                         pb1.Value = i;
                         RefreshLists();
                         Application.DoEvents();
                     }
-                    for (int j = 0; j < pcc.Exports.Count(); j++)
+                    for (int j = 0; j < Exports.Count(); j++)
                     {
                         if (j % 100 == 0)//refresh
                         {
@@ -125,7 +126,7 @@ namespace ME3Explorer.Propertydb
                         }
                         int f = -1;
                         for (int k = 0; k < Classes.Count(); k++)
-                            if (Classes[k].name == pcc.Exports[j].ClassName)
+                            if (Classes[k].name == Exports[j].ClassName)
                             {
                                 f = k;
                                 break;
@@ -133,13 +134,13 @@ namespace ME3Explorer.Propertydb
                         if (f == -1)//New Class found, add
                         {
                             ClassDef tmp = new ClassDef();
-                            tmp.name = pcc.Exports[j].ClassName;
+                            tmp.name = Exports[j].ClassName;
                             tmp.props = new List<PropDef>();
                             Classes.Add(tmp);
                             f = Classes.Count() - 1;
                             UpdateStatus();
                         }
-                        List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[j]);
+                        List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, Exports[j]);
                         ClassDef res = Classes[f];
                         foreach (PropertyReader.Property p in props)
                         {

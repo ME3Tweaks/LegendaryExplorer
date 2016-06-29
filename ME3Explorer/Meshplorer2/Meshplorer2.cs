@@ -86,17 +86,18 @@ namespace ME3Explorer.Meshplorer2
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
                                             ME3Package pcc = new ME3Package(loc + "temp\\" + filename);
-                                            for (int i = 0; i < pcc.Exports.Count; i++)
-                                                if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
-                                                    pcc.Exports[i].ClassName == "StaticMesh")
+                                            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                            for (int i = 0; i < Exports.Count; i++)
+                                                if (Exports[i].ClassName == "SkeletalMesh" ||
+                                                    Exports[i].ClassName == "StaticMesh")
                                                 {
                                                     EntryStruct ent = new EntryStruct();
                                                     ent.DLCName = Path.GetFileName(DLCpath);
                                                     ent.Filename = filename;
                                                     ent.Index = i;
                                                     ent.isDLC = true;
-                                                    ent.ObjectPath = pcc.Exports[i].GetFullPath;
-                                                    ent.isSkeletal = (pcc.Exports[i].ClassName == "SkeletalMesh");
+                                                    ent.ObjectPath = Exports[i].GetFullPath;
+                                                    ent.isSkeletal = Exports[i].ClassName == "SkeletalMesh";
                                                     Entries.Add(ent);
                                                 }
                                             File.Delete(loc + "temp\\" + filename);
@@ -132,17 +133,18 @@ namespace ME3Explorer.Meshplorer2
                 try
                 {
                     ME3Package pcc = new ME3Package(file);
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
-                            pcc.Exports[i].ClassName == "StaticMesh")
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    for (int i = 0; i < Exports.Count; i++)
+                        if (Exports[i].ClassName == "SkeletalMesh" ||
+                            Exports[i].ClassName == "StaticMesh")
                         {
                             EntryStruct ent = new EntryStruct();
                             ent.DLCName = "";
                             ent.Filename = Path.GetFileName(file);
                             ent.Index = i;
                             ent.isDLC = false;
-                            ent.ObjectPath = pcc.Exports[i].GetFullPath;
-                            ent.isSkeletal = (pcc.Exports[i].ClassName == "SkeletalMesh");
+                            ent.ObjectPath = Exports[i].GetFullPath;
+                            ent.isSkeletal = Exports[i].ClassName == "SkeletalMesh";
                             Entries.Add(ent);
                         }
                     if (count % 10 == 0)

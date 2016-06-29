@@ -1552,7 +1552,7 @@ namespace ME3Explorer
             int jobCount = 0;
             for (int i = 0; i < basePCC.ExportCount; i++)
             {
-                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding exports just yet.
+                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding Exports just yet.
                     break;
 
 

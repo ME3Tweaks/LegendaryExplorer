@@ -115,9 +115,10 @@ namespace ME1Explorer
             }
             ME1Package pcc = packages[n];
             tlkFileSets.Clear();
-            for (int i = 0; i < pcc.Exports.Count; i++)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
             {
-                if(pcc.Exports[i].ClassName == "BioTlkFileSet")
+                if(Exports[i].ClassName == "BioTlkFileSet")
                 {
                     BioTlkFileSet b = new BioTlkFileSet(pcc, i);
                     tlkFileSets.Add(b);
@@ -128,9 +129,9 @@ namespace ME1Explorer
             if(tlkFileSets.Count == 0)
             {
                 BioTlkFileSet tlkSet = new BioTlkFileSet(pcc);
-                for (int i = 0; i < pcc.Exports.Count; i++)
+                for (int i = 0; i < Exports.Count; i++)
                 {
-                    if (pcc.Exports[i].ClassName == "BioTlkFile")
+                    if (Exports[i].ClassName == "BioTlkFile")
                     {
                         TalkFile tlk = new TalkFile(pcc, i);
                         tlkSet.talkFiles.Add(tlk);

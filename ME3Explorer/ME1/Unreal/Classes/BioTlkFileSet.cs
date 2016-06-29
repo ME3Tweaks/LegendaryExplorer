@@ -17,9 +17,10 @@ namespace ME1Explorer.Unreal.Classes
         {
             pcc = _pcc;
             index = -1;
-            for (int i = 0; i < pcc.Exports.Count; i++)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
             {
-                if (pcc.Exports[i].ClassName == "BioTlkFileSet")
+                if (Exports[i].ClassName == "BioTlkFileSet")
                 {
                     index = i;
                 }

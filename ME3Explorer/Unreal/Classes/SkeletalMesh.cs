@@ -614,9 +614,10 @@ namespace ME3Explorer.Unreal.Classes
             Owner = pcc;
             Flags = (int)(pcc.Exports[Index].ObjectFlags >> 32);
             int start = GetPropertyEnd();
-            byte[] buff = new byte[pcc.Exports[Index].Data.Length - start];
-            for (int i = 0; i < pcc.Exports[Index].Data.Length - start; i++)
-                buff[i] = pcc.Exports[Index].Data[i + start];
+            byte[] data = pcc.Exports[Index].Data;
+            byte[] buff = new byte[data.Length - start];
+            for (int i = 0; i < data.Length - start; i++)
+                buff[i] = data[i + start];
             MemoryStream m = new MemoryStream(buff);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
@@ -818,8 +819,8 @@ namespace ME3Explorer.Unreal.Classes
             int pos = 0x00;
             try
             {
-
-                int test = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, 8);
+                byte[] data = Owner.Exports[MyIndex].Data;
+                int test = BitConverter.ToInt32(data, 8);
                 if (test == 0)
                     pos = 0x04;
                 else
@@ -828,11 +829,11 @@ namespace ME3Explorer.Unreal.Classes
                     pos = 0x1A;
                 while (true)
                 {
-                    int idxname = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos);
+                    int idxname = BitConverter.ToInt32(data, pos);
                     if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
                         break;
-                    int idxtype = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos + 8);
-                    int size = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos + 16);
+                    int idxtype = BitConverter.ToInt32(data, pos + 8);
+                    int size = BitConverter.ToInt32(data, pos + 16);
                     if (size == 0)
                         size = 1;   //boolean fix
                     if (Owner.getNameEntry(idxtype) == "StructProperty")
@@ -840,7 +841,7 @@ namespace ME3Explorer.Unreal.Classes
                     if (Owner.getNameEntry(idxtype) == "ByteProperty")
                         size += 8;
                     pos += 24 + size;
-                    if (pos > Owner.Exports[MyIndex].Data.Length)
+                    if (pos > data.Length)
                     {
                         pos -= 24 + size;
                         break;
@@ -875,8 +876,8 @@ namespace ME3Explorer.Unreal.Classes
             int pos = 0x00;
             try
             {
-
-                int test = BitConverter.ToInt32(Owner.Exports[n].Data, 8);
+                byte[] data = Owner.Exports[n].Data;
+                int test = BitConverter.ToInt32(data, 8);
                 if (test == 0)
                     pos = 0x04;
                 else
@@ -885,11 +886,11 @@ namespace ME3Explorer.Unreal.Classes
                     pos = 0x1A;
                 while (true)
                 {
-                    int idxname = BitConverter.ToInt32(Owner.Exports[n].Data, pos);
+                    int idxname = BitConverter.ToInt32(data, pos);
                     if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
                         break;
-                    int idxtype = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 8);
-                    int size = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 16);
+                    int idxtype = BitConverter.ToInt32(data, pos + 8);
+                    int size = BitConverter.ToInt32(data, pos + 16);
                     if (size == 0)
                         size = 1;   //boolean fix
                     if (Owner.getNameEntry(idxtype) == "StructProperty")
@@ -901,30 +902,30 @@ namespace ME3Explorer.Unreal.Classes
                     {
                         case "ObjectProperty":
                         case "IntProperty":
-                            int val = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            int val = BitConverter.ToInt32(data, pos + 24);
                             s += val.ToString();
                             break;
                         case "NameProperty":
                         case "StructProperty":
-                            int name = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            int name = BitConverter.ToInt32(data, pos + 24);
                             s += Owner.getNameEntry(name);
                             break;
                         case "FloatProperty":
-                            float f = BitConverter.ToSingle(Owner.Exports[n].Data, pos + 24);
+                            float f = BitConverter.ToSingle(data, pos + 24);
                             s += f.ToString();
                             break;
                         case "BoolProperty":
-                            s += (Owner.Exports[n].Data[pos + 24] == 1).ToString();
+                            s += (data[pos + 24] == 1).ToString();
                             break;
                         case "StrProperty":
-                            int len = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            int len = BitConverter.ToInt32(data, pos + 24);
                             for (int i = 0; i < len - 1; i++)
-                                s += (char)Owner.Exports[n].Data[pos + 28 + i];
+                                s += (char)data[pos + 28 + i];
                             break;
                     }
                     res.Nodes.Add(s);
                     pos += 24 + size;
-                    if (pos > Owner.Exports[n].Data.Length)
+                    if (pos > data.Length)
                     {
                         pos -= 24 + size;
                         break;

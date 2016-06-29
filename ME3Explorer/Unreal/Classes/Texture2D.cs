@@ -55,7 +55,7 @@ namespace ME3Explorer.Unreal.Classes
             // check if texIdx is an Export index and a Texture2D class
             if (pccObj.isExport(texIdx) && (pccObj.Exports[texIdx].ClassName == className))
             {
-                ME3ExportEntry expEntry = pccObj.Exports[texIdx];
+                IExportEntry expEntry = pccObj.Exports[texIdx];
                 properties = new Dictionary<string, PropertyReader.Property>();
                 byte[] rawData = (byte[])expEntry.Data.Clone();
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData, expEntry.ObjectFlags);
@@ -462,12 +462,11 @@ namespace ME3Explorer.Unreal.Classes
 
             string newTextureGroupName = "TEXTUREGROUP_Shadowmap";
             textureGroupName = newTextureGroupName;
-            if(!pccRef.Names.Exists(name => name == newTextureGroupName))
-                pccRef.Names.Add(newTextureGroupName);
+            int nameIndex = pccRef.FindNameOrAdd(newTextureGroupName);
             using (MemoryStream rawStream = new MemoryStream(LODGroup.raw))
             {
                 rawStream.Seek(32, SeekOrigin.Begin);
-                rawStream.WriteValueS32(pccRef.Names.FindIndex(name => name == newTextureGroupName));
+                rawStream.WriteValueS32(nameIndex);
                 //rawStream.Seek(32, SeekOrigin.Begin);
                 rawStream.WriteValueS32(0);
                 properties["LODGroup"].raw = rawStream.ToArray();

@@ -40,8 +40,9 @@ namespace ME3Explorer.DialogEditor
             {
                 pcc = new ME3Package(fileName);
                 Objs = new List<int>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "BioConversation")
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = 0; i < Exports.Count; i++)
+                    if (Exports[i].ClassName == "BioConversation")
                         Objs.Add(i);
                 RefreshCombo();
             }

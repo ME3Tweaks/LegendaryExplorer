@@ -99,7 +99,7 @@ namespace ME3Explorer.Unreal.Classes
                 if(pcc.isExport(idx))
                 {
                     Objects.Add(idx);
-                    ME3ExportEntry e = pcc.Exports[idx];
+                    IExportEntry e = pcc.Exports[idx];
                     switch (e.ClassName)
                     {
                         case "SplineActor":
@@ -596,7 +596,7 @@ namespace ME3Explorer.Unreal.Classes
                 int index = Objects[i];
                 if (index > 0)
                 {
-                    ME3ExportEntry e = pcc.Exports[index];
+                    IExportEntry e = pcc.Exports[index];
                     DebugOutput.PrintLn((i + 1) + " / " + Objects.Count + " : \"" + e.ObjectName + "\" - \"" + e.ClassName + "\"");
                     switch (e.ClassName)
                     {
@@ -722,7 +722,7 @@ namespace ME3Explorer.Unreal.Classes
                 int index = Objects[i];
                 if (index > 0)
                 {
-                    ME3ExportEntry e = pcc.Exports[index];
+                    IExportEntry e = pcc.Exports[index];
                     DebugOutput.PrintLn((i + 1) + " / " + Objects.Count + " : \"" + e.ObjectName + "\" - \"" + e.ClassName + "\"");
                     switch (e.ClassName)
                     {

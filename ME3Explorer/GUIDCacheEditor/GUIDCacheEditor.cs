@@ -51,7 +51,7 @@ namespace ME3Explorer.GUIDCacheEditor
             }
         }
 
-        public void ReadGUIDs(ME3ExportEntry export)
+        public void ReadGUIDs(IExportEntry export)
         {
             props = PropertyReader.getPropList(pcc, export);
             byte[] buff = export.Data;
@@ -168,7 +168,6 @@ namespace ME3Explorer.GUIDCacheEditor
                     m.WriteByte(b);
             }
             pcc.Exports[0].Data = m.ToArray();
-            pcc.Exports[0].hasChanged = true;
             pcc.appendSave(pcc.fileName, true, 30); //weird header!
             MessageBox.Show("Done.");
             RefreshLists();

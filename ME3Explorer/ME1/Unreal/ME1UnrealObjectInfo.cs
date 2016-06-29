@@ -218,25 +218,28 @@ namespace ME1Explorer.Unreal
                 if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
                 {
                     pcc = new ME1Package(files[i]);
-                    for (int j = 0; j < pcc.Exports.Count; j++)
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    IExportEntry exportEntry;
+                    for (int j = 0; j < Exports.Count; j++)
                     {
-                        if (pcc.Exports[j].ClassName == "Enum")
+                        exportEntry = Exports[j];
+                        if (exportEntry.ClassName == "Enum")
 
                         {
                             generateEnumValues(j, pcc);
                         }
-                        else if (pcc.Exports[j].ClassName == "Class")
+                        else if (exportEntry.ClassName == "Class")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
-                            if (!Classes.ContainsKey(pcc.Exports[j].ObjectName))
+                            objectName = exportEntry.ObjectName;
+                            if (!Classes.ContainsKey(exportEntry.ObjectName))
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
                             }
                         }
-                        else if (pcc.Exports[j].ClassName == "ScriptStruct")
+                        else if (exportEntry.ClassName == "ScriptStruct")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
-                            if (!Structs.ContainsKey(pcc.Exports[j].ObjectName))
+                            objectName = exportEntry.ObjectName;
+                            if (!Structs.ContainsKey(exportEntry.ObjectName))
                             {
                                 Structs.Add(objectName, generateClassInfo(j, pcc));
                             }
@@ -251,8 +254,9 @@ namespace ME1Explorer.Unreal
         private static ClassInfo generateClassInfo(int index, ME1Package pcc)
         {
             ClassInfo info = new ClassInfo();
-            info.baseClass = pcc.Exports[index].ClassParent;
-            foreach (ME1ExportEntry entry in pcc.Exports)
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            info.baseClass = Exports[index].ClassParent;
+            foreach (IExportEntry entry in Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
@@ -287,7 +291,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(ME1Package pcc, ME1ExportEntry entry)
+        private static PropertyInfo getProperty(ME1Package pcc, IExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

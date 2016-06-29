@@ -62,7 +62,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(558, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -103,7 +102,7 @@
             this.toolStripTextBox2,
             this.toolStripButton1,
             this.toolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(558, 25);
             this.toolStrip1.TabIndex = 1;
@@ -154,7 +153,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -164,7 +163,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(558, 369);
+            this.splitContainer1.Size = new System.Drawing.Size(558, 345);
             this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -177,7 +176,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(275, 369);
+            this.listBox1.Size = new System.Drawing.Size(275, 345);
             this.listBox1.TabIndex = 0;
             // 
             // listBox2
@@ -189,7 +188,7 @@
             this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(0, 0);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(279, 369);
+            this.listBox2.Size = new System.Drawing.Size(279, 345);
             this.listBox2.TabIndex = 0;
             // 
             // BatchRenamer

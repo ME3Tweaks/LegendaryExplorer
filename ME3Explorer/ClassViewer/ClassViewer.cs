@@ -33,8 +33,9 @@ namespace ME3Explorer.ClassViewer
                 {
                     pcc = new ME3Package(d.FileName);
                     Objects = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "Class")
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    for (int i = 0; i < Exports.Count; i++)
+                        if (Exports[i].ClassName == "Class")
                             Objects.Add(i);
                     RefreshLists();
                 }
@@ -235,16 +236,18 @@ namespace ME3Explorer.ClassViewer
             if (i < 0)
             {
                 i = -i - 1;
-                if (pcc.Imports[i].PackageFullName != "Class" && pcc.Imports[i].PackageFullName != "Package")
-                    s += pcc.Imports[i].PackageFullName + ".";
-                s += pcc.Imports[i].ObjectName;
+                IImportEntry importEntry = pcc.Imports[i];
+                if (importEntry.PackageFullName != "Class" && importEntry.PackageFullName != "Package")
+                    s += importEntry.PackageFullName + ".";
+                s += importEntry.ObjectName;
             }
             else if (i > 0) 
             {
                 i--;
-                if (pcc.Exports[i].PackageFullName != "Class" && pcc.Exports[i].PackageFullName != "Package")
-                    s += pcc.Exports[i].PackageFullName + ".";
-                s += pcc.Exports[i].ObjectName;
+                IExportEntry exportEntry = pcc.Exports[i];
+                if (exportEntry.PackageFullName != "Class" && exportEntry.PackageFullName != "Package")
+                    s += exportEntry.PackageFullName + ".";
+                s += exportEntry.ObjectName;
             }
             return s;
         }

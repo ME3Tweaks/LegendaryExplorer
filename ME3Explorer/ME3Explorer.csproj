@@ -447,12 +447,6 @@
     <Compile Include="ClassViewer\ClassViewer.Designer.cs">
       <DependentUpon>ClassViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Codex Editor\CodexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Codex Editor\CodexEditor.Designer.cs">
-      <DependentUpon>CodexEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Conditionals\CondEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -552,12 +546,6 @@
       <DependentUpon>Leveleditor.cs</DependentUpon>
     </Compile>
     <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
-    <Compile Include="LevelExplorer\ME3LevelExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\ME3LevelExplorer.Designer.cs">
-      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -626,7 +614,6 @@
     </Compile>
     <Compile Include="ME1\Unreal\Classes\BioConversation.cs" />
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
-    <Compile Include="ME1\Unreal\Classes\Sequence.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
     <Compile Include="ME2\DialogEditor\AddReply.cs">
@@ -656,7 +643,6 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="ME2\Unreal\Classes\BioConversation.cs" />
-    <Compile Include="ME2\Unreal\Classes\Sequence.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer2\Meshplorer2.cs">
       <SubType>Form</SubType>
@@ -775,9 +761,6 @@
     <EmbeddedResource Include="Coalesced Editor\CoalEditor.resx">
       <DependentUpon>CoalEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Codex Editor\CodexEditor.resx">
-      <DependentUpon>CodexEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -826,9 +809,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
       <DependentUpon>Leveleditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\ME3LevelExplorer.resx">
-      <DependentUpon>ME3LevelExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>

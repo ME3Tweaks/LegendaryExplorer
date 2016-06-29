@@ -88,10 +88,11 @@ namespace ME3Explorer.SubtitleScanner
                 try
                 {
                     ME3Package pcc = new ME3Package(file);
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "BioConversation")
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    for (int i = 0; i < Exports.Count; i++)
+                        if (Exports[i].ClassName == "BioConversation")
                         {
-                            DebugOutput.PrintLn("Found dialog \"" + pcc.Exports[i].ObjectName + "\"", false);
+                            DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
                             BioConversation Dialog = new BioConversation(pcc, i);
                             foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                             {
@@ -106,7 +107,7 @@ namespace ME3Explorer.SubtitleScanner
                                     t.pathafc = "";//Todo
                                     t.pathdlc = "";
                                     t.pathpcc = file;
-                                    t.convname = pcc.Exports[i].ObjectName;
+                                    t.convname = Exports[i].ObjectName;
                                     if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
                                         t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
                                     else
@@ -130,7 +131,7 @@ namespace ME3Explorer.SubtitleScanner
                                     t.pathafc = "";//Todo
                                     t.pathdlc = "";
                                     t.pathpcc = file;
-                                    t.convname = pcc.Exports[i].ObjectName;
+                                    t.convname = Exports[i].ObjectName;
                                     Entries.Add(t);
                                     DebugOutput.PrintLn("Reply: " + t.text, false);
                                 }
@@ -166,10 +167,11 @@ namespace ME3Explorer.SubtitleScanner
                     try
                     {
                         ME3Package pcc = new ME3Package(file);
-                        for (int i = 0; i < pcc.Exports.Count; i++)
-                            if (pcc.Exports[i].ClassName == "BioConversation")
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        for (int i = 0; i < Exports.Count; i++)
+                            if (Exports[i].ClassName == "BioConversation")
                             {
-                                DebugOutput.PrintLn("Found dialog \"" + pcc.Exports[i].ObjectName + "\"", false);
+                                DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
                                 BioConversation Dialog = new BioConversation(pcc, i);
                                 foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                                 {
@@ -184,7 +186,7 @@ namespace ME3Explorer.SubtitleScanner
                                         t.pathafc = "";//Todo
                                         t.pathdlc = "";
                                         t.pathpcc = file;
-                                        t.convname = pcc.Exports[i].ObjectName;
+                                        t.convname = Exports[i].ObjectName;
                                         if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
                                             t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
                                         else
@@ -208,7 +210,7 @@ namespace ME3Explorer.SubtitleScanner
                                         t.pathafc = "";//Todo
                                         t.pathdlc = "";
                                         t.pathpcc = file;
-                                        t.convname = pcc.Exports[i].ObjectName;
+                                        t.convname = Exports[i].ObjectName;
                                         Entries.Add(t);
                                         DebugOutput.PrintLn("Reply: " + t.text, false);
                                     }
@@ -254,10 +256,11 @@ namespace ME3Explorer.SubtitleScanner
                                 MemoryStream mem = dlc.DecompressEntry(j);
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
                                 ME3Package pcc = new ME3Package("temp.pcc");
-                                for (int i = 0; i < pcc.Exports.Count; i++)
-                                    if (pcc.Exports[i].ClassName == "BioConversation")
+                                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                for (int i = 0; i < Exports.Count; i++)
+                                    if (Exports[i].ClassName == "BioConversation")
                                     {
-                                        DebugOutput.PrintLn("Found dialog \"" + pcc.Exports[i].ObjectName + "\"", false);
+                                        DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
                                         BioConversation Dialog = new BioConversation(pcc, i);
                                         foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                                         {
@@ -272,7 +275,7 @@ namespace ME3Explorer.SubtitleScanner
                                                 t.pathafc = "";//Todo
                                                 t.pathdlc = file;
                                                 t.pathpcc = filename;
-                                                t.convname = pcc.Exports[i].ObjectName;
+                                                t.convname = Exports[i].ObjectName;
                                                 if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
                                                     t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
                                                 else
@@ -296,7 +299,7 @@ namespace ME3Explorer.SubtitleScanner
                                                 t.pathafc = "";//Todo
                                                 t.pathdlc = file;
                                                 t.pathpcc = filename;
-                                                t.convname = pcc.Exports[i].ObjectName;
+                                                t.convname = Exports[i].ObjectName;
                                                 Entries.Add(t);
                                                 DebugOutput.PrintLn("Reply: " + t.text, false);
                                             }

@@ -61,10 +61,11 @@ namespace ME3Explorer
         {
             listBox1.Items.Clear();
             ObjectIndexes = new List<int>();
-            for(int i=0;i<pcc.Exports.Count;i++)            
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i=0; i < Exports.Count; i++)            
             {
-                ME3ExportEntry e = pcc.Exports[i];
-                Status.Text = "Scan object " + i + " / " + pcc.Exports.Count;
+                IExportEntry e = Exports[i];
+                Status.Text = "Scan object " + i + " / " + Exports.Count;
                 if (e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream")
                 {
                     string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
@@ -83,7 +84,7 @@ namespace ME3Explorer
             rtb1.Visible = true;
             hb1.Visible = false;
             int index = ObjectIndexes[n];
-            ME3ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 w = new WwiseStream(pcc, index);                
@@ -109,7 +110,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            ME3ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 Stop();
@@ -175,7 +176,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            ME3ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 SaveFileDialog d = new SaveFileDialog();
@@ -210,7 +211,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            ME3ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (w.IsPCCStored)
             {
                 //TODO: enable replacing of PCC-stored sounds
@@ -268,7 +269,7 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            ME3ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 dr.textBox3.Text = w.DataOffset.ToString();

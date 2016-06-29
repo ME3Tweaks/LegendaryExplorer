@@ -281,7 +281,7 @@ namespace ME3Explorer.Unreal
                 {
                     return null;
                 }
-                ME3ExportEntry entry = pcc.Exports[info.exportIndex + 1];
+                IExportEntry entry = pcc.Exports[info.exportIndex + 1];
                 List<PropertyReader.Property> Props = PropertyReader.getPropList(importPCC, entry);
                 MemoryStream m = new MemoryStream(entry.DataSize - 4);
                 foreach (PropertyReader.Property p in Props)
@@ -344,15 +344,18 @@ namespace ME3Explorer.Unreal
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
                     pcc = new ME3Package(files[i]);
-                    for (int j = 0; j < pcc.Exports.Count; j++)
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    IExportEntry exportEntry;
+                    for (int j = 0; j < Exports.Count; j++)
                     {
-                        if (pcc.Exports[j].ClassName == "Enum")
+                        exportEntry = Exports[j];
+                        if (exportEntry.ClassName == "Enum")
                         {
                             generateEnumValues(j, pcc);
                         }
-                        else if (pcc.Exports[j].ClassName == "Class")
+                        else if (exportEntry.ClassName == "Class")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
+                            objectName = exportEntry.ObjectName;
                             if (!Classes.ContainsKey(objectName))
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
@@ -363,9 +366,9 @@ namespace ME3Explorer.Unreal
                                 SequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
                             }
                         }
-                        else if (pcc.Exports[j].ClassName == "ScriptStruct")
+                        else if (exportEntry.ClassName == "ScriptStruct")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
+                            objectName = exportEntry.ObjectName;
                             if (!Structs.ContainsKey(objectName))
                             {
                                 Structs.Add(objectName, generateClassInfo(j, pcc));
@@ -443,7 +446,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(ME3Package pcc, ME3ExportEntry entry)
+        private static PropertyInfo getProperty(ME3Package pcc, IExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

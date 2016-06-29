@@ -45,7 +45,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(595, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -70,7 +69,7 @@
             this.checkAndRebuildSFARToolStripMenuItem.Text = "Check and Rebuild SFAR";
             this.checkAndRebuildSFARToolStripMenuItem.Click += new System.EventHandler(this.checkAndRebuildSFARToolStripMenuItem_Click);
             // 
-            // DLCTOCbinUpdater
+            // SFARTOCbinUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -79,7 +78,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "DLCTOCbinUpdater";
+            this.Name = "SFARTOCbinUpdater";
             this.Text = "SFAR TOC Updater";
             this.Activated += new System.EventHandler(this.DLCTOCbinUpdater_Activated);
             this.menuStrip1.ResumeLayout(false);

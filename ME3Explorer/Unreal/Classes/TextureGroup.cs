@@ -74,13 +74,13 @@ namespace ME3Explorer.Unreal.Classes
         {
             MemoryStream buffer = new MemoryStream();
             buffer.WriteValueU32(firstVal);
-            buffer.WriteValueS32(pccRef.Names.FindIndex(name => name == "None"));
+            buffer.WriteValueS32(pccRef.findName("None"));
             buffer.Seek(16, SeekOrigin.Begin);
             buffer.WriteValueU32(otherVal);
             buffer.WriteValueS32(enumTextureGroups.Count);
             foreach (ByteProp byteProp in enumTextureGroups)
             {
-                buffer.WriteValueS32(pccRef.Names.FindIndex(name => name == byteProp.name));
+                buffer.WriteValueS32(pccRef.FindNameOrAdd(byteProp.name));
                 buffer.WriteValueS32(byteProp.value);
             }
 

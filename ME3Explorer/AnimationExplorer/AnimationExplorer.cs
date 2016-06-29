@@ -31,7 +31,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 LoadPcc(d.FileName);
         }
 
@@ -42,8 +42,10 @@ namespace ME3Explorer.AnimationExplorer
                 pcc = new ME3Package(s);
                 AT = new List<AnimTree>();
                 AS = new List<AnimSet>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    switch (pcc.Exports[i].ClassName)
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    switch (Exports[i].ClassName)
                     {
                         case "AnimTree":
                             AT.Add(new AnimTree(pcc, i));
@@ -52,11 +54,12 @@ namespace ME3Explorer.AnimationExplorer
                             AS.Add(new AnimSet(pcc, i));
                             break;
                     }
-                treeView1.Nodes.Clear();
-                foreach (AnimTree at in AT)
-                    treeView1.Nodes.Add(at.ToTree());
-                foreach (AnimSet ans in AS)
-                    treeView1.Nodes.Add(ans.ToTree());
+                    treeView1.Nodes.Clear();
+                    foreach (AnimTree at in AT)
+                        treeView1.Nodes.Add(at.ToTree());
+                    foreach (AnimSet ans in AS)
+                        treeView1.Nodes.Add(ans.ToTree());
+                }
             }
             catch (Exception ex)
             {
@@ -82,7 +85,8 @@ namespace ME3Explorer.AnimationExplorer
                     ME3Package _pcc = new ME3Package(file);
                     DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
                     bool found = false;
-                    foreach (ME3ExportEntry ex in _pcc.Exports)
+                    IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
+                    foreach (IExportEntry ex in Exports)
                         if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
                         {
                             DebugOutput.PrintLn("Found Animation!");

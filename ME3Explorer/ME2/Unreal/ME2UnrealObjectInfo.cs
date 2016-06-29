@@ -218,25 +218,28 @@ namespace ME2Explorer.Unreal
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
                     pcc = new ME2Package(files[i]);
-                    for (int j = 0; j < pcc.Exports.Count; j++)
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    IExportEntry exportEntry;
+                    for (int j = 0; j < Exports.Count; j++)
                     {
-                        if (pcc.Exports[j].ClassName == "Enum")
+                        exportEntry = Exports[j];
+                        if (exportEntry.ClassName == "Enum")
 
                         {
                             generateEnumValues(j, pcc);
                         }
-                        else if (pcc.Exports[j].ClassName == "Class")
+                        else if (exportEntry.ClassName == "Class")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
-                            if (!Classes.ContainsKey(pcc.Exports[j].ObjectName))
+                            objectName = exportEntry.ObjectName;
+                            if (!Classes.ContainsKey(exportEntry.ObjectName))
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
                             }
                         }
-                        else if (pcc.Exports[j].ClassName == "ScriptStruct")
+                        else if (exportEntry.ClassName == "ScriptStruct")
                         {
-                            objectName = pcc.Exports[j].ObjectName;
-                            if (!Structs.ContainsKey(pcc.Exports[j].ObjectName))
+                            objectName = exportEntry.ObjectName;
+                            if (!Structs.ContainsKey(exportEntry.ObjectName))
                             {
                                 Structs.Add(objectName, generateClassInfo(j, pcc));
                             }
@@ -287,7 +290,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(ME2Package pcc, ME2ExportEntry entry)
+        private static PropertyInfo getProperty(ME2Package pcc, IExportEntry entry)
         {
             PropertyInfo p = new PropertyInfo();
             switch (entry.ClassName)

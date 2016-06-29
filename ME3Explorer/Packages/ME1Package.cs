@@ -23,8 +23,8 @@ namespace ME3Explorer.Packages
         private int nameSize { get { int val = BitConverter.ToInt32(header, 12); if (val < 0) return val * -2; else return val; } }
         private uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
-        public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
-        public bool canReconstruct { get { return !Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
+        public bool isModified { get { return exports.Any(entry => entry.hasChanged == true); } }
+        public bool canReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
         public bool bCompressed
         {
             get { return (flags & 0x02000000) != 0; }
@@ -54,23 +54,23 @@ namespace ME3Explorer.Packages
         }
         private ME1ExportEntry LastExport;
         
-        public MemoryStream listsStream;
-        public List<string> Names { get; set; }
-        public List<ME1ImportEntry> Imports;
-        public List<ME1ExportEntry> Exports;
+        private List<string> names;
+        private List<ME1ImportEntry> imports;
+        private List<ME1ExportEntry> exports;
 
-        public List<IExportEntry> IExports
+        public IReadOnlyList<string> Names { get { return names; } }
+        public IReadOnlyList<IExportEntry> Exports
         {
             get
             {
-                return Exports.ToList<IExportEntry>();
+                return exports;
             }
         }
-        public List<IImportEntry> IImports
+        public IReadOnlyList<IImportEntry> Imports
         {
             get
             {
-                return Imports.ToList<IImportEntry>();
+                return imports;
             }
         }
 
@@ -107,7 +107,7 @@ namespace ME3Explorer.Packages
                 DebugOutput.PrintLn("Magic number incorrect: " + magic);
                 throw new FormatException("This is not an ME1 Package file. The magic number is incorrect.");
             }
-
+            MemoryStream listsStream;
             if (bCompressed)
             {
                 DebugOutput.PrintLn("File is compressed");
@@ -142,7 +142,7 @@ namespace ME3Explorer.Packages
         {
             DebugOutput.PrintLn("Reading Names...");
             fs.Seek(NameOffset, SeekOrigin.Begin);
-            Names = new List<string>();
+            names = new List<string>();
             for (int i = 0; i < NameCount; i++)
             {
                 int len = fs.ReadValueS32();
@@ -162,19 +162,19 @@ namespace ME3Explorer.Packages
                     }
                     fs.Seek(10, SeekOrigin.Current);
                 }
-                Names.Add(s);
+                names.Add(s);
             }
         }
 
         private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
-            Imports = new List<ME1ImportEntry>();
+            imports = new List<ME1ImportEntry>();
             fs.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
                 ME1ImportEntry import = new ME1ImportEntry(this, fs.ReadBytes(28));
-                Imports.Add(import);
+                imports.Add(import);
             }
         }
 
@@ -182,7 +182,7 @@ namespace ME3Explorer.Packages
         {
             DebugOutput.PrintLn("Reading Exports...");
             fs.Seek(ExportOffset, SeekOrigin.Begin);
-            Exports = new List<ME1ExportEntry>();
+            exports = new List<ME1ExportEntry>();
             byte[] buffer;
 
             for (int i = 0; i < ExportCount; i++)
@@ -205,7 +205,7 @@ namespace ME3Explorer.Packages
                 fs.Read(buffer, 0, buffer.Length);
                 exp.Data = buffer;
                 exp.hasChanged = false;
-                Exports.Add(exp);
+                exports.Add(exp);
                 fs.Seek(end, SeekOrigin.Begin);
 
                 if (LastExport == null || exp.DataOffset > LastExport.DataOffset)
@@ -259,8 +259,8 @@ namespace ME3Explorer.Packages
 
                 //name table
                 NameOffset = (int)m.Position;
-                NameCount = Names.Count;
-                foreach (string name in Names)
+                NameCount = names.Count;
+                foreach (string name in names)
                 {
                     m.WriteValueS32(name.Length + 1);
                     m.WriteString(name);
@@ -270,17 +270,17 @@ namespace ME3Explorer.Packages
                 }
                 //import table
                 ImportOffset = (int)m.Position;
-                ImportCount = Imports.Count;
-                foreach (ME1ImportEntry e in Imports)
+                ImportCount = imports.Count;
+                foreach (ME1ImportEntry e in imports)
                 {
                     m.WriteBytes(e.header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
-                ExportCount = Exports.Count;
-                for (int i = 0; i < Exports.Count; i++)
+                ExportCount = exports.Count;
+                for (int i = 0; i < exports.Count; i++)
                 {
-                    ME1ExportEntry e = Exports[i];
+                    ME1ExportEntry e = exports[i];
                     e.headerOffset = (uint)m.Position;
                     m.WriteBytes(e.header);
                 }
@@ -290,9 +290,9 @@ namespace ME3Explorer.Packages
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
                 expDataBegOffset = (int)m.Position;
                 //export data
-                for (int i = 0; i < Exports.Count; i++)
+                for (int i = 0; i < exports.Count; i++)
                 {
-                    ME1ExportEntry e = Exports[i];
+                    ME1ExportEntry e = exports[i];
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
@@ -329,31 +329,31 @@ namespace ME3Explorer.Packages
 
 
             //Get info
-            int expInfoEndOffset = ExportOffset + Exports.Sum(export => export.header.Length);
+            int expInfoEndOffset = ExportOffset + exports.Sum(export => export.header.Length);
             if (expDataBegOffset < expInfoEndOffset)
                 expDataBegOffset = expInfoEndOffset;
-            List<ME1ExportEntry> unchangedExports = Exports.Where(export => !export.hasChanged).ToList();
+            List<ME1ExportEntry> unchangedExports = exports.Where(export => !export.hasChanged).ToList();
             List<ME1ExportEntry> changedExports;
             List<ME1ExportEntry> replaceExports = null;
             if (!attemptOverwrite)
             {
                 //If not trying to overwrite, then select all exports that have been changed
-                changedExports = Exports.Where(export => export.hasChanged).ToList();
+                changedExports = exports.Where(export => export.hasChanged).ToList();
             }
             else
             {
                 //If we are trying to overwrite, then split up the exports that have been changed that can and can't overwrite the originals
-                changedExports = Exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
-                replaceExports = Exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
+                changedExports = exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
+                replaceExports = exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
             }
-            int max = Exports.Max(maxExport => maxExport.DataOffset);
-            ME1ExportEntry lastExport = Exports.Find(export => export.DataOffset == max);
+            int max = exports.Max(maxExport => maxExport.DataOffset);
+            ME1ExportEntry lastExport = exports.Find(export => export.DataOffset == max);
             int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
 
             if (!attemptOverwrite)
             {
                 int offset = ExportOffset;
-                foreach (ME1ExportEntry export in Exports)
+                foreach (ME1ExportEntry export in exports)
                 {
                     if (!export.hasChanged)
                     {
@@ -425,9 +425,9 @@ namespace ME3Explorer.Packages
                 }
                 //Set the new nameoffset and namecounts
                 NameOffset = (int)newPCCStream.Position;
-                NameCount = Names.Count;
+                NameCount = names.Count;
                 //Then write out the namelist
-                foreach (string name in Names)
+                foreach (string name in names)
                 {
                     newPCCStream.WriteValueS32(name.Length + 1);
                     newPCCStream.WriteString(name);
@@ -450,14 +450,14 @@ namespace ME3Explorer.Packages
 
                 //update the import list
                 newPCCStream.Seek(ImportOffset, SeekOrigin.Begin);
-                foreach (ME1ImportEntry import in Imports)
+                foreach (ME1ImportEntry import in imports)
                 {
                     newPCCStream.Write(import.header, 0, import.header.Length);
                 }
 
                 //Finally, update the export list
                 newPCCStream.Seek(ExportOffset, SeekOrigin.Begin);
-                foreach (ME1ExportEntry export in Exports)
+                foreach (ME1ExportEntry export in exports)
                 {
                     newPCCStream.Write(export.header, 0, export.header.Length);
                 }
@@ -493,9 +493,9 @@ namespace ME3Explorer.Packages
         public string GetClass(int Index)
         {
             if (Index > 0 && isExport(Index - 1))
-                return Exports[Index - 1].ObjectName;
+                return exports[Index - 1].ObjectName;
             if (Index < 0 && isImport(Index * -1 - 1))
-                return Imports[Index * -1 - 1].ObjectName;
+                return imports[Index * -1 - 1].ObjectName;
             return "Class";
         }
 
@@ -504,13 +504,13 @@ namespace ME3Explorer.Packages
             string s = "";
             if (Link > 0 && isExport(Link - 1))
             {
-                s = Exports[Link - 1].ObjectName + ".";
-                s = FollowLink(Exports[Link - 1].idxLink) + s;
+                s = exports[Link - 1].ObjectName + ".";
+                s = FollowLink(exports[Link - 1].idxLink) + s;
             }
             if (Link < 0 && isImport(Link * -1 - 1))
             {
-                s = Imports[Link * -1 - 1].ObjectName + ".";
-                s = FollowLink(Imports[Link * -1 - 1].idxLink) + s;
+                s = imports[Link * -1 - 1].ObjectName + ".";
+                s = FollowLink(imports[Link * -1 - 1].idxLink) + s;
             }
             return s;
         }
@@ -519,7 +519,7 @@ namespace ME3Explorer.Packages
         {
             string s = "";
             if (isName(Index))
-                s = Names[Index];
+                s = names[Index];
             return s;
         }
 
@@ -533,11 +533,11 @@ namespace ME3Explorer.Packages
             string s = "";
             if (index > 0)
             {
-                s = Names[Exports[index - 1].idxObjectName];
+                s = names[exports[index - 1].idxObjectName];
             }
             if (index < 0)
             {
-                s = Names[Imports[index * -1 - 1].idxObjectName];
+                s = names[imports[index * -1 - 1].idxObjectName];
             }
             if (index == 0)
             {
@@ -553,18 +553,18 @@ namespace ME3Explorer.Packages
         public IEntry getEntry(int index)
         {
             if (index > 0 && index <= ExportCount)
-                return Exports[index - 1];
+                return exports[index - 1];
             if (-index > 0 && -index <= ImportCount)
-                return Imports[-index - 1];
+                return imports[-index - 1];
             return null;
         }
 
         public string getObjectClass(int index)
         {
             if (index > 0 && index <= ExportCount)
-                return Exports[index - 1].ClassName;
+                return exports[index - 1].ClassName;
             if (-index > 0 && -index <= ImportCount)
-                return Imports[-index - 1].ClassName;
+                return imports[-index - 1].ClassName;
             return "";
         }
 
@@ -574,23 +574,23 @@ namespace ME3Explorer.Packages
             //First check if name already exists
             for (int i = 0; i < NameCount; i++)
             {
-                if (Names[i] == newName)
+                if (names[i] == newName)
                 {
                     nameID = i;
                     return nameID;
                 }
             }
 
-            Names.Add(newName);
+            names.Add(newName);
             NameCount++;
-            return Names.Count - 1;
+            return names.Count - 1;
         }
 
         public void addName(string name)
         {
-            if (!Names.Contains(name))
+            if (!names.Contains(name))
             {
-                Names.Add(name);
+                names.Add(name);
                 NameCount++;
             }
         }
@@ -612,8 +612,8 @@ namespace ME3Explorer.Packages
             if (importEntry.fileRef != this)
                 throw new Exception("you cannot add a new import entry from another file, it has invalid references!");
 
-            Imports.Add(importEntry);
-            ImportCount = Imports.Count;
+            imports.Add(importEntry);
+            ImportCount = imports.Count;
         }
 
         public void addExport(IExportEntry exportEntry)
@@ -636,20 +636,20 @@ namespace ME3Explorer.Packages
             exportEntry.hasChanged = true;
 
             //changing data offset in order to append it at the end of the file
-            int maxOffset = Exports.Max(entry => entry.DataOffset);
-            ME1ExportEntry lastExport = Exports.Find(export => export.DataOffset == maxOffset);
+            int maxOffset = exports.Max(entry => entry.DataOffset);
+            ME1ExportEntry lastExport = exports.Find(export => export.DataOffset == maxOffset);
             int lastOffset = lastExport.DataOffset + lastExport.Data.Length;
             exportEntry.DataOffset = lastOffset;
 
-            Exports.Add(exportEntry);
-            ExportCount = Exports.Count;
+            exports.Add(exportEntry);
+            ExportCount = exports.Count;
         }
 
         public int FindExp(string name)
         {
             for (int i = 0; i < ExportCount; i++)
             {
-                if (String.Compare(Exports[i].ObjectName, name, true) == 0)
+                if (String.Compare(exports[i].ObjectName, name, true) == 0)
                     return i;
             }
             return -1;
@@ -659,7 +659,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < ExportCount; i++)
             {
-                if (String.Compare(Exports[i].ObjectName, name, true) == 0 && Exports[i].ClassName == className)
+                if (String.Compare(exports[i].ObjectName, name, true) == 0 && exports[i].ClassName == className)
                     return i;
             }
             return -1;
@@ -673,7 +673,7 @@ namespace ME3Explorer.Packages
         /// <returns></returns>
         public int findName(string nameToFind)
         {
-            for (int i = 0; i < Names.Count; i++)
+            for (int i = 0; i < names.Count; i++)
             {
                 if (String.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
@@ -699,12 +699,17 @@ namespace ME3Explorer.Packages
 
         public IExportEntry getExport(int index)
         {
-            return Exports[index];
+            return exports[index];
         }
 
         public IImportEntry getImport(int index)
         {
-            return Imports[index];
+            return imports[index];
+        }
+
+        public void setNames(List<string> list)
+        {
+            names = list;
         }
     }
 }

@@ -314,14 +314,14 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             SceneMan.ApplyRotation(new Vector3(0, 0, -rz));
         }
 
-        private void exportSceneTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExportsceneTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.3ds|*.3ds";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 timer1.Enabled = false;
-                SceneMan.ExportScene3DS(d.FileName);
+                SceneMan.Exportscene3DS(d.FileName);
                 timer1.Enabled = true;
                 MessageBox.Show("Done.");
             }

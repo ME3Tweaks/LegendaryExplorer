@@ -2,11 +2,10 @@
 
 namespace ME3Explorer.Packages
 {
-    public class ME3ExportEntry : IExportEntry
+    public abstract class ExportEntry
     {
         public byte[] header { get; set; }
-        public ME3Package fileRef;
-        public IMEPackage FileRef { get { return fileRef; } }
+
         public uint headerOffset { get; set; }
 
         public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
@@ -16,6 +15,20 @@ namespace ME3Explorer.Packages
         public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
         public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
         public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
+
+        
+        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
+        public int DataOffsetTmp;
+        protected byte[] _data = null;
+        
+        public bool hasChanged { get; internal set; }
+    }
+
+    public class ME3ExportEntry : ExportEntry, IExportEntry
+    {
+        public ME3Package fileRef;
+        public IMEPackage FileRef { get { return fileRef; } }
 
         public string ObjectName { get { return fileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -65,11 +78,6 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
-        
-        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
-        public int DataOffsetTmp;
-        private byte[] _data = null;
 
         public byte[] Data
         {
@@ -85,8 +93,6 @@ namespace ME3Explorer.Packages
 
             set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
-
-        public bool hasChanged { get; internal set; }
 
         public ME3ExportEntry(ME3Package pccFile, byte[] importData, uint exportOffset)
         {
@@ -109,7 +115,7 @@ namespace ME3Explorer.Packages
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (ME3ExportEntry ent in fileRef.Exports)
+            foreach (IExportEntry ent in fileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -122,24 +128,15 @@ namespace ME3Explorer.Packages
         }
     }
 
-    public class ME2ExportEntry : IExportEntry
+    public class ME2ExportEntry : ExportEntry, IExportEntry
     {
-        public byte[] header { get; set; }
         public ME2Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
 
-        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
-        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
-        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(ulong)); } }
-
         public string ObjectName { get { return fileRef.Names[idxObjectName]; } }
-        public string ClassParent { get { int val = idxClassParent; if (val < 0) return fileRef.Names[BitConverter.ToInt32(fileRef.Imports[val * -1 - 1].header, 20)]; else if (val > 0) return fileRef.Names[fileRef.Exports[val - 1].idxObjectName]; else return "Class"; } }
-        public string ClassName { get { int val = idxClass; if (val < 0) return fileRef.Names[fileRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return fileRef.Names[fileRef.Exports[val].idxObjectName]; else return "Class"; } }
-        public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return fileRef.Names[fileRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return fileRef.Names[fileRef.Exports[val - 1].idxObjectName]; else return "None"; } }
+        public string ClassName { get { int val = idxClass; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
+        public string ClassParent { get { int val = idxClassParent; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
+        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return fileRef.getNameEntry(fileRef.getEntry(val).idxObjectName); else return "None"; } }
 
         public string PackageName
         {
@@ -185,19 +182,12 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int DataSize { get { return BitConverter.ToInt32(header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
-        private byte[] _data = null;
-
         public byte[] Data
         {
             get { return _data; }
 
             set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
-
-        public bool hasChanged { get; internal set; }
-        public uint headerOffset { get; set; }
 
         public ME2ExportEntry(ME2Package pccFile)
         {
@@ -212,7 +202,7 @@ namespace ME3Explorer.Packages
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (ME2ExportEntry ent in fileRef.Exports)
+            foreach (IExportEntry ent in fileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -225,25 +215,15 @@ namespace ME3Explorer.Packages
         }
     }
 
-    public class ME1ExportEntry : IExportEntry
+    public class ME1ExportEntry : ExportEntry, IExportEntry
     {
         public ME1Package fileRef;
         public IMEPackage FileRef { get { return fileRef; } }
-
-        public byte[] header { get; set; }
-        public uint headerOffset { get; set; }
-        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
-        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
-        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 64, sizeof(ulong)); } }
-
+        
         public string ObjectName { get { return fileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
         public string ClassParent { get { int val = idxClassParent; if (val != 0) return fileRef.Names[fileRef.getEntry(val).idxObjectName]; else return "Class"; } }
-        public string ArchtypeName { get { int val = idxArchtype; if (val < 0) return fileRef.Names[fileRef.Imports[val * -1 - 1].idxObjectName]; else if (val > 0) return fileRef.Names[fileRef.Exports[val].idxObjectName]; else return "None"; } }
+        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return fileRef.getNameEntry(fileRef.getEntry(val).idxObjectName); else return "None"; } }
 
         public string PackageName
         {
@@ -288,19 +268,13 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
-
-        public int DataSize { get { return BitConverter.ToInt32(header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
-        private byte[] _data = null;
-
+        
         public byte[] Data
         {
             get { return _data; }
 
             set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
-
-        public bool hasChanged { get; internal set; }
 
         public ME1ExportEntry(ME1Package file)
         {
@@ -315,7 +289,7 @@ namespace ME3Explorer.Packages
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (ME1ExportEntry ent in fileRef.Exports)
+            foreach (IExportEntry ent in fileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {

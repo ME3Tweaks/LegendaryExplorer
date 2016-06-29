@@ -35,8 +35,9 @@ namespace ME3Explorer.WwiseBankViewer
                 {
                     pcc = new ME3Package(d.FileName);
                     objects = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "WwiseBank")
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    for (int i = 0; i < Exports.Count; i++)
+                        if (Exports[i].ClassName == "WwiseBank")
                             objects.Add(i);
                     ListRefresh();
                 }
