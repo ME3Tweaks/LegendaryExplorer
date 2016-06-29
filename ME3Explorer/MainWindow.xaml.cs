@@ -25,6 +25,7 @@ namespace ME3Explorer
     public partial class MainWindow : Window
     {
         private bool CICOpen = true;
+        private bool SearchOpen = false;
 
         public MainWindow()
         {
@@ -32,6 +33,7 @@ namespace ME3Explorer
             Tools.InitializeTools();
             installModspanel.setToolList(Tools.items.Where(x => x.tags.Contains("user")));
             favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
+            searchPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -58,6 +60,10 @@ namespace ME3Explorer
         {
             if (e.ChangedButton == MouseButton.Left)
             {
+                if (SearchBox.IsFocused)
+                {
+                    SearchBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
                 this.DragMove();
             }
         }
@@ -77,19 +83,27 @@ namespace ME3Explorer
             CICOpen = !CICOpen;
             Image img = sender as Image;
             img.Source = (ImageSource)img.FindResource(CICOpen ? "LogoOnImage" : "LogoOffImage");
-            Storyboard sb;
+            DoubleAnimation anim;
+            TimeSpan timeSpan = TimeSpan.FromMilliseconds(300);
             if (CICOpen)
             {
-                sb = FindResource("sbSlideOutPanel") as Storyboard;
+                anim = new DoubleAnimation(650, timeSpan);
+                if (SearchBox.Text.Trim() != string.Empty)
+                {
+                    SearchOpen = true;
+                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+                }
             }
             else
             {
-                sb = FindResource("sbSlideInPanel") as Storyboard;
+                anim = new DoubleAnimation(0, timeSpan);
+                if (SearchOpen)
+                {
+                    SearchOpen = false;
+                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                }
             }
-            if (sb != null)
-            {
-                sb.Begin(CICPanel);
-            }
+            CICPanel.BeginAnimation(WidthProperty, anim);
         }
 
         private void LinkLabel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -114,6 +128,39 @@ namespace ME3Explorer
                     default:
                         break;
                 }
+            }
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!SearchOpen)
+            {
+                SearchOpen = true;
+                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+            }
+
+            List<Tool> results = new List<Tool>();
+            string[] words = SearchBox.Text.ToLower().Split(' ');
+            foreach (Tool tool in Tools.items)
+            {
+                foreach (string word in words)
+                {
+                    if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                    {
+                        results.Add(tool);
+                        break;
+                    }
+                }
+            }
+            searchPanel.setToolList(results);
+        }
+        
+        private void SearchBox_LostFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (SearchOpen && SearchBox.Text.Trim() == string.Empty)
+            {
+                SearchOpen = false;
+                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(200)));
             }
         }
     }

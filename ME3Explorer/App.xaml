@@ -84,31 +84,52 @@
             </Style.Triggers>
         </Style>
 
-        <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_icon64x64.png"/>
+        <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
         <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
-        <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
-        <BitmapImage x:Key="iconImageEngine" UriSource="Resources/ImageEngine_icon_64x64.png"/>
-        <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
         <BitmapImage x:Key="iconBatchRenamer" UriSource="Icons/batch_rename_64x64.png"/>
-
-        <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
-        <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
-        <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
-        <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
-        <BitmapImage x:Key="iconPlotDatabase" UriSource="Icons/plot_DB_64x64.png"/>
-        <BitmapImage x:Key="iconAutoTOC" UriSource="Icons/autotoc_64x64.png"/>
-        <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
-
-        <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
+        <BitmapImage x:Key="iconClassViewer" UriSource="Resources/class_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_icon64x64.png"/>
+        <BitmapImage x:Key="iconImageEngine" UriSource="Resources/ImageEngine_icon_64x64.png"/>
+        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
+        <BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_64x64.png"/>
         <BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>
-        <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
-        <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64x64.png"/>
-        <BitmapImage x:Key="iconCoalescedOperator" UriSource="Resources/coalesced_operator_64x64.png"/>
+        <BitmapImage x:Key="iconPlotDatabase" UriSource="Icons/plot_DB_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/property_database_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyDumper" UriSource="Resources/property_dumper_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyManager" UriSource="Resources/property_manager_64x64.png"/>
+        <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psa_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_64x64.png"/>
+        <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_64x64.png"/>
+        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_64x64.png"/>
+        <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
+        <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
+        <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
+
+        <BitmapImage x:Key="iconAutoTOC" UriSource="Icons/autotoc_64x64.png"/>
+        <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
+        <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
+        <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
+
+        <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
+        <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64x64.png"/>
+        <BitmapImage x:Key="iconConditionalsEditor" UriSource="Resources/conditionals_editor_64x64.png"/>
         <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
-        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
+        <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
+        <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_editor_64x64.png"/>
+        <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
+        <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
+        <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
+        <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
+        <BitmapImage x:Key="iconPAREditor" UriSource="Resources/PAR_editor_64x64.png"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
+        <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon_64x64.png"/>
+        <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
+        <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
+        <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/TLK_editor_64x64.png"/>
+        <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
     </Application.Resources>
 </Application>

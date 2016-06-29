@@ -159,6 +159,9 @@
     <Compile Include="Coalesced Editor\FileWrapper.cs" />
     <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
+    <Compile Include="SearchPanel.xaml.cs">
+      <DependentUpon>SearchPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InitialDLCExtractor.xaml.cs">
       <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
     </Compile>
@@ -380,6 +383,10 @@
     <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </Compile>
+    <Page Include="SearchPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InitialDLCExtractor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1186,6 +1193,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo_OFF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\elipsis_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

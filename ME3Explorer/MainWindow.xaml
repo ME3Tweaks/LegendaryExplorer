@@ -8,21 +8,6 @@
         mc:Ignorable="d"
         Title="ME3Explorer" Height="450" WindowStyle="None" Icon="Icons/me3exp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width">
     <Window.Resources>
-        <System:Double x:Key="MainPanelWidth">650</System:Double>
-        <Storyboard x:Key="sbSlideOutPanel">
-            <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="{DynamicResource MainPanelWidth}" Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Key="sbSlideInPanel">
-            <DoubleAnimation Storyboard.TargetProperty="Width" From="{DynamicResource MainPanelWidth}" To="0" Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="Command_CanExecute" Executed="CloseCommand_Executed" />
@@ -33,8 +18,10 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+        <Rectangle Grid.Column="0" Grid.ColumnSpan="3" MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
         <StackPanel>
             <DockPanel Height="24">
                 <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource WindowManagementButton}">
@@ -149,9 +136,8 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-        <Rectangle Grid.Column="1" MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
-        <Grid x:Name="CICPanel" Grid.Column="1" Width="{StaticResource MainPanelWidth}" >
-            <Grid Width="{StaticResource MainPanelWidth}">
+        <Grid x:Name="CICPanel" Grid.Column="1" Width="650" >
+            <Grid Width="650">
                 <Grid Width="620" Margin="15,24">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="52"/>
@@ -178,7 +164,7 @@
                                     </Style>
                                 </Grid.Resources>
                                 <TextBox x:Name="SearchBox" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="24" Background="{x:Null}" 
-									BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center" CaretBrush="#FFFBFBFB"/>
+									BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center" CaretBrush="#FFFBFBFB" TextChanged="SearchBox_TextChanged" LostKeyboardFocus="SearchBox_LostFocus"/>
                                 <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" 
 									Foreground="#FFFBFBFB" FontFamily="{StaticResource TitilliumWeb-Italic}" FontSize="19" Style="{StaticResource WaterMark}"/>
                                 <Image Source="Resources/search.ico" Height="32" HorizontalAlignment="Right" Margin="0,8,8,8" Style="{StaticResource WaterMark}"/>
@@ -297,5 +283,8 @@
                 </Grid>
             </Grid>
         </Grid>
+        <local:SearchPanel x:Name="searchPanel" Title="Search Results" Grid.Column="2" Icon="Resources/search.ico" Width="0">
+            
+        </local:SearchPanel>
     </Grid>
 </Window>
