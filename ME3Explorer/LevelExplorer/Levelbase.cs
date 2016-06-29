@@ -17,8 +17,8 @@ namespace ME3Explorer.LevelExplorer
 {
     public partial class Levelbase : Form
     {
-        public string DataBaseFile;
-        public string location;
+        public static readonly string LevelDatabaseDataFolder = Path.Combine(App.AppDataFolder, @"LevelDatabase\");
+        public static readonly string DatabaseFile = Path.Combine(LevelDatabaseDataFolder, "levels.dbs"); 
 
         public struct DBEntry
         {            
@@ -36,7 +36,7 @@ namespace ME3Explorer.LevelExplorer
 
         public void LoadDataBase()
         {
-            FileStream fs = new FileStream(DataBaseFile, FileMode.Open, FileAccess.Read);
+            FileStream fs = new FileStream(DatabaseFile, FileMode.Open, FileAccess.Read);
             BitConverter.IsLittleEndian = true;
             database = new List<DBEntry>();
             byte[] buff = new byte[4];
@@ -73,7 +73,7 @@ namespace ME3Explorer.LevelExplorer
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
             }
-            FileStream fs = new FileStream(DataBaseFile, FileMode.Create, FileAccess.Write);
+            FileStream fs = new FileStream(DatabaseFile, FileMode.Create, FileAccess.Write);
             string pathcook = ME3Directory.cookedPath;
             DebugOutput.Clear();
             DebugOutput.PrintLn("Levelbase.cs: Loading files from :" + pathcook);
@@ -179,9 +179,7 @@ namespace ME3Explorer.LevelExplorer
 
         private void Levelbase_Load(object sender, EventArgs e)
         {
-            location = Path.GetDirectoryName(Application.ExecutablePath);
-            DataBaseFile = location + "\\exec\\levelz.dbs";
-            if (File.Exists(DataBaseFile))
+            if (File.Exists(DatabaseFile))
                 LoadDataBase();
             else
             {

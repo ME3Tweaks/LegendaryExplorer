@@ -29,12 +29,6 @@ namespace ME3Explorer
 
         public SequenceEditor()
         {
-            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
-            {
-                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
-                this.Close();
-                return;
-            }
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
@@ -46,14 +40,55 @@ namespace ME3Explorer
 
             SText.LoadFont();
             SObj.talkfiles = talkFiles;
+        }
+
+        private void SequenceEditor_Load(object sender, EventArgs e)
+        {
             Dictionary<string, object> options = null;
-            //legacy save spot
-            if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
-            { 
-                options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
-                File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
-            }
-            else if (File.Exists(OptionsPath))
+            
+            #region Migrate data from legacy locations
+            if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\") ||
+                    Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\") ||
+                    Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
+            {
+                if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                {
+                    options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                    File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                }
+                if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                {
+                    File.Delete(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                }
+                if (File.Exists(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                {
+                    File.Delete(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                }
+
+
+                var comp = new Microsoft.VisualBasic.Devices.Computer();
+                if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\"))
+                {
+                    Directory.CreateDirectory(ME3ViewsPath);
+                    comp.FileSystem.CopyDirectory(ME3Directory.cookedPath + @"\SequenceViews\", ME3ViewsPath);
+                    comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                }
+                if (Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\"))
+                {
+                    Directory.CreateDirectory(ME2ViewsPath);
+                    comp.FileSystem.CopyDirectory(ME2Directory.cookedPath + @"\SequenceViews\", ME2ViewsPath);
+                    comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                }
+                if (Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
+                {
+                    Directory.CreateDirectory(ME1ViewsPath);
+                    comp.FileSystem.CopyDirectory(ME1Directory.cookedPath + @"\SequenceViews\", ME1ViewsPath);
+                    comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                }
+            } 
+            #endregion
+
+            if (File.Exists(OptionsPath))
             {
                 options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
             }
@@ -84,6 +119,9 @@ namespace ME3Explorer
 
         public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
         public static readonly string OptionsPath = Path.Combine(SequenceEditorDataFolder, "SequenceEditorOptions.JSON");
+        public static readonly string ME3ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME3SequenceViews\");
+        public static readonly string ME2ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME2SequenceViews\");
+        public static readonly string ME1ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME1SequenceViews\");
 
         private const int CLONED_SEQREF_MAGIC = 0x05edf619;
 
@@ -264,7 +302,7 @@ namespace ME3Explorer
             {
                 if (pcc.game == MEGame.ME3)
                 {
-                    JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON"; 
+                    JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON"; 
                 }
                 else
                 {
@@ -297,27 +335,27 @@ namespace ME3Explorer
                         packageName = packageName.Replace("Sequence", ObjName) + ".";
                     if (pcc.game == MEGame.ME2)
                     {
-                        JSONpath = ME2Directory.cookedPath + @"\SequenceViews\SequenceReference" + packageName + objectName + ".JSON";
+                        JSONpath = ME2ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
                     }
                     else
                     {
-                        JSONpath = ME1Directory.cookedPath + @"\SequenceViews\SequenceReference" + packageName + objectName + ".JSON";
+                        JSONpath = ME1ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
                     }
                 }
                 RefOrRefChild = true;
             }
             else
             {
-                string cookedPath = ME3Directory.cookedPath;
+                string viewsPath = ME3ViewsPath;
                 if (pcc.game == MEGame.ME2)
                 {
-                    cookedPath = ME2Directory.cookedPath;
+                    viewsPath = ME2ViewsPath;
                 }
                 else if (pcc.game == MEGame.ME1)
                 {
-                    cookedPath = ME1Directory.cookedPath;
+                    viewsPath = ME1ViewsPath;
                 }
-                JSONpath = cookedPath + @"\SequenceViews\" + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + index + objectName + ".JSON";
+                JSONpath = viewsPath + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + index + objectName + ".JSON";
                 RefOrRefChild = false;
             }
         }

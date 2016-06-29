@@ -439,6 +439,7 @@
             this.Name = "SequenceEditor";
             this.Text = "SequenceEditor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SequenceEditor_FormClosing);
+            this.Load += new System.EventHandler(this.SequenceEditor_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragEnter);
             this.splitContainer1.Panel1.ResumeLayout(false);

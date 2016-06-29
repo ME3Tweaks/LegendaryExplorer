@@ -14,6 +14,8 @@ namespace ME3Explorer
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
 
+        public static readonly string LoadedTLKsPath = App.AppDataFolder + "ME3LoadedTLKs.JSON";
+
         public static void LoadTlkData(string fileName)
         {
             if (File.Exists(fileName))
@@ -43,10 +45,9 @@ namespace ME3Explorer
 
         public static void LoadSavedTlkList()
         {
-            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\LoadedTLKs.JSON";
-            if (File.Exists(path))
+            if (File.Exists(LoadedTLKsPath))
             {
-                List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(path));
+                List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPath));
                 foreach (string filePath in files)
                 {
                     LoadTlkData(filePath);
@@ -61,8 +62,7 @@ namespace ME3Explorer
 
         private static void SaveTLKList()
         {
-            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\LoadedTLKs.JSON";
-            File.WriteAllText(path, JsonConvert.SerializeObject(tlkList.Select(x => x.path)));
+            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => x.path)));
         }
 
         public static void addTLK(string fileName)

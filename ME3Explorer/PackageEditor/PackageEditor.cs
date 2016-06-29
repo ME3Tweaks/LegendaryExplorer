@@ -27,6 +27,9 @@ namespace ME3Explorer
         public const int Exports_VIEW = 2;
         public const int TREE_VIEW = 3;
         public PropGrid pg;
+
+        public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
+
         private string currentFile;
 
         private List<int> ClassNames;
@@ -997,7 +1000,7 @@ namespace ME3Explorer
         {
             RFiles = new List<string>();
             RFiles.Clear();
-            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\history.log";
+            string path = PackageEditorDataFolder + "recentFiles.log";
             if (File.Exists(path))
             {
                 BitConverter.IsLittleEndian = true;
@@ -1019,7 +1022,11 @@ namespace ME3Explorer
         }
         private void SaveRecentList()
         {
-            string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\history.log";
+            if (!Directory.Exists(PackageEditorDataFolder))
+            {
+                Directory.CreateDirectory(PackageEditorDataFolder);
+            }
+            string path = PackageEditorDataFolder + "recentFiles.log";
             if (File.Exists(path))
                 File.Delete(path);
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);

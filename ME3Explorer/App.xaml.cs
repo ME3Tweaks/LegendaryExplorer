@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using ME1Explorer.Unreal;
@@ -29,6 +30,10 @@ namespace ME3Explorer
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Integration.WindowsFormsHost.EnableWindowsFormsInterop();
+            if (!Directory.Exists(AppDataFolder))
+            {
+                Directory.CreateDirectory(AppDataFolder);
+            }
             TalkFiles.LoadSavedTlkList();
             ME2Explorer.TalkFiles.LoadSavedTlkList();
             ME1UnrealObjectInfo.loadfromJSON();

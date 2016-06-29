@@ -32,21 +32,6 @@ namespace ME3Explorer.SubtitleScanner
         }
 
         public List<EntryStruct> Entries;
-        public TalkFile talkFile;
-
-        public void InitTalkFile(Object editorTalkFile = null)
-        {
-            if (editorTalkFile == null)
-            {
-                var tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                talkFile = new TalkFile();
-                talkFile.LoadTlkData(tlkPath);
-            }
-            else
-            {
-                talkFile = (TalkFile)editorTalkFile;
-            }
-        }
 
         public SubtitleScanner()
         {
@@ -66,7 +51,6 @@ namespace ME3Explorer.SubtitleScanner
             bool scanDLC = (res == System.Windows.Forms.DialogResult.Yes);            
             DebugOutput.StartDebugger("Subtitle Scanner");
             Entries = new List<EntryStruct>();
-            InitTalkFile();
             ScanBasefolder();
             if (scanDLC)
             {
@@ -96,7 +80,7 @@ namespace ME3Explorer.SubtitleScanner
                             BioConversation Dialog = new BioConversation(pcc, i);
                             foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                             {
-                                string text = talkFile.findDataById(e.refText);
+                                string text = TalkFiles.findDataById(e.refText);
                                 if (text.Length != 7 && text != "No Data")
                                 {
                                     EntryStruct t = new EntryStruct();
@@ -120,7 +104,7 @@ namespace ME3Explorer.SubtitleScanner
                             }
                             foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
                             {
-                                string text = talkFile.findDataById(e.refText);
+                                string text = TalkFiles.findDataById(e.refText);
                                 if (text.Length != 7 && text != "No Data")
                                 {
                                     EntryStruct t = new EntryStruct();
@@ -175,7 +159,7 @@ namespace ME3Explorer.SubtitleScanner
                                 BioConversation Dialog = new BioConversation(pcc, i);
                                 foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                                 {
-                                    string text = talkFile.findDataById(e.refText);
+                                    string text = TalkFiles.findDataById(e.refText);
                                     if (text.Length != 7 && text != "No Data")
                                     {
                                         EntryStruct t = new EntryStruct();
@@ -199,7 +183,7 @@ namespace ME3Explorer.SubtitleScanner
                                 }
                                 foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
                                 {
-                                    string text = talkFile.findDataById(e.refText);
+                                    string text = TalkFiles.findDataById(e.refText);
                                     if (text.Length != 7 && text != "No Data")
                                     {
                                         EntryStruct t = new EntryStruct();
@@ -264,7 +248,7 @@ namespace ME3Explorer.SubtitleScanner
                                         BioConversation Dialog = new BioConversation(pcc, i);
                                         foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
                                         {
-                                            string text = talkFile.findDataById(e.refText);
+                                            string text = TalkFiles.findDataById(e.refText);
                                             if (text.Length != 7 && text != "No Data")
                                             {
                                                 EntryStruct t = new EntryStruct();
@@ -288,7 +272,7 @@ namespace ME3Explorer.SubtitleScanner
                                         }
                                         foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
                                         {
-                                            string text = talkFile.findDataById(e.refText);
+                                            string text = TalkFiles.findDataById(e.refText);
                                             if (text.Length != 7 && text != "No Data")
                                             {
                                                 EntryStruct t = new EntryStruct();
