@@ -46,10 +46,20 @@ namespace ME3Explorer
 
             SText.LoadFont();
             SObj.talkfiles = talkFiles;
+            Dictionary<string, object> options = null;
+            //legacy save spot
             if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+            { 
+                options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+            }
+            else if (File.Exists(OptionsPath))
             {
-                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
-                if (options.ContainsKey("AutoSave")) 
+                options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
+            }
+            if (options != null)
+            {
+                if (options.ContainsKey("AutoSave"))
                     autoSaveViewToolStripMenuItem.Checked = (bool)options["AutoSave"];
                 if (options.ContainsKey("OutputNumbers"))
                     showOutputNumbersToolStripMenuItem.Checked = (bool)options["OutputNumbers"];
@@ -71,6 +81,9 @@ namespace ME3Explorer
                 index = i;
             }
         }
+
+        public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
+        public static readonly string OptionsPath = Path.Combine(SequenceEditorDataFolder, "SequenceEditorOptions.JSON");
 
         private const int CLONED_SEQREF_MAGIC = 0x05edf619;
 
@@ -557,9 +570,9 @@ namespace ME3Explorer
             options.Add("AutoSave", autoSaveViewToolStripMenuItem.Checked);
             options.Add("GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked);
             string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews"))
-                Directory.CreateDirectory(ME3Directory.cookedPath + @"\SequenceViews");
-            File.WriteAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
+            if (!Directory.Exists(SequenceEditorDataFolder))
+                Directory.CreateDirectory(SequenceEditorDataFolder);
+            File.WriteAllText(OptionsPath, outputFile);
         }
 
         private void saveViewToolStripMenuItem_Click(object sender, EventArgs e)

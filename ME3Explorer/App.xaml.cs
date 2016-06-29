@@ -12,6 +12,8 @@ namespace ME3Explorer
     /// </summary>
     public partial class App : Application
     {
+        public static string AppDataFolder { get { return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\"; } }
+
         public static readonly string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
         public static string Version { get { return "v" + GetVersion(); } }

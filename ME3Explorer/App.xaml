@@ -124,7 +124,6 @@
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
-        <BitmapImage x:Key="iconPAREditor" UriSource="Resources/PAR_editor_64x64.png"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
         <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon_64x64.png"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>

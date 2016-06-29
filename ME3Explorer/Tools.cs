@@ -426,16 +426,6 @@ namespace ME3Explorer
             });
             list.Add(new Tool
             {
-                name = "PAR Editor",
-                icon = Application.Current.FindResource("iconPAREditor") as ImageSource,
-                open = () =>
-                {
-                    (new PAREditor.PAREditor()).Show();
-                },
-                tags = new List<string> { "developer" }
-            });
-            list.Add(new Tool
-            {
                 name = "Sequence Editor",
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>

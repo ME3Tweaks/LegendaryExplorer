@@ -127,21 +127,6 @@ namespace ME3Explorer.LevelExplorer
             fs.Close();
         }
 
-        private void Levelbase_Activated(object sender, EventArgs e)
-        {
-            location = Path.GetDirectoryName(Application.ExecutablePath);
-            DataBaseFile = location + "\\exec\\levelz.dbs";
-            if (File.Exists(DataBaseFile))
-                LoadDataBase();
-            else
-            {
-                DialogResult res = MessageBox.Show("No database found. Do you want to start a scan and create one?\n (this may take a while, so have debug window open)", "No database found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (res == System.Windows.Forms.DialogResult.Yes)
-                    CreateDataBase();
-            }
-            RefreshList();
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
@@ -190,6 +175,21 @@ namespace ME3Explorer.LevelExplorer
             led.Show();
             led.WindowState = FormWindowState.Maximized;
             led.LoadPCC(d.filepath);
+        }
+
+        private void Levelbase_Load(object sender, EventArgs e)
+        {
+            location = Path.GetDirectoryName(Application.ExecutablePath);
+            DataBaseFile = location + "\\exec\\levelz.dbs";
+            if (File.Exists(DataBaseFile))
+                LoadDataBase();
+            else
+            {
+                DialogResult res = MessageBox.Show("No database found. Do you want to start a scan and create one?\n (this may take a while, so have debug window open)", "No database found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (res == System.Windows.Forms.DialogResult.Yes)
+                    CreateDataBase();
+            }
+            RefreshList();
         }
     }
 }

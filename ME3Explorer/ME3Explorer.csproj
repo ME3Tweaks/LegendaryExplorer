@@ -698,12 +698,6 @@
     <Compile Include="PackageEditor\PackageEditor.Designer.cs">
       <DependentUpon>PackageEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PAREditor\PAREditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PAREditor\PAREditor.Designer.cs">
-      <DependentUpon>PAREditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="PCCRepack\PCCRepack.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -864,9 +858,6 @@
     <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PAREditor\PAREditor.resx">
-      <DependentUpon>PAREditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
@@ -1073,7 +1064,6 @@
     <Resource Include="Resources\property_database_64x64.png" />
     <Resource Include="Resources\pcceditor2_64x64.png" />
     <Resource Include="Resources\pcc_repacker_64x64.png" />
-    <Resource Include="Resources\PAR_editor_64x64.png" />
     <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
