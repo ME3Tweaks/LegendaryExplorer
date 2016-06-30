@@ -557,7 +557,7 @@ namespace ME3Explorer
 
         public void PreviewProps(int n)
         {
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.getExport(n));
+            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(n));
             pg = new PropGrid();
             propGrid.SelectedObject = pg;
             pg.Add(new CustomProperty("Name", "_Meta", pcc.getExport(n).ObjectName, typeof(string), true, true));
@@ -629,7 +629,7 @@ namespace ME3Explorer
                 name = parent.Label;
             }
             IExportEntry ent = pcc.getExport(n);
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.getNameEntry(p[i].Name) == name)
@@ -1120,7 +1120,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            List<PropertyReader.Property> prop = PropertyReader.getPropList(pcc, pcc.getExport(n));
+            List<PropertyReader.Property> prop = PropertyReader.getPropList(pcc.getExport(n));
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
             d.FileName = pcc.getExport(n).ObjectName + ".bin";
@@ -1275,7 +1275,7 @@ namespace ME3Explorer
             }
             if (pcc.getExport(n).ClassName.Contains("BlockingVolume") || pcc.getExport(n).ClassName.Contains("SFXDoor"))
             {
-                List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(n));
+                List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
                 foreach (PropertyReader.Property p in props)
                 {
                     if (pcc.getNameEntry(p.Name) == "location")
@@ -1438,7 +1438,7 @@ namespace ME3Explorer
                 {
                     byte[] buff = pcc.getExport(n).Data;
                     BitConverter.IsLittleEndian = true;
-                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(n));
+                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
                     int start = props[props.Count - 1].offend;
                     int len = BitConverter.ToInt32(buff, start);
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -1464,7 +1464,7 @@ namespace ME3Explorer
                 {
                     byte[] buff = pcc.getExport(n).Data;
                     BitConverter.IsLittleEndian = true;
-                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(n));
+                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
                     int start = props[props.Count - 1].offend;
                     MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
@@ -1811,7 +1811,7 @@ namespace ME3Explorer
                     break;
             }
             byte[] idata = ex.Data;
-            List<PropertyReader.Property> Props = PropertyReader.getPropList(importpcc, ex);
+            List<PropertyReader.Property> Props = PropertyReader.getPropList(ex);
             int start = PropertyReader.detectStart(importpcc, idata, importpcc.getExport(n).ObjectFlags);
             int end = start;
             if (Props.Count != 0)

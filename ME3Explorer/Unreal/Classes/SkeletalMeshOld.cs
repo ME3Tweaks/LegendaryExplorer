@@ -153,7 +153,7 @@ namespace ME3Explorer.Unreal.Classes
             pcc = Pcc;
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
             Deserialize();
         }
 

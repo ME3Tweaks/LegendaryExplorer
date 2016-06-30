@@ -296,12 +296,12 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static Property getPropOrNull(IMEPackage pcc, IExportEntry export, string propName)
+        public static Property getPropOrNull(IExportEntry export, string propName)
         {
-            List<Property> props = getPropList(pcc, export);
+            List<Property> props = getPropList(export);
             foreach (Property prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == propName)
+                if (export.FileRef.getNameEntry(prop.Name) == propName)
                 {
                     return prop;
                 }
@@ -322,11 +322,11 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<Property> getPropList(IMEPackage pcc, IExportEntry export)
+        public static List<Property> getPropList(IExportEntry export)
         {
             Application.DoEvents();
-            int start = detectStart(pcc, export.Data, export.ObjectFlags);
-            return ReadProp(pcc, export.Data, start);
+            int start = detectStart(export.FileRef, export.Data, export.ObjectFlags);
+            return ReadProp(export.FileRef, export.Data, start);
         }
 
         public static string TypeToString(int type)

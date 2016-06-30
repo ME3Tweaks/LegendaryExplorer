@@ -126,7 +126,7 @@ namespace ME3Explorer
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
                 {
-                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc, pcc.getExport(Index)).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
+                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc.getExport(Index)).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
                     if (tlkSetRef != null)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value.IntValue - 1);
@@ -2202,7 +2202,7 @@ namespace ME3Explorer
 
         private void addPropButton_Click(object sender, EventArgs e)
         {
-            List<string> props = PropertyReader.getPropList(pcc, pcc.getExport(Index)).Select(x => pcc.getNameEntry(x.Name)).ToList();
+            List<string> props = PropertyReader.getPropList(pcc.getExport(Index)).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props);
             if (prop != null)
             {

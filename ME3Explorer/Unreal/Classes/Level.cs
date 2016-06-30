@@ -59,7 +59,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize(bool SimpleRead)
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[Index]);
             int off = props[props.Count() - 1].offend + 4;
             if (SimpleRead)
                 ReadObjectsSimple(off);

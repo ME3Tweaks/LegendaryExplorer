@@ -202,5 +202,17 @@ namespace ME3Explorer.Properties {
                 this["PlotVarDBPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisableToolDescriptions {
+            get {
+                return ((bool)(this["DisableToolDescriptions"]));
+            }
+            set {
+                this["DisableToolDescriptions"] = value;
+            }
+        }
     }
 }

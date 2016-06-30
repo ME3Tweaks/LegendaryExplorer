@@ -239,7 +239,7 @@ namespace ME3Explorer
                     }
                     else if (exportEntry.ClassName == "SequenceReference")
                     {
-                        var props = PropertyReader.getPropList(pcc, exportEntry);
+                        var props = PropertyReader.getPropList(exportEntry);
                         var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
                         if (propSequenceReference != null)
                         {
@@ -291,7 +291,7 @@ namespace ME3Explorer
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(pcc.getExport(index).ObjectName, @"[<>:""/\\|?*]", "");
             bool isClonedSeqRef = false;
-            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.getExport(index), "DefaultViewZoom");
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc.getExport(index), "DefaultViewZoom");
             if (p != null && p.Value.IntValue == CLONED_SEQREF_MAGIC)
             {
                 isClonedSeqRef = true;
@@ -314,7 +314,7 @@ namespace ME3Explorer
                     {
                         if (pcc.getExport(pcc.getExport(idx).idxLink - 1).ClassName == "SequenceReference")
                         {
-                            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(idx));
+                            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(idx));
                             for (int i = 0; i < props.Count(); i++)
                                 if (pcc.getNameEntry(props[i].Name) == "ObjName")
                                 {
@@ -403,7 +403,7 @@ namespace ME3Explorer
                 else
                     savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
             }
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.getExport(index));
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(index));
             foreach (PropertyReader.Property prop in props)
             {
                 if (pcc.getNameEntry(prop.Name) == "ObjPosX")
@@ -563,7 +563,7 @@ namespace ME3Explorer
             switch (pcc.getExport(n).ClassName)
             {
                 default:
-                    p = PropertyReader.getPropList(pcc, pcc.getExport(n));
+                    p = PropertyReader.getPropList(pcc.getExport(n));
                     break;
             }
             pg = new PropGrid();
@@ -889,7 +889,7 @@ namespace ME3Explorer
         private void addObjectToSequence(int index, bool removeLinks = true)
         {
             byte[] buff = pcc.getExport(index).Data;
-            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, pcc.getExport(index), "ParentSequence");
+            PropertyReader.Property p = PropertyReader.getPropOrNull(pcc.getExport(index), "ParentSequence");
             if (p != null)
             {
                 byte[] val = BitConverter.GetBytes(SequenceIndex + 1);
@@ -904,7 +904,7 @@ namespace ME3Explorer
             buff = pcc.getExport(SequenceIndex).Data;
             List<byte> ListBuff = new List<byte>(buff);
             BitConverter.IsLittleEndian = true;
-            p = PropertyReader.getPropOrNull(pcc, pcc.getExport(SequenceIndex), "SequenceObjects");
+            p = PropertyReader.getPropOrNull(pcc.getExport(SequenceIndex), "SequenceObjects");
             if (p != null)
             {
                 int count = BitConverter.ToInt32(p.raw, 24);
@@ -957,7 +957,7 @@ namespace ME3Explorer
                 name = parent.Label;
             }
             IExportEntry ent = pcc.getExport(n);
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
+            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
             int m = -1;
             for (int i = 0; i < p.Count; i++)
                 if (pcc.Names[p[i].Name] == name)
@@ -1349,7 +1349,7 @@ namespace ME3Explorer
             if (exp.ClassName == "Sequence")
             {
                 int originalSequenceIndex = SequenceIndex;
-                PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, exp, "SequenceObjects");
+                PropertyReader.Property p = PropertyReader.getPropOrNull(exp, "SequenceObjects");
                 if (p == null)
                 {
                     return;
@@ -1441,7 +1441,7 @@ namespace ME3Explorer
                 byte[] data;
                 foreach (int objIndex in CurrentObjects)
                 {
-                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "OutputLinks");
+                    p = PropertyReader.getPropOrNull(pcc.getExport(objIndex), "OutputLinks");
                     if (p != null)
                     {
                         data = pcc.getExport(objIndex).Data;
@@ -1470,7 +1470,7 @@ namespace ME3Explorer
                         }
                         pcc.getExport(objIndex).Data = data;
                     }
-                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "VariableLinks");
+                    p = PropertyReader.getPropOrNull(pcc.getExport(objIndex), "VariableLinks");
                     if (p != null)
                     {
                         data = pcc.getExport(objIndex).Data;
@@ -1498,7 +1498,7 @@ namespace ME3Explorer
                         }
                         pcc.getExport(objIndex).Data = data;
                     }
-                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(objIndex), "EventLinks");
+                    p = PropertyReader.getPropOrNull(pcc.getExport(objIndex), "EventLinks");
                     if (p != null)
                     {
                         data = pcc.getExport(objIndex).Data;
@@ -1531,7 +1531,7 @@ namespace ME3Explorer
                 //re-point sequence links to new objects
                 int oldObj = 0;
                 int newObj = 0;
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex), "InputLinks");
                 if (p != null)
                 {
                     data = pcc.getExport(expIndex).Data;
@@ -1558,7 +1558,7 @@ namespace ME3Explorer
                     }
                     pcc.getExport(expIndex).Data = data;
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex), "OutputLinks");
                 if (p != null)
                 {
                     data = pcc.getExport(expIndex).Data;
@@ -1604,7 +1604,7 @@ namespace ME3Explorer
                 useGlobalSequenceRefSavesToolStripMenuItem.Checked = false;
 
                 //set OSequenceReference to new sequence
-                PropertyReader.Property p = PropertyReader.getPropOrNull(pcc, exp, "oSequenceReference");
+                PropertyReader.Property p = PropertyReader.getPropOrNull(exp, "oSequenceReference");
                 if (p == null || p.Value.IntValue == 0)
                 {
                     return;
@@ -1615,7 +1615,7 @@ namespace ME3Explorer
                 cloneObject(p.Value.IntValue - 1, false);
 
                 //remove cloned sequence from SeqRef's parent's sequenceobjects
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(SequenceIndex), "SequenceObjects");
+                p = PropertyReader.getPropOrNull(pcc.getExport(SequenceIndex), "SequenceObjects");
                 List<byte> memList = pcc.getExport(SequenceIndex).Data.ToList();
                 int count = BitConverter.ToInt32(pcc.getExport(SequenceIndex).Data, p.offsetval) - 1;
                 byte[] buff = BitConverter.GetBytes(4 + count * 4);
@@ -1634,7 +1634,7 @@ namespace ME3Explorer
                 //set SequenceReference's linked name indices
                 List<int> inputIndices = new List<int>();
                 List<int> outputIndices = new List<int>();
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex + 1), "InputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1652,7 +1652,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex + 1), "OutputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1670,7 +1670,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "InputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex), "InputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1688,7 +1688,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex), "OutputLinks");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex), "OutputLinks");
                 if (p != null)
                 {
                     int pos = 28;
@@ -1709,7 +1709,7 @@ namespace ME3Explorer
 
 
                 //set new Sequence's link and ParentSequence prop to SeqRef
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "ParentSequence");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex + 1), "ParentSequence");
                 if (p == null)
                 {
                     throw new Exception();
@@ -1719,14 +1719,14 @@ namespace ME3Explorer
 
                 //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
                 //ugly, but it should work
-                p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "DefaultViewZoom");
+                p = PropertyReader.getPropOrNull(pcc.getExport(expIndex + 1), "DefaultViewZoom");
                 if (p != null)
                 {
                     pcc.getExport(expIndex + 1).Data.OverwriteRange(p.offsetval, BitConverter.GetBytes(CLONED_SEQREF_MAGIC));
                 }
                 else
                 {
-                    p = PropertyReader.getPropOrNull(pcc, pcc.getExport(expIndex + 1), "None");
+                    p = PropertyReader.getPropOrNull(pcc.getExport(expIndex + 1), "None");
                     memList = pcc.getExport(expIndex + 1).Data.ToList();
                     memList.InsertRange(p.offsetval, BitConverter.GetBytes(pcc.FindNameOrAdd("DefaultViewZoom")));
                     memList.InsertRange(p.offsetval + 4, new byte[4]);

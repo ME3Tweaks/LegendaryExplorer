@@ -40,5 +40,10 @@ namespace ME3Explorer
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            ME3Explorer.Properties.Settings.Default.Save();
+        }
     }
 }

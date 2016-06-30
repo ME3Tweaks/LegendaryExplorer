@@ -7,9 +7,6 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="300">
-    <UserControl.Resources>
-        <System:Double x:Key="InfoPanelWidth">300</System:Double>
-    </UserControl.Resources>
     <Grid Width="{StaticResource InfoPanelWidth}">
         <Grid Width="{StaticResource InfoPanelWidth}">
             <Grid Margin="0,24,15,15">

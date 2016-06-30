@@ -282,7 +282,7 @@ namespace ME3Explorer.Unreal
                     return null;
                 }
                 IExportEntry entry = pcc.Exports[info.exportIndex + 1];
-                List<PropertyReader.Property> Props = PropertyReader.getPropList(importPCC, entry);
+                List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
                 MemoryStream m = new MemoryStream(entry.DataSize - 4);
                 foreach (PropertyReader.Property p in Props)
                 {
@@ -386,7 +386,7 @@ namespace ME3Explorer.Unreal
         private static SequenceObjectInfo generateSequenceObjectInfo(int i, ME3Package pcc)
         {
             SequenceObjectInfo info = new SequenceObjectInfo();
-            PropertyReader.Property inputLinks = PropertyReader.getPropOrNull(pcc, pcc.Exports[i + 1], "InputLinks");
+            PropertyReader.Property inputLinks = PropertyReader.getPropOrNull(pcc.Exports[i + 1], "InputLinks");
             if (inputLinks != null)
             {
                 int pos = 28;

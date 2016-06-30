@@ -214,7 +214,7 @@ namespace ME3Explorer.InterpEditor
             InterpGroups.Clear();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             List<int> groups = new List<int>();
             foreach (PropertyReader.Property p in props)
             {
@@ -468,7 +468,7 @@ namespace ME3Explorer.InterpEditor
             m_nmSFXFindActor = -1;
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             List<int> tracks = new List<int>();
             foreach (PropertyReader.Property p in props)
             {
@@ -779,7 +779,7 @@ namespace ME3Explorer.InterpEditor
         {
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             List<int> tracks = new List<int>();
             foreach (PropertyReader.Property p in props)
             {

@@ -62,7 +62,7 @@ namespace ME3Explorer.Unreal.Classes
                 headerData = new byte[propertiesOffset];
                 Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
                 pccOffset = (uint)expEntry.DataOffset;
-                List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(pccObj, expEntry);
+                List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(expEntry);
                 texName = expEntry.ObjectName;
                 for (int i = 0; i < tempProperties.Count; i++)
                 {

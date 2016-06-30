@@ -32,7 +32,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
+            props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
             BinaryOffset = props[props.Count - 1].offend + 0x10;
             ReadChunks();
         }

@@ -177,7 +177,7 @@ namespace ME2Explorer.Unreal.Classes
         {
             BitConverter.IsLittleEndian = true;
             Unk1 = BitConverter.ToInt32(Memory, 0);
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
+            Props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
             ReadStartingList();
             ReadEntryList();
             ReadReplyList();

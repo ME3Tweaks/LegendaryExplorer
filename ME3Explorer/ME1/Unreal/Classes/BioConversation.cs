@@ -177,7 +177,7 @@ namespace ME1Explorer.Unreal.Classes
         private void ReadData()
         {
             Unk1 = BitConverter.ToInt32(Memory, 0);
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
+            Props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
             TlkFileSet = Props[FindPropByName("m_oTlkFileSet")].Value.IntValue;
             ReadStartingList();
             ReadEntryList();

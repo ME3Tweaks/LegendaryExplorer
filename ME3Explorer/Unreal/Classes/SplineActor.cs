@@ -61,7 +61,7 @@ namespace ME3Explorer.Unreal.Classes
             Vector3 r = new Vector3();
             if (!Pcc.isExport(Index))
                 return new Vector3();
-            List<PropertyReader.Property> pp = PropertyReader.getPropList(Pcc, Pcc.Exports[Index]);
+            List<PropertyReader.Property> pp = PropertyReader.getPropList(Pcc.Exports[Index]);
             foreach (PropertyReader.Property p in pp)
                 switch (Pcc.getNameEntry(p.Name))
                 {
@@ -80,7 +80,7 @@ namespace ME3Explorer.Unreal.Classes
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
             BitConverter.IsLittleEndian = true;
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))

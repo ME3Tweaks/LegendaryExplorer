@@ -40,7 +40,7 @@ namespace ME1Explorer.SaveGameOperator
             ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[1]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[1]);
             foreach (PropertyReader.Property p in props)
             {
                 string name = pcc.getNameEntry(p.Name);
@@ -70,7 +70,7 @@ namespace ME1Explorer.SaveGameOperator
             ME1Package pcc = new ME1Package("temp.upk");
             File.Delete("temp.upk");
             byte[] buff = pcc.Exports[1].Data;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[1]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[1]);
             int v;
             float f;
             foreach (PropertyReader.Property p in props)

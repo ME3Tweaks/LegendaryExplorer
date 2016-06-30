@@ -35,7 +35,7 @@ namespace ME3Explorer.CurveEd
             index = Index;
             InterpCurveTracks = new List<InterpCurve>();
 
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             CurveType throwaway = CurveType.InterpCurveVector;
             foreach (var p in props)
             {
@@ -125,7 +125,7 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (var p in props)
             {
                 if (p.TypeVal == PropertyReader.Type.StructProperty)

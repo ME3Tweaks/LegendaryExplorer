@@ -53,7 +53,7 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public void ReadGUIDs(IExportEntry export)
         {
-            props = PropertyReader.getPropList(pcc, export);
+            props = PropertyReader.getPropList(export);
             byte[] buff = export.Data;
             int pos = props[props.Count - 1].offend;
             int count = BitConverter.ToInt32(buff, pos);
@@ -156,7 +156,7 @@ namespace ME3Explorer.GUIDCacheEditor
                 return;
             MemoryStream m = new MemoryStream();
             byte[] buff = pcc.Exports[0].Data;
-            props = PropertyReader.getPropList(pcc, pcc.Exports[0]);
+            props = PropertyReader.getPropList(pcc.Exports[0]);
             int pos = props[props.Count - 1].offend;
             m.Write(buff, 0, pos);
             m.Write(BitConverter.GetBytes(GUIDs.Count), 0, 4);

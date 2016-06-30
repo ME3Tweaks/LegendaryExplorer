@@ -71,7 +71,7 @@ namespace ME3Explorer.Unreal.Classes
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;            
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
             BitConverter.IsLittleEndian = true;
             Unknown = BitConverter.ToInt32(data, 0);
             foreach (PropertyReader.Property p in Props)

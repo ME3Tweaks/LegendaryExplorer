@@ -42,7 +42,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
+            props = PropertyReader.getPropList(pcc.Exports[Index]);
             int off = props[props.Count - 1].offend + 8;
             ValueOffset = off;
             DataSize = BitConverter.ToInt32(memory, off);

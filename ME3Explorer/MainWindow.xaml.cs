@@ -26,6 +26,19 @@ namespace ME3Explorer
     {
         private bool CICOpen = true;
         private bool SearchOpen = false;
+        private bool AdvancedOpen = false;
+
+        public bool DisableFlyouts
+        {
+            get { return (bool)GetValue(DisableFlyoutsProperty); }
+            set { SetValue(DisableFlyoutsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisableFlyoutsProperty =
+            DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+
+
 
         public MainWindow()
         {
@@ -34,6 +47,9 @@ namespace ME3Explorer
             installModspanel.setToolList(Tools.items.Where(x => x.tags.Contains("user")));
             favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
             searchPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
+
+            DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
+            disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -102,6 +118,11 @@ namespace ME3Explorer
                     SearchOpen = false;
                     searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
                 }
+                if (AdvancedOpen)
+                {
+                    AdvancedOpen = false;
+                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                }
             }
             CICPanel.BeginAnimation(WidthProperty, anim);
         }
@@ -135,6 +156,11 @@ namespace ME3Explorer
         {
             if (!SearchOpen)
             {
+                if (AdvancedOpen)
+                {
+                    AdvancedOpen = false;
+                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                }
                 SearchOpen = true;
                 searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
             }
@@ -161,6 +187,44 @@ namespace ME3Explorer
             {
                 SearchOpen = false;
                 searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(200)));
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Properties.Settings.Default.DisableDLCCheckOnStart = disableSetupCheckBox.IsChecked ?? false;
+            Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
+        }
+
+        private void advancedSettings_Click(object sender, RoutedEventArgs e)
+        {
+            AdvancedOpen = !AdvancedOpen;
+            if (AdvancedOpen)
+            {
+                if (SearchOpen)
+                {
+                    SearchOpen = false;
+                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                }
+                advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+            }
+            else
+            {
+                advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(200)));
+            }
+        }
+
+        private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (!SearchOpen && SearchBox.Text.Trim() != string.Empty)
+            {
+                SearchOpen = true;
+                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+                if (AdvancedOpen)
+                {
+                    AdvancedOpen = false;
+                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                }
             }
         }
     }

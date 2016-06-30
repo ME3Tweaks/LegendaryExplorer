@@ -235,7 +235,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 
@@ -476,7 +476,7 @@ namespace ME3Explorer.InterpEditor
             m_aTrackKeys = new List<TrackKey>();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTrackKeys")
@@ -535,7 +535,7 @@ namespace ME3Explorer.InterpEditor
             m_nmFindActor.index = -1;
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_nmFindActor")
@@ -581,7 +581,7 @@ namespace ME3Explorer.InterpEditor
             m_aMovieKeyData = new List<MovieKey>();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aMovieKeyData")
@@ -649,7 +649,7 @@ namespace ME3Explorer.InterpEditor
             m_aTarget = new List<int>();         
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -717,7 +717,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "FloatTrack")
@@ -757,7 +757,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "VectorTrack")
@@ -798,7 +798,7 @@ namespace ME3Explorer.InterpEditor
             FacingController.index = -1;
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "FacingController")
@@ -836,7 +836,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "InterpValue")
@@ -887,7 +887,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aInterruptData")
@@ -957,7 +957,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aSubtitleData")
@@ -1030,7 +1030,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aCameras")
@@ -1087,7 +1087,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_nStrRefID")
@@ -1137,7 +1137,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "EventTrack")
@@ -1266,7 +1266,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1454,7 +1454,7 @@ namespace ME3Explorer.InterpEditor
             m_aLightingKeys = new List<LightingKey>();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1565,7 +1565,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1652,7 +1652,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1737,7 +1737,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aFacingKeys")
@@ -1812,7 +1812,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_TrackFoleySound")
@@ -1896,7 +1896,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aFOVOKeys")
@@ -1979,7 +1979,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "oEffect")
@@ -2058,7 +2058,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -2137,7 +2137,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aAttachToTarget")
@@ -2215,7 +2215,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_BlackScreenSeq")
@@ -2271,7 +2271,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -2316,7 +2316,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_SeqForceUpdateLight")
@@ -2365,7 +2365,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_LightEnvSeq")
@@ -2425,7 +2425,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -2469,7 +2469,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_oTextureMovie")
@@ -2516,7 +2516,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aNearClipKeyData")
@@ -2585,7 +2585,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_PawnRefTag")
@@ -2662,7 +2662,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_LightEnvSeq")
@@ -2710,7 +2710,7 @@ namespace ME3Explorer.InterpEditor
 
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_bUnlockAtEnd")
@@ -2785,7 +2785,7 @@ namespace ME3Explorer.InterpEditor
             EventTrack = new List<EventTrackKey>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -2939,7 +2939,7 @@ namespace ME3Explorer.InterpEditor
 
             byte[] buff = pcc.Exports[index].Data;
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3131,7 +3131,7 @@ namespace ME3Explorer.InterpEditor
             AnimSeqs = new List<AnimControlTrackKey>();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "AnimSeqs")
@@ -3240,7 +3240,7 @@ namespace ME3Explorer.InterpEditor
             LookupTrack.Points = new List<InterpLookupTrack.Point>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3350,7 +3350,7 @@ namespace ME3Explorer.InterpEditor
             VisibilityTrack = new List<VisibilityTrackKey>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -3440,7 +3440,7 @@ namespace ME3Explorer.InterpEditor
             ToggleTrack = new List<ToggleTrackKey>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -3527,7 +3527,7 @@ namespace ME3Explorer.InterpEditor
             WwiseEvent key = new WwiseEvent();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "WwiseEvents")
@@ -3596,7 +3596,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "Param")
@@ -3627,7 +3627,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3674,7 +3674,7 @@ namespace ME3Explorer.InterpEditor
             AffectedMaterialRefs = new List<MeshMaterialRef>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3733,7 +3733,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3766,7 +3766,7 @@ namespace ME3Explorer.InterpEditor
         {
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3797,7 +3797,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3827,7 +3827,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3861,7 +3861,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3928,7 +3928,7 @@ namespace ME3Explorer.InterpEditor
         {
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bContinueSoundOnMatineeEnd")
@@ -4025,7 +4025,7 @@ namespace ME3Explorer.InterpEditor
             m_aDOFData = new List<BioDOFTrackData>();
             
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -4118,7 +4118,7 @@ namespace ME3Explorer.InterpEditor
             CutTrack = new List<DirectorTrackCut>();
 
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "CutTrack")
@@ -4180,7 +4180,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bPersistFade")

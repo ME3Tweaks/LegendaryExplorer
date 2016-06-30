@@ -326,7 +326,7 @@ namespace ME3Explorer
                 {
                     (new Coalesced_Editor.CoalEditor()).Show();
                 },
-                tags = new List<string> { "developer", "coalesced", "ini" }
+                tags = new List<string> { "developer", "coalesced", "ini", "bin" }
             });
             list.Add(new Tool
             {
@@ -336,7 +336,7 @@ namespace ME3Explorer
                 {
                     (new Conditionals()).Show();
                 },
-                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer" }
+                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" }
             });
             list.Add(new Tool
             {

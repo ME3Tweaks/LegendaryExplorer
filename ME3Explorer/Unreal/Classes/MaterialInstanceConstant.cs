@@ -38,7 +38,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadProperties()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
             Textures = new List<TextureParam>();
             for (int i = 0; i < props.Count(); i++)
             {
