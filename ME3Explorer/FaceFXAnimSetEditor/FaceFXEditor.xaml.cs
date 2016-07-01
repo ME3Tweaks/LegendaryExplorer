@@ -90,6 +90,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             SaveChanges();
             FaceFX = new FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as PCCObject.ExportEntry);
             linesListBox.ItemsSource = FaceFX.Data.Data;
+            treeView.Nodes.Clear();
         }
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -122,6 +123,8 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 lineText.Text = TalkFiles.findDataById(tlkID);
             }
+            treeView.Nodes.Clear();
+            treeView.Nodes.AddRange(FaceFX.DataToTree2(selectedLine));
         }
 
         private void updateAnimListBox()
@@ -318,6 +321,67 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             lines.Remove(line);
             FaceFX.Data.Data = lines.ToArray();
             linesListBox.ItemsSource = FaceFX.Data.Data;
+        }
+
+        private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+
+        {
+            var t = treeView.SelectedNode;
+            if (t == null)
+                return;
+            string result; int i; float f = 0;
+            int subidx = t.Index;
+            switch (subidx)
+            {
+                case 0://Name
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", FaceFX.Header.Names.ElementAtOrDefault(selectedLine.Name), 0, 0);
+                    if (result == string.Empty)
+                    {
+                        break;
+                    }
+                    if (FaceFX.Header.Names.Contains(result))
+                    {
+                        selectedLine.Name = FaceFX.Header.Names.IndexOf(result);
+                    }
+                    else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
+                    {
+                        FaceFX.Header.Names = FaceFX.Header.Names.Concat(result).ToArray();
+                        selectedLine.Name = FaceFX.Header.Names.Length - 1;
+                    }
+                    break;
+                case 1://FadeInTime
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.FadeInTime.ToString(), 0, 0);
+                    if (float.TryParse(result, out f))
+                        selectedLine.FadeInTime = f;
+                    break;
+                case 2://FadeInTime
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.FadeOutTime.ToString(), 0, 0);
+                    if (float.TryParse(result, out f))
+                        selectedLine.FadeOutTime = f;
+                    break;
+                case 3://unk2
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.unk2.ToString(), 0, 0);
+                    i = -1;
+                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
+                        selectedLine.unk2 = i;
+                    break;
+                case 4://Path
+                    selectedLine.path = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.path, 0, 0);
+                    break;
+                case 5://ID
+                    selectedLine.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.ID, 0, 0);
+                    break;
+                case 6://unk3
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.unk3.ToString(), 0, 0);
+                    i = -1;
+                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
+                        selectedLine.unk3 = i;
+                    break;
+                default:
+                    return;
+            }
+            treeView.Nodes.Clear();
+            treeView.Nodes.AddRange(FaceFX.DataToTree2(selectedLine));
         }
     }
 }

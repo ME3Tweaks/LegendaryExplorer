@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.FaceFXAnimSetEditor"
              xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
              d:DesignHeight="411.124" d:DesignWidth="827.446">
     <Window.CommandBindings>
@@ -32,28 +33,39 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="310"/>
-                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="180"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Label Content="Lines"/>
-            <ListBox x:Name="linesListBox" Grid.Row="1" SelectionChanged="linesListBox_SelectionChanged"
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="155"/>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="linesListBox" SelectionChanged="linesListBox_SelectionChanged"
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding path}">
-                            <TextBlock.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Delete" Click="DeleteLine_Click"/>
-                                </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding path}">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Delete" Click="DeleteLine_Click"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <WindowsFormsHost Grid.Row="1">
+                    <forms:TreeView x:Name="treeView" MouseDoubleClick="treeView_MouseDoubleClick">
+                        
+                    </forms:TreeView>
+                </WindowsFormsHost>
+            </Grid>
             <Label Content="Animations" Grid.Column="1"/>
             <ListBox x:Name="animationListBox" Grid.Column="1" Grid.Row="1" SelectionChanged="animationListBox_SelectionChanged" 
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"

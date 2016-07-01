@@ -292,7 +292,7 @@ namespace ME3Explorer.Unreal.Classes
                 foreach (ControlPoint u in d.points)
                     t5.Nodes.Add((count2++) + " : " + u.time + " ; " + u.weight + " ; " + u.inTangent + " ; " + u.leaveTangent);
                 t3.Nodes.Add(t5);
-                TreeNode t6 = new TreeNode("Groups?");
+                TreeNode t6 = new TreeNode("animLengths");
                 count2 = 0;
                 foreach (int u in d.numKeys)
                     t6.Nodes.Add((count2++) + " : " + u.ToString("X8"));
@@ -308,6 +308,19 @@ namespace ME3Explorer.Unreal.Classes
             res.Nodes.Add(t2);
             res.Expand();
             return res;
+        }
+
+        public TreeNode[] DataToTree2(FaceFXLine d)
+        {
+            TreeNode[] nodes = new TreeNode[7];
+            nodes[0] = new TreeNode("Name : 0x" + d.Name.ToString("X8") + " \"" + Header.Names[d.Name].Trim() + "\"");
+            nodes[1] = new TreeNode("FadeInTime : " + d.FadeInTime);
+            nodes[2] = new TreeNode("FadeOutTime : " + d.FadeOutTime);
+            nodes[3] = new TreeNode("Unk2 : 0x" + d.unk2.ToString("X8"));
+            nodes[4] = new TreeNode("Path : " + d.path);
+            nodes[5] = new TreeNode("ID : " + d.ID);
+            nodes[6] = new TreeNode("Unk3 : 0x" + d.unk3.ToString("X8"));
+            return nodes;
         }
 
         public void DumpToFile(string path)
