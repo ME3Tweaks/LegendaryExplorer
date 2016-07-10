@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Unreal;
 using Gibbed.IO;
+using System.IO;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer.CurveEd
@@ -37,7 +38,7 @@ namespace ME3Explorer.CurveEd
     public class InterpCurve
     {
 
-        private ME3Package pcc;
+        private IMEPackage pcc;
         private PropertyReader.Property prop;
         private CurveType curveType;
 
@@ -45,7 +46,7 @@ namespace ME3Explorer.CurveEd
         public ObservableCollection<Curve> Curves { get; set; }
 
 
-        public InterpCurve(ME3Package _pcc, PropertyReader.Property p)
+        public InterpCurve(IMEPackage _pcc, PropertyReader.Property p)
         {
             pcc = _pcc;
             prop = p;
@@ -60,7 +61,7 @@ namespace ME3Explorer.CurveEd
             switch (curveType)
             {
                 case CurveType.InterpCurveQuat:
-                    throw new NotImplementedException($"{pcc.getNameEntry(p.Value.IntValue)} has not been implemented yet.");
+                    throw new NotImplementedException($"InterpCurveQuat has not been implemented yet.");
                     break;
                 case CurveType.InterpCurveFloat:
                     float OutVal = 0f;
@@ -146,13 +147,13 @@ namespace ME3Explorer.CurveEd
                     }
                     break;
                 case CurveType.InterpCurveVector2D:
-                    throw new NotImplementedException($"{pcc.getNameEntry(p.Value.IntValue)} has not been implemented yet.");
+                    throw new NotImplementedException($"InterpCurveVector2D has not been implemented yet.");
                     break;
                 case CurveType.InterpCurveTwoVectors:
-                    throw new NotImplementedException($"{pcc.getNameEntry(p.Value.IntValue)} has not been implemented yet.");
+                    throw new NotImplementedException($"InterpCurveTwoVectors has not been implemented yet.");
                     break;
                 case CurveType.InterpCurveLinearColor:
-                    throw new NotImplementedException($"{pcc.getNameEntry(p.Value.IntValue)} has not been implemented yet.");
+                    throw new NotImplementedException($"InterpCurveLinearColor has not been implemented yet.");
                     break;
                 default:
                     break;
@@ -160,17 +161,67 @@ namespace ME3Explorer.CurveEd
             foreach (var curve in Curves)
             {
                 curve.SharedValueChanged += Curve_SharedValueChanged;
+                curve.ListModified += Curve_ListModified;
             }
         }
 
-        private bool updatingSharedValue = false;
-        private void Curve_SharedValueChanged(object sender, EventArgs e)
+        private bool updatingCurves = false;
+        private void Curve_ListModified(object sender, Tuple<bool, int> e)
         {
-            if (updatingSharedValue)
+            if (updatingCurves)
             {
                 return;
             }
-            updatingSharedValue = true;
+            updatingCurves = true;
+            int index = e.Item2;
+            Curve c = sender as Curve;
+            //added
+            if (e.Item1)
+            {
+                foreach (var curve in Curves)
+                {
+                    if (curve != c)
+                    {
+                        CurvePoint p = c.CurvePoints.ElementAt(index);
+                        if (index == 0)
+                        {
+                            curve.CurvePoints.AddFirst(new CurvePoint(p.InVal, curve.CurvePoints.First().OutVal, 0, 0, p.InterpMode));
+                        }
+                        else
+                        {
+                            LinkedListNode<CurvePoint> prevNode = curve.CurvePoints.NodeAt(index - 1);
+                            float outVal = prevNode.Value.OutVal;
+                            if (prevNode.Next != null)
+                            {
+                                outVal = outVal + (prevNode.Next.Value.OutVal - outVal) / 2;
+                            }
+                            curve.CurvePoints.AddAfter(prevNode, new CurvePoint(p.InVal, outVal, 0, 0, p.InterpMode));
+                        }
+                    }
+                }
+            }
+            //removed
+            else
+            {
+
+                foreach (var curve in Curves)
+                {
+                    if (curve != c)
+                    {
+                        curve.CurvePoints.RemoveAt(index);
+                    }
+                }
+            }
+            updatingCurves = false;
+        }
+
+        private void Curve_SharedValueChanged(object sender, EventArgs e)
+        {
+            if (updatingCurves)
+            {
+                return;
+            }
+            updatingCurves = true;
             Curve c = sender as Curve;
             foreach (var curve in Curves)
             {
@@ -183,77 +234,55 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
-            updatingSharedValue = false;
+            updatingCurves = false;
         }
 
         public byte[] Serialize()
         {
-            byte[] res = prop.raw;
-            
-            var points = PropertyReader.ReadStructArrayProp(pcc, PropertyReader.getPropOrNull(pcc, res, 32, "Points"));
+            MemoryStream m = new MemoryStream();
+            MemoryStream temp = new MemoryStream();
+
+            int count = Curves[0].CurvePoints.Count;
+
             switch (curveType)
             {
                 case CurveType.InterpCurveQuat:
                     break;
                 case CurveType.InterpCurveFloat:
-                    for (int i = 0; i < points.Count; i++)
+                    for (int i = 0; i < count; i++)
                     {
-                        foreach (var p in points[i])
-                        {
-                            switch (pcc.getNameEntry(p.Name))
-                            {
-                                case "OutVal":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).OutVal));
-                                    break;
-                                case "ArriveTangent":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).ArriveTangent));
-                                    break;
-                                case "LeaveTangent":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).LeaveTangent));
-                                    break;
-                                case "InterpMode":
-                                    res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(pcc.FindNameOrAdd(Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString())));
-                                    break;
-                                //changing time not supported
-                                case "InVal":
-                                default:
-                                    break;
-                            }
-                        }
+                        m.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
+                        m.WriteFloatProperty(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal);
+                        m.WriteFloatProperty(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent);
+                        m.WriteFloatProperty(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent);
+                        m.WriteByteProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
+                        m.WriteNoneProperty(pcc);
                     }
+                    temp.WriteArrayProperty(pcc, "Points", count, m.ToArray());
+                    temp.WriteNoneProperty(pcc);
+                    m = new MemoryStream();
+                    m.WriteStructProperty(pcc, Name, "InterpCurveFloat", temp.ToArray());
                     break;
                 case CurveType.InterpCurveVector:
-                    for (int i = 0; i < points.Count; i++)
+                    for (int i = 0; i < count; i++)
                     {
-                        foreach (var p in points[i])
-                        {
-                            switch (pcc.getNameEntry(p.Name))
-                            {
-                                case "OutVal":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).OutVal));
-                                    res.OverwriteRange(p.offsetval + 44, BitConverter.GetBytes(Curves[1].CurvePoints.ElementAt(i).OutVal));
-                                    res.OverwriteRange(p.offsetval + 48, BitConverter.GetBytes(Curves[2].CurvePoints.ElementAt(i).OutVal));
-                                    break;
-                                case "ArriveTangent":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).ArriveTangent));
-                                    res.OverwriteRange(p.offsetval + 44, BitConverter.GetBytes(Curves[1].CurvePoints.ElementAt(i).ArriveTangent));
-                                    res.OverwriteRange(p.offsetval + 48, BitConverter.GetBytes(Curves[2].CurvePoints.ElementAt(i).ArriveTangent));
-                                    break;
-                                case "LeaveTangent":
-                                    res.OverwriteRange(p.offsetval + 40, BitConverter.GetBytes(Curves[0].CurvePoints.ElementAt(i).LeaveTangent));
-                                    res.OverwriteRange(p.offsetval + 44, BitConverter.GetBytes(Curves[1].CurvePoints.ElementAt(i).LeaveTangent));
-                                    res.OverwriteRange(p.offsetval + 48, BitConverter.GetBytes(Curves[2].CurvePoints.ElementAt(i).LeaveTangent));
-                                    break;
-                                case "InterpMode":
-                                    res.OverwriteRange(p.offsetval + 32, BitConverter.GetBytes(pcc.FindNameOrAdd(Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString())));
-                                    break;
-                                //changing time not supported
-                                case "InVal":
-                                default:
-                                    break;
-                            }
-                        }
+                        m.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
+                        m.WriteStructPropVector(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal,
+                                                               Curves[1].CurvePoints.ElementAt(i).OutVal,
+                                                               Curves[2].CurvePoints.ElementAt(i).OutVal);
+                        m.WriteStructPropVector(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent,
+                                                                      Curves[1].CurvePoints.ElementAt(i).ArriveTangent,
+                                                                      Curves[2].CurvePoints.ElementAt(i).ArriveTangent);
+                        m.WriteStructPropVector(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent,
+                                                                     Curves[1].CurvePoints.ElementAt(i).LeaveTangent,
+                                                                     Curves[2].CurvePoints.ElementAt(i).LeaveTangent);
+                        m.WriteByteProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
+                        m.WriteNoneProperty(pcc);
                     }
+                    temp.WriteArrayProperty(pcc, "Points", count, m.ToArray());
+                    temp.WriteNoneProperty(pcc);
+                    m = new MemoryStream();
+                    m.WriteStructProperty(pcc, Name, "InterpCurveVector", temp.ToArray());
                     break;
                 case CurveType.InterpCurveVector2D:
                     break;
@@ -265,7 +294,7 @@ namespace ME3Explorer.CurveEd
                     break;
             }
 
-            return res;
+            return m.ToArray();
         }
 
         private static Vector GetVector(PropertyReader.Property prop)
@@ -276,5 +305,7 @@ namespace ME3Explorer.CurveEd
             vec.Z = BitConverter.ToSingle(prop.raw, 40);
             return vec;
         }
+
+
     }
 }

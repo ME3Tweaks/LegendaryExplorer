@@ -145,7 +145,7 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc"))
+            if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
             {
                 fs = new MemoryStream(MEPackageHandler.Decompress(fs));
             }
@@ -168,7 +168,7 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc"))
+            if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
             {
                 fs = new MemoryStream(MEPackageHandler.Decompress(fs));
             }

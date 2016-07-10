@@ -1,0 +1,95 @@
+﻿<Window x:Class="ME3Explorer.FaceFXAnimSetEditor.FaceFXEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer.FaceFXAnimSetEditor"
+             xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             mc:Ignorable="d" 
+             d:DesignHeight="411.124" d:DesignWidth="827.446">
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+        <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+    </Window.CommandBindings>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="Open"/>
+                <MenuItem Header="_Save" Command="Save"/>
+            </MenuItem>
+        </Menu>
+        <ToolBar x:Name="toolBar" Background="#FFF7F7F7" DockPanel.Dock="Top">
+            <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding GetFullPath}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Content="Load" Click="LoadButton_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1"/>
+        </ToolBar>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="310"/>
+                <ColumnDefinition Width="180"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Content="Lines"/>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="155"/>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="linesListBox" SelectionChanged="linesListBox_SelectionChanged"
+                 AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
+                 DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding path}">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Delete" Click="DeleteLine_Click"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <WindowsFormsHost Grid.Row="1">
+                    <forms:TreeView x:Name="treeView" MouseDoubleClick="treeView_MouseDoubleClick">
+                        
+                    </forms:TreeView>
+                </WindowsFormsHost>
+            </Grid>
+            <Label Content="Animations" Grid.Column="1"/>
+            <ListBox x:Name="animationListBox" Grid.Column="1" Grid.Row="1" SelectionChanged="animationListBox_SelectionChanged" 
+                     AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
+                     DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <curveEd:CurveGraph x:Name="graph" DockPanel.Dock="Right"/>
+            <TextBlock x:Name="lineText" Grid.Row="1"/>
+        </Grid>
+    </DockPanel>
+</Window>

@@ -1,4 +1,4 @@
-cd ME3Explorer\bin\Debug\
 del /s *.pdb
-del *.xml
 del /s *.vshost.*
+cd ME3Explorer\bin\Debug\
+del *.xml
