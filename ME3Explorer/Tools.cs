@@ -15,6 +15,7 @@ namespace ME3Explorer
         public ImageSource icon { get; set; }
         public Action open { get; set; }
         public List<string> tags;
+        public string subCategory { get; set; }
     }
 
     public static class Tools
@@ -48,16 +49,6 @@ namespace ME3Explorer
             });
             list.Add(new Tool
             {
-                name = "SFAR TOC Updater",
-                icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
-                open = () =>
-                {
-                    (new SFARTOCbinUpdater()).Show();
-                },
-                tags = new List<string> { "user", "dlc", "toc", "tocing" }
-            });
-            list.Add(new Tool
-            {
                 name = "TPF Tools",
                 icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
                 open = () =>
@@ -79,7 +70,8 @@ namespace ME3Explorer
                     assExp.Show();
                     assExp.LoadMe();
                 },
-                tags = new List<string> { "utlity", "novice", "friendly", "user-friendly" }
+                tags = new List<string> { "utlity", "novice", "friendly", "user-friendly" },
+                subCategory = "Explorers",
             });
             list.Add(new Tool
             {
@@ -89,17 +81,8 @@ namespace ME3Explorer
                 {
                     (new AFCExtract()).Show();
                 },
-                tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" }
-            });
-            list.Add(new Tool
-            {
-                name = "Batch Renamer",
-                icon = Application.Current.FindResource("iconBatchRenamer") as ImageSource,
-                open = () =>
-                {
-                    (new batchrenamer.BatchRenamer()).Show();
-                },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
+                subCategory = "Extractors + Repackers",
             });
             list.Add(new Tool
             {
@@ -109,7 +92,8 @@ namespace ME3Explorer
                 {
                     (new BIKExtract()).Show();
                 },
-                tags = new List<string> { "utility", "bik", "movie" }
+                tags = new List<string> { "utility", "bik", "movie" },
+                subCategory = "Extractors + Repackers",
             });
             list.Add(new Tool
             {
@@ -119,7 +103,8 @@ namespace ME3Explorer
                 {
                     (new ClassViewer.ClassViewer()).Show();
                 },
-                tags = new List<string> { "utility", "import" }
+                tags = new List<string> { "utility", "import" },
+                subCategory = "Explorers",
             });
             list.Add(new Tool
             {
@@ -131,7 +116,8 @@ namespace ME3Explorer
                     if (File.Exists(loc + "\\HexConverter.exe"))
                         Process.Start(loc + "\\HexConverter.exe");
                 },
-                tags = new List<string> { "utility", "code", "endian" }
+                tags = new List<string> { "utility", "code", "endian" },
+                subCategory = "Converters",
             });
             list.Add(new Tool
             {
@@ -141,7 +127,8 @@ namespace ME3Explorer
                 {
                     (new CSharpImageLibrary.MainWindow()).Show();
                 },
-                tags = new List<string> { "utility", "texture", "convert", "dds", "bmp", "jpg", "png" }
+                tags = new List<string> { "utility", "texture", "convert", "dds", "bmp", "jpg", "png" },
+                subCategory = "Converters",
             });
             list.Add(new Tool
             {
@@ -151,7 +138,8 @@ namespace ME3Explorer
                 {
                     (new InterpEditor.InterpEditor()).Show();
                 },
-                tags = new List<string> { "utiity", "dialogue", "matinee", "cutscene", "animcutscene" }
+                tags = new List<string> { "utiity", "dialogue", "matinee", "cutscene", "animcutscene" },
+                subCategory = "Explorers",
             });
             list.Add(new Tool
             {
@@ -161,7 +149,8 @@ namespace ME3Explorer
                 {
                     (new LevelExplorer.Levelbase()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Databases",
             });
             list.Add(new Tool
             {
@@ -171,7 +160,8 @@ namespace ME3Explorer
                 {
                     (new PCCRepack()).Show();
                 },
-                tags = new List<string> { "utility", "compress", "decompress" }
+                tags = new List<string> { "utility", "compress", "decompress" },
+                subCategory = "Extractors + Repackers",
             });
             list.Add(new Tool
             {
@@ -181,7 +171,8 @@ namespace ME3Explorer
                 {
                     (new PlotVarDB.PlotVarDB()).Show();
                 },
-                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer" }
+                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer" },
+                subCategory = "Databases",
             });
             list.Add(new Tool
             {
@@ -191,7 +182,8 @@ namespace ME3Explorer
                 {
                     (new Propertydb.PropertyDB()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Databases",
             });
             list.Add(new Tool
             {
@@ -201,7 +193,8 @@ namespace ME3Explorer
                 {
                     (new Property_Dumper.PropDumper()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Properties",
             });
             list.Add(new Tool
             {
@@ -211,7 +204,8 @@ namespace ME3Explorer
                 {
                     (new PropertyManager()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Properties",
             });
             list.Add(new Tool
             {
@@ -221,7 +215,8 @@ namespace ME3Explorer
                 {
                     (new PSAViewer()).Show();
                 },
-                tags = new List<string> { "utility", "mesh", "animation" }
+                tags = new List<string> { "utility", "mesh", "animation" },
+                subCategory = "Explorers",
             });
             list.Add(new Tool
             {
@@ -231,7 +226,8 @@ namespace ME3Explorer
                 {
                     (new PSKViewer.PSKViewer()).Show();
                 },
-                tags = new List<string> { "utility", "mesh" }
+                tags = new List<string> { "utility", "mesh" },
+                subCategory = "Explorers",
             });
             list.Add(new Tool
             {
@@ -241,7 +237,8 @@ namespace ME3Explorer
                 {
                     (new ME1Explorer.SaveGameEditor.SaveEditor()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Saved Games",
             });
             list.Add(new Tool
             {
@@ -251,7 +248,8 @@ namespace ME3Explorer
                 {
                     (new ME1Explorer.SaveGameOperator.SaveGameOperator()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Saved Games",
             });
             list.Add(new Tool
             {
@@ -261,7 +259,8 @@ namespace ME3Explorer
                 {
                     (new ScriptDB.ScriptDB()).Show();
                 },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility" },
+                subCategory = "Databases",
             });
             list.Add(new Tool
             {
@@ -271,29 +270,8 @@ namespace ME3Explorer
                 {
                     (new SubtitleScanner.SubtitleScanner()).Show();
                 },
-                tags = new List<string> { "utility", "dialogue", "text", "line" }
-            });
-            list.Add(new Tool
-            {
-                name = "ME3 Backup Tool",
-                icon = Application.Current.FindResource("iconME3BackupTool") as ImageSource,
-                open = () =>
-                {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\ME3VanillaMaker.exe"))
-                        Process.Start(loc + "\\ME3VanillaMaker.exe");
-                },
-                tags = new List<string> { "utility", "vanilla" }
-            });
-            list.Add(new Tool
-            {
-                name = "Language Selector",
-                icon = Application.Current.FindResource("iconLanguageSelector") as ImageSource,
-                open = () =>
-                {
-                    (new Language_Selector()).Show();
-                },
-                tags = new List<string> { "utility" }
+                tags = new List<string> { "utility", "dialogue", "text", "line" },
+                subCategory = "Explorers",
             });
             #endregion
 
@@ -306,7 +284,8 @@ namespace ME3Explorer
                 {
                     (new AnimationExplorer.AnimationExplorer()).Show();
                 },
-                tags = new List<string> { "developer", "animation", "gesture", "bones" }
+                tags = new List<string> { "developer", "animation", "gesture", "bones" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -316,7 +295,8 @@ namespace ME3Explorer
                 {
                     (new CameraTool.CamTool()).Show();
                 },
-                tags = new List<string> { "developer" }
+                tags = new List<string> { "developer" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -326,7 +306,8 @@ namespace ME3Explorer
                 {
                     (new Coalesced_Editor.CoalEditor()).Show();
                 },
-                tags = new List<string> { "developer", "coalesced", "ini", "bin" }
+                tags = new List<string> { "developer", "coalesced", "ini", "bin" },
+                subCategory = "Core",
             });
             list.Add(new Tool
             {
@@ -336,7 +317,8 @@ namespace ME3Explorer
                 {
                     (new Conditionals()).Show();
                 },
-                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" }
+                tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
+                subCategory = "Core",
             });
             list.Add(new Tool
             {
@@ -346,7 +328,8 @@ namespace ME3Explorer
                 {
                     (new DialogEditor.DialogEditor()).Show();
                 },
-                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" }
+                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -356,7 +339,8 @@ namespace ME3Explorer
                 {
                     (new FaceFXAnimSetEditor.FaceFXAnimSetEditor()).Show();
                 },
-                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" }
+                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -366,7 +350,8 @@ namespace ME3Explorer
                 {
                     (new GUIDCacheEditor.GUIDCacheEditor()).Show();
                 },
-                tags = new List<string> { "developer" }
+                tags = new List<string> { "developer" },
+                subCategory = "Other",
             });
             list.Add(new Tool
             {
@@ -376,7 +361,8 @@ namespace ME3Explorer
                 {
                     (new LevelExplorer.LevelEditor.Leveleditor()).Show();
                 },
-                tags = new List<string> { "developer" }
+                tags = new List<string> { "developer" },
+                subCategory = "Other",
             });
             list.Add(new Tool
             {
@@ -390,7 +376,8 @@ namespace ME3Explorer
                         Process.Start(loc + "\\ME3Creator.exe");
                     }
                 },
-                tags = new List<string> { "developer", "advanced", "cloning", "import", "export" }
+                tags = new List<string> { "developer", "advanced", "cloning", "import", "export" },
+                subCategory = "Core",
             });
             list.Add(new Tool
             {
@@ -400,7 +387,8 @@ namespace ME3Explorer
                 {
                     (new Meshplorer.Meshplorer()).Show();
                 },
-                tags = new List<string> { "developer", "mesh" }
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
             });
             list.Add(new Tool
             {
@@ -410,7 +398,8 @@ namespace ME3Explorer
                 {
                     (new Meshplorer2.Meshplorer2()).Show();
                 },
-                tags = new List<string> { "developer", "mesh" }
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
             });
             list.Add(new Tool
             {
@@ -422,7 +411,8 @@ namespace ME3Explorer
                     pck.Show();
                     pck.LoadMostRecent();
                 },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u"}
+                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u"},
+                subCategory = "Core",
             });
             list.Add(new Tool
             {
@@ -432,7 +422,8 @@ namespace ME3Explorer
                 { 
                     (new SequenceEditor()).Show();
                 },
-                tags = new List<string> { "developer", "kismet", "me1", "me2", "me3" }
+                tags = new List<string> { "developer", "kismet", "me1", "me2", "me3" },
+                subCategory = "Core",
             });
             list.Add(new Tool
             {
@@ -442,7 +433,8 @@ namespace ME3Explorer
                 {
                     (new SFARBasicEditor()).Show();
                 },
-                tags = new List<string> { "developer", "dlc" }
+                tags = new List<string> { "developer", "dlc" },
+                subCategory = "SFARS",
             });
             list.Add(new Tool
             {
@@ -452,7 +444,19 @@ namespace ME3Explorer
                 {
                     (new SFAREditor2()).Show();
                 },
-                tags = new List<string> { "developer", "dlc" }
+                tags = new List<string> { "developer", "dlc" },
+                subCategory = "SFARS",
+            });
+            list.Add(new Tool
+            {
+                name = "SFAR TOC Updater",
+                icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
+                open = () =>
+                {
+                    (new SFARTOCbinUpdater()).Show();
+                },
+                tags = new List<string> { "developer", "dlc", "toc", "tocing" },
+                subCategory = "SFARS",
             });
             list.Add(new Tool
             {
@@ -462,7 +466,8 @@ namespace ME3Explorer
                 {
                     (new Soundplorer()).Show();
                 },
-                tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" }
+                tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -472,7 +477,8 @@ namespace ME3Explorer
                 {
                     (new Texplorer2()).Show();
                 },
-                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" }
+                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
+                subCategory = "Meshes + Textures",
             });
             list.Add(new Tool
             {
@@ -482,7 +488,8 @@ namespace ME3Explorer
                 {
                     (new TLKEditor()).Show();
                 },
-                tags = new List<string> { "developer", "dialogue", "subtitle", "text" }
+                tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
+                subCategory = "Scene Shop",
             });
             list.Add(new Tool
             {
@@ -492,7 +499,8 @@ namespace ME3Explorer
                 {
                     (new ME1Explorer.TlkManager()).Show();
                 },
-                tags = new List<string> { "developer", "dialogue", "subtitle", "text" }
+                tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
+                subCategory = "Scene Shop",
             });
             #endregion
 

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ME3Explorer.SearchPanel"
+﻿<local:ToolListControl x:Class="ME3Explorer.SearchPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -56,4 +56,4 @@
             <Image x:Name="scrollIndicator" Source="Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
         </Grid>
     </Grid>
-</UserControl>
+</local:ToolListControl>

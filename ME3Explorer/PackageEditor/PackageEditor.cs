@@ -1697,7 +1697,7 @@ namespace ME3Explorer
                 if (DestinationNode.TreeView != sourceNode.TreeView)
                 {
                     IMEPackage importpcc = sourceNode.TreeView.Tag as IMEPackage;
-                    if (!pcc.canClone() || importpcc == null || importpcc.game != pcc.game)
+                    if (!pcc.canClone() || importpcc == null)
                     {
                         return;
                     }
@@ -1823,6 +1823,11 @@ namespace ME3Explorer
             {
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
+                if (pcc.game != MEGame.ME3)
+                {
+                    stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
+                }
                 res.Write(stackdummy, 0, stackdummy.Length);
             }
             else

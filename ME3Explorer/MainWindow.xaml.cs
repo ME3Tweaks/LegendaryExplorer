@@ -27,6 +27,11 @@ namespace ME3Explorer
         private bool CICOpen = true;
         private bool SearchOpen = false;
         private bool AdvancedOpen = false;
+        private bool UtilitiesOpen = false;
+        private bool CreateModsOpen = false;
+        
+        Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
+        Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
 
         public bool DisableFlyouts
         {
@@ -37,16 +42,16 @@ namespace ME3Explorer
         // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisableFlyoutsProperty =
             DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-
-
+        
 
         public MainWindow()
         {
             InitializeComponent();
             Tools.InitializeTools();
             installModspanel.setToolList(Tools.items.Where(x => x.tags.Contains("user")));
-            favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
-            searchPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
+            //favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
+            utilitiesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
+            createModsPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
@@ -96,35 +101,46 @@ namespace ME3Explorer
         
         private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            CICOpen = !CICOpen;
-            Image img = sender as Image;
-            img.Source = (ImageSource)img.FindResource(CICOpen ? "LogoOnImage" : "LogoOffImage");
-            DoubleAnimation anim;
-            TimeSpan timeSpan = TimeSpan.FromMilliseconds(300);
             if (CICOpen)
             {
-                anim = new DoubleAnimation(650, timeSpan);
-                if (SearchBox.Text.Trim() != string.Empty)
-                {
-                    SearchOpen = true;
-                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
-                }
+                closeCIC();
             }
             else
             {
-                anim = new DoubleAnimation(0, timeSpan);
-                if (SearchOpen)
+                if (CreateModsOpen)
                 {
-                    SearchOpen = false;
-                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                    closeCreateMods(100);
                 }
-                if (AdvancedOpen)
+                if (UtilitiesOpen)
                 {
-                    AdvancedOpen = false;
-                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                    closeUtilities(100);
                 }
+                CICOpen = true;
+                Logo.Source = (ImageSource)Logo.FindResource("LogoOnImage");
+                if (SearchBox.Text.Trim() != string.Empty)
+                {
+                    SearchOpen = true;
+                    searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
+                }
+                CICPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
             }
-            CICPanel.BeginAnimation(WidthProperty, anim);
+        }
+
+        private void closeCIC(int duration = 300)
+        {
+            CICOpen = false;
+            Logo.Source = (ImageSource)Logo.FindResource("LogoOffImage");
+            if (SearchOpen)
+            {
+                SearchOpen = false;
+                searchPanel.BeginDoubleAnimation(WidthProperty, 0, duration / 3);
+            }
+            if (AdvancedOpen)
+            {
+                AdvancedOpen = false;
+                advancedPanel.BeginDoubleAnimation(WidthProperty, 0, duration / 3);
+            }
+            CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
         private void LinkLabel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -159,10 +175,10 @@ namespace ME3Explorer
                 if (AdvancedOpen)
                 {
                     AdvancedOpen = false;
-                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                    advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
                 }
                 SearchOpen = true;
-                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+                searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
 
             List<Tool> results = new List<Tool>();
@@ -186,7 +202,7 @@ namespace ME3Explorer
             if (SearchOpen && SearchBox.Text.Trim() == string.Empty)
             {
                 SearchOpen = false;
-                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(200)));
+                searchPanel.BeginDoubleAnimation(WidthProperty, 0, 200);
             }
         }
 
@@ -204,13 +220,13 @@ namespace ME3Explorer
                 if (SearchOpen)
                 {
                     SearchOpen = false;
-                    searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                    searchPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
                 }
-                advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+                advancedPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
             else
             {
-                advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(200)));
+                advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 200);
             }
         }
 
@@ -219,13 +235,71 @@ namespace ME3Explorer
             if (!SearchOpen && SearchBox.Text.Trim() != string.Empty)
             {
                 SearchOpen = true;
-                searchPanel.BeginAnimation(WidthProperty, new DoubleAnimation(300, TimeSpan.FromMilliseconds(200)));
+                searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
                 if (AdvancedOpen)
                 {
                     AdvancedOpen = false;
-                    advancedPanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(100)));
+                    advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
                 }
             }
+        }
+
+        private void UtilitiesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (UtilitiesOpen)
+            {
+                closeUtilities();
+            }
+            else
+            {
+                UtilitiesOpen = true;
+                if (CICOpen)
+                {
+                    closeCIC(100);
+                }
+                if (CreateModsOpen)
+                {
+                    closeCreateMods(100);
+                }
+                utilitiesButton.OpacityMask = HighlightBrush;
+                utilitiesPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
+            }
+        }
+
+        private void closeUtilities(int duration = 300)
+        {
+            UtilitiesOpen = false;
+            utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+            utilitiesButton.OpacityMask = LabelTextBrush;
+        }
+
+        private void CreateModsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CreateModsOpen)
+            {
+                closeCreateMods();
+            }
+            else
+            {
+                CreateModsOpen = true;
+                if (CICOpen)
+                {
+                    closeCIC(100);
+                }
+                if (UtilitiesOpen)
+                {
+                    closeUtilities(100);
+                }
+                createModsButton.OpacityMask = HighlightBrush;
+                createModsPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
+            }
+        }
+
+        private void closeCreateMods(int duration = 300)
+        {
+            CreateModsOpen = false;
+            createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+            createModsButton.OpacityMask = LabelTextBrush;
         }
     }
 }

@@ -58,33 +58,6 @@ using System.Runtime.InteropServices;
 
 namespace ManagedLZO
 {
-    public static class LZO1X
-    {
-        [DllImport("lzo2helper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern Int32 LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
-
-        [DllImport("lzo2helper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern Int32 LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
-
-        public unsafe static void Decompress(byte[] src, byte[] dst)
-        {
-            uint dstLen = 0;
-            int status = LZODecompress(src, (uint)src.Length, dst, ref dstLen);
-        }
-
-        public unsafe static byte[] Compress(byte[] src)
-        {
-            uint dstLen = 0;
-            byte[] tmpbuf = new byte[src.Length + (src.Length / 16) + 64 + 3];
-            int status = LZOCompress(src, (uint)src.Length, tmpbuf, ref dstLen);
-            if (status != 0)
-                return new byte[0];
-            byte[] dst = new byte[dstLen];
-            Array.Copy(tmpbuf, dst, dstLen);
-            return dst;
-        }
-    }
-
     public static class MiniLZO
     {
         private const uint M2_MAX_LEN = 8;

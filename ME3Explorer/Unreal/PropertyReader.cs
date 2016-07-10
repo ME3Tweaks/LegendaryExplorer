@@ -786,6 +786,10 @@ namespace ME3Explorer.Unreal
         {
             if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
+                if (pcc.game != MEGame.ME3)
+                {
+                    return 32; 
+                }
                 return 30;
             }
             int result = 8;

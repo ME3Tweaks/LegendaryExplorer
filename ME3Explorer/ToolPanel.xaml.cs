@@ -18,7 +18,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for ToolPanel.xaml
     /// </summary>
-    public partial class ToolPanel : UserControl
+    public partial class ToolPanel : ToolListControl
     {
         public string Category
         {
@@ -73,68 +73,24 @@ namespace ME3Explorer
         public int viewCapacity { get { return Rows * Columns; } }
 
         private int index;
-        private IEnumerable<Tool> tools;
 
         public ToolPanel()
         {
             InitializeComponent();
         }
 
-        public void setToolList(IEnumerable<Tool> enumerable)
+        public override void setToolList(IEnumerable<Tool> enumerable)
         {
-            List<Tool> list = enumerable.ToList();
-            list.Sort((x, y) => x.name.CompareTo(y.name));
-            tools = list;
+            base.setToolList(enumerable);
             index = 0;
             updateContents();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ((sender as Button)?.DataContext as Tool)?.open();
-        }
-
+        
         private void Button_GotFocus(object sender, RoutedEventArgs e)
         {
 
         }
-
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Button b = sender as Button;
-            if (b != null)
-            {
-                Rectangle r = b.FindName("highlightUnderline") as Rectangle;
-                if (r != null)
-                {
-                    r.Visibility = Visibility.Visible;
-                }
-                Image img = b.FindName("toolIcon") as Image;
-                if (img != null)
-                {
-                    img.Opacity = 1;
-                }
-            }
-        }
-
-        private void Button_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Button b = sender as Button;
-            if (b != null)
-            {
-                Rectangle r = b.FindName("highlightUnderline") as Rectangle;
-                if (r != null)
-                {
-                    r.Visibility = Visibility.Hidden;
-                }
-                Image img = b.FindName("toolIcon") as Image;
-                if (img != null)
-                {
-                    img.Opacity = 0.85;
-                }
-            }
-        }
-
+        
         private void backButton_Click(object sender, RoutedEventArgs e)
         {
             index -= viewCapacity;

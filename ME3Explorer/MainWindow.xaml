@@ -33,7 +33,7 @@
                 </Button>-->
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
-            <Image Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand">
+            <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand">
                 <Image.Resources>
                     <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_OFF.png"/>
                     <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_ON.png"/>
@@ -96,13 +96,14 @@
                                 <Setter Property="Width" Value="48"/>
                             </Style>
                         </Style.Resources>
+                        <Setter Property="OpacityMask" Value="{StaticResource LabelTextBrush}"/>
                         <Setter Property="Padding" Value="0,14,0,0"/>
                         <Style.BasedOn>
                             <StaticResource ResourceKey="BorderlessButton"/>
                         </Style.BasedOn>
                     </Style>
                 </StackPanel.Resources>
-                <Button Style="{StaticResource MainMenuButton}">
+                <Button x:Name="utilitiesButton" Style="{StaticResource MainMenuButton}" Click="UtilitiesButton_Click">
                     <StackPanel>
                         <Label Content="UTILITIES"/>
                         <Line Width="70"/>
@@ -113,7 +114,7 @@
                         </Rectangle>
                     </StackPanel>
                 </Button>
-                <Button Style="{StaticResource MainMenuButton}">
+                <Button x:Name="createModsButton" Style="{StaticResource MainMenuButton}" Click="CreateModsButton_Click">
                     <StackPanel>
                         <Label Content="CREATE MODS"/>
                         <Line Width="90"/>
@@ -335,5 +336,7 @@
                 <Image x:Name="scrollIndicator" Source="Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
             </Grid>
         </Grid>
+        <local:MainToolPanel x:Name="utilitiesPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left"/>
+        <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

@@ -113,7 +113,7 @@ namespace ME3Explorer.Packages
 
                     try
                     {
-                        LZO1X.Decompress(datain, dataout);
+                        MiniLZO.Decompress(datain, dataout);
                     }
                     catch
                     {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Animation;
 
 namespace ME3Explorer
 {
@@ -31,7 +32,18 @@ namespace ME3Explorer
             bound.SetBinding(boundProp, b);
         }
 
-        //added by SirCxyrtyx
+        /// <summary>
+        /// Starts a DoubleAnimation for a specified animated property on this element
+        /// </summary>
+        /// <param name="target">element to perform animation on</param>
+        /// <param name="dp">The property to animate, which is specified as a dependency property identifier</param>
+        /// <param name="toValue">The destination value of the animation</param>
+        /// <param name="duration">The duration of the animation, in milliseconds</param>
+        public static void BeginDoubleAnimation(this UIElement target, DependencyProperty dp, double toValue, int duration)
+        {
+            target.BeginAnimation(dp, new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)));
+        }
+
         /// <summary>
         /// Overwrites a portion of an array starting at offset with the contents of another array.
         /// </summary>

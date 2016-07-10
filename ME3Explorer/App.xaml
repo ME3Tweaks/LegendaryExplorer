@@ -1,9 +1,9 @@
-﻿<Application
+﻿<Application x:Class="ME3Explorer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ME3Explorer"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
-             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.App"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              StartupUri="MainWindow.xaml" Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
         <FontFamily x:Key="TitilliumWeb-Italic">/ME3Explorer;component/Resources/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>
@@ -63,7 +63,7 @@
         </Style>
         <Style x:Key="styleButtonLabel" TargetType="{x:Type Label}" >
             <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-SemiBold}"/>
-            <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
+            <Setter Property="Foreground" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
                     <Setter Property="Foreground" Value="{StaticResource HighlightColor}"/>
@@ -71,7 +71,7 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="styleButtonLine" TargetType="{x:Type Line}" >
-            <Setter Property="Stroke" Value="{StaticResource LabelTextBrush}"/>
+            <Setter Property="Stroke" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
                     <Setter Property="Stroke" Value="{StaticResource HighlightColor}"/>
@@ -79,7 +79,7 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="styleButtonRectangle" TargetType="{x:Type Rectangle}" >
-            <Setter Property="Fill" Value="{StaticResource LabelTextBrush}"/>
+            <Setter Property="Fill" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
                     <Setter Property="Fill" Value="{StaticResource HighlightColor}"/>

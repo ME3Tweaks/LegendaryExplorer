@@ -62,6 +62,14 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -84,10 +92,6 @@
     <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.2.14.1\lib\net40\CsvHelper.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
@@ -159,6 +163,9 @@
     <Compile Include="Coalesced Editor\FileWrapper.cs" />
     <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
+    <Compile Include="MainToolPanel.xaml.cs">
+      <DependentUpon>MainToolPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -167,7 +174,7 @@
     </Compile>
     <Compile Include="ME1\Unreal\Bytecode.cs" />
     <Compile Include="ME1\Unreal\Function.cs" />
-    <Compile Include="MiniLZO.cs" />
+    <Compile Include="Packages\MiniLZO.cs" />
     <Compile Include="Packages\ExportEntry.cs" />
     <Compile Include="Packages\IEntry.cs" />
     <Compile Include="Packages\IMEPackage.cs" />
@@ -310,6 +317,7 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="TOCeditor.cs" />
+    <Compile Include="ToolListControl.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
@@ -383,6 +391,10 @@
     <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </Compile>
+    <Page Include="MainToolPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SearchPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
