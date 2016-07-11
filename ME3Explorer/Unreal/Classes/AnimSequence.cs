@@ -275,10 +275,10 @@ namespace ME3Explorer.Unreal.Classes
         public void SaveChanges()
         {
             MemoryStream m = new MemoryStream();
-            m.Write(BitConverter.GetBytes((int)Unknown), 0, 4);
+            m.Write(BitConverter.GetBytes(Unknown), 0, 4);
             foreach (PropertyReader.Property p in Props)
                 m.Write(p.raw, 0, p.raw.Length);
-            m.Write(BitConverter.GetBytes((int)CompressedBlob.Length), 0, 4);
+            m.Write(BitConverter.GetBytes(CompressedBlob.Length), 0, 4);
             m.Write(CompressedBlob, 0, CompressedBlob.Length);
             pcc.Exports[MyIndex].Data = m.ToArray();
         }

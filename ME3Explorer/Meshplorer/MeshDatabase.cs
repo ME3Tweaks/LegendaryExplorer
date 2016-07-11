@@ -40,7 +40,7 @@ namespace ME3Explorer.Meshplorer
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -145,15 +145,15 @@ namespace ME3Explorer.Meshplorer
                 int magic = 0x12345678;
                 BitConverter.IsLittleEndian = true;
                 fs.Write(BitConverter.GetBytes(magic), 0, 4);
-                fs.Write(BitConverter.GetBytes((int)database.Count), 0, 4);
+                fs.Write(BitConverter.GetBytes(database.Count), 0, 4);
                 foreach (DBEntry ent in database)
                 {
                     WriteString(fs, ent.filename);
-                    fs.Write(BitConverter.GetBytes((int)ent.Objects.Count), 0, 4);
+                    fs.Write(BitConverter.GetBytes(ent.Objects.Count), 0, 4);
                     foreach (ObjInf o in ent.Objects)
                     {
-                        fs.Write(BitConverter.GetBytes((int)o.Index), 0, 4);
-                        fs.Write(BitConverter.GetBytes((int)o.Type), 0, 4);
+                        fs.Write(BitConverter.GetBytes(o.Index), 0, 4);
+                        fs.Write(BitConverter.GetBytes(o.Type), 0, 4);
                         WriteString(fs, o.name);
                     }
                 }
@@ -164,7 +164,7 @@ namespace ME3Explorer.Meshplorer
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);   
         }
 

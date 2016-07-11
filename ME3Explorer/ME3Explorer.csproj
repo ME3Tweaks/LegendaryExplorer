@@ -164,6 +164,7 @@
     <Compile Include="Coalesced Editor\FileWrapper.cs" />
     <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>

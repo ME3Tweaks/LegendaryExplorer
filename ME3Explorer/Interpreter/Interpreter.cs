@@ -456,7 +456,7 @@ namespace ME3Explorer
                 for (int i = 0; i < 3; i++)
                 {
                     val = BitConverter.ToInt32(memory, readerpos);
-                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + ((float)val * 360f / 65536f).ToString("0.0######") + " degrees)");
+                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)");
                     node.Name = readerpos.ToString();
                     node.Tag = nodeType.StructLeafDeg;
                     t.Nodes.Add(node);
@@ -734,7 +734,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        s += "(byte)" + memory[pos].ToString();
+                        s += "(byte)" + memory[pos];
                         node = new TreeNode(s);
                         node.Name = pos.ToString();
                         node.Tag = nodeType.StructLeafByte;
@@ -844,7 +844,7 @@ namespace ME3Explorer
             string s = p.offset.ToString("X4") + ": ";
             s += "Name: \"" + pcc.getNameEntry(p.name) + "\" ";
             s += "Type: \"" + pcc.getNameEntry(p.type) + "\" ";
-            s += "Size: " + p.size.ToString() + " Value: ";
+            s += "Size: " + p.size + " Value: ";
             nodeType propertyType = getType(pcc.getNameEntry(p.type));
             int idx;
             byte val;
@@ -856,7 +856,7 @@ namespace ME3Explorer
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() +  " (" + pcc.getObjectName(idx) + ")";
+                    s += idx +  " (" + pcc.getObjectName(idx) + ")";
                     break;
                 case nodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -920,11 +920,11 @@ namespace ME3Explorer
                     break;
                 case nodeType.ArrayProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() + "(count)";
+                    s += idx + "(count)";
                     break;
                 case nodeType.StringRefProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "#" + idx.ToString() + ": ";
+                    s += "#" + idx + ": ";
                     if (pcc.game == MEGame.ME3)
                     {
                         s += TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : TalkFiles.findDataById(idx); 

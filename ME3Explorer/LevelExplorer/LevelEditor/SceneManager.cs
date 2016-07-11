@@ -85,7 +85,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             material.Specular = Color.LightGray;
             material.SpecularSharpness = 15.0F;
             device.Material = material;
-            float aspect = (float)device.PresentationParameters.BackBufferWidth / (float)device.PresentationParameters.BackBufferHeight;
+            float aspect = device.PresentationParameters.BackBufferWidth / (float)device.PresentationParameters.BackBufferHeight;
             device.Transform.Projection = Matrix.PerspectiveFovLH(1f / aspect, aspect, 1.0f, 1000000.0f);
             device.SetRenderState(RenderStates.ShadeMode, 1);
             device.RenderState.Lighting = true;

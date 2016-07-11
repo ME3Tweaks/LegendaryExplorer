@@ -76,7 +76,7 @@ namespace ME3Explorer.Property_Dumper
             pb1.Value = 0;
         }
 
-        public string DumpArray(ME3Package pcc,byte [] raw, int pos, string s, int depth)
+        public string DumpArray(ME3Package pcc, byte[] raw, int pos, int depth)
         {
             string res = "";
             List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, raw, pos);
@@ -93,14 +93,14 @@ namespace ME3Explorer.Property_Dumper
                     //for (int j = 0; j < depth; j++)
                     //    res += "\t";
                     //res += "in Property #" + i + " : " + PropertyReader.PropertyToText(p[i], pcc) + "\n";
-                    res += DumpArray(pcc, raw, p[i].offsetval + 4, res, depth + 1);
+                    res += DumpArray(pcc, raw, p[i].offsetval + 4, depth + 1);
                 }
                 if (p[i].TypeVal == PropertyReader.Type.StructProperty)
                 {
                     //for (int j = 0; j < depth; j++)
                     //    res += "\t";
                     //res += "in Property #" + i + " : " + PropertyReader.PropertyToText(p[i], pcc) + "\n";
-                    res += DumpArray(pcc, raw, p[i].offsetval + 8, res, depth + 1);
+                    res += DumpArray(pcc, raw, p[i].offsetval + 8, depth + 1);
                 }
             }
             return res;
@@ -108,7 +108,7 @@ namespace ME3Explorer.Property_Dumper
 
         private void makeDialogDumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -149,7 +149,7 @@ namespace ME3Explorer.Property_Dumper
                                     s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
                                 if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
                                 {
-                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, s, 1);
+                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, 1);
                                     if (tt.Length != 0)
                                     {
                                         s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
@@ -158,7 +158,7 @@ namespace ME3Explorer.Property_Dumper
                                 }
                                 if (prop.TypeVal == PropertyReader.Type.StructProperty)
                                 {
-                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, s, 1);
+                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, 1);
                                     if (tt.Length != 0)
                                     {
                                         s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
@@ -227,7 +227,7 @@ namespace ME3Explorer.Property_Dumper
 
         public void LetsDump2(string classname)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;

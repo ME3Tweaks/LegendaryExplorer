@@ -25,7 +25,6 @@ namespace ME3Explorer
         public string pathBIOGame;
         public string currentPCC;
         ME3PCCObject pcc = null;
-        AmaroK86.MassEffect3.DLCBase currentDLC = null;
         ME3SaltTexture2D tex2D;
         WwiseStream w;
         public Clipboard clip;
@@ -211,7 +210,7 @@ namespace ME3Explorer
         public void Println(int i)
         {
             string sout = rtb1.Text;
-            sout += i.ToString() + "\n";
+            sout += i + "\n";
             rtb1.Text = sout;
         }
 
@@ -338,8 +337,8 @@ namespace ME3Explorer
             //for (int i = 0; i < pcc.ExportCount; i++)
                 if (pcc.Exports[l].ObjectName == name)
                 {
-                    string s = "SIZE: " + pcc.Exports[l].DataSize.ToString();
-                    s += " bytes  OFFSET: " + pcc.Exports[l].DataOffset.ToString();
+                    string s = "SIZE: " + pcc.Exports[l].DataSize;
+                    s += " bytes  OFFSET: " + pcc.Exports[l].DataOffset;
                     s += "  CLASS: " + pcc.Exports[l].ClassName;
                     s += "  NAME: " + pcc.Exports[l].ObjectName;
                     s += "  INDEX: " + l;
@@ -436,7 +435,7 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(new ME3Package(pcc.pccFileName), index);
+                w = new WwiseStream(new ME3Package(pcc.pccFileName), index);
                 w.ExtractToFile(pathCooked,pcc.Exports[index].ObjectName);
             }
         }
@@ -529,38 +528,6 @@ namespace ME3Explorer
         {
             panelImage.Visible = false;
             listView1.Visible = true;
-        }
-
-        public void ExecuteCommandSync(object command)
-        {
-            try
-            {
-                // create the ProcessStartInfo using "cmd" as the program to be run,
-                // and "/c " as the parameters.
-                // Incidentally, /c tells cmd that we want it to execute the command that follows,
-                // and then exit.
-                System.Diagnostics.ProcessStartInfo procStartInfo =
-                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
-
-                // The following commands are needed to redirect the standard output.
-                // This means that it will be redirected to the Process.StandardOutput StreamReader.
-                procStartInfo.RedirectStandardOutput = true;
-                procStartInfo.UseShellExecute = false;
-                // Do not create the black window.
-                procStartInfo.CreateNoWindow = true;
-                // Now we create a process, assign its ProcessStartInfo and start it
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = procStartInfo;
-                proc.Start();
-                // Get the output into a string
-                string result = proc.StandardOutput.ReadToEnd();
-                // Display the command output.
-                Console.WriteLine(result);
-            }
-            catch
-            {
-                // Log the exception
-            }
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)

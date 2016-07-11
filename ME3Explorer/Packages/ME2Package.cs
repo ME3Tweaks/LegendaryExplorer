@@ -225,7 +225,6 @@ namespace ME3Explorer.Packages
         ///     save PCCObject to file by reconstruction from data
         /// </summary>
         /// <param name="path">full path + file name.</param>
-        /// <param name="compress">true if you want a zlib compressed pcc file.</param>
         public void saveByReconstructing(string path)
         {
             try
@@ -346,7 +345,7 @@ namespace ME3Explorer.Packages
                     else
                         break;
                 }
-                rtValues += offset.ToString() + " ";
+                rtValues += offset + " ";
                 using (FileStream stream = new FileStream(loc + "\\exec\\infoCache.bin", FileMode.Append))
                 {
                     stream.Seek(0, SeekOrigin.End);

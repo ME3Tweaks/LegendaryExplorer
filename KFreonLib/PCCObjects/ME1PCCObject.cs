@@ -616,7 +616,7 @@ namespace KFreonLib.PCCObjects
             {
                 List<ME1ImportEntry> temp = new List<ME1ImportEntry>();
                 for (int i = 0; i < value.Count; i++)
-                    temp.Add((ME1ImportEntry)Imports[i]);
+                    temp.Add(Imports[i]);
                 Imports = temp;
             }
         }
@@ -633,7 +633,7 @@ namespace KFreonLib.PCCObjects
             {
                 List<ME1ExportEntry> temp = new List<ME1ExportEntry>();
                 for (int i = 0; i < value.Count; i++)
-                    temp.Add((ME1ExportEntry)Exports[i]);
+                    temp.Add(Exports[i]);
                 Exports = temp;
             }
         }

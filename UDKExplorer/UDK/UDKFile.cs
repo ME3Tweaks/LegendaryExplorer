@@ -351,7 +351,7 @@ namespace UDKExplorer.UDK
 
                 Stream listsStream;
                 listsStream = udkStream;
-                headerEnd = (int)NameOffset;
+                headerEnd = NameOffset;
 
                 // fill names list
                 listsStream.Seek(NameOffset, SeekOrigin.Begin);
@@ -709,7 +709,7 @@ namespace UDKExplorer.UDK
                     else
                         break;
                 }
-                rtValues += offset.ToString() + " ";
+                rtValues += offset + " ";
                 using (FileStream stream = new FileStream(loc + "\\exec\\infoCache.bin", FileMode.Append))
                 {
                     stream.Seek(0, SeekOrigin.End);

@@ -197,14 +197,14 @@ namespace AmaroK86.MassEffect3
                     }
                 }
                 blocksToRemove += dlcBase.fileList[DLCBase.fileListHash].blockSizeArray.Length;
-                blocksToAdd += (int)Math.Ceiling((double)dlcFileList.Length / (double)DLCBase.MaximumBlockSize);
+                blocksToAdd += (int)Math.Ceiling(dlcFileList.Length / (double)DLCBase.MaximumBlockSize);
 
                 foreach (var kvp in listAdd)
                 {
                     string fPath = kvp.Value.filePath;
                     if ((Path.GetExtension(fPath) != ".bik" &&
                          Path.GetExtension(fPath) != ".afc"))
-                        blocksToAdd += (int)Math.Ceiling((double)DLCPack.Getsize(kvp.Value.filePath) / (double)DLCBase.MaximumBlockSize);
+                        blocksToAdd += (int)Math.Ceiling(DLCPack.Getsize(kvp.Value.filePath) / (double)DLCBase.MaximumBlockSize);
                 }
 
                 foreach (var kvp in listReplace)
@@ -212,7 +212,7 @@ namespace AmaroK86.MassEffect3
                     if (dlcBase.fileList[kvp.Key].blockSizeIndex != -1)
                     {
                         blocksToRemove += dlcBase.fileList[kvp.Key].blockSizeArray.Length;
-                        blocksToAdd += (int)Math.Ceiling((double)DLCPack.Getsize(kvp.Value) / (double)DLCBase.MaximumBlockSize);
+                        blocksToAdd += (int)Math.Ceiling(DLCPack.Getsize(kvp.Value) / (double)DLCBase.MaximumBlockSize);
                     }
                 }
 
@@ -231,7 +231,7 @@ namespace AmaroK86.MassEffect3
 
                 //getting initial blocks and data offsets
                 inPointerBlockSize = 0x20 + (dlcBase.fileList.Count * 0x1E);
-                outPointerBlockSize = 0x20 + ((int)outNumOfEntries * 0x1E);
+                outPointerBlockSize = 0x20 + outNumOfEntries * 0x1E;
                 input.Seek(8, 0);
                 int inDataOffset = input.ReadValueS32();
                 int outBlockCount = ((inDataOffset - inPointerBlockSize) / 2) - blocksToRemove + blocksToAdd;
@@ -326,11 +326,11 @@ namespace AmaroK86.MassEffect3
                             if (entry.blockSizeIndex == -1)
                             {
                                 inDataOffset = (int)entry.dataOffset[0];
-                                input.Seek((long)inDataOffset, 0);
+                                input.Seek(inDataOffset, 0);
                                 inputBlock = new byte[fileSize];
                                 input.Read(inputBlock, 0, fileSize);
 
-                                output.Seek((long)outPointerData, 0);
+                                output.Seek(outPointerData, 0);
                                 output.Write(inputBlock, 0, fileSize);
                                 outPointerData += fileSize;
 
@@ -338,7 +338,7 @@ namespace AmaroK86.MassEffect3
                             }
                             else
                             {
-                                numBlocks = (int)Math.Ceiling((double)fileSize / (double)DLCBase.MaximumBlockSize);
+                                numBlocks = (int)Math.Ceiling(fileSize / (double)DLCBase.MaximumBlockSize);
                                 inDataOffset = (int)entry.dataOffset[0];
                                 for (int i = 0; i < numBlocks; i++)
                                 {
@@ -348,11 +348,11 @@ namespace AmaroK86.MassEffect3
                                     blockSize = blockSize == 0 ? DLCBase.MaximumBlockSize : blockSize;
 
                                     inputBlock = new byte[blockSize];
-                                    input.Seek((long)inDataOffset, 0);
+                                    input.Seek(inDataOffset, 0);
                                     input.Read(inputBlock, 0, (int)blockSize);
                                     inDataOffset += (int)blockSize;
 
-                                    output.Seek((long)outPointerBlockSize, 0);
+                                    output.Seek(outPointerBlockSize, 0);
                                     if (blockSize == DLCBase.MaximumBlockSize)
                                         output.WriteValueU16(0);
                                     else
@@ -361,7 +361,7 @@ namespace AmaroK86.MassEffect3
                                         throw new Exception("Block index offset values out of range,\n  last block: " + blockIndexCounter + "\n  Pointer Block: " + outPointerBlockSize.ToString("X8") + "\n  Data Offset: " + outInitialDataOffset.ToString("X8"));
                                     outPointerBlockSize += 2;
 
-                                    output.Seek((long)outPointerData, 0);
+                                    output.Seek(outPointerData, 0);
                                     output.Write(inputBlock, 0, (int)blockSize);
                                     if (output.Position - outPointerData != blockSize)
                                     {
@@ -388,7 +388,7 @@ namespace AmaroK86.MassEffect3
                                 if (worker != null)
                                     worker.ReportProgress(0, count + "/" + listComplete.Count + ": Adding " + Path.GetFileName(selectedFile));
                             }
-                            output.Seek((long)outPointerBlockSize, 0);
+                            output.Seek(outPointerBlockSize, 0);
                             //compressing the replacing file
                             ushort[] blockSizeArray;
 
@@ -398,7 +398,7 @@ namespace AmaroK86.MassEffect3
                                 if ((Path.GetExtension(selectedFile) == ".bik" || Path.GetExtension(selectedFile) == ".afc") && entry.blockSizeIndex == -1)
                                 {
                                     outBlockIndex = -1;
-                                    output.Seek((long)outPointerData, SeekOrigin.Begin);
+                                    output.Seek(outPointerData, SeekOrigin.Begin);
                                     output.WriteFromStream(streamFile, streamFile.Length);
                                     outPointerData += (int)streamFile.Length;
                                 }
@@ -412,7 +412,7 @@ namespace AmaroK86.MassEffect3
                                     outPointerBlockSize += (blockSizeArray.Length * 2);
                                     blockIndexCounter += blockSizeArray.Length;
 
-                                    output.Seek((long)outPointerData, SeekOrigin.Begin);
+                                    output.Seek(outPointerData, SeekOrigin.Begin);
                                     int totallength = 0;
                                     for (int i = 0; i < comprArr.Length; i++)
                                     {
@@ -460,7 +460,7 @@ namespace AmaroK86.MassEffect3
                     if (worker != null)
                         worker.ReportProgress(100);
 
-                    output.Seek((long)outPointerEntry, 0);
+                    output.Seek(outPointerEntry, 0);
                     output.WriteValueU32(hashEntry.A.Swap());
                     output.WriteValueU32(hashEntry.B.Swap());
                     output.WriteValueU32(hashEntry.C.Swap());
@@ -486,7 +486,7 @@ namespace AmaroK86.MassEffect3
                     MemoryStream encStream = new MemoryStream();
                     DLCPack.CompressFile(streamRead, out blockSizeArray, encStream);
 
-                    output.Seek((long)outPointerBlockSize, 0);
+                    output.Seek(outPointerBlockSize, 0);
                     for (int i = 0; i < blockSizeArray.Length; i++)
                     {
                         output.WriteValueU16(blockSizeArray[i]);
@@ -494,19 +494,19 @@ namespace AmaroK86.MassEffect3
                     outPointerBlockSize += (blockSizeArray.Length * 2);
                     blockIndexCounter += blockSizeArray.Length;
 
-                    output.Seek((long)outPointerData, 0);
+                    output.Seek(outPointerData, 0);
                     encStream.WriteTo(output);
                     outPointerData += (int)encStream.Length;
 
                     fileSize = (int)streamRead.Length;
 
-                    output.Seek((long)outPointerEntryFileList, 0);
+                    output.Seek(outPointerEntryFileList, 0);
                     output.WriteValueU32(DLCBase.fileListHash.A.Swap());
                     output.WriteValueU32(DLCBase.fileListHash.B.Swap());
                     output.WriteValueU32(DLCBase.fileListHash.C.Swap());
                     output.WriteValueU32(DLCBase.fileListHash.D.Swap());
                     output.WriteValueS32(outBlockIndex);
-                    output.WriteValueS32((int)fileSize);
+                    output.WriteValueS32(fileSize);
                     output.WriteValueU8(0x00);
                     output.WriteValueS32(outDataOffset);
                     output.WriteValueU8(0x00);

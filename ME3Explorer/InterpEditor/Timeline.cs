@@ -703,7 +703,7 @@ namespace ME3Explorer.InterpEditor
         public void addTrack(InterpTrack t)
         {
             InterpTracks.Add(t);
-            t.listEntry.TranslateBy(0, (int)InterpTracks.Count * (Timeline.TrackHeight + 1));
+            t.listEntry.TranslateBy(0, InterpTracks.Count * (Timeline.TrackHeight + 1));
             //t.listEntry.Pickable = false;
             t.listEntry.ChildrenPickable = false;
             if (collapsed)

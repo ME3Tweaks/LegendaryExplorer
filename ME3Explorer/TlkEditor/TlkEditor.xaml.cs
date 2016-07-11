@@ -14,10 +14,10 @@ namespace ME3Explorer
     /// </summary>
     public partial class TLKEditor : Window
     {
-        private String _inputTlkFilePath = ConfigurationManager.AppSettings["InputTlkFilePath"];
-        private String _outputTextFilePath = ConfigurationManager.AppSettings["OutputTextFilePath"];
-        private String _inputXmlFilePath = ConfigurationManager.AppSettings["InputXmlFilePath"];
-        private String _outputTlkFilePath = ConfigurationManager.AppSettings["OutputTlkFilePath"];
+        private string _inputTlkFilePath = ConfigurationManager.AppSettings["InputTlkFilePath"];
+        private string _outputTextFilePath = ConfigurationManager.AppSettings["OutputTextFilePath"];
+        private string _inputXmlFilePath = ConfigurationManager.AppSettings["InputXmlFilePath"];
+        private string _outputTlkFilePath = ConfigurationManager.AppSettings["OutputTlkFilePath"];
 
         public string InputTlkFilePath
         {
@@ -169,7 +169,7 @@ namespace ME3Explorer
                 try
                 {
                     HuffmanCompression hc = new HuffmanCompression();
-                    hc.LoadInputData(_inputXmlFilePath, TalkFile.Fileformat.Xml, debugVersion);
+                    hc.LoadInputData(_inputXmlFilePath, debugVersion);
 
                     hc.SaveToTlkFile(_outputTlkFilePath);
                 }

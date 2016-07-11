@@ -276,7 +276,7 @@ namespace ME3Explorer.InterpEditor
             }
             timelineEntry.Height = Timeline.TrackHeight;
             if (timelineEntry.ChildrenCount != 0)
-                timelineEntry.Width = (float)timelineEntry[timelineEntry.ChildrenCount - 1].OffsetX + 10;
+                timelineEntry.Width = timelineEntry[timelineEntry.ChildrenCount - 1].OffsetX + 10;
         }
 
         //key click handler

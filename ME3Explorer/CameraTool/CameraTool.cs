@@ -375,7 +375,7 @@ namespace ME3Explorer.CameraTool
         private void generateFromBasefolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string basepath = KFreonLib.MEDirectories.ME3Directory.cookedPath;
-            if (String.IsNullOrEmpty(basepath))
+            if (string.IsNullOrEmpty(basepath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -436,15 +436,15 @@ namespace ME3Explorer.CameraTool
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                byte[] buff = BitConverter.GetBytes((int)OverView.Count);
+                byte[] buff = BitConverter.GetBytes(OverView.Count);
                 fs.Write(buff, 0, 4);
                 foreach (OverViewStruct o in OverView)
                 {
-                    buff = BitConverter.GetBytes((int)o.filepath.Length);
+                    buff = BitConverter.GetBytes(o.filepath.Length);
                     fs.Write(buff, 0, 4);
                     foreach (char c in o.filepath)
                         fs.WriteByte((byte)c);
-                    buff = BitConverter.GetBytes((int)o.Indexes.Count);
+                    buff = BitConverter.GetBytes(o.Indexes.Count);
                     fs.Write(buff, 0, 4);
                     foreach (int i in o.Indexes)
                     {

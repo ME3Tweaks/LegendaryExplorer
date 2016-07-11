@@ -200,7 +200,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             {
                 f = Convert.ToSingle(s);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 s = "0";
             }

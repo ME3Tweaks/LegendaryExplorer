@@ -565,7 +565,7 @@ namespace ME3Creator
                             for (int i = 0; i < (p.size - 4) / 4; i++)
                             {
                                 int val = BitConverter.ToInt32(PropMemory, p.offset + 28 + i * 4);
-                                string s = (p.offset + 28 + i * 4).ToString("X4") + " : " + val.ToString();
+                                string s = (p.offset + 28 + i * 4).ToString("X4") + " : " + val;
                                 t.Nodes.Add(s);
                             }
                             ret.Nodes.Add(t);
@@ -587,7 +587,7 @@ namespace ME3Creator
                             for (int i = 0; i < p.size / 4; i++)
                             {
                                 int val = BitConverter.ToInt32(PropMemory, p.offset + 32 + i * 4);
-                                string s = (p.offset + 32 + i * 4).ToString("X4") + " : " + val.ToString();
+                                string s = (p.offset + 32 + i * 4).ToString("X4") + " : " + val;
                                 t.Nodes.Add(s);
                             }
                             ret.Nodes.Add(t);
@@ -603,7 +603,7 @@ namespace ME3Creator
             string s = p.offset.ToString("X4") + " : ";
             s += "Name: \"" + pcc.GetName(p.name) + "\" ";
             s += "Type: \"" + pcc.GetName(p.type) + "\" ";
-            s += "Size: " + p.size.ToString() + " Value: ";
+            s += "Size: " + p.size + " Value: ";
             switch (isType(pcc.GetName(p.type)))
             {
                 case 1:
@@ -624,7 +624,7 @@ namespace ME3Creator
                     break;
                 case 2:
                     float f = BitConverter.ToSingle(PropMemory, p.offset + 24);
-                    s += f.ToString() + "f";
+                    s += f + "f";
                     break;
                 case 0:
                 case 4:
@@ -645,11 +645,11 @@ namespace ME3Creator
                     break;
                 case 7:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    s += idx.ToString() + "(count)";
+                    s += idx + "(count)";
                     break;
                 case 9:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    s += "#" + idx.ToString() ;
+                    s += "#" + idx ;
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -1831,7 +1831,7 @@ namespace ME3Creator
         private void CopySTMfromUDK(MemoryStream m, UDKObject u, int idx)
         {
             UDKLibWV.Classes.StaticMesh stm = new UDKLibWV.Classes.StaticMesh(u, idx);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             WriteName(m, pcc.FindNameOrAdd("BodySetup"));
             WriteName(m, pcc.FindNameOrAdd("ObjectProperty"));
             WriteInt(m, 4);
@@ -1895,7 +1895,7 @@ namespace ME3Creator
         private void WriteName(MemoryStream m, int idx)
         {
             WriteInt(m, idx);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
         }
 
         private void hb2_SelectionLengthChanged(object sender, EventArgs e)

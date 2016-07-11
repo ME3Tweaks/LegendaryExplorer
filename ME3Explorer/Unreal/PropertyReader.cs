@@ -354,16 +354,16 @@ namespace ME3Explorer.Unreal
             string s = "";
             s = "Name: " + pcc.getNameEntry(p.Name);
             s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Size.ToString();
+            s += " Size: " + p.Size;
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + pcc.getNameEntry (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + pcc.getNameEntry (p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
                 case Type.IntProperty:                
                 case Type.ObjectProperty:
                 case Type.StringRefProperty :
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.BoolProperty:
                     s += " Value: " + (p.raw[24] == 1);
@@ -462,9 +462,9 @@ namespace ME3Explorer.Unreal
                         RotatorProp rp = new RotatorProp();
                         rp.name = structType;
                         rp.nameindex = p.Value.IntValue;
-                        rp.Pitch = (float)BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
-                        rp.Yaw = (float)BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
-                        rp.Roll = (float)BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
+                        rp.Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
+                        rp.Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
+                        rp.Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
                         pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
                     }
                     else if (structType == "LinearColor")

@@ -45,7 +45,9 @@ namespace ME3Explorer.DialogEditor
         protected int index;
         protected Pen outlinePen;
 
-        public DlgObj(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+#pragma warning disable RECS0154 // Parameter is never used
+        protected DlgObj(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+#pragma warning restore RECS0154 // Parameter is never used
             : base()
         {
             conv = bc;

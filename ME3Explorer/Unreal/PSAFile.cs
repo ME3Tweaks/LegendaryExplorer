@@ -194,9 +194,9 @@ namespace ME3Explorer.Unreal
                     m.WriteByte((byte)name[i]);
                 else
                     m.WriteByte(0);
-            m.Write(BitConverter.GetBytes((int)0x1e83b9), 0, 4);
-            m.Write(BitConverter.GetBytes((int)size), 0, 4);
-            m.Write(BitConverter.GetBytes((int)count), 0, 4);
+            m.Write(BitConverter.GetBytes(0x1e83b9), 0, 4);
+            m.Write(BitConverter.GetBytes(size), 0, 4);
+            m.Write(BitConverter.GetBytes(count), 0, 4);
         }
 
         public void WriteAnimHead(MemoryStream m)
@@ -214,9 +214,9 @@ namespace ME3Explorer.Unreal
                         m.WriteByte((byte)b.name[i]);
                     else
                         m.WriteByte(0);
-                m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                m.Write(BitConverter.GetBytes((int)b.childs), 0, 4);
-                m.Write(BitConverter.GetBytes((int)b.parent), 0, 4);
+                m.Write(BitConverter.GetBytes(0), 0, 4);
+                m.Write(BitConverter.GetBytes(b.childs), 0, 4);
+                m.Write(BitConverter.GetBytes(b.parent), 0, 4);
                 for (int i = 0; i < 44; i++)
                     m.WriteByte(0);
             }

@@ -184,7 +184,7 @@ namespace KFreonLib.Scripting
                 {
                     using (FileStream fs = new FileStream(exec + "ModData.cache", FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
-                        fs.Seek((long)Offset, SeekOrigin.Begin);
+                        fs.Seek(Offset, SeekOrigin.Begin);
                         return fs.ReadBytes(Length);
                     }
                 }
@@ -409,7 +409,7 @@ namespace KFreonLib.Scripting
 
             private int GuessGame(List<string> pccs)
             {
-                int[] NumFounds = new int[3] { 0, 0, 0 };
+                int[] NumFounds = { 0, 0, 0 };
 
                 DebugOutput.PrintLn("Starting to guess game...");
 

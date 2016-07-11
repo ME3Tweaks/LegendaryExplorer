@@ -95,12 +95,12 @@ namespace ME3Explorer.Unreal.Classes
         public string ToRawText(bool debug = true)
         {
             string s = "";
-            s += "Childindex : " + child.ToString() + "\n";
-            s += "Unknown1 : " + unk1.ToString() + "\n";
-            s += "Unknown2 : " + unk2.ToString() + "\n";
-            s += "Script Size : " + size.ToString() + "\n";
+            s += "Childindex : " + child + "\n";
+            s += "Unknown1 : " + unk1 + "\n";
+            s += "Unknown2 : " + unk2 + "\n";
+            s += "Script Size : " + size + "\n";
             s += GetFlags() + "\n";
-            s += "Native Index: " + nativeindex.ToString() + "\n";
+            s += "Native Index: " + nativeindex + "\n";
             s += "Script:\n";
             s += Bytecode.ToRawText(script, pcc,debug);
             return s;

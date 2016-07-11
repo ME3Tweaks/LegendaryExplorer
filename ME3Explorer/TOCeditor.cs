@@ -38,11 +38,11 @@ namespace ME3Explorer
                         return;
                     }
 
-                    String tocfile = arguments[2];
+                    string tocfile = arguments[2];
                     int numfiles = (arguments.Length - 3) / 2;
 
-                    string[] searchTerms = new String[numfiles];
-                    string[] filesizes = new String[numfiles];
+                    string[] searchTerms = new string[numfiles];
+                    string[] filesizes = new string[numfiles];
 
                     int argnum = 3; //starts at 3
                     for (int i = 0; i < searchTerms.Length; i++)
@@ -147,7 +147,7 @@ namespace ME3Explorer
             }
         }
 
-        private int searchFirstResult(String search)
+        private int searchFirstResult(string search)
         {
             lastsearch = search;
             for (int i = 0; i < content.Count(); i++)
@@ -160,7 +160,7 @@ namespace ME3Explorer
             return -1;
         }
 
-        private void editFilesize(int n, String newsize)
+        private void editFilesize(int n, string newsize)
         {
             Inventory temp = content[n];
             try
@@ -181,7 +181,7 @@ namespace ME3Explorer
             }
         }
         
-        private void saveTOC(String path)
+        private void saveTOC(string path)
         {
             FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
             for (int i = 0; i < memsize; i++)

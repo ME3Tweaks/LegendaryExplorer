@@ -80,7 +80,7 @@ namespace ME3Explorer
                 }
                 listBox1.Items.Clear();
                 for (int i = 0; i < entr.Count; i++)
-                    listBox1.Items.Add("#" + i.ToString() + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
+                    listBox1.Items.Add("#" + i + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
                 listBox2.Items.Clear();
                 listBox2.Items.Add("Loaded " + Path.GetFileName(path) + "\nCount: " + entr.Count);
             }
@@ -141,8 +141,8 @@ namespace ME3Explorer
                 string dir = m.SelectedPath +"\\";
                 for (int i = 0; i < entr.Count; i++)
                 {
-                    listBox2.Items.Add("\n#" + i.ToString() + "/" + (entr.Count-1).ToString() + " Extracting " + entr[i].off.ToString("X"));
-                    listBox2.Items.Add("\n#" + i.ToString() + "/" + (entr.Count - 1).ToString() + " Extract Wwise");
+                    listBox2.Items.Add("\n#" + i + "/" + (entr.Count-1) + " Extracting " + entr[i].off.ToString("X"));
+                    listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Extract Wwise");
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
                     string loc = Path.GetDirectoryName(Application.ExecutablePath);
                     FileStream fileStream = new FileStream(loc + "\\exec\\out.dat", FileMode.Create, FileAccess.Write);
@@ -150,7 +150,7 @@ namespace ME3Explorer
                     for (int j = 0; j < t.size; j++)
                         fileStream.WriteByte(memory[t.off + j]);
                     fileStream.Close();
-                    listBox2.Items.Add("\n#" + i.ToString() + "/" + (entr.Count - 1).ToString() + " Convert to Ogg");
+                    listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Convert to Ogg");
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
                     System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\ww2ogg.exe", "out.dat");
                     procStartInfo.WorkingDirectory = loc + "\\exec";
@@ -162,7 +162,7 @@ namespace ME3Explorer
                     proc.Start();
                     proc.WaitForExit();
                     proc.Close();
-                    listBox2.Items.Add("\n#" + i.ToString() + "/" + (entr.Count - 1).ToString() + " Convert to Wav");
+                    listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Convert to Wav");
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
                     procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "out.ogg");
                     procStartInfo.WorkingDirectory = loc + "\\exec";
@@ -176,7 +176,7 @@ namespace ME3Explorer
                     File.Copy(loc + "\\exec\\out.wav", dir + entr[i].off.ToString("X") + ".wav");
                     File.Delete(loc + "\\exec\\out.ogg");
                     File.Delete(loc + "\\exec\\out.dat");
-                    listBox2.Items.Add("\n#" + i.ToString() + "/" + (entr.Count - 1).ToString() + " Clean up. \nDone.");
+                    listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Clean up. \nDone.");
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
                     Application.DoEvents();
                 }

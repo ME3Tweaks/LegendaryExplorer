@@ -90,7 +90,6 @@ namespace ME3Explorer.Coalesced_Editor
 
         public void SaveBIN(string path, string temp)
         {
-            var mode = Mode.ToBin;
             var inputPath = temp;
             var outputPath = path;
             Setup setup;
@@ -103,7 +102,7 @@ namespace ME3Explorer.Coalesced_Editor
                 {
                     setup = JsonConvert.DeserializeObject<Setup>(text);
                 }
-                catch (JsonReaderException e)
+                catch (JsonReaderException)
                 {
                     return;
                 }
@@ -130,7 +129,7 @@ namespace ME3Explorer.Coalesced_Editor
                     {
                         file = JsonConvert.DeserializeObject<FileWrapper>(text);
                     }
-                    catch (JsonReaderException e)
+                    catch (JsonReaderException)
                     {
                         return;
                     }

@@ -42,7 +42,7 @@ namespace ME3Explorer.SequenceObjects
         protected Pen outlinePen;
         protected SText comment;
 
-        public SObj(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
+        protected SObj(int idx, IMEPackage p, GraphEditor grapheditor)
             : base()
         {
             pcc = p;
@@ -56,7 +56,7 @@ namespace ME3Explorer.SequenceObjects
             this.Pickable = true;
         }
 
-        public SObj(int idx, float x, float y, IMEPackage p)
+        protected SObj(int idx, IMEPackage p)
             : base()
         {
             pcc = p;
@@ -162,7 +162,7 @@ namespace ME3Explorer.SequenceObjects
         public string Value { get { return val.Text; } set { val.Text = value; } }
 
         public SVar(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, p, grapheditor)
         {
             string s = pcc.getExport(index).ObjectName;
             s = s.Replace("BioSeqVar_", "");
@@ -199,8 +199,8 @@ namespace ME3Explorer.SequenceObjects
                 }
             }
             this.TranslateBy(x, y);
-            this.MouseEnter += new PInputEventHandler(OnMouseEnter);
-            this.MouseLeave += new PInputEventHandler(OnMouseLeave);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
         }
 
         public string GetValue()
@@ -404,7 +404,7 @@ namespace ME3Explorer.SequenceObjects
         protected PPath shape;
         protected PPath titleBox;
         public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, p, grapheditor)
         {
             string s = pcc.getExport(index).ObjectName;
             float w = 0;
@@ -436,7 +436,7 @@ namespace ME3Explorer.SequenceObjects
         }
         protected void MakeTitleBox(string s)
         {
-            s = "#" + index.ToString() + " : " + s;
+            s = "#" + index + " : " + s;
             SText title = new SText(s, Color.FromArgb(255, 255, 128));
             title.TextAlignment = StringAlignment.Center;
             title.ConstrainWidthToTextWidth = false;
@@ -491,14 +491,14 @@ namespace ME3Explorer.SequenceObjects
         public List<OutputLink> Outlinks;
         public List<VarLink> Varlinks;
 
-        public SBox(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
         {
             
         }
 
-        public SBox(int idx, float x, float y, IMEPackage p)
-            : base(idx, x, y, p)
+        protected SBox(int idx, IMEPackage p)
+            : base(idx, p)
         {
             
         }
@@ -554,7 +554,7 @@ namespace ME3Explorer.SequenceObjects
 
         protected float GetTitleBox(string s, float w)
         {
-            s = "#" + index.ToString() + " : " + s;
+            s = "#" + index + " : " + s;
             SText title = new SText(s,titleBrush);
             title.TextAlignment = StringAlignment.Center;
             title.ConstrainWidthToTextWidth = false;
@@ -923,21 +923,21 @@ namespace ME3Explorer.SequenceObjects
                             }
                             MemoryStream m = new MemoryStream();
                             m.Write(BitConverter.GetBytes(pcc.findName("LinkedOp")), 0, 4); //name: LinkedOp
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
                             m.Write(BitConverter.GetBytes(pcc.findName("ObjectProperty")), 0, 4); //type: ObjectProperty
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes((int)4), 0, 4); //size
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
+                            m.Write(BitConverter.GetBytes(4), 0, 4); //size
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
                             m.Write(BitConverter.GetBytes(end.Index + 1), 0, 4);//value
                             m.Write(BitConverter.GetBytes(pcc.findName("InputLinkIdx")), 0, 4); //name: InputLinkIdx
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
                             m.Write(BitConverter.GetBytes(pcc.findName("IntProperty")), 0, 4); //type: IntProperty
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes((int)4), 0, 4); //size
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
+                            m.Write(BitConverter.GetBytes(4), 0, 4); //size
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
                             m.Write(BitConverter.GetBytes(inputIndex), 0, 4);//value
                             m.Write(BitConverter.GetBytes(pcc.findName("None")), 0, 4); //name: None
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                            m.Write(BitConverter.GetBytes(0), 0, 4);
                             ListBuff.InsertRange(p[f].offsetval + pos + 4 + count2 * 64, m.ToArray());
                             pcc.getExport(start.Index).Data = ListBuff.ToArray();
                             j = count; //break outer loop
@@ -1147,7 +1147,7 @@ namespace ME3Explorer.SequenceObjects
     public class SEvent : SBox
     {
         public SEvent(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, p, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
             string s = pcc.getExport(index).ObjectName;
@@ -1266,7 +1266,7 @@ namespace ME3Explorer.SequenceObjects
         protected float originalY;
 
         public SAction(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, p, grapheditor)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1275,7 +1275,7 @@ namespace ME3Explorer.SequenceObjects
         }
 
         public SAction(int idx, float x, float y, IMEPackage p)
-            : base(idx, x, y, p)
+            : base(idx, p)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1298,16 +1298,20 @@ namespace ME3Explorer.SequenceObjects
         {
             if (pcc.game == MEGame.ME1)
             {
-                if (x == -0.1f)
+                // ==
+                if (Math.Abs(x - -0.1f) < float.Epsilon)
                     x = originalX;
-                if (y == -0.1f)
+                // ==
+                if (Math.Abs(y - -0.1f) < float.Epsilon)
                     y = originalY;
             }
             else
 	        {
-                if (originalX != -1)
+                // ==
+                if (Math.Abs(originalX - -1) > float.Epsilon)
                     x = originalX;
-                if (originalY != -1)
+                // ==
+                if (Math.Abs(originalY - -1) > float.Epsilon)
                     y = originalY; 
             }
             outlinePen = new Pen(Color.Black);
@@ -1476,8 +1480,8 @@ namespace ME3Explorer.SequenceObjects
                     l.index = j;
                     l.node = PPath.CreateRectangle(0, -4, 10, 8);
                     l.node.Brush = outputBrush;
-                    l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-                    l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                    l.node.MouseEnter += OnMouseEnter;
+                    l.node.MouseLeave += OnMouseLeave;
                     l.node.AddInputEventListener(new InputDragHandler());
                     InLinks.Add(l);
                     for (int i = 0; i < p2.Count(); i++)
@@ -1499,8 +1503,8 @@ namespace ME3Explorer.SequenceObjects
                             l.index = i;
                             l.node = PPath.CreateRectangle(0, -4, 10, 8);
                             l.node.Brush = outputBrush;
-                            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-                            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                            l.node.MouseEnter += OnMouseEnter;
+                            l.node.MouseLeave += OnMouseLeave;
                             l.node.AddInputEventListener(new InputDragHandler());
                             InLinks.Add(l);
                         }
@@ -1525,8 +1529,8 @@ namespace ME3Explorer.SequenceObjects
                             InputLink l = new InputLink();
                             l.node = PPath.CreateRectangle(0, -4, 10, 8);
                             l.node.Brush = outputBrush;
-                            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-                            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                            l.node.MouseEnter += OnMouseEnter;
+                            l.node.MouseLeave += OnMouseLeave;
                             l.node.AddInputEventListener(new InputDragHandler());
                             l.Desc = ":" + i;
                             l.hasName = false;

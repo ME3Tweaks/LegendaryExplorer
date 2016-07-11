@@ -33,7 +33,7 @@ namespace ME3Explorer.ScriptDB
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -102,7 +102,7 @@ namespace ME3Explorer.ScriptDB
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 BitConverter.IsLittleEndian = true;
-                byte[] buff = BitConverter.GetBytes((int)database.Count());
+                byte[] buff = BitConverter.GetBytes(database.Count());
                 DebugOutput.PrintLn("Creating file in memory...");
                 fs.Write(buff, 0, 4);
                 MemoryStream m = new MemoryStream();
@@ -159,7 +159,7 @@ namespace ME3Explorer.ScriptDB
 
         public void WriteString(MemoryStream fs, string s)
         {
-            byte[] buff = BitConverter.GetBytes((int)s.Length);
+            byte[] buff = BitConverter.GetBytes(s.Length);
             fs.Write(buff, 0, 4);
             foreach (char c in s)
                 fs.WriteByte((byte)c);

@@ -130,7 +130,7 @@ namespace ME3Explorer.UnrealHelper
             {
                 run = false;
                 for (int i = 0; i < Definitions.Count - 1; i++)
-                    if (String.Compare(Definitions[i].name, Definitions[i + 1].name) > 0)
+                    if (string.Compare(Definitions[i].name, Definitions[i + 1].name) > 0)
                     {
                         run = true;
                         ClassDefinition t = Definitions[i];
@@ -139,7 +139,7 @@ namespace ME3Explorer.UnrealHelper
                     }
                 for (int i = 0; i < Definitions.Count - 1; i++)
                     for(int j=0;j<Definitions[i].props.Count-1;j++)
-                        if (String.Compare(Definitions[i].props[j].name, Definitions[i].props[j + 1].name) > 0)
+                        if (string.Compare(Definitions[i].props[j].name, Definitions[i].props[j + 1].name) > 0)
                         {
                             run=true;
                             Property p = Definitions[i].props[j];
@@ -229,23 +229,23 @@ namespace ME3Explorer.UnrealHelper
                                     switch (m.size)
                                     {
                                         case 1:
-                                            p.value += memory[pos].ToString() + " ";
+                                            p.value += memory[pos] + " ";
                                             break;
                                         case 2:
-                                            p.value += BitConverter.ToUInt16(memory, pos).ToString() + " ";
+                                            p.value += BitConverter.ToUInt16(memory, pos) + " ";
                                             break;
                                         case 4:
-                                            p.value += BitConverter.ToUInt32(memory, pos).ToString() + " ";
+                                            p.value += BitConverter.ToUInt32(memory, pos) + " ";
                                             break;
                                     }
                                 if (m.type == 1)
                                     switch (m.size)
                                     {                                        
                                         case 2:
-                                            p.value += getFloat16(pos).ToString() + " ";
+                                            p.value += getFloat16(pos) + " ";
                                             break;
                                         case 4:
-                                            p.value += BitConverter.ToSingle(memory, pos).ToString() + " ";
+                                            p.value += BitConverter.ToSingle(memory, pos) + " ";
                                             break;
                                         default:
                                             p.value += "";
@@ -290,15 +290,15 @@ namespace ME3Explorer.UnrealHelper
                                 switch(size)
                                 {
                                     case 1:
-                                        p.value += memory[pos].ToString() + " ";
+                                        p.value += memory[pos] + " ";
                                         pos += 4;
                                         break;
                                     case 2:
-                                        p.value += BitConverter.ToUInt16(memory, pos).ToString() + " ";
+                                        p.value += BitConverter.ToUInt16(memory, pos) + " ";
                                         pos += 4;
                                         break;
                                     case 4:
-                                        p.value += BitConverter.ToUInt32(memory, pos).ToString() + " ";
+                                        p.value += BitConverter.ToUInt32(memory, pos) + " ";
                                         pos += 4;
                                         break;
                                     default :

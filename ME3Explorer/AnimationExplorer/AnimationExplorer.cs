@@ -70,7 +70,7 @@ namespace ME3Explorer.AnimationExplorer
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string path = ME3Directory.cookedPath;
-            if (String.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -122,7 +122,7 @@ namespace ME3Explorer.AnimationExplorer
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 
@@ -164,7 +164,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 BitConverter.IsLittleEndian = true;
-                fs.Write(BitConverter.GetBytes((int)filenames.Count), 0, 4);
+                fs.Write(BitConverter.GetBytes(filenames.Count), 0, 4);
                 foreach (string s in filenames)
                     WriteString(fs, s);
                 fs.Close();

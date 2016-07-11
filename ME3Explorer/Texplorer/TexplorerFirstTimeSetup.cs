@@ -337,7 +337,7 @@ namespace ME3Explorer
             DLCPackage dlc = new DLCPackage(file);
             List<string> dlcpath = new List<string>(dlc.MyFileName.Split('\\'));
             dlcpath.RemoveRange(dlcpath.Count - 5, 5);
-            string dlcExtractionPath = String.Join("\\", dlcpath.ToArray());
+            string dlcExtractionPath = string.Join("\\", dlcpath.ToArray());
 
             List<int> Indicies = new List<int>();
             for (int i = 0; i < dlc.Files.Count(); i++)

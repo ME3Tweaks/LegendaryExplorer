@@ -604,7 +604,7 @@ namespace ME3LibWV
                     byte[]buff = new byte[Header._offsetCompFlagEnd];
                     Source.Read(buff, 0, (int)Header._offsetCompFlagEnd);
                     Header.DeCompBuffer.Write(buff, 0, (int)Header._offsetCompFlagEnd);
-                    Header.DeCompBuffer.Write(BitConverter.GetBytes((int)0), 0, 4);
+                    Header.DeCompBuffer.Write(BitConverter.GetBytes(0), 0, 4);
                     Header.DeCompBuffer.Write(BitConverter.GetBytes(Header.unk7), 0, 4);
                     Header.DeCompBuffer.Write(BitConverter.GetBytes(Header.unk8), 0, 4);
                     Header.DeCompBuffer.Seek(Header._offsetFlag, 0);
@@ -843,7 +843,7 @@ namespace ME3LibWV
             {
                 text += "\0";
             }
-            s.Write(BitConverter.GetBytes((int)(-text.Length)), 0, 4);
+            s.Write(BitConverter.GetBytes(-text.Length), 0, 4);
             foreach (char c in text)
             {
                 s.WriteByte((byte)c);

@@ -33,7 +33,7 @@ namespace ME3Explorer.GUIDCacheEditor
 
         private void openGUIDCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -146,7 +146,7 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public static int GetHexVal(char hex)
         {
-            int val = (int)hex;
+            int val = hex;
             return val - (val < 58 ? 48 : 55);
         }
 
@@ -163,7 +163,7 @@ namespace ME3Explorer.GUIDCacheEditor
             foreach (GuidEntry g in GUIDs)
             {
                 m.Write(BitConverter.GetBytes(g.NameIdx), 0, 4);
-                m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                m.Write(BitConverter.GetBytes(0), 0, 4);
                 foreach (byte b in g.GUID)
                     m.WriteByte(b);
             }

@@ -79,7 +79,7 @@ namespace ME1Explorer.Unreal
         private const int EX_EqualEqual_DelDel = 0x3B;
         private const int EX_NotEqual_DelDel = 0x3C;
 
-        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug, int headerdiff)
+        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug)
         {
             ME3Explorer.BitConverter.IsLittleEndian = true;
             string s = "";
@@ -100,7 +100,7 @@ namespace ME1Explorer.Unreal
                 s += "\nDebug print:\n\n";
                 SortDbgMsg();
                 for (int i = 0; i < _debug.Count(); i++)
-                    s += _debug[i].count.ToString() + " : " + _debug[i].msg;
+                    s += _debug[i].count + " : " + _debug[i].msg;
             }
             return s;
 
@@ -321,32 +321,6 @@ namespace ME1Explorer.Unreal
             NATIVE_Disable = 0x76,
             NATIVE_SaveConfig = 0x218,
         };
-
-        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug = false)
-        {
-            ME3Explorer.BitConverter.IsLittleEndian = true;
-            string s = "";
-            pcc = Pcc;
-            memory = raw;
-            memsize = raw.Length;
-            DebugCounter = 0;
-            _debug = new List<DbgMsg>();
-            List<Token> t = ReadAll(0);
-            int pos = 32;
-            for (int i = 0; i < t.Count; i++)
-            {
-                s += pos.ToString("X2") + " : " + t[i].text + "\n";
-                pos += t[i].raw.Length;
-            }
-            if (debug)
-            {
-                s += "\nDebug print:\n\n";
-                SortDbgMsg();
-                for (int i = 0; i < _debug.Count(); i++)
-                    s += _debug[i].count.ToString() + " : " + _debug[i].msg;
-            }
-            return s;
-        }
 
         private static void SortDbgMsg()
         {
@@ -2747,7 +2721,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             ME3Explorer.BitConverter.IsLittleEndian = true;
-            int index = (Int32)ME3Explorer.BitConverter.ToInt32(memory, start + 1);
+            int index = ME3Explorer.BitConverter.ToInt32(memory, start + 1);
             t.text = "If(" + pcc.getObjectName(index) + ")\n\t{\n";
             int pos = start + 8;
             Token a = ReadToken(pos);
@@ -3094,7 +3068,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             ME3Explorer.BitConverter.IsLittleEndian = true;
-            int n = (Int32)ME3Explorer.BitConverter.ToInt32(memory, start + 1);
+            int n = ME3Explorer.BitConverter.ToInt32(memory, start + 1);
             t.text = n.ToString();
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -3139,7 +3113,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             ME3Explorer.BitConverter.IsLittleEndian = true;
-            int index = (Int32)ME3Explorer.BitConverter.ToInt32(memory, start + 1);
+            int index = ME3Explorer.BitConverter.ToInt32(memory, start + 1);
             t.text = " '" + pcc.getObjectName(index) + "'";
             if (index > 0 && index <= pcc.Exports.Count)
                 t.text = pcc.Exports[index - 1].ClassName + t.text;
@@ -3155,7 +3129,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             ME3Explorer.BitConverter.IsLittleEndian = true;
-            int index = (Int32)ME3Explorer.BitConverter.ToInt32(memory, start + 1);
+            int index = ME3Explorer.BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index) + "(";
             int pos = start + 5;
             int count = 0;
@@ -3183,7 +3157,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             ME3Explorer.BitConverter.IsLittleEndian = true;
-            int index = (Int32)ME3Explorer.BitConverter.ToInt32(memory, start + 1);
+            int index = ME3Explorer.BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -3274,7 +3248,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             float f = ME3Explorer.BitConverter.ToSingle(memory, start + 1);
-            t.text = f.ToString() + "f";
+            t.text = f + "f";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];

@@ -39,7 +39,6 @@ namespace ME3Explorer.CurveEd
     {
 
         private IMEPackage pcc;
-        private PropertyReader.Property prop;
         private CurveType curveType;
 
         public string Name { get; set; }
@@ -49,7 +48,6 @@ namespace ME3Explorer.CurveEd
         public InterpCurve(IMEPackage _pcc, PropertyReader.Property p)
         {
             pcc = _pcc;
-            prop = p;
 
             Curves = new ObservableCollection<Curve>();
             Name = pcc.getNameEntry(p.Name);
@@ -62,7 +60,6 @@ namespace ME3Explorer.CurveEd
             {
                 case CurveType.InterpCurveQuat:
                     throw new NotImplementedException($"InterpCurveQuat has not been implemented yet.");
-                    break;
                 case CurveType.InterpCurveFloat:
                     float OutVal = 0f;
                     float ArriveTangent = 0f;
@@ -148,13 +145,10 @@ namespace ME3Explorer.CurveEd
                     break;
                 case CurveType.InterpCurveVector2D:
                     throw new NotImplementedException($"InterpCurveVector2D has not been implemented yet.");
-                    break;
                 case CurveType.InterpCurveTwoVectors:
                     throw new NotImplementedException($"InterpCurveTwoVectors has not been implemented yet.");
-                    break;
                 case CurveType.InterpCurveLinearColor:
                     throw new NotImplementedException($"InterpCurveLinearColor has not been implemented yet.");
-                    break;
                 default:
                     break;
             }

@@ -506,11 +506,11 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_name = FindName(name);
             int NAME_StrProperty = FindName("StrProperty");
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_StrProperty), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(sizetext), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(-text.Length), 0, 4);
             foreach (char c in text)
                 m.Write(BitConverter.GetBytes((Int16)c), 0, 2);            
@@ -522,12 +522,12 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_name = FindName(name);
             int NAME_type = FindName(type);
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_type), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)4), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)value), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(4), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(value), 0, 4);
             return 28;
         }
 
@@ -536,15 +536,15 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_name = FindName(name);
             int NAME_type = FindName("ByteProperty");
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_type), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)8), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)valuetype), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)valuename), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(8), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(valuetype), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(valuename), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             return 40;
         }
 
@@ -553,11 +553,11 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_name = FindName(name);
             int NAME_type = FindName("ArrayProperty");
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_type), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(value.Count * 4 + 4), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(value.Count), 0, 4);
             foreach(int i in value)
                 m.Write(BitConverter.GetBytes(i), 0, 4);
@@ -569,11 +569,11 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_name = FindName(name);
             int NAME_type = FindName(type);
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_type), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             if (value)
                 m.WriteByte(1);
             else
@@ -585,7 +585,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             int NAME_None = FindName("None");
             m.Write(BitConverter.GetBytes(NAME_None), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             return 8;
         }
 
@@ -632,9 +632,9 @@ namespace ME3Explorer.Unreal.Classes
             int NAME_ArrayProperty = FindName("ArrayProperty");
             int NAME_ReplyListNew = FindName("ReplyListNew");
             m.Write(BitConverter.GetBytes(NAME_ReplyListNew), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(NAME_ArrayProperty), 0, 4);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(new byte[8], 0, 8);//size dummy
             int arraysize = 4;
             int tmpsize = 0;
@@ -698,7 +698,7 @@ namespace ME3Explorer.Unreal.Classes
                     case "m_StartingList":
                         m.Write(p.raw, 0, 0x10);
                         m.Write(BitConverter.GetBytes(StartingList.Count * 4 + 4), 0, 4);
-                        m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                        m.Write(BitConverter.GetBytes(0), 0, 4);
                         m.Write(BitConverter.GetBytes(StartingList.Count), 0, 4);
                         foreach (int i in StartingList)
                             m.Write(BitConverter.GetBytes(i), 0, 4);
@@ -732,7 +732,7 @@ namespace ME3Explorer.Unreal.Classes
                     case "m_aSpeakerList":
                         m.Write(p.raw, 0, 0x10);
                         m.Write(BitConverter.GetBytes(SpeakerList.Count * 8 + 4), 0, 4);
-                        m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                        m.Write(BitConverter.GetBytes(0), 0, 4);
                         m.Write(BitConverter.GetBytes(SpeakerList.Count), 0, 4);
                         foreach (int i in SpeakerList)
                             m.Write(BitConverter.GetBytes((long)i), 0, 8);
@@ -740,7 +740,7 @@ namespace ME3Explorer.Unreal.Classes
                     case "m_aFemaleFaceSets":
                         m.Write(p.raw, 0, 0x10);
                         m.Write(BitConverter.GetBytes(FemaleFaceSets.Count * 4 + 4), 0, 4);
-                        m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                        m.Write(BitConverter.GetBytes(0), 0, 4);
                         m.Write(BitConverter.GetBytes(FemaleFaceSets.Count), 0, 4);
                         foreach (int i in FemaleFaceSets)
                             m.Write(BitConverter.GetBytes(i), 0, 4);
@@ -748,7 +748,7 @@ namespace ME3Explorer.Unreal.Classes
                     case "m_aMaleFaceSets":
                         m.Write(p.raw, 0, 0x10);
                         m.Write(BitConverter.GetBytes(MaleFaceSets.Count * 4 + 4), 0, 4);
-                        m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                        m.Write(BitConverter.GetBytes(0), 0, 4);
                         m.Write(BitConverter.GetBytes(MaleFaceSets.Count), 0, 4);
                         foreach (int i in MaleFaceSets)
                             m.Write(BitConverter.GetBytes(i), 0, 4);
@@ -770,7 +770,7 @@ namespace ME3Explorer.Unreal.Classes
                         m.Write(p.raw, 0, p.raw.Length);
                         break;
                 }
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             pcc.Exports[MyIndex].Data = m.ToArray();
             pcc.save();
         }

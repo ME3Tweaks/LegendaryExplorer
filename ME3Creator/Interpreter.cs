@@ -402,7 +402,7 @@ namespace ME3Creator
                 for (int i = 0; i < 3; i++)
                 {
                     val = BitConverter.ToInt32(memory, readerpos);
-                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + ((float)val * 360f / 65536f).ToString("0.0######") + " degrees)");
+                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)");
                     node.Name = readerpos.ToString();
                     node.Tag = nodeType.StructLeafDeg;
                     t.Nodes.Add(node);
@@ -683,7 +683,7 @@ namespace ME3Creator
                     }
                     else
                     {
-                        s += "(byte)" + memory[pos].ToString();
+                        s += "(byte)" + memory[pos];
                         node = new TreeNode(s);
                         node.Name = pos.ToString();
                         node.Tag = nodeType.StructLeafByte;
@@ -792,7 +792,7 @@ namespace ME3Creator
             string s = p.offset.ToString("X4") + ": ";
             s += "Name: \"" + pcc.GetName(p.name) + "\" ";
             s += "Type: \"" + pcc.GetName(p.type) + "\" ";
-            s += "Size: " + p.size.ToString() + " Value: ";
+            s += "Size: " + p.size + " Value: ";
             nodeType propertyType = getType(pcc.GetName(p.type));
             int idx;
             byte val;
@@ -852,11 +852,11 @@ namespace ME3Creator
                     break;
                 case nodeType.ArrayProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() + "(count)";
+                    s += idx + "(count)";
                     break;
                 case nodeType.StringRefProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "#" + idx.ToString();
+                    s += "#" + idx;
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -1222,7 +1222,7 @@ namespace ME3Creator
                         propDropdown.Visible = true;
                         break;
                     case nodeType.StructLeafDeg:
-                        proptext.Text = ((float)BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
                         proptext.Visible = true;
                         break;
                     case nodeType.StructLeafObject:

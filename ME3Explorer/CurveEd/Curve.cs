@@ -53,7 +53,8 @@ namespace ME3Explorer.CurveEd
             get { return inVal; }
             set
             {
-                if (value != inVal)
+                //accurate float comparison ( != )
+                if (Math.Abs(value - inVal) > float.Epsilon)
                 {
                     inVal = value;
                     OnPropertyChanged();
@@ -91,7 +92,8 @@ namespace ME3Explorer.CurveEd
             OutVal = outVal;
             ArriveTangent = arriveTangent;
             LeaveTangent = leaveTangent;
-            if (arriveTangent == leaveTangent)
+            //accurate float comparison ( == )
+            if (Math.Abs(arriveTangent - leaveTangent) < float.Epsilon)
             {
                 interpMode = CurveMode.CIM_CurveUser;
             }

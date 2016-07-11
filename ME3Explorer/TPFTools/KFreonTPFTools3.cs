@@ -1637,7 +1637,7 @@ namespace ME3Explorer
 
             // KFreon: Notify if some are invalid
             if (Invalids.Count > 0)
-                MessageBox.Show("The following files are not TPFTools things:" + Environment.NewLine + String.Join(Environment.NewLine, Invalids.ToArray()), "You have failed. We will find another.");
+                MessageBox.Show("The following files are not TPFTools things:" + Environment.NewLine + string.Join(Environment.NewLine, Invalids.ToArray()), "You have failed. We will find another.");
 
             BeginLoadingFiles(ValidDrops);
         }

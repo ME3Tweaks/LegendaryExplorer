@@ -359,21 +359,21 @@ namespace UDKExplorer.UDK
             string s = "";
             s = "Name: " + udk.getName(p.Name);
             s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Value.len.ToString();
+            s += " Size: " + p.Value.len;
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + udk.getName (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + udk.getName (p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
                 case Type.IntProperty:                
                 case Type.ObjectProperty:
                 case Type.BoolProperty:
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff,0);
-                    s += " Value: " + f.ToString();
+                    s += " Value: " + f;
                     break;
                 case Type.NameProperty:
                     s += " " + udk.getName(p.Value.IntValue);
@@ -468,9 +468,9 @@ namespace UDKExplorer.UDK
                         RotatorProp rp = new RotatorProp();
                         rp.name = structType;
                         rp.nameindex = p.Value.IntValue;
-                        rp.Pitch = (float)BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
-                        rp.Yaw = (float)BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
-                        rp.Roll = (float)BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
+                        rp.Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
+                        rp.Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
+                        rp.Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
                         pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, rp, typeof(RotatorProp), false, true);
                     }
                     else if (structType == "LinearColor")

@@ -16,6 +16,7 @@ using System.Net.Sockets;
 
 namespace ME3Explorer.DLLInjector
 {
+#pragma warning disable RECS0065 // Expression is always 'true' or always 'false'
     public partial class DLLInjector : Form
     {
         #region include
@@ -136,6 +137,7 @@ namespace ME3Explorer.DLLInjector
             }
             catch
             {
+                return;
             }
         }
 
@@ -178,19 +180,19 @@ namespace ME3Explorer.DLLInjector
             }
         }
 
-        public void InjectDLL(IntPtr hProcess, String strDLLName)
+        public void InjectDLL(IntPtr hProcess, string strDLLName)
         {
             IntPtr bytesout;
             Int32 LenWrite = strDLLName.Length + 1;
-            IntPtr AllocMem = (IntPtr)VirtualAllocEx(hProcess, (IntPtr)null, (uint)LenWrite, 0x1000, 0x40); //allocation pour WriteProcessMemory
+            IntPtr AllocMem = VirtualAllocEx(hProcess, (IntPtr)null, (uint)LenWrite, 0x1000, 0x40); //allocation pour WriteProcessMemory
             WriteProcessMemory(hProcess, AllocMem, strDLLName, (UIntPtr)LenWrite, out bytesout);
-            UIntPtr Injector = (UIntPtr)GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
+            UIntPtr Injector = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
             if (Injector == null)
             {
                 MessageBox.Show(" Injector Error! \n ");
                 return;
             }
-            IntPtr hThread = (IntPtr)CreateRemoteThread(hProcess, (IntPtr)null, 0, Injector, AllocMem, 0, out bytesout);
+            IntPtr hThread = CreateRemoteThread(hProcess, (IntPtr)null, 0, Injector, AllocMem, 0, out bytesout);
             if (hThread == null)
             {
                 MessageBox.Show(" hThread [ 1 ] Error! \n ");
@@ -273,7 +275,7 @@ namespace ME3Explorer.DLLInjector
             bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.WorkerReportsProgress = true;
-            bw.DoWork += new DoWorkEventHandler(Listener);
+            bw.DoWork += Listener;
             bw.RunWorkerAsync();
         }
 
@@ -291,7 +293,7 @@ namespace ME3Explorer.DLLInjector
                         MyStream.WriteByte(32);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                 }
         }
@@ -320,7 +322,7 @@ namespace ME3Explorer.DLLInjector
             Int32 ProcID = IDs[SelectedID];
             if (ProcID >= 0)
             {
-                IntPtr hProcess = (IntPtr)OpenProcess(0x1F0FFF, 1, ProcID);
+                IntPtr hProcess = OpenProcess(0x1F0FFF, 1, ProcID);
                 Process proc = Process.GetProcessById(ProcID);
                 ProcessPath = Path.GetDirectoryName(proc.Modules[0].FileName) + "\\";
                 if (hProcess == null)
@@ -349,7 +351,7 @@ namespace ME3Explorer.DLLInjector
                 Int32 ProcID = IDs[n];
                 if (ProcID >= 0)
                 {
-                    IntPtr hProcess = (IntPtr)OpenProcess(0x1F0FFF, 1, ProcID);
+                    IntPtr hProcess = OpenProcess(0x1F0FFF, 1, ProcID);
                     Process proc = Process.GetProcessById(ProcID);
                     if (hProcess == null)
                     {
@@ -379,4 +381,5 @@ namespace ME3Explorer.DLLInjector
         }
 
     }
+#pragma warning restore RECS0065 // Expression is always 'true' or always 'false'
 }

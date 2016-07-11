@@ -238,7 +238,7 @@ namespace ME3Explorer
             DebugOutput.PrintLn("Now saving pcc: " + currentPCC + "...");
             PCC = PCCObjects.Creation.CreatePCCObject(currentPCC, WhichGame);
 
-            if (String.Compare(tex2D.texName, PCC.Exports[ExpIDs[j]].ObjectName, true) != 0 || (PCC.Exports[ExpIDs[j]].ClassName != "Texture2D" && PCC.Exports[ExpIDs[j]].ClassName != "LightMapTexture2D" && PCC.Exports[ExpIDs[j]].ClassName != "TextureFlipBook"))
+            if (string.Compare(tex2D.texName, PCC.Exports[ExpIDs[j]].ObjectName, true) != 0 || (PCC.Exports[ExpIDs[j]].ClassName != "Texture2D" && PCC.Exports[ExpIDs[j]].ClassName != "LightMapTexture2D" && PCC.Exports[ExpIDs[j]].ClassName != "TextureFlipBook"))
                 throw new InvalidDataException("Export object has wrong class or name");
 
             Textures.ITexture2D temptex2D = PCC.CreateTexture2D(ExpIDs[j], pathBIOGame);
@@ -1024,7 +1024,7 @@ namespace ME3Explorer
                 }
             }
 
-            DebugOutput.PrintLn(String.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
+            DebugOutput.PrintLn(string.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
 
             using (TexplorerFirstTimeSetup fts = new TexplorerFirstTimeSetup(WhichGame, DLCPath, pathCooked))
             {
@@ -1087,7 +1087,7 @@ namespace ME3Explorer
                 for (int j = 0; j < packs.Length; j++)
                 {
                     node = null;
-                    string tempPack = String.Join(".", packs, 0, j + 1);
+                    string tempPack = string.Join(".", packs, 0, j + 1);
                     for (int k = 0; k < NodeCount; k++)
                     {
                         myTreeNode current = Tree.GetNode(k);
@@ -1209,7 +1209,7 @@ namespace ME3Explorer
 
             PCCObjects.IPCCObject pcc = PCCObjects.Creation.CreatePCCObject(fulpath, WhichGame);
             
-            if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || String.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
+            if ((pcc.Exports[IDs[0]].ClassName != "Texture2D" && pcc.Exports[IDs[0]].ClassName != "LightMapTexture2D" && pcc.Exports[IDs[0]].ClassName != "TextureFlipBook") || string.Compare(pcc.Exports[IDs[0]].ObjectName, texname, true) != 0)
                 throw new InvalidDataException("Export is not correct class or name!");
 
             //Load the texture from the pcc
@@ -1246,7 +1246,7 @@ namespace ME3Explorer
                 //The texture is a single image, therefore use replace function
                 if (noImg == 1)
                 {
-                    string imgSize = tex2D.imgList[0].imgSize.width.ToString() + "x" + tex2D.imgList[0].imgSize.height.ToString();
+                    string imgSize = tex2D.imgList[0].imgSize.width + "x" + tex2D.imgList[0].imgSize.height;
                     try
                     {
                         tex2D.replaceImage(imgSize, im, pathBIOGame);
@@ -1274,7 +1274,7 @@ namespace ME3Explorer
 
                     if (!hasMips)
                     {
-                        string imgSize = imgFile.imgSize.width.ToString() + "x" + imgFile.imgSize.height.ToString();
+                        string imgSize = imgFile.imgSize.width + "x" + imgFile.imgSize.height;
                         try
                         {
                             //Try replacing the image. If it doesn't exist then it'll throw and error and you'll need to upscale the image
@@ -1339,7 +1339,7 @@ namespace ME3Explorer
 
                 // KFreon: More timer stuff
                 TimeSpan ts = TimeSpan.FromMilliseconds(Environment.TickCount - start);
-                Console.WriteLine(ts.Duration().ToString());
+                Console.WriteLine(ts.Duration());
                 DebugOutput.Print("All PCC updates finished. ");
                 return true;
             }
@@ -1662,13 +1662,13 @@ namespace ME3Explorer
             message.Add("Mipmaps:  " + (mipcount > 1 ? "Yes (" + mipcount + ")" : "No (1)"));
             //message.Add("LODGroup:  " + (tex2D.hasChanged ? "TEXTUREGROUP_Shadowmap" : ((String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup))));
             // Heff: Were ALL modified textures assigned the shadowmap texture group?
-            message.Add("LODGroup:  " + (String.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
+            message.Add("LODGroup:  " + (string.IsNullOrEmpty(tex2D.LODGroup) ? "None (Uses World)" : tex2D.LODGroup));
             message.Add("Texmod Hash:  " + Textures.Methods.FormatTexmodHashAsString(tex2D.Hash));
 
             if (WhichGame != 1)
                 message.Add("Texture Cache File:  " + (info.storageType == 0  ? "PCC Stored" : tex2D.arcName + ".tfc"));
 
-            PropertiesRTB.Text = String.Join(Environment.NewLine, message);
+            PropertiesRTB.Text = string.Join(Environment.NewLine, message);
         }
 
         private void PCCsCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -2066,7 +2066,7 @@ namespace ME3Explorer
             using (ImageEngineImage img = new ImageEngineImage(path))
             {
                 if (img.Format.InternalFormat != tex2D.texFormat)
-                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat.ToString() + "  Required: " + tex2D.texFormat.ToString().ToUpperInvariant());
+                    sb.Append("Invalid format. Selected image is: " + img.Format.InternalFormat + "  Required: " + tex2D.texFormat.ToString().ToUpperInvariant());
 
                 if (img.NumMipMaps < tex2D.Mips)
                     sb.AppendLine("Mipmap error. Requires: " + tex2D.Mips + ".  Currently: " + img.NumMipMaps);
@@ -2419,7 +2419,7 @@ namespace ME3Explorer
 
             if (errors != null && errors.Count != 0)
             {
-                MessageBox.Show("Errors occured!" + Environment.NewLine + String.Join(Environment.NewLine, errors), "Your technology is based on that of the Mass Relays...", MessageBoxButtons.OK);
+                MessageBox.Show("Errors occured!" + Environment.NewLine + string.Join(Environment.NewLine, errors), "Your technology is based on that of the Mass Relays...", MessageBoxButtons.OK);
                 StatusUpdater.UpdateText("Errors occured. See DebugWindow");
             }
             else

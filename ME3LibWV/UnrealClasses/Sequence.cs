@@ -132,7 +132,7 @@ namespace ME3LibWV.UnrealClasses
                                         for (int i2 = 0; i2 < count2; i2++)
                                         {
                                             Pr3 = PropertyReader.ReadProp(pcc, pp.raw, pos2);
-                                            string res = "#" + i2.ToString() + " : ";
+                                            string res = "#" + i2 + " : ";
                                             foreach (PropertyReader.Property ppp in Pr3)
                                             {
                                                 string s3 = pcc.GetName(ppp.Name);                                                
@@ -191,7 +191,7 @@ namespace ME3LibWV.UnrealClasses
                                         for (int i2 = 0; i2 < count2; i2++)
                                         {
                                             int idx = BitConverter.ToInt32(pp.raw, 28 + i2 * 4);
-                                            t4.Nodes.Add("#" + i2.ToString() + " : #" + idx + " " + pcc.GetObjectPath(idx) + pcc.getObjectName(idx));
+                                            t4.Nodes.Add("#" + i2 + " : #" + idx + " " + pcc.GetObjectPath(idx) + pcc.getObjectName(idx));
                                         }
                                         t3.Nodes.Add(t4);
                                         break;

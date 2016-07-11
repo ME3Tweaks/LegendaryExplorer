@@ -76,7 +76,7 @@ namespace KFreonLib.PCCObjects
                 //ExportEntry lastEntry = Exports.Find(export => export.DataOffset == Exports.Max(maxExport => maxExport.DataOffset));
                 /*Console.WriteLine((long)(lastEntry.DataOffset + lastEntry.DataSize) + "\n");
                 Console.WriteLine((long)(lastEntry2.DataOffset + lastEntry2.DataSize) + "\n\n");*/
-                return (long)(lastEntry.DataOffset + lastEntry.DataSize);
+                return lastEntry.DataOffset + lastEntry.DataSize;
             }
             set
             {
@@ -128,7 +128,7 @@ namespace KFreonLib.PCCObjects
 
                 // KFreon: Decompress blocks
                 newoffset = offset - (uint)blockList[DataStart].uncOffset;
-                for (int i = (int)DataStart; i <= DataEnd; i++)
+                for (int i = DataStart; i <= DataEnd; i++)
                 {
                     DataStream.Seek(blockList[i].cprOffset, SeekOrigin.Begin);
                     //retval.Seek(blockList[i].uncOffset, SeekOrigin.Begin);
@@ -247,7 +247,7 @@ namespace KFreonLib.PCCObjects
                 }
 
                 // correcting the header, in case there's need to be saved
-                Buffer.BlockCopy(BitConverter.GetBytes((int)0), 0, header, header.Length - 12, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(0), 0, header, header.Length - 12, sizeof(int));
                 tempStream.Read(header, header.Length - 8, 8);
                 headerEnd = (int)tempStream.Position;
 
@@ -988,7 +988,7 @@ namespace KFreonLib.PCCObjects
             {
                 List<ME3ImportEntry> temp = new List<ME3ImportEntry>();
                 for (int i = 0; i < value.Count; i++)
-                    temp.Add((ME3ImportEntry)Imports[i]);
+                    temp.Add(Imports[i]);
                 Imports = temp;
             }
         }
@@ -1005,7 +1005,7 @@ namespace KFreonLib.PCCObjects
             {
                 List<ME3ExportEntry> temp = new List<ME3ExportEntry>();
                 for (int i = 0; i < value.Count; i++)
-                    temp.Add((ME3ExportEntry)Exports[i]);
+                    temp.Add(Exports[i]);
                 Exports = temp;
             }
         }

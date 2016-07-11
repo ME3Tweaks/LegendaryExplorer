@@ -95,7 +95,7 @@ namespace KFreonLib.Helpers
             byte[] result;
             using (MemoryStream stream = new MemoryStream())
             {
-                byte[] magic = new byte[] { 0xC1, 0x83, 0x2A, 0x9E, 0x00, 0x00, 0x02, 0x00 };
+                byte[] magic = { 0xC1, 0x83, 0x2A, 0x9E, 0x00, 0x00, 0x02, 0x00 };
                 pos = Gibbed.IO.NumberHelpers.LittleEndian(pos);
                 BinaryWriter bin = new BinaryWriter(stream);
                 bin.Write(magic);

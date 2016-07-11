@@ -156,7 +156,7 @@ namespace ME3Explorer.Unreal.Classes
                         Vector4 erotQ = seqn.CompressedTrackOffsets[k].Rot;
                         Quaternion q1 = Vec4ToQ(srotQ);
                         Quaternion q2 = Vec4ToQ(erotQ);
-                        float t = (float)j / (float)(inf.NumRawFrames - 1);
+                        float t = j / (float)(inf.NumRawFrames - 1);
                         Vector3 currV = Vector3.Lerp(fromV, toV, t);
                         Quaternion qc = Quaternion.Slerp(q1, q2, t);
                         PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();
@@ -191,7 +191,7 @@ namespace ME3Explorer.Unreal.Classes
                     Vector4 erotQ = s2.CompressedTrackOffsets[k].Rot;
                     Quaternion q1 = Vec4ToQ(srotQ);
                     Quaternion q2 = Vec4ToQ(erotQ);
-                    float t = (float)j / (float)(inf2.NumRawFrames - 1);
+                    float t = j / (float)(inf2.NumRawFrames - 1);
                     Vector3 currV = Vector3.Lerp(fromV, toV, t);
                     Quaternion qc = Quaternion.Slerp(q1, q2, t);
                     PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();

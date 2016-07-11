@@ -163,7 +163,7 @@ namespace UMD.HCIL.Piccolo.Event {
 
 				result.Append("minScale=" + minScale);
 				result.Append(",maxScale=" + maxScale);
-				result.Append(",viewZoomPoint=" + viewZoomPoint.ToString());
+				result.Append(",viewZoomPoint=" + viewZoomPoint);
 				result.Append(',');
 				result.Append(base.ParamString);
 

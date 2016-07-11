@@ -33,8 +33,9 @@ namespace ME2Explorer.Unreal
                     Enums = blob.Enums;
                 }
             }
-            catch (Exception)
+            catch
             {
+                return;
             }
         }
 

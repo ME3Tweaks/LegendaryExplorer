@@ -154,7 +154,7 @@ namespace KFreonLib.Textures.SaltDDSPreview
                 if (h < 4)
                     h = 4;
             }
-            long totalBytes = (long)((float)(w * h) * BPP);
+            long totalBytes = (long)(w * h * BPP);
             w = imgsize.width;
             h = imgsize.height;
             if (w == 1 && h == 1)

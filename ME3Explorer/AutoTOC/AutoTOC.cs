@@ -26,7 +26,7 @@ namespace ME3Explorer.AutoTOC
                 if (cmdCommand.Equals("-autotoc", StringComparison.Ordinal))
                 {
 
-                    String tocfile = arguments[2];
+                    string tocfile = arguments[2];
                     prepareToCreateTOC(tocfile);
                     Environment.Exit(0);
                     Application.Exit();
@@ -84,11 +84,11 @@ namespace ME3Explorer.AutoTOC
         {
             BitConverter.IsLittleEndian = true;
             FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write);
-            fs.Write(BitConverter.GetBytes((int)0x3AB70C13), 0, 4);
-            fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
-            fs.Write(BitConverter.GetBytes((int)0x1), 0, 4);
-            fs.Write(BitConverter.GetBytes((int)0x8), 0, 4);
-            fs.Write(BitConverter.GetBytes((int)files.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(0x3AB70C13), 0, 4);
+            fs.Write(BitConverter.GetBytes(0x0), 0, 4);
+            fs.Write(BitConverter.GetBytes(0x1), 0, 4);
+            fs.Write(BitConverter.GetBytes(0x8), 0, 4);
+            fs.Write(BitConverter.GetBytes(files.Length), 0, 4);
             for (int i = 0; i < files.Length; i++)
             {
                 string file = files[i];
@@ -105,13 +105,13 @@ namespace ME3Explorer.AutoTOC
                 }
                 else
                 {
-                    fs.Write(BitConverter.GetBytes((int)0), 0, 4);//Filesize
+                    fs.Write(BitConverter.GetBytes(0), 0, 4);//Filesize
                 }
-                fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);//SHA1
-                fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes((int)0x0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);//SHA1
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
                 foreach (char c in file)
                     fs.WriteByte((byte)c);
                 fs.WriteByte(0);
@@ -150,7 +150,7 @@ namespace ME3Explorer.AutoTOC
 
         private void generateAllTOCsButton_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;

@@ -289,7 +289,7 @@ namespace ME3Explorer.Packages
                         countSize = 0;
                     }
                     else
-                        countSize += (int)emptySpace;
+                        countSize += emptySpace;
                 }
 
                 // adds export data into the count
@@ -323,7 +323,7 @@ namespace ME3Explorer.Packages
                 outputStream.WriteValueU32((uint)outOffsetData);
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
-                uncompressedPcc.Read(inputBlock, 0, (int)currentUncBlockSize);
+                uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
                 byte[] compressedBlock = ZBlock.Compress(inputBlock, 0, inputBlock.Length);
 
                 outputStream.WriteValueS32(compressedBlock.Length);

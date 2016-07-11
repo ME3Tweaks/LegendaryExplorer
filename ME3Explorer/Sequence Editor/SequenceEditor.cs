@@ -32,7 +32,7 @@ namespace ME3Explorer
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
-            graphEditor.Camera.MouseDown += new PInputEventHandler(backMouseDown_Handler);
+            graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
 
             talkFiles = new ME1Explorer.TalkFiles();
@@ -46,6 +46,7 @@ namespace ME3Explorer
         {
             Dictionary<string, object> options = null;
             
+            //TODO: Re-enable deletion of old data once this is ready for release
             #region Migrate data from legacy locations
             if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\") ||
                     Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\") ||
@@ -54,7 +55,7 @@ namespace ME3Explorer
                 if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
                 {
                     options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
-                    File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                    //File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
                 }
                 if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
                 {
@@ -71,19 +72,19 @@ namespace ME3Explorer
                 {
                     Directory.CreateDirectory(ME3ViewsPath);
                     comp.FileSystem.CopyDirectory(ME3Directory.cookedPath + @"\SequenceViews\", ME3ViewsPath);
-                    comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    //comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
                 if (Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\"))
                 {
                     Directory.CreateDirectory(ME2ViewsPath);
                     comp.FileSystem.CopyDirectory(ME2Directory.cookedPath + @"\SequenceViews\", ME2ViewsPath);
-                    comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    //comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
                 if (Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
                 {
                     Directory.CreateDirectory(ME1ViewsPath);
                     comp.FileSystem.CopyDirectory(ME1Directory.cookedPath + @"\SequenceViews\", ME1ViewsPath);
-                    comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    //comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
             } 
             #endregion
@@ -223,7 +224,7 @@ namespace ME3Explorer
         }
         public TreeNode FindSequences(IMEPackage pcc, int index, bool wantFullName = false)
         {
-            TreeNode ret = new TreeNode("#" + index.ToString() + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
+            TreeNode ret = new TreeNode("#" + index + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
             ret.Name = index.ToString();
             Sequence seq = new Sequence(pcc, index);
             if (seq.SequenceObjects != null)
@@ -380,7 +381,7 @@ namespace ME3Explorer
             foreach (SObj o in Objects)
             {
                 o.refreshView = RefreshView;
-                o.MouseDown += new PInputEventHandler(node_MouseDown);
+                o.MouseDown += node_MouseDown;
             }
             if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.game != MEGame.ME1)
             {
@@ -554,7 +555,7 @@ namespace ME3Explorer
                 {
                     int m = seq.SequenceObjects[i] - 1;
                     CurrentObjects.Add(m);
-                    listBox1.Items.Add("#" + m.ToString() + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
+                    listBox1.Items.Add("#" + m + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
                 }
         }
         public void GetProperties(int n)
@@ -693,7 +694,7 @@ namespace ME3Explorer
                             if (((SBox)sender).Varlinks[i].Links[j] != -1)
                             {
                                 temp = new ToolStripMenuItem("Break link from " + ((SBox)sender).Varlinks[i].Desc + " to " + ((SBox)sender).Varlinks[i].Links[j]);
-                                temp.Click += new EventHandler(removeLink_handler);
+                                temp.Click += removeLink_handler;
                                 array = new ArrayList();
                                 array.Add(sender);
                                 array.Add(0);
@@ -711,7 +712,7 @@ namespace ME3Explorer
                             if (((SBox)sender).Outlinks[i].Links[j] != -1)
                             {
                                 temp = new ToolStripMenuItem("Break link from " + ((SBox)sender).Outlinks[i].Desc + " to " + ((SBox)sender).Outlinks[i].Links[j] + " :" + ((SBox)sender).Outlinks[i].InputIndices[j]);
-                                temp.Click += new EventHandler(removeLink_handler);
+                                temp.Click += removeLink_handler;
                                 array = new ArrayList();
                                 array.Add(sender);
                                 array.Add(1);
@@ -737,7 +738,7 @@ namespace ME3Explorer
                     if (submenu.Items.Count > 0)
                     {
                         temp = new ToolStripMenuItem("Break all Links");
-                        temp.Click += new EventHandler(removeAllLinks_handler);
+                        temp.Click += removeAllLinks_handler;
                         temp.Tag = sender;
                         submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
@@ -1144,7 +1145,7 @@ namespace ME3Explorer
                         listBox1.SelectedIndex = -1;
                         listBox1.SelectedIndex = t;
                     }
-                    else if (e.ChangedItem.Value.GetType() == typeof(int))
+                    else if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         if (e.ChangedItem.Label == "nameindex")
@@ -1173,7 +1174,7 @@ namespace ME3Explorer
                     break;
                 case PropertyReader.Type.ByteProperty:
                 case PropertyReader.Type.NameProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -1185,7 +1186,7 @@ namespace ME3Explorer
                     }
                     break;
                 case PropertyReader.Type.ObjectProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -1766,7 +1767,7 @@ namespace ME3Explorer
         {
             this.camera = graphEditor.Camera;
             camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += new PInputEventHandler(OnMouseWheel);
+            camera.MouseWheel += OnMouseWheel;
             graphEditor.KeyDown += OnKeyDown;
         }
 

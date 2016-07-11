@@ -261,14 +261,14 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
                 {
-                    listBox1.Items.Add(i.ToString() + " : " + pcc.getNameEntry(i));
+                    listBox1.Items.Add(i + " : " + pcc.getNameEntry(i));
                 }
             }
             if (CurrentView == IMPORTS_VIEW)
             {
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    string importStr = i.ToString() + " (0x" + (pcc.ImportOffset + (i * ME3ImportEntry.
+                    string importStr = i + " (0x" + (pcc.ImportOffset + (i * ME3ImportEntry.
                         byteSize)).ToString("X4") + "): (" + imports[i].PackageFile + ") ";
                     if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
                     {
@@ -316,7 +316,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    exps.Add(i.ToString() + " : " + s);
+                    exps.Add(i + " : " + s);
                 }
                 listBox1.Items.AddRange(exps.ToArray());
             }
@@ -818,7 +818,7 @@ namespace ME3Explorer
                         listBox1.SelectedIndex = -1;
                         listBox1.SelectedIndex = t;
                     }
-                    else if (e.ChangedItem.Value.GetType() == typeof(int))
+                    else if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         if (e.ChangedItem.Label == "nameindex")
@@ -847,7 +847,7 @@ namespace ME3Explorer
                     break;
                 case PropertyReader.Type.ByteProperty:
                 case PropertyReader.Type.NameProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -859,7 +859,7 @@ namespace ME3Explorer
                     }
                     break;
                 case PropertyReader.Type.ObjectProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -1005,7 +1005,7 @@ namespace ME3Explorer
             {
                 BitConverter.IsLittleEndian = true;
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                byte[] buff = new byte[4]; ;
+                byte[] buff = new byte[4];
                 fs.Read(buff, 0, 4);
                 int count = BitConverter.ToInt32(buff, 0);
                 for (int i = 0; i < count; i++)
@@ -1469,7 +1469,7 @@ namespace ME3Explorer
                     MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
                     byte[] import = File.ReadAllBytes(d.FileName);
-                    m.Write(BitConverter.GetBytes((int)import.Length), 0, 4);
+                    m.Write(BitConverter.GetBytes(import.Length), 0, 4);
                     m.Write(import, 0, import.Length);
                     pcc.getExport(n).Data = m.ToArray();
                     pcc.save();

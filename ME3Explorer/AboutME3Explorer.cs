@@ -15,9 +15,9 @@ namespace ME3Explorer
         public AboutME3Explorer()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
+            this.Text = string.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = "Mass Effect 3 Explorer";
-            this.labelVersion.Text = String.Format("Version: {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            this.labelVersion.Text = string.Format("Version: {0}", Assembly.GetExecutingAssembly().GetName().Version);
             this.labelCompanyName.Text = "Credits:";
             this.textBoxDescription.Text = AssemblyDescription;
         }
@@ -45,7 +45,7 @@ namespace ME3Explorer
         {
             get
             {
-                List<String> developers = new List<String>();
+                List<string> developers = new List<string>();
                 developers.Add("CURRENT STAFF:");
                 developers.Add("- KFreon, Lead Developer");
                 developers.Add("- SirCxyrtyx, Programmer");
@@ -101,7 +101,7 @@ namespace ME3Explorer
                 developers.Add("- hex code texture by Maksim Kabakou, Shutterstock");
 
                 StringBuilder sb = new StringBuilder();
-                foreach (String developer in developers)
+                foreach (string developer in developers)
                 {
                     sb.Append(developer);
                     sb.Append("\r\n");

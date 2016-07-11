@@ -45,8 +45,8 @@ namespace ME3Explorer
                         string dlcFileName = arguments[2];
                         int numfiles = (arguments.Length - 3) / 2;
 
-                        string[] filesToReplace = new String[numfiles];
-                        string[] newFiles = new String[numfiles];
+                        string[] filesToReplace = new string[numfiles];
+                        string[] newFiles = new string[numfiles];
 
                         int argnum = 3; //starts at 3
                         for (int i = 0; i < filesToReplace.Length; i++)
@@ -133,8 +133,8 @@ namespace ME3Explorer
                         string dlcFileName = arguments[2];
 
                         int numfiles = (arguments.Length - 3) / 2;
-                        string[] internalPaths = new String[numfiles];
-                        string[] sourcePaths = new String[numfiles];
+                        string[] internalPaths = new string[numfiles];
+                        string[] sourcePaths = new string[numfiles];
 
                         int argnum = 3; //starts at 3
                         for (int i = 0; i < internalPaths.Length; i++)
@@ -180,7 +180,7 @@ namespace ME3Explorer
 
                         int numfiles = (arguments.Length - 3);
 
-                        string[] filesToRemove = new String[numfiles];
+                        string[] filesToRemove = new string[numfiles];
 
                         int argnum = 3; //starts at 3
                         for (int i = 0; i < filesToRemove.Length; i++)
@@ -273,7 +273,7 @@ namespace ME3Explorer
             }
         }
 
-        private void openSFAR(String filename)
+        private void openSFAR(string filename)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace ME3Explorer
             }
         }
 
-        private DLCPackage openSFAR2(String filename)
+        private DLCPackage openSFAR2(string filename)
         {
             try
             {
@@ -319,7 +319,7 @@ namespace ME3Explorer
             selectSearchedElement(result);
         }
 
-        private void selectSearchedElement(String query)
+        private void selectSearchedElement(string query)
         {
             if (query == "")
                 return;
@@ -329,7 +329,7 @@ namespace ME3Explorer
                 this.treeView1.SelectedNode = SelectedNode;
                 this.treeView1.SelectedNode.Expand();
                 this.treeView1.Select();
-            };
+            }
         }
 
         private TreeNode SearchNode(string SearchText, TreeNode StartNode)
@@ -341,17 +341,17 @@ namespace ME3Explorer
                 {
                     node = StartNode;
                     break;
-                };
+                }
                 if (StartNode.Nodes.Count != 0)
                 {
                     node = SearchNode(SearchText, StartNode.Nodes[0]);//Recursive Search
                     if (node != null)
                     {
                         break;
-                    };
-                };
+                    }
+                }
                 StartNode = StartNode.NextNode;
-            };
+            }
             return node;
         }
 
@@ -409,7 +409,7 @@ namespace ME3Explorer
             }
         }
 
-        private void extractFile(int n, String exportLocation)
+        private void extractFile(int n, string exportLocation)
         {
             MemoryStream m = DLC.DecompressEntry(n);
             FileStream fs = new FileStream(exportLocation, FileMode.Create, FileAccess.Write);
@@ -441,7 +441,7 @@ namespace ME3Explorer
             }
         }
 
-        private void replaceFile(String filename, int n)
+        private void replaceFile(string filename, int n)
         {
             DLC.ReplaceEntry(filename, n);
 
@@ -575,13 +575,13 @@ namespace ME3Explorer
             DebugOutput.PrintLn("Updating DLC's PCConsoleTOC.bin");
             List<string> FileNames = toc.GetFiles(t2 + "\\");
             List<string> tet = new List<string>(t2.Split('\\'));
-            string remov = String.Join("\\", tet.ToArray());
+            string remov = string.Join("\\", tet.ToArray());
             for (int i = 0; i < FileNames.Count; i++)
                 FileNames[i] = FileNames[i].Substring(remov.Length + 1);
             string[] ts = t2.Split('\\');
             tet.Clear();
             tet.AddRange(ts);
-            string basepath = String.Join("\\", tet.ToArray()) + '\\';
+            string basepath = string.Join("\\", tet.ToArray()) + '\\';
             string tocfile = t2 + "\\PCConsoleTOC.bin";
             toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
             if (!automated)
@@ -590,10 +590,10 @@ namespace ME3Explorer
             }
         }
 
-        private void unpackSFAR(DLCPackage DLC)
+        private void unpackSFAR(DLCPackage dlc)
         {
             AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
-            if (DLC == null || DLC.Files == null)
+            if (dlc == null || dlc.Files == null)
                 return;
             string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
             if (result == "")
@@ -602,7 +602,7 @@ namespace ME3Explorer
             if (result.EndsWith(";"))
                 result = result.Substring(0, result.Length - 1);
             string[] patt = result.Split(';');
-            string file = DLC.MyFileName;                   //full path
+            string file = dlc.MyFileName;                   //full path
             string t1 = Path.GetDirectoryName(file);        //cooked
             string t2 = Path.GetDirectoryName(t1);          //DLC_Name
             string t3 = Path.GetDirectoryName(t2);          //DLC
@@ -610,12 +610,12 @@ namespace ME3Explorer
             string gamebase = Path.GetDirectoryName(t4);    //Mass Effect3
             DebugOutput.PrintLn("Extracting DLC with gamebase : " + gamebase);
             DebugOutput.PrintLn("DLC name : " + t2);
-            if (DLC.Files.Length > 1)
+            if (dlc.Files.Length > 1)
             {
                 List<int> Indexes = new List<int>();
-                for (int i = 0; i < DLC.Files.Length; i++)
+                for (int i = 0; i < dlc.Files.Length; i++)
                 {
-                    string DLCpath = DLC.Files[i].FileName;
+                    string DLCpath = dlc.Files[i].FileName;
                     for (int j = 0; j < patt.Length; j++)
                         if (DLCpath.ToLower().EndsWith(patt[j].Trim().ToLower()) && patt[j].Trim().ToLower() != "")
                         {
@@ -627,26 +627,26 @@ namespace ME3Explorer
 
                             if (!File.Exists(outpath))
                                 using (FileStream fs = new FileStream(outpath, FileMode.Create))
-                                    DLC.DecompressEntry(i).WriteTo(fs);
+                                    dlc.DecompressEntry(i).WriteTo(fs);
                             Indexes.Add(i);
                             Application.DoEvents();
                             break;
                         }
                 }
-                DLC.DeleteEntry(Indexes);
+                dlc.DeleteEntry(Indexes);
             }
 
             // AutoTOC
             DebugOutput.PrintLn("Updating DLC's PCConsoleTOC.bin");
             List<string> FileNames = toc.GetFiles(t2 + "\\");
             List<string> tet = new List<string>(t2.Split('\\'));
-            string remov = String.Join("\\", tet.ToArray());
+            string remov = string.Join("\\", tet.ToArray());
             for (int i = 0; i < FileNames.Count; i++)
                 FileNames[i] = FileNames[i].Substring(remov.Length + 1);
             string[] ts = t2.Split('\\');
             tet.Clear();
             tet.AddRange(ts);
-            string basepath = String.Join("\\", tet.ToArray()) + '\\';
+            string basepath = string.Join("\\", tet.ToArray()) + '\\';
             string tocfile = t2 + "\\PCConsoleTOC.bin";
             toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
             DebugOutput.PrintLn("DLC Done.");
@@ -676,8 +676,7 @@ namespace ME3Explorer
 
                 if (file != "")
                 {
-                    DLCPackage DLC = openSFAR2(file);
-                    unpackSFAR(DLC);
+                    unpackSFAR(openSFAR2(file));
 
                 }
             }

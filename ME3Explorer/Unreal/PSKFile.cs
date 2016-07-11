@@ -261,12 +261,12 @@ namespace ME3Explorer.Unreal
             fs.Write(buff, 0, 32);
             foreach (PSKEdge e in psk.edges)
             {
-                fs.Write(BitConverter.GetBytes((Int16)e.index), 0, 2);
+                fs.Write(BitConverter.GetBytes(e.index), 0, 2);
                 fs.Write(BitConverter.GetBytes((Int16)0), 0, 2);
                 fs.Write(BitConverter.GetBytes(e.U), 0, 4);
                 fs.Write(BitConverter.GetBytes(e.V), 0, 4);
                 fs.WriteByte(e.material);
-                fs.Write(BitConverter.GetBytes((Int32)0), 0, 3);
+                fs.Write(BitConverter.GetBytes(0), 0, 3);
             }
         }
 
@@ -281,7 +281,7 @@ namespace ME3Explorer.Unreal
                 fs.Write(BitConverter.GetBytes((Int16)f.v2), 0, 2);
                 fs.WriteByte(f.material);
                 fs.WriteByte(0);
-                fs.Write(BitConverter.GetBytes((Int32)0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0), 0, 4);
             }
         }
 

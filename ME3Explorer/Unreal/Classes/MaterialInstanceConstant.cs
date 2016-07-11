@@ -101,7 +101,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode(pcc.Exports[index].ObjectName);
             for (int i = 0; i < Textures.Count(); i++)
             {
-                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1).ToString();
+                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1);
                 s += " " + pcc.getObjectName(Textures[i].TexIndex);
                 res.Nodes.Add(s);
             }

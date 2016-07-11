@@ -82,6 +82,7 @@ namespace ME3Explorer.Unreal
             }
             catch (Exception)
             {
+                return;
             }
         }
 
@@ -223,7 +224,7 @@ namespace ME3Explorer.Unreal
         {
             if (Structs.ContainsKey(className))
             {
-                bool isImmutable = ImmutableStructs.Contains(className);
+                bool immutable = isImmutable(className);
                 ClassInfo info = Structs[className];
                 ME3Package importPCC;
                 try
@@ -257,7 +258,7 @@ namespace ME3Explorer.Unreal
                     //check if property is transient, if so, skip (neither of the structs that inherit have transient props)
                     if (info.properties.ContainsKey(propName) || propName == "None" || info.baseClass != "Class")
                     {
-                        if (isImmutable && !fullProps)
+                        if (immutable && !fullProps)
                         {
                             PropertyReader.ImportImmutableProperty(pcc, importPCC, p, className, m, true);
                         }

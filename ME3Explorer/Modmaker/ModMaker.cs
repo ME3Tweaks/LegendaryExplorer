@@ -333,7 +333,7 @@ namespace ME3Explorer
                 string size = UsefulThings.General.GetFileSizeAsString(len);
                 names[i] = (job.Name + "  --> Size: " + size);
 
-                DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
+                DebugOutput.PrintLn(string.Format("Job: {0}  size:  {1}", job.Name, job.Length));
                 DebugOutput.PrintLn("Getting further job info...");
 
                 var result = job.GetJobDetails(autoupdate == true, out versionConflict, version);
@@ -1427,7 +1427,7 @@ namespace ME3Explorer
             string searchElement = null;
 
             // KFreon: Only look if search is provided
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 searchElement = searchString.Substring(2).ToUpperInvariant();
                 Predicate<ModJob> Searcher = j =>

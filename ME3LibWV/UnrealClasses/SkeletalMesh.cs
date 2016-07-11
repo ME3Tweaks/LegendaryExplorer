@@ -457,7 +457,7 @@ namespace ME3LibWV.UnrealClasses
             Loaded = true;
             MyIndex = Index;
             Owner = pcc;
-            Flags = (int)(pcc.Exports[Index].ObjectFlags >> 32);
+            Flags = pcc.Exports[Index].ObjectFlags >> 32;
             int start = GetPropertyEnd();
             byte[] buff = new byte[pcc.Exports[Index].Data.Length - start];
             for (int i = 0; i < pcc.Exports[Index].Data.Length - start; i++)

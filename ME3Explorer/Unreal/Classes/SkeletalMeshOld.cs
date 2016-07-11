@@ -533,9 +533,9 @@ namespace ME3Explorer.Unreal.Classes
                     m.Write(BitConverter.GetBytes(X.Unk1), 0, 4);
                     m.Write(BitConverter.GetBytes(X.Unk2), 0, 4);
                     for (int j = 0; j < 4; j++)
-                        m.WriteByte((byte)X.Influences[j].bone);
+                        m.WriteByte(X.Influences[j].bone);
                     for (int j = 0; j < 4; j++)
-                        m.WriteByte((byte)X.Influences[j].weight);
+                        m.WriteByte(X.Influences[j].weight);
                     //Took me a while for this!
                     
                     WriteVector(m, X.Position);
@@ -1303,7 +1303,7 @@ namespace ME3Explorer.Unreal.Classes
             t.Nodes.Add(t1);
             t1 = new TreeNode("Active Bones");
             for (int i = 0; i < sec.ActiveBones.Count; i++)
-                t1.Nodes.Add(new TreeNode(i.ToString() + " : " + sec.ActiveBones[i]));
+                t1.Nodes.Add(new TreeNode(i + " : " + sec.ActiveBones[i]));
             t.Nodes.Add(t1);
             t1 = new TreeNode("Edges");
             t1 = ToTreeEdges(t1, sec.Edges);
@@ -1321,7 +1321,7 @@ namespace ME3Explorer.Unreal.Classes
                 string s = i.ToString("d4") + " : Tangents(" + TanToStr(e.Unk1) + "; " + TanToStr(e.Unk2) + " ) ";
                 s += "Influences(";
                 for (int j = 0; j < 4; j++)
-                    s += "{" + e.Influences[j].bone + " ; " + (float)(e.Influences[j].weight / 255f) + "}";
+                    s += "{" + e.Influences[j].bone + " ; " + e.Influences[j].weight / 255f + "}";
                 s += " Position(" + e.Position.X + "; " + e.Position.Y + "; " + e.Position.Z + " )";
                 s += " UV(" + e.UV.X + "; " + e.UV.Y + " )";
                 TreeNode t2 = new TreeNode(s);
@@ -1336,8 +1336,8 @@ namespace ME3Explorer.Unreal.Classes
             string s = "[";
             byte[] buff = BitConverter.GetBytes(t);
             for (int i = 0; i < 3; i++)
-                s += String.Format("{0:0.000}", ((buff[i] - 128) / 256f) * 2f) + " ; ";
-            s += String.Format("{0:0.000}", ((buff[3] - 128) / 256f) * 2f) + "]";
+                s += string.Format("{0:0.000}", ((buff[i] - 128) / 256f) * 2f) + " ; ";
+            s += string.Format("{0:0.000}", ((buff[3] - 128) / 256f) * 2f) + "]";
             return s;
         }
 

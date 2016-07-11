@@ -53,7 +53,7 @@ namespace KFreonLib.Helpers
 
         private Bitmap GetSystemImageForMessageBox(MessageBoxIcon icon)
         {
-            string test = Enum.GetName(typeof (MessageBoxIcon), (object)icon);
+            string test = Enum.GetName(typeof (MessageBoxIcon), icon);
             Bitmap bmp = null;
             try
             {

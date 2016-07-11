@@ -39,7 +39,7 @@ namespace ME3LibWV
 			}
 			set
 			{
-				base.List[index] = (CustomProperty)value;
+				base.List[index] = value;
 			}
 		}
 
@@ -124,7 +124,7 @@ namespace ME3LibWV
 			PropertyDescriptor[] newProps = new PropertyDescriptor[this.Count];
 			for (int i = 0; i < this.Count; i++)
 			{
-				CustomProperty  prop = (CustomProperty) this[i];
+				CustomProperty  prop = this[i];
 				newProps[i] = new CustomPropertyDescriptor(ref prop, attributes);
 			}
 

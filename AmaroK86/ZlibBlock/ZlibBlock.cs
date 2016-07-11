@@ -40,7 +40,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
             MemoryStream dataBlock = new MemoryStream();
             DeflaterOutputStream zipStream;
 
-            int numSeg = (int)Math.Ceiling((double)count / (double)maxSegmentSize);
+            int numSeg = (int)Math.Ceiling(count / (double)maxSegmentSize);
 
             headBlock.WriteValueU32(magic);
             headBlock.WriteValueU32(maxSegmentSize);
@@ -152,7 +152,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                 uint totUncomprSize = buffStream.ReadValueU32();
 
                 byte[] outputBuffer = new byte[totUncomprSize];
-                int numOfSegm = (int)Math.Ceiling((double)totUncomprSize / (double)maxSegmentSize);
+                int numOfSegm = (int)Math.Ceiling(totUncomprSize / (double)maxSegmentSize);
                 int headSegm = 16;
                 int dataSegm = headSegm + (numOfSegm * 8);
                 int buffOff = 0;

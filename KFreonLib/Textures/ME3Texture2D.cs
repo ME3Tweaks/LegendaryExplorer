@@ -114,7 +114,7 @@ namespace KFreonLib.Textures
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData);
                 headerData = new byte[propertiesOffset];
                 Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
-                pccOffset = (uint)expEntry.DataOffset;
+                pccOffset = expEntry.DataOffset;
                 List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(pccObj, rawData);
                 texName = expEntry.ObjectName;
                 for (int i = 0; i < tempProperties.Count; i++)
@@ -501,7 +501,7 @@ namespace KFreonLib.Textures
             }
             else
             {
-                char[] delimiters = new char[] { '=', ',' };
+                char[] delimiters = { '=', ',' };
                 uint maxLODSize = Convert.ToUInt32(oldValue.Split(delimiters)[3]);
                 if (maxValue > maxLODSize)
                     iniFile.IniWriteValue(section, key, newValue);
@@ -721,7 +721,7 @@ namespace KFreonLib.Textures
 
         public IImageInfo GenerateImageInfo()
         {
-            IImageInfo imginfo = imgList.First(img => (int)img.storageType != (int)ME3Texture2D.storage.empty);
+            IImageInfo imginfo = imgList.First(img => img.storageType != (int)ME3Texture2D.storage.empty);
             imginfo.GameVersion = 3;
             return imginfo;
         }

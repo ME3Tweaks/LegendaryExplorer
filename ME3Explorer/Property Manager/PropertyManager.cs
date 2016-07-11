@@ -84,14 +84,14 @@ namespace ME3Explorer
             for (int i = 0; i < count; i++)
             {
                 UPropertyReader.PropertyMeta t = new UPropertyReader.PropertyMeta();
-                string sizes = Microsoft.VisualBasic.Interaction.InputBox("What size has element #" + i.ToString() + "? (1,2 or 4 bytes)", "ME3 Explorer", "4", 0, 0);
+                string sizes = Microsoft.VisualBasic.Interaction.InputBox("What size has element #" + i + "? (1,2 or 4 bytes)", "ME3 Explorer", "4", 0, 0);
                 if (sizes == "")
                     return;
                 int size = Convert.ToInt32(sizes);
                 if (size != 1 && size != 2 && size != 4)
                     return;
                 t.size = size;
-                string types = Microsoft.VisualBasic.Interaction.InputBox("What type has element #" + i.ToString() + "? \n(0=Value, 1=Float, 2=Name, 3=Ignore)", "ME3 Explorer", "", 0, 0);
+                string types = Microsoft.VisualBasic.Interaction.InputBox("What type has element #" + i + "? \n(0=Value, 1=Float, 2=Name, 3=Ignore)", "ME3 Explorer", "", 0, 0);
                 if (types == "")
                     return;
                 int type = Convert.ToInt32(types);

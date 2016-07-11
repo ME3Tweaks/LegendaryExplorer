@@ -183,7 +183,7 @@ namespace KFreonLib.PCCObjects
                 case Type.IntProperty:
                 case Type.ObjectProperty:
                 case Type.StringRefProperty:
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.BoolProperty:
                     s += " Value: " + (p.raw[24] == 1);
@@ -269,7 +269,7 @@ namespace KFreonLib.PCCObjects
                         p.offsetval = pos + 24;
                         pos += 25;
                         byte temp = raw[p.offsetval];
-                        v.IntValue = (int)temp;
+                        v.IntValue = temp;
                         v.Boolereno = temp == 1;
                     }
                     else
@@ -391,7 +391,7 @@ namespace KFreonLib.PCCObjects
                     break;
                 case "StrProperty":
                     if (MEtype == 2)
-                        count = (int)BitConverter.ToInt32(raw, pos + 24);
+                        count = BitConverter.ToInt32(raw, pos + 24);
                     else
                         count = (int)BitConverter.ToInt64(raw, pos + 24);
                     p = new Property();
@@ -685,24 +685,24 @@ namespace KFreonLib.PCCObjects
             string s = "";
             s = "Name: " + pcc.Names[p.Name];
             s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Value.len.ToString();
+            s += " Size: " + p.Value.len;
             int MEtype = Methods.GetMEType();
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + pcc.GetName(p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + pcc.GetName(p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
                 case Type.IntProperty:
                 case Type.BoolProperty:
                 case Type.StringRefProperty:
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.ObjectProperty:
                     if (MEtype == 2)
-                        s += " Value: " + p.Value.IntValue.ToString();
+                        s += " Value: " + p.Value.IntValue;
                     else
                     {
-                        s += " Value: " + p.Value.IntValue.ToString() + " ";
+                        s += " Value: " + p.Value.IntValue + " ";
                         int v = p.Value.IntValue;
                         if (v == 0)
                             s += "None";
@@ -714,7 +714,7 @@ namespace KFreonLib.PCCObjects
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff, 0);
-                    s += " Value: " + f.ToString();
+                    s += " Value: " + f;
                     break;
                 case Type.NameProperty:
                     s += " " + pcc.Names[p.Value.IntValue];

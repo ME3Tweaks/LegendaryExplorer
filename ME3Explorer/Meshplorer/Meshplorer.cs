@@ -144,8 +144,9 @@ namespace ME3Explorer.Meshplorer
                 if (skm.LODModels.Count > 3)
                     lOD4ToolStripMenuItem.Enabled = true;
             }
-            catch (Exception)
+            catch
             {
+                return;
             }
         }
 
@@ -475,8 +476,9 @@ namespace ME3Explorer.Meshplorer
                         hb1.SelectionLength = 1;
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
+
                 }
             }
             TreeNode t = e.Node;
@@ -493,8 +495,9 @@ namespace ME3Explorer.Meshplorer
                         if (Materials[i] == idx)
                             toolStripComboBox1.SelectedIndex = i;
                 }
-                catch (Exception ex)
+                catch
                 {
+
                 }
             }
         }

@@ -31,12 +31,12 @@ namespace SevenZip.Compression.LZMA
         // these are the default properties, keeping it simple for now:
 		static object[] properties =
 				{
-					(Int32)(dictionary),
-					(Int32)(2),
-					(Int32)(3),
-					(Int32)(0),
-					(Int32)(2),
-					(Int32)(16),
+                    dictionary,
+                    2,
+                    3,
+                    0,
+                    2,
+                    16,
 					"bt4",
 					eos
 				};

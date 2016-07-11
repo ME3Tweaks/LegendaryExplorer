@@ -266,8 +266,9 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new { anim = a, group = selectedLine.numKeys[animationListBox.SelectedIndex] }), DragDropEffects.Copy);
                         }
                     }
-                    catch (Exception)
+                    catch
                     {
+                        return;
                     }
                 }
             }

@@ -720,7 +720,7 @@ namespace KFreonLib.PCCObjects
         {
             if (_data == null)
             {
-                pccRef.listsStream.Seek((long)DataOffset, SeekOrigin.Begin);
+                pccRef.listsStream.Seek(DataOffset, SeekOrigin.Begin);
                 return pccRef.listsStream.ReadBytes(DataSize);
             }
             else

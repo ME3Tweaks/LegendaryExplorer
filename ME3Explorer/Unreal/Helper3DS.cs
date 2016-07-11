@@ -37,7 +37,7 @@ namespace ME3Explorer.Unreal
         public static void AddMeshTo3DS(Lib3dsFile res, PSKFile f, Matrix m)
         {
             Lib3dsMesh mesh = new Lib3dsMesh();
-            string name =  "Box00" + res.meshes.Count.ToString();
+            string name =  "Box00" + res.meshes.Count;
             mesh.name = name;
             mesh.matrix = Matrix2FA(Matrix.Identity);
             mesh.vertices = new List<Lib3dsVertex>();

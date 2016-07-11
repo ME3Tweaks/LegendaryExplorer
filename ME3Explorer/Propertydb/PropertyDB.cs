@@ -87,7 +87,7 @@ namespace ME3Explorer.Propertydb
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -229,7 +229,7 @@ namespace ME3Explorer.Propertydb
         
         public void WriteString(string s, FileStream fs)
         {
-            byte[] buff = BitConverter.GetBytes((int)s.Length);
+            byte[] buff = BitConverter.GetBytes(s.Length);
             fs.Write(buff, 0, 4);
             for (int i = 0; i < s.Length; i++)
                 fs.WriteByte((byte)s[i]);

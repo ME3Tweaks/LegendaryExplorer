@@ -216,7 +216,7 @@ namespace UMD.HCIL.Piccolo.Activities {
 				if (activityTimer == null) {
 					activityTimer = new Timer();
 					activityTimer.Interval = PUtil.ACTIVITY_SCHEDULER_FRAME_INTERVAL;
-					activityTimer.Tick += new EventHandler(StepActivities);
+					activityTimer.Tick += StepActivities;
 				}
 				return activityTimer;
 			}

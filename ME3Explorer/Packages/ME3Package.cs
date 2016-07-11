@@ -166,7 +166,7 @@ namespace ME3Explorer.Packages
                     }
 
                     // correcting the header, in case there's need to be saved
-                    Buffer.BlockCopy(BitConverter.GetBytes((int)0), 0, header, header.Length - 12, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes(0), 0, header, header.Length - 12, sizeof(int));
                     pccStream.Read(header, header.Length - 8, 8);
                     
                     // decompress first block that holds infos about names, imports and exports
@@ -207,7 +207,7 @@ namespace ME3Explorer.Packages
                     ME3ImportEntry e = new ME3ImportEntry(this, listsStream);
                     imports.Add(e);
                     //Debug.WriteLine("Read import " + i + " " + e.ObjectName + ", offset: " + offset);
-                };
+                }
 
                 // fill export list (only the headers, not the data)
                 listsStream.Seek(ExportOffset, SeekOrigin.Begin);
@@ -320,7 +320,6 @@ namespace ME3Explorer.Packages
         ///     save PCCObject to file by reconstruction from data
         /// </summary>
         /// <param name="path">full path + file name.</param>
-        /// <param name="compress">true if you want a zlib compressed pcc file.</param>
         public void saveByReconstructing(string path)
         {
             saveByReconstructing(path, false);
@@ -460,7 +459,7 @@ namespace ME3Explorer.Packages
                     else
                         break;
                 }
-                rtValues += offset.ToString() + " ";
+                rtValues += offset + " ";
                 using (FileStream stream = new FileStream(loc + "\\exec\\infoCache.bin", FileMode.Append))
                 {
                     stream.Seek(0, SeekOrigin.End);
@@ -714,7 +713,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (String.Compare(nameToFind, getNameEntry(i)) == 0)
+                if (string.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
             }
             return -1;

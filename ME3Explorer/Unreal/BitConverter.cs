@@ -23,19 +23,7 @@ namespace ME3Explorer
         ///     architecture.
         ///</summary>
         public static bool IsLittleEndian { get; set; } // should default to false, which is what we want for Empire
-
-        /// <summary>
-        ///     Converts the specified double-precision floating point number to a 64-bit
-        ///     signed integer.
-        ///
-        /// Parameters:
-        ///   value:
-        ///     The number to convert.
-        ///
-        /// Returns:
-        ///     A 64-bit signed integer whose value is equivalent to value.
-        ///</summary>
-        public static long DoubleToInt64Bits(double value) { throw new NotImplementedException(); }
+        
         ///
         /// <summary>
         ///     Returns the specified Boolean value as an array of bytes.
@@ -203,7 +191,6 @@ namespace ME3Explorer
         /// Returns:
         ///     An array of bytes with length 4.
         ///</summary>
-        [CLSCompliant(false)]
         public static byte[] GetBytes(uint value)
         {
             if (IsLittleEndian)
@@ -226,7 +213,6 @@ namespace ME3Explorer
         /// Returns:
         ///     An array of bytes with length 8.
         ///</summary>
-        [CLSCompliant(false)]
         public static byte[] GetBytes(ulong value)
         {
             if (IsLittleEndian)
@@ -260,19 +246,6 @@ namespace ME3Explorer
                 return System.BitConverter.GetBytes(value).Reverse().ToArray();
             }
         }
-        ///
-        /// <summary>
-        ///     Converts the specified 64-bit signed integer to a double-precision floating
-        ///     point number.
-        ///
-        /// Parameters:
-        ///   value:
-        ///     The number to convert.
-        ///
-        /// Returns:
-        ///     A double-precision floating point number whose value is equivalent to value.
-        ///</summary>
-        public static double Int64BitsToDouble(long value) { throw new NotImplementedException(); }
         ///
         /// <summary>
         ///     Returns a Boolean value converted from one byte at a specified position in
@@ -352,7 +325,19 @@ namespace ME3Explorer
         ///   System.ArgumentOutOfRangeException:
         ///     startIndex is less than zero or greater than the length of value minus 1.
         ///</summary>
-        public static double ToDouble(byte[] value, int startIndex) { throw new NotImplementedException(); }
+        public static double ToDouble(byte[] value, int startIndex)
+        {
+            if (startIndex > value.Length - sizeof(double))
+                return 0;
+            if (IsLittleEndian)
+            {
+                return System.BitConverter.ToDouble(value, startIndex);
+            }
+            else
+            {
+                return System.BitConverter.ToDouble(value.Reverse().ToArray(), value.Length - sizeof(double) - startIndex);
+            }
+        }
         ///
         /// <summary>
         ///     Returns a 16-bit signed integer converted from two bytes at a specified position
@@ -469,7 +454,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToInt64(value.Reverse().ToArray(), value.Length - sizeof(Int64) - startIndex);
+                return System.BitConverter.ToInt64(value.Reverse().ToArray(), value.Length - sizeof(long) - startIndex);
             }
         }
         ///
@@ -507,7 +492,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToSingle(value.Reverse().ToArray(), value.Length - sizeof(Single) - startIndex);
+                return System.BitConverter.ToSingle(value.Reverse().ToArray(), value.Length - sizeof(float) - startIndex);
             }
         }
         ///

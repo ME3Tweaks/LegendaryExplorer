@@ -39,7 +39,7 @@ namespace ME3Explorer.Unreal
 			}
 			set
 			{
-				base.List[index] = (CustomProperty)value;
+				base.List[index] = value;
 			}
 		}
 
@@ -49,7 +49,7 @@ namespace ME3Explorer.Unreal
 		/// Get Class Name
 		/// </summary>
 		/// <returns>String</returns>
-		public String GetClassName()
+		public string GetClassName()
 		{
 			return TypeDescriptor.GetClassName(this,true);
 		}
@@ -67,7 +67,7 @@ namespace ME3Explorer.Unreal
 		/// GetComponentName
 		/// </summary>
 		/// <returns>String</returns>
-		public String GetComponentName()
+		public string GetComponentName()
 		{
 			return TypeDescriptor.GetComponentName(this, true);
 		}
@@ -124,7 +124,7 @@ namespace ME3Explorer.Unreal
 			PropertyDescriptor[] newProps = new PropertyDescriptor[this.Count];
 			for (int i = 0; i < this.Count; i++)
 			{
-				CustomProperty  prop = (CustomProperty) this[i];
+				CustomProperty  prop = this[i];
 				newProps[i] = new CustomPropertyDescriptor(ref prop, attributes);
 			}
 

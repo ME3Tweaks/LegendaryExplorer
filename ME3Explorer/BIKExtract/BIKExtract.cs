@@ -77,7 +77,7 @@ namespace ME3Explorer
                 }
                 listBox1.Items.Clear();
                 for (int i = 0; i < entr.Count; i++)
-                    listBox1.Items.Add("#" + i.ToString() + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
+                    listBox1.Items.Add("#" + i + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
                 listBox2.Items.Clear();
                 listBox2.Items.Add("Loaded " + Path.GetFileName(path) + "\nCount: " + entr.Count);
             }

@@ -408,7 +408,7 @@ namespace UDKExplorer
             string s = p.offset.ToString("X4") + ": ";
             s += "Name: \"" + udk.getName(p.name) + "\" ";
             s += "Type: \"" + udk.getName(p.type) + "\" ";
-            s += "Size: " + p.size.ToString() + " Value: ";
+            s += "Size: " + p.size + " Value: ";
             nodeType propertyType = getType(udk.getName(p.type));
             int idx;
             byte val;
@@ -420,7 +420,7 @@ namespace UDKExplorer
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() +  " (" + udk.getObjectName(idx) + ")";
+                    s += idx +  " (" + udk.getObjectName(idx) + ")";
                     break;
                 case nodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -460,7 +460,7 @@ namespace UDKExplorer
                     break;
                 case nodeType.ArrayProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString() + "(count)";
+                    s += idx + "(count)";
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -834,7 +834,7 @@ namespace UDKExplorer
                         propDropdown.Visible = true;
                         break;
                     case nodeType.StructLeafDeg:
-                        proptext.Text = ((float)BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
                         proptext.Visible = true;
                         break;
                     case nodeType.StructLeafObject:

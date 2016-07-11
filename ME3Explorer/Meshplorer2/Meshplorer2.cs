@@ -40,7 +40,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void scanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -275,13 +275,13 @@ namespace ME3Explorer.Meshplorer2
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 BitConverter.IsLittleEndian = true;
-                fs.Write(BitConverter.GetBytes((int)Entries.Count), 0, 4);
+                fs.Write(BitConverter.GetBytes(Entries.Count), 0, 4);
                 foreach(EntryStruct es in Entries)
                 {
                     WriteString(fs, es.Filename);
                     WriteString(fs, es.DLCName);
                     WriteString(fs, es.ObjectPath);
-                    fs.Write(BitConverter.GetBytes((int)es.Index), 0, 4);
+                    fs.Write(BitConverter.GetBytes(es.Index), 0, 4);
                     if (es.isDLC)
                         fs.WriteByte(1);
                     else
@@ -298,7 +298,7 @@ namespace ME3Explorer.Meshplorer2
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 
@@ -470,7 +470,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void Meshplorer2_Load(object sender, EventArgs e)
         {
-            this.pb1.MouseWheel += new MouseEventHandler(MouseWheelHandler);
+            this.pb1.MouseWheel += MouseWheelHandler;
         }
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)

@@ -156,22 +156,22 @@ namespace ME3LibWV
             string s = "";
             s = "Name: " + pcc.Names[p.Name];
             s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Value.len.ToString();
+            s += " Size: " + p.Value.len;
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + pcc.GetName (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + pcc.GetName (p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
                 case Type.IntProperty:                
                 case Type.ObjectProperty:
                 case Type.BoolProperty:
                 case Type.StringRefProperty :
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff,0);
-                    s += " Value: " + f.ToString();
+                    s += " Value: " + f;
                     break;
                 case Type.NameProperty:
                     s += " " + pcc.Names[p.Value.IntValue];

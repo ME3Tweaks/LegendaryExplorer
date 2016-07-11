@@ -271,7 +271,8 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+                ToolInfoPanelOpen = false;
+                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 0, 50);
             }
             UtilitiesOpen = false;
             utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
@@ -304,7 +305,8 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+                ToolInfoPanelOpen = false;
+                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 0, 50);
             }
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
@@ -321,6 +323,7 @@ namespace ME3Explorer
             toolInfoPanel.setTool(e);
             if (!ToolInfoPanelOpen && !DisableFlyouts)
             {
+                ToolInfoPanelOpen = true;
                 toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
             }
         }
