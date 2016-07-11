@@ -384,6 +384,26 @@ namespace ME3Explorer
             });
             list.Add(new Tool
             {
+                name = "FaceFXAnimSet Editor",
+                icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
+                open = () =>
+                {
+                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3");
+                    switch (result)
+                    {
+                        case "ME3":
+                            (new FaceFXAnimSetEditor.FaceFXAnimSetEditor()).Show();
+                            break;
+                        case "ME2":
+                            (new ME2Explorer.FaceFXAnimSetEditor()).Show();
+                            break;
+                    }
+                },
+                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
+                subCategory = "Scene Shop",
+            });
+            list.Add(new Tool
+            {
                 name = "GUID Cache Editor",
                 icon = Application.Current.FindResource("iconGUIDCacheEditor") as ImageSource,
                 open = () =>

@@ -168,6 +168,13 @@
     <Compile Include="MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME2\FaceFXAnimSetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME2\FaceFXAnimSetEditor.Designer.cs">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME2\Unreal\Classes\FaceFXAnimSet.cs" />
     <Compile Include="SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -821,6 +828,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
+      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>
