@@ -12,15 +12,15 @@ using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using Be.Windows.Forms;
 
-namespace ME3Explorer.WwiseBankViewer
+namespace ME3Explorer.WwiseBankEditor
 {
-    public partial class WwiseViewer : Form
+    public partial class WwiseEditor : Form
     {
         public ME3Package pcc;
         public List<int> objects;
         public WwiseBank bank;
 
-        public WwiseViewer()
+        public WwiseEditor()
         {
             InitializeComponent();
         }

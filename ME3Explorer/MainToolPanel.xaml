@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ME3Explorer"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="650">
-    <Grid Width="650">
+    <Grid x:Name="rootGrid" Width="650">
         <Grid Width="650">
             <Grid Margin="15,24">
 

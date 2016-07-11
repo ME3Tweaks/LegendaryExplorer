@@ -20,6 +20,8 @@ namespace ME3Explorer
     /// </summary>
     public partial class MainToolPanel : ToolListControl
     {
+        public event EventHandler<Tool> ToolMouseOver;
+
         public MainToolPanel()
         {
             InitializeComponent();
@@ -44,6 +46,7 @@ namespace ME3Explorer
         protected override void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             base.Button_MouseEnter(sender, e);
+            ToolMouseOver?.Invoke(sender, (sender as Button)?.DataContext as Tool);
         }
 
         protected override void Button_MouseLeave(object sender, MouseEventArgs e)

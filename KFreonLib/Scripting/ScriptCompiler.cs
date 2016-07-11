@@ -29,9 +29,9 @@ namespace KFreonLib.Scripting
             options.GenerateExecutable = false;
             options.GenerateInMemory = true;
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string[] dlls1 = Directory.GetFiles(path, "Amarok86*.dll");
-            string[] dlls2 = Directory.GetFiles(path, "Gibbed.*.dll");
-            string[] dlls3 = Directory.GetFiles(path, "SaltTPF.dll");
+            string[] dlls1 = Directory.GetFiles(path, "Amarok86*.dll", SearchOption.AllDirectories);
+            string[] dlls2 = Directory.GetFiles(path, "Gibbed.*.dll", SearchOption.AllDirectories);
+            string[] dlls3 = Directory.GetFiles(path, "SaltTPF.dll", SearchOption.AllDirectories);
             options.ReferencedAssemblies.AddRange(dlls1.Select(f => Path.Combine(path, f)).ToArray());
             options.ReferencedAssemblies.AddRange(dlls2.Select(f => Path.Combine(path, f)).ToArray());
             options.ReferencedAssemblies.AddRange(dlls2.Select(f => Path.Combine(path, f)).ToArray());

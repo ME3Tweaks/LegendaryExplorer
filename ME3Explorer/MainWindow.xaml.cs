@@ -29,6 +29,7 @@ namespace ME3Explorer
         private bool AdvancedOpen = false;
         private bool UtilitiesOpen = false;
         private bool CreateModsOpen = false;
+        private bool ToolInfoPanelOpen = false;
         
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
@@ -268,6 +269,10 @@ namespace ME3Explorer
 
         private void closeUtilities(int duration = 300)
         {
+            if (ToolInfoPanelOpen)
+            {
+                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+            }
             UtilitiesOpen = false;
             utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             utilitiesButton.OpacityMask = LabelTextBrush;
@@ -297,9 +302,32 @@ namespace ME3Explorer
 
         private void closeCreateMods(int duration = 300)
         {
+            if (ToolInfoPanelOpen)
+            {
+                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+            }
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             createModsButton.OpacityMask = LabelTextBrush;
+        }
+
+        private void utilitiesPanel_ToolMouseOver(object sender, Tool e)
+        {
+            openToolInfo(e);
+        }
+
+        private void openToolInfo(Tool e)
+        {
+            toolInfoPanel.setTool(e);
+            if (!ToolInfoPanelOpen && !DisableFlyouts)
+            {
+                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+            }
+        }
+
+        private void createModsPanel_ToolMouseOver(object sender, Tool e)
+        {
+            openToolInfo(e);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace ME3Explorer.WwiseBankViewer
+﻿namespace ME3Explorer.WwiseBankEditor
 {
-    partial class WwiseViewer
+    partial class WwiseEditor
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WwiseViewer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WwiseEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

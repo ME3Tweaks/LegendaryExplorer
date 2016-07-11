@@ -109,6 +109,7 @@
         <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
         <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
         <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
+        <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebank_editor_64x64.png"/>
 
         <BitmapImage x:Key="iconAutoTOC" UriSource="Icons/autotoc_64x64.png"/>
         <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>

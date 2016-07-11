@@ -16,6 +16,7 @@ namespace ME3Explorer
         public Action open { get; set; }
         public List<string> tags;
         public string subCategory { get; set; }
+        public string description { get; set; }
     }
 
     public static class Tools
@@ -35,7 +36,8 @@ namespace ME3Explorer
                 {
                     (new AutoTOC.AutoTOC()).Show();
                 },
-                tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" }
+                tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
+                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
             list.Add(new Tool
             {
@@ -45,7 +47,8 @@ namespace ME3Explorer
                 {
                     (new ModMaker()).Show();
                 },
-                tags = new List<string> { "user", ".mod", "mod", "mesh" }
+                tags = new List<string> { "user", ".mod", "mod", "mesh" },
+                description = "ModMaker is a tool used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
             });
             list.Add(new Tool
             {
@@ -55,7 +58,8 @@ namespace ME3Explorer
                 {
                     (new KFreonTPFTools3()).Show();
                 },
-                tags = new List<string> { "user", "texture", "tpf", "dds", "bmp", "jpg", "png" }
+                tags = new List<string> { "user", "texture", "tpf", "dds", "bmp", "jpg", "png" },
+                description = "TPF Tools is the toolset’s primary texture installation utility for users. An alternative to Texmod, TPF Tools allows for permanent insertion of textures into game files. It’s compatible with a variety of texture formats, will help “repair” improperly-formatted textures, and has an assortment of other features.\n\nTPF Tools can also be used by modders to package textures into TPFs for distribution."
             });
             #endregion
 
@@ -70,8 +74,9 @@ namespace ME3Explorer
                     assExp.Show();
                     assExp.LoadMe();
                 },
-                tags = new List<string> { "utlity", "novice", "friendly", "user-friendly" },
+                tags = new List<string> { "utility", "novice", "friendly", "user-friendly" },
                 subCategory = "Explorers",
+                description = "Asset Explorer is a useful utility for newcomers to modding Mass Effect. It allows for the browsing of ME3 PCC files via a somewhat user-friendly GUI.\n\nAttention: this tool is in archival state and may contain features that no longer function.",
             });
             list.Add(new Tool
             {
@@ -83,6 +88,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
                 subCategory = "Extractors + Repackers",
+                description = "Audio Extractor** is a utility that extracts sound data from ME3 AFC files."
             });
             list.Add(new Tool
             {
@@ -94,6 +100,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "bik", "movie" },
                 subCategory = "Extractors + Repackers",
+                description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
             });
             list.Add(new Tool
             {
@@ -118,6 +125,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "code", "endian" },
                 subCategory = "Converters",
+                description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
             list.Add(new Tool
             {
@@ -129,6 +137,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "texture", "convert", "dds", "bmp", "jpg", "png" },
                 subCategory = "Converters",
+                description = "Image Engine is a texture conversion utility. It supports BMP, JPG, PNG, TGA files, as well as a variety of DDS formats and compressions. Modification to mipmaps are also supported.",
             });
             list.Add(new Tool
             {
@@ -140,6 +149,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utiity", "dialogue", "matinee", "cutscene", "animcutscene" },
                 subCategory = "Explorers",
+                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
             list.Add(new Tool
             {
@@ -173,6 +183,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer" },
                 subCategory = "Databases",
+                description = "Plot Database is a cross-game utility used to store story data associated with plot IDs. The tool comes pre-loaded with a default .db that can be customized by the user. Never look up a plot bool or integer again!",
             });
             list.Add(new Tool
             {
@@ -272,6 +283,19 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "dialogue", "text", "line" },
                 subCategory = "Explorers",
+                description = "Subtitle Scanner is a utility for ME3 that scans game files for all subtitles and displays the results in a searchable dialog.",
+            });
+            list.Add(new Tool
+            {
+                name = "WwiseBank Editor",
+                icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
+                open = () =>
+                {
+                    (new WwiseBankEditor.WwiseEditor()).Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "text", "line" },
+                subCategory = "Scene Shop",
+                description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
             });
             #endregion
 
@@ -308,6 +332,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "coalesced", "ini", "bin" },
                 subCategory = "Core",
+                description = "Coalesced Editor is used to create and edit ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.\n\nAttention: This tool is deprecated and does not work correctly for DLC.It will be updated soon.Use with caution.",
             });
             list.Add(new Tool
             {
@@ -319,6 +344,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
                 subCategory = "Core",
+                description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
             });
             list.Add(new Tool
             {
@@ -330,6 +356,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
+                description = "Dialogue Editor is  cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
             });
             list.Add(new Tool
             {
@@ -378,6 +405,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "advanced", "cloning", "import", "export" },
                 subCategory = "Core",
+                description = "ME3Creator is the toolset’s most advanced modding tool for ME3. It allows for level viewing, intrafile and interfile import and export cloning, re-linking of game objects, and much more.",
             });
             list.Add(new Tool
             {
@@ -413,6 +441,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u"},
                 subCategory = "Core",
+                description = "Package Editor is the toolset’s main tool for editing trilogy package files in various formats (PCC, UPK, SFM). Properties, arrays, names, curve data, and more can all be easily added and edited."
             });
             list.Add(new Tool
             {
@@ -424,6 +453,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
+                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             list.Add(new Tool
             {
@@ -435,6 +465,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = "SFARS",
+                description = "SFAR Basic Editor loads ME3 DLC SFARs, allowing for exploration and basic edits within a relatively user-friendly GUI.",
             });
             list.Add(new Tool
             {
@@ -446,6 +477,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = "SFARS",
+                description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. It displays technical data absent from the Basic Editor and contains searching and unpack features.",
             });
             list.Add(new Tool
             {
@@ -457,6 +489,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc", "toc", "tocing" },
                 subCategory = "SFARS",
+                description = "SFAR TOC Updater updates PCConsoleTOC.bin files that are inside unpacked ME3 SFARs. Due to DLC unpacking requirement for texture viewing and modification, most users will never use this tool."
             });
             list.Add(new Tool
             {
@@ -468,6 +501,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
+                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
             });
             list.Add(new Tool
             {
@@ -479,6 +513,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
                 subCategory = "Meshes + Textures",
+                description = "Texplorer is the toolset’s primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
             });
             list.Add(new Tool
             {
@@ -490,6 +525,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
                 subCategory = "Scene Shop",
+                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
             });
             list.Add(new Tool
             {
@@ -501,6 +537,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
                 subCategory = "Scene Shop",
+                description = "ME1 TLK Editor extracts tlk files from ME1 packages and converts them into xml, allowing users to edit the display of all game text. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
             });
             #endregion
 

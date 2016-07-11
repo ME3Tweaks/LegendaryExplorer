@@ -44,13 +44,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icons\me3exp_favicon.ico</ApplicationIcon>
@@ -195,9 +196,9 @@
     </Compile>
     <Compile Include="CurveEd\Handle.cs" />
     <Compile Include="CurveEd\InterpCurve.cs" />
-	<Compile Include="FaceFXAnimSetEditor\FaceFXEditor.xaml.cs">
-		<DependentUpon>FaceFXEditor.xaml</DependentUpon>
-	</Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXEditor.xaml.cs">
+      <DependentUpon>FaceFXEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property Dumper\PropDumper.Designer.cs">
       <DependentUpon>PropDumper.cs</DependentUpon>
     </Compile>
@@ -319,6 +320,9 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="TOCeditor.cs" />
+    <Compile Include="ToolInfoPanel.xaml.cs">
+      <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolListControl.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ToolPanel.xaml.cs">
@@ -437,12 +441,6 @@
     <Compile Include="AutoTOC\AutoTOC.Designer.cs">
       <DependentUpon>AutoTOC.cs</DependentUpon>
     </Compile>
-    <Compile Include="batchrenamer\BatchRenamer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="batchrenamer\BatchRenamer.Designer.cs">
-      <DependentUpon>BatchRenamer.cs</DependentUpon>
-    </Compile>
     <Compile Include="BIKExtract\BIKExtract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -541,12 +539,6 @@
     <Compile Include="Interpreter\InterpreterHost.Designer.cs">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="Language Selector\Language Selector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Language Selector\Language Selector.Designer.cs">
-      <DependentUpon>Language Selector.cs</DependentUpon>
-    </Compile>
     <Compile Include="LevelExplorer\Levelbase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -572,7 +564,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-	<Page Include="FaceFXAnimSetEditor\FaceFXEditor.xaml">
+    <Page Include="FaceFXAnimSetEditor\FaceFXEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -583,6 +575,10 @@
     <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolInfoPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolPanel.xaml">
       <SubType>Designer</SubType>
@@ -758,9 +754,6 @@
     <EmbeddedResource Include="AutoTOC\AutoTOC.resx">
       <DependentUpon>AutoTOC.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="batchrenamer\BatchRenamer.resx">
-      <DependentUpon>BatchRenamer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
@@ -812,9 +805,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language Selector\Language Selector.resx">
-      <DependentUpon>Language Selector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
       <DependentUpon>Levelbase.cs</DependentUpon>
@@ -988,10 +978,6 @@
     <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
       <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
       <Name>ME3LibWV</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ME3VanillaMaker\ME3VanillaMaker.csproj">
-      <Project>{2d2226f5-75d2-4aee-9799-eaab9fc931af}</Project>
-      <Name>ME3VanillaMaker</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
@@ -1189,7 +1175,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
-xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
 call "$(DevEnvDir)..\Tools\vsvars32.bat"
 editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
