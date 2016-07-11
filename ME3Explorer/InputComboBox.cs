@@ -8,14 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ME1Explorer
+namespace ME3Explorer
 {
     public partial class InputComboBox : Form
     {
         public InputComboBox()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
         }
 
         private void okButton_Click(object sender, EventArgs e)
@@ -28,7 +27,7 @@ namespace ME1Explorer
             Close();
         }
 
-        public static string GetValue(string promptText, List<string> items, string defaultValue = "") {
+        public static string GetValue(string promptText, IEnumerable<string> items, string defaultValue = "") {
             InputComboBox prompt = new InputComboBox();
             prompt.label1.Text = promptText;
             prompt.comboBox1.Items.AddRange(items.ToArray());

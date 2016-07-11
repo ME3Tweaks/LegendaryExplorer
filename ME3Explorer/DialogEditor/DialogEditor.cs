@@ -56,16 +56,16 @@ namespace ME3Explorer.DialogEditor
         {
             if (Objs == null)
                 return;
-            toolStripComboBox1.Items.Clear();
+            bioConversationComboBox.Items.Clear();
             foreach (int i in Objs)
-                toolStripComboBox1.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
-            if (toolStripComboBox1.Items.Count != 0)
-                toolStripComboBox1.SelectedIndex = 0;
+                bioConversationComboBox.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
+            if (bioConversationComboBox.Items.Count != 0)
+                bioConversationComboBox.SelectedIndex = 0;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            int n = toolStripComboBox1.SelectedIndex;
+            int n = bioConversationComboBox.SelectedIndex;
             if (n == -1)
                 return;
             Dialog = new BioConversation(pcc, Objs[n]);
@@ -85,34 +85,34 @@ namespace ME3Explorer.DialogEditor
         {
             if (Dialog == null)
                 return;
-            listBox1.Items.Clear();
-            listBox2.Items.Clear();
-            listBox3.Items.Clear();
-            listBox4.Items.Clear();
-            listBox5.Items.Clear();
-            treeView1.Nodes.Clear();
-            treeView2.Nodes.Clear();
+            startingListBox.Items.Clear();
+            speakerListBox.Items.Clear();
+            stageDirectionsListBox.Items.Clear();
+            maleFaceSetsListBox.Items.Clear();
+            femaleFaceSetsListBox.Items.Clear();
+            entryListTreeView.Nodes.Clear();
+            replyListTreeView.Nodes.Clear();
             int count = 0;
             foreach (int i in Dialog.StartingList)
-                listBox1.Items.Add((count++) + " : " + i);
+                startingListBox.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, pcc));
+                entryListTreeView.Nodes.Add(e.ToTree(count++, pcc));
             count = 0;
             foreach (BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, pcc));
+                replyListTreeView.Nodes.Add(r.ToTree(count++, pcc));
             count = 0;
             foreach (int i in Dialog.SpeakerList)
-                listBox2.Items.Add((count++) + " : " + i + " , " + pcc.getNameEntry(i));
+                speakerListBox.Items.Add((count++) + " : " + i + " , " + pcc.getNameEntry(i));
             count = 0;
             foreach (BioConversation.StageDirectionStruct sd in Dialog.StageDirections)
-                listBox3.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + TalkFiles.findDataById(sd.StringRef));
+                stageDirectionsListBox.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + TalkFiles.findDataById(sd.StringRef));
             count = 0;
             foreach (int i in Dialog.MaleFaceSets)
-                listBox4.Items.Add((count++) + " : " + i);
+                maleFaceSetsListBox.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (int i in Dialog.FemaleFaceSets)
-                listBox5.Items.Add((count++) + " : " + i);
+                femaleFaceSetsListBox.Items.Add((count++) + " : " + i);
         }
 
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -126,7 +126,7 @@ namespace ME3Explorer.DialogEditor
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = startingListBox.SelectedIndex) == -1)
                 return;
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", Dialog.StartingList[n].ToString(), 0, 0);
             if (result == "")
@@ -140,7 +140,7 @@ namespace ME3Explorer.DialogEditor
         private void listBox2_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = speakerListBox.SelectedIndex) == -1)
                 return;
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name entry", "ME3Explorer", Dialog.SpeakerList[n].ToString(), 0, 0);
             if (result == "")
@@ -154,7 +154,7 @@ namespace ME3Explorer.DialogEditor
         private void listBox4_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = maleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", Dialog.MaleFaceSets[n].ToString(), 0, 0);
             if (result == "")
@@ -168,7 +168,7 @@ namespace ME3Explorer.DialogEditor
         private void listBox5_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = femaleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", Dialog.FemaleFaceSets[n].ToString(), 0, 0);
             if (result == "")
@@ -234,7 +234,7 @@ namespace ME3Explorer.DialogEditor
         private void fromStartingListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = startingListBox.SelectedIndex) == -1)
                 return;
             Dialog.StartingList.RemoveAt(n);
             RefreshTabs();
@@ -243,7 +243,7 @@ namespace ME3Explorer.DialogEditor
         private void fromSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = speakerListBox.SelectedIndex) == -1)
                 return;
             Dialog.SpeakerList.RemoveAt(n);
             RefreshTabs();
@@ -252,7 +252,7 @@ namespace ME3Explorer.DialogEditor
         private void fromMaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = maleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             Dialog.MaleFaceSets.RemoveAt(n);
             RefreshTabs();
@@ -261,7 +261,7 @@ namespace ME3Explorer.DialogEditor
         private void fromFemalFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = femaleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             Dialog.FemaleFaceSets.RemoveAt(n);
             RefreshTabs();
@@ -270,7 +270,7 @@ namespace ME3Explorer.DialogEditor
         private void listBox3_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = stageDirectionsListBox.SelectedIndex) == -1)
                 return;
             BioConversation.StageDirectionStruct sd = Dialog.StageDirections[n];
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME3Explorer", Dialog.StageDirections[n].Text, 0, 0);
@@ -290,7 +290,7 @@ namespace ME3Explorer.DialogEditor
         private void stageDirectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
+            if (pcc == null || Dialog == null || (n = stageDirectionsListBox.SelectedIndex) == -1)
                 return;
             BioConversation.StageDirectionStruct sd = new BioConversation.StageDirectionStruct();
             sd.Text = "";
@@ -445,7 +445,7 @@ namespace ME3Explorer.DialogEditor
 
         private void toReplysEntryListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView2.SelectedNode;
+            TreeNode t = replyListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -473,7 +473,7 @@ namespace ME3Explorer.DialogEditor
 
         private void fromReplysEntryListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView2.SelectedNode;
+            TreeNode t = replyListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -486,7 +486,7 @@ namespace ME3Explorer.DialogEditor
 
         private void replyListEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView2.SelectedNode;
+            TreeNode t = replyListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
             BioConversation.ReplyListStruct rp = new BioConversation.ReplyListStruct();
@@ -669,7 +669,7 @@ namespace ME3Explorer.DialogEditor
 
         private void toEntrysSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -701,7 +701,7 @@ namespace ME3Explorer.DialogEditor
 
         private void fromEntrysSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -714,7 +714,7 @@ namespace ME3Explorer.DialogEditor
 
         private void fromEntrysReplyListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -727,7 +727,7 @@ namespace ME3Explorer.DialogEditor
 
         private void fromReplyListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView2.SelectedNode;
+            TreeNode t = replyListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
             Dialog.ReplyList.RemoveAt(t.Index);
@@ -736,7 +736,7 @@ namespace ME3Explorer.DialogEditor
 
         private void fromEntryListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
             Dialog.EntryList.RemoveAt(t.Index);
@@ -745,7 +745,7 @@ namespace ME3Explorer.DialogEditor
 
         private void entryListEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
             BioConversation.EntryListStuct el0 = Dialog.EntryList[t.Index];
@@ -789,7 +789,7 @@ namespace ME3Explorer.DialogEditor
 
         private void entrysReplyListEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -818,7 +818,7 @@ namespace ME3Explorer.DialogEditor
 
         private void toEntrysReplyListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode t = treeView1.SelectedNode;
+            TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent == null)
                 return;
             TreeNode p = t.Parent;
@@ -856,22 +856,22 @@ namespace ME3Explorer.DialogEditor
 
         private void entriesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            treeView1.ExpandAll();
+            entryListTreeView.ExpandAll();
         }
 
         private void repliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            treeView2.ExpandAll();
+            replyListTreeView.ExpandAll();
         }
 
         private void entriesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            treeView1.CollapseAll();
+            entryListTreeView.CollapseAll();
         }
 
         private void repliesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            treeView2.CollapseAll();
+            replyListTreeView.CollapseAll();
         }
 
         private void DialogEditor_DragEnter(object sender, DragEventArgs e)

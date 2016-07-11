@@ -488,10 +488,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogEditor\DialogVisObjects.cs" />
-    <Compile Include="DialogEditor\InputComboBox.cs">
+    <Compile Include="InputComboBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogEditor\InputComboBox.Designer.cs">
+    <Compile Include="InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="DLLInjector\DLLInjector.cs">
@@ -599,12 +599,6 @@
     <Compile Include="ME1\DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME1\DialogEditor\InputComboBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME1\DialogEditor\InputComboBox.Designer.cs">
-      <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\SaveGameEditor\SaveEditor.cs">
@@ -642,12 +636,6 @@
     </Compile>
     <Compile Include="ME2\DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ME2\DialogEditor\InputComboBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\DialogEditor\InputComboBox.Designer.cs">
-      <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Packages\SaltLZOHelper.cs" />
     <Compile Include="ME2\TlkManager\TalkFiles.cs" />
@@ -780,7 +768,7 @@
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogEditor\InputComboBox.resx">
+    <EmbeddedResource Include="InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
@@ -819,9 +807,6 @@
     <EmbeddedResource Include="ME1\DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ME1\DialogEditor\InputComboBox.resx">
-      <DependentUpon>InputComboBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ME1\SaveGameEditor\SaveEditor.resx">
       <DependentUpon>SaveEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -836,9 +821,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME2\DialogEditor\InputComboBox.resx">
-      <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\TlkManager\TlkManager.resx">
       <DependentUpon>TlkManager.cs</DependentUpon>

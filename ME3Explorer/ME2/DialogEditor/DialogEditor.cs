@@ -10,6 +10,7 @@ using ME2Explorer.Unreal;
 using ME2Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer;
 
 namespace ME2Explorer
 {

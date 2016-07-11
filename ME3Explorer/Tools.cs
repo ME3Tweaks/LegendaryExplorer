@@ -352,7 +352,20 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
-                    (new DialogEditor.DialogEditor()).Show();
+                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2", "ME1" }, "ME3");
+                    switch (result)
+                    {
+                        case "ME3":
+                            (new DialogEditor.DialogEditor()).Show();
+                            break;
+                        case "ME2":
+                            (new ME2Explorer.DialogEditor()).Show();
+                            break;
+                        case "ME1":
+                            (new ME1Explorer.DialogEditor()).Show();
+                            break;
+                    }
+                    
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
@@ -360,11 +373,11 @@ namespace ME3Explorer
             });
             list.Add(new Tool
             {
-                name = "FaceFXAnimSet Editor",
+                name = "FaceFX Editor",
                 icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
                 open = () =>
                 {
-                    (new FaceFXAnimSetEditor.FaceFXAnimSetEditor()).Show();
+                    (new FaceFXAnimSetEditor.FaceFXEditor()).Show();
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
                 subCategory = "Scene Shop",

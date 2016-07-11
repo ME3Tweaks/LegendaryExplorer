@@ -116,7 +116,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(610, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -506,7 +505,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(602, 387);
+            this.tabPage2.Size = new System.Drawing.Size(602, 363);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Entry List";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -517,7 +516,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(3, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(596, 381);
+            this.treeView1.Size = new System.Drawing.Size(596, 357);
             this.treeView1.TabIndex = 0;
             this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             // 
@@ -527,7 +526,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(602, 387);
+            this.tabPage3.Size = new System.Drawing.Size(602, 363);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Reply List";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -539,7 +538,7 @@
             this.treeView2.HideSelection = false;
             this.treeView2.Location = new System.Drawing.Point(3, 3);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(596, 381);
+            this.treeView2.Size = new System.Drawing.Size(596, 357);
             this.treeView2.TabIndex = 0;
             this.treeView2.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView2_NodeMouseDoubleClick);
             // 
@@ -549,7 +548,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(602, 387);
+            this.tabPage4.Size = new System.Drawing.Size(602, 363);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Speaker List";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -563,7 +562,7 @@
             this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(3, 3);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(596, 381);
+            this.listBox2.Size = new System.Drawing.Size(596, 357);
             this.listBox2.TabIndex = 0;
             this.listBox2.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
             // 
@@ -573,7 +572,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(602, 387);
+            this.tabPage5.Size = new System.Drawing.Size(602, 363);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Script List";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -587,7 +586,7 @@
             this.listBox3.ItemHeight = 16;
             this.listBox3.Location = new System.Drawing.Point(3, 3);
             this.listBox3.Name = "listBox3";
-            this.listBox3.Size = new System.Drawing.Size(596, 381);
+            this.listBox3.Size = new System.Drawing.Size(596, 357);
             this.listBox3.TabIndex = 0;
             this.listBox3.DoubleClick += new System.EventHandler(this.listBox3_DoubleClick);
             // 
@@ -597,7 +596,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(602, 387);
+            this.tabPage6.Size = new System.Drawing.Size(602, 363);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Male Face Sets";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -611,7 +610,7 @@
             this.listBox4.ItemHeight = 16;
             this.listBox4.Location = new System.Drawing.Point(3, 3);
             this.listBox4.Name = "listBox4";
-            this.listBox4.Size = new System.Drawing.Size(596, 381);
+            this.listBox4.Size = new System.Drawing.Size(596, 357);
             this.listBox4.TabIndex = 0;
             this.listBox4.DoubleClick += new System.EventHandler(this.listBox4_DoubleClick);
             // 
@@ -621,7 +620,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(602, 387);
+            this.tabPage7.Size = new System.Drawing.Size(602, 363);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Female Face Sets";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -635,7 +634,7 @@
             this.listBox5.ItemHeight = 16;
             this.listBox5.Location = new System.Drawing.Point(3, 3);
             this.listBox5.Name = "listBox5";
-            this.listBox5.Size = new System.Drawing.Size(596, 381);
+            this.listBox5.Size = new System.Drawing.Size(596, 357);
             this.listBox5.TabIndex = 0;
             this.listBox5.DoubleClick += new System.EventHandler(this.listBox5_DoubleClick);
             // 
