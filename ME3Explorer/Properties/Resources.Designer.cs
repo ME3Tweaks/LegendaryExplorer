@@ -213,39 +213,9 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Back {
-            get {
-                object obj = ResourceManager.GetObject("Back", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap back2 {
             get {
                 object obj = ResourceManager.GetObject("back2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap backup_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("backup_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap batch_rename_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("batch_rename_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -631,26 +601,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap lang_select_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("lang_select_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap level_database_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("level_database_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap level_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("level_editor_64x64", resourceCulture);
@@ -869,26 +819,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap questmap_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("questmap_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap script_compiler_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("script_compiler_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap script_database_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("script_database_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

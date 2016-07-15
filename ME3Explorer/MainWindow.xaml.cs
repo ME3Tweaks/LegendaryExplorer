@@ -47,15 +47,28 @@ namespace ME3Explorer
 
         public MainWindow()
         {
-            InitializeComponent();
-            Tools.InitializeTools();
-            installModspanel.setToolList(Tools.items.Where(x => x.tags.Contains("user")));
-            //favoritesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
-            utilitiesPanel.setToolList(Tools.items.Where(x => x.tags.Contains("utility")));
-            createModsPanel.setToolList(Tools.items.Where(x => x.tags.Contains("developer")));
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                SystemCommands.CloseWindow(this);
+            }
+            installModspanel.setToolList(Tools.Items.Where(x => x.tags.Contains("user")));
+            favoritesPanel.setToolList(Tools.Items.Where(x => x.IsFavorited));
+            Tools.FavoritesChanged += Tools_FavoritesChanged;
+            utilitiesPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("utility")));
+            createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
+        }
+
+        private void Tools_FavoritesChanged(object sender, EventArgs e)
+        {
+            favoritesPanel.setToolList(Tools.Items.Where(x => x.IsFavorited));
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -184,7 +197,7 @@ namespace ME3Explorer
 
             List<Tool> results = new List<Tool>();
             string[] words = SearchBox.Text.ToLower().Split(' ');
-            foreach (Tool tool in Tools.items)
+            foreach (Tool tool in Tools.Items)
             {
                 foreach (string word in words)
                 {

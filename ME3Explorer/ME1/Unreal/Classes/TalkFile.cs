@@ -91,17 +91,6 @@ namespace ME1Explorer.Unreal.Classes
             tlkSetIndex = _tlkSetIndex;
             LoadTlkData();
         }
-
-        public TalkFile(ME1Package _pcc)
-        {
-            pcc = _pcc;
-            index = pcc.FindExp("tlk");
-            tlkSetIndex = -1;
-            if (index >= 0)
-            {
-                LoadTlkData();
-            }
-        } 
         #endregion
 
         //ITalkFile

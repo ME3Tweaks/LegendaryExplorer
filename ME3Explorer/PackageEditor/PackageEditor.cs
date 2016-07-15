@@ -268,8 +268,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    string importStr = i + " (0x" + (pcc.ImportOffset + (i * ME3ImportEntry.
-                        byteSize)).ToString("X4") + "): (" + imports[i].PackageFile + ") ";
+                    string importStr = i + " (0x" + (pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + "): (" + imports[i].PackageFile + ") ";
                     if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
                     {
                         importStr += imports[i].PackageFullName + ".";

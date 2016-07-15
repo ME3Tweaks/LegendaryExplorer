@@ -14,7 +14,7 @@
                     <ColumnDefinition Width="2"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Rectangle Width="2" Fill="#FFFBFBFB"/>
+                <Rectangle Width="2" Fill="#A3FBFBFB"/>
                 <StackPanel Grid.Column="1">
                     <StackPanel Orientation="Horizontal" Height="46">
                         <Rectangle Width="46" Fill="#7F3F5E66">
@@ -34,13 +34,14 @@
                                 <DataTemplate>
                                     <Grid Width="263">
                                         <Button Padding="0" Style="{StaticResource BorderlessButton}" Width="263" Margin="0,0,0,8"
-                                            Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave">
+                                            Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"
+                                                MouseRightButtonDown="Button_MouseRightButtonDown">
                                             <StackPanel Orientation="Horizontal" Width="263">
                                                 <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding icon}" Opacity="0.85">
                                                 </Image>
                                                 <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
                                                     <TextBlock x:Name="toolName" Text="{Binding name}" FontFamily="{StaticResource TitilliumWeb-Light}"
-                                                           Foreground="#FFF9F9F9" FontSize="18"/>
+                                                           FontSize="18" Style="{StaticResource styleFavoritable}"/>
                                                     <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
                                                            Margin="0,-6,0,0" Fill="{StaticResource HighlightColor}" Visibility="Hidden"/>
                                                 </StackPanel>

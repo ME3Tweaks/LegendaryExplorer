@@ -26,24 +26,25 @@
                                             <TranslateTransform Y="-1.5"/>
                                         </TextBlock.RenderTransform>
                                     </TextBlock>
-                                    <Rectangle Fill="#A3FBFBFB" Height="2" Margin="8,0,0,0"/>
+                                    <Rectangle Fill="#A3FBFBFB" Height="2" Margin="6,0"/>
                                     <ItemsControl x:Name="ToolList" ItemsSource="{Binding Value, Mode=OneWay}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate >
-                                                <StackPanel Margin="8,0,0,8"/>
+                                                <WrapPanel Margin="8,0,0,8"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
                                                     <Button Padding="0" Style="{StaticResource BorderlessButton}" Margin="0,8,0,0"
-                                            Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave">
+                                                            Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Width="302"
+                                                            MouseRightButtonDown="Button_MouseRightButtonDown">
                                                         <StackPanel Orientation="Horizontal" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Button}}">
                                                             <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding icon}" Opacity="0.85">
                                                             </Image>
                                                             <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
-                                                                <TextBlock x:Name="toolName" Text="{Binding name}" FontFamily="{StaticResource TitilliumWeb-Light}"
-                                                           Foreground="#FFF9F9F9" FontSize="18"/>
+                                                                <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding name}"
+                                                                           FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18"/>
                                                                 <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
                                                            Margin="0,-6,0,0" Fill="{StaticResource HighlightColor}" Visibility="Hidden"/>
                                                             </StackPanel>

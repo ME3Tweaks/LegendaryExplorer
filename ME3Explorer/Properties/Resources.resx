@@ -139,9 +139,6 @@
   <data name="CheckboxDebugTlk" xml:space="preserve">
     <value>Test version (displays String ID before every line in-game)</value>
   </data>
-  <data name="script_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\script_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="AlertExceptionTlkNotFound" xml:space="preserve">
     <value>Selected TLK file was not found or is corrupted.</value>
   </data>
@@ -159,12 +156,6 @@
   </data>
   <data name="modmaker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\modmaker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="lang_select_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\lang_select_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="script_compiler_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\script_compiler_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pcc_repacker_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pcc_repacker_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,20 +196,11 @@
   <data name="HowTo25" xml:space="preserve">
     <value>You will see a message saying the work is done. Your custom TLK file is ready to be put in an appropriate Mass Effect 2 folder.</value>
   </data>
-  <data name="Back" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MenuHelp" xml:space="preserve">
     <value>Help</value>
   </data>
   <data name="plot_DB_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\plot_DB_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="level_database_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\level_database_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="batch_rename_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\batch_rename_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="me3creator_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\me3creator_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -413,9 +395,6 @@ Please make sure you have chosen a file in a TLK format for Mass Effect 2 game.<
   </data>
   <data name="sequence_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sequence_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="backup_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icons\backup_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document-save" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\document-save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

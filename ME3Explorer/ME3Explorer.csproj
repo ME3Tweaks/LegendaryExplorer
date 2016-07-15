@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ME3Explorer</RootNamespace>
     <AssemblyName>ME3Explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -29,6 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,7 +55,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icons\me3exp_favicon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\meexp_favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>ME3Explorer.App</StartupObject>
@@ -145,10 +146,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="AboutME3Explorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +166,7 @@
     <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="main.cs" />
     <Compile Include="MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
@@ -1012,21 +1014,11 @@
     <Resource Include="Icons\autotoc_64x64.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\backup_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\batch_rename_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\BIK_movie_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\DDSConverter_64x64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\interpreter_icon.ico" />
     <Resource Include="Icons\interp_viewer_icon.ico" />
-    <Resource Include="Icons\me3exp_favicon.ico" />
     <Resource Include="Icons\TLKManager_icon.ico" />
     <Resource Include="Resources\About_icon.ico" />
     <Resource Include="Resources\close_icon.ico" />
@@ -1049,10 +1041,6 @@
     <Resource Include="Resources\sfar_basiceditor_icon_64x64.png" />
     <Resource Include="Resources\sfar_basiceditor_icon.ico" />
     <Resource Include="Resources\sequence_editor_64x64.png" />
-    <Resource Include="Resources\script_database_64x64.png" />
-    <Resource Include="Resources\script_compiler_64x64.png" />
-    <Resource Include="Resources\save_gameoperator_64x64.png" />
-    <Resource Include="Resources\save_gameeditor_64x64.png" />
     <Resource Include="Resources\questmap_editor_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
@@ -1064,19 +1052,16 @@
     <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
-    <Resource Include="Resources\me3exp_favicon_64x64.png" />
     <Resource Include="Resources\me3creator_64x64.png" />
     <Resource Include="Resources\me2exp_64x64.png" />
     <Resource Include="Resources\me1exp_64x64.png" />
     <Resource Include="Resources\material_viewer_64x64.png" />
     <Resource Include="Resources\level_explorer_64x64.png" />
     <Resource Include="Resources\level_editor_64x64.png" />
-    <Resource Include="Resources\level_database_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
     <Resource Include="Resources\ImageEngine_icon_64x64.png" />
-    <Resource Include="Resources\Image1.bmp" />
     <Resource Include="Resources\help-browser.png" />
     <Resource Include="Resources\GUIDcache_editor_64x64.png" />
     <Resource Include="Resources\fxa_editor_64x64.png" />
@@ -1092,14 +1077,8 @@
     <Resource Include="Resources\coalesced_editor_64x64.png" />
     <Resource Include="Resources\class_viewer_64x64.png" />
     <Resource Include="Resources\camera_tool_64x64.png" />
-    <Resource Include="Resources\Back.png" />
     <Resource Include="Resources\asset_explorer_64x64.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
-    <Resource Include="ME2\Resources\TLKManager_icon_64x64.png" />
-    <Resource Include="ME2\Resources\sequence_editor_icon.ico" />
-    <Resource Include="ME2\Resources\sequence_editor_64x64.png" />
-    <Resource Include="ME2\Resources\package_editor_64x64.png" />
-    <Resource Include="ME2\Resources\dialogue_editor_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\TPFTools_64x64.png" />
     <Resource Include="Icons\texplorer_64x64.png" />
@@ -1111,11 +1090,6 @@
     <Resource Include="Icons\me3exp_smallbanner_v2.png" />
     <Resource Include="Icons\me3exp_smallbanner_v1.png" />
     <Resource Include="Icons\me3exp_newbanner.png" />
-    <Resource Include="Icons\me2exp_icon.png" />
-    <Resource Include="Icons\me2exp_64x64.png" />
-    <Resource Include="Icons\me1exp_icon.png" />
-    <Resource Include="Icons\me1exp_64x64.png" />
-    <Resource Include="Icons\lang_select_64x64.png" />
     <Page Include="CurveEd\CurveEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1163,6 +1137,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\elipsis_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\facefx_editor_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\level_database_icon.ico" />
+    <Resource Include="Resources\save_gameeditor_icon.ico" />
+    <Resource Include="Resources\save_gameoperator_icon.ico" />
+    <Resource Include="Resources\script_database_icon.ico" />
+    <SplashScreen Include="Resources\toolset_splash.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </SplashScreen>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\meexp_favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

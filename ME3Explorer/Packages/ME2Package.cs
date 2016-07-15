@@ -29,7 +29,7 @@ namespace ME3Explorer.Packages
         public bool bCompressed
         {
             get { return (flags & 0x02000000) != 0; }
-            set
+            private set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
                     Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
@@ -485,31 +485,6 @@ namespace ME3Explorer.Packages
             return (Index >= 0 && Index < ExportCount);
         }
 
-        public string GetClass(int Index)
-        {
-            if (Index > 0 && isExport(Index - 1))
-                return exports[Index - 1].ObjectName;
-            if (Index < 0 && isImport(Index * -1 - 1))
-                return imports[Index * -1 - 1].ObjectName;
-            return "Class";
-        }
-
-        public string FollowLink(int Link)
-        {
-            string s = "";
-            if (Link > 0 && isExport(Link - 1))
-            {
-                s = exports[Link - 1].ObjectName + ".";
-                s = FollowLink(exports[Link - 1].idxLink) + s;
-            }
-            if (Link < 0 && isImport(Link * -1 - 1))
-            {
-                s = imports[Link * -1 - 1].ObjectName + ".";
-                s = FollowLink(imports[Link * -1 - 1].idxLink) + s;
-            }
-            return s;
-        }
-
         public string getNameEntry(int Index)
         {
             string s = "";
@@ -595,7 +570,7 @@ namespace ME3Explorer.Packages
 
         public void addImport(ME2ImportEntry importEntry)
         {
-            if (importEntry.fileRef != this)
+            if (importEntry.fileRef2 != this)
                 throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
 
             imports.Add(importEntry);
@@ -616,7 +591,7 @@ namespace ME3Explorer.Packages
 
         public void addExport(ME2ExportEntry exportEntry)
         {
-            if (exportEntry.fileRef != this)
+            if (exportEntry.fileRef2 != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
 
             exportEntry.hasChanged = true;
@@ -629,26 +604,6 @@ namespace ME3Explorer.Packages
 
             exports.Add(exportEntry);
             ExportCount = exports.Count;
-        }
-
-        public int FindExp(string name)
-        {
-            for (int i = 0; i < ExportCount; i++)
-            {
-                if (string.Compare(exports[i].ObjectName, name, true) == 0)
-                    return i;
-            }
-            return -1;
-        }
-
-        public int FindExp(string name, string className)
-        {
-            for (int i = 0; i < ExportCount; i++)
-            {
-                if (string.Compare(exports[i].ObjectName, name, true) == 0 && exports[i].ClassName == className)
-                    return i;
-            }
-            return -1;
         }
 
         /// <summary>

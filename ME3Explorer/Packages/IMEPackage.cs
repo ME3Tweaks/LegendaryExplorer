@@ -44,7 +44,7 @@ namespace ME3Explorer.Packages
 
     public interface IMEPackage
     {
-        bool bCompressed { get; set; }
+        bool bCompressed { get; }
         bool canReconstruct { get; }
         bool isModified { get; }
         int ExportCount { get; }
@@ -56,26 +56,31 @@ namespace ME3Explorer.Packages
         MEGame game { get; }
         string fileName { get; }
 
+        //reading
         bool canClone();
         bool isExport(int index);
-        IExportEntry getExport(int index);
         bool isImport(int index);
-        IImportEntry getImport(int index);
         bool isName(int index);
         IEntry getEntry(int index);
+        IExportEntry getExport(int index);
+        IImportEntry getImport(int index);
         int findName(string nameToFind);
-        int FindNameOrAdd(string name);
-        string appendSave(string newFileName, bool attemptOverwrite = true, int HeaderNameOffset = 34);
         string getClassName(int index);
         string getNameEntry(int index);
         string getObjectClass(int index);
         string getObjectName(int index);
+
+        //editing
+        void addName(string name);
+        int FindNameOrAdd(string name);
+        void setNames(List<string> list);
         void addExport(IExportEntry exportEntry);
         void addImport(IImportEntry importEntry);
-        void addName(string name);
-        void setNames(List<string> list);
+
+        //saving
         void save();
         void save(string path);
         void saveByReconstructing(string path);
+        string appendSave(string newFileName, bool attemptOverwrite = true, int HeaderNameOffset = 34);
     }
 }

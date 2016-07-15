@@ -27,18 +27,26 @@ namespace ME3Explorer
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Integration.WindowsFormsHost.EnableWindowsFormsInterop();
+
+            //set up AppData Folder
             if (!Directory.Exists(AppDataFolder))
             {
                 Directory.CreateDirectory(AppDataFolder);
             }
+
+            //load in data files
             TalkFiles.LoadSavedTlkList();
             ME2Explorer.TalkFiles.LoadSavedTlkList();
             ME1UnrealObjectInfo.loadfromJSON();
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
+
+            //static class setup
+            Tools.Initialize();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

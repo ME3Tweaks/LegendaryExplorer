@@ -25,6 +25,16 @@ namespace ME3Explorer
             ((sender as Button)?.DataContext as Tool)?.open();
         }
 
+        
+        protected void Button_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                Tool t = ((sender as Button)?.DataContext as Tool);
+                t.IsFavorited = !t.IsFavorited;
+            }
+        }
+
         protected virtual void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Button b = sender as Button;

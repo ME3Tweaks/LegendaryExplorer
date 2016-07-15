@@ -91,6 +91,7 @@
             this.Name = "InputComboBox";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ME3Explorer";
             this.ResumeLayout(false);
             this.PerformLayout();

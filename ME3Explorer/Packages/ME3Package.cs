@@ -32,7 +32,7 @@ namespace ME3Explorer.Packages
         public bool bCompressed
         {
             get { return (flags & 0x02000000) != 0; }
-            set
+            private set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
                     Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
@@ -667,7 +667,7 @@ namespace ME3Explorer.Packages
 
         public void addImport(ME3ImportEntry importEntry)
         {
-            if (importEntry.fileRef != this)
+            if (importEntry.fileRef3 != this)
                 throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
 
             imports.Add(importEntry);
@@ -688,7 +688,7 @@ namespace ME3Explorer.Packages
 
         public void addExport(ME3ExportEntry exportEntry)
         {
-            if (exportEntry.fileRef != this)
+            if (exportEntry.fileRef3 != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
 
             exportEntry.hasChanged = true;

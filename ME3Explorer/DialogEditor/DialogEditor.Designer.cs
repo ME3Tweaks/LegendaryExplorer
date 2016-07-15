@@ -91,11 +91,11 @@
             this.maleFaceSetsListBox = new System.Windows.Forms.ListBox();
             this.femaleFaceSetsTab = new System.Windows.Forms.TabPage();
             this.femaleFaceSetsListBox = new System.Windows.Forms.ListBox();
+            this.scriptListTab = new System.Windows.Forms.TabPage();
+            this.scriptListBox = new System.Windows.Forms.ListBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.bioConversationComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.loadButton = new System.Windows.Forms.ToolStripButton();
-            this.scriptListTab = new System.Windows.Forms.TabPage();
-            this.scriptListBox = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.startingListTab.SuspendLayout();
@@ -105,8 +105,8 @@
             this.stageDirectionsTab.SuspendLayout();
             this.maleFaceSetsTab.SuspendLayout();
             this.femaleFaceSetsTab.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.scriptListTab.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -642,6 +642,28 @@
             this.femaleFaceSetsListBox.TabIndex = 0;
             this.femaleFaceSetsListBox.DoubleClick += new System.EventHandler(this.listBox5_DoubleClick);
             // 
+            // scriptListTab
+            // 
+            this.scriptListTab.Controls.Add(this.scriptListBox);
+            this.scriptListTab.Location = new System.Drawing.Point(4, 22);
+            this.scriptListTab.Name = "scriptListTab";
+            this.scriptListTab.Size = new System.Drawing.Size(602, 363);
+            this.scriptListTab.TabIndex = 7;
+            this.scriptListTab.Text = "Script List";
+            this.scriptListTab.UseVisualStyleBackColor = true;
+            // 
+            // scriptListBox
+            // 
+            this.scriptListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scriptListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scriptListBox.FormattingEnabled = true;
+            this.scriptListBox.IntegralHeight = false;
+            this.scriptListBox.ItemHeight = 16;
+            this.scriptListBox.Location = new System.Drawing.Point(0, 0);
+            this.scriptListBox.Name = "scriptListBox";
+            this.scriptListBox.Size = new System.Drawing.Size(602, 363);
+            this.scriptListBox.TabIndex = 1;
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -668,28 +690,6 @@
             this.loadButton.Text = "Load";
             this.loadButton.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
-            // scriptListTab
-            // 
-            this.scriptListTab.Controls.Add(this.scriptListBox);
-            this.scriptListTab.Location = new System.Drawing.Point(4, 22);
-            this.scriptListTab.Name = "scriptListTab";
-            this.scriptListTab.Size = new System.Drawing.Size(602, 363);
-            this.scriptListTab.TabIndex = 7;
-            this.scriptListTab.Text = "Script List";
-            this.scriptListTab.UseVisualStyleBackColor = true;
-            // 
-            // scriptListBox
-            // 
-            this.scriptListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scriptListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scriptListBox.FormattingEnabled = true;
-            this.scriptListBox.IntegralHeight = false;
-            this.scriptListBox.ItemHeight = 16;
-            this.scriptListBox.Location = new System.Drawing.Point(0, 0);
-            this.scriptListBox.Name = "scriptListBox";
-            this.scriptListBox.Size = new System.Drawing.Size(602, 363);
-            this.scriptListBox.TabIndex = 1;
-            // 
             // DialogEditor
             // 
             this.AllowDrop = true;
@@ -702,7 +702,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DialogEditor";
-            this.Text = "Dialog Editor";
+            this.Text = "Dialog Editor (ME3)";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragEnter);
             this.menuStrip1.ResumeLayout(false);
@@ -715,9 +715,9 @@
             this.stageDirectionsTab.ResumeLayout(false);
             this.maleFaceSetsTab.ResumeLayout(false);
             this.femaleFaceSetsTab.ResumeLayout(false);
+            this.scriptListTab.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.scriptListTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

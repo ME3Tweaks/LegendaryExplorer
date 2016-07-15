@@ -82,7 +82,10 @@ namespace ME3Explorer
         public override void setToolList(IEnumerable<Tool> enumerable)
         {
             base.setToolList(enumerable);
-            index = 0;
+            while (index > tools.Count)
+            {
+                index -= viewCapacity;
+            }
             updateContents();
         }
         

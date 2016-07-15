@@ -28,7 +28,7 @@ namespace ME3Explorer.Packages
         public bool bCompressed
         {
             get { return (flags & 0x02000000) != 0; }
-            set
+            private set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
                     Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
@@ -608,7 +608,7 @@ namespace ME3Explorer.Packages
 
         public void addImport(ME1ImportEntry importEntry)
         {
-            if (importEntry.fileRef != this)
+            if (importEntry.fileRef1 != this)
                 throw new Exception("you cannot add a new import entry from another file, it has invalid references!");
 
             imports.Add(importEntry);
@@ -629,7 +629,7 @@ namespace ME3Explorer.Packages
 
         public void addExport(ME1ExportEntry exportEntry)
         {
-            if (exportEntry.fileRef != this)
+            if (exportEntry.fileRef1 != this)
                 throw new Exception("you cannot add a new export entry from another file, it has invalid references!");
 
             exportEntry.hasChanged = true;
@@ -642,26 +642,6 @@ namespace ME3Explorer.Packages
 
             exports.Add(exportEntry);
             ExportCount = exports.Count;
-        }
-
-        public int FindExp(string name)
-        {
-            for (int i = 0; i < ExportCount; i++)
-            {
-                if (string.Compare(exports[i].ObjectName, name, true) == 0)
-                    return i;
-            }
-            return -1;
-        }
-
-        public int FindExp(string name, string className)
-        {
-            for (int i = 0; i < ExportCount; i++)
-            {
-                if (string.Compare(exports[i].ObjectName, name, true) == 0 && exports[i].ClassName == className)
-                    return i;
-            }
-            return -1;
         }
 
         /// <summary>

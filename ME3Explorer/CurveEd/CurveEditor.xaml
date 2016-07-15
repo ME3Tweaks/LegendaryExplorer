@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:ME3Explorer.CurveEd"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.CurveEd.CurveEditor"
              mc:Ignorable="d" 
-             d:DesignHeight="297.789" d:DesignWidth="600.737" Closing="Window_Closing">
+             d:DesignHeight="297.789" d:DesignWidth="600.737" Closing="Window_Closing" Title="Curve Editor">
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
     </Window.CommandBindings>

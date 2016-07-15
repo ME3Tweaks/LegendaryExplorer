@@ -30,7 +30,7 @@ namespace ME3Explorer
         public override void setToolList(IEnumerable<Tool> enumerable)
         {
             base.setToolList(enumerable);
-            Dictionary<string, List<Tool>> subCats = new Dictionary<string, List<Tool>>();
+            SortedDictionary<string, List<Tool>> subCats = new SortedDictionary<string, List<Tool>>();
             foreach (var tool in tools)
             {
                 if (!subCats.ContainsKey(tool.subCategory))

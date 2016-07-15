@@ -87,6 +87,15 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="styleFavoritable" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFF9F9F9"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsFavorited}" Value="True">
+                    <Setter Property="Foreground" Value="#FFEBC86A"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
         <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
@@ -95,7 +104,7 @@
         <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_icon64x64.png"/>
         <BitmapImage x:Key="iconImageEngine" UriSource="Resources/ImageEngine_icon_64x64.png"/>
         <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
-        <BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_64x64.png"/>
+        <BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_icon.ico"/>
         <BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Icons/plot_DB_64x64.png"/>
         <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/property_database_64x64.png"/>
@@ -103,9 +112,9 @@
         <BitmapImage x:Key="iconPropertyManager" UriSource="Resources/property_manager_64x64.png"/>
         <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psa_viewer_64x64.png"/>
         <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
-        <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_64x64.png"/>
-        <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_64x64.png"/>
-        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_64x64.png"/>
+        <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>
+        <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>
+        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_icon.ico"/>
         <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
         <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
         <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
@@ -122,6 +131,7 @@
         <BitmapImage x:Key="iconConditionalsEditor" UriSource="Resources/conditionals_editor_64x64.png"/>
         <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
+        <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefx_editor_icon.ico"/>
         <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
         <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_editor_64x64.png"/>
         <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>

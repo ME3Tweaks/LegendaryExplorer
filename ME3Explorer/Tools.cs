@@ -6,10 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace ME3Explorer
 {
-    public class Tool
+    public class Tool : DependencyObject
     {
         public string name { get; set; }
         public ImageSource icon { get; set; }
@@ -17,18 +18,44 @@ namespace ME3Explorer
         public List<string> tags;
         public string subCategory { get; set; }
         public string description { get; set; }
+        public bool IsFavorited
+        {
+            get { return (bool)GetValue(IsFavoritedProperty); }
+            set { SetValue(IsFavoritedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsFavorited.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsFavoritedProperty =
+            DependencyProperty.Register("IsFavorited", typeof(bool), typeof(Tool), new PropertyMetadata(false, OnIsFavoritedChanged));
+
+        private static void OnIsFavoritedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Tools.saveFavorites();
+        }
     }
 
     public static class Tools
     {
-        public static List<Tool> items;
+        private static HashSet<Tool> items;
 
-        public static void InitializeTools()
+        private static readonly string FavoritesPath = Path.Combine(App.AppDataFolder, "Favorites.JSON");
+
+        public static event EventHandler FavoritesChanged;
+
+        public static IReadOnlyCollection<Tool> Items
         {
-            List<Tool> list = new List<Tool>();
+            get
+            {
+                return items;
+            }
+        }
+
+        public static void Initialize()
+        {
+            HashSet<Tool> set = new HashSet<Tool>();
 
             #region Install Mods
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "AutoTOC",
                 icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
@@ -39,7 +66,7 @@ namespace ME3Explorer
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Modmaker",
                 icon = Application.Current.FindResource("iconModMaker") as ImageSource,
@@ -47,10 +74,11 @@ namespace ME3Explorer
                 {
                     (new ModMaker()).Show();
                 },
-                tags = new List<string> { "user", ".mod", "mod", "mesh" },
+                tags = new List<string> { "user", "utility", ".mod", "mod", "mesh" },
+                subCategory = "Mod Packagers",
                 description = "ModMaker is a tool used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "TPF Tools",
                 icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
@@ -58,13 +86,25 @@ namespace ME3Explorer
                 {
                     (new KFreonTPFTools3()).Show();
                 },
-                tags = new List<string> { "user", "texture", "tpf", "dds", "bmp", "jpg", "png" },
+                tags = new List<string> { "user", "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
+                subCategory = "Mod Packagers",
                 description = "TPF Tools is the toolset’s primary texture installation utility for users. An alternative to Texmod, TPF Tools allows for permanent insertion of textures into game files. It’s compatible with a variety of texture formats, will help “repair” improperly-formatted textures, and has an assortment of other features.\n\nTPF Tools can also be used by modders to package textures into TPFs for distribution."
             });
             #endregion
 
             #region Utilities
-            list.Add(new Tool
+            set.Add(new Tool
+            {
+                name = "Animation Explorer",
+                icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+                open = () =>
+                {
+                    (new AnimationExplorer.AnimationExplorer()).Show();
+                },
+                tags = new List<string> { "utility", "animation", "gesture", "bones" },
+                subCategory = "Explorers",
+            });
+            set.Add(new Tool
             {
                 name = "Asset Explorer",
                 icon = Application.Current.FindResource("iconAssetExplorer") as ImageSource,
@@ -78,7 +118,7 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Asset Explorer is a useful utility for newcomers to modding Mass Effect. It allows for the browsing of ME3 PCC files via a somewhat user-friendly GUI.\n\nAttention: this tool is in archival state and may contain features that no longer function.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Audio Extractor",
                 icon = Application.Current.FindResource("iconAudioExtractor") as ImageSource,
@@ -88,9 +128,9 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
                 subCategory = "Extractors + Repackers",
-                description = "Audio Extractor** is a utility that extracts sound data from ME3 AFC files."
+                description = "Audio Extractor is a utility that extracts sound data from ME3 AFC files."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Bik Movie Extractor",
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
@@ -102,7 +142,7 @@ namespace ME3Explorer
                 subCategory = "Extractors + Repackers",
                 description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Class Viewer",
                 icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
@@ -113,7 +153,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "import" },
                 subCategory = "Explorers",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Hex Converter",
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
@@ -127,7 +167,7 @@ namespace ME3Explorer
                 subCategory = "Converters",
                 description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Image Engine",
                 icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
@@ -139,7 +179,7 @@ namespace ME3Explorer
                 subCategory = "Converters",
                 description = "Image Engine is a texture conversion utility. It supports BMP, JPG, PNG, TGA files, as well as a variety of DDS formats and compressions. Modification to mipmaps are also supported.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Interp Viewer",
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
@@ -151,7 +191,7 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Level Database",
                 icon = Application.Current.FindResource("iconLevelDatabase") as ImageSource,
@@ -162,7 +202,18 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
             });
-            list.Add(new Tool
+            set.Add(new Tool
+            {
+                name = "Meshplorer",
+                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+                open = () =>
+                {
+                    (new Meshplorer.Meshplorer()).Show();
+                },
+                tags = new List<string> { "utility", "mesh" },
+                subCategory = "Explorers",
+            });
+            set.Add(new Tool
             {
                 name = "PCC Repacker",
                 icon = Application.Current.FindResource("iconPCCRepacker") as ImageSource,
@@ -173,7 +224,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "compress", "decompress" },
                 subCategory = "Extractors + Repackers",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Plot Database",
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
@@ -183,9 +234,9 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer" },
                 subCategory = "Databases",
-                description = "Plot Database is a cross-game utility used to store story data associated with plot IDs. The tool comes pre-loaded with a default .db that can be customized by the user. Never look up a plot bool or integer again!",
+                description = "Plot Database is a cross-game utility used to store story data associated with plot IDs. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Property Database",
                 icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
@@ -196,7 +247,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Property Dumper",
                 icon = Application.Current.FindResource("iconPropertyDumper") as ImageSource,
@@ -207,7 +258,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Property Manager",
                 icon = Application.Current.FindResource("iconPropertyManager") as ImageSource,
@@ -218,7 +269,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "PSA Viewer",
                 icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
@@ -229,7 +280,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "mesh", "animation" },
                 subCategory = "Explorers",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "PSK Viewer",
                 icon = Application.Current.FindResource("iconPSKViewer") as ImageSource,
@@ -240,9 +291,9 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "mesh" },
                 subCategory = "Explorers",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
-                name = "ME1 Save Game Editor",
+                name = "ME1 Save Editor",
                 icon = Application.Current.FindResource("iconSaveGameEditor") as ImageSource,
                 open = () =>
                 {
@@ -251,9 +302,9 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Saved Games",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
-                name = "ME1 Save Game Operator",
+                name = "ME1 Save Operator",
                 icon = Application.Current.FindResource("iconSaveGameOperator") as ImageSource,
                 open = () =>
                 {
@@ -262,7 +313,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Saved Games",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Script Database",
                 icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
@@ -273,7 +324,7 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Subtitle Scanner",
                 icon = Application.Current.FindResource("iconSubtitleScanner") as ImageSource,
@@ -285,44 +336,10 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Subtitle Scanner is a utility for ME3 that scans game files for all subtitles and displays the results in a searchable dialog.",
             });
-            list.Add(new Tool
-            {
-                name = "WwiseBank Editor",
-                icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
-                open = () =>
-                {
-                    (new WwiseBankEditor.WwiseEditor()).Show();
-                },
-                tags = new List<string> { "utility", "dialogue", "text", "line" },
-                subCategory = "Scene Shop",
-                description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
-            });
             #endregion
 
             #region Create Mods
-            list.Add(new Tool
-            {
-                name = "Animation Explorer",
-                icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
-                open = () =>
-                {
-                    (new AnimationExplorer.AnimationExplorer()).Show();
-                },
-                tags = new List<string> { "developer", "animation", "gesture", "bones" },
-                subCategory = "Scene Shop",
-            });
-            list.Add(new Tool
-            {
-                name = "Camera Tool",
-                icon = Application.Current.FindResource("iconCameraTool") as ImageSource,
-                open = () =>
-                {
-                    (new CameraTool.CamTool()).Show();
-                },
-                tags = new List<string> { "developer" },
-                subCategory = "Scene Shop",
-            });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Coalesced Editor",
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
@@ -332,9 +349,9 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "coalesced", "ini", "bin" },
                 subCategory = "Core",
-                description = "Coalesced Editor is used to create and edit ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.\n\nAttention: This tool is deprecated and does not work correctly for DLC.It will be updated soon.Use with caution.",
+                description = "Coalesced Editor is used to create and edit ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.\n\nAttention: This tool is deprecated and does not work correctly for DLC. It will be updated soon. Use with caution.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Conditionals Editor",
                 icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
@@ -346,7 +363,7 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Dialogue Editor",
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
@@ -369,20 +386,21 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
-                description = "Dialogue Editor is  cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
+                description = "Dialogue Editor is a cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "FaceFX Editor",
-                icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconFaceFXEditor") as ImageSource,
                 open = () =>
                 {
                     (new FaceFXAnimSetEditor.FaceFXEditor()).Show();
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
                 subCategory = "Scene Shop",
+                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit ME3 FaceFX AnimSets (FXEs) and, soon, the corresponding FaceFXAsset.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "FaceFXAnimSet Editor",
                 icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
@@ -401,8 +419,9 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
                 subCategory = "Scene Shop",
+                description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "GUID Cache Editor",
                 icon = Application.Current.FindResource("iconGUIDCacheEditor") as ImageSource,
@@ -413,7 +432,7 @@ namespace ME3Explorer
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Level Editor",
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
@@ -424,7 +443,7 @@ namespace ME3Explorer
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "ME3 Creator",
                 icon = Application.Current.FindResource("iconME3Creator") as ImageSource,
@@ -440,18 +459,7 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "ME3Creator is the toolset’s most advanced modding tool for ME3. It allows for level viewing, intrafile and interfile import and export cloning, re-linking of game objects, and much more.",
             });
-            list.Add(new Tool
-            {
-                name = "Meshplorer",
-                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer.Meshplorer()).Show();
-                },
-                tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
-            });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Meshplorer 2",
                 icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
@@ -462,7 +470,7 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Package Editor",
                 icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
@@ -476,7 +484,7 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Package Editor is the toolset’s main tool for editing trilogy package files in various formats (PCC, UPK, SFM). Properties, arrays, names, curve data, and more can all be easily added and edited."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Sequence Editor",
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
@@ -488,7 +496,7 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "SFAR Basic Editor",
                 icon = Application.Current.FindResource("iconSFARBasicEditor") as ImageSource,
@@ -500,7 +508,7 @@ namespace ME3Explorer
                 subCategory = "SFARS",
                 description = "SFAR Basic Editor loads ME3 DLC SFARs, allowing for exploration and basic edits within a relatively user-friendly GUI.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "SFAR Editor 2",
                 icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
@@ -512,7 +520,7 @@ namespace ME3Explorer
                 subCategory = "SFARS",
                 description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. It displays technical data absent from the Basic Editor and contains searching and unpack features.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "SFAR TOC Updater",
                 icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
@@ -524,7 +532,7 @@ namespace ME3Explorer
                 subCategory = "SFARS",
                 description = "SFAR TOC Updater updates PCConsoleTOC.bin files that are inside unpacked ME3 SFARs. Due to DLC unpacking requirement for texture viewing and modification, most users will never use this tool."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Soundplorer",
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
@@ -536,7 +544,7 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "Texplorer",
                 icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
@@ -548,7 +556,7 @@ namespace ME3Explorer
                 subCategory = "Meshes + Textures",
                 description = "Texplorer is the toolset’s primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "ME3 + ME2 TLK Editor",
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
@@ -560,7 +568,7 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
             });
-            list.Add(new Tool
+            set.Add(new Tool
             {
                 name = "ME1 TLK Editor",
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
@@ -572,9 +580,72 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "ME1 TLK Editor extracts tlk files from ME1 packages and converts them into xml, allowing users to edit the display of all game text. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
             });
+            set.Add(new Tool
+            {
+                name = "WwiseBank Editor",
+                icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
+                open = () =>
+                {
+                    (new WwiseBankEditor.WwiseEditor()).Show();
+                },
+                tags = new List<string> { "developer", "dialogue", "text", "line" },
+                subCategory = "Scene Shop",
+                description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
+            });
             #endregion
 
-            items = list;
+            items = set;
+
+            loadFavorites();
+        }
+
+        private static void loadFavorites()
+        {
+            try
+            {
+                if (File.Exists(FavoritesPath))
+                {
+                    string raw = File.ReadAllText(FavoritesPath);
+                    HashSet<string> favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
+                    foreach (var tool in items)
+                    {
+                        if (favorites.Contains(tool.name))
+                        {
+                            tool.IsFavorited = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        public static void saveFavorites()
+        {
+
+            if (FavoritesChanged != null)
+            {
+                FavoritesChanged.Invoke(null, EventArgs.Empty);
+                try
+                {
+                    HashSet<string> favorites = new HashSet<string>();
+                    foreach (var tool in items)
+                    {
+                        if (tool.IsFavorited)
+                        {
+                            favorites.Add(tool.name);
+                        }
+                    }
+                    string file = JsonConvert.SerializeObject(favorites);
+                    File.WriteAllText(FavoritesPath, file);
+                }
+                catch
+                {
+                    return;
+                } 
+            }
         }
     }
 }

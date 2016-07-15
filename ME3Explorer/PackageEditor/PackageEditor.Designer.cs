@@ -80,7 +80,6 @@
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
-            this.interpreterControl = new ME3Explorer.Interpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -120,7 +119,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.headerTab = new System.Windows.Forms.TabPage();
-            this.hb2 = new Be.Windows.Forms.HexBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.saveHeaderHexChangesBtn = new System.Windows.Forms.ToolStripButton();
             this.scriptTab = new System.Windows.Forms.TabPage();
@@ -130,6 +128,8 @@
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.interpreterControl = new ME3Explorer.Interpreter();
+            this.hb2 = new Be.Windows.Forms.HexBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -638,19 +638,10 @@
             this.interpreterTab.Location = new System.Drawing.Point(4, 22);
             this.interpreterTab.Name = "interpreterTab";
             this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpreterTab.Size = new System.Drawing.Size(660, 394);
+            this.interpreterTab.Size = new System.Drawing.Size(670, 419);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.UseVisualStyleBackColor = true;
-            // 
-            // interpreterControl
-            // 
-            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
-            this.interpreterControl.Name = "interpreterControl";
-            this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(654, 388);
-            this.interpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -658,7 +649,7 @@
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(660, 394);
+            this.infoTab.Size = new System.Drawing.Size(670, 419);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.UseVisualStyleBackColor = true;
@@ -921,7 +912,7 @@
             this.metaDataPage.Location = new System.Drawing.Point(4, 22);
             this.metaDataPage.Name = "metaDataPage";
             this.metaDataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.metaDataPage.Size = new System.Drawing.Size(660, 394);
+            this.metaDataPage.Size = new System.Drawing.Size(670, 419);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.UseVisualStyleBackColor = true;
@@ -1027,27 +1018,10 @@
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
             this.headerTab.Padding = new System.Windows.Forms.Padding(3);
-            this.headerTab.Size = new System.Drawing.Size(660, 394);
+            this.headerTab.Size = new System.Drawing.Size(670, 419);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.UseVisualStyleBackColor = true;
-            // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(3, 28);
-            this.hb2.MinBytesPerLine = 16;
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(654, 363);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 0;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
             // 
             // toolStrip2
             // 
@@ -1055,7 +1029,7 @@
             this.saveHeaderHexChangesBtn});
             this.toolStrip2.Location = new System.Drawing.Point(3, 3);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(654, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(664, 25);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             // 
@@ -1074,7 +1048,7 @@
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(4, 22);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(660, 394);
+            this.scriptTab.Size = new System.Drawing.Size(670, 419);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
             this.scriptTab.UseVisualStyleBackColor = true;
@@ -1087,7 +1061,7 @@
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(660, 394);
+            this.rtb1.Size = new System.Drawing.Size(670, 419);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -1127,6 +1101,32 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
+            // interpreterControl
+            // 
+            this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.interpreterControl.Name = "interpreterControl";
+            this.interpreterControl.Pcc = null;
+            this.interpreterControl.Size = new System.Drawing.Size(664, 413);
+            this.interpreterControl.TabIndex = 0;
+            // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(3, 28);
+            this.hb2.MinBytesPerLine = 16;
+            this.hb2.Name = "hb2";
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(664, 388);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 0;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
             // 
             // PackageEditor
             // 
