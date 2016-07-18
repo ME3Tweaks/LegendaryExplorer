@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
 
@@ -42,6 +43,12 @@ namespace ME3Explorer
         public static void BeginDoubleAnimation(this UIElement target, DependencyProperty dp, double toValue, int duration)
         {
             target.BeginAnimation(dp, new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)));
+        }
+
+        public static void AppendLine(this TextBoxBase box, string text)
+        {
+            box.AppendText(text + Environment.NewLine);
+            box.ScrollToEnd();
         }
     }
 

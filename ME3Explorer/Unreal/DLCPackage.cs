@@ -8,6 +8,7 @@ using ME3Explorer.Unreal;
 using SevenZip.Compression.LZMA;
 using KFreonLib.Debugging;
 using UsefulThings;
+using System.Threading.Tasks;
 
 namespace ME3Explorer.Unreal
 {
@@ -154,6 +155,19 @@ namespace ME3Explorer.Unreal
 
         public HeaderStruct Header;
         public FileEntryStruct[] Files;
+
+        public long UncompressedSize
+        {
+            get
+            {
+                long size = 0;
+                foreach (var file in Files)
+                {
+                    size += file.RealUncompressedSize;
+                }
+                return size;
+            }
+        }
 
         public DLCPackage(string FileName)
         {
@@ -330,6 +344,65 @@ namespace ME3Explorer.Unreal
                 }
             }
             fs.Close();
+            return result;
+        }
+
+        public async Task<MemoryStream> DecompressEntryAsync(int Index)
+        {
+            MemoryStream result = new MemoryStream();
+            FileEntryStruct e = Files[Index];
+            uint count = 0;
+            byte[] inputBlock;
+            long left = e.RealUncompressedSize;
+            List<Task<byte[]>> tasks = new List<Task<byte[]>>();
+            using (FileStream fs = new FileStream(MyFileName, FileMode.Open, FileAccess.Read,FileShare.None, 4096, useAsync: true))
+            {
+                fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
+                byte[] buff;
+                if (e.BlockSizeIndex == 0xFFFFFFFF)
+                {
+                    buff = new byte[e.RealUncompressedSize];
+                    await fs.ReadAsync(buff, 0, buff.Length).ConfigureAwait(continueOnCapturedContext: false);
+                    result.Write(buff, 0, buff.Length);
+                }
+                else
+                {
+                    while (left > 0)
+                    {
+                        uint compressedBlockSize = e.BlockSizes[count];
+                        if (compressedBlockSize == 0)
+                            compressedBlockSize = Header.MaxBlockSize;
+                        if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
+                        {
+                            left -= compressedBlockSize;
+                            buff = new byte[compressedBlockSize];
+                            await fs.ReadAsync(buff, 0, buff.Length).ConfigureAwait(continueOnCapturedContext: false);
+                            tasks.Add(Task.FromResult(buff));
+                        }
+                        else
+                        {
+                            var uncompressedBlockSize = (uint)Math.Min(left, Header.MaxBlockSize);
+                            left -= uncompressedBlockSize;
+                            if (compressedBlockSize < 5)
+                            {
+                                throw new Exception("compressed block size smaller than 5");
+                            }
+                            inputBlock = new byte[compressedBlockSize];
+
+                            await fs.ReadAsync(inputBlock, 0, (int)compressedBlockSize).ConfigureAwait(continueOnCapturedContext: false);
+
+                            tasks.Add(SevenZipHelper.DecompressAsync(inputBlock, (int)uncompressedBlockSize));
+                        }
+                        count++;
+                    }
+                    await Task.WhenAll(tasks).ConfigureAwait(continueOnCapturedContext: false);
+                    foreach (var task in tasks)
+                    {
+                        buff = task.Result;
+                        result.Write(buff, 0, buff.Length);
+                    }
+                } 
+            }
             return result;
         }
 
@@ -558,7 +631,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public void DeleteEntry(List<int> Index)
+        public void DeleteEntries(List<int> Index)
         {
             try
             {

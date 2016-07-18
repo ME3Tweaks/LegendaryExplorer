@@ -10,6 +10,7 @@
         <FontFamily x:Key="TitilliumWeb-Light">/ME3Explorer;component/Resources/TitilliumWeb-Light.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-SemiBold">/ME3Explorer;component/Resources/TitilliumWeb-SemiBold.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-Regular">/ME3Explorer;component/Resources/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="Exo-SemiBold">/ME3Explorer;component/Resources/Exo-SemiBold.ttf#Exo</FontFamily>
 
         <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
@@ -24,6 +25,33 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BorderedButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"

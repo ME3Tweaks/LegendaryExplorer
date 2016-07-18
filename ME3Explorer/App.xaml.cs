@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Unreal;

@@ -71,6 +71,8 @@ namespace ME3Explorer
             DependencyProperty.Register("Columns", typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
 
         public int viewCapacity { get { return Rows * Columns; } }
+        
+        public event EventHandler<Tool> ToolMouseOver;
 
         private int index;
 
@@ -125,6 +127,12 @@ namespace ME3Explorer
             {
                 backButton.Visibility = Visibility.Collapsed;
             }
+        }
+
+        protected override void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            base.Button_MouseEnter(sender, e);
+            ToolMouseOver?.Invoke(sender, (sender as Button)?.DataContext as Tool);
         }
     }
 }

@@ -124,13 +124,13 @@ namespace KFreonLib.Misc
             switch (GameVers)
             {
                 case 1:
-                    ME1Directory.GamePath(path);
+                    ME1Directory.gamePath = path;
                     break;
                 case 2:
-                    ME2Directory.GamePath(path);
+                    ME2Directory.gamePath = path;
                     break;
                 case 3:
-                    ME3Directory.GamePath(path);
+                    ME3Directory.gamePath = path;
                     break;
             }
         }

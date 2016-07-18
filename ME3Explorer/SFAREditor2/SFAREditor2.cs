@@ -568,7 +568,7 @@ namespace ME3Explorer
                             break;
                         }
                 }
-                DLC.DeleteEntry(Indexes);
+                DLC.DeleteEntries(Indexes);
             }
 
             // AutoTOC
@@ -633,7 +633,7 @@ namespace ME3Explorer
                             break;
                         }
                 }
-                dlc.DeleteEntry(Indexes);
+                dlc.DeleteEntries(Indexes);
             }
 
             // AutoTOC

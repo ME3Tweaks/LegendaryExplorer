@@ -233,7 +233,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <local:ToolPanel x:Name="installModspanel" Grid.Column="0" Category="Install Mods" Width="385" ItemMargin="0,10,0,0" Columns="5"
-							ItemControlMargin="-6.5,0" ClipToBounds="True"/>
+							ItemControlMargin="-6.5,0" ClipToBounds="True" ToolMouseOver="ToolMouseOver"/>
                         <Border Grid.Column="2" Background="#7210192A">
                             <StackPanel Orientation="Vertical" Margin="6,0">
                                 <StackPanel.Resources>
@@ -297,9 +297,99 @@
                         </Border>
                     </Grid>
                 </Grid>
+                <TextBlock x:Name="favoritesWatermark" Text="Shift+Right Click on any tool to add it to Favorites. Repeat to unfavorite. Favorited tools have yellow names."
+                       HorizontalAlignment="Left" Margin="69,170,0,0" VerticalAlignment="Top" Height="60" Width="474" FontFamily="{StaticResource TitilliumWeb-Light}" Foreground="#4CFDFDFD" FontSize="20" TextWrapping="Wrap"/>
             </Grid>
         </Grid>
         <local:SearchPanel x:Name="searchPanel" Title="Search Results" Grid.Column="2" Icon="Resources/search.ico" Width="0"/>
+        <Grid x:Name="pathsPanel" Grid.Column="2">
+            <Grid Width="{StaticResource InfoPanelWidth}">
+                <Grid Margin="0,24,15,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Width="2" Fill="#A3FBFBFB"/>
+                    <StackPanel Grid.Column="1">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
+                                <Setter Property="Foreground" Value="#FFFDFDFD"/>
+                            </Style>
+                            <Style x:Key="styleGameTitle" TargetType="{x:Type TextBlock}">
+                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
+                                <Setter Property="Foreground" Value="#FFFDFDFD"/>
+                                <Setter Property="FontSize" Value="20"/>
+                            </Style>
+                            <Style x:Key="styleGameNotFound" TargetType="{x:Type TextBlock}">
+                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Light}"/>
+                                <Setter Property="Foreground" Value="#FFFDFDFD"/>
+                                <Setter Property="FontSize" Value="18"/>
+                                <Setter Property="Text" Value="Game Not Detected"/>
+                                <Setter Property="Height" Value="22"/>
+                            </Style>
+                            <Style TargetType="{x:Type Rectangle}">
+                                <Setter Property="Height" Value="2"/>
+                                <Setter Property="Fill" Value="#FFFBFBFB"/>
+                            </Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="Height" Value="22"/>
+                            </Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Setter Property="Margin" Value="0,8,0,0"/>
+                            </Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BorderedButton}">
+                                <Setter Property="Content" Value="Browse"/>
+                                <Setter Property="Background" Value="#CCC1C1C1"/>
+                                <Setter Property="Foreground" Value="#CCFFFFFF"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource LabelTextBrush}"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Light}"/>
+                                <Setter Property="FontSize" Value="18"/>
+                                <Setter Property="Width" Value="80"/>
+                                <Setter Property="Height" Value="23"/>
+                                <Setter Property="Padding" Value="0,-4,0,0"/>
+                                <Setter Property="Margin" Value="0,8,0,0"/>
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <StackPanel Orientation="Horizontal" Height="46">
+                            <Rectangle Width="46" Fill="#7F3F5E66"/>
+                            <Image Width="32" Height="32" Margin="-46,0,0,0" Source="Resources/folder.ico"/>
+                            <Label Content=" Game Paths" FontSize="23" 
+								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>
+                        </StackPanel>
+                        <StackPanel Margin="15,20,0,0">
+                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect"/>
+                            <Rectangle/>
+                            <Grid>
+                                <TextBlock Style="{StaticResource styleGameNotFound}"/>
+                                <TextBox x:Name="me1PathBox"/>
+                            </Grid>
+                            <Button x:Name="me1PathBrowseButton" Click="me1PathBrowseButton_Click"/>
+                        </StackPanel>
+                        <StackPanel Margin="15,20,0,0">
+                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 2"/>
+                            <Rectangle/>
+                            <Grid>
+                                <TextBlock Style="{StaticResource styleGameNotFound}"/>
+                                <TextBox x:Name="me2PathBox"/>
+                            </Grid>
+                            <Button x:Name="me2PathBrowseButton"/>
+                        </StackPanel>
+                        <StackPanel Margin="15,20,0,0">
+                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 3"/>
+                            <Rectangle/>
+                            <Grid>
+                                <TextBlock Style="{StaticResource styleGameNotFound}"/>
+                                <TextBox x:Name="me3PathBox"/>
+                            </Grid>
+                            <Button x:Name="me3PathBrowseButton"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
         <Grid x:Name="advancedPanel" Width="0" Grid.Column="2">
             <Grid Width="{StaticResource InfoPanelWidth}">
                 <Grid Margin="0,24,15,15">
@@ -348,8 +438,8 @@
                 <Image x:Name="scrollIndicator" Source="Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
             </Grid>
         </Grid>
-        <local:MainToolPanel x:Name="utilitiesPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="utilitiesPanel_ToolMouseOver"/>
-        <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="createModsPanel_ToolMouseOver"/>
+        <local:MainToolPanel x:Name="utilitiesPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
+        <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:ToolInfoPanel x:Name="toolInfoPanel" Width="0" HorizontalAlignment="Left" Grid.Column="2"/>
     </Grid>
 </Window>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using KFreonLib.MEDirectories;
+using Microsoft.Win32;
 
 namespace ME3Explorer
 {
@@ -30,6 +32,7 @@ namespace ME3Explorer
         private bool UtilitiesOpen = false;
         private bool CreateModsOpen = false;
         private bool ToolInfoPanelOpen = false;
+        private bool PathsPanelOpen = false;
         
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
@@ -47,6 +50,7 @@ namespace ME3Explorer
 
         public MainWindow()
         {
+            //exception occurs in InitializeComponent() without try block, but doesn't if present. wtf
             try
             {
                 InitializeComponent();
@@ -57,18 +61,38 @@ namespace ME3Explorer
                 SystemCommands.CloseWindow(this);
             }
             installModspanel.setToolList(Tools.Items.Where(x => x.tags.Contains("user")));
-            favoritesPanel.setToolList(Tools.Items.Where(x => x.IsFavorited));
             Tools.FavoritesChanged += Tools_FavoritesChanged;
+            Tools_FavoritesChanged(null, null);
             utilitiesPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("utility")));
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            
+            if (!Properties.Settings.Default.DisableDLCCheckOnStart)
+            {
+                if (File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
+                {
+                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
+                    var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
+                    var unextracted = folders.Except(extracted);
+                    if (unextracted.Count() > 0)
+                    {
+                        (new InitialSetup()).ShowDialog();
+                    } 
+                }
+                else
+                {
+                    (new InitialSetup()).ShowDialog();
+                }
+            }
         }
 
         private void Tools_FavoritesChanged(object sender, EventArgs e)
         {
-            favoritesPanel.setToolList(Tools.Items.Where(x => x.IsFavorited));
+            IEnumerable<Tool> favs = Tools.Items.Where(x => x.IsFavorited);
+            favoritesPanel.setToolList(favs);
+            favoritesWatermark.Visibility = favs.Count() > 0 ? Visibility.Hidden : Visibility.Visible;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -146,13 +170,15 @@ namespace ME3Explorer
             Logo.Source = (ImageSource)Logo.FindResource("LogoOffImage");
             if (SearchOpen)
             {
-                SearchOpen = false;
-                searchPanel.BeginDoubleAnimation(WidthProperty, 0, duration / 3);
+                closeSearch(duration / 3);
             }
             if (AdvancedOpen)
             {
-                AdvancedOpen = false;
-                advancedPanel.BeginDoubleAnimation(WidthProperty, 0, duration / 3);
+                closeAdvancedSettings(duration / 3);
+            }
+            if (ToolInfoPanelOpen)
+            {
+                closeToolInfo();
             }
             CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
@@ -188,8 +214,11 @@ namespace ME3Explorer
             {
                 if (AdvancedOpen)
                 {
-                    AdvancedOpen = false;
-                    advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
+                    closeAdvancedSettings();
+                }
+                if (ToolInfoPanelOpen)
+                {
+                    closeToolInfo();
                 }
                 SearchOpen = true;
                 searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
@@ -228,20 +257,29 @@ namespace ME3Explorer
 
         private void advancedSettings_Click(object sender, RoutedEventArgs e)
         {
-            AdvancedOpen = !AdvancedOpen;
             if (AdvancedOpen)
             {
-                if (SearchOpen)
-                {
-                    SearchOpen = false;
-                    searchPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
-                }
-                advancedPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
+                closeAdvancedSettings(200);
             }
             else
             {
-                advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 200);
+                if (SearchOpen)
+                {
+                    closeSearch();
+                }
+                if (ToolInfoPanelOpen)
+                {
+                    closeToolInfo();
+                }
+                AdvancedOpen = true;
+                advancedPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
+        }
+
+        private void closeSearch(int duration = 100)
+        {
+            SearchOpen = false;
+            searchPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
         private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -252,10 +290,19 @@ namespace ME3Explorer
                 searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
                 if (AdvancedOpen)
                 {
-                    AdvancedOpen = false;
-                    advancedPanel.BeginDoubleAnimation(WidthProperty, 0, 100);
+                    closeAdvancedSettings();
+                }
+                if (ToolInfoPanelOpen)
+                {
+                    closeToolInfo();
                 }
             }
+        }
+
+        private void closeAdvancedSettings(int duration = 100)
+        {
+            AdvancedOpen = false;
+            advancedPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
         private void UtilitiesButton_Click(object sender, RoutedEventArgs e)
@@ -284,8 +331,7 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                ToolInfoPanelOpen = false;
-                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 0, 50);
+                closeToolInfo();
             }
             UtilitiesOpen = false;
             utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
@@ -318,17 +364,26 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                ToolInfoPanelOpen = false;
-                toolInfoPanel.BeginDoubleAnimation(WidthProperty, 0, 50);
+                closeToolInfo(50);
             }
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             createModsButton.OpacityMask = LabelTextBrush;
         }
 
-        private void utilitiesPanel_ToolMouseOver(object sender, Tool e)
+        private void closeToolInfo(int duration = 50)
         {
-            openToolInfo(e);
+            ToolInfoPanelOpen = false;
+            toolInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        }
+
+        private void ToolMouseOver(object sender, Tool t)
+        {
+            if (SearchBox.IsFocused)
+            {
+                SearchBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+            openToolInfo(t);
         }
 
         private void openToolInfo(Tool e)
@@ -336,14 +391,90 @@ namespace ME3Explorer
             toolInfoPanel.setTool(e);
             if (!ToolInfoPanelOpen && !DisableFlyouts)
             {
+                if (SearchOpen)
+                {
+                    closeSearch();
+                }
+                if (AdvancedOpen)
+                {
+                    closeAdvancedSettings();
+                }
                 ToolInfoPanelOpen = true;
                 toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
             }
         }
 
-        private void createModsPanel_ToolMouseOver(object sender, Tool e)
+        private void closeGamePaths(int duration = 50)
         {
-            openToolInfo(e);
+            PathsPanelOpen = false;
+            pathsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+
+            string me1Path = null;
+            string me2Path = null;
+            string me3Path = null;
+            if (File.Exists(Path.Combine(me1PathBox.Text, "Binaries", "MassEffect.exe")))
+            {
+                me1Path = me1PathBox.Text;
+            }
+            if (File.Exists(Path.Combine(me2PathBox.Text, "Binaries", "MassEffect2.exe")))
+            {
+                me2Path = me2PathBox.Text;
+            }
+            if (File.Exists(Path.Combine(me3PathBox.Text, "Binaries", "Win32", "MassEffect3.exe")))
+            {
+                me3Path = me3PathBox.Text;
+            }
+            MEDirectories.SaveSettings(new List<string> { me1Path, me2Path, me3Path });
+        }
+
+        private void me1PathBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            string game;
+            if (b == me1PathBrowseButton)
+            {
+                game = "Mass Effect";
+            }
+            else if (b == me2PathBrowseButton)
+            {
+                game = "Mass Effect 2";
+            }
+            else if (b == me3PathBrowseButton)
+            {
+                game = "Mass Effect 3";
+            }
+            else
+            {
+                return;
+            }
+            if (game != "")
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Title = $"Select {game} executable.";
+                game = game.Replace(" ", "");
+                ofd.Filter = $"{game}.exe|{game}.exe";
+
+                if (ofd.ShowDialog() == true)
+                {
+                    string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
+                    
+                    switch (game)
+                    {
+                        case "MassEffect":
+                            me1PathBox.Text = ME1Directory.gamePath = result;
+                            me1PathBox.Visibility = Visibility.Visible;
+                            break;
+                        case "MassEffect2":
+                            me2PathBox.Text = ME2Directory.gamePath = result;
+                            me2PathBox.Visibility = Visibility.Visible;
+                            break;
+                        case "MassEffect3":
+                            me3PathBox.Text = ME3Directory.gamePath = Path.GetDirectoryName(result);
+                            me3PathBox.Visibility = Visibility.Visible;
+                            break;
+                    }
+                }
+            }
         }
     }
 }

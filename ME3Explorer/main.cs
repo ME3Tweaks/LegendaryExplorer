@@ -12,7 +12,7 @@ namespace ME3Explorer
         public static void Main()
         {
             SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
-            splashScreen.Show(false, true);
+            splashScreen.Show(false);
             App app = new App();
             app.InitializeComponent();
             splashScreen.Close(TimeSpan.FromMilliseconds(1));

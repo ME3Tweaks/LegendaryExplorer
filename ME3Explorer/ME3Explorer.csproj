@@ -166,6 +166,9 @@
     <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="InitialSetup.xaml.cs">
+      <DependentUpon>InitialSetup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="main.cs" />
     <Compile Include="MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
@@ -179,9 +182,6 @@
     <Compile Include="ME2\Unreal\Classes\FaceFXAnimSet.cs" />
     <Compile Include="SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="InitialDLCExtractor.xaml.cs">
-      <DependentUpon>InitialDLCExtractor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ME1\Unreal\Bytecode.cs" />
     <Compile Include="ME1\Unreal\Function.cs" />
@@ -407,6 +407,10 @@
     <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </Compile>
+    <Page Include="InitialSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainToolPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -414,10 +418,6 @@
     <Page Include="SearchPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InitialDLCExtractor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -937,6 +937,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
     <Resource Include="Resources\TitilliumWeb-Regular.ttf" />
     <Resource Include="Resources\TitilliumWeb-Italic.ttf" />
@@ -944,7 +945,9 @@
     <Resource Include="Resources\TitilliumWeb-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\KismetFont.ttf" />
@@ -1030,7 +1033,6 @@
     <Resource Include="TlkEditor\icon.png" />
     <Resource Include="SFARTOCbinUpdater\back2.jpg" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
-    <Resource Include="Resources\ue_codeeditor_64x64.png" />
     <Resource Include="Resources\udk_converter_64x64.png" />
     <Resource Include="Resources\TLKManager_icon_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />
@@ -1053,8 +1055,6 @@
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\me3creator_64x64.png" />
-    <Resource Include="Resources\me2exp_64x64.png" />
-    <Resource Include="Resources\me1exp_64x64.png" />
     <Resource Include="Resources\material_viewer_64x64.png" />
     <Resource Include="Resources\level_explorer_64x64.png" />
     <Resource Include="Resources\level_editor_64x64.png" />
@@ -1087,9 +1087,6 @@
     <Resource Include="Icons\plot_DB_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
-    <Resource Include="Icons\me3exp_smallbanner_v2.png" />
-    <Resource Include="Icons\me3exp_smallbanner_v1.png" />
-    <Resource Include="Icons\me3exp_newbanner.png" />
     <Page Include="CurveEd\CurveEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1152,6 +1149,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\meexp_favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\me3exp_smallbanner_v1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

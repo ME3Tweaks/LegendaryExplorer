@@ -362,7 +362,7 @@ namespace ME3Explorer
                     ExtractedFiles.Add(dlcExtractionPath + entry.FileName);
                 }
             }
-            dlc.DeleteEntry(Indicies);
+            dlc.DeleteEntries(Indicies);
             return ExtractedFiles;
         }
 
