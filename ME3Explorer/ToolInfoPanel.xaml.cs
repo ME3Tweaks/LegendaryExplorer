@@ -28,6 +28,14 @@ namespace ME3Explorer
         public void setTool(Tool tool)
         {
             this.DataContext = tool;
+            if (tool.description?.Length > 315)
+            {
+                scrollIndicator.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                scrollIndicator.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

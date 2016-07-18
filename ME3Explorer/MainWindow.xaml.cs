@@ -180,6 +180,10 @@ namespace ME3Explorer
             {
                 closeToolInfo();
             }
+            if (PathsPanelOpen)
+            {
+                closeGamePaths();
+            }
             CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
@@ -219,6 +223,10 @@ namespace ME3Explorer
                 if (ToolInfoPanelOpen)
                 {
                     closeToolInfo();
+                }
+                if (PathsPanelOpen)
+                {
+                    closeGamePaths();
                 }
                 SearchOpen = true;
                 searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
@@ -271,6 +279,10 @@ namespace ME3Explorer
                 {
                     closeToolInfo();
                 }
+                if (PathsPanelOpen)
+                {
+                    closeGamePaths();
+                }
                 AdvancedOpen = true;
                 advancedPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
@@ -295,6 +307,10 @@ namespace ME3Explorer
                 if (ToolInfoPanelOpen)
                 {
                     closeToolInfo();
+                }
+                if (PathsPanelOpen)
+                {
+                    closeGamePaths();
                 }
             }
         }
@@ -399,6 +415,10 @@ namespace ME3Explorer
                 {
                     closeAdvancedSettings();
                 }
+                if (PathsPanelOpen)
+                {
+                    closeGamePaths();
+                }
                 ToolInfoPanelOpen = true;
                 toolInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
             }
@@ -427,7 +447,7 @@ namespace ME3Explorer
             MEDirectories.SaveSettings(new List<string> { me1Path, me2Path, me3Path });
         }
 
-        private void me1PathBrowseButton_Click(object sender, RoutedEventArgs e)
+        private void pathBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
             string game;
@@ -474,6 +494,55 @@ namespace ME3Explorer
                             break;
                     }
                 }
+            }
+        }
+
+        private void gamePaths_Click(object sender, RoutedEventArgs e)
+        {
+            if (PathsPanelOpen)
+            {
+                closeGamePaths();
+            }
+            else
+            {
+                if (ME1Directory.gamePath != null)
+                {
+                    me1PathBox.Text = ME1Directory.gamePath;
+                }
+                else
+                {
+                    me1PathBox.Visibility = Visibility.Collapsed;
+                }
+                if (ME2Directory.gamePath != null)
+                {
+                    me2PathBox.Text = ME2Directory.gamePath;
+                }
+                else
+                {
+                    me2PathBox.Visibility = Visibility.Collapsed;
+                }
+                if (ME3Directory.gamePath != null)
+                {
+                    me3PathBox.Text = ME3Directory.gamePath;
+                }
+                else
+                {
+                    me3PathBox.Visibility = Visibility.Collapsed;
+                }
+                if (SearchOpen)
+                {
+                    closeSearch();
+                }
+                if (AdvancedOpen)
+                {
+                    closeAdvancedSettings();
+                }
+                if (ToolInfoPanelOpen)
+                {
+                    closeToolInfo();
+                }
+                PathsPanelOpen = true;
+                pathsPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
             }
         }
     }

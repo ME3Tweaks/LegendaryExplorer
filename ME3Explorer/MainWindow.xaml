@@ -267,7 +267,7 @@
                                     </TextBlock.RenderTransform>
                                 </TextBlock>
                                 <Rectangle Fill="#A3FBFBFB" Height="2"/>
-                                <Button>
+                                <Button Click="gamePaths_Click">
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Style="{StaticResource styleIcon}">
                                             <Rectangle.OpacityMask>
@@ -302,15 +302,15 @@
             </Grid>
         </Grid>
         <local:SearchPanel x:Name="searchPanel" Title="Search Results" Grid.Column="2" Icon="Resources/search.ico" Width="0"/>
-        <Grid x:Name="pathsPanel" Grid.Column="2">
+        <Grid x:Name="pathsPanel"  Grid.Column="2" Width="0">
             <Grid Width="{StaticResource InfoPanelWidth}">
-                <Grid Margin="0,24,15,15">
+                <Grid Margin="0,24,15,15" Width="285">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Rectangle Width="2" Fill="#A3FBFBFB"/>
-                    <StackPanel Grid.Column="1">
+                    <StackPanel Grid.Column="1" Width="283">
                         <StackPanel.Resources>
                             <Style TargetType="{x:Type Label}">
                                 <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
@@ -351,6 +351,7 @@
                                 <Setter Property="Padding" Value="0,-4,0,0"/>
                                 <Setter Property="Margin" Value="0,8,0,0"/>
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <EventSetter Event="Click" Handler="pathBrowseButton_Click"/>
                             </Style>
                         </StackPanel.Resources>
                         <StackPanel Orientation="Horizontal" Height="46">
@@ -366,7 +367,7 @@
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
                                 <TextBox x:Name="me1PathBox"/>
                             </Grid>
-                            <Button x:Name="me1PathBrowseButton" Click="me1PathBrowseButton_Click"/>
+                            <Button x:Name="me1PathBrowseButton"/>
                         </StackPanel>
                         <StackPanel Margin="15,20,0,0">
                             <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 2"/>

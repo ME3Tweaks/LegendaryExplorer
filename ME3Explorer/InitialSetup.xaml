@@ -35,7 +35,7 @@
             <StackPanel x:Name="step1Section">
                 <Label Height="32" Background="#FFBFBFBF">
                     <TextBlock x:Name="step1TextBlock" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
-                               FontFamily="{StaticResource TitilliumWeb-SemiBold}">
+                               FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="0,0,0,-1">
                         Step 1.
                         <Run Text=" Verify Game Paths." FontFamily="{StaticResource TitilliumWeb-Regular}"/>
                     </TextBlock>
@@ -87,9 +87,10 @@
         <Grid>
             <StackPanel x:Name="step2Section">
                 <Label Height="32" Background="#FFBFBFBF">
-                    <TextBlock x:Name="step2TextBlock" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center">
-                        <Run Text="Step 2. " FontFamily="{StaticResource TitilliumWeb-SemiBold}"/>
-                        <Run Text="DLC Unpacking" FontFamily="{StaticResource TitilliumWeb-Regular}"/>
+                    <TextBlock x:Name="step2TextBlock" Foreground="#FF080808" FontSize="18"
+                               FontFamily="{StaticResource TitilliumWeb-SemiBold}" VerticalAlignment="Center" Margin="0,0,0,-2">
+                        Step 2.
+                        <Run Text=" DLC Unpacking" FontFamily="{StaticResource TitilliumWeb-Regular}"/>
                     </TextBlock>
                 </Label>
                 <Grid>
