@@ -129,7 +129,7 @@ namespace ME3Explorer
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            (new AboutME3Explorer()).Show();
+            (new About()).Show();
         }
 
         private void Debug_Click(object sender, RoutedEventArgs e)

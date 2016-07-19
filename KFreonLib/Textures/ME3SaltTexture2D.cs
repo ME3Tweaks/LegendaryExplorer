@@ -1610,7 +1610,7 @@ namespace KFreonLib.Textures
 
         public IImageInfo GenerateImageInfo()
         {
-            IImageInfo imginfo = privateimgList.First(img => (int)img.storageType != (int)ME3Texture2D.storage.empty);
+            IImageInfo imginfo = privateimgList.First(img => (int)img.storageType != (int)storage.empty);
             imginfo.GameVersion = 3;
             return imginfo;
         }

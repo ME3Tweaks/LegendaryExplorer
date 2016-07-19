@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using Gibbed.IO;
 using System.Drawing;
-using DDSPreview = KFreonLib.Textures.SaltDDSPreview.DDSPreview;
 using System.Drawing.Drawing2D;
 using SaltTPF;
 using System.Drawing.Imaging;

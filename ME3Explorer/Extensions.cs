@@ -1,56 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 
 namespace ME3Explorer
 {
-    public static class WPFExtensions
-    {
-        /// <summary>
-        /// Binds a property
-        /// </summary>
-        /// <param name="bound">object to create binding on</param>
-        /// <param name="boundProp">property to create binding on</param>
-        /// <param name="source">object being bound to</param>
-        /// <param name="sourceProp">property being bound to</param>
-        /// <param name="converter">optional value converter</param>
-        /// <param name="parameter">optional value converter parameter</param>
-        public static void bind(this FrameworkElement bound, DependencyProperty boundProp, FrameworkElement source, string sourceProp,
-            IValueConverter converter = null, object parameter = null)
-        {
-            Binding b = new Binding { Source = source, Path = new PropertyPath(sourceProp) };
-            if (converter != null)
-            {
-                b.Converter = converter;
-                b.ConverterParameter = parameter;
-            }
-            bound.SetBinding(boundProp, b);
-        }
-
-        /// <summary>
-        /// Starts a DoubleAnimation for a specified animated property on this element
-        /// </summary>
-        /// <param name="target">element to perform animation on</param>
-        /// <param name="dp">The property to animate, which is specified as a dependency property identifier</param>
-        /// <param name="toValue">The destination value of the animation</param>
-        /// <param name="duration">The duration of the animation, in milliseconds</param>
-        public static void BeginDoubleAnimation(this UIElement target, DependencyProperty dp, double toValue, int duration)
-        {
-            target.BeginAnimation(dp, new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)));
-        }
-
-        public static void AppendLine(this TextBoxBase box, string text)
-        {
-            box.AppendText(text + Environment.NewLine);
-            box.ScrollToEnd();
-        }
-    }
 
     public static class EnumerableExtensions
     {
@@ -210,6 +172,80 @@ namespace ME3Explorer
                 }
             }
             return false;
+        }
+    }
+
+    public static class WPFExtensions
+    {
+        /// <summary>
+        /// Binds a property
+        /// </summary>
+        /// <param name="bound">object to create binding on</param>
+        /// <param name="boundProp">property to create binding on</param>
+        /// <param name="source">object being bound to</param>
+        /// <param name="sourceProp">property being bound to</param>
+        /// <param name="converter">optional value converter</param>
+        /// <param name="parameter">optional value converter parameter</param>
+        public static void bind(this FrameworkElement bound, DependencyProperty boundProp, FrameworkElement source, string sourceProp,
+            IValueConverter converter = null, object parameter = null)
+        {
+            Binding b = new Binding { Source = source, Path = new PropertyPath(sourceProp) };
+            if (converter != null)
+            {
+                b.Converter = converter;
+                b.ConverterParameter = parameter;
+            }
+            bound.SetBinding(boundProp, b);
+        }
+
+        /// <summary>
+        /// Starts a DoubleAnimation for a specified animated property on this element
+        /// </summary>
+        /// <param name="target">element to perform animation on</param>
+        /// <param name="dp">The property to animate, which is specified as a dependency property identifier</param>
+        /// <param name="toValue">The destination value of the animation</param>
+        /// <param name="duration">The duration of the animation, in milliseconds</param>
+        public static void BeginDoubleAnimation(this UIElement target, DependencyProperty dp, double toValue, int duration)
+        {
+            target.BeginAnimation(dp, new DoubleAnimation(toValue, TimeSpan.FromMilliseconds(duration)));
+        }
+
+        public static void AppendLine(this TextBoxBase box, string text)
+        {
+            box.AppendText(text + Environment.NewLine);
+            box.ScrollToEnd();
+        }
+    }
+
+    //http://stackoverflow.com/a/11433814/1968930
+    public static class HyperlinkExtensions
+    {
+        public static bool GetIsExternal(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsExternalProperty);
+        }
+
+        public static void SetIsExternal(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsExternalProperty, value);
+        }
+        public static readonly DependencyProperty IsExternalProperty =
+            DependencyProperty.RegisterAttached("IsExternal", typeof(bool), typeof(HyperlinkExtensions), new PropertyMetadata(false, OnIsExternalChanged));
+
+        private static void OnIsExternalChanged(object sender, DependencyPropertyChangedEventArgs args)
+        {
+            var hyperlink = sender as Hyperlink;
+
+            if ((bool)args.NewValue)
+                hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+            else
+                hyperlink.RequestNavigate -= Hyperlink_RequestNavigate;
+        }
+
+        private static void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
+            e.Handled = true;
         }
     }
 }

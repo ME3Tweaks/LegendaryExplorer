@@ -838,14 +838,12 @@ namespace ME3Explorer
         private List<string> InstallJob(ModJob job)
         {
             List<string> results = new List<string>();
-
-            ScriptCompiler sc = new ScriptCompiler();
+            
             KFreonLib.Scripting.ModMaker.ModData = job.data;
-            sc.rtb1.Text = job.Script;
 
             try
             {
-                results.Add(sc.Compile());
+                results.Add(ScriptCompiler.CompileAndRun(job.Script));
             }
             catch (Exception e)
             {

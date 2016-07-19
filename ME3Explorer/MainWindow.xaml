@@ -196,7 +196,7 @@
                                             <ControlTemplate TargetType="{x:Type Label}">
                                                 <Grid Height="26">
                                                     <ContentPresenter x:Name="cPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                    <Rectangle Height="2" Width="{TemplateBinding Width}" VerticalAlignment="Bottom" Fill="{TemplateBinding BorderBrush}" />
+                                                    <Rectangle Height="2" Width="{TemplateBinding ActualWidth}" VerticalAlignment="Bottom" Fill="{TemplateBinding BorderBrush}" />
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
@@ -221,7 +221,7 @@
                             <Label Content="GitHub" HorizontalAlignment="Right" />
                             <Label Content="Nexus" Grid.Column="2"/>
                             <Label Content="Forums" Grid.Row="1" HorizontalAlignment="Right" Margin="0,-3,0,0" />
-                            <Label Content="Wikia" Grid.Row="1" Grid.Column="2" Margin="0,-3,0,0"/>
+                            <Label Content="Wikia" Grid.Row="1" Grid.Column="2" Margin="0,-3,0,0" HorizontalAlignment="Left"/>
                         </Grid>
                     </StackPanel>
                     <local:ToolPanel x:Name="favoritesPanel" Grid.Row="2" Category="Favorites" ItemMargin="0,15,0,0" Rows="2" Columns="7"
@@ -330,7 +330,7 @@
                             </Style>
                             <Style TargetType="{x:Type Rectangle}">
                                 <Setter Property="Height" Value="2"/>
-                                <Setter Property="Fill" Value="#FFFBFBFB"/>
+                                <Setter Property="Fill" Value="#CCFBFBFB"/>
                             </Style>
                             <Style TargetType="{x:Type TextBox}">
                                 <Setter Property="Height" Value="22"/>
@@ -340,22 +340,27 @@
                             </Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BorderedButton}">
                                 <Setter Property="Content" Value="Browse"/>
-                                <Setter Property="Background" Value="#CCC1C1C1"/>
-                                <Setter Property="Foreground" Value="#CCFFFFFF"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource LabelTextBrush}"/>
+                                <Setter Property="Background" Value="#77C1C1C1"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="BorderBrush" Value="#77FDFDFD"/>
                                 <Setter Property="BorderThickness" Value="2"/>
                                 <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Light}"/>
                                 <Setter Property="FontSize" Value="18"/>
                                 <Setter Property="Width" Value="80"/>
-                                <Setter Property="Height" Value="23"/>
-                                <Setter Property="Padding" Value="0,-4,0,0"/>
+                                <Setter Property="Height" Value="28"/>
+                                <Setter Property="Padding" Value="0,-2,0,0"/>
                                 <Setter Property="Margin" Value="0,8,0,0"/>
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
                                 <EventSetter Event="Click" Handler="pathBrowseButton_Click"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="#FF1F283C"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
                         <StackPanel Orientation="Horizontal" Height="46">
-                            <Rectangle Width="46" Fill="#7F3F5E66"/>
+                            <Rectangle Width="46" Fill="#7F3F5E66" Height="46"/>
                             <Image Width="32" Height="32" Margin="-46,0,0,0" Source="Resources/folder.ico"/>
                             <Label Content=" Game Paths" FontSize="23" 
 								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>

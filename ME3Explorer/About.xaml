@@ -1,0 +1,185 @@
+﻿<Window x:Class="ME3Explorer.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ME3Explorer"
+        mc:Ignorable="d"
+        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <StackPanel Width="600" Margin="0,0,0,10">
+        <StackPanel Orientation="Horizontal">
+            <Image Width="249" Height="109" Source="Resources/me3exp_smallbanner_v1.png"/>
+            <Grid Width="351" Height="109" Background="#FF1F283C">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Mass Effect 3 Explorer" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
+                    <TextBlock Text="{Binding Source={x:Static local:App.Version}}" Foreground="White" FontSize="26" 
+                               FontFamily="{StaticResource TitilliumWeb-Regular}" HorizontalAlignment="Center" Margin="0,-6,0,0"/>
+                    <TextBlock Text="Copyright (c) 2011-2016 ME3Explorer Team" FontFamily="{StaticResource TitilliumWeb-SemiBold}" Foreground="#FFD8D8D8"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <Rectangle Height="6" Fill="#FFF3F3F3"/>
+        <TextBlock FontFamily="{StaticResource Exo-SemiBold}" Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Margin="0,9">
+            <Run Text="Visit our web site hosted by GitHub: "/>
+            <Hyperlink NavigateUri="http://me3explorer.github.io/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">http://me3explorer.github.io/</Hyperlink>
+        </TextBlock>
+        <Grid Height="32" Background="#FFBFBFBF">
+            <TextBlock Text="Credits" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
+                               FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="10,0,0,-1"/>
+        </Grid>
+        <Grid Margin="10,4,10,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Current Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17" Foreground="#FF080808"/>
+                <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
+                    <Run Text="• Kfreon - Lead Designer"/><LineBreak/>
+                    <Run Text="• SirCxyrtyx - Programmer"/><LineBreak/>
+                    <Run Text="• Giftfish - Coordinater"/>
+                </TextBlock>
+                <Label FontFamily="{StaticResource TitilliumWeb-Light}"
+                       FontSize="14" Foreground="#FF808080" BorderBrush="#FFA8A8A8" BorderThickness="2" Width="179" HorizontalAlignment="Center"
+                       VerticalAlignment="Center" Margin="0,14,0,0">
+                    <TextBlock TextWrapping="Wrap" Text="Credit also goes to toolset modders for their continued feedback &amp; support!" TextAlignment="Center"/>
+                </Label>
+            </StackPanel>
+            <TabControl Height="200" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,6,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid SnapsToDevicePixels="True">
+                                        <Border x:Name="Bd" Margin="-2,-2,0,-2" BorderBrush="#FFA8A8A8" BorderThickness="2,2,2,0" Background="{x:Null}" Padding="{TemplateBinding Padding}" Height="24">
+                                            <ContentPresenter x:Name="Content" Margin="0,0,0,1" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
+                                        </Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" TargetName="Bd" Value="#FFF9F9F9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="1"/>
+                                            <Setter Property="Background" TargetName="Bd" Value="#FFF9F9F9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Background" TargetName="Bd" Value="{x:Null}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+                <TabItem Header="Programming">
+                    <ScrollViewer>
+                        <TextBlock>
+                        WarrantyVoider<LineBreak/>
+                        AmaroK86      <LineBreak/>
+                        Eudaimonium   <LineBreak/>
+                        Saltisgood    <LineBreak/>
+                        Aquadran      <LineBreak/>
+                        BCSWowbagger  <LineBreak/>
+                        Erik JS       <LineBreak/>
+                        Fog.Gene      <LineBreak/>
+                        Kfreon        <LineBreak/>
+                        Ashley66444   <LineBreak/>
+                        JohnP         <LineBreak/>
+                        SirCxyrtyx    <LineBreak/>
+                        FemShep       <LineBreak/>
+                        MrFob         <LineBreak/>
+                        Heff          <LineBreak/>
+                        </TextBlock>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="3rd Party Code">
+                    <ScrollViewer>
+                        <TextBlock>
+                        Bernhard Elbl - Be.Windows.Forms.HexBox         <LineBreak/>
+                        Eliot, UnHood - UnrealScript Bytecode Decompiler<LineBreak/>
+                        Gibbed - variety of tools                       <LineBreak/>
+                        Gildor - UModel and others                      <LineBreak/>
+                        Gocek - ME2 TLK Tool                            <LineBreak/>
+                        Hcs64 - ww2ogg                                  <LineBreak/>
+                        Jean-Loup Gailly and Mark Adler - zLib          <LineBreak/>
+                        John33 - Oggdec                                 <LineBreak/>
+                        Newtonsoft - JSON.NET                           <LineBreak/>
+                        Nvidia - Real Time DXT                          <LineBreak/>
+                        Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
+                        RS - Texmod                                     <LineBreak/>
+                        TheFeckless - UE3 SDK Generator                 <LineBreak/>
+                        </TextBlock>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Documentation">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock>
+                        GitHub - SirCxyrtyx                       <LineBreak/>
+                        Nexusmods - Giftfish and SirCxyrtyx       <LineBreak/>
+                        Toolset GUI Text - Giftfish and SirCxyrtyx<LineBreak/>
+                        Web Portal - Giftfish and SirCxyrtyx      <LineBreak/>
+                        Wikia - Giftfish and Wiki Contributors    <LineBreak/>
+                        </TextBlock>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Art + Design">
+                    <ScrollViewer>
+                        <TextBlock>
+                        ME3Explorer 3.0 GUI Design by Giftfish and SirCxyrtyx                      <LineBreak/>
+                                                                                                   <LineBreak/>
+                        FONTS                                                                      <LineBreak/>
+                        Exo © Nataneal Gama                                                        <LineBreak/>
+                        Hack © Source Foundry                                                      <LineBreak/>
+                        Korataki © Ray Larabie                                                     <LineBreak/>
+                        Slider, Creator Unknown                                                    <LineBreak/>
+                        Titillium Web © Accademia di Belle Arti di Urbino                          <LineBreak/>
+                                                                                                   <LineBreak/>
+                        GRAPHICS                                                                   <LineBreak/>
+                        “3”, “M”, &amp; Splash Background © BioWare Corp. and Electronic Arts, Inc.<LineBreak/>
+                        Hex Code Background © Maksim Kabakou, Shutterstock                         <LineBreak/>
+                        Outline icons © Flaticon.com                                               <LineBreak/>
+                        ME3Explorer Graphics and Tool Icons by Giftfish                            <LineBreak/>
+                        </TextBlock>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <Grid Height="32" Background="#FFBFBFBF">
+            <TextBlock Text="License" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
+                               FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="10,0,0,-1"/>
+        </Grid>
+        <StackPanel Margin="10,0">
+            <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Foreground="#FF4D4D4D" Margin="0,3,0,0">
+                <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">ME3Explorer</Run> is free software and may be changed or distributed
+                as specified by the terms of The MIT License. ME3Explorer is supplied without warranty; any problems incurred through use of the
+                software are your responsibility, not ours.
+            </TextBlock>
+            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="195" Margin="0,3,0,0">
+                <RichTextBox.Document>
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="The MIT License" FontWeight="Bold"/>
+                        </Paragraph>
+                        <Paragraph>
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+                            and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+                        </Paragraph>
+                        <Paragraph>
+                            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                        </Paragraph>
+                        <Paragraph>
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+                            DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox.Document>
+            </RichTextBox>
+        </StackPanel>
+    </StackPanel>
+</Window>

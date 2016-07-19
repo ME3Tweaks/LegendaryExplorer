@@ -146,15 +146,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AboutME3Explorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutME3Explorer.Designer.cs">
-      <DependentUpon>AboutME3Explorer.cs</DependentUpon>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Coalesced Editor\CoalEditor.cs">
       <SubType>Form</SubType>
@@ -180,6 +181,11 @@
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ME2\Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -262,12 +268,6 @@
     </Compile>
     <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SFARTOCbinUpdater\SFARTOCbinUpdater.Designer.cs">
-      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
     </Compile>
     <Compile Include="Soundplorer\DirectReplace.cs">
       <SubType>Form</SubType>
@@ -725,19 +725,11 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="AboutME3Explorer.resx">
-      <DependentUpon>AboutME3Explorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="AFCExtract\AFCExtract.resx">
       <DependentUpon>AFCExtract.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -870,8 +862,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Property Dumper\PropDumper.resx">
       <DependentUpon>PropDumper.cs</DependentUpon>
@@ -900,9 +892,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SFARTOCbinUpdater\SFARTOCbinUpdater.resx">
-      <DependentUpon>SFARTOCbinUpdater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>
@@ -937,6 +926,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
     <Resource Include="Resources\TitilliumWeb-Regular.ttf" />
@@ -1031,32 +1021,25 @@
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="TlkEditor\icon.png" />
-    <Resource Include="SFARTOCbinUpdater\back2.jpg" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
-    <Resource Include="Resources\udk_converter_64x64.png" />
     <Resource Include="Resources\TLKManager_icon_64x64.png" />
     <Resource Include="Resources\TLK_editor_icon.ico" />
     <Resource Include="Resources\TLK_editor_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
     <Resource Include="Resources\soundplorer_64x64.png" />
     <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
-    <Resource Include="Resources\sfar_basiceditor_icon_64x64.png" />
     <Resource Include="Resources\sfar_basiceditor_icon.ico" />
     <Resource Include="Resources\sequence_editor_64x64.png" />
-    <Resource Include="Resources\questmap_editor_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
     <Resource Include="Resources\property_manager_64x64.png" />
     <Resource Include="Resources\property_dumper_64x64.png" />
     <Resource Include="Resources\property_database_64x64.png" />
-    <Resource Include="Resources\pcceditor2_64x64.png" />
     <Resource Include="Resources\pcc_repacker_64x64.png" />
     <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\me3creator_64x64.png" />
-    <Resource Include="Resources\material_viewer_64x64.png" />
-    <Resource Include="Resources\level_explorer_64x64.png" />
     <Resource Include="Resources\level_editor_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
@@ -1067,13 +1050,8 @@
     <Resource Include="Resources\fxa_editor_64x64.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />
-    <Resource Include="Resources\dlc_editor2_64x64.png" />
-    <Resource Include="Resources\dlc_basiceditor_64x64.png" />
     <Resource Include="Resources\dialogue_editor_64x64.png" />
-    <Resource Include="Resources\DDSConverter_64x64.png" />
     <Resource Include="Resources\conditionals_editor_64x64.png" />
-    <Resource Include="Resources\codex_editor_64x64.png" />
-    <Resource Include="Resources\coalesced_operator_64x64.png" />
     <Resource Include="Resources\coalesced_editor_64x64.png" />
     <Resource Include="Resources\class_viewer_64x64.png" />
     <Resource Include="Resources\camera_tool_64x64.png" />
@@ -1083,7 +1061,6 @@
     <Resource Include="Icons\TPFTools_64x64.png" />
     <Resource Include="Icons\texplorer_64x64.png" />
     <Resource Include="Icons\texplorer.ico" />
-    <Resource Include="Icons\SFARTOC_64x64.png" />
     <Resource Include="Icons\plot_DB_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
@@ -1142,7 +1119,6 @@
     <Resource Include="Resources\level_database_icon.ico" />
     <Resource Include="Resources\save_gameeditor_icon.ico" />
     <Resource Include="Resources\save_gameoperator_icon.ico" />
-    <Resource Include="Resources\script_database_icon.ico" />
     <SplashScreen Include="Resources\toolset_splash.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </SplashScreen>

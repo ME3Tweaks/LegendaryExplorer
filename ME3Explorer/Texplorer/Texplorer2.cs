@@ -2378,39 +2378,6 @@ namespace ME3Explorer
                 ShowContextPanel(false);
         }
 
-        private void treeIOToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void changePathsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // KFreon: Populate BIOGame entries
-            List<string> biogames = new List<string>();
-            for (int i = 1; i < 4; i++)
-            {
-                if (i == WhichGame)
-                    biogames.Add(pathBIOGame);
-                else
-                    biogames.Add("");
-            }
-
-            // KFreon: Display PathChanger
-            using (Helpers.PathChanger changer = new Helpers.PathChanger(biogames[0], biogames[1], biogames[2]))
-            {
-                if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                    return;
-
-                #region Change Paths and Save
-                // KFreon: Change paths
-                MEExDirecs.SetPaths(changer.PathME1, changer.PathME2, changer.PathME3);
-
-                // KFreon: Get paths again
-                CheckGameStates();
-                #endregion
-            }
-        }
-
         private void AddDLCToTree(List<string> pccs)
         {
             Tree.AddPCCs(pccs);

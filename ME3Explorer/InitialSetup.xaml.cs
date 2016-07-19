@@ -65,15 +65,15 @@ namespace ME3Explorer
                 var parts = ME3Directory.gamePath.Split(':');
                 DriveInfo info = new DriveInfo(parts[0]);
                 double availableSpace = info.AvailableFreeSpace;
-                availableSpaceRun.Text = " " + UsefulThings.General.GetFileSizeAsString(availableSpace);
+                availableSpaceRun.Text = UsefulThings.General.GetFileSizeAsString(availableSpace);
                 double requiredSpace = GetRequiredSize();
                 if (requiredSpace >= 0)
                 {
-                    requiredSpaceRun.Text = " " + UsefulThings.General.GetFileSizeAsString(requiredSpace);
+                    requiredSpaceRun.Text = UsefulThings.General.GetFileSizeAsString(requiredSpace);
                 }
                 else
                 {
-                    requiredSpaceRun.Text = " ?";
+                    requiredSpaceRun.Text = "?";
                 }
                 unpackOutput.AppendLine($"Unpacked DLC detected: {sfarsToUnpack.Count}");
                 if (sfarsToUnpack.Count > 0)
@@ -114,6 +114,7 @@ namespace ME3Explorer
         {
             doneButton.Background = new SolidColorBrush(Color.FromRgb(0xb8, 0, 0));
             doneButton.Content = "Setup failed! Exit by clicking the \"x\" in the upper right.";
+            doneButton.IsEnabled = true;
         }
 
         private double GetRequiredSize()
@@ -156,12 +157,6 @@ namespace ME3Explorer
             //the difference between the uncompressed size and compressed size of all SFARS, plus the compressed size
             //of the largest SFAR. I'm using the uncompressed size instead as a fudge factor.
             return (uncompressedSize - compressedSize) + largestUncompressedSize;
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            Process.Start(e.Uri.AbsoluteUri);
-            e.Handled = true;
         }
 
         private void me1PathBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -274,9 +269,8 @@ namespace ME3Explorer
         {
             if (step1Complete && step2Complete)
             {
+                doneButton.IsEnabled = true;
                 doneButton.Content = "Done! Click here to exit Setup and launch ME3Explorer.";
-                doneButton.Cursor = Cursors.Hand;
-                doneButton.Click += DoneButton_Click;
             }
         }
 
@@ -295,6 +289,8 @@ namespace ME3Explorer
             timeRemainingTextBlock.Text = "Estimating Time Remaining...";
 
             unpackOutput.AppendLine("DLC unpacking initiated...");
+            double uncompressedSoFar = 0;
+            DateTime initial = DateTime.Now;
             foreach (var sfar in sfarsToUnpack)
             {
                 string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.MyFileName)));
@@ -303,8 +299,6 @@ namespace ME3Explorer
                     dlcName = prettyDLCNames[dlcName];
                 }
                 unpackOutput.AppendLine($"Unpacking {dlcName}...");
-                double uncompressedSoFar = 0;
-                DateTime initial = DateTime.Now;
                 if (sfar.Files.Length > 1)
                 {
                     List<int> Indexes = new List<int>();
@@ -336,7 +330,7 @@ namespace ME3Explorer
                                 TimeSpan timeRemaining = TimeSpan.FromSeconds((elapsed.TotalSeconds / PercentComplete) * (100 - PercentComplete));
                                 if (timeRemaining.TotalMinutes < 1)
                                 {
-                                    timeRemainingTextBlock.Text = $"Estimated Time Remaining: less than 1 minute";
+                                    timeRemainingTextBlock.Text = $"Estimated Time Remaining: < 1 minute";
                                 }
                                 else
                                 {
@@ -357,6 +351,7 @@ namespace ME3Explorer
                 toc.GenerateAllTOCs();
             });
             unpackOutput.AppendLine("ALL TOCs Generated!");
+            unpackProgress.Value = unpackProgress.Maximum;
             completeStep2();
         }
     }

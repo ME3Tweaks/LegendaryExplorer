@@ -11,6 +11,7 @@
         <FontFamily x:Key="TitilliumWeb-SemiBold">/ME3Explorer;component/Resources/TitilliumWeb-SemiBold.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="TitilliumWeb-Regular">/ME3Explorer;component/Resources/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
         <FontFamily x:Key="Exo-SemiBold">/ME3Explorer;component/Resources/Exo-SemiBold.ttf#Exo</FontFamily>
+        <FontFamily x:Key="Exo-Regular">/ME3Explorer;component/Resources/Exo-Regular.ttf#Exo</FontFamily>
 
         <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
@@ -167,7 +168,7 @@
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
-        <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon_64x64.png"/>
+        <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon.ico"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
         <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/TLK_editor_64x64.png"/>

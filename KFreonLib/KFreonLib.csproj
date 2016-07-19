@@ -70,12 +70,6 @@
     <Compile Include="GUI\VersionPickDialog.xaml.cs">
       <DependentUpon>VersionPickDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\KFreonMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Helpers\KFreonMessageBox.Designer.cs">
-      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
@@ -85,18 +79,7 @@
     <Compile Include="Debugging\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\PathChanger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Helpers\PathChanger.Designer.cs">
-      <DependentUpon>PathChanger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Scripting\ScriptCompiler.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Scripting\ScriptCompiler.Designer.cs">
-      <DependentUpon>ScriptCompiler.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Scripting\ScriptCompiler.cs" />
     <Compile Include="Helpers\MiniLZO.cs" />
     <Compile Include="Helpers\SaltLZOHelper.cs" />
     <Compile Include="Helpers\UnrealFlags.cs" />
@@ -130,8 +113,6 @@
     <Compile Include="Textures\ME1Texture2D.cs" />
     <Compile Include="Textures\ME2Texture2D.cs" />
     <Compile Include="Textures\ME3SaltTexture2D.cs" />
-    <Compile Include="Textures\ME3Texture2D.cs" />
-    <Compile Include="Textures\SaltDDSPreview.cs" />
     <Compile Include="Textures\TexInfo.cs" />
     <Compile Include="Textures\Misc.cs" />
     <Compile Include="TreeDB.cs" />
@@ -165,15 +146,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Debugging\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Helpers\KFreonMessageBox.resx">
-      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Helpers\PathChanger.resx">
-      <DependentUpon>PathChanger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Scripting\ScriptCompiler.resx">
-      <DependentUpon>ScriptCompiler.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -689,9 +689,18 @@ namespace ME3Explorer
             return DLCpath.Replace("/", "\\");
         }
 
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void updateTOCToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            DLC.UpdateTOCbin();
+            DebugOutput.PrintLn("Done.");
+            MessageBox.Show("Done.");
+        }
 
+        private void updateTOCAndRebuildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DLC.UpdateTOCbin(true);
+            DebugOutput.PrintLn("Done.");
+            MessageBox.Show("Done.");
         }
     }
 }

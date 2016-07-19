@@ -13,15 +13,8 @@ using KFreonLib.GUI;
 
 namespace KFreonLib.Scripting
 {
-    public partial class ScriptCompiler : Form
+    public static class ScriptCompiler
     {
-        public bool selectPCCModifier { get; set; }
-        public ScriptCompiler()
-        {
-            InitializeComponent();
-            selectPCCModifier = false;
-        }
-
         static Assembly CompileCode(string code)
         {
             Microsoft.CSharp.CSharpCodeProvider csProvider = new Microsoft.CSharp.CSharpCodeProvider();
@@ -64,7 +57,7 @@ namespace KFreonLib.Scripting
             return result.CompiledAssembly;
         }
 
-        static string RunScript(Assembly script, RichTextBox r)
+        static string RunScript(Assembly script)
         {
             string res = "Error";
             foreach (Type type in script.GetExportedTypes())
@@ -77,7 +70,7 @@ namespace KFreonLib.Scripting
                             IScript scriptObject = constructor.Invoke(null) as IScript;
                             if (scriptObject != null)
                             {
-                                r.Text = res = scriptObject.RunScript();
+                                res = scriptObject.RunScript();
                             }
                             else
                             {
@@ -90,41 +83,13 @@ namespace KFreonLib.Scripting
             return res;
         }
 
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog FileDialog1 = new OpenFileDialog();
-            FileDialog1.Filter = "text files (*.txt)|*.txt";
-            if (FileDialog1.ShowDialog() == DialogResult.OK)
-                rtb1.LoadFile(FileDialog1.FileName);
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog FileDialog1 = new SaveFileDialog();
-            FileDialog1.Filter = "text files (*.txt)|*.txt";
-            if (FileDialog1.ShowDialog() == DialogResult.OK)
-                rtb1.SaveFile(FileDialog1.FileName);
-        }
-
-        private void compileToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            Compile();
-        }
-
         [STAThread]
-        public string Compile()
+        public static string CompileAndRun(string script)
         {
-            string temp = rtb1.Text;
             string res = "Error";
-            /*temp = temp.Replace("Texplorer tex = new Texplorer();", "Texplorer tex = new Texplorer(true);");
-            if (selectPCCModifier)
-            {
-                temp = temp.Replace("Texplorer tex = new Texplorer(true);", "Texplorer tex = new Texplorer(true);\ntex.selectPCCs = true;");
-            }*/
-            //MessageBox.Show(temp);
-            Assembly compiledScript = CompileCode(temp);
+            Assembly compiledScript = CompileCode(script);
             if (compiledScript != null)
-                res = RunScript(compiledScript, rtb2);
+                res = RunScript(compiledScript);
             if(res == "Code Finished")
             {
                 res = "Success";
@@ -132,19 +97,5 @@ namespace KFreonLib.Scripting
             GC.Collect();
             return res;
         }
-
-        private void rtb1_SelectionChanged(object sender, EventArgs e)
-        {
-            int index = rtb1.SelectionStart;
-            int line = rtb1.GetLineFromCharIndex(index) + 1;
-            int firstChar = rtb1.GetFirstCharIndexFromLine(line - 1);
-            int column = index - firstChar;
-            Label1.Text = "Line: " + line + "  Col: " + column;
-        }
-
-        private void ScriptCompiler_FormClosing(object sender, FormClosingEventArgs e)
-        {
-        }
-
     }
 }

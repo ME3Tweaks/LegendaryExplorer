@@ -68,7 +68,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Modmaker",
+                name = "ModMaker",
                 icon = Application.Current.FindResource("iconModMaker") as ImageSource,
                 open = () =>
                 {
@@ -522,18 +522,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "SFAR TOC Updater",
-                icon = Application.Current.FindResource("iconSFARTOCUpdater") as ImageSource,
-                open = () =>
-                {
-                    (new SFARTOCbinUpdater()).Show();
-                },
-                tags = new List<string> { "developer", "dlc", "toc", "tocing" },
-                subCategory = "SFARS",
-                description = "SFAR TOC Updater updates PCConsoleTOC.bin files that are inside unpacked ME3 SFARs. Due to DLC unpacking requirement for texture viewing and modification, most users will never use this tool."
-            });
-            set.Add(new Tool
-            {
                 name = "Soundplorer",
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
@@ -552,9 +540,9 @@ namespace ME3Explorer
                 {
                     (new Texplorer2()).Show();
                 },
-                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
+                tags = new List<string> { "user" ,"developer", "texture", "tfc", "scan", "tree" },
                 subCategory = "Meshes + Textures",
-                description = "Texplorer is the toolset’s primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
+                description = "For users and modders alike, Texplorer is the toolset's primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
             });
             set.Add(new Tool
             {

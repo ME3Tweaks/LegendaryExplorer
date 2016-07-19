@@ -2737,21 +2737,6 @@ namespace ME3Explorer
             RedrawTreeView();
         }
 
-        private void ChangePathsButton_Click(object sender, EventArgs e)
-        {
-            using (KFreonLib.Helpers.PathChanger changer = new KFreonLib.Helpers.PathChanger(MEExDirecs.GetDifferentPathBIOGame(1), MEExDirecs.GetDifferentPathBIOGame(2), MEExDirecs.GetDifferentPathBIOGame(3)))
-            {
-                if (changer.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                    return;
-
-                // KFreon: Set and save settings
-                MEExDirecs.SetPaths(changer.PathME1, changer.PathME2, changer.PathME3);
-
-                // KFreon: Check game paths again for indicators
-                DoGameIndicatorChecks();
-            }
-        }
-
         public static async Task<KFreonTPFTools3> GetCurrentInstance()
         {
             if (CurrentInstance == null)
