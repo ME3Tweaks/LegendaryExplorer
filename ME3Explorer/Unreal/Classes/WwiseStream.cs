@@ -147,7 +147,7 @@ namespace ME3Explorer.Unreal.Classes
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
             {
-                fs = new MemoryStream(MEPackageHandler.Decompress(fs));
+                fs = new MemoryStream(CompressionHelper.Decompress(fs));
             }
             if (DataOffset + DataSize > fs.Length)
                 return;
@@ -170,7 +170,7 @@ namespace ME3Explorer.Unreal.Classes
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
             {
-                fs = new MemoryStream(MEPackageHandler.Decompress(fs));
+                fs = new MemoryStream(CompressionHelper.Decompress(fs));
             }
             if (DataOffset + DataSize > fs.Length)
                 return;

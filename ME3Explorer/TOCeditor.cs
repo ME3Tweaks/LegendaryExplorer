@@ -17,94 +17,51 @@ namespace ME3Explorer
         }
 
         public byte[] memory;
-        public int memsize = 0;
         public List<Inventory> content;
-        public string lastsearch = ".pcc";
 
-        public TOCeditor()
+        public int updateTOCFromCommandLine(IList<string> arguments)
         {
-            //FemShep's Mod Manager 3 automator for TOCEditor.
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Length > 2)
+            if (arguments.Count % 2 != 1 || arguments.Count < 3)
             {
-                //try
-                //{
-                string cmdCommand = arguments[1];
-                if (cmdCommand.Equals("-toceditorupdate", StringComparison.Ordinal))
-                {
-                    if (arguments.Length % 2 != 1 || arguments.Length < 5)
-                    {
-                        MessageBox.Show("Wrong number of arguments for automated TOC update.\nSyntax is: <exe> -toceditorupdate <TOCFILE> <UPDATESIZEFILE> <SIZE> [<UPDATESIZEFILE> <SIZE>]...", "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    string tocfile = arguments[2];
-                    int numfiles = (arguments.Length - 3) / 2;
-
-                    string[] searchTerms = new string[numfiles];
-                    string[] filesizes = new string[numfiles];
-
-                    int argnum = 3; //starts at 3
-                    for (int i = 0; i < searchTerms.Length; i++)
-                    {
-                        searchTerms[i] = arguments[argnum];
-                        argnum++;
-                        filesizes[i] = arguments[argnum];
-                        argnum++;
-                    }
-
-                    loadTOCfile(tocfile);
-                    for (int i = 0; i < numfiles; i++)
-                    {
-                        int n = searchFirstResult(searchTerms[i]);
-                        if (n == -1)
-                        {
-                            MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\nFile path in this TOC not found:\n" + tocfile + "\n" + searchTerms[i], "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Environment.Exit(1);
-                            Application.Exit();
-                        }
-                        editFilesize(n, filesizes[i]);
-                    }
-                    saveTOC(tocfile);
-                    Environment.Exit(0);
-                    Application.Exit();
-                }
-                //}
-            } //end automation
-        }
-
-        public bool UpdateFile(string name, uint size, string path)
-        {
-            loadTOCfile(path);
-            int n = -1;
-            for (int i = 0; i < content.Count(); i++)
-                if (content[i].name.EndsWith(name))
-                    n = i;
-            if (n == -1) return false;
-            //edit entry
-            Inventory temp = content[n];
-            temp.size = size;
-            content[n] = temp;
-            uint pos = temp.offset;
-            BitConverter.IsLittleEndian = true;
-            byte[] buff = BitConverter.GetBytes(size);
-            for (int i = 0; i < 4; i++)
-                memory[pos + i] = buff[i];
-            //write file
-            FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-            for (int i = 0; i < memsize; i++)
-            {
-                fileStream.WriteByte(memory[i]);
+                MessageBox.Show("Wrong number of arguments for automated TOC update.\nSyntax is: <exe> -toceditorupdate <TOCFILE> <UPDATESIZEFILE> <SIZE> [<UPDATESIZEFILE> <SIZE>]...", "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
             }
-            fileStream.Close();
-            return true;
+
+            string tocfile = arguments[0];
+            int numfiles = (arguments.Count - 1) / 2;
+
+            string[] searchTerms = new string[numfiles];
+            string[] filesizes = new string[numfiles];
+
+            int argnum = 1;
+            for (int i = 0; i < searchTerms.Length; i++)
+            {
+                searchTerms[i] = arguments[argnum];
+                argnum++;
+                filesizes[i] = arguments[argnum];
+                argnum++;
+            }
+
+            loadTOCfile(tocfile);
+            for (int i = 0; i < numfiles; i++)
+            {
+                int n = searchFirstResult(searchTerms[i]);
+                if (n == -1)
+                {
+                    MessageBox.Show("The filepath in this PCConsoleTOC.bin file was not found. Unable to proceed.\nFile path in this TOC not found:\n" + tocfile + "\n" + searchTerms[i], "ME3Explorer TOCEditor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return 1;
+                }
+                editFilesize(n, filesizes[i]);
+            }
+            saveTOC(tocfile);
+            return 0;
         }
 
         private void loadTOCfile(string path)
         {
             BitConverter.IsLittleEndian = true;
             FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            memsize = (int)fileStream.Length;
+            int memsize = (int)fileStream.Length;
             memory = new byte[memsize];
             int count;
             int sum = 0;
@@ -149,7 +106,6 @@ namespace ME3Explorer
 
         private int searchFirstResult(string search)
         {
-            lastsearch = search;
             for (int i = 0; i < content.Count(); i++)
             {
                 if (content[i].name.Contains(search))
@@ -184,7 +140,7 @@ namespace ME3Explorer
         private void saveTOC(string path)
         {
             FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-            for (int i = 0; i < memsize; i++)
+            for (int i = 0; i < memory.Length; i++)
             {
                 fileStream.WriteByte(memory[i]);
             }

@@ -46,7 +46,6 @@ namespace ME3Explorer
         {
             Dictionary<string, object> options = null;
             
-            //TODO: Re-enable deletion of old data once this is ready for release
             #region Migrate data from legacy locations
             if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\") ||
                     Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\") ||
@@ -55,7 +54,7 @@ namespace ME3Explorer
                 if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
                 {
                     options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
-                    //File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                    File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
                 }
                 if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
                 {
@@ -72,19 +71,19 @@ namespace ME3Explorer
                 {
                     Directory.CreateDirectory(ME3ViewsPath);
                     comp.FileSystem.CopyDirectory(ME3Directory.cookedPath + @"\SequenceViews\", ME3ViewsPath);
-                    //comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
                 if (Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\"))
                 {
                     Directory.CreateDirectory(ME2ViewsPath);
                     comp.FileSystem.CopyDirectory(ME2Directory.cookedPath + @"\SequenceViews\", ME2ViewsPath);
-                    //comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
                 if (Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
                 {
                     Directory.CreateDirectory(ME1ViewsPath);
                     comp.FileSystem.CopyDirectory(ME1Directory.cookedPath + @"\SequenceViews\", ME1ViewsPath);
-                    //comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                 }
             } 
             #endregion
@@ -822,8 +821,8 @@ namespace ME3Explorer
             if (toFile)
             {
                 string outputFile = JsonConvert.SerializeObject(SavedPositions);
-                if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
-                    Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
+                if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
                 File.WriteAllText(JSONpath, outputFile);
                 SavedPositions.Clear();
             }

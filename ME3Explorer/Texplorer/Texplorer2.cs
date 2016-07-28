@@ -1353,8 +1353,7 @@ namespace ME3Explorer
             if (WhichGame == 3)
             {
                 DebugOutput.PrintLn("Updating TOCs...");
-                AutoTOC.AutoTOC toccer = new AutoTOC.AutoTOC();
-                toccer.GenerateAllTOCs();
+                AutoTOC.GenerateAllTOCs();
                 DebugOutput.PrintLn("TOCs updated.");
             }
         }

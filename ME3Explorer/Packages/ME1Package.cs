@@ -111,7 +111,7 @@ namespace ME3Explorer.Packages
             if (bCompressed)
             {
                 DebugOutput.PrintLn("File is compressed");
-                listsStream = SaltLZOHelper.DecompressPCC(tempStream, header.Length);
+                listsStream = CompressionHelper.DecompressPCC(tempStream);
 
                 //Correct the header
                 bCompressed = false;
@@ -377,7 +377,7 @@ namespace ME3Explorer.Packages
             {
                 if (bCompressed)
                 {
-                    oldPCC = SaltLZOHelper.DecompressPCC(oldPccStream, header.Length).ToArray().Take(lastDataOffset).ToArray();
+                    oldPCC = CompressionHelper.DecompressPCC(oldPccStream).ToArray().Take(lastDataOffset).ToArray();
                 }
                 else
                 {

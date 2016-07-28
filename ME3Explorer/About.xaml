@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" Height="751">
     <StackPanel Width="600" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
             <Image Width="249" Height="109" Source="Resources/me3exp_smallbanner_v1.png"/>
@@ -28,13 +28,13 @@
             <TextBlock Text="Credits" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
                                FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="10,0,0,-1"/>
         </Grid>
-        <Grid Margin="10,4,10,8">
+        <Grid Margin="10,4,10,8" Width="580">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="195"/>
+                <ColumnDefinition Width="385"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Current Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17" Foreground="#FF080808"/>
+                <TextBlock Text="Current Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
                     <Run Text="• Kfreon - Lead Designer"/><LineBreak/>
                     <Run Text="• SirCxyrtyx - Programmer"/><LineBreak/>
@@ -153,7 +153,7 @@
                                FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="10,0,0,-1"/>
         </Grid>
         <StackPanel Margin="10,0">
-            <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Foreground="#FF4D4D4D" Margin="0,3,0,0">
+            <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Margin="0,3,0,0">
                 <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">ME3Explorer</Run> is free software and may be changed or distributed
                 as specified by the terms of The MIT License. ME3Explorer is supplied without warranty; any problems incurred through use of the
                 software are your responsibility, not ours.

@@ -63,6 +63,34 @@ namespace ME3Explorer
             return -1;
         }
 
+        public static int IndexOf<T>(this LinkedList<T> list, T node)
+        {
+            LinkedListNode<T> temp = list.First;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (node.Equals(temp.Value))
+                {
+                    return i;
+                }
+                temp = temp.Next;
+            }
+            return -1;
+        }
+
+        public static LinkedListNode<T> Node<T>(this LinkedList<T> list, T node)
+        {
+            LinkedListNode<T> temp = list.First;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (node.Equals(temp.Value))
+                {
+                    return temp;
+                }
+                temp = temp.Next;
+            }
+            return null;
+        }
+
         public static void RemoveAt<T>(this LinkedList<T> list, int index)
         {
             list.Remove(list.NodeAt(index));

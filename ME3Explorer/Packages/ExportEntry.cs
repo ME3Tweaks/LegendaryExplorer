@@ -104,7 +104,7 @@ namespace ME3Explorer.Packages
                 // if data isn't loaded then fill it from pcc file (load-on-demand)
                 if (_data == null)
                 {
-                    fileRef3.getData(DataOffset, this);
+                    _data = fileRef3.getData(DataOffset, this);
                 }
                 return _data;
             }
@@ -112,10 +112,10 @@ namespace ME3Explorer.Packages
             set { _data = value; hasChanged = true; DataSize = value.Length; }
         }
 
-        public ME3ExportEntry(ME3Package pccFile, byte[] importData, uint exportOffset)
+        public ME3ExportEntry(ME3Package pccFile, byte[] headerData, uint exportOffset)
         {
             fileRef3 = pccFile;
-            header = (byte[])importData.Clone();
+            header = (byte[])headerData.Clone();
             headerOffset = exportOffset;
             hasChanged = false;
         }

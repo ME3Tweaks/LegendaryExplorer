@@ -1050,7 +1050,7 @@ namespace KFreonLib.Textures
             {
                 int i = 0;
                 string CustCache = "CustTextures";
-                while (i < 10)
+                while (i < 100)
                 {
                     FileInfo cacheInfo = new FileInfo(Path.Combine(bioPath, "CookedPC", CustCache + i + ".tfc"));
 

@@ -279,6 +279,20 @@ namespace ME3Explorer
             this.Close();
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!step1Complete || !step2Complete)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    "Setup is incomplete. Game paths may be incorrect and you will not be able to use the toolset to mod or browse textures for ME3. Cancel setup?",
+                    "", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
         private async void unpackDLCButton_Click(object sender, RoutedEventArgs e)
         {
             unpackDLCButton.IsEnabled = false;
@@ -347,8 +361,7 @@ namespace ME3Explorer
             unpackOutput.AppendLine("Generating TOCs...");
             await Task.Run(() =>
             {
-                AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
-                toc.GenerateAllTOCs();
+                AutoTOC.GenerateAllTOCs();
             });
             unpackOutput.AppendLine("ALL TOCs Generated!");
             unpackProgress.Value = unpackProgress.Maximum;

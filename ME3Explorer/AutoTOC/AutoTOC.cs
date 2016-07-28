@@ -8,33 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using KFreonLib.MEDirectories;
+using System.Threading.Tasks;
 
-namespace ME3Explorer.AutoTOC
+namespace ME3Explorer
 {
     public partial class AutoTOC : Form
     {
         public AutoTOC()
         {
             InitializeComponent();
-            //FemShep's Mod Manager 4.1 automator for AutoTOC.
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Length == 3)
-            {
-                //try
-                //{
-                string cmdCommand = arguments[1];
-                if (cmdCommand.Equals("-autotoc", StringComparison.Ordinal))
-                {
-
-                    string tocfile = arguments[2];
-                    prepareToCreateTOC(tocfile);
-                    Environment.Exit(0);
-                    Application.Exit();
-                }
-            }
         }
 
-        private void prepareToCreateTOC(string consoletocFile)
+        public static void prepareToCreateTOC(string consoletocFile, RichTextBox rtb = null)
         {
             if (!consoletocFile.EndsWith("\\"))
             {
@@ -43,7 +28,7 @@ namespace ME3Explorer.AutoTOC
             List<string> files = GetFiles(consoletocFile);
             if (files.Count != 0)
             {
-                rtb1.AppendText($"Creating TOC in {consoletocFile}\n");
+                rtb?.AppendText($"Creating TOC in {consoletocFile}\n");
                 string t = files[0];
                 int n = t.IndexOf("DLC_");
                 if (n > 0)
@@ -75,51 +60,47 @@ namespace ME3Explorer.AutoTOC
                 {
                     pathbase = consoletocFile;
                 }
-                CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin",files.ToArray());
-                rtb1.AppendText("Done.\n");
+                CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin", files.ToArray());
+                rtb?.AppendText("Done.\n");
             }
         }
 
-        public void CreateTOC(string basepath, string tocFile, string[] files)
+        static void CreateTOC(string basepath, string tocFile, string[] files)
         {
             BitConverter.IsLittleEndian = true;
-            FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write);
-            fs.Write(BitConverter.GetBytes(0x3AB70C13), 0, 4);
-            fs.Write(BitConverter.GetBytes(0x0), 0, 4);
-            fs.Write(BitConverter.GetBytes(0x1), 0, 4);
-            fs.Write(BitConverter.GetBytes(0x8), 0, 4);
-            fs.Write(BitConverter.GetBytes(files.Length), 0, 4);
-            for (int i = 0; i < files.Length; i++)
+            byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            using (FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
             {
-                string file = files[i];
-                if (i == files.Length - 1)//Entry Size
-                    fs.Write(new byte[2], 0, 2);
-                else
-                    fs.Write(BitConverter.GetBytes((ushort)(0x1D + file.Length)), 0, 2);
-                fs.Write(BitConverter.GetBytes((ushort)0), 0, 2);//Flags
-                if (Path.GetFileName(file).ToLower() != "pcconsoletoc.bin")
+                fs.Write(BitConverter.GetBytes(0x3AB70C13), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x1), 0, 4);
+                fs.Write(BitConverter.GetBytes(0x8), 0, 4);
+                fs.Write(BitConverter.GetBytes(files.Length), 0, 4);
+                for (int i = 0; i < files.Length; i++)
                 {
-                    FileStream fs2 = new FileStream(basepath + file, FileMode.Open, FileAccess.Read);
-                    fs.Write(BitConverter.GetBytes((int)fs2.Length), 0, 4);//Filesize
-                    fs2.Close();
-                }
-                else
-                {
-                    fs.Write(BitConverter.GetBytes(0), 0, 4);//Filesize
-                }
-                fs.Write(BitConverter.GetBytes(0x0), 0, 4);//SHA1
-                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
-                fs.Write(BitConverter.GetBytes(0x0), 0, 4);
-                foreach (char c in file)
-                    fs.WriteByte((byte)c);
-                fs.WriteByte(0);
+                    string file = files[i];
+                    if (i == files.Length - 1)//Entry Size
+                        fs.Write(new byte[2], 0, 2);
+                    else
+                        fs.Write(BitConverter.GetBytes((ushort)(0x1D + file.Length)), 0, 2);
+                    fs.Write(BitConverter.GetBytes((ushort)0), 0, 2);//Flags
+                    if (Path.GetFileName(file).ToLower() != "pcconsoletoc.bin")
+                    {
+                        fs.Write(BitConverter.GetBytes((int)(new FileInfo(basepath + file)).Length), 0, 4);//Filesize
+                    }
+                    else
+                    {
+                        fs.Write(BitConverter.GetBytes(0), 0, 4);//Filesize
+                    }
+                    fs.Write(SHA1, 0, 20);
+                    foreach (char c in file)
+                        fs.WriteByte((byte)c);
+                    fs.WriteByte(0);
+                } 
             }
-            fs.Close();
         }
 
-        public List<string> GetFiles(string basefolder)
+        static List<string> GetFiles(string basefolder)
         {
             List<string> res = new List<string>();
             string test = Path.GetFileName(Path.GetDirectoryName(basefolder));
@@ -138,10 +119,9 @@ namespace ME3Explorer.AutoTOC
             return res;
         }
 
-        public string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc" };
-
-        public string[] DirFiles(string path)
+        static string[] DirFiles(string path)
         {
+            string[] Pattern = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.txt", "*.cnd", "*.upk", "*.tfc" };
             List<string> res = new List<string>();
             foreach (string s in Pattern)
                 res.AddRange(Directory.GetFiles(path, s));
@@ -156,17 +136,28 @@ namespace ME3Explorer.AutoTOC
                 return;
             }
             rtb1.Clear();
-            GenerateAllTOCs();
+            GenerateAllTOCs(rtb1);
             rtb1.AppendText("***********************\n* All TOCs Generated! *\n***********************\n");
         }
 
-        public void GenerateAllTOCs()
+        public static void GenerateAllTOCs(RichTextBox rtb = null)
         {
-            prepareToCreateTOC(ME3Directory.gamePath + @"BIOGame\");
-            DirectoryInfo[] dlcFolders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories();
-            foreach (DirectoryInfo d in dlcFolders)
+            List<DirectoryInfo> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().ToList();
+            folders.Add(new DirectoryInfo(ME3Directory.gamePath + @"BIOGame\"));
+            //only use parallel execution if no ui interaction will be performed.
+            if (rtb == null)
             {
-                prepareToCreateTOC(d.FullName);
+                Parallel.ForEach(folders, d =>
+                {
+                    prepareToCreateTOC(d.FullName);
+                }); 
+            }
+            else
+            {
+                foreach (DirectoryInfo d in folders)
+                {
+                    prepareToCreateTOC(d.FullName, rtb);
+                }
             }
         }
 
@@ -179,7 +170,7 @@ namespace ME3Explorer.AutoTOC
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = Path.GetDirectoryName(d.FileName) + "\\";
-                prepareToCreateTOC(path);
+                prepareToCreateTOC(path, rtb1);
             }
         }
     }

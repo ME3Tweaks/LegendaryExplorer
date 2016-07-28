@@ -607,7 +607,7 @@ namespace ME3Explorer.Unreal
                         }
                         pos += 2;
                     }
-                    else
+                    else if (count > 0)
                     {
                         for (int i = 1; i < count; i++)
                         {

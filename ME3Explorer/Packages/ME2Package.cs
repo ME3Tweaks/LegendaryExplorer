@@ -92,8 +92,8 @@ namespace ME3Explorer.Packages
             tempStream.Seek(12, SeekOrigin.Begin);
             int tempNameSize = tempStream.ReadValueS32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
-            int tempGenerator = tempStream.ReadValueS32();
-            tempStream.Seek(36 + tempGenerator * 12, SeekOrigin.Current);
+            int tempGenerations = tempStream.ReadValueS32();
+            tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
@@ -110,7 +110,7 @@ namespace ME3Explorer.Packages
             {
                 DebugOutput.PrintLn("File is compressed");
                 {
-                    listsStream = SaltLZOHelper.DecompressPCC(tempStream, header.Length);
+                    listsStream = CompressionHelper.DecompressPCC(tempStream);
 
                     //Correct the header
                     bCompressed = false;
@@ -361,7 +361,7 @@ namespace ME3Explorer.Packages
             {
                 if (bCompressed)
                 {
-                    oldPCC = SaltLZOHelper.DecompressPCC(oldPccStream, header.Length).ToArray().Take(lastDataOffset).ToArray();
+                    oldPCC = CompressionHelper.DecompressPCC(oldPccStream).ToArray().Take(lastDataOffset).ToArray();
                 }
                 else
                 {

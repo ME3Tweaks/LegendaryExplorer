@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="ME3Explorer Initial Setup" Icon="Resources/meexp_favicon.ico" Background="#FFD8D8D8" SizeToContent="WidthAndHeight"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="ME3Explorer Initial Setup" Icon="Resources/meexp_favicon.ico" Background="#FFD8D8D8"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="606" Height="772">
     <Window.Resources>
         <Style x:Key="setupButton" TargetType="Button" BasedOn="{StaticResource BorderedButton}">
             <Setter Property="Background" Value="#FF808080"/>
@@ -102,12 +102,12 @@
                         <Run Text=" DLC Unpacking " FontFamily="{StaticResource TitilliumWeb-Regular}"/>
                     </TextBlock>
                 </Label>
-                <Grid>
+                <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="255"/>
                     </Grid.ColumnDefinitions>
-                    <Grid Margin="10,8">
+                    <Grid Margin="10,8,10,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -116,12 +116,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" TextWrapping="Wrap" FontSize="15" Foreground="#FF4D4D4D" Height="161" Width="325"
+                        <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" TextWrapping="Wrap" FontSize="15" Foreground="#FF4D4D4D" Height="141" Width="325"
                                Grid.ColumnSpan="2">
-                        To browse, edit, extract, or install textures into <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">Mass Effect 3</Run>,
-                        <Run TextDecorations="Underline">all</Run> DLC must be unpacked. Unpacking SFARs also makes it easier to browse their contents. 
-                        This process may take up to an hour, and cannot be stopped once started. Space requirements for your system are specified below. 
-                        When ready, click "Unpack DLC".
+                            To mod or view <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">Mass Effect 3</Run> textures,
+                            <Run TextDecorations="Underline">all</Run> DLC must be unpacked. Unpacking SFARs also makes it easier to browse their contents.
+                            This process may take up to an hour, and cannot be stopped once started. Space requirements for your system are specified below.
+                            When ready, click "Unpack DLC".
                         </TextBlock>
                         <StackPanel Grid.Row="1">
                             <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FF080808">
@@ -142,7 +142,7 @@
                         </Grid.RowDefinitions>
                         <RichTextBox x:Name="unpackOutput" Background="Black" BorderBrush="#FF8B8B8B" Foreground="Lime" IsUndoEnabled="True" IsTabStop="False"
                                      FontFamily="/ME3Explorer;component/Resources/#Hack" Focusable="False" AllowDrop="False" IsReadOnly="True" 
-                                     ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="163" FontWeight="Thin" >
+                                     ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="145" FontWeight="Thin" >
                             <RichTextBox.Resources>
                                 <Style TargetType="{x:Type Paragraph}">
                                     <Setter Property="Margin" Value="0"/>

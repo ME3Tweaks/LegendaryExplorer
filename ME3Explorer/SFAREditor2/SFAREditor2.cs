@@ -81,6 +81,7 @@ namespace ME3Explorer
                                 return;
                             }
                             replaceFile(newFiles[i], t.Index);
+                            System.Diagnostics.Debug.WriteLine("Injection complete.");
                         }
                     }
                     else if (cmdCommand.Equals("-dlcextract", StringComparison.Ordinal))
@@ -222,7 +223,7 @@ namespace ME3Explorer
                     {
                         if (arguments.Length != 4)
                         {
-                            MessageBox.Show("Wrong number of arguments for automated DLC unpacking:\nSyntax is: <exe> -dlcinject SFARPATH EXTRACTIONPATH", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Wrong number of arguments for automated DLC unpacking:\nSyntax is: <exe> -dlcunpack SFARPATH EXTRACTIONPATH", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
 
@@ -260,7 +261,7 @@ namespace ME3Explorer
                 Environment.Exit(0);
                 Application.Exit();
             }
-            DebugOutput.StartDebugger("DLC Editor 2"); //open debugging window AFTER automation. Otherwise it pops up all weirdlike.
+            DebugOutput.StartDebugger("SFAR Editor 2"); //open debugging window AFTER automation. Otherwise it pops up all weirdlike.
         }
 
         private void openSFARToolStripMenuItem_Click(object sender, EventArgs e)
@@ -406,6 +407,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 extractFile(n, d.FileName);
+                MessageBox.Show("File extracted.");
             }
         }
 
@@ -415,13 +417,6 @@ namespace ME3Explorer
             FileStream fs = new FileStream(exportLocation, FileMode.Create, FileAccess.Write);
             fs.Write(m.ToArray(), 0, (int)m.Length);
             fs.Close();
-            //DLC = new DLCPackage(DLC.MyFileName);
-            //treeView1.Nodes.Clear();
-            //treeView1.Nodes.Add(DLC.ToTree());
-            if (!automated)
-            {
-                MessageBox.Show("File extracted.");
-            }
         }
 
         private void replaceSelectedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -438,6 +433,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 replaceFile(d.FileName, n);
+                MessageBox.Show("File Replaced.");
             }
         }
 
@@ -449,14 +445,6 @@ namespace ME3Explorer
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(DLC.ToTree());
             SearchNode(filename, treeView1.Nodes[0]);
-            if (!automated)
-            {
-                MessageBox.Show("File Replaced.");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("Injection complete.");
-            }
         }
 
         private void createReplaceModJobToolStripMenuItem_Click(object sender, EventArgs e)
@@ -509,7 +497,6 @@ namespace ME3Explorer
 
         private void unpackSFARToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
             if (DLC == null || DLC.Files == null)
                 return;
             string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
@@ -572,18 +559,7 @@ namespace ME3Explorer
             }
 
             // AutoTOC
-            DebugOutput.PrintLn("Updating DLC's PCConsoleTOC.bin");
-            List<string> FileNames = toc.GetFiles(t2 + "\\");
-            List<string> tet = new List<string>(t2.Split('\\'));
-            string remov = string.Join("\\", tet.ToArray());
-            for (int i = 0; i < FileNames.Count; i++)
-                FileNames[i] = FileNames[i].Substring(remov.Length + 1);
-            string[] ts = t2.Split('\\');
-            tet.Clear();
-            tet.AddRange(ts);
-            string basepath = string.Join("\\", tet.ToArray()) + '\\';
-            string tocfile = t2 + "\\PCConsoleTOC.bin";
-            toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
+            AutoTOC.prepareToCreateTOC(t2 + "\\PCConsoleTOC.bin");
             if (!automated)
             {
                 MessageBox.Show("SFAR Unpacked.");
@@ -592,7 +568,6 @@ namespace ME3Explorer
 
         private void unpackSFAR(DLCPackage dlc)
         {
-            AutoTOC.AutoTOC toc = new AutoTOC.AutoTOC();
             if (dlc == null || dlc.Files == null)
                 return;
             string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
@@ -637,18 +612,7 @@ namespace ME3Explorer
             }
 
             // AutoTOC
-            DebugOutput.PrintLn("Updating DLC's PCConsoleTOC.bin");
-            List<string> FileNames = toc.GetFiles(t2 + "\\");
-            List<string> tet = new List<string>(t2.Split('\\'));
-            string remov = string.Join("\\", tet.ToArray());
-            for (int i = 0; i < FileNames.Count; i++)
-                FileNames[i] = FileNames[i].Substring(remov.Length + 1);
-            string[] ts = t2.Split('\\');
-            tet.Clear();
-            tet.AddRange(ts);
-            string basepath = string.Join("\\", tet.ToArray()) + '\\';
-            string tocfile = t2 + "\\PCConsoleTOC.bin";
-            toc.CreateTOC(basepath, tocfile, FileNames.ToArray());
+            AutoTOC.prepareToCreateTOC(t2 + "\\PCConsoleTOC.bin");
             DebugOutput.PrintLn("DLC Done.");
         }
 

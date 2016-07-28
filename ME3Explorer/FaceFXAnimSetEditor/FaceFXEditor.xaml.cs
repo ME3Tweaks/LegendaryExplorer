@@ -385,5 +385,13 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             treeView.Nodes.Clear();
             treeView.Nodes.AddRange(FaceFX.DataToTree2(selectedLine));
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete || e.Key == Key.Back)
+            {
+                graph.DeleteSelectedKey();
+            }
+        }
     }
 }

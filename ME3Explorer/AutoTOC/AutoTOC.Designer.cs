@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.AutoTOC
+﻿namespace ME3Explorer
 {
     partial class AutoTOC
     {

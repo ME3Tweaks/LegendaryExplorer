@@ -1914,5 +1914,16 @@ namespace ME3Explorer
                 c.Show();
             }
         }
+
+        private void PackageEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Dispose(true);
+
+        }
+
+        private void PackageEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
+        }
     }
 }

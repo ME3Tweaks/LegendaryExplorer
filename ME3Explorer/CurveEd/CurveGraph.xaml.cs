@@ -21,6 +21,7 @@ namespace ME3Explorer.CurveEd
     /// </summary>
     public partial class CurveGraph : UserControl
     {
+
         private const int LINE_SPACING = 50;
 
         private bool dragging = false;
@@ -466,6 +467,24 @@ namespace ME3Explorer.CurveEd
                     a.Y = localY(d);
                     Paint(true);
                 }
+            }
+        }
+
+        public void DeleteSelectedKey()
+        {
+            LinkedListNode<CurvePoint> point = SelectedCurve.CurvePoints.Find(SelectedPoint);
+            if (point != null)
+            {
+                if (point.Previous != null)
+                {
+                    SelectedPoint = point.Previous.Value;
+                }
+                else if (point.Next != null)
+                {
+                    SelectedPoint = point.Next.Value;
+                }
+                SelectedCurve.RemovePoint(point);
+                Paint();
             }
         }
     }

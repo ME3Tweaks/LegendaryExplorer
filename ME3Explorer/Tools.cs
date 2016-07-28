@@ -61,7 +61,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
                 open = () =>
                 {
-                    (new AutoTOC.AutoTOC()).Show();
+                    (new AutoTOC()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."

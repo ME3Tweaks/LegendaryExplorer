@@ -199,7 +199,7 @@ namespace ME3Explorer.Packages
                 // fill import list
                 //Console.Out.WriteLine("IMPORT OFFSET: " + ImportOffset);
                 listsStream.Seek(ImportOffset, SeekOrigin.Begin);
-                byte[] buffer = new byte[ME3ImportEntry.byteSize];
+                byte[] buffer = new byte[ImportEntry.byteSize];
                 for (int i = 0; i < ImportCount; i++)
                 {
 
@@ -242,7 +242,7 @@ namespace ME3Explorer.Packages
         ///     given export data offset, the function recovers it from the file.
         /// </summary>
         /// <param name="offset">offset position of desired export data</param>
-        public void getData(int offset, IExportEntry exp = null)
+        public byte[] getData(int offset, IExportEntry exp = null)
         {
             byte[] buffer;
             if (bCompressed)
@@ -266,7 +266,7 @@ namespace ME3Explorer.Packages
                     {
                         buffer = new byte[expInfo.DataSize];
                         Buffer.BlockCopy(uncBlock, expInfo.DataOffset - selected.uncOffset, buffer, 0, expInfo.DataSize);
-                        expInfo.Data = buffer;
+                        return buffer;
                     }
                 }
             }
@@ -287,9 +287,10 @@ namespace ME3Explorer.Packages
                     buffer = new byte[expSelect.DataSize];
                     pccStream.Seek(expSelect.DataOffset, SeekOrigin.Begin);
                     pccStream.Read(buffer, 0, buffer.Length);
-                    expSelect.Data = buffer;
+                    return buffer;
                 }
             }
+            throw new Exception("Export not found!");
         }
 
         /// <summary>
@@ -394,7 +395,7 @@ namespace ME3Explorer.Packages
 
                 if (compress)
                 {
-                    MEPackageHandler.CompressAndSave(m, path);
+                    CompressionHelper.CompressAndSave(m, path);
                 }
                 else
                 {
@@ -473,7 +474,7 @@ namespace ME3Explorer.Packages
             byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
             if (this.bCompressed)
             {
-                oldPCC = MEPackageHandler.Decompress(fileName).Take(lastDataOffset).ToArray();
+                oldPCC = CompressionHelper.Decompress(fileName).Take(lastDataOffset).ToArray();
             }
             else
             {
