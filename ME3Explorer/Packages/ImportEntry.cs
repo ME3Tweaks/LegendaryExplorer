@@ -5,9 +5,9 @@ namespace ME3Explorer.Packages
 {
     public abstract class ImportEntry
     {
-        public ME1Package fileRef1;
-        public ME2Package fileRef2;
-        public ME3Package fileRef3;
+        protected ME1Package fileRef1;
+        protected ME2Package fileRef2;
+        protected ME3Package fileRef3;
         public IMEPackage FileRef
         {
             get
@@ -28,12 +28,12 @@ namespace ME3Explorer.Packages
         }
 
         public const int byteSize = 28;
-        public byte[] header { get; set; }
+        public byte[] header { get; protected set; }
 
-        public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-        public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-        public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+        public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); hasChanged = true; } }
+        public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); hasChanged = true; } }
+        public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); hasChanged = true; } }
+        public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); hasChanged = true; } }
         public int ObjectFlags { get { return BitConverter.ToInt32(header, 24); } }
 
         public string ClassName { get { return FileRef.Names[idxClassName]; } }
@@ -83,6 +83,8 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
+
+        public bool hasChanged { get; internal set; }
     }
 
     public class ME3ImportEntry : ImportEntry, IImportEntry

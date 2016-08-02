@@ -236,7 +236,7 @@ namespace ME3Explorer.Unreal.Classes
                     pos += 64;
                 }
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.fileName);
+                string currfile = Path.GetFileName(pcc.FileName);
                 mj.data = data;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
                 string loc = Path.GetDirectoryName(Application.ExecutablePath);

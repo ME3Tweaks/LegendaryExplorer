@@ -41,7 +41,7 @@ namespace ME3Explorer.InterpEditor
         {
             try
             {
-                pcc = new ME3Package(fileName);
+                pcc = MEPackageHandler.OpenME3Package(fileName);
                 objects.Clear();
                 CurrentFile = fileName;
                 for (int i = 0; i < pcc.Exports.Count; i++)

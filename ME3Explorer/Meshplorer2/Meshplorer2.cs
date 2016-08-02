@@ -85,7 +85,7 @@ namespace ME3Explorer.Meshplorer2
                                             }
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
-                                            ME3Package pcc = new ME3Package(loc + "temp\\" + filename);
+                                            ME3Package pcc = MEPackageHandler.OpenME3Package(loc + "temp\\" + filename);
                                             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                                             for (int i = 0; i < Exports.Count; i++)
                                                 if (Exports[i].ClassName == "SkeletalMesh" ||
@@ -132,7 +132,7 @@ namespace ME3Explorer.Meshplorer2
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    ME3Package pcc = new ME3Package(file);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
                         if (Exports[i].ClassName == "SkeletalMesh" ||
@@ -351,7 +351,7 @@ namespace ME3Explorer.Meshplorer2
                         EntryStruct en = Entries[i];
                         if (!en.isDLC)
                         {
-                            ME3Package pcc = new ME3Package(ME3Directory.cookedPath + en.Filename);
+                            ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
                                 Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -392,7 +392,7 @@ namespace ME3Explorer.Meshplorer2
                                         {
                                             try
                                             {
-                                                ME3Package pcc = new ME3Package(loc + filename);
+                                                ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
                                                     Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -525,7 +525,7 @@ namespace ME3Explorer.Meshplorer2
                 en = Entries[o];                
                 if (!en.isDLC)
                 {
-                    pcc = new ME3Package(ME3Directory.cookedPath + en.Filename);
+                    pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                     if (en.isSkeletal)
                     {
                         skm = new SkeletalMesh(pcc, en.Index);
@@ -557,7 +557,7 @@ namespace ME3Explorer.Meshplorer2
                                 {
                                     try
                                     {
-                                        pcc = new ME3Package(loc + "dlc.pcc");
+                                        pcc = MEPackageHandler.OpenME3Package(loc + "dlc.pcc");
                                         if (en.isSkeletal)
                                         {
                                             skm = new SkeletalMesh(pcc, en.Index);

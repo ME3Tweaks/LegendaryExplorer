@@ -7,8 +7,8 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}" 
-        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" 
-        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="0">
+        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="../Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" 
+        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="1">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
@@ -34,20 +34,20 @@
         <StackPanel>
             <DockPanel Height="24">
                 <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource WindowManagementButton}">
-                    <Image Source="Resources/close_icon.ico"/>
+                    <Image Source="../Resources/close_icon.ico"/>
                 </Button>
                 <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
-                    <Image Source="Resources/minimize_icon.ico" Height="12" Width="12"/>
+                    <Image Source="../Resources/minimize_icon.ico" Height="12" Width="12"/>
                 </Button>
                 <!--<Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
-                    <Image Source="Resources/resize_icon.ico" Height="12" Width="12"/>
+                    <Image Source="../Resources/resize_icon.ico" Height="12" Width="12"/>
                 </Button>-->
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
             <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand">
                 <Image.Resources>
-                    <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_OFF.png"/>
-                    <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources/logo_ON.png"/>
+                    <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_OFF.png"/>
+                    <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_ON.png"/>
                     <Style TargetType="{x:Type Image}">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -82,10 +82,10 @@
                     </Style>
                 </DockPanel.Resources>
                 <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}" Click="About_Click">
-                    <Image Source="Resources/About_icon.ico"/>
+                    <Image Source="../Resources/About_icon.ico"/>
                 </Button>
                 <Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}" Click="Debug_Click">
-                    <Image Source="Resources/bug_icon.ico" />
+                    <Image Source="../Resources/bug_icon.ico" />
                 </Button>
                 <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
             </DockPanel>
@@ -120,7 +120,7 @@
                         <Line Width="90"/>
                         <Rectangle>
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="Resources/install_mods_icon.ico"/>
+                                <ImageBrush ImageSource="../Resources/install_mods_icon.ico"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>
@@ -131,18 +131,18 @@
                         <Line Width="70"/>
                         <Rectangle>
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="Resources/create_mods_icon.ico"/>
+                                <ImageBrush ImageSource="../Resources/create_mods_icon.ico"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>
                 </Button>
-                <Button Style="{StaticResource MainMenuButton}">
+                <Button x:Name="taskPaneButton" Style="{StaticResource MainMenuButton}" Click="taskPaneButton_Click">
                     <StackPanel>
                         <Label Content="TASK PANE"/>
                         <Line Width="73"/>
                         <Rectangle>
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="Resources/taskbar.ico"/>
+                                <ImageBrush ImageSource="../Resources/taskbar.ico"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>
@@ -180,7 +180,7 @@
 									BorderBrush="{x:Null}" Foreground="#FFFBFBFB" VerticalContentAlignment="Center" CaretBrush="#FFFBFBFB" TextChanged="SearchBox_TextChanged" LostKeyboardFocus="SearchBox_LostFocus" GotKeyboardFocus="SearchBox_GotKeyboardFocus"/>
                                 <TextBlock IsHitTestVisible="False" Text="Search the Toolset..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" 
 									Foreground="#FFFBFBFB" FontFamily="{StaticResource TitilliumWeb-Italic}" FontSize="19" Style="{StaticResource WaterMark}"/>
-                                <Image Source="Resources/search.ico" Height="32" HorizontalAlignment="Right" Margin="0,8,8,8" Style="{StaticResource WaterMark}"/>
+                                <Image Source="../Resources/search.ico" Height="32" HorizontalAlignment="Right" Margin="0,8,8,8" Style="{StaticResource WaterMark}"/>
                             </Grid>
                         </Border>
                         <Grid Margin="17,0,0,0">
@@ -271,7 +271,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Style="{StaticResource styleIcon}">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="Resources/folder.ico"/>
+                                                <ImageBrush ImageSource="../Resources/folder.ico"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                         <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
@@ -284,7 +284,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Style="{StaticResource styleIcon}">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="Resources/settings.ico"/>
+                                                <ImageBrush ImageSource="../Resources/settings.ico"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                         <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
@@ -301,7 +301,7 @@
                        HorizontalAlignment="Left" Margin="69,170,0,0" VerticalAlignment="Top" Height="60" Width="474" FontFamily="{StaticResource TitilliumWeb-Light}" Foreground="#4CFDFDFD" FontSize="20" TextWrapping="Wrap"/>
             </Grid>
         </Grid>
-        <local:SearchPanel x:Name="searchPanel" Title="Search Results" Grid.Column="2" Icon="Resources/search.ico" Width="0" HorizontalAlignment="Left"/>
+        <local:SearchPanel x:Name="searchPanel" Title="Search Results" Grid.Column="2" Icon="../Resources/search.ico" Width="0" HorizontalAlignment="Left"/>
         <Grid x:Name="pathsPanel"  Grid.Column="2" Width="0" HorizontalAlignment="Left">
             <Grid Width="{StaticResource InfoPanelWidth}">
                 <Grid Margin="0,24,15,15" Width="285">
@@ -361,7 +361,7 @@
                         </StackPanel.Resources>
                         <StackPanel Orientation="Horizontal" Height="46">
                             <Rectangle Width="46" Fill="#7F3F5E66" Height="46"/>
-                            <Image Width="32" Height="32" Margin="-46,0,0,0" Source="Resources/folder.ico"/>
+                            <Image Width="32" Height="32" Margin="-46,0,0,0" Source="../Resources/folder.ico"/>
                             <Label Content=" Game Paths" FontSize="23" 
 								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>
                         </StackPanel>
@@ -413,7 +413,7 @@
                         </StackPanel.Resources>
                         <StackPanel Orientation="Horizontal" Height="46">
                             <Rectangle Width="46" Fill="#7F3F5E66"/>
-                            <Image Width="32" Height="32" Margin="-46,0,0,0" Source="Resources/settings.ico"/>
+                            <Image Width="32" Height="32" Margin="-46,0,0,0" Source="../Resources/settings.ico"/>
                             <Label Content="Advanced Settings" FontSize="23" 
 								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>
                         </StackPanel>
@@ -425,7 +425,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <CheckBox x:Name="disableSetupCheckBox" VerticalAlignment="Center" Margin="0,1,0,0"/>
                                     <TextBlock Text="Disable Wizard" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
-                                    <Image Height="16" Width="16" Source="Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
+                                    <Image Height="16" Width="16" Source="../Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
                                 		ToolTip="Disables the setup wizard to allow bypass of DLC unpacking. Not for typical users. ONLY for those who don't want to mod or browse textures. Untick the box to re-allow the setup wizard." 
                                         Margin="6,0,0,0"/>
                                 </StackPanel>
@@ -434,18 +434,20 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <CheckBox x:Name="disableFlyoutsCheckBox" VerticalAlignment="Center" Margin="0,1,0,0" IsChecked="{Binding DisableFlyouts}"/>
                                     <TextBlock Text="Disable tool descriptions" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
-                                    <Image Height="16" Width="16" Source="Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
+                                    <Image Height="16" Width="16" Source="../Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
 										ToolTip="Prevents display of infopanels containing tool descriptions. Appropriate for more advanced users." Margin="6,0,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </StackPanel>
                 </Grid>
-                <Image x:Name="scrollIndicator" Source="Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
+                <Image x:Name="scrollIndicator" Source="../Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
             </Grid>
         </Grid>
         <local:MainToolPanel x:Name="utilitiesPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:ToolInfoPanel x:Name="toolInfoPanel" Width="0" HorizontalAlignment="Left" Grid.Column="2"/>
+        <local:TaskPane x:Name="taskPanePanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="taskPanePanel_ToolMouseOver"/>
+        <local:TaskPaneInfoPanel x:Name="taskPaneInfoPanel" Grid.Column="2" Width="0" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

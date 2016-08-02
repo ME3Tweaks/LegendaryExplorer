@@ -31,8 +31,10 @@ namespace ME3Explorer
         private bool AdvancedOpen = false;
         private bool UtilitiesOpen = false;
         private bool CreateModsOpen = false;
+        private bool TaskPaneOpen = false;
         private bool ToolInfoPanelOpen = false;
         private bool PathsPanelOpen = false;
+        private bool TaskPaneInfoPanelOpen = false;
         
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
@@ -152,6 +154,10 @@ namespace ME3Explorer
                 if (UtilitiesOpen)
                 {
                     closeUtilities(100);
+                }
+                if (TaskPaneOpen)
+                {
+                    closeTaskPane(100);
                 }
                 CICOpen = true;
                 Logo.Source = (ImageSource)Logo.FindResource("LogoOnImage");
@@ -338,6 +344,10 @@ namespace ME3Explorer
                 {
                     closeCreateMods(100);
                 }
+                if (TaskPaneOpen)
+                {
+                    closeTaskPane(100);
+                }
                 utilitiesButton.OpacityMask = HighlightBrush;
                 utilitiesPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
             }
@@ -370,6 +380,10 @@ namespace ME3Explorer
                 if (UtilitiesOpen)
                 {
                     closeUtilities(100);
+                }
+                if (TaskPaneOpen)
+                {
+                    closeTaskPane(100);
                 }
                 createModsButton.OpacityMask = HighlightBrush;
                 createModsPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
@@ -543,6 +557,58 @@ namespace ME3Explorer
                 }
                 PathsPanelOpen = true;
                 pathsPanel.BeginDoubleAnimation(WidthProperty, 300, 50);
+            }
+        }
+
+        private void taskPaneButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskPaneOpen)
+            {
+                closeTaskPane();
+            }
+            else
+            {
+                TaskPaneOpen = true;
+                if (CICOpen)
+                {
+                    closeCIC(100);
+                }
+                if (UtilitiesOpen)
+                {
+                    closeUtilities(100);
+                }
+                if (CreateModsOpen)
+                {
+                    closeCreateMods(100);
+                }
+                taskPaneButton.OpacityMask = HighlightBrush;
+                taskPanePanel.BeginDoubleAnimation(WidthProperty, 650, 300);
+            }
+        }
+
+        private void closeTaskPane(int duration = 300)
+        {
+            if (TaskPaneInfoPanelOpen)
+            {
+                closeTaskPaneInfoPanel();
+            }
+            TaskPaneOpen = false;
+            taskPanePanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+            taskPaneButton.OpacityMask = LabelTextBrush;
+        }
+
+        private void closeTaskPaneInfoPanel(int duration = 100)
+        {
+            TaskPaneInfoPanelOpen = false;
+            taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        }
+
+        private void taskPanePanel_ToolMouseOver(object sender, GenericWindow e)
+        {
+            taskPaneInfoPanel.setTool(e);
+            if (!TaskPaneInfoPanelOpen)
+            {
+                taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
             }
         }
     }

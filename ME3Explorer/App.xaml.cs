@@ -7,6 +7,7 @@ using System.Windows;
 using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer
@@ -50,6 +51,7 @@ namespace ME3Explorer
 
             //static class setup
             Tools.Initialize();
+            MEPackageHandler.Initialize();
 
             int exitCode = 0;
             if (HandleCommandLineArgs(Environment.GetCommandLineArgs(), out exitCode))

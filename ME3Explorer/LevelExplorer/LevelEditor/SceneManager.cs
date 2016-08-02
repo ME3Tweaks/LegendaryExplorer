@@ -109,7 +109,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             {
                 Levelfile l = new Levelfile();
                 l.path = path;
-                l.pcc = new ME3Package(path);
+                l.pcc = MEPackageHandler.OpenME3Package(path);
                 IReadOnlyList<IExportEntry> Exports = l.pcc.Exports;
                 for (int i = 0; i < Exports.Count; i++)
                 {

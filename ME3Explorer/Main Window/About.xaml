@@ -8,7 +8,7 @@
         Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" Height="751">
     <StackPanel Width="600" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
-            <Image Width="249" Height="109" Source="Resources/me3exp_smallbanner_v1.png"/>
+            <Image Width="249" Height="109" Source="../Resources/me3exp_smallbanner_v1.png"/>
             <Grid Width="351" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Mass Effect 3 Explorer" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>

@@ -18,6 +18,7 @@ namespace ME3Explorer
         public List<string> tags;
         public string subCategory { get; set; }
         public string description { get; set; }
+        public Type type { get; set; }
         public bool IsFavorited
         {
             get { return (bool)GetValue(IsFavoritedProperty); }
@@ -58,6 +59,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "AutoTOC",
+                type = typeof(AutoTOC),
                 icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
                 open = () =>
                 {
@@ -69,6 +71,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ModMaker",
+                type = typeof(ModMaker),
                 icon = Application.Current.FindResource("iconModMaker") as ImageSource,
                 open = () =>
                 {
@@ -81,6 +84,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "TPF Tools",
+                type = typeof(KFreonTPFTools3),
                 icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
                 open = () =>
                 {
@@ -96,6 +100,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Animation Explorer",
+                type = typeof(AnimationExplorer.AnimationExplorer),
                 icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
                 open = () =>
                 {
@@ -107,6 +112,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Asset Explorer",
+                type = typeof(AssetExplorer),
                 icon = Application.Current.FindResource("iconAssetExplorer") as ImageSource,
                 open = () =>
                 {
@@ -121,6 +127,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Audio Extractor",
+                type = typeof(AFCExtract),
                 icon = Application.Current.FindResource("iconAudioExtractor") as ImageSource,
                 open = () =>
                 {
@@ -133,6 +140,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Bik Movie Extractor",
+                type = typeof(BIKExtract),
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
                 open = () =>
                 {
@@ -145,6 +153,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Class Viewer",
+                type = typeof(ClassViewer.ClassViewer),
                 icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
                 open = () =>
                 {
@@ -156,6 +165,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Hex Converter",
+                type = typeof(HexConverter.Hexconverter),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
@@ -170,6 +180,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Image Engine",
+                type = typeof(CSharpImageLibrary.MainWindow),
                 icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
                 open = () =>
                 {
@@ -182,6 +193,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interp Viewer",
+                type = typeof(InterpEditor.InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
@@ -194,6 +206,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Level Database",
+                type = typeof(LevelExplorer.Levelbase),
                 icon = Application.Current.FindResource("iconLevelDatabase") as ImageSource,
                 open = () =>
                 {
@@ -205,6 +218,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Meshplorer",
+                type = typeof(Meshplorer.Meshplorer),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
                 open = () =>
                 {
@@ -216,6 +230,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "PCC Repacker",
+                type = typeof(PCCRepack),
                 icon = Application.Current.FindResource("iconPCCRepacker") as ImageSource,
                 open = () =>
                 {
@@ -227,6 +242,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Plot Database",
+                type = typeof(PlotVarDB.PlotVarDB),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
                 open = () =>
                 {
@@ -239,6 +255,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Property Database",
+                type = typeof(Propertydb.PropertyDB),
                 icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
                 open = () =>
                 {
@@ -250,6 +267,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Property Dumper",
+                type = typeof(Property_Dumper.PropDumper),
                 icon = Application.Current.FindResource("iconPropertyDumper") as ImageSource,
                 open = () =>
                 {
@@ -261,6 +279,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Property Manager",
+                type = typeof(PropertyManager),
                 icon = Application.Current.FindResource("iconPropertyManager") as ImageSource,
                 open = () =>
                 {
@@ -272,6 +291,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "PSA Viewer",
+                type = typeof(PSAViewer),
                 icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
                 open = () =>
                 {
@@ -283,6 +303,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "PSK Viewer",
+                type = typeof(PSKViewer.PSKViewer),
                 icon = Application.Current.FindResource("iconPSKViewer") as ImageSource,
                 open = () =>
                 {
@@ -294,6 +315,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME1 Save Editor",
+                type = typeof(ME1Explorer.SaveGameEditor.SaveEditor),
                 icon = Application.Current.FindResource("iconSaveGameEditor") as ImageSource,
                 open = () =>
                 {
@@ -305,6 +327,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME1 Save Operator",
+                type = typeof(ME1Explorer.SaveGameOperator.SaveGameOperator),
                 icon = Application.Current.FindResource("iconSaveGameOperator") as ImageSource,
                 open = () =>
                 {
@@ -316,6 +339,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Script Database",
+                type = typeof(ScriptDB.ScriptDB),
                 icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
                 open = () =>
                 {
@@ -327,6 +351,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Subtitle Scanner",
+                type = typeof(SubtitleScanner.SubtitleScanner),
                 icon = Application.Current.FindResource("iconSubtitleScanner") as ImageSource,
                 open = () =>
                 {
@@ -342,6 +367,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Coalesced Editor",
+                type = typeof(Coalesced_Editor.CoalEditor),
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
                 open = () =>
                 {
@@ -354,6 +380,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Conditionals Editor",
+                type = typeof(Conditionals),
                 icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
                 open = () =>
                 {
@@ -366,6 +393,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Dialogue Editor",
+                type = typeof(DialogEditor.DialogEditor),
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
@@ -391,6 +419,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "FaceFX Editor",
+                type = typeof(FaceFXAnimSetEditor.FaceFXEditor),
                 icon = Application.Current.FindResource("iconFaceFXEditor") as ImageSource,
                 open = () =>
                 {
@@ -403,6 +432,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "FaceFXAnimSet Editor",
+                type = typeof(FaceFXAnimSetEditor.FaceFXAnimSetEditor),
                 icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
                 open = () =>
                 {
@@ -424,6 +454,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "GUID Cache Editor",
+                type = typeof(GUIDCacheEditor.GUIDCacheEditor),
                 icon = Application.Current.FindResource("iconGUIDCacheEditor") as ImageSource,
                 open = () =>
                 {
@@ -434,7 +465,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Interpreter",
+                type = typeof(InterpreterHost),
+                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
+                tags = new List<string>(),
+                subCategory = "Other",
+            });
+            set.Add(new Tool
+            {
                 name = "Level Editor",
+                type = typeof(LevelExplorer.LevelEditor.Leveleditor),
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
                 open = () =>
                 {
@@ -446,6 +486,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME3 Creator",
+                type = typeof(ME3Creator.Form1),
                 icon = Application.Current.FindResource("iconME3Creator") as ImageSource,
                 open = () =>
                 {
@@ -462,6 +503,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Meshplorer 2",
+                type = typeof(Meshplorer2.Meshplorer2),
                 icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
                 open = () =>
                 {
@@ -473,6 +515,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Package Editor",
+                type = typeof(PackageEditor),
                 icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
                 open = () =>
                 {
@@ -487,6 +530,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Sequence Editor",
+                type = typeof(SequenceEditor),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
                 { 
@@ -499,6 +543,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "SFAR Basic Editor",
+                type = typeof(SFARBasicEditor),
                 icon = Application.Current.FindResource("iconSFARBasicEditor") as ImageSource,
                 open = () =>
                 {
@@ -511,6 +556,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "SFAR Editor 2",
+                type = typeof(SFAREditor2),
                 icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
                 open = () =>
                 {
@@ -523,6 +569,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Soundplorer",
+                type = typeof(Soundplorer),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
@@ -535,6 +582,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Texplorer",
+                type = typeof(Texplorer2),
                 icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
                 open = () =>
                 {
@@ -547,6 +595,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME3 + ME2 TLK Editor",
+                type = typeof(TLKEditor),
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
@@ -559,6 +608,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME1 TLK Editor",
+                type = typeof(TlkManager),
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
@@ -571,6 +621,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",
+                type = typeof(WwiseBankEditor.WwiseEditor),
                 icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
                 open = () =>
                 {

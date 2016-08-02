@@ -71,7 +71,7 @@ namespace ME3Explorer.SubtitleScanner
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    ME3Package pcc = new ME3Package(file);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
                         if (Exports[i].ClassName == "BioConversation")
@@ -150,7 +150,7 @@ namespace ME3Explorer.SubtitleScanner
                     DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                     try
                     {
-                        ME3Package pcc = new ME3Package(file);
+                        ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
                             if (Exports[i].ClassName == "BioConversation")
@@ -239,7 +239,7 @@ namespace ME3Explorer.SubtitleScanner
                                 DebugOutput.PrintLn(" " + j.ToString("d4") + " / " + dlc.Files.Length.ToString("d4") + " : opening " + Path.GetFileName(filename),true);
                                 MemoryStream mem = dlc.DecompressEntry(j);
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
-                                ME3Package pcc = new ME3Package("temp.pcc");
+                                ME3Package pcc = MEPackageHandler.OpenME3Package("temp.pcc");
                                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                                 for (int i = 0; i < Exports.Count; i++)
                                     if (Exports[i].ClassName == "BioConversation")

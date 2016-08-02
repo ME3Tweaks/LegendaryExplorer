@@ -219,7 +219,7 @@ namespace ME3Explorer.Unreal.Classes
                 wav.SaveChanges();
             foreach (WwiseEnvironmentVolume wev in WEV)
                 wev.SaveChanges();
-            DebugOutput.PrintLn("Saving \"" + Path.GetFileName(pcc.fileName) + "\" ..."); 
+            DebugOutput.PrintLn("Saving \"" + Path.GetFileName(pcc.FileName) + "\" ..."); 
             pcc.save();
         }
 

@@ -653,7 +653,7 @@ namespace ME3Explorer.Unreal
                     p.TypeVal = Type.ByteProperty;
                     v = new PropertyValue();
                     v.len = p.Size;
-                    if (pcc.game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3)
                     {
                         p.offsetval = pos + 32;
                         v.StringValue = pcc.getNameEntry(sname);
@@ -703,7 +703,7 @@ namespace ME3Explorer.Unreal
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = raw[pos + 24];
-                    if (pcc.game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3)
                     {
                         v.len = 1; 
                     }
@@ -788,7 +788,7 @@ namespace ME3Explorer.Unreal
         {
             if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
-                if (pcc.game != MEGame.ME3)
+                if (pcc.Game != MEGame.ME3)
                 {
                     return 32; 
                 }
@@ -840,7 +840,7 @@ namespace ME3Explorer.Unreal
                 case "BoolProperty":
                     m.Write(new byte[8], 0, 8);
                     m.WriteByte((byte)p.Value.IntValue);
-                    if (pcc.game != MEGame.ME3)
+                    if (pcc.Game != MEGame.ME3)
                     {
                         m.Write(new byte[3], 0, 3);
                     }
@@ -853,7 +853,7 @@ namespace ME3Explorer.Unreal
                 case "ByteProperty":
                     m.Write(BitConverter.GetBytes(p.Size), 0, 4);
                     m.Write(new byte[4], 0, 4);
-                    if (pcc.game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3)
                     {
                         name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
                         idxname2 = pcc.FindNameOrAdd(name2);

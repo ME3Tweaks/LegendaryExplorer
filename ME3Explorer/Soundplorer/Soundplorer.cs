@@ -43,7 +43,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    pcc = new ME3Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
                     CurrentFile = d.FileName;
                     afcPath = "";
                     LoadObjects();
@@ -118,7 +118,7 @@ namespace ME3Explorer
                 string path;
                 if (w.IsPCCStored)
                 {
-                    path = pcc.fileName;
+                    path = pcc.FileName;
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace ME3Explorer
                     string path;
                     if (w.IsPCCStored)
                     {
-                        path = pcc.fileName;
+                        path = pcc.FileName;
                     }
                     else
                     {
@@ -227,7 +227,7 @@ namespace ME3Explorer
                     string path;
                     if (w.IsPCCStored)
                     {
-                        path = pcc.fileName;
+                        path = pcc.FileName;
                     }
                     else
                     {

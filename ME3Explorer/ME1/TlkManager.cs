@@ -41,7 +41,7 @@ namespace ME1Explorer
             
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.fileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.FileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
             }
         }
 
@@ -72,7 +72,7 @@ namespace ME1Explorer
             }
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.fileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.FileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
             }
         }
 
@@ -84,7 +84,7 @@ namespace ME1Explorer
             fileBox.Items.Clear();
             foreach (ME1Package pcc in packages)
             {
-                fileBox.Items.Add(Path.GetFileName(pcc.fileName));
+                fileBox.Items.Add(Path.GetFileName(pcc.FileName));
             }
             fileBox.SelectedIndex = selectedFile;
             Application.DoEvents();
@@ -178,7 +178,7 @@ namespace ME1Explorer
             if (!selectedTlks.tlkList.Contains(tlk))
             {
                 selectedTlks.tlkList.Add(tlk);
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlk.pcc.fileName) + " -> " + tlkFileSets[bioTlkSetBox.SelectedIndex].Name + tlk.Name);
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(tlk.pcc.FileName) + " -> " + tlkFileSets[bioTlkSetBox.SelectedIndex].Name + tlk.Name);
             }
         }
 
@@ -283,9 +283,9 @@ namespace ME1Explorer
                 compressor.replaceTlkwithFile(tlk.pcc, tlk.index);
                 MessageBox.Show("Done");
             }
-            n = packages.FindIndex(x => tlk.pcc.fileName == x.fileName);
+            n = packages.FindIndex(x => tlk.pcc.FileName == x.FileName);
             packages.RemoveAt(n);
-            packages.Insert(n, new ME1Package(tlk.pcc.fileName));
+            packages.Insert(n, new ME1Package(tlk.pcc.FileName));
             refreshFileBox();
         }
     }

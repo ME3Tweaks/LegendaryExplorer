@@ -29,8 +29,8 @@ namespace ME3Explorer
                 {
                     try
                     {
-                        ME3Package pccObj = new ME3Package(fileName);
-                        if (!pccObj.canReconstruct)
+                        ME3Package pccObj = MEPackageHandler.OpenME3Package(fileName);
+                        if (!pccObj.CanReconstruct)
                         {
                             var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
                                 "Do you want to visit a forum thread with more information and a possible solution?",
@@ -81,7 +81,7 @@ namespace ME3Explorer
                             File.Copy(fileName, backupFile);
                         }
 
-                        ME3Package pccObj = new ME3Package(fileName);
+                        ME3Package pccObj = MEPackageHandler.OpenME3Package(fileName);
                         pccObj.saveByReconstructing(fileName);
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -110,15 +110,14 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to decompress does not exist:\n" + sourceFile, "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
             try
             {
-                ME3Package pccObj = new ME3Package(sourceFile);
+                ME3Package pccObj = MEPackageHandler.OpenME3Package(sourceFile);
                 pccObj.saveByReconstructing(outputFile);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error:\n" + ex.Message);
+                MessageBox.Show("Error:\n" + ex.Message);
                 return 1;
             }
             return 0;
@@ -134,21 +133,13 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to compress does not exist:\n" + sourceFile, "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
-            try
+            ME3Package pccObj = MEPackageHandler.OpenME3Package(sourceFile);
+            if (!pccObj.CanReconstruct)
             {
-                ME3Package pccObj = new ME3Package(sourceFile);
-                if (!pccObj.canReconstruct)
-                {
-                    throw new Exception("Cannot compress files with a SeekFreeShaderCache");
-                }
-                pccObj.saveByReconstructing(outputFile, true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error:\n" + ex.Message);
+                MessageBox.Show("Cannot compress files with a SeekFreeShaderCache", "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
+            pccObj.saveByReconstructing(outputFile, true);
             return 0;
         }
     }

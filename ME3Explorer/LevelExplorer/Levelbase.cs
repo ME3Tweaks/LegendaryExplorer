@@ -84,7 +84,7 @@ namespace ME3Explorer.LevelExplorer
                 DebugOutput.PrintLn(i + "/" + (files.Length - 1) + " Scanning : " + Path.GetFileName(file));
                 try
                 {
-                    ME3Package pcc = new ME3Package(file);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                     for (int j = 0; j < pcc.Exports.Count(); j++)
                     {
                         IExportEntry e = pcc.Exports[j];
@@ -138,7 +138,7 @@ namespace ME3Explorer.LevelExplorer
 
                 try
                 {
-                    ME3Package pcc = new ME3Package(l.filepath);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(l.filepath);
                     Level lev = new Level(pcc, l.index, true);
                     string s = "";
                     s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";

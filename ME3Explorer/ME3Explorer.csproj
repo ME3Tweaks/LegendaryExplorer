@@ -147,7 +147,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="About.xaml">
+    <Page Include="Main Window\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,7 +155,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="About.xaml.cs">
+    <Compile Include="GenericWindow.cs" />
+    <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="Coalesced Editor\CoalEditor.cs">
@@ -171,8 +172,11 @@
     <Compile Include="InitialSetup.xaml.cs">
       <DependentUpon>InitialSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="main.cs" />
-    <Compile Include="MainToolPanel.xaml.cs">
+    <Compile Include="Main Window\TaskPaneInfoPanel.xaml.cs">
+      <DependentUpon>TaskPaneInfoPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs" />
+    <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="ME2\FaceFXAnimSetEditor.cs">
@@ -182,12 +186,13 @@
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ME2\Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SearchPanel.xaml.cs">
+    <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="ME1\Unreal\Bytecode.cs" />
@@ -290,6 +295,9 @@
     <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main Window\TaskPane.xaml.cs">
+      <DependentUpon>TaskPane.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Texplorer\KFreonListErrorBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -332,12 +340,12 @@
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
     <Compile Include="TOCeditor.cs" />
-    <Compile Include="ToolInfoPanel.xaml.cs">
+    <Compile Include="Main Window\ToolInfoPanel.xaml.cs">
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolListControl.cs" />
+    <Compile Include="Main Window\ToolListControl.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="ToolPanel.xaml.cs">
+    <Compile Include="Main Window\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="TPFTools\KFreonTPFTools3.cs">
@@ -413,15 +421,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainToolPanel.xaml">
+    <Page Include="Main Window\MainToolPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SearchPanel.xaml">
+    <Page Include="Main Window\SearchPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Main Window\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -564,13 +572,21 @@
       <DependentUpon>Leveleditor.cs</DependentUpon>
     </Compile>
     <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Main Window\TaskPaneInfoPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main Window\TaskPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -588,11 +604,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ToolInfoPanel.xaml">
+    <Page Include="Main Window\ToolInfoPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolPanel.xaml">
+    <Page Include="Main Window\ToolPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1130,6 +1146,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\me3exp_smallbanner_v1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\diskette_white.ico" />
+    <Resource Include="Resources\eye_white.ico" />
+    <Resource Include="Resources\ME1Game.ico" />
+    <Resource Include="Resources\ME2Game.ico" />
+    <Resource Include="Resources\ME3Game.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\close.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

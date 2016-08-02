@@ -33,7 +33,7 @@ namespace ME3Explorer.Property_Dumper
             {
                 try
                 {
-                    pcc = new ME3Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
                     LetsDump();
                 }
                 catch (Exception ex)
@@ -132,7 +132,7 @@ namespace ME3Explorer.Property_Dumper
 
                         while (pause)
                             Application.DoEvents();
-                        pcc = new ME3Package(files[i]);
+                        pcc = MEPackageHandler.OpenME3Package(files[i]);
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                         pb1.Maximum = Exports.Count;
                         pb2.Value = i;
@@ -249,7 +249,7 @@ namespace ME3Explorer.Property_Dumper
                 {
                     while (pause)
                         Application.DoEvents();
-                    pcc = new ME3Package(files[i]);
+                    pcc = MEPackageHandler.OpenME3Package(files[i]);
                     DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     pb1.Maximum = Exports.Count;

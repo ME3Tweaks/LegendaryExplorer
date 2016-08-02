@@ -18,10 +18,10 @@
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Button x:Name="backButton" Style="{StaticResource BorderlessButton}" Opacity="0.85" Click="backButton_Click" Visibility="Collapsed">
-                        <Image Source="Resources/left_arrow.ico" Width="16" Height="16"/>
+                        <Image Source="../Resources/left_arrow.ico" Width="16" Height="16"/>
                     </Button>
                     <Button x:Name="forwardButton" Style="{StaticResource BorderlessButton}" Margin="0" Opacity="0.85" Click="forwardButton_Click" Visibility="Collapsed">
-                        <Image Source="Resources/right_arrow.ico" Width="16" Height="16"/>
+                        <Image Source="../Resources/right_arrow.ico" Width="16" Height="16"/>
                     </Button>
                 </StackPanel>
             </DockPanel>

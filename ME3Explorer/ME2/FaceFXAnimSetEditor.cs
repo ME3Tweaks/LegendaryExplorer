@@ -32,7 +32,7 @@ namespace ME2Explorer
             {
                 try
                 {
-                    pcc = new ME2Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME2Package(d.FileName);
                     Objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)

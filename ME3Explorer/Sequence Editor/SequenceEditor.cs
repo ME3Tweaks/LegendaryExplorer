@@ -158,7 +158,8 @@ namespace ME3Explorer
         {
             try
             {
-                pcc = MEPackageHandler.OpenMEPackage(fileName);
+                pcc?.Release(winForm: this);
+                pcc = MEPackageHandler.OpenMEPackage(fileName, winForm: this);
                 CurrentFile = fileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
                 LoadSequences();
@@ -300,7 +301,7 @@ namespace ME3Explorer
             string packageFullName = pcc.getExport(index).PackageFullName;
             if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
             {
-                if (pcc.game == MEGame.ME3)
+                if (pcc.Game == MEGame.ME3)
                 {
                     JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON"; 
                 }
@@ -333,7 +334,7 @@ namespace ME3Explorer
                     }
                     else
                         packageName = packageName.Replace("Sequence", ObjName) + ".";
-                    if (pcc.game == MEGame.ME2)
+                    if (pcc.Game == MEGame.ME2)
                     {
                         JSONpath = ME2ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
                     }
@@ -347,11 +348,11 @@ namespace ME3Explorer
             else
             {
                 string viewsPath = ME3ViewsPath;
-                if (pcc.game == MEGame.ME2)
+                if (pcc.Game == MEGame.ME2)
                 {
                     viewsPath = ME2ViewsPath;
                 }
-                else if (pcc.game == MEGame.ME1)
+                else if (pcc.Game == MEGame.ME1)
                 {
                     viewsPath = ME1ViewsPath;
                 }
@@ -382,7 +383,7 @@ namespace ME3Explorer
                 o.refreshView = RefreshView;
                 o.MouseDown += node_MouseDown;
             }
-            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.game != MEGame.ME1)
+            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.Game != MEGame.ME1)
             {
                 LoadDialogueObjects();
             }
@@ -422,7 +423,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    if (pcc.game == MEGame.ME1)
+                    if (pcc.Game == MEGame.ME1)
                     {
                         Objects.Add(new SEvent(index, x, y, pcc, graphEditor));
                     }
@@ -439,7 +440,7 @@ namespace ME3Explorer
                     Objects.Add(new SVar(index, savedInfo.X, savedInfo.Y, pcc, graphEditor));
                 else
                 {
-                    if (pcc.game == MEGame.ME1)
+                    if (pcc.Game == MEGame.ME1)
                     {
                         Objects.Add(new SVar(index, x, y, pcc, graphEditor));
                     }
@@ -450,13 +451,13 @@ namespace ME3Explorer
                     }
                 }
             }
-            else if (pcc.getExport(index).ClassName == "SequenceFrame" && pcc.game == MEGame.ME1)
+            else if (pcc.getExport(index).ClassName == "SequenceFrame" && pcc.Game == MEGame.ME1)
             {
                 Objects.Add(new SFrame(index, x, y, pcc, graphEditor));
             }
             else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
-                if (pcc.game == MEGame.ME1)
+                if (pcc.Game == MEGame.ME1)
                 {
                     Objects.Add(new SAction(index, x, y, pcc, graphEditor));
                 }
@@ -525,7 +526,7 @@ namespace ME3Explorer
                             o.Layout(savedInfo.X, savedInfo.Y);
                         else
                         {
-                            if (pcc.game == MEGame.ME1)
+                            if (pcc.Game == MEGame.ME1)
                             {
                                 o.Layout(-0.1f, -0.1f);
                             }
@@ -1250,19 +1251,19 @@ namespace ME3Explorer
             if (pcc != null)
             {
 
-                if (pcc.game == MEGame.ME3)
+                if (pcc.Game == MEGame.ME3)
                 {
                     TlkManager tm = new TlkManager();
                     tm.InitTlkManager();
                     tm.Show();
                 }
-                else if (pcc.game == MEGame.ME2)
+                else if (pcc.Game == MEGame.ME2)
                 {
                     ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
                     tm.InitTlkManager();
                     tm.Show();
                 }
-                else if (pcc.game == MEGame.ME1)
+                else if (pcc.Game == MEGame.ME1)
                 {
                     ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
                     tm.InitTlkManager(talkFiles);
@@ -1301,7 +1302,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            string extension = Path.GetExtension(pcc.fileName);
+            string extension = Path.GetExtension(pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
             if (d.ShowDialog() == DialogResult.OK)
             {
@@ -1320,9 +1321,10 @@ namespace ME3Explorer
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!pcc.canClone())
+            //TODO: support cloning in SeqEd for ME2 and ME1
+            if (pcc.Game != MEGame.ME3)
             {
-                return;
+                MessageBox.Show("Cloning in the Sequence editor is currently supported for ME3 only. Try using the Package Editor instead.", "Sorry!");
             }
             int n = CurrentObjects[listBox1.SelectedIndex];
             if (n == -1)

@@ -74,9 +74,8 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                pcc = MEPackageHandler.OpenMEPackage(s);
-                appendSaveMenuItem.Enabled = true;
-                appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
+                pcc?.Release(winForm: this);
+                pcc = MEPackageHandler.OpenMEPackage(s, winForm: this);
                 interpreterControl.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
@@ -327,7 +326,7 @@ namespace ME3Explorer
                 int importsOffset = Exports.Count;
                 int link;
                 List<TreeNode> nodeList = new List<TreeNode>(Exports.Count + imports.Count + 1);
-                TreeNode node = new TreeNode(pcc.fileName);
+                TreeNode node = new TreeNode(pcc.FileName);
                 node.Tag = true;
                 nodeList.Add(node);
                 for (int i = 0; i < Exports.Count; i++)
@@ -441,13 +440,13 @@ namespace ME3Explorer
                     {
                         tabControl1.TabPages.Insert(1, interpreterTab);
                     }
-                    if (pcc.getExport(n).ClassName == "Function" && pcc.game != MEGame.ME2)
+                    if (pcc.getExport(n).ClassName == "Function" && pcc.Game != MEGame.ME2)
                     {
                         if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
                         {
                             tabControl1.TabPages.Add(scriptTab);
                         }
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             Function func = new Function(pcc.getExport(n).Data, pcc as ME3Package);
                             rtb1.Text = func.ToRawText();
@@ -881,11 +880,11 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            string extension = Path.GetExtension(pcc.fileName);
+            string extension = Path.GetExtension(pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.appendSave(d.FileName, true);
+                pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -1247,24 +1246,6 @@ namespace ME3Explorer
             }
         }
 
-        private void reconstructionSave_Click(object sender, EventArgs e)
-        {
-            if (pcc == null)
-                return;
-            if (!pcc.canClone())
-            {
-                return;
-            }
-            SaveFileDialog d = new SaveFileDialog();
-            string extension = Path.GetExtension(pcc.fileName);
-            d.Filter = $"*{extension}|*{extension}";
-            if (d.ShowDialog() == DialogResult.OK)
-            {
-                pcc.saveByReconstructing(d.FileName);
-                MessageBox.Show("Done");
-            }
-        }
-
         private void editBlockingVolToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
@@ -1329,7 +1310,7 @@ namespace ME3Explorer
                 while ((cnt = fs.Read(buff, sum, buff.Length - sum)) > 0) sum += cnt;
                 fs.Close();
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.fileName);
+                string currfile = Path.GetFileName(pcc.FileName);
                 mj.data = buff;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + n + " with " + buff.Length + " bytes of data";
                 string loc = Path.GetDirectoryName(Application.ExecutablePath);
@@ -1349,7 +1330,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.fileName, CopyArray(pcc.getExport(n).Data));
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.FileName, CopyArray(pcc.getExport(n).Data));
             KFreonLib.Scripting.ModMaker.JobList.Add(mj);
             MessageBox.Show("Done");
         }
@@ -1556,7 +1537,7 @@ namespace ME3Explorer
             }
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
-            pcc.getExport(n).header = m.ToArray();
+            pcc.getExport(n).setHeader(m.ToArray());
 
             RefreshView();
             goToNumber(n);
@@ -1579,16 +1560,9 @@ namespace ME3Explorer
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!pcc.canClone())
-            {
-                return;
-            }
             int n = 0;
             if (GetSelected(out n))
             {
-                appendSaveMenuItem.Enabled = false;
-                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning has occured.";
-
                 if (n >= 0)
                 {
                     IExportEntry ent = pcc.getExport(n).Clone();
@@ -1608,16 +1582,10 @@ namespace ME3Explorer
 
         private void cloneTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!pcc.canClone())
-            {
-                return;
-            }
             int n = 0;
             if (GetSelected(out n))
             {
                 int nextIndex;
-                appendSaveMenuItem.Enabled = false;
-                appendSaveMenuItem.ToolTipText = "This method cannot be used if cloning or importing has occured.";
 
                 TreeNode rootNode = treeView1.SelectedNode;
                 if (n >= 0)
@@ -1696,12 +1664,10 @@ namespace ME3Explorer
                 if (DestinationNode.TreeView != sourceNode.TreeView)
                 {
                     IMEPackage importpcc = sourceNode.TreeView.Tag as IMEPackage;
-                    if (!pcc.canClone() || importpcc == null)
+                    if (importpcc == null)
                     {
                         return;
                     }
-                    appendSaveMenuItem.Enabled = false;
-                    appendSaveMenuItem.ToolTipText = "This method cannot be used if importing has occured.";
                     
                     int n = Convert.ToInt32(sourceNode.Name);
                     int link;
@@ -1774,7 +1740,7 @@ namespace ME3Explorer
         {
             IImportEntry imp = importpcc.getImport(n);
             IImportEntry nimp = null;
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     nimp = new ME1ImportEntry(pcc as ME1Package, imp.header);
@@ -1797,7 +1763,7 @@ namespace ME3Explorer
         {
             IExportEntry ex = importpcc.getExport(n);
             IExportEntry nex = null;
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     nex = new ME1ExportEntry(pcc as ME1Package);
@@ -1822,7 +1788,7 @@ namespace ME3Explorer
             {
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
-                if (pcc.game != MEGame.ME3)
+                if (pcc.Game != MEGame.ME3)
                 {
                     stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,};
@@ -1849,7 +1815,7 @@ namespace ME3Explorer
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;
             }
-            if (importpcc.game == MEGame.ME3 && importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
+            if (importpcc.Game == MEGame.ME3 && importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
             {
                 SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
                 SkeletalMesh.BoneStruct bone;
@@ -1877,7 +1843,7 @@ namespace ME3Explorer
                 for (int i = end; i < idata.Length; i++)
                     res.WriteByte(idata[i]);
             }
-            nex.header = (byte[])ex.header.Clone();
+            nex.setHeader((byte[])ex.header.Clone());
             nex.Data = res.ToArray();
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
@@ -1908,7 +1874,7 @@ namespace ME3Explorer
         private void editInCurveEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = 0;
-            if (GetSelected(out n) && n >= 0 && pcc.game == MEGame.ME3)
+            if (GetSelected(out n) && n >= 0 && pcc.Game == MEGame.ME3)
             {
                 CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(n));
                 c.Show();

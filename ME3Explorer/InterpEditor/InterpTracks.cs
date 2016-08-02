@@ -338,7 +338,7 @@ namespace ME3Explorer.InterpEditor
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadFile(pcc.fileName);
+            p.LoadFile(pcc.FileName);
             p.goToNumber(index);
         }
 

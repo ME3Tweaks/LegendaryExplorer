@@ -48,7 +48,7 @@ namespace ME3Explorer.ScriptDB
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    ME3Package pcc = new ME3Package(file);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                     int count2 = 0;
                     foreach (IExportEntry ent in pcc.Exports)
                     {

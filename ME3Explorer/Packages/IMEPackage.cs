@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ME3Explorer.Packages
 {
@@ -44,20 +46,21 @@ namespace ME3Explorer.Packages
 
     public interface IMEPackage
     {
-        bool bCompressed { get; }
-        bool canReconstruct { get; }
-        bool isModified { get; }
+        bool IsCompressed { get; }
+        bool CanReconstruct { get; }
+        bool IsModified { get; }
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }
         IReadOnlyList<IExportEntry> Exports { get; }
         IReadOnlyList<IImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
-        MEGame game { get; }
-        string fileName { get; }
+        MEGame Game { get; }
+        string FileName { get; }
+        DateTime LastSaved { get; }
+        long FileSize { get; }
 
         //reading
-        bool canClone();
         bool isExport(int index);
         bool isImport(int index);
         bool isName(int index);
@@ -73,14 +76,21 @@ namespace ME3Explorer.Packages
         //editing
         void addName(string name);
         int FindNameOrAdd(string name);
-        void setNames(List<string> list);
         void addExport(IExportEntry exportEntry);
         void addImport(IImportEntry importEntry);
+        /// <summary>
+        ///     exposed so that the property import function can restore the namelist after a failure.
+        ///     please don't use it anywhere else.
+        /// </summary>
+        void setNames(List<string> list);
 
         //saving
         void save();
         void save(string path);
-        void saveByReconstructing(string path);
-        string appendSave(string newFileName, bool attemptOverwrite = true, int HeaderNameOffset = 34);
+
+        ObservableCollection<GenericWindow> Tools { get; }
+        void RegisterTool(GenericWindow tool);
+        void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
+        event EventHandler noLongerOpenInTools;
     }
 }

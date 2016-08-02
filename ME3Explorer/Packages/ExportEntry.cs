@@ -4,39 +4,36 @@ namespace ME3Explorer.Packages
 {
     public abstract class ExportEntry
     {
-        public ME1Package fileRef1;
-        public ME2Package fileRef2;
-        public ME3Package fileRef3;
-        public IMEPackage FileRef
+        public IMEPackage FileRef { get; protected set; }
+
+        protected ExportEntry(byte[] headerData)
         {
-            get
-            {
-                if (fileRef1 != null)
-                {
-                    return fileRef1;
-                }
-                else if (fileRef2 != null)
-                {
-                    return fileRef2;
-                }
-                else
-                {
-                    return fileRef3;
-                }
-            }
+            header = (byte[])headerData.Clone();
+            OriginalDataSize = DataSize;
         }
 
-        public byte[] header { get; set; }
+        protected ExportEntry()
+        {
+            OriginalDataSize = 0;
+        }
+
+        public byte[] header { get; protected set; }
+
+        public void setHeader(byte[] newHead)
+        {
+            header = newHead;
+            hasChanged = true;
+        }
 
         public uint headerOffset { get; set; }
 
-        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
-        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
-        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
+        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); hasChanged = true; } }
+        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); hasChanged = true; } }
+        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); hasChanged = true; } }
+        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); hasChanged = true; } }
+        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); hasChanged = true; } }
+        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); hasChanged = true; } }
+        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); hasChanged = true; } }
 
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -86,10 +83,17 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
+        
+        public byte[] Data
+        {
+            get { return _data; }
+
+            set { _data = value; hasChanged = true; DataSize = value.Length; }
+        }
 
         public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
         public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
-        public int DataOffsetTmp;
+        public readonly int OriginalDataSize;
         protected byte[] _data = null;
         
         public bool hasChanged { get; internal set; }
@@ -97,43 +101,27 @@ namespace ME3Explorer.Packages
 
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
-        public byte[] Data
+        public ME3ExportEntry(ME3Package pccFile, byte[] headerData, uint exportOffset) :
+            base(headerData)
         {
-            get
-            {
-                // if data isn't loaded then fill it from pcc file (load-on-demand)
-                if (_data == null)
-                {
-                    _data = fileRef3.getData(DataOffset, this);
-                }
-                return _data;
-            }
-
-            set { _data = value; hasChanged = true; DataSize = value.Length; }
-        }
-
-        public ME3ExportEntry(ME3Package pccFile, byte[] headerData, uint exportOffset)
-        {
-            fileRef3 = pccFile;
-            header = (byte[])headerData.Clone();
+            FileRef = pccFile;
             headerOffset = exportOffset;
-            hasChanged = false;
         }
 
         public ME3ExportEntry(ME3Package pccFile)
         {
-            fileRef3 = pccFile;
+            FileRef = pccFile;
         }
 
         public IExportEntry Clone()
         {
-            ME3ExportEntry newExport = (ME3ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
-                                                                               // now creates new copies of referenced objects
+            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package);
             newExport.header = (byte[])this.header.Clone();
+            newExport.headerOffset = 0;
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in fileRef3.Exports)
+            foreach (IExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -148,27 +136,27 @@ namespace ME3Explorer.Packages
 
     public class ME2ExportEntry : ExportEntry, IExportEntry
     {
-        public byte[] Data
+        public ME2ExportEntry(ME2Package pccFile, byte[] headerData, uint exportOffset) :
+            base(headerData)
         {
-            get { return _data; }
-
-            set { _data = value; hasChanged = true; DataSize = value.Length; }
+            FileRef = pccFile;
+            headerOffset = exportOffset;
         }
 
         public ME2ExportEntry(ME2Package pccFile)
         {
-            fileRef2 = pccFile;
+            FileRef = pccFile;
         }
 
         public IExportEntry Clone()
         {
-            ME2ExportEntry newExport = (ME2ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
-                                                                               // now creates new copies of referenced objects
+            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package);
             newExport.header = (byte[])this.header.Clone();
+            newExport.headerOffset = 0;
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in fileRef2.Exports)
+            foreach (IExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -183,27 +171,27 @@ namespace ME3Explorer.Packages
 
     public class ME1ExportEntry : ExportEntry, IExportEntry
     {
-        public byte[] Data
+        public ME1ExportEntry(ME1Package pccFile, byte[] headerData, uint exportOffset) :
+            base(headerData)
         {
-            get { return _data; }
-
-            set { _data = value; hasChanged = true; DataSize = value.Length; }
+            FileRef = pccFile;
+            headerOffset = exportOffset;
         }
 
         public ME1ExportEntry(ME1Package file)
         {
-            fileRef1 = file;
+            FileRef = file;
         }
 
         public IExportEntry Clone()
         {
-            ME1ExportEntry newExport = (ME1ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
-                                                                               // now creates new copies of referenced objects
+            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package);
             newExport.header = (byte[])this.header.Clone();
+            newExport.headerOffset = 0;
             newExport.Data = (byte[])this.Data.Clone();
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in fileRef1.Exports)
+            foreach (IExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {

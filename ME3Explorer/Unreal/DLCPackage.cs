@@ -347,9 +347,8 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
-        public async Task<MemoryStream> DecompressEntryAsync(int Index)
+        public async Task DecompressEntryAsync(int Index, Stream output)
         {
-            MemoryStream result = new MemoryStream();
             FileEntryStruct e = Files[Index];
             uint count = 0;
             byte[] inputBlock;
@@ -363,7 +362,7 @@ namespace ME3Explorer.Unreal
                 {
                     buff = new byte[e.RealUncompressedSize];
                     await fs.ReadAsync(buff, 0, buff.Length).ConfigureAwait(continueOnCapturedContext: false);
-                    result.Write(buff, 0, buff.Length);
+                    await output.WriteAsync(buff, 0, buff.Length).ConfigureAwait(continueOnCapturedContext: false);
                 }
                 else
                 {
@@ -399,11 +398,10 @@ namespace ME3Explorer.Unreal
                     foreach (var task in tasks)
                     {
                         buff = task.Result;
-                        result.Write(buff, 0, buff.Length);
+                        await output.WriteAsync(buff, 0, buff.Length).ConfigureAwait(continueOnCapturedContext: false);
                     }
                 } 
             }
-            return result;
         }
 
         public MemoryStream DecompressEntry(int Index, FileStream fs)

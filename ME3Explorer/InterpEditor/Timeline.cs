@@ -656,7 +656,7 @@ namespace ME3Explorer.InterpEditor
                         addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
-                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/ME3Explorer/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.fileName.Substring(pcc.fileName.LastIndexOf(@"\")));
+                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/ME3Explorer/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.FileName.Substring(pcc.FileName.LastIndexOf(@"\")));
                         break;
                 }
             }
@@ -696,7 +696,7 @@ namespace ME3Explorer.InterpEditor
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadFile(pcc.fileName);
+            p.LoadFile(pcc.FileName);
             p.goToNumber(index);
         }
 

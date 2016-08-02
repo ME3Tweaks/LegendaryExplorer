@@ -121,7 +121,7 @@ namespace ME3Explorer
             memory = pcc.getExport(Index).Data;
             className = pcc.getExport(Index).ClassName;
 
-            if (pcc.game == MEGame.ME1)
+            if (pcc.Game == MEGame.ME1)
             {
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
@@ -463,7 +463,7 @@ namespace ME3Explorer
                     readerpos += 4;
                 }
             }
-            else if (pcc.game == MEGame.ME3)
+            else if (pcc.Game == MEGame.ME3)
             {
                 if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
                 {
@@ -890,7 +890,7 @@ namespace ME3Explorer
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case nodeType.ByteProperty:
-                    if (pcc.game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3)
                     {
                         if (p.size == 1)
                         {
@@ -925,15 +925,15 @@ namespace ME3Explorer
                 case nodeType.StringRefProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx + ": ";
-                    if (pcc.game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3)
                     {
                         s += TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : TalkFiles.findDataById(idx); 
                     }
-                    else if (pcc.game == MEGame.ME2)
+                    else if (pcc.Game == MEGame.ME2)
                     {
                         s += ME2Explorer.TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.TalkFiles.findDataById(idx);
                     }
-                    else if (pcc.game == MEGame.ME1)
+                    else if (pcc.Game == MEGame.ME1)
                     {
                         s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
                     }
@@ -987,7 +987,7 @@ namespace ME3Explorer
 
                             if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
                                 readerpos += 8;
-                            if (pcc.game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3)
                             {
                                 if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
                                     readerpos++;
@@ -1269,7 +1269,7 @@ namespace ME3Explorer
                         int size = BitConverter.ToInt32(memory, pos + 16);
                         string enumName = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
                         int valOffset;
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             valOffset = 32;
                         }
@@ -1503,7 +1503,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
-                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                             {
                                 break;
                             }
@@ -1617,7 +1617,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
-                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                             {
                                 break;
                             }
@@ -1640,7 +1640,7 @@ namespace ME3Explorer
                         break;
                     case "ByteProperty":
                         int valOffset;
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             valOffset = 32;
                         }
@@ -1898,7 +1898,7 @@ namespace ME3Explorer
                             return; //not valid
                         }
                         if (!pcc.Names.Contains(nameEntry.Text) &&
-                            DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.fileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
+                            DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} does not contain the Name: {nameEntry.Text}\nWould you like to add it to the Name list?", "", MessageBoxButtons.YesNo))
                         {
                             return;
                         }
@@ -1919,7 +1919,7 @@ namespace ME3Explorer
                     case ArrayType.String:
                         List<byte> stringBuff = new List<byte>();
 
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             memList.InsertRange(offset, BitConverter.GetBytes(-(proptext.Text.Length + 1)));
                             for (int j = 0; j < proptext.Text.Length; j++)
@@ -1944,7 +1944,7 @@ namespace ME3Explorer
                         byte[] buff;
                         if (LAST_SELECTED_NODE.Nodes.Count == 0)
                         {
-                            if (pcc.game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3)
                             {
                                 buff = ME3UnrealObjectInfo.getDefaultClassValue(pcc as ME3Package, getEnclosingType(LAST_SELECTED_NODE));
                                 if (buff == null)
@@ -2207,7 +2207,7 @@ namespace ME3Explorer
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
-                if (info.type == PropertyReader.Type.StructProperty && pcc.game != MEGame.ME3)
+                if (info.type == PropertyReader.Type.StructProperty && pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files.", "Sorry :(");
                 }
@@ -2245,7 +2245,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(0));
                         buff.AddRange(new byte[4]);
                         //value
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             buff.Add(0); 
                         }
@@ -2259,7 +2259,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(6));
                         buff.AddRange(new byte[4]);
                         //value
-                        if (pcc.game == MEGame.ME3)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             buff.AddRange(BitConverter.GetBytes(-1));
                             buff.Add(0); 
@@ -2285,7 +2285,7 @@ namespace ME3Explorer
                             //size
                             buff.AddRange(BitConverter.GetBytes(1));
                             buff.AddRange(new byte[4]);
-                            if (pcc.game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3)
                             {
                                 //enum Type
                                 buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd("None")));
@@ -2299,7 +2299,7 @@ namespace ME3Explorer
                             //size
                             buff.AddRange(BitConverter.GetBytes(8));
                             buff.AddRange(new byte[4]);
-                            if (pcc.game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3)
                             {
                                 //enum Type
                                 buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd(info.reference)));
@@ -2421,7 +2421,7 @@ namespace ME3Explorer
         #region UnrealObjectInfo
         private PropertyInfo GetPropertyInfo(int propName)
         {
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
@@ -2435,7 +2435,7 @@ namespace ME3Explorer
 
         private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false)
         {
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
@@ -2449,7 +2449,7 @@ namespace ME3Explorer
 
         private ArrayType GetArrayType(PropertyInfo propInfo)
         {
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getArrayType(propInfo);
@@ -2467,7 +2467,7 @@ namespace ME3Explorer
             {
                 typeName = className;
             }
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
@@ -2481,7 +2481,7 @@ namespace ME3Explorer
 
         private List<string> GetEnumValues(string enumName, int propName)
         {
-            switch (pcc.game)
+            switch (pcc.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));

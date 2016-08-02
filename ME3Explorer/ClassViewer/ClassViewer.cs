@@ -31,7 +31,7 @@ namespace ME3Explorer.ClassViewer
             {
                 try
                 {
-                    pcc = new ME3Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
                     Objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)

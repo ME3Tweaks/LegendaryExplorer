@@ -124,6 +124,10 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        
+        <BitmapImage x:Key="iconME1" UriSource="/ME3Explorer;component/Resources/ME1Game.ico"/>
+        <BitmapImage x:Key="iconME2" UriSource="/ME3Explorer;component/Resources/ME2Game.ico"/>
+        <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
 
         <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
         <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
@@ -162,6 +166,7 @@
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefx_editor_icon.ico"/>
         <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
+        <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
         <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_editor_64x64.png"/>
         <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>

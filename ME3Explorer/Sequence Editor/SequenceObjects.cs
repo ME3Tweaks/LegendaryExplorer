@@ -92,7 +92,7 @@ namespace ME3Explorer.SequenceObjects
                 int count = BitConverter.ToInt32(buff2, 24);
                 int pos = 28;
                 int stringMult = 1;
-                if (pcc.game == MEGame.ME3)
+                if (pcc.Game == MEGame.ME3)
                 {
                     stringMult = 2;
                 }
@@ -312,7 +312,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
                             {
-                                switch (pcc.game)
+                                switch (pcc.Game)
                                 {
                                     case MEGame.ME1:
                                         return talkfiles.findDataById(prop.Value.IntValue);
@@ -617,7 +617,7 @@ namespace ME3Explorer.SequenceObjects
                                 l.Links.Add(-1);
                                 l.offsets.Add(-1);
                             }
-                            switch (pcc.game)
+                            switch (pcc.Game)
                             {
                                 case MEGame.ME1:
                                 case MEGame.ME2:
@@ -1296,7 +1296,7 @@ namespace ME3Explorer.SequenceObjects
 
         public override void Layout(float x, float y)
         {
-            if (pcc.game == MEGame.ME1)
+            if (pcc.Game == MEGame.ME1)
             {
                 // ==
                 if (Math.Abs(x - -0.1f) < float.Epsilon)
@@ -1382,7 +1382,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
                 {
-                    if (pcc.game == MEGame.ME1)
+                    if (pcc.Game == MEGame.ME1)
                     {
                         {
                             if (prop.Value.IntValue > 0)
@@ -1488,7 +1488,7 @@ namespace ME3Explorer.SequenceObjects
                         pos += p2[i].raw.Length;
                 }
             }
-            else if (pcc.game == MEGame.ME3)
+            else if (pcc.Game == MEGame.ME3)
             {
                 try
                 {

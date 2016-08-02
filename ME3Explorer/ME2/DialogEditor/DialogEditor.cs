@@ -34,7 +34,7 @@ namespace ME2Explorer
             {
                 try
                 {
-                    pcc = new ME2Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME2Package(d.FileName);
                     Objs = new List<int>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "BioConversation")

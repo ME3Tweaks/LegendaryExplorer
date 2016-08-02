@@ -229,7 +229,7 @@ namespace ME3Explorer.Unreal
                 ME3Package importPCC;
                 try
                 {
-                    importPCC = new ME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
                 }
                 catch (Exception)
                 {
@@ -276,7 +276,7 @@ namespace ME3Explorer.Unreal
                 ME3Package importPCC;
                 try
                 {
-                    importPCC = new ME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
                 }
                 catch (Exception)
                 {
@@ -344,7 +344,7 @@ namespace ME3Explorer.Unreal
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    pcc = new ME3Package(files[i]);
+                    pcc = MEPackageHandler.OpenME3Package(files[i]);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     IExportEntry exportEntry;
                     for (int j = 0; j < Exports.Count; j++)
@@ -410,7 +410,7 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo();
             info.baseClass = pcc.Exports[index].ClassParent;
             info.exportIndex = index;
-            info.pccPath = new string(pcc.fileName.Skip(pcc.fileName.LastIndexOf("BIOGame") + 8).ToArray());
+            info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
             foreach (ME3ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"

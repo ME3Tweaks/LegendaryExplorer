@@ -787,7 +787,7 @@ namespace ME1Explorer.Unreal.Classes
                         break;
                 }
             pcc.Exports[MyIndex].Data = m.ToArray();
-            pcc.save(pcc.fileName);
+            pcc.save(pcc.FileName);
         }
     }
 }

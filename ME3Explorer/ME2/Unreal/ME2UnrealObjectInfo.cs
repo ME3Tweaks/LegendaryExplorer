@@ -207,7 +207,7 @@ namespace ME2Explorer.Unreal
 
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
-        //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
+        //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
             ME2Package pcc;
@@ -218,7 +218,7 @@ namespace ME2Explorer.Unreal
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    pcc = new ME2Package(files[i]);
+                    pcc = MEPackageHandler.OpenME2Package(files[i]);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     IExportEntry exportEntry;
                     for (int j = 0; j < Exports.Count; j++)

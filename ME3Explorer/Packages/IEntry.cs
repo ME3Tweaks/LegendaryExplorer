@@ -2,7 +2,7 @@
 {
     public interface IEntry
     {
-        byte[] header { get; set; }
+        byte[] header { get; }
         IMEPackage FileRef { get; }
         int idxLink { get; set; }
         int idxObjectName { get; set; }
@@ -38,5 +38,6 @@
         ulong ObjectFlags { get; set; }
 
         IExportEntry Clone();
+        void setHeader(byte[] v);
     }
 }

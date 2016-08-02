@@ -149,7 +149,7 @@ namespace ME1Explorer
 
             byte[] buff = m.ToArray();
             pcc.Exports[Index].Data = buff;
-            pcc.save(pcc.fileName); 
+            pcc.save(pcc.FileName); 
         }
 
         /// <summary>

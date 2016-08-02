@@ -65,7 +65,7 @@ namespace ME3Explorer.Meshplorer
         {
             try
             {
-                pcc = new ME3Package(path);
+                pcc = MEPackageHandler.OpenME3Package(path);
                 MeshplorerMode = 0;
                 CurrFile = path;
                 Materials = new List<int>();

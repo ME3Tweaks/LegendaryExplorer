@@ -30,8 +30,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.appendSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reconstructionSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -170,8 +169,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.appendSaveMenuItem,
-            this.reconstructionSaveMenuItem,
+            this.saveAsMenuItem,
             this.toolStripMenuItem1,
             this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -181,7 +179,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -190,36 +188,28 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
-            // appendSaveMenuItem
+            // saveAsMenuItem
             // 
-            this.appendSaveMenuItem.Name = "appendSaveMenuItem";
-            this.appendSaveMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.appendSaveMenuItem.Text = "Save As (append)";
-            this.appendSaveMenuItem.ToolTipText = "Save by appending changes to the end of the file";
-            this.appendSaveMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
-            // 
-            // reconstructionSaveMenuItem
-            // 
-            this.reconstructionSaveMenuItem.Name = "reconstructionSaveMenuItem";
-            this.reconstructionSaveMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.reconstructionSaveMenuItem.Text = "Save As (reconstruct)";
-            this.reconstructionSaveMenuItem.ToolTipText = "Save changes by reconstructing the PCC";
-            this.reconstructionSaveMenuItem.Click += new System.EventHandler(this.reconstructionSave_Click);
+            this.saveAsMenuItem.Name = "saveAsMenuItem";
+            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsMenuItem.Text = "Save As";
+            this.saveAsMenuItem.ToolTipText = "Save As";
+            this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -1210,7 +1200,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         public System.Windows.Forms.ToolStripMenuItem getDumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceWithBINToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reconstructionSaveMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editBlockingVolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modjobsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createBinaryReplaceJobFromFileToolStripMenuItem;
@@ -1275,7 +1264,7 @@
         private System.Windows.Forms.ContextMenuStrip nameContextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.ComponentModel.IContainer components;
-        private System.Windows.Forms.ToolStripMenuItem appendSaveMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
         private System.Windows.Forms.TabPage interpreterTab;
         private Interpreter interpreterControl;
         private System.Windows.Forms.ToolStrip toolStrip2;

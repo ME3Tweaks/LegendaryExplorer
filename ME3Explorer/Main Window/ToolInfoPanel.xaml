@@ -26,7 +26,7 @@
                     </ScrollViewer>
                 </StackPanel>
             </Grid>
-            <Image x:Name="scrollIndicator" Source="Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
+            <Image x:Name="scrollIndicator" Source="../Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
         </Grid>
     </Grid>
 </UserControl>

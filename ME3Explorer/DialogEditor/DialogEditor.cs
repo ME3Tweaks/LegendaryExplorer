@@ -38,7 +38,7 @@ namespace ME3Explorer.DialogEditor
         {
             try
             {
-                pcc = new ME3Package(fileName);
+                pcc = MEPackageHandler.OpenME3Package(fileName);
                 Objs = new List<int>();
                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                 for (int i = 0; i < Exports.Count; i++)

@@ -5,41 +5,25 @@ using System.Linq;
 using System.Text;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
-using KFreonLib.Debugging;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
 using System.Windows;
 
 namespace ME3Explorer.Packages
 {
-    public class ME3Package : IMEPackage
+    public class ME3Package : MEPackage, IMEPackage
     {
-        public MEGame game { get { return MEGame.ME3; } }
-        public string fileName { get; private set; }
+        public MEGame Game { get { return MEGame.ME3; } }
 
         static int headerSize = 0x8E;
-        private byte[] header = new byte[headerSize];
 
-        private uint magic { get { return BitConverter.ToUInt32(header, 0); } }
-        private ushort lowVers { get { return BitConverter.ToUInt16(header, 4); } }
-        private ushort highVers { get { return BitConverter.ToUInt16(header, 6); } }
-        private uint HeaderLength { get { return BitConverter.ToUInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(uint)); } }
-        private int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } // usually = 10
-        private uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
-
-        public bool isModified { get { return exports.Any(entry => entry.hasChanged == true); } }
-        public bool canReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
-        public bool bCompressed
-        {
-            get { return (flags & 0x02000000) != 0; }
-            private set
+        public bool IsModified {
+            get
             {
-                if (value) // sets the compressed flag if bCompressed set equal to true
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
-                else // else set to false
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags & ~0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                return exports.Any(entry => entry.hasChanged == true) || imports.Any(entry => entry.hasChanged == true || namesAdded > 0);
             }
         }
+        public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
 
         private int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
         private int NameCount
@@ -51,7 +35,7 @@ namespace ME3Explorer.Packages
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 68, sizeof(int));
             }
         }
-        private int NameOffset
+        public int NameOffset
         {
             get { return BitConverter.ToInt32(header, idxOffsets + 4); }
             set
@@ -69,28 +53,15 @@ namespace ME3Explorer.Packages
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
             }
         }
-        private int ExportOffset { get { Debug.WriteLine("idxOffsets: " + idxOffsets + ", offset for export offset: " + (idxOffsets + 12)); return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
+        private int ExportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
         public int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
-        private uint FreeZoneStart { get { return BitConverter.ToUInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
-        private uint FreeZoneEnd { get { return BitConverter.ToUInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
-
-        private int expInfoEndOffset { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int)); } }
-        private int expDataBegOffset
-        {
-            get { return BitConverter.ToInt32(header, idxOffsets + 28); }
-            set
-            {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(int));
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
-            }
-        }
-
-        private List<string> names;
+        private int FreeZoneStart { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
+        private int FreeZoneEnd { get { return BitConverter.ToInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
+        
         private List<ME3ImportEntry> imports;
         private List<ME3ExportEntry> exports;
 
-        public IReadOnlyList<string> Names { get { return names; } }
         public IReadOnlyList<IExportEntry> Exports
         {
             get
@@ -107,30 +78,35 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private List<Block> blockList = null;
-        protected class Block
+        static bool isInitialized;
+        public static Func<string, ME3Package> Initialize()
         {
-            public int uncOffset;
-            public int uncSize;
-            public int cprOffset;
-            public int cprSize;
-            public bool bRead = false;
+            if (isInitialized)
+            {
+                throw new Exception(nameof(ME3Package) + " can only be initialized once");
+            }
+            else
+            {
+                isInitialized = true;
+                return f => new ME3Package(f);
+            }
         }
 
         /// <summary>
-        ///     PCCObject class constructor. It also load namelist, importlist and exportinfo (not exportdata) from pcc file
+        ///     PCCObject class constructor. It also loads namelist, importlist, exportinfo, and exportdata from pcc file
         /// </summary>
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
-        public ME3Package(string pccFilePath)
+        private ME3Package(string pccFilePath)
         {
-            fileName = Path.GetFullPath(pccFilePath);
-            using (FileStream pccStream = File.OpenRead(fileName))
+            FileName = Path.GetFullPath(pccFilePath);
+            lastSaved = null;
+            MemoryStream listsStream;
+            names = new List<string>();
+            imports = new List<ME3ImportEntry>();
+            exports = new List<ME3ExportEntry>();
+            using (FileStream pccStream = File.OpenRead(FileName))
             {
-                names = new List<string>();
-                imports = new List<ME3ImportEntry>();
-                exports = new List<ME3ExportEntry>();
-
-                pccStream.Read(header, 0, header.Length);
+                header = pccStream.ReadBytes(headerSize);
                 if (magic != ZBlock.magic &&
                     magic.Swap() != ZBlock.magic)
                 {
@@ -141,156 +117,69 @@ namespace ME3Explorer.Packages
                 {
                     throw new FormatException("unsupported version");
                 }
-
-                Stream listsStream;
-
-                if (bCompressed)
-                {
-                    // seeks the blocks info position
-                    pccStream.Seek(idxOffsets + 60, SeekOrigin.Begin);
-                    int generator = pccStream.ReadValueS32();
-                    pccStream.Seek((generator * 12) + 20, SeekOrigin.Current);
-
-                    int blockCount = pccStream.ReadValueS32();
-                    blockList = new List<Block>();
-
-                    // creating the Block list
-                    for (int i = 0; i < blockCount; i++)
-                    {
-                        Block temp = new Block();
-                        temp.uncOffset = pccStream.ReadValueS32();
-                        temp.uncSize = pccStream.ReadValueS32();
-                        temp.cprOffset = pccStream.ReadValueS32();
-                        temp.cprSize = pccStream.ReadValueS32();
-                        blockList.Add(temp);
-                    }
-
-                    // correcting the header, in case there's need to be saved
-                    Buffer.BlockCopy(BitConverter.GetBytes(0), 0, header, header.Length - 12, sizeof(int));
-                    pccStream.Read(header, header.Length - 8, 8);
-                    
-                    // decompress first block that holds infos about names, imports and exports
-                    pccStream.Seek(blockList[0].cprOffset, SeekOrigin.Begin);
-                    byte[] uncBlock = ZBlock.Decompress(pccStream, blockList[0].cprSize);
-
-                    // write decompressed block inside temporary stream
-                    listsStream = new MemoryStream();
-                    listsStream.Seek(blockList[0].uncOffset, SeekOrigin.Begin);
-                    listsStream.Write(uncBlock, 0, uncBlock.Length);
-                }
-                else
-                {
-                    listsStream = pccStream;
-                }
                 
-                // fill names list
-                listsStream.Seek(NameOffset, SeekOrigin.Begin);
-                for (int i = 0; i < NameCount; i++)
+                if (IsCompressed)
                 {
-                    long currOffset = listsStream.Position;
-                    int strLength = listsStream.ReadValueS32();
-                    string str = listsStream.ReadString(strLength * -2, true, Encoding.Unicode);
-                    //Debug.WriteLine("Read name "+i+" "+str+" length: " + strLength+", offset: "+currOffset);
-                    names.Add(str);
-                }
-                //Debug.WriteLine("Names done. Current offset: "+listsStream.Position);
-                //Debug.WriteLine("Import Offset: " + ImportOffset);
+                    listsStream = CompressionHelper.DecompressME3(pccStream);
 
-                // fill import list
-                //Console.Out.WriteLine("IMPORT OFFSET: " + ImportOffset);
-                listsStream.Seek(ImportOffset, SeekOrigin.Begin);
-                byte[] buffer = new byte[ImportEntry.byteSize];
-                for (int i = 0; i < ImportCount; i++)
-                {
-
-                    long offset = listsStream.Position;
-                    ME3ImportEntry e = new ME3ImportEntry(this, listsStream);
-                    imports.Add(e);
-                    //Debug.WriteLine("Read import " + i + " " + e.ObjectName + ", offset: " + offset);
-                }
-
-                // fill export list (only the headers, not the data)
-                listsStream.Seek(ExportOffset, SeekOrigin.Begin);
-                //Console.Out.WriteLine("Export OFFSET: " + ImportOffset);
-                for (int i = 0; i < ExportCount; i++)
-                {
-                    uint expInfoOffset = (uint)listsStream.Position;
-
-                    listsStream.Seek(44, SeekOrigin.Current);
-                    int count = listsStream.ReadValueS32();
-                    listsStream.Seek(-48, SeekOrigin.Current);
-
-                    int expInfoSize = 68 + (count * 4);
-                    buffer = new byte[expInfoSize];
-
-                    listsStream.Read(buffer, 0, buffer.Length);
-                    ME3ExportEntry e = new ME3ExportEntry(this, buffer, expInfoOffset);
-                    //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize); 
-                    exports.Add(e);
-                }
-                //load in all data
-                byte[] buff;
-                foreach (ME3ExportEntry e in exports)
-                {
-                    buff = e.Data;
-                }
-            }
-            Debug.WriteLine(getMetadataString());
-        }
-
-        /// <summary>
-        ///     given export data offset, the function recovers it from the file.
-        /// </summary>
-        /// <param name="offset">offset position of desired export data</param>
-        public byte[] getData(int offset, IExportEntry exp = null)
-        {
-            byte[] buffer;
-            if (bCompressed)
-            {
-                Block selected = blockList.Find(block => block.uncOffset <= offset && block.uncOffset + block.uncSize > offset);
-                byte[] uncBlock;
-
-                using (FileStream pccStream = File.OpenRead(fileName))
-                {
-                    pccStream.Seek(selected.cprOffset, SeekOrigin.Begin);
-                    uncBlock = ZBlock.Decompress(pccStream, selected.cprSize);
-
-                    // the selected block has been read
-                    selected.bRead = true;
-                }
-
-                // fill all the exports data extracted from the uncBlock
-                foreach (IExportEntry expInfo in exports)
-                {
-                    if (expInfo.DataOffset >= selected.uncOffset && expInfo.DataOffset + expInfo.DataSize <= selected.uncOffset + selected.uncSize)
-                    {
-                        buffer = new byte[expInfo.DataSize];
-                        Buffer.BlockCopy(uncBlock, expInfo.DataOffset - selected.uncOffset, buffer, 0, expInfo.DataSize);
-                        return buffer;
-                    }
-                }
-            }
-            else
-            {
-                IExportEntry expSelect;
-                if (exp == null)
-                {
-                    int expIndex = exports.FindIndex(export => export.DataOffset <= offset && export.DataOffset + export.DataSize > offset);
-                    expSelect = exports[expIndex];
+                    //correcting the header
+                    listsStream.Seek(0, SeekOrigin.Begin);
+                    listsStream.Read(header, 0, header.Length);
                 }
                 else
                 {
-                    expSelect = exp;
-                }
-                using (FileStream pccStream = File.OpenRead(fileName))
-                {
-                    buffer = new byte[expSelect.DataSize];
-                    pccStream.Seek(expSelect.DataOffset, SeekOrigin.Begin);
-                    pccStream.Read(buffer, 0, buffer.Length);
-                    return buffer;
+                    listsStream = new MemoryStream();
+                    pccStream.Seek(0, SeekOrigin.Begin);
+                    pccStream.CopyTo(listsStream);
                 }
             }
-            throw new Exception("Export not found!");
+
+            // fill names list
+            listsStream.Seek(NameOffset, SeekOrigin.Begin);
+            for (int i = 0; i < NameCount; i++)
+            {
+                long currOffset = listsStream.Position;
+                int strLength = listsStream.ReadValueS32();
+                string str = listsStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                names.Add(str);
+            }
+
+            // fill import list
+            listsStream.Seek(ImportOffset, SeekOrigin.Begin);
+            byte[] buffer = new byte[ImportEntry.byteSize];
+            for (int i = 0; i < ImportCount; i++)
+            {
+
+                long offset = listsStream.Position;
+                ME3ImportEntry e = new ME3ImportEntry(this, listsStream);
+                imports.Add(e);
+            }
+
+            // fill export list
+            listsStream.Seek(ExportOffset, SeekOrigin.Begin);
+            for (int i = 0; i < ExportCount; i++)
+            {
+                uint expInfoOffset = (uint)listsStream.Position;
+
+                listsStream.Seek(44, SeekOrigin.Current);
+                int count = listsStream.ReadValueS32();
+                listsStream.Seek(-48, SeekOrigin.Current);
+
+                int expInfoSize = 68 + (count * 4);
+                buffer = new byte[expInfoSize];
+
+                listsStream.Read(buffer, 0, buffer.Length);
+                ME3ExportEntry e = new ME3ExportEntry(this, buffer, expInfoOffset);
+                long headerEnd = listsStream.Position;
+
+                buffer = new byte[e.DataSize];
+                listsStream.Seek(e.DataOffset, SeekOrigin.Begin);
+                listsStream.Read(buffer, 0, buffer.Length);
+                e.Data = buffer;
+                e.hasChanged = false;
+                exports.Add(e);
+                listsStream.Seek(headerEnd, SeekOrigin.Begin);
+            }
         }
 
         /// <summary>
@@ -298,7 +187,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public void save()
         {
-            save(fileName);
+            save(FileName);
         }
 
         /// <summary>
@@ -307,13 +196,13 @@ namespace ME3Explorer.Packages
         /// <param name="path">full path + file name.</param>
         public void save(string path)
         {
-            if (canReconstruct)
+            if (CanReconstruct)
             {
                 saveByReconstructing(path);
             }
             else
             {
-                appendSave(path, true);
+                appendSave(path);
             }
         }
 
@@ -335,7 +224,7 @@ namespace ME3Explorer.Packages
         {
             try
             {
-                this.bCompressed = false;
+                this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
                 //name table
@@ -372,10 +261,10 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.header);
                 }
                 //freezone
-                int FreeZoneSize = (int)FreeZoneEnd - (int)FreeZoneStart;
-                FreeZoneStart = (uint)m.Position;
+                int FreeZoneSize = FreeZoneEnd - FreeZoneStart;
+                FreeZoneStart = (int)m.Position;
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
-                FreeZoneEnd = HeaderLength = (uint)m.Position;
+                FreeZoneEnd = expDataBegOffset = (int)m.Position;
                 //export data
                 for (int i = 0; i < exports.Count; i++)
                 {
@@ -399,8 +288,9 @@ namespace ME3Explorer.Packages
                 }
                 else
                 {
-                    File.WriteAllBytes(path, m.ToArray()); 
+                    File.WriteAllBytes(path, m.ToArray());
                 }
+                AfterSave();
             }
             catch (Exception ex)
             {
@@ -411,74 +301,44 @@ namespace ME3Explorer.Packages
         /// <summary>
         /// This method is an alternate way of saving PCCs
         /// Instead of reconstructing the PCC from the data taken, it instead copies across the existing
-        /// data, appends changed exports, updates the export list, changes the namelist location and updates the
-        /// value in the header
+        /// data, appends the name list and import list, appends changed and new exports, and then appends the export list.
+        /// Changed exports with the same datasize or smaller are updaed in place.
         /// </summary>
         /// <param name="newFileName">The filename to write to</param>
-        /// <param name="attemptOverwrite">Do you wish to attempt to overwrite the existing export</param>
-        public string appendSave(string newFileName, bool attemptOverwrite, int HeaderNameOffset = 34)
+        public void appendSave(string newFileName)
         {
-            string rtValues = "";
-            string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            IEnumerable<ME3ExportEntry> replaceExports;
+            IEnumerable<ME3ExportEntry> appendExports;
 
-
-            //Get info
-            expInfoEndOffset = ExportOffset + exports.Sum(export => export.header.Length);
-            if (expDataBegOffset < expInfoEndOffset)
-                expDataBegOffset = expInfoEndOffset;
-            //List<ExportEntry> unchangedexports = exports.Where(export => !export.hasChanged || (export.hasChanged && export.Data.Length <= export.DataSize)).ToList();
-            List<ME3ExportEntry> unchangedexports = exports.Where(export => !export.hasChanged).ToList();
-            List<ME3ExportEntry> changedexports;
-            List<ME3ExportEntry> replaceexports = null;
-            if (!attemptOverwrite)
+            int lastDataOffset;
+            int max;
+            if (IsAppend)
             {
-                //If not trying to overwrite, then select all exports that have been changed
-                changedexports = exports.Where(export => export.hasChanged).ToList();
-                //MessageBox.Show("No changed exports = " + changedexports.Count);
-                //throw new NullReferenceException();
+                replaceExports = exports.Where(export => export.hasChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
+                appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.hasChanged && export.DataSize > export.OriginalDataSize));
+                max = exports.Where(exp => exp.DataOffset < NameOffset).Max(e => e.DataOffset);
             }
             else
             {
-                //If we are trying to overwrite, then split up the exports that have been changed that can and can't overwrite the originals
-                changedexports = exports.Where(export => export.hasChanged && export.Data.Length > export.DataSize).ToList();
-                replaceexports = exports.Where(export => export.hasChanged && export.Data.Length <= export.DataSize).ToList();
+                IEnumerable<ME3ExportEntry> changedExports;
+                changedExports = exports.Where(export => export.hasChanged);
+                replaceExports = changedExports.Where(export => export.DataSize <= export.OriginalDataSize);
+                appendExports = changedExports.Except(replaceExports);
+                max = exports.Max(maxExport => maxExport.DataOffset);
             }
-            int max = exports.Max(maxExport => maxExport.DataOffset);
+
             ME3ExportEntry lastExport = exports.Find(export => export.DataOffset == max);
-            int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
-            //byte[] oldName;
+            lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
 
-            if (!attemptOverwrite)
+            byte[] oldPCC = new byte[lastDataOffset];
+            if (IsCompressed)
             {
-                int offset = ExportOffset;
-                foreach (ME3ExportEntry export in exports)
-                {
-                    if (!export.hasChanged)
-                    {
-                        offset += export.header.Length;
-                    }
-                    else
-                        break;
-                }
-                rtValues += offset + " ";
-                using (FileStream stream = new FileStream(loc + "\\exec\\infoCache.bin", FileMode.Append))
-                {
-                    stream.Seek(0, SeekOrigin.End);
-                    rtValues += stream.Position + " ";
-                    //throw new FileNotFoundException();
-                    stream.Write(changedexports[0].header, 32, 8);
-                }
-            }
-
-
-            byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
-            if (this.bCompressed)
-            {
-                oldPCC = CompressionHelper.Decompress(fileName).Take(lastDataOffset).ToArray();
+                oldPCC = CompressionHelper.Decompress(FileName).Take(lastDataOffset).ToArray();
+                IsCompressed = false;
             }
             else
             {
-                using (FileStream oldPccStream = new FileStream(this.fileName, FileMode.Open))
+                using (FileStream oldPccStream = new FileStream(this.FileName, FileMode.Open))
                 {
                     //Read the original data up to the last export
                     oldPccStream.Read(oldPCC, 0, lastDataOffset);
@@ -490,91 +350,71 @@ namespace ME3Explorer.Packages
                 newPCCStream.Seek(0, SeekOrigin.Begin);
                 //Write the original file up til the last original export (note that this leaves in all the original exports)
                 newPCCStream.Write(oldPCC, 0, lastDataOffset);
-                if (!attemptOverwrite)
-                {
-                    //If we're not trying to overwrite then just append all the changed exports
-                    foreach (ME3ExportEntry export in changedexports)
-                    {
-                        export.DataOffset = (int)newPCCStream.Position;
-                        export.DataSize = export.Data.Length;
-                        newPCCStream.Write(export.Data, 0, export.Data.Length);
-                    }
-                }
-                else
-                {
-                    //If we are then move to each offset and overwrite the data with the new exports
-                    foreach (ME3ExportEntry export in replaceexports)
-                    {
-                        //newPCCStream.Position = export.DataOffset;
-                        newPCCStream.Seek(export.DataOffset, SeekOrigin.Begin);
-                        export.DataSize = export.Data.Length;
-                        newPCCStream.Write(export.Data, 0, export.Data.Length);
-                    }
-                    //Then move to the end and append the new data
-                    //newPCCStream.Position = lastDataOffset;
-                    newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
 
-                    foreach (ME3ExportEntry export in changedexports)
-                    {
-                        export.DataOffset = (int)newPCCStream.Position;
-                        export.DataSize = export.Data.Length;
-                        newPCCStream.Write(export.Data, 0, export.Data.Length);
-                    }
+                //write the in-place export updates
+                foreach (ME3ExportEntry export in replaceExports)
+                {
+                    newPCCStream.Seek(export.DataOffset, SeekOrigin.Begin);
+                    export.DataSize = export.Data.Length;
+                    newPCCStream.WriteBytes(export.Data);
                 }
+
+                newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
                 //Set the new nameoffset and namecounts
                 NameOffset = (int)newPCCStream.Position;
                 NameCount = names.Count;
-                //Then write out the namelist
+                //Write out the namelist
                 foreach (string name in names)
                 {
                     newPCCStream.WriteValueS32(-(name.Length + 1));
                     newPCCStream.WriteString(name + "\0", (uint)(name.Length + 1) * 2, Encoding.Unicode);
                 }
-                //Move to the name info position in the header - not a strong piece of code, but it's working so far
-                //newPCCStream.Position = 34;
-                newPCCStream.Seek(HeaderNameOffset, SeekOrigin.Begin);
-                //And write the new info
-                byte[] nameHeader = new byte[8];
-                byte[] nameCount = BitConverter.GetBytes(NameCount);
-                byte[] nameOff = BitConverter.GetBytes(NameOffset);
-                for (int i = 0; i < 4; i++)
-                    nameHeader[i] = nameCount[i];
-                for (int i = 0; i < 4; i++)
-                    nameHeader[i + 4] = nameOff[i];
-                newPCCStream.Write(nameHeader, 0, 8);
 
-                //update the import list
-                newPCCStream.Seek(ImportOffset, SeekOrigin.Begin);
+                //Write the import list
+                ImportOffset = (int)newPCCStream.Position;
+                ImportCount = imports.Count;
                 foreach (ME3ImportEntry import in imports)
                 {
-                    newPCCStream.Write(import.header, 0, import.header.Length);
+                    newPCCStream.WriteBytes(import.header);
                 }
 
-                //Finally, update the export list
-                newPCCStream.Seek(ExportOffset, SeekOrigin.Begin);
+                //Append the new data
+                foreach (ME3ExportEntry export in appendExports)
+                {
+                    export.DataOffset = (int)newPCCStream.Position;
+                    export.DataSize = export.Data.Length;
+                    newPCCStream.WriteBytes(export.Data);
+                }
+
+                //Write the export list
+                ExportOffset = (int)newPCCStream.Position;
+                ExportCount = exports.Count;
                 foreach (ME3ExportEntry export in exports)
                 {
-                    newPCCStream.Write(export.header, 0, export.header.Length);
+                    newPCCStream.WriteBytes(export.header);
                 }
 
-                if (!attemptOverwrite)
-                {
-                    using (FileStream stream = new FileStream(loc + "\\exec\\infoCache.bin", FileMode.Append))
-                    {
-                        stream.Seek(0, SeekOrigin.End);
-                        rtValues += stream.Position + " ";
-                        stream.Write(changedexports[0].header, 32, 8);
-                    }
-                }
+                IsAppend = true;
+
+                //write the updated header
+                newPCCStream.Seek(0, SeekOrigin.Begin);
+                newPCCStream.WriteBytes(header);
             }
-            return rtValues;
+            AfterSave();
         }
 
-        public string getNameEntry(int index)
+        private void AfterSave()
         {
-            if (!isName(index))
-                return "";
-            return names[index];
+            lastSaved = DateTime.Now;
+            foreach (var export in exports)
+            {
+                export.hasChanged = false;
+            }
+            foreach (var import in imports)
+            {
+                import.hasChanged = false;
+            }
+            namesAdded = 0;
         }
 
         public string getObjectName(int index)
@@ -626,10 +466,6 @@ namespace ME3Explorer.Packages
             return null;
         }
 
-        public bool isName(int index)
-        {
-            return (index >= 0 && index < names.Count);
-        }
         public bool isImport(int index)
         {
             return (index >= 0 && index < imports.Count);
@@ -637,21 +473,6 @@ namespace ME3Explorer.Packages
         public bool isExport(int index)
         {
             return (index >= 0 && index < exports.Count);
-        }
-
-        public int FindNameOrAdd(string name)
-        {
-            for (int i = 0; i < names.Count; i++)
-                if (names[i] == name)
-                    return i;
-            names.Add(name);
-            return names.Count - 1;
-        }
-
-        public void addName(string name)
-        {
-            if (!names.Contains(name))
-                names.Add(name);
         }
 
         public void addImport(IImportEntry importEntry)
@@ -668,7 +489,7 @@ namespace ME3Explorer.Packages
 
         public void addImport(ME3ImportEntry importEntry)
         {
-            if (importEntry.fileRef3 != this)
+            if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
 
             imports.Add(importEntry);
@@ -689,61 +510,13 @@ namespace ME3Explorer.Packages
 
         public void addExport(ME3ExportEntry exportEntry)
         {
-            if (exportEntry.fileRef3 != this)
+            if (exportEntry.FileRef != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
 
             exportEntry.hasChanged = true;
 
-            //changing data offset in order to append it at the end of the file
-            int maxOffset = exports.Max(entry => entry.DataOffset);
-            ME3ExportEntry lastExport = exports.Find(export => export.DataOffset == maxOffset);
-            int lastOffset = lastExport.DataOffset + lastExport.Data.Length;
-            exportEntry.DataOffset = lastOffset;
-
             exports.Add(exportEntry);
             ExportCount = exports.Count;
-        }
-
-        /// <summary>
-        /// Checks whether a name exists in the PCC and returns its index
-        /// If it doesn't exist returns -1
-        /// </summary>
-        /// <param name="nameToFind">The name of the string to find</param>
-        /// <returns></returns>
-        public int findName(string nameToFind)
-        {
-            for (int i = 0; i < names.Count; i++)
-            {
-                if (string.Compare(nameToFind, getNameEntry(i)) == 0)
-                    return i;
-            }
-            return -1;
-        }
-
-        public string getMetadataString()
-        {
-            string str = "PCC File Metadata";
-            str += "\nNames Offset: " + this.NameOffset;
-            str += "\nImports Offset: " + this.ImportOffset;
-            str += "\nExport Offset: " + this.ExportOffset;
-            return str;
-
-        }
-
-        public bool canClone()
-        {
-            if (!canReconstruct)
-            {
-                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Cloning will cause a crash when ME3 attempts to load this file.\n" +
-                    "Do you want to visit a forum thread with more information and a possible solution?",
-                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButton.YesNo, MessageBoxImage.Stop);
-                if (res == MessageBoxResult.Yes)
-                {
-                    Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
-                }
-                return false;
-            }
-            return true;
         }
 
         public IExportEntry getExport(int index)
@@ -755,7 +528,7 @@ namespace ME3Explorer.Packages
         {
             return imports[index];
         }
-
+        
         public void setNames(List<string> list)
         {
             names = list;

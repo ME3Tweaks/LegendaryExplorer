@@ -57,7 +57,7 @@ namespace ME3Explorer.Meshplorer
                 DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    ME3Package pcc = new ME3Package(file);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                     DBEntry ent = new DBEntry();
                     ent.filename = Path.GetFileName(file);
                     ent.Objects = new List<ObjInf>();

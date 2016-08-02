@@ -6,6 +6,7 @@ using ManagedLZO;
 using System.IO;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
+using System.Threading.Tasks;
 
 namespace ME3Explorer.Packages
 {
@@ -49,7 +50,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="raw">pcc file passed in stream format</param>
         /// <returns>a decompressed stream.</returns>
-        public static MemoryStream DecompressPCC(Stream raw)
+        public static MemoryStream DecompressME1orME2(Stream raw)
         {
             raw.Seek(4, SeekOrigin.Begin);
             ushort versionLo = raw.ReadValueU16();
@@ -162,11 +163,11 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="rawData">pcc file passed in byte array format.</param>
         /// <returns>a decompressed array of bytes.</returns>
-        public static byte[] Decompress(byte[] rawData)
+        public static byte[] DecompressME3(byte[] rawData)
         {
             using (MemoryStream input = new MemoryStream(rawData))
             {
-                return Decompress(input);
+                return DecompressME3(input).ToArray();
             }
         }
 
@@ -186,12 +187,12 @@ namespace ME3Explorer.Packages
                 //ME3
                 if (versionLo == 684 && versionHi == 194)
                 {
-                    return Decompress(input);
+                    return DecompressME3(input).ToArray();
                 }
                 //ME2 || ME1
                 else if (versionLo == 512 && versionHi == 130 || versionLo == 491 && versionHi == 1008)
                 {
-                    return CompressionHelper.DecompressPCC(input).ToArray();
+                    return DecompressME1orME2(input).ToArray();
                 }
                 else
                 {
@@ -205,7 +206,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="input">pcc file passed in stream format</param>
         /// <returns>a decompressed array of bytes</returns>
-        public static byte[] Decompress(Stream input)
+        public static MemoryStream DecompressME3(Stream input)
         {
             input.Seek(0, SeekOrigin.Begin);
             var magic = input.ReadValueU32(Endian.Little);
@@ -273,45 +274,50 @@ namespace ME3Explorer.Packages
             byte[] buff;
 
             input.Seek(0, SeekOrigin.Begin);
-            using (MemoryStream output = new MemoryStream())
+            MemoryStream output = new MemoryStream();
+            output.Seek(0, SeekOrigin.Begin);
+
+            output.WriteFromStream(input, headerSize);
+            output.WriteValueU32(0, endian); // block count
+
+            input.Seek(afterBlockTableOffset, SeekOrigin.Begin);
+            output.WriteFromStream(input, 8);
+
+            //check if has extra name list (don't know it's usage...)
+            if ((packageFlags & 0x10000000) != 0)
             {
-                output.Seek(0, SeekOrigin.Begin);
-
-                output.WriteFromStream(input, headerSize);
-                output.WriteValueU32(0, endian); // block count
-
-                input.Seek(afterBlockTableOffset, SeekOrigin.Begin);
-                output.WriteFromStream(input, 8);
-
-                //check if has extra name list (don't know it's usage...)
-                if ((packageFlags & 0x10000000) != 0)
-                {
-                    long curPos = output.Position;
-                    output.WriteFromStream(input, nameOffset - curPos);
-                }
-
-                for (int i = 0; i < blockCount; i++)
-                {
-                    input.Seek(headBlockOff, SeekOrigin.Begin);
-                    var uncompressedOffset = input.ReadValueU32(endian);
-                    var uncompressedSize = input.ReadValueU32(endian);
-                    var compressedOffset = input.ReadValueU32(endian);
-                    var compressedSize = input.ReadValueU32(endian);
-                    headBlockOff = (int)input.Position;
-
-                    buff = new byte[compressedSize];
-                    input.Seek(compressedOffset, SeekOrigin.Begin);
-                    input.Read(buff, 0, buff.Length);
-
-                    byte[] temp = ZBlock.Decompress(buff, 0, buff.Length);
-                    output.Seek(uncompressedOffset, SeekOrigin.Begin);
-                    output.Write(temp, 0, temp.Length);
-                }
-
-                output.Seek(packageFlagsOffset, SeekOrigin.Begin);
-                output.WriteValueU32(packageFlags & ~0x02000000u, endian);
-                return output.ToArray();
+                long curPos = output.Position;
+                output.WriteFromStream(input, nameOffset - curPos);
             }
+
+            //decompress blocks in parallel
+            Task<byte[]>[] tasks = new Task<byte[]>[blockCount];
+            uint[] uncompressedOffsets = new uint[blockCount];
+            for (int i = 0; i < blockCount; i++)
+            {
+                input.Seek(headBlockOff, SeekOrigin.Begin);
+                uncompressedOffsets[i] = input.ReadValueU32(endian);
+                var uncompressedSize = input.ReadValueU32(endian);
+                var compressedOffset = input.ReadValueU32(endian);
+                var compressedSize = input.ReadValueU32(endian);
+                headBlockOff = (int)input.Position;
+
+                buff = new byte[compressedSize];
+                input.Seek(compressedOffset, SeekOrigin.Begin);
+                input.Read(buff, 0, buff.Length);
+
+                tasks[i] = ZBlock.DecompressAsync(buff);
+            }
+            Task.WaitAll(tasks);
+            for (int i = 0; i < blockCount; i++)
+            {
+                output.Seek(uncompressedOffsets[i], SeekOrigin.Begin);
+                output.WriteBytes(tasks[i].Result);
+            }
+
+            output.Seek(packageFlagsOffset, SeekOrigin.Begin);
+            output.WriteValueU32(packageFlags & ~0x02000000u, endian);
+            return output;
         }
         #endregion
 

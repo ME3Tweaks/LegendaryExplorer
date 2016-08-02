@@ -41,7 +41,7 @@ namespace ME3Explorer.GUIDCacheEditor
             BitConverter.IsLittleEndian = true;
             try
             {
-                pcc = new ME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
+                pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
                 ReadGUIDs(pcc.Exports[0]);
                 RefreshLists();
             }
@@ -168,7 +168,7 @@ namespace ME3Explorer.GUIDCacheEditor
                     m.WriteByte(b);
             }
             pcc.Exports[0].Data = m.ToArray();
-            pcc.appendSave(pcc.fileName, true, 30); //weird header!
+            pcc.appendSave(pcc.FileName);
             MessageBox.Show("Done.");
             RefreshLists();
         }

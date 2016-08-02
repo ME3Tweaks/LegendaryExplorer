@@ -39,7 +39,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             try
             {
-                pcc = new ME3Package(s);
+                pcc = MEPackageHandler.OpenME3Package(s);
                 AT = new List<AnimTree>();
                 AS = new List<AnimSet>();
                 for (int i = 0; i < pcc.ExportCount; i++)
@@ -82,7 +82,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 try
                 {
-                    ME3Package _pcc = new ME3Package(file);
+                    IMEPackage _pcc = MEPackageHandler.OpenMEPackage(file);
                     DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
                     bool found = false;
                     IReadOnlyList<IExportEntry> Exports = _pcc.Exports;

@@ -33,7 +33,7 @@ namespace ME3Explorer.WwiseBankEditor
             {
                 try
                 {
-                    pcc = new ME3Package(d.FileName);
+                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
                     objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)

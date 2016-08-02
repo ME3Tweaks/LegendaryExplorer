@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
 namespace ME3Explorer
 {
-
     public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)
@@ -119,6 +122,14 @@ namespace ME3Explorer
         /// <param name="source">data to write to dest</param>
         public static void OverwriteRange<T>(this T[] dest, int offset, T[] source)
         {
+            if (offset < 0)
+            {
+                offset = dest.Length + offset;
+                if (offset < 0)
+                {
+                    throw new IndexOutOfRangeException("Attempt to write before the beginning of the array.");
+                }
+            }
             if (offset + source.Length > dest.Length)
             {
                 throw new IndexOutOfRangeException("Attempt to write past the end of the array.");
@@ -242,6 +253,51 @@ namespace ME3Explorer
         {
             box.AppendText(text + Environment.NewLine);
             box.ScrollToEnd();
+        }
+
+        public static BitmapImage ToBitmapImage(this System.Drawing.Bitmap bitmap)
+        {
+            MemoryStream memory = new MemoryStream();
+            bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+            memory.Position = 0;
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memory;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+            return bitmapImage;
+        }
+    }
+
+    public static class ExternalExtensions
+    {
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        static extern bool IsIconic(IntPtr hwnd);
+        [DllImport("user32.dll")]
+        static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
+        
+        public static void BringToFront(this Window window)
+        {
+            WindowInteropHelper helper = new WindowInteropHelper(window);
+            if (IsIconic(helper.Handle))
+            {
+                //SW_RESTORE = 9;
+                ShowWindowAsync(helper.Handle, 9);
+            }
+            SetForegroundWindow(helper.Handle);
+        }
+
+        public static void BringToFront(this System.Windows.Forms.Form form)
+        {
+            if (IsIconic(form.Handle))
+            {
+                //SW_RESTORE = 9;
+                ShowWindowAsync(form.Handle, 9);
+            }
+            SetForegroundWindow(form.Handle);
         }
     }
 

@@ -40,13 +40,6 @@ namespace ME3Explorer
             }
         }
 
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll")]
-        static extern bool IsIconic(IntPtr hwnd);
-        [DllImport("user32.dll")]
-        static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
-
         //
         public int SignalExternalCommandLineArgs(IList<string> args)
         {
@@ -54,13 +47,7 @@ namespace ME3Explorer
             if (!HandleCommandLineArgs(args, out exitCode))
             {
                 //if not called with command line arguments, bring window to the fore
-                WindowInteropHelper helper = new WindowInteropHelper(MainWindow);
-                if (IsIconic(helper.Handle))
-                {
-                    //SW_RESTORE = 9;
-                    ShowWindowAsync(helper.Handle, 9);
-                }
-                SetForegroundWindow(helper.Handle);
+                MainWindow.BringToFront();
             }
             return exitCode;
         }

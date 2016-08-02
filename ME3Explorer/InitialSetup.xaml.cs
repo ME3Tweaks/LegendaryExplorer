@@ -23,7 +23,27 @@ namespace ME3Explorer
     /// </summary>
     public partial class InitialSetup : Window
     {
-        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>();
+        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>()
+        {
+            ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
+            ["DLC_EXP_Pack003"] = "Citadel",
+            ["DLC_EXP_Pack003_Base"] = "Citadel Base",
+            ["DLC_OnlinePassHidCE"] = "Collector's Edition Bonus Content",
+            ["DLC_CON_END"] = "Extended Cut",
+            ["DLC_HEN_PR"] = "From Ashes",
+            ["DLC_CON_GUN01"] = "Firefight Pack",
+            ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
+            ["DLC_EXP_Pack001"] = "Leviathan",
+            ["DLC_CON_DH1"] = "Mass Effect: Genesis 2",
+            ["DLC_EXP_Pack002"] = "Omega",
+            ["DLC_CON_MP3"] = "Earth",
+            ["DLC_CON_MP2"] = "Rebellion",
+            ["DLC_CON_MP5"] = "Reckoning",
+            ["DLC_CON_MP1"] = "Resurgence",
+            ["DLC_CON_MP4"] = "Retaliation",
+            ["DLC_UPD_Patch01"] = "Patch01",
+            ["DLC_UPD_Patch02"] = "Patch02"
+        };
 
         List<DLCPackage> sfarsToUnpack = new List<DLCPackage>();
         double totalUncompressedSize;
@@ -37,25 +57,6 @@ namespace ME3Explorer
             me1PathBox.Text = ME1Directory.gamePath;
             me2PathBox.Text = ME2Directory.gamePath;
             me3PathBox.Text = ME3Directory.gamePath;
-
-            prettyDLCNames.Add("DLC_CON_APP01", "Alternate Appearance Pack 1");
-            prettyDLCNames.Add("DLC_EXP_Pack003", "Citadel");
-            prettyDLCNames.Add("DLC_EXP_Pack003_Base", "Citadel Base");
-            prettyDLCNames.Add("DLC_OnlinePassHidCE", "Collector's Edition Bonus Content");
-            prettyDLCNames.Add("DLC_CON_END", "Extended Cut");
-            prettyDLCNames.Add("DLC_HEN_PR", "From Ashes");
-            prettyDLCNames.Add("DLC_CON_GUN01", "Firefight Pack");
-            prettyDLCNames.Add("DLC_CON_GUN02", "Groundside Resistance Pack");
-            prettyDLCNames.Add("DLC_EXP_Pack001", "Leviathan");
-            prettyDLCNames.Add("DLC_CON_DH1", "Mass Effect: Genesis 2");
-            prettyDLCNames.Add("DLC_EXP_Pack002", "Omega");
-            prettyDLCNames.Add("DLC_CON_MP3", "Earth");
-            prettyDLCNames.Add("DLC_CON_MP2", "Rebellion");
-            prettyDLCNames.Add("DLC_CON_MP5", "Reckoning");
-            prettyDLCNames.Add("DLC_CON_MP1", "Resurgence");
-            prettyDLCNames.Add("DLC_CON_MP4", "Retaliation");
-            prettyDLCNames.Add("DLC_UPD_Patch01", "Patch01");
-            prettyDLCNames.Add("DLC_UPD_Patch02", "Patch02");
         }
 
         private void prepDLCUnpacking()
@@ -331,8 +332,7 @@ namespace ME3Explorer
                                 {
                                     using (FileStream fs = new FileStream(outpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                                     {
-                                        MemoryStream m = await sfar.DecompressEntryAsync(i);
-                                        await fs.WriteAsync(m.ToArray(), 0, (int)m.Length);
+                                        await sfar.DecompressEntryAsync(i, fs);
                                     }
                                 }
                                 Indexes.Add(i);

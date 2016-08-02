@@ -51,7 +51,8 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 try
                 {
-                    pcc = new ME3Package(d.FileName);
+                    pcc?.Release(wpfWindow: this);
+                    pcc = MEPackageHandler.OpenME3Package(d.FileName, wpfWindow: this);
                     animSets = new List<IExportEntry>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "FaceFXAnimSet")

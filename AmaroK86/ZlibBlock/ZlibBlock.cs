@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Gibbed.IO;
+using System.Threading.Tasks;
 
 namespace AmaroK86.MassEffect3.ZlibBlock
 {
@@ -117,11 +118,14 @@ namespace AmaroK86.MassEffect3.ZlibBlock
             return Compress(buffer,0,count);
         }
 
-        public static byte[] Decompress(byte[] buffer)
+        public static Task<byte[]> DecompressAsync(byte[] buffer)
         {
             if (buffer == null)
                 throw new ArgumentNullException();
-            return Decompress(buffer, 0, buffer.Length);
+            return Task.Run(() =>
+            {
+                return Decompress(buffer, 0, buffer.Length);
+            });
         }
 
         public static byte[] Decompress(byte[] buffer, int offset, int count)

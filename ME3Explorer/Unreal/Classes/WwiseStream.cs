@@ -145,9 +145,9 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
+            if (path.EndsWith(".pcc") && (MEPackageHandler.OpenME3Package(path)).IsCompressed)
             {
-                fs = new MemoryStream(CompressionHelper.Decompress(fs));
+                fs = CompressionHelper.DecompressME3(fs);
             }
             if (DataOffset + DataSize > fs.Length)
                 return;
@@ -168,9 +168,9 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc") && (new ME3Package(path)).bCompressed)
+            if (path.EndsWith(".pcc") && (MEPackageHandler.OpenME3Package(path)).IsCompressed)
             {
-                fs = new MemoryStream(CompressionHelper.Decompress(fs));
+                fs = CompressionHelper.DecompressME3(fs);
             }
             if (DataOffset + DataSize > fs.Length)
                 return;
