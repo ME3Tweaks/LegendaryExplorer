@@ -19,16 +19,19 @@
                     <StackPanel Orientation="Horizontal" Height="48">
                         <Image Source="{Binding tool.icon, Mode=OneWay}" Width="48" Height="48"/>
                         <Label Content="{Binding tool.name, Mode=OneWay}" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="23" 
-                                   VerticalAlignment="Center" Foreground="{StaticResource LabelTextBrush}" Background="#54808080" Width="233" Height="46" BorderThickness="0,2,2,2" BorderBrush="#54CFCFCF"/>
+                               VerticalAlignment="Center" Foreground="{StaticResource LabelTextBrush}" Background="#54808080" Width="233"
+                               Height="46" BorderThickness="0,2,2,2" BorderBrush="#54CFCFCF" Padding="5,0,5,1" VerticalContentAlignment="Center"/>
                     </StackPanel>
                     <Image x:Name="screenShot" Width="256" Height="256" Margin="0,20,0,0"/>
-                    <Label FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="18" Foreground="{StaticResource LabelTextBrush}" HorizontalContentAlignment="Center">
-                        <TextBlock>
+                    <Label FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="18" Foreground="{StaticResource LabelTextBrush}" HorizontalContentAlignment="Center" Width="282">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock>
                             File: <Run Text="{Binding fileName, Mode=OneWay}" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Foreground="#FFF9F9F9"/>
-                        </TextBlock>
+                            </TextBlock>
+                        </Viewbox>
                     </Label>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button BorderBrush="{x:Null}" Click="viewButton_Click">
+                        <Button Click="viewButton_Click">
                             <StackPanel Orientation="Horizontal" Height="32">
                                 <Grid Width="32" Height="32" Background="#7FCFCFCF">
                                     <Image Source="/ME3Explorer;component/Resources/eye_white.ico" Width="24" Height="24" HorizontalAlignment="Center"
@@ -40,7 +43,7 @@
                                 </Grid>
                             </StackPanel>
                         </Button>
-                        <Button BorderBrush="{x:Null}" Click="closeButton_Click">
+                        <Button Click="closeButton_Click">
                             <StackPanel Orientation="Horizontal" Height="32">
                                 <Grid Width="32" Height="32" Background="#7FCFCFCF">
                                     <Image Source="/ME3Explorer;component/Resources/close.ico" Width="24" Height="24" 
@@ -56,6 +59,8 @@
                     <StackPanel.Resources>
                         <Style TargetType="Button" BasedOn="{StaticResource BorderedButton}">
                             <Setter Property="Width" Value="132"/>
+                            <Setter Property="BorderBrush" Value="{x:Null}"/>
+                            <Setter Property="Padding" Value="0"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="BorderBrush" Value="#FF5692A2"/>

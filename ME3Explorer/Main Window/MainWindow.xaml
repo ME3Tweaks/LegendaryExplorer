@@ -8,7 +8,7 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}" 
         Title="ME3Explorer" Height="450" WindowStyle="None" Icon="../Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" 
-        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="1">
+        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="0">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
@@ -448,6 +448,6 @@
         <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:ToolInfoPanel x:Name="toolInfoPanel" Width="0" HorizontalAlignment="Left" Grid.Column="2"/>
         <local:TaskPane x:Name="taskPanePanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="taskPanePanel_ToolMouseOver"/>
-        <local:TaskPaneInfoPanel x:Name="taskPaneInfoPanel" Grid.Column="2" Width="0" HorizontalAlignment="Left"/>
+        <local:TaskPaneInfoPanel x:Name="taskPaneInfoPanel" Grid.Column="2" Width="0" HorizontalAlignment="Left" Close="taskPaneInfoPanel_Close"/>
     </Grid>
 </Window>

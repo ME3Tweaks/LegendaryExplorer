@@ -157,7 +157,7 @@ namespace ME3Explorer
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             readerpos = PropertyReader.detectStart(pcc, memory, pcc.getExport(Index).ObjectFlags);
-            BitConverter.IsLittleEndian = true;
+            
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + pcc.getExport(Index).ObjectName);
             topLevelTree.Tag = nodeType.Root;
@@ -692,7 +692,7 @@ namespace ME3Explorer
                 case PropertyReader.Type.StringRefProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     s += "#" + n + ": ";
-                    s += TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : TalkFiles.findDataById(n);
+                    s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(n);
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
                     node.Tag = nodeType.StructLeafInt;
@@ -927,11 +927,11 @@ namespace ME3Explorer
                     s += "#" + idx + ": ";
                     if (pcc.Game == MEGame.ME3)
                     {
-                        s += TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : TalkFiles.findDataById(idx); 
+                        s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx); 
                     }
                     else if (pcc.Game == MEGame.ME2)
                     {
-                        s += ME2Explorer.TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.TalkFiles.findDataById(idx);
+                        s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
                     }
                     else if (pcc.Game == MEGame.ME1)
                     {
@@ -2203,13 +2203,14 @@ namespace ME3Explorer
         private void addPropButton_Click(object sender, EventArgs e)
         {
             List<string> props = PropertyReader.getPropList(pcc.getExport(Index)).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(className, props);
+            string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
                 if (info.type == PropertyReader.Type.StructProperty && pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files.", "Sorry :(");
+                    return;
                 }
                 List<byte> buff = new List<byte>();
                 //name

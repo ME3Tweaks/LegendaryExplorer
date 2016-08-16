@@ -72,7 +72,7 @@ namespace ME3Explorer.Unreal.Classes
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;            
             Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            
             Unknown = BitConverter.ToInt32(data, 0);
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
@@ -229,7 +229,6 @@ namespace ME3Explorer.Unreal.Classes
             foreach (PropertyReader.Property p in Props)
                 if (pcc.getNameEntry(p.Name) == "CompressedTrackOffsets")
                     buff = p.raw;
-            BitConverter.IsLittleEndian=true;
             for (int i = 0; i < CompressedTrackOffsets.Count; i++)
             {
                 m.Write(BitConverter.GetBytes(loc[i].X), 0, 4);

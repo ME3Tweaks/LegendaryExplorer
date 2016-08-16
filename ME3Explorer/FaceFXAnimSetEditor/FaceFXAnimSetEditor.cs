@@ -11,13 +11,12 @@ using ME3Explorer.Unreal.Classes;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
 
-namespace ME3Explorer.FaceFXAnimSetEditor
+namespace ME3Explorer.FaceFX
 {
-    public partial class FaceFXAnimSetEditor : Form
+    public partial class FaceFXAnimSetEditor : WinFormsBase
     {
-        public ME3Package pcc;
         public List<int> Objects;
-        public FaceFXAnimSet FaceFX;
+        public ME3FaceFXAnimSet FaceFX;
 
         public FaceFXAnimSetEditor()
         {
@@ -32,7 +31,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
+                    LoadME3Package(d.FileName);
                     Objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
@@ -103,7 +102,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            FaceFX = new FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
+            FaceFX = new ME3FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
             FaceFXRefresh(n);
         }
 
@@ -154,7 +153,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 int entidx = t1.Index;
                 int subidx = t.Index;
-                FaceFXAnimSet.FaceFXLine d = FaceFX.Data.Data[entidx];
+                ME3FaceFXLine d = FaceFX.Data.Data[entidx];
                 switch (subidx)
                 {
                     case 0://unk1
@@ -186,10 +185,10 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         d.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.ID, 0, 0);
                         break;
                     case 9://unk3
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk3.ToString(), 0, 0);
+                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.index.ToString(), 0, 0);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                            d.unk3 = i;
+                            d.index = i;
                         break;
                     default:
                         return;
@@ -201,11 +200,11 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 int entidx = t2.Index;
                 int subidx = t1.Index;
                 int subsubidx = t.Index;
-                FaceFXAnimSet.FaceFXLine d = FaceFX.Data.Data[entidx];
+                ME3FaceFXLine d = FaceFX.Data.Data[entidx];
                 switch (subidx)
                 {
                     case 1:
-                        FaceFXAnimSet.NameRef u = d.animations[subsubidx];
+                        ME3NameRef u = d.animations[subsubidx];
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, 0, 0);
                         string[] reslist = result.Split(';');
                         if (reslist.Length != 2)
@@ -221,7 +220,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         d.animations[subsubidx] = u;
                         break;
                     case 2:
-                        FaceFXAnimSet.ControlPoint u2 = d.points[subsubidx];
+                        ControlPoint u2 = d.points[subsubidx];
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, 0, 0);
                         reslist = result.Split(';');
                         if (reslist.Length != 4)

@@ -75,7 +75,7 @@ namespace ME3Explorer.Unreal.Classes
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
             Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
                 {
@@ -217,7 +217,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] Vector3ToBuff(Vector3 v)
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
+            
             m.Write(BitConverter.GetBytes(v.X), 0, 4);
             m.Write(BitConverter.GetBytes(v.Y), 0, 4);
             m.Write(BitConverter.GetBytes(v.Z), 0, 4);

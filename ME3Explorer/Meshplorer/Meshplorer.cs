@@ -16,14 +16,13 @@ using Be.Windows.Forms;
 
 namespace ME3Explorer.Meshplorer
 {
-    public partial class Meshplorer : Form
+    public partial class Meshplorer : WinFormsBase
     {
         public struct NameEntry
         {
             public int index;
         }
-
-        public ME3Package pcc;
+        
         public List<NameEntry> Objects;
         public List<int> Materials;
         public int MeshplorerMode = 0; //0=PCC,1=PSK
@@ -65,7 +64,7 @@ namespace ME3Explorer.Meshplorer
         {
             try
             {
-                pcc = MEPackageHandler.OpenME3Package(path);
+                LoadME3Package(path);
                 MeshplorerMode = 0;
                 CurrFile = path;
                 Materials = new List<int>();
@@ -110,7 +109,7 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadStaticMesh(int index)
         {
-            stm = new StaticMesh(pcc, index);
+            stm = new StaticMesh(pcc as ME3Package, index);
             Preview3D.StatMesh = stm;
             //Preview3D.SkelMesh = null;
             Preview3D.CamOffset = new Vector3(0, 0, 0);
@@ -124,8 +123,8 @@ namespace ME3Explorer.Meshplorer
             try
             {
                 DisableLODs();
-                skm = new SkeletalMesh(pcc, index);
-                skmold = new SkeletalMeshOld(pcc, index);
+                skm = new SkeletalMesh(pcc as ME3Package, index);
+                skmold = new SkeletalMeshOld(pcc as ME3Package, index);
                 hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
                 Preview3D.StatMesh = null;
                 Preview3D.SkelMesh = skm;
@@ -548,7 +547,7 @@ namespace ME3Explorer.Meshplorer
                 return;
             int idx = Objects[n].index;
             MPOpt.SelectedObject = idx;
-            MPOpt.pcc = pcc;
+            MPOpt.pcc = pcc as ME3Package;
             MPOpt.SelectedLOD = getLOD();
             UDKCopy u = new UDKCopy();
             u.MdiParent = this.MdiParent;

@@ -199,10 +199,10 @@ namespace ME3Explorer.Propertydb
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian=true;
+
                 WriteInt(Classes.Count(), fs);
                 for (int i = 0; i < Classes.Count(); i++)
                 {
@@ -262,7 +262,7 @@ namespace ME3Explorer.Propertydb
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 int count = ReadInt(fs);
                 Classes = new List<ClassDef>();
                 pb1.Maximum = count + 1;

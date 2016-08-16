@@ -1,7 +1,12 @@
-﻿namespace ME3Explorer.Packages
+﻿using System.ComponentModel;
+
+namespace ME3Explorer.Packages
 {
     public interface IEntry
     {
+        bool HasChanged { get; }
+        int Index { get; set; }
+        int UIndex { get; }
         byte[] header { get; }
         IMEPackage FileRef { get; }
         int idxLink { get; set; }
@@ -24,7 +29,6 @@
 
     public interface IExportEntry : IEntry
     {
-        bool hasChanged { get; }
         byte[] Data { get; set; }
         int DataOffset { get; }
         int DataSize { get; }
@@ -39,5 +43,7 @@
 
         IExportEntry Clone();
         void setHeader(byte[] v);
+
+        event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -101,15 +101,13 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
         }
 
-        public void AddLevel(string path)
+        public void AddLevel(ME3Package pcc)
         {
-            if (!File.Exists(path))
-                return;
             try
             {
                 Levelfile l = new Levelfile();
-                l.path = path;
-                l.pcc = MEPackageHandler.OpenME3Package(path);
+                l.path = pcc.FileName;
+                l.pcc = pcc;
                 IReadOnlyList<IExportEntry> Exports = l.pcc.Exports;
                 for (int i = 0; i < Exports.Count; i++)
                 {
@@ -118,7 +116,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
                     {
                         DebugOutput.Clear();
                         l.level = new Level(l.pcc, i);
-                        TreeNode t = new TreeNode(Path.GetFileName(path));
+                        TreeNode t = new TreeNode(Path.GetFileName(pcc.FileName));
                         t.Nodes.Add(l.level.ToTree(i));
                         GlobalTree.Visible = false;
                         GlobalTree.Nodes.Add(t);

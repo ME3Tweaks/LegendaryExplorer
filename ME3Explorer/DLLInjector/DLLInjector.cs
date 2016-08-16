@@ -260,7 +260,7 @@ namespace ME3Explorer.DLLInjector
             FileStream fs = new FileStream(ProcessPath + "conf.bin", FileMode.Create, FileAccess.Write);
             fs.WriteByte((byte)'W');
             fs.WriteByte((byte)'V');
-            BitConverter.IsLittleEndian = true;
+            
             fs.Write(BitConverter.GetBytes(off), 0, 4);
             fs.Close();
             return true;

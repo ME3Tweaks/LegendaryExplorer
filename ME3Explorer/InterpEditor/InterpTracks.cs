@@ -234,7 +234,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadGenericData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -475,7 +475,7 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aTrackKeys = new List<TrackKey>();
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -534,7 +534,7 @@ namespace ME3Explorer.InterpEditor
             m_nmFindActor = new NameReference();
             m_nmFindActor.index = -1;
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -580,7 +580,7 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aMovieKeyData = new List<MovieKey>();
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -648,7 +648,7 @@ namespace ME3Explorer.InterpEditor
             m_aToggleKeyData = new List<ToggleKey>();
             m_aTarget = new List<int>();         
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -716,7 +716,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -756,7 +756,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -797,7 +797,7 @@ namespace ME3Explorer.InterpEditor
             FacingController = new NameReference();
             FacingController.index = -1;
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -835,7 +835,7 @@ namespace ME3Explorer.InterpEditor
             PropertyName = -1;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -886,7 +886,7 @@ namespace ME3Explorer.InterpEditor
             m_aInterruptData = new List<InterruptKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -932,7 +932,7 @@ namespace ME3Explorer.InterpEditor
             public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("nStrRefID : " + TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
+                root.Nodes.Add("nStrRefID : " + ME3TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
                 root.Nodes.Add("fLength : " + fLength);
                 root.Nodes.Add("bShowAtTop : " + bShowAtTop);
                 root.Nodes.Add("bUseOnlyAsReplyWheelHint : " + bUseOnlyAsReplyWheelHint);
@@ -956,7 +956,7 @@ namespace ME3Explorer.InterpEditor
             m_aSubtitleData = new List<SubtitleKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1029,7 +1029,7 @@ namespace ME3Explorer.InterpEditor
             m_aCameras = new List<CameraSwitchKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1086,7 +1086,7 @@ namespace ME3Explorer.InterpEditor
             m_fJCutOffset = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1100,7 +1100,7 @@ namespace ME3Explorer.InterpEditor
         public override void ToTree()
         {
             base.ToTree();
-            AddToTree("m_nStrRefID : " + TalkFiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
+            AddToTree("m_nStrRefID : " + ME3TalkFiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
             AddToTree("m_fJCutOffset : " + m_fJCutOffset);
         }
     }
@@ -1136,7 +1136,7 @@ namespace ME3Explorer.InterpEditor
             EventTrack = new List<RotationModeKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1265,7 +1265,7 @@ namespace ME3Explorer.InterpEditor
             m_fStartPoseOffset = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -1453,7 +1453,7 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aLightingKeys = new List<LightingKey>();
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -1564,7 +1564,7 @@ namespace ME3Explorer.InterpEditor
             m_aLookAtKeys = new List<LookAtKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -1651,7 +1651,7 @@ namespace ME3Explorer.InterpEditor
             m_aPropKeys = new List<PropKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -1736,7 +1736,7 @@ namespace ME3Explorer.InterpEditor
             m_aFacingKeys = new List<FacingKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1811,7 +1811,7 @@ namespace ME3Explorer.InterpEditor
             m_TrackFoleySound = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1869,7 +1869,7 @@ namespace ME3Explorer.InterpEditor
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pConversation : " + pConversation);
-                root.Nodes.Add("nLineStrRef : " + TalkFiles.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
+                root.Nodes.Add("nLineStrRef : " + ME3TalkFiles.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
                 root.Nodes.Add("srActorNameOverride : " + srActorNameOverride);
                 root.Nodes.Add("bForceHideSubtitles : " + bForceHideSubtitles);
                 root.Nodes.Add("bPlaySoundOnly : " + bPlaySoundOnly);
@@ -1895,7 +1895,7 @@ namespace ME3Explorer.InterpEditor
             m_aFOVOKeys = new List<FOVOKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -1978,7 +1978,7 @@ namespace ME3Explorer.InterpEditor
             oEffect = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2057,7 +2057,7 @@ namespace ME3Explorer.InterpEditor
             BoneName = -1;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2136,7 +2136,7 @@ namespace ME3Explorer.InterpEditor
             m_nmSocketOrBone = -1;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2214,7 +2214,7 @@ namespace ME3Explorer.InterpEditor
             m_BlackScreenSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2270,7 +2270,7 @@ namespace ME3Explorer.InterpEditor
             m_aTarget = new List<int>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2315,7 +2315,7 @@ namespace ME3Explorer.InterpEditor
             m_SeqForceUpdateLight = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2364,7 +2364,7 @@ namespace ME3Explorer.InterpEditor
             m_LightEnvSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2424,7 +2424,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -2468,7 +2468,7 @@ namespace ME3Explorer.InterpEditor
             m_oTextureMovie = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2515,7 +2515,7 @@ namespace ME3Explorer.InterpEditor
             m_aNearClipKeyData = new List<NearClipKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2584,7 +2584,7 @@ namespace ME3Explorer.InterpEditor
             m_Pawn = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2661,7 +2661,7 @@ namespace ME3Explorer.InterpEditor
             m_LightEnvSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2709,7 +2709,7 @@ namespace ME3Explorer.InterpEditor
             m_aMicLockKeys = new List<MicLockKey>();
 
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2784,7 +2784,7 @@ namespace ME3Explorer.InterpEditor
         {
             EventTrack = new List<EventTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -2938,7 +2938,7 @@ namespace ME3Explorer.InterpEditor
             m_aBioFemaleAnimSets = new List<int>();
 
             byte[] buff = pcc.Exports[index].Data;
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -3130,7 +3130,7 @@ namespace ME3Explorer.InterpEditor
         {
             AnimSeqs = new List<AnimControlTrackKey>();
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3239,7 +3239,7 @@ namespace ME3Explorer.InterpEditor
             LookupTrack = new InterpLookupTrack();
             LookupTrack.Points = new List<InterpLookupTrack.Point>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -3349,7 +3349,7 @@ namespace ME3Explorer.InterpEditor
         {
             VisibilityTrack = new List<VisibilityTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3439,7 +3439,7 @@ namespace ME3Explorer.InterpEditor
         {
             ToggleTrack = new List<ToggleTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3526,7 +3526,7 @@ namespace ME3Explorer.InterpEditor
         {
             WwiseEvent key = new WwiseEvent();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3595,7 +3595,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3626,7 +3626,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3673,7 +3673,7 @@ namespace ME3Explorer.InterpEditor
         {
             AffectedMaterialRefs = new List<MeshMaterialRef>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3732,7 +3732,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3765,7 +3765,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3796,7 +3796,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3826,7 +3826,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -3860,7 +3860,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -3927,7 +3927,7 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -4024,7 +4024,7 @@ namespace ME3Explorer.InterpEditor
         {
             m_aDOFData = new List<BioDOFTrackData>();
             
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
@@ -4117,7 +4117,7 @@ namespace ME3Explorer.InterpEditor
         {
             CutTrack = new List<DirectorTrackCut>();
 
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
@@ -4179,7 +4179,7 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {

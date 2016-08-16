@@ -11,9 +11,9 @@ namespace ME3Explorer
     ///     All info taken from the meta data of System.BitConverter. This implementation
     ///     allows for Endianness consideration.
     ///</summary>
-    public static class BitConverter
+    public static class EndianBitConverter
     {
-        static BitConverter()
+        static EndianBitConverter()
         {
             IsLittleEndian = true;
         }
@@ -22,7 +22,7 @@ namespace ME3Explorer
         ///     Indicates the byte order ("endianess") in which data is stored in this computer
         ///     architecture.
         ///</summary>
-        public static bool IsLittleEndian { get; set; } // should default to false, which is what we want for Empire
+        public static bool IsLittleEndian { get; set; }
         
         ///
         /// <summary>

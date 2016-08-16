@@ -57,33 +57,27 @@ namespace SevenZip.Compression.LZMA
             return outStream.ToArray();
         }
 
-        public static byte[] Decompress(byte[] inputBytes, int outSize)
+        public static byte[] Decompress(byte[] inputBytes, long decompressedSize)
         {
-            MemoryStream newInStream = new MemoryStream(inputBytes);
+            var compressed = new MemoryStream(inputBytes);
+            var decoder = new Decoder();
 
-            SevenZip.Compression.LZMA.Decoder decoder = new SevenZip.Compression.LZMA.Decoder();
-
-            newInStream.Seek(0, 0);
-            MemoryStream newOutStream = new MemoryStream();
-
-            byte[] properties2 = new byte[5];
-            if (newInStream.Read(properties2, 0, 5) != 5)
+            var properties2 = new byte[5];
+            if (compressed.Read(properties2, 0, 5) != 5)
+            {
                 throw (new Exception("input .lzma is too short"));
+            }
+
             decoder.SetDecoderProperties(properties2);
 
-            long compressedSize = newInStream.Length - newInStream.Position;
-            decoder.Code(newInStream, newOutStream, compressedSize, outSize, null);
+            var compressedSize = compressed.Length - compressed.Position;
+            var decompressed = new MemoryStream();
+            decoder.Code(compressed, decompressed, compressedSize, decompressedSize, null);
 
-            byte[] b = newOutStream.ToArray();
-			
-			/*if(b.Length > outSize)
-			{
-				byte[] output = new byte[outSize];
-				Array.Copy(b,output,outSize);
-				return output;
-			}*/
+            if (decompressed.Length != decompressedSize)
+                throw new Exception("Decompression Error");
 
-            return b;
+            return decompressed.ToArray();
         }
 
         public static Task<byte[]> DecompressAsync(byte[] inputBytes, int outSize)

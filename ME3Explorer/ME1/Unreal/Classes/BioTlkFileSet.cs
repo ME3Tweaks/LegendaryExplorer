@@ -27,7 +27,7 @@ namespace ME1Explorer.Unreal.Classes
             }
             if (index != -1)
             {
-                loadData();
+                loadData(index);
             }
             else
             {
@@ -53,23 +53,30 @@ namespace ME1Explorer.Unreal.Classes
             //skip properties
             r.BaseStream.Seek(12, SeekOrigin.Begin);
 
-            int count = r.ReadInt32();
-            talkFiles = new List<TalkFile>(count);
-            int langRef;
-            for (int i = 0; i < count; i++)
+            if (r.BaseStream.Length > 12)
             {
-                langRef = r.ReadInt32();
-                r.ReadInt64();
-                talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, true, langRef, index));
-                talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, false, langRef, index));
-            }
-            for (int i = 0; i < talkFiles.Count; i++)
-            {
-                if (talkFiles[i].language == "Int" && !talkFiles[i].male)
+                int count = r.ReadInt32();
+                talkFiles = new List<TalkFile>(count);
+                int langRef;
+                for (int i = 0; i < count; i++)
                 {
-                    selectedTLK = i;
-                    break;
+                    langRef = r.ReadInt32();
+                    r.ReadInt64();
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, true, langRef, index));
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, false, langRef, index));
                 }
+                for (int i = 0; i < talkFiles.Count; i++)
+                {
+                    if (talkFiles[i].language == "Int" && !talkFiles[i].male)
+                    {
+                        selectedTLK = i;
+                        break;
+                    }
+                } 
+            }
+            else
+            {
+                talkFiles = new List<TalkFile>();
             }
         }
 

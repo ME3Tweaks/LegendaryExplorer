@@ -229,7 +229,7 @@ namespace ME3Explorer.Unreal
 
         public void Export(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             byte[] buff = ChunkHeader("ACTRHEAD", 0x1E83B9, 0, 0);
             fs.Write(buff, 0, 32);
@@ -383,7 +383,7 @@ namespace ME3Explorer.Unreal
         public void ImportPSK(string path)
         {
             psk = new PSKContainer();
-            BitConverter.IsLittleEndian = true;
+            
             FileStream pskFile = new FileStream(path, FileMode.Open, FileAccess.Read);
              
 

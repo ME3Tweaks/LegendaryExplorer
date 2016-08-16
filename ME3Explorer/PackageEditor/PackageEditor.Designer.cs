@@ -38,10 +38,6 @@
             this.addNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInInterpreterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editBlockingVolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.faceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportFaceFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -179,7 +175,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -188,7 +184,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -196,7 +192,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -204,12 +200,12 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -221,8 +217,6 @@
             this.addNameToolStripMenuItem,
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
-            this.editBlockingVolToolStripMenuItem,
-            this.faceFXToolStripMenuItem,
             this.editInCurveEditorToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -258,37 +252,6 @@
             this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
-            // 
-            // editBlockingVolToolStripMenuItem
-            // 
-            this.editBlockingVolToolStripMenuItem.Name = "editBlockingVolToolStripMenuItem";
-            this.editBlockingVolToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.editBlockingVolToolStripMenuItem.Text = "Edit Blocking Vol";
-            this.editBlockingVolToolStripMenuItem.Visible = false;
-            this.editBlockingVolToolStripMenuItem.Click += new System.EventHandler(this.editBlockingVolToolStripMenuItem_Click);
-            // 
-            // faceFXToolStripMenuItem
-            // 
-            this.faceFXToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportFaceFXToolStripMenuItem,
-            this.importToolStripMenuItem});
-            this.faceFXToolStripMenuItem.Name = "faceFXToolStripMenuItem";
-            this.faceFXToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.faceFXToolStripMenuItem.Text = "FaceFX";
-            // 
-            // exportFaceFXToolStripMenuItem
-            // 
-            this.exportFaceFXToolStripMenuItem.Name = "exportFaceFXToolStripMenuItem";
-            this.exportFaceFXToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.exportFaceFXToolStripMenuItem.Text = "Export";
-            this.exportFaceFXToolStripMenuItem.Click += new System.EventHandler(this.exportFaceFXToolStripMenuItem_Click_1);
-            // 
-            // importToolStripMenuItem
-            // 
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.importToolStripMenuItem.Text = "Import";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // editInCurveEditorToolStripMenuItem
             // 
@@ -1200,7 +1163,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         public System.Windows.Forms.ToolStripMenuItem getDumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceWithBINToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editBlockingVolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modjobsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createBinaryReplaceJobFromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createBinaryReplaceJobFromObjectToolStripMenuItem;
@@ -1241,9 +1203,6 @@
         private System.Windows.Forms.ComboBox nameComboBox;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ToolStripMenuItem faceFXToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportFaceFXToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel status2;
         private System.Windows.Forms.TabPage headerTab;
         private System.Windows.Forms.ToolStripButton Button5;

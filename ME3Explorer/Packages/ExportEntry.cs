@@ -1,10 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
+using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry
+    public abstract class ExportEntry : ViewModelBase
     {
         public IMEPackage FileRef { get; protected set; }
+
+        public int Index { get; set; }
+        public int UIndex { get { return Index + 1; } }
 
         protected ExportEntry(byte[] headerData)
         {
@@ -22,18 +27,18 @@ namespace ME3Explorer.Packages
         public void setHeader(byte[] newHead)
         {
             header = newHead;
-            hasChanged = true;
+            HasChanged = true;
         }
 
         public uint headerOffset { get; set; }
 
-        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); hasChanged = true; } }
-        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); hasChanged = true; } }
-        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); hasChanged = true; } }
-        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); hasChanged = true; } }
-        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); hasChanged = true; } }
-        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); hasChanged = true; } }
-        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); hasChanged = true; } }
+        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); HasChanged = true; } }
+        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); HasChanged = true; } }
+        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); HasChanged = true; } }
+        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); HasChanged = true; } }
+        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); HasChanged = true; } }
+        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); HasChanged = true; } }
+        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); HasChanged = true; } }
 
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -88,15 +93,28 @@ namespace ME3Explorer.Packages
         {
             get { return _data; }
 
-            set { _data = value; hasChanged = true; DataSize = value.Length; }
+            set { _data = value; HasChanged = true; DataSize = value.Length; }
         }
 
         public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
         public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
         public readonly int OriginalDataSize;
         protected byte[] _data = null;
-        
-        public bool hasChanged { get; internal set; }
+        bool hasChanged;
+
+        public bool HasChanged
+        {
+            get
+            {
+                return hasChanged;
+            }
+
+            set
+            {
+                hasChanged = value;
+                OnPropertyChanged();
+            }
+        }
     }
 
     public class ME3ExportEntry : ExportEntry, IExportEntry

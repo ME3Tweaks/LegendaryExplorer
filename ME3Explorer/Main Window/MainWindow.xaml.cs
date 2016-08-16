@@ -608,8 +608,14 @@ namespace ME3Explorer
             taskPaneInfoPanel.setTool(e);
             if (!TaskPaneInfoPanelOpen)
             {
+                TaskPaneInfoPanelOpen = true;
                 taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
             }
+        }
+
+        private void taskPaneInfoPanel_Close(object sender, EventArgs e)
+        {
+            closeTaskPaneInfoPanel();
         }
     }
 }

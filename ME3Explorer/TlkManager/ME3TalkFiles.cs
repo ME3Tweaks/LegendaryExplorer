@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace ME3Explorer
 {
-    public static class TalkFiles
+    public static class ME3TalkFiles
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
 

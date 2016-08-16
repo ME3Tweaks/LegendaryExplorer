@@ -50,7 +50,7 @@ namespace ME3Explorer.Unreal.Classes
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
             Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
                 {

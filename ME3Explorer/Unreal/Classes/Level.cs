@@ -69,7 +69,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadObjects(int off)
         {
-            BitConverter.IsLittleEndian = true;
+            
             int pos = off;
             int count = BitConverter.ToInt32(memory, pos);
             pos += 4;
@@ -167,7 +167,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadObjectsSimple(int off)
         {
-            BitConverter.IsLittleEndian = true;
+            
             int pos = off;
             int count = BitConverter.ToInt32(memory, pos);
             pos += 4;

@@ -12,9 +12,8 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.ClassViewer
 {
-    public partial class ClassViewer : Form
+    public partial class ClassViewer : WinFormsBase
     {
-        public ME3Package pcc;
         public List<int> Objects;
         public string output;
 
@@ -27,11 +26,11 @@ namespace ME3Explorer.ClassViewer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
+                    LoadME3Package(d.FileName);
                     Objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
@@ -63,7 +62,7 @@ namespace ME3Explorer.ClassViewer
 
         public void AnalyzeClass(int index)
         {
-            BitConverter.IsLittleEndian = true;
+            
             output = "";
             Printf("Start Analyzing...");
             byte[] buff = pcc.Exports[index].Data;

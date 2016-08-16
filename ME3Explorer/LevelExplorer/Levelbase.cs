@@ -37,7 +37,7 @@ namespace ME3Explorer.LevelExplorer
         public void LoadDataBase()
         {
             FileStream fs = new FileStream(DatabaseFile, FileMode.Open, FileAccess.Read);
-            BitConverter.IsLittleEndian = true;
+            
             database = new List<DBEntry>();
             byte[] buff = new byte[4];
             fs.Read(buff, 0, 4);
@@ -110,7 +110,7 @@ namespace ME3Explorer.LevelExplorer
                 }
             }
             database.Sort((a,b) => a.filepath.CompareTo(b.filepath));
-            BitConverter.IsLittleEndian = true;
+            
             byte[] buff = BitConverter.GetBytes(database.Count());
             fs.Write(buff, 0, 4);
             foreach (DBEntry e in database)

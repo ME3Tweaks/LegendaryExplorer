@@ -88,7 +88,7 @@ namespace ME3Explorer.SequenceObjects
             if (f != -1)
             {
                 byte[] buff2 = p[f].raw;
-                BitConverter.IsLittleEndian = true;
+                
                 int count = BitConverter.ToInt32(buff2, 24);
                 int pos = 28;
                 int stringMult = 1;
@@ -317,9 +317,9 @@ namespace ME3Explorer.SequenceObjects
                                     case MEGame.ME1:
                                         return talkfiles.findDataById(prop.Value.IntValue);
                                     case MEGame.ME2:
-                                        return ME2Explorer.TalkFiles.findDataById(prop.Value.IntValue);
+                                        return ME2Explorer.ME2TalkFiles.findDataById(prop.Value.IntValue);
                                     case MEGame.ME3:
-                                        return ME3Explorer.TalkFiles.findDataById(prop.Value.IntValue);
+                                        return ME3Explorer.ME3TalkFiles.findDataById(prop.Value.IntValue);
                                     default:
                                         break;
                                 }
@@ -589,7 +589,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
+                
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
@@ -669,7 +669,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
+                
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {
@@ -882,7 +882,7 @@ namespace ME3Explorer.SequenceObjects
             }
             if (inputIndex == -1)
                 return;
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(start.Index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
@@ -979,7 +979,7 @@ namespace ME3Explorer.SequenceObjects
             }
             if(link.Links == null)
                 return;
-            BitConverter.IsLittleEndian = true;
+            
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(start.Index));
             int f = -1;
             for (int i = 0; i < p.Count(); i++)
@@ -1033,7 +1033,7 @@ namespace ME3Explorer.SequenceObjects
         public void RemoveOutlink(int linkconnection, int linkIndex, bool refresh = true)
         {
             List<byte> ListBuff = new List<byte>(pcc.getExport(index).Data);
-            BitConverter.IsLittleEndian = true;
+            
             OutputLink link = Outlinks[linkconnection];
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(index));
             int f = -1;
@@ -1089,7 +1089,7 @@ namespace ME3Explorer.SequenceObjects
         public void RemoveVarlink(int linkconnection, int linkIndex, bool refresh = true)
         {
             List<byte> ListBuff = new List<byte>(pcc.getExport(index).Data);
-            BitConverter.IsLittleEndian = true;
+            
             VarLink link = Varlinks[linkconnection];
             List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(index));
             int f = -1;
@@ -1469,7 +1469,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 int pos = 28;
                 byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
+                
                 int count = BitConverter.ToInt32(global, 24);
                 for (int j = 0; j < count; j++)
                 {

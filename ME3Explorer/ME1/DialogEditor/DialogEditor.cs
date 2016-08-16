@@ -14,18 +14,17 @@ using ME3Explorer;
 
 namespace ME1Explorer
 {
-    public partial class DialogEditor : Form
+    public partial class DialogEditor : WinFormsBase
     {
         public BioTlkFileSet tlkFileSet;
         public TalkFiles tlkFiles;
         public ITalkFile tlkFile;
         public BioConversation Dialog;
-        public ME1Package pcc;
         public List<int> Objs;
 
         public void InitBioTlkFileSet()
         {
-            tlkFileSet = new BioTlkFileSet(pcc);
+            tlkFileSet = new BioTlkFileSet(pcc as ME1Package);
             tlkFiles = new TalkFiles();
             tlkFile = tlkFileSet;
         }
@@ -41,11 +40,11 @@ namespace ME1Explorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    pcc = new ME1Package(d.FileName);
+                    LoadME1Package(d.FileName);
                     manageTLKSetToolStripMenuItem.Enabled = true;
                     InitBioTlkFileSet();
                     Objs = new List<int>();
@@ -77,7 +76,7 @@ namespace ME1Explorer
             int n = toolStripComboBox1.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new BioConversation(pcc, Objs[n]);
+            Dialog = new BioConversation(pcc as ME1Package, Objs[n]);
             tlkFileSet.loadData(Dialog.TlkFileSet - 1);
             if (!tlkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
             {
@@ -102,10 +101,10 @@ namespace ME1Explorer
                 listBox1.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, pcc));
+                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, pcc as ME1Package));
             count = 0;
             foreach (BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, pcc));
+                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, pcc as ME1Package));
             count = 0;
             foreach (BioConversation.SpeakerListStruct sp in Dialog.SpeakerList)
                 listBox2.Items.Add((count++) + " : " + sp.SpeakerTag + " , " + sp.Text);
@@ -806,7 +805,7 @@ namespace ME1Explorer
             }
             BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply();
-            ar.pcc = pcc;
+            ar.pcc = pcc as ME1Package;
             if (SubIndx != -1)
             {
                 BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
@@ -850,7 +849,7 @@ namespace ME1Explorer
         private void manageTLKSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.InitTlkManager(pcc, tlkFileSet, tlkFiles);
+            tm.InitTlkManager(pcc as ME1Package, tlkFileSet, tlkFiles);
             tlkFiles = tm.selectedTlks;
             tlkFile = tlkFiles;
             tm.Show();

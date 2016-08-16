@@ -254,7 +254,7 @@ namespace ME3Explorer
         private async void ContinueButton_Click(object sender, EventArgs e)
         {
             FilesToAddToTree = new List<string>();
-            BitConverter.IsLittleEndian = true;
+            
             ContinueButton.Enabled = false;
             DoingStuff = true;
             await Task.Run(() => DoStuff());
@@ -335,7 +335,7 @@ namespace ME3Explorer
             string[] dlcname = file.Split('\\');
             DebugOutput.PrintLn("Temp extracting DLC: " + dlcname[dlcname.Length - 3]);
             DLCPackage dlc = new DLCPackage(file);
-            List<string> dlcpath = new List<string>(dlc.MyFileName.Split('\\'));
+            List<string> dlcpath = new List<string>(dlc.FileName.Split('\\'));
             dlcpath.RemoveRange(dlcpath.Count - 5, 5);
             string dlcExtractionPath = string.Join("\\", dlcpath.ToArray());
 

@@ -14,9 +14,8 @@ using Be.Windows.Forms;
 
 namespace ME3Explorer.WwiseBankEditor
 {
-    public partial class WwiseEditor : Form
+    public partial class WwiseEditor : WinFormsBase
     {
-        public ME3Package pcc;
         public List<int> objects;
         public WwiseBank bank;
 
@@ -29,11 +28,11 @@ namespace ME3Explorer.WwiseBankEditor
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
+                    LoadME3Package(d.FileName);
                     objects = new List<int>();
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
@@ -67,7 +66,7 @@ namespace ME3Explorer.WwiseBankEditor
             if (n == -1)
                 return;
             int index = objects[n];
-            bank = new WwiseBank(pcc, index);
+            bank = new WwiseBank(pcc as ME3Package, index);
             hb1.ByteProvider = new DynamicByteProvider(bank.getBinary());
             rtb1.Text = bank.GetQuickScan();
             ListRefresh2();
@@ -84,7 +83,7 @@ namespace ME3Explorer.WwiseBankEditor
         {
             if (bank == null || bank.didx_data == null || bank.didx_data.Length == 0)
                 return;
-             System.Windows.Forms.FolderBrowserDialog m = new System.Windows.Forms.FolderBrowserDialog();
+             System.Windows.Forms.FolderBrowserDialog m = new FolderBrowserDialog();
             m.ShowDialog();
             if (m.SelectedPath != "")
             {
@@ -110,7 +109,7 @@ namespace ME3Explorer.WwiseBankEditor
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(d.FileName, bank.RecreateBinary());
                 MessageBox.Show("Done.");
@@ -167,7 +166,7 @@ namespace ME3Explorer.WwiseBankEditor
             }
             else
             {
-                BitConverter.IsLittleEndian = true;
+                
                 int ID1 = BitConverter.ToInt32(buff, 5);
                 int opt = BitConverter.ToInt32(buff, 13);
                 int ID2 = BitConverter.ToInt32(buff, 17);
@@ -216,7 +215,7 @@ namespace ME3Explorer.WwiseBankEditor
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.save(d.FileName);
                 MessageBox.Show("Done.");

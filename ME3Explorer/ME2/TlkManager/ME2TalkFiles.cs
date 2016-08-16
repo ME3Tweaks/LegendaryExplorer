@@ -11,7 +11,7 @@ using ME3Explorer;
 
 namespace ME2Explorer
 {
-    public static class TalkFiles
+    public static class ME2TalkFiles
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
 

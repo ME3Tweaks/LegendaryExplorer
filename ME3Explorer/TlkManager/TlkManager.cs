@@ -19,7 +19,7 @@ namespace ME3Explorer
         private void refresh()
         {
             listBox1.Items.Clear();
-            foreach (TalkFile tlk in TalkFiles.tlkList)
+            foreach (TalkFile tlk in ME3TalkFiles.tlkList)
             {
                 listBox1.Items.Add(tlk.path);
             }
@@ -31,7 +31,7 @@ namespace ME3Explorer
             d.Filter = "*.tlk|*.tlk";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                TalkFiles.addTLK(d.FileName);
+                ME3TalkFiles.addTLK(d.FileName);
                 refresh();
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
             }
@@ -42,7 +42,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n != -1)
             {
-                TalkFiles.removeTLK(n);
+                ME3TalkFiles.removeTLK(n);
                 refresh();
             }
         }
@@ -52,7 +52,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n > 0)
             {
-                TalkFiles.moveTLKUp(n);
+                ME3TalkFiles.moveTLKUp(n);
                 refresh();
                 listBox1.SelectedIndex = n - 1;
             }
@@ -63,7 +63,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n != -1 && n < listBox1.Items.Count - 1)
             {
-                TalkFiles.moveTLKDown(n);
+                ME3TalkFiles.moveTLKDown(n);
                 refresh();
                 listBox1.SelectedIndex = n + 1;
             }

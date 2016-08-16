@@ -1,26 +1,21 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using Be.Windows.Forms;
-using ME3Explorer.Unreal.Classes;
-using KFreonLib.MEDirectories;
-using UsefulThings;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Be.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
+using UsefulThings;
 
 namespace ME3Explorer
 {
-    public partial class PackageEditor : Form
+    public partial class PackageEditor : WinFormsBase
     {
-        public IMEPackage pcc;
         public int CurrentView;
         public const int NAMES_VIEW = 0;
         public const int IMPORTS_VIEW = 1;
@@ -34,15 +29,14 @@ namespace ME3Explorer
 
         private List<int> ClassNames;
 
-
         public PackageEditor()
         {
             InitializeComponent();
             LoadRecentList();
             RefreshRecent();
             tabControl1.TabPages.Remove(scriptTab);
-            
-            SetView(TREE_VIEW) ;
+
+            SetView(TREE_VIEW);
             interpreterControl.PropertyValueChanged += InterpreterControl_PropertyValueChanged;
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
         }
@@ -74,8 +68,7 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                pcc?.Release(winForm: this);
-                pcc = MEPackageHandler.OpenMEPackage(s, winForm: this);
+                LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
@@ -122,7 +115,7 @@ namespace ME3Explorer
                 Classes.Add((count++) + " : " + exp.ObjectName);
             }
             count = 0;
-            
+
             int off = imports.Count;
             if (n >= 0)
             {
@@ -190,7 +183,6 @@ namespace ME3Explorer
                 RFiles.RemoveAt(0);
                 RFiles.Add(s);
             }
-
         }
 
         public void InitStuff()
@@ -242,7 +234,6 @@ namespace ME3Explorer
                     Button5.Checked = false;
                     break;
             }
-            
         }
 
         public void RefreshView()
@@ -379,7 +370,7 @@ namespace ME3Explorer
             treeView1.EndUpdate();
             listBox1.EndUpdate();
         }
-                
+
         private void Button3_Click(object sender, EventArgs e)
         {
             SetView(Exports_VIEW);
@@ -467,7 +458,7 @@ namespace ME3Explorer
                         interpreterControl.Index = n;
                         interpreterControl.InitInterpreter();
                     }
-                    UpdateStatusEx(n); 
+                    UpdateStatusEx(n);
                 }
                 //import
                 else
@@ -531,7 +522,7 @@ namespace ME3Explorer
             }
         }
 
-        public void UpdateStatusEx(int n)        
+        public void UpdateStatusEx(int n)
         {
             toolStripStatusLabel1.Text = $"Class:{pcc.getExport(n).ClassName} Flags: 0x{pcc.getExport(n).ObjectFlags.ToString("X16")}";
             toolStripStatusLabel1.ToolTipText = "";
@@ -563,7 +554,7 @@ namespace ME3Explorer
             pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.getExport(n).DataOffset, typeof(int), true, true));
             pg.Add(new CustomProperty("Data Size", "_Meta", pcc.getExport(n).DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
-                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));            
+                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
             propGrid.Refresh();
             propGrid.ExpandAllGridItems();
         }
@@ -622,7 +613,7 @@ namespace ME3Explorer
             {
                 parentVal = parent.Value.GetType();
             }
-            if (name == "nameindex" || name == "index" ||  parentVal == typeof(ColorProp) || parentVal == typeof(VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
+            if (name == "nameindex" || name == "index" || parentVal == typeof(ColorProp) || parentVal == typeof(VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
             {
                 name = parent.Label;
             }
@@ -649,7 +640,7 @@ namespace ME3Explorer
                         ent.Data[p[m].offsetval + i] = buff2[i];
                     break;
                 case PropertyReader.Type.IntProperty:
-                case PropertyReader.Type.StringRefProperty:                
+                case PropertyReader.Type.StringRefProperty:
                     int newv = Convert.ToInt32(e.ChangedItem.Value);
                     int oldv = Convert.ToInt32(e.OldValue);
                     buff2 = BitConverter.GetBytes(newv);
@@ -836,7 +827,7 @@ namespace ME3Explorer
                             int index = Convert.ToInt32(sidx);
                             buff2 = BitConverter.GetBytes(val);
                             for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i]; 
+                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i];
                             int t = listBox1.SelectedIndex;
                             listBox1.SelectedIndex = -1;
                             listBox1.SelectedIndex = t;
@@ -925,7 +916,7 @@ namespace ME3Explorer
                 start = 0;
             else
                 start = n + 1;
-            
+
             if (CurrentView == NAMES_VIEW)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
@@ -988,7 +979,7 @@ namespace ME3Explorer
         }
 
         private void findClassButtonClick(object sender, EventArgs e)
-        {            
+        {
             Find();
         }
 
@@ -1001,7 +992,7 @@ namespace ME3Explorer
             string path = PackageEditorDataFolder + "recentFiles.log";
             if (File.Exists(path))
             {
-                BitConverter.IsLittleEndian = true;
+                
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 byte[] buff = new byte[4];
                 fs.Read(buff, 0, 4);
@@ -1018,6 +1009,7 @@ namespace ME3Explorer
                 fs.Close();
             }
         }
+
         private void SaveRecentList()
         {
             if (!Directory.Exists(PackageEditorDataFolder))
@@ -1028,7 +1020,7 @@ namespace ME3Explorer
             if (File.Exists(path))
                 File.Delete(path);
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            BitConverter.IsLittleEndian = true;
+            
             byte[] buff = BitConverter.GetBytes(RFiles.Count);
             fs.Write(buff, 0, 4);
             for (int i = 0; i < RFiles.Count; i++)
@@ -1148,7 +1140,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            InterpreterHost ip = new InterpreterHost(pcc, n);
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (Package Editor)";
             ip.MdiParent = this.MdiParent;
             ip.Show();
@@ -1188,7 +1180,7 @@ namespace ME3Explorer
         {
             if (CurrentView == TREE_VIEW)
             {
-                if(n >= -pcc.ImportCount && n < pcc.ExportCount)
+                if (n >= -pcc.ImportCount && n < pcc.ExportCount)
                 {
                     TreeNode[] nodes = treeView1.Nodes.Find(n.ToString(), true);
                     if (nodes.Length > 0)
@@ -1199,11 +1191,11 @@ namespace ME3Explorer
                 }
             }
             else
-	        {
+            {
                 if (n >= 0 && n < listBox1.Items.Count)
                 {
                     listBox1.SelectedIndex = n;
-                } 
+                }
             }
         }
 
@@ -1246,52 +1238,6 @@ namespace ME3Explorer
             }
         }
 
-        private void editBlockingVolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
-            {
-                return;
-            }
-            if (pcc.getExport(n).ClassName.Contains("BlockingVolume") || pcc.getExport(n).ClassName.Contains("SFXDoor"))
-            {
-                List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
-                foreach (PropertyReader.Property p in props)
-                {
-                    if (pcc.getNameEntry(p.Name) == "location")
-                    {
-                        BitConverter.IsLittleEndian = true;
-                        float x = BitConverter.ToSingle(p.raw, 32);
-                        float y = BitConverter.ToSingle(p.raw, 36);
-                        float z = BitConverter.ToSingle(p.raw, 40);
-                        rtb1.Text = "Location : (" + x + "; " + y + "; " + z + ")";
-                        Application.DoEvents();
-                        string nx = Microsoft.VisualBasic.Interaction.InputBox("New X Value:", "Edit Location", x.ToString());
-                        string ny = Microsoft.VisualBasic.Interaction.InputBox("New Y Value:", "Edit Location", y.ToString());
-                        string nz = Microsoft.VisualBasic.Interaction.InputBox("New Z Value:", "Edit Location", z.ToString());
-                        if (nx == "" || ny == "" || nz == "")
-                            return;
-                        x = Convert.ToSingle(nx);
-                        y = Convert.ToSingle(ny);
-                        z = Convert.ToSingle(nz);
-                        byte[] buff = pcc.getExport(n).Data;
-                        int offset = p.offend - 12;
-                        byte[] tmp = BitConverter.GetBytes(x);
-                        for (int i = 0; i < 4; i++)
-                            buff[offset + i] = tmp[i];
-                        tmp = BitConverter.GetBytes(y);
-                        for (int i = 0; i < 4; i++)
-                            buff[offset + i + 4] = tmp[i];
-                        tmp = BitConverter.GetBytes(z);
-                        for (int i = 0; i < 4; i++)
-                            buff[offset + i + 8] = tmp[i];
-                        pcc.getExport(n).Data = buff;
-                        MessageBox.Show("Done.");
-                    }
-                }
-            }
-        }
-
         private void createBinaryReplaceJobFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
@@ -1330,17 +1276,9 @@ namespace ME3Explorer
             {
                 return;
             }
-            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.FileName, CopyArray(pcc.getExport(n).Data));
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.FileName, (byte[])pcc.getExport(n).Data.Clone());
             KFreonLib.Scripting.ModMaker.JobList.Add(mj);
             MessageBox.Show("Done");
-        }
-
-        public byte[] CopyArray(byte[] raw)
-        {
-            byte[] buff = new byte[raw.Length];
-            for (int i = 0; i < raw.Length; i++)
-                buff[i] = raw[i];
-            return buff;
         }
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
@@ -1401,62 +1339,6 @@ namespace ME3Explorer
             }
             RefreshView();
             goToNumber(n);
-        }
-        
-        private void exportFaceFXToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
-            {
-                return;
-            }
-            if (pcc.getExport(n).ClassName == "FaceFXAsset" || pcc.getExport(n).ClassName == "FaceFXAnimSet")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.fxa|*.fxa";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    byte[] buff = pcc.getExport(n).Data;
-                    BitConverter.IsLittleEndian = true;
-                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
-                    int start = props[props.Count - 1].offend;
-                    int len = BitConverter.ToInt32(buff, start);
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    fs.Write(buff, start + 4, len); 
-                    fs.Close();
-                    MessageBox.Show("Done.");
-                }
-            }
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
-            {
-                return;
-            }
-            if (pcc.getExport(n).ClassName == "FaceFXAsset" || pcc.getExport(n).ClassName == "FaceFXAnimSet")
-            {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.fxa|*.fxa";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    byte[] buff = pcc.getExport(n).Data;
-                    BitConverter.IsLittleEndian = true;
-                    List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.getExport(n));
-                    int start = props[props.Count - 1].offend;
-                    MemoryStream m = new MemoryStream();
-                    m.Write(buff, 0, start);
-                    byte[] import = File.ReadAllBytes(d.FileName);
-                    m.Write(BitConverter.GetBytes(import.Length), 0, 4);
-                    m.Write(import, 0, import.Length);
-                    pcc.getExport(n).Data = m.ToArray();
-                    pcc.save();
-                    Preview();
-                    MessageBox.Show("Done.");
-                }
-            }
         }
 
         private void Button5_Click(object sender, EventArgs e)
@@ -1568,7 +1450,7 @@ namespace ME3Explorer
                     IExportEntry ent = pcc.getExport(n).Clone();
                     pcc.addExport(ent);
                     RefreshView();
-                    goToNumber(pcc.ExportCount - 1); 
+                    goToNumber(pcc.ExportCount - 1);
                 }
                 else
                 {
@@ -1668,7 +1550,7 @@ namespace ME3Explorer
                     {
                         return;
                     }
-                    
+
                     int n = Convert.ToInt32(sourceNode.Name);
                     int link;
                     if (DestinationNode.Name == "")
@@ -1683,7 +1565,7 @@ namespace ME3Explorer
                     int nextIndex;
                     if (n >= 0)
                     {
-                        if(!importExport(importpcc, n, link))
+                        if (!importExport(importpcc, n, link))
                         {
                             return;
                         }
@@ -1714,7 +1596,7 @@ namespace ME3Explorer
                 index = Convert.ToInt32(node.Name);
                 if (index >= 0)
                 {
-                    if(!importExport(importpcc, index, n))
+                    if (!importExport(importpcc, index, n))
                     {
                         return false;
                     }
@@ -1727,7 +1609,7 @@ namespace ME3Explorer
                 }
                 if (node.Nodes.Count > 0)
                 {
-                    if(!importTree(node, importpcc, nextIndex))
+                    if (!importTree(node, importpcc, nextIndex))
                     {
                         return false;
                     }
@@ -1884,12 +1766,10 @@ namespace ME3Explorer
         private void PackageEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             Dispose(true);
-
         }
 
         private void PackageEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
         }
     }
 }

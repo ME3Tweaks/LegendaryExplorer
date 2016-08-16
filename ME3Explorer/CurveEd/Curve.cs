@@ -31,14 +31,9 @@ namespace ME3Explorer.CurveEd
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChanged?.Invoke(this, e);
-        }
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
@@ -139,7 +134,11 @@ namespace ME3Explorer.CurveEd
         public void AddPoint(CurvePoint newPoint, LinkedListNode<CurvePoint> relTo, bool before = true)
         {
             LinkedListNode<CurvePoint> addedNode;
-            if (before)
+            if (relTo == null)
+            {
+                addedNode = CurvePoints.AddFirst(newPoint);
+            }
+            else if (before)
             {
                 addedNode = CurvePoints.AddBefore(relTo, newPoint);
             }

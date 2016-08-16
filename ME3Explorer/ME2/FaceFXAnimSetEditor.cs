@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
-using ME3Explorer.ME2.Unreal.Classes;
+using ME3Explorer.FaceFX;
 
 namespace ME2Explorer
 {
@@ -17,7 +17,7 @@ namespace ME2Explorer
     {
         public ME2Package pcc;
         public List<int> Objects;
-        public FaceFXAnimSet FaceFX;
+        public ME2FaceFXAnimSet FaceFX;
 
         public FaceFXAnimSetEditor()
         {
@@ -103,7 +103,7 @@ namespace ME2Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            FaceFX = new FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
+            FaceFX = new ME2FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
             FaceFXRefresh(n);
         }
 

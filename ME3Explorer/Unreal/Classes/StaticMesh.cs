@@ -820,7 +820,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void SerializeToFile(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             WriteBoundaries(fs);
             Write_kDOP(fs);
@@ -838,7 +838,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] SerializeToBuffer()
         {
-            BitConverter.IsLittleEndian = true;
+            
             MemoryStream fs = new MemoryStream();
             WriteProperties(fs);
             WriteBoundaries(fs);

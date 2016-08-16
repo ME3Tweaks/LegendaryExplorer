@@ -15,9 +15,8 @@ using KFreonLib.MEDirectories;
 
 namespace ME3Explorer
 {
-    public partial class Soundplorer : Form
+    public partial class Soundplorer : WinFormsBase
     {
-        ME3Package pcc;
         public string CurrentFile;
         public List<int> ObjectIndexes;
         WwiseStream w;
@@ -43,7 +42,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
+                    LoadME3Package(d.FileName);
                     CurrentFile = d.FileName;
                     afcPath = "";
                     LoadObjects();
@@ -87,7 +86,7 @@ namespace ME3Explorer
             IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
-                w = new WwiseStream(pcc, index);                
+                w = new WwiseStream(pcc as ME3Package, index);                
                 string s = "#" + index + " WwiseStream : " + ex.ObjectName + "\n\n";
                 s += "Filename : \"" + w.FileName + "\"\n";
                 s += "Data size: " + w.DataSize + " bytes\n";                    
@@ -99,7 +98,7 @@ namespace ME3Explorer
             {
                 rtb1.Visible = false;
                 hb1.Visible = true;
-                wb = new WwiseBank(pcc, index);
+                wb = new WwiseBank(pcc as ME3Package, index);
                 hb1.ByteProvider = new DynamicByteProvider(wb.getBinary());
             }
         }
@@ -114,7 +113,7 @@ namespace ME3Explorer
             if (ex.ClassName == "WwiseStream")
             {
                 Stop();
-                w = new WwiseStream(pcc, index);
+                w = new WwiseStream(pcc as ME3Package, index);
                 string path;
                 if (w.IsPCCStored)
                 {

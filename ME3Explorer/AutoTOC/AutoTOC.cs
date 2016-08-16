@@ -67,7 +67,7 @@ namespace ME3Explorer
 
         static void CreateTOC(string basepath, string tocFile, string[] files)
         {
-            BitConverter.IsLittleEndian = true;
+            
             byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             using (FileStream fs = new FileStream(tocFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
             {
@@ -142,23 +142,25 @@ namespace ME3Explorer
 
         public static void GenerateAllTOCs(RichTextBox rtb = null)
         {
-            List<DirectoryInfo> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().ToList();
-            folders.Add(new DirectoryInfo(ME3Directory.gamePath + @"BIOGame\"));
+            List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
+            folders.Add(ME3Directory.gamePath + @"BIOGame\");
             //only use parallel execution if no ui interaction will be performed.
             if (rtb == null)
             {
-                Parallel.ForEach(folders, d =>
-                {
-                    prepareToCreateTOC(d.FullName);
-                }); 
+                Task.WhenAll(folders.Select(loc => TOCAsync(loc))).Wait();
             }
             else
             {
-                foreach (DirectoryInfo d in folders)
+                foreach (string s in folders)
                 {
-                    prepareToCreateTOC(d.FullName, rtb);
+                    prepareToCreateTOC(s, rtb);
                 }
             }
+        }
+
+        private static Task TOCAsync(string tocLoc)
+        {
+            return Task.Run(() => prepareToCreateTOC(tocLoc));
         }
 
         private void createTOCButton_Click(object sender, EventArgs e)
@@ -167,7 +169,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
             d.FileName = "PCConsoleTOC.bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 string path = Path.GetDirectoryName(d.FileName) + "\\";
                 prepareToCreateTOC(path, rtb1);

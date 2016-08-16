@@ -130,7 +130,7 @@ namespace ME3Explorer
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BitConverter.IsLittleEndian = true;
+            
             string path = string.Empty;
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "*.cnd|*.cnd";
@@ -151,7 +151,7 @@ namespace ME3Explorer
             while ((cnt = fileStream.Read(memory, sum, memsize - sum)) > 0) sum += cnt;
             fileStream.Close();
             fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            BitConverter.IsLittleEndian = true;
+            
             int magic = ReadInt32(fileStream);
             if (magic != 0x434F4E44)
             {
@@ -642,7 +642,7 @@ namespace ME3Explorer
             string path = string.Empty;
             SaveFileDialog FileDialog1 = new SaveFileDialog();
             FileDialog1.Filter = "*.cnd|*.cnd";
-            BitConverter.IsLittleEndian = true;
+            
             if (FileDialog1.ShowDialog() == DialogResult.OK)
             {
                 path = FileDialog1.FileName;

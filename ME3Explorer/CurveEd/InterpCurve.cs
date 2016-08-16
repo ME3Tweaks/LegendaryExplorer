@@ -243,19 +243,27 @@ namespace ME3Explorer.CurveEd
                 case CurveType.InterpCurveQuat:
                     break;
                 case CurveType.InterpCurveFloat:
-                    for (int i = 0; i < count; i++)
+                    //the "new Func"s are Immediately-Invoked Function Expressions
+                    m.WriteStructProperty(pcc, Name, "InterpCurveFloat", new Func<MemoryStream>(() =>
                     {
-                        m.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
-                        m.WriteFloatProperty(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal);
-                        m.WriteFloatProperty(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent);
-                        m.WriteFloatProperty(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent);
-                        m.WriteByteProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
-                        m.WriteNoneProperty(pcc);
-                    }
-                    temp.WriteArrayProperty(pcc, "Points", count, m.ToArray());
-                    temp.WriteNoneProperty(pcc);
-                    m = new MemoryStream();
-                    m.WriteStructProperty(pcc, Name, "InterpCurveFloat", temp.ToArray());
+                        MemoryStream tmp1 = new MemoryStream();
+                        tmp1.WriteArrayProperty(pcc, "Points", count, new Func<MemoryStream>(() =>
+                        {
+                            MemoryStream tmp2 = new MemoryStream();
+                            for (int i = 0; i < count; i++)
+                            {
+                                tmp2.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
+                                tmp2.WriteFloatProperty(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal);
+                                tmp2.WriteFloatProperty(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent);
+                                tmp2.WriteFloatProperty(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent);
+                                tmp2.WriteByteProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
+                                tmp2.WriteNoneProperty(pcc);
+                            }
+                            return tmp2;
+                        })());
+                        tmp1.WriteNoneProperty(pcc);
+                        return tmp1;
+                    })());
                     break;
                 case CurveType.InterpCurveVector:
                     for (int i = 0; i < count; i++)
@@ -273,10 +281,10 @@ namespace ME3Explorer.CurveEd
                         m.WriteByteProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
                         m.WriteNoneProperty(pcc);
                     }
-                    temp.WriteArrayProperty(pcc, "Points", count, m.ToArray());
+                    temp.WriteArrayProperty(pcc, "Points", count, m);
                     temp.WriteNoneProperty(pcc);
                     m = new MemoryStream();
-                    m.WriteStructProperty(pcc, Name, "InterpCurveVector", temp.ToArray());
+                    m.WriteStructProperty(pcc, Name, "InterpCurveVector", temp);
                     break;
                 case CurveType.InterpCurveVector2D:
                     break;

@@ -13,11 +13,10 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.DialogEditor
 {
-    public partial class DialogEditor : Form
+    public partial class DialogEditor : WinFormsBase
     {
-        public BioConversation Dialog;
-        public ME3Package pcc;
-        public List<int> Objs;
+        public ME3BioConversation Dialog;
+        public List<IExportEntry> Objs;
 
         public DialogEditor()
         {
@@ -38,12 +37,16 @@ namespace ME3Explorer.DialogEditor
         {
             try
             {
-                pcc = MEPackageHandler.OpenME3Package(fileName);
-                Objs = new List<int>();
+                LoadME3Package(fileName);
+                Objs = new List<IExportEntry>();
                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                for (int i = 0; i < Exports.Count; i++)
-                    if (Exports[i].ClassName == "BioConversation")
-                        Objs.Add(i);
+                foreach (var exp in Exports)
+                {
+                    if (exp.ClassName == "BioConversation")
+                    {
+                        Objs.Add(exp);
+                    }
+                }
                 RefreshCombo();
             }
             catch (Exception ex)
@@ -57,8 +60,8 @@ namespace ME3Explorer.DialogEditor
             if (Objs == null)
                 return;
             bioConversationComboBox.Items.Clear();
-            foreach (int i in Objs)
-                bioConversationComboBox.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
+            foreach (var exp in Objs)
+                bioConversationComboBox.Items.Add("#" + exp.Index + " : " + exp.ObjectName);
             if (bioConversationComboBox.Items.Count != 0)
                 bioConversationComboBox.SelectedIndex = 0;
         }
@@ -68,7 +71,7 @@ namespace ME3Explorer.DialogEditor
             int n = bioConversationComboBox.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new BioConversation(pcc, Objs[n]);
+            Dialog = new ME3BioConversation(Objs[n] as ME3ExportEntry);
             RefreshTabs();
             RefreshVisualizer();
         }
@@ -96,17 +99,17 @@ namespace ME3Explorer.DialogEditor
             foreach (int i in Dialog.StartingList)
                 startingListBox.Items.Add((count++) + " : " + i);
             count = 0;
-            foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
-                entryListTreeView.Nodes.Add(e.ToTree(count++, pcc));
+            foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
+                entryListTreeView.Nodes.Add(e.ToTree(count++, pcc as ME3Package));
             count = 0;
-            foreach (BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                replyListTreeView.Nodes.Add(r.ToTree(count++, pcc));
+            foreach (ME3BioConversation.ReplyListStruct r in Dialog.ReplyList)
+                replyListTreeView.Nodes.Add(r.ToTree(count++, pcc as ME3Package));
             count = 0;
             foreach (int i in Dialog.SpeakerList)
                 speakerListBox.Items.Add((count++) + " : " + i + " , " + pcc.getNameEntry(i));
             count = 0;
-            foreach (BioConversation.StageDirectionStruct sd in Dialog.StageDirections)
-                stageDirectionsListBox.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + TalkFiles.findDataById(sd.StringRef));
+            foreach (ME3BioConversation.StageDirectionStruct sd in Dialog.StageDirections)
+                stageDirectionsListBox.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + ME3TalkFiles.findDataById(sd.StringRef));
             count = 0;
             foreach (int i in Dialog.MaleFaceSets)
                 maleFaceSetsListBox.Items.Add((count++) + " : " + i);
@@ -272,7 +275,7 @@ namespace ME3Explorer.DialogEditor
             int n;
             if (pcc == null || Dialog == null || (n = stageDirectionsListBox.SelectedIndex) == -1)
                 return;
-            BioConversation.StageDirectionStruct sd = Dialog.StageDirections[n];
+            ME3BioConversation.StageDirectionStruct sd = Dialog.StageDirections[n];
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME3Explorer", Dialog.StageDirections[n].Text, 0, 0);
             if (result == "")
                 return;
@@ -292,7 +295,7 @@ namespace ME3Explorer.DialogEditor
             int n;
             if (pcc == null || Dialog == null || (n = stageDirectionsListBox.SelectedIndex) == -1)
                 return;
-            BioConversation.StageDirectionStruct sd = new BioConversation.StageDirectionStruct();
+            ME3BioConversation.StageDirectionStruct sd = new ME3BioConversation.StageDirectionStruct();
             sd.Text = "";
             foreach (char c in Dialog.StageDirections[n].Text)
                 sd.Text += c;
@@ -309,7 +312,7 @@ namespace ME3Explorer.DialogEditor
             TreeNode p = t.Parent;
             int n = p.Index, i = 0;
             string result;
-            BioConversation.ReplyListStruct rp = Dialog.ReplyList[n];
+            ME3BioConversation.ReplyListStruct rp = Dialog.ReplyList[n];
             #region MainProps
             if (p.Parent == null)//MainProps
             {
@@ -451,7 +454,7 @@ namespace ME3Explorer.DialogEditor
             TreeNode p = t.Parent;
             if (p.Parent == null)
             {
-                BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Index];
+                ME3BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Index];
                 int i = 0;
                 string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", "0", 0, 0);
                 if (result == "") return;
@@ -461,7 +464,7 @@ namespace ME3Explorer.DialogEditor
             }
             else
             {
-                BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Parent.Index];
+                ME3BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Parent.Index];
                 int i = 0;
                 string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer","0", 0, 0);
                 if (result == "") return;
@@ -489,7 +492,7 @@ namespace ME3Explorer.DialogEditor
             TreeNode t = replyListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
-            BioConversation.ReplyListStruct rp = new BioConversation.ReplyListStruct();
+            ME3BioConversation.ReplyListStruct rp = new ME3BioConversation.ReplyListStruct();
             rp.EntryList = new List<int>();
             foreach (int i in Dialog.ReplyList[t.Index].EntryList)
                 rp.EntryList.Add(i);
@@ -527,7 +530,7 @@ namespace ME3Explorer.DialogEditor
             TreeNode p = t.Parent;
             int n = p.Index, i = 0;
             string result;
-            BioConversation.EntryListStuct el = Dialog.EntryList[n];
+            ME3BioConversation.EntryListStuct el = Dialog.EntryList[n];
             #region MainProps
             if (p.Parent == null)//MainProps
             {
@@ -642,7 +645,7 @@ namespace ME3Explorer.DialogEditor
                 int m = t.Index;
                 if (p.Index == 0) //ReplyList
                 {
-                    BioConversation.EntryListReplyListStruct rpe = el.ReplyList[m];
+                    ME3BioConversation.EntryListReplyListStruct rpe = el.ReplyList[m];
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string for \"Paraphrase\"", "ME3Explorer", rpe.Paraphrase.ToString(), 0, 0);
                     rpe.Paraphrase = result;
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value for \"Index\"", "ME3Explorer", rpe.Index.ToString(), 0, 0);
@@ -675,7 +678,7 @@ namespace ME3Explorer.DialogEditor
             TreeNode p = t.Parent;
             if (p.Parent == null)
             {
-                BioConversation.EntryListStuct el = Dialog.EntryList[p.Index];
+                ME3BioConversation.EntryListStuct el = Dialog.EntryList[p.Index];
                 int i = 0;
                 string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", "0", 0, 0);
                 if (result == "") return;
@@ -687,7 +690,7 @@ namespace ME3Explorer.DialogEditor
             }
             else
             {
-                BioConversation.EntryListStuct el = Dialog.EntryList[p.Parent.Index];
+                ME3BioConversation.EntryListStuct el = Dialog.EntryList[p.Parent.Index];
                 int i = 0;
                 string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", "0", 0, 0);
                 if (result == "") return;
@@ -748,12 +751,12 @@ namespace ME3Explorer.DialogEditor
             TreeNode t = entryListTreeView.SelectedNode;
             if (t == null || t.Parent != null)
                 return;
-            BioConversation.EntryListStuct el0 = Dialog.EntryList[t.Index];
-            BioConversation.EntryListStuct el = new BioConversation.EntryListStuct();
-            el.ReplyList = new List<BioConversation.EntryListReplyListStruct>();
-            foreach (BioConversation.EntryListReplyListStruct rpe0 in el0.ReplyList)
+            ME3BioConversation.EntryListStuct el0 = Dialog.EntryList[t.Index];
+            ME3BioConversation.EntryListStuct el = new ME3BioConversation.EntryListStuct();
+            el.ReplyList = new List<ME3BioConversation.EntryListReplyListStruct>();
+            foreach (ME3BioConversation.EntryListReplyListStruct rpe0 in el0.ReplyList)
             {
-                BioConversation.EntryListReplyListStruct rpe = new BioConversation.EntryListReplyListStruct();
+                ME3BioConversation.EntryListReplyListStruct rpe = new ME3BioConversation.EntryListReplyListStruct();
                 rpe.CategoryType = rpe0.CategoryType;
                 rpe.CategoryValue = rpe0.CategoryValue;
                 rpe.Index = rpe0.Index;
@@ -795,9 +798,9 @@ namespace ME3Explorer.DialogEditor
             TreeNode p = t.Parent;
             if (p.Parent != null && p.Index == 0)
             {
-                BioConversation.EntryListStuct el = Dialog.EntryList[p.Parent.Index];
-                BioConversation.EntryListReplyListStruct rpe0 = el.ReplyList[t.Index];
-                BioConversation.EntryListReplyListStruct rpe = new BioConversation.EntryListReplyListStruct();
+                ME3BioConversation.EntryListStuct el = Dialog.EntryList[p.Parent.Index];
+                ME3BioConversation.EntryListReplyListStruct rpe0 = el.ReplyList[t.Index];
+                ME3BioConversation.EntryListReplyListStruct rpe = new ME3BioConversation.EntryListReplyListStruct();
                 rpe.CategoryType = rpe0.CategoryType;
                 rpe.CategoryValue = rpe0.CategoryValue;
                 rpe.Index = rpe0.Index;
@@ -831,12 +834,12 @@ namespace ME3Explorer.DialogEditor
                 Index = p.Parent.Index;
                 SubIndx = t.Index;
             }
-            BioConversation.EntryListStuct el = Dialog.EntryList[Index];
+            ME3BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply();
-            ar.pcc = pcc;
+            ar.pcc = pcc as ME3Package;
             if (SubIndx != -1)
             {
-                BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
+                ME3BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
                 ar.textBox1.Text = tr.Paraphrase;
                 ar.textBox2.Text = tr.refParaphrase.ToString();
                 ar.comboBox1.SelectedItem = pcc.getNameEntry(tr.CategoryValue);
@@ -848,7 +851,7 @@ namespace ME3Explorer.DialogEditor
             if (ar.state == -1)
                 return;
             if(el.ReplyList == null)
-                el.ReplyList = new List<BioConversation.EntryListReplyListStruct>();
+                el.ReplyList = new List<ME3BioConversation.EntryListReplyListStruct>();
             el.ReplyList.Add(ar.res);
             Dialog.EntryList[Index] = el;
             RefreshTabs();

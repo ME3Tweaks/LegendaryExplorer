@@ -323,7 +323,7 @@ namespace ME3Explorer.Unreal.Classes
 
             private float HalfToFloat(UInt16 val)
             {
-                BitConverter.IsLittleEndian = true;
+                
                 UInt16 u = val;
                 int sign = (u >> 15) & 0x00000001;
                 int exp = (u >> 10) & 0x0000001F;
@@ -815,7 +815,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public int GetPropertyEnd()
         {
-            BitConverter.IsLittleEndian = true;
+            
             int pos = 0x00;
             try
             {
@@ -872,7 +872,7 @@ namespace ME3Explorer.Unreal.Classes
         private TreeNode GetProperties(int n)
         {
             TreeNode res = new TreeNode("Properties");
-            BitConverter.IsLittleEndian = true;
+            
             int pos = 0x00;
             try
             {
@@ -1010,7 +1010,7 @@ namespace ME3Explorer.Unreal.Classes
 
         private float HalfToFloat(UInt16 val)
         {
-            BitConverter.IsLittleEndian = true;
+            
             UInt16 u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;

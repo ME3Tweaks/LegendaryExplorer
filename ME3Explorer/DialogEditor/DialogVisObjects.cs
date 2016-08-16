@@ -37,7 +37,7 @@ namespace ME3Explorer.DialogEditor
         }
 
         public abstract Tuple<char, int> Id { get; }
-        public BioConversation conv;
+        public ME3BioConversation conv;
         public DialogVis dv;
         public List<OutputLink> Outlinks;
 
@@ -46,7 +46,7 @@ namespace ME3Explorer.DialogEditor
         protected Pen outlinePen;
 
 #pragma warning disable RECS0154 // Parameter is never used
-        protected DlgObj(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+        protected DlgObj(int idx, float x, float y, ME3BioConversation bc, DialogVis dialogvis)
 #pragma warning restore RECS0154 // Parameter is never used
             : base()
         {
@@ -87,7 +87,7 @@ namespace ME3Explorer.DialogEditor
 
         protected PPath box;
 
-        public DlgStart(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+        public DlgStart(int idx, float x, float y, ME3BioConversation bc, DialogVis dialogvis)
             : base(idx, x, y, bc, dialogvis)
         {
             outlinePen = new Pen(Color.Black);
@@ -121,7 +121,7 @@ namespace ME3Explorer.DialogEditor
 
     public abstract class DlgLine : DlgObj
     {
-        public DlgLine(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+        public DlgLine(int idx, float x, float y, ME3BioConversation bc, DialogVis dialogvis)
             : base(idx, x, y, bc, dialogvis)
         {
 
@@ -132,7 +132,7 @@ namespace ME3Explorer.DialogEditor
     {
         public override Tuple<char, int> Id { get { return new Tuple<char, int>('e', index); } }
 
-        public DlgEntry(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+        public DlgEntry(int idx, float x, float y, ME3BioConversation bc, DialogVis dialogvis)
             : base(idx, x, y, bc, dialogvis)
         {
             
@@ -143,7 +143,7 @@ namespace ME3Explorer.DialogEditor
     {
         public override Tuple<char, int> Id { get { return new Tuple<char, int>('r', index); } }
 
-        public DlgReply(int idx, float x, float y, BioConversation bc, DialogVis dialogvis)
+        public DlgReply(int idx, float x, float y, ME3BioConversation bc, DialogVis dialogvis)
             : base(idx, x, y, bc, dialogvis)
         {
 

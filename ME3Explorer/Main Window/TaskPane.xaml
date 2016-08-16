@@ -12,11 +12,14 @@
         <local:PathToLocationConverter x:Key="pathToLocationConverter"/>
         <local:FileSizeToStringConverter x:Key="fileSizeToStringConverter"/>
         <local:CountToStringConverter x:Key="countToStringConverter"/>
+        <local:RelativeDateTimeConverter x:Key="relativeDateTimeConverter"/>
+
+        <local:PeriodicUpdater Interval="60.0" x:Key="updater"/>
     </UserControl.Resources>
     <Grid x:Name="rootGrid" Width="650">
         <Grid Width="650">
             <Grid Margin="15,24">
-                <ScrollViewer Foreground="{x:Null}" VerticalScrollBarVisibility="Hidden">
+                <ScrollViewer x:Name="topScrollViewer" Foreground="{x:Null}" VerticalScrollBarVisibility="Hidden">
                     <ItemsControl x:Name="fileList">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate >
@@ -31,34 +34,42 @@
                                         <ColumnDefinition Width="204"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Background="#7210192A">
-                                        <DockPanel Margin="7,0">
-                                            <TextBlock Text="{Binding FileName, Converter={StaticResource pathToFilenameConverter}, Mode=OneWay}"  FontSize="19"
-                                                       FontFamily="{StaticResource TitilliumWeb-Regular}" Foreground="#FFFDFDFD" DockPanel.Dock="Left"/>
-                                            <Image DockPanel.Dock="Right" Width="16" Height="16" 
+                                        <Grid Margin="7,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="16"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left" Width="375">
+                                                <TextBlock Text="{Binding FileName, Converter={StaticResource pathToFilenameConverter}, Mode=OneWay}" FontSize="19"
+                                                       FontFamily="{StaticResource TitilliumWeb-Regular}" Foreground="#FFFDFDFD"/>
+                                            </Viewbox>
+                                            <Image Grid.Column="1" Width="16" Height="16" 
                                                    Source="{Binding Game, Converter={StaticResource gameToIconConverter}, Mode=OneWay}"/>
-                                        </DockPanel>
+                                        </Grid>
                                         <Rectangle Fill="#A3FBFBFB" Height="2" Margin="7,0"/>
                                         <ItemsControl x:Name="ToolList" ItemsSource="{Binding Tools, Mode=OneWay}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate >
-                                                    <WrapPanel Margin="8,0,0,8"/>
+                                                    <WrapPanel Margin="8,10,0,8"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
                                                         <Button Padding="0" Style="{StaticResource BorderlessButton}" Margin="0,5,0,0"
-                                                            Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Width="204"
+                                                            Click="Button_Click" MouseEnter="Button_MouseEnter" Width="204"
                                                             MouseRightButtonDown="Button_MouseRightButtonDown">
                                                             <StackPanel Orientation="Horizontal" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Button}}">
                                                                 <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding tool.icon}" Opacity="0.85">
                                                                 </Image>
-                                                                <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
-                                                                    <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding tool.name}"
-                                                                           FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18"/>
-                                                                    <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
-                                                           Margin="0,-6,0,0" Fill="{StaticResource HighlightColor}" Visibility="Hidden"/>
-                                                                </StackPanel>
+                                                                <Viewbox Margin="10,0,0,0" VerticalAlignment="Center" StretchDirection="DownOnly" Width="170" HorizontalAlignment="Left">
+                                                                    <StackPanel>
+                                                                        <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding tool.name}"
+                                                                               FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18"/>
+                                                                        <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
+                                                                               Fill="{StaticResource HighlightColor}" Visibility="Hidden"/>
+                                                                    </StackPanel>
+                                                                </Viewbox>
                                                             </StackPanel>
                                                         </Button>
                                                     </Grid>
@@ -67,25 +78,32 @@
                                         </ItemsControl>
                                     </StackPanel>
                                     <Grid Grid.Column="1" Background="#6601050D">
-                                        <StackPanel Margin="14">
-                                            <TextBlock Text="Location:" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="19" Foreground="#FFFDFDFD" VerticalAlignment="Center" Margin="0,-10,0,0"/>
+                                        <StackPanel Margin="14,17">
+                                            <TextBlock Text="Location:" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="19" Foreground="#FFFDFDFD" VerticalAlignment="Center" Margin="0,-10,0,0"/>
                                             <TextBlock Text="{Binding FileName, Converter={StaticResource pathToLocationConverter}, Mode=OneWay}" Foreground="#FFF9F9F9"
-                                                       FontSize="16" FontFamily="{StaticResource TitilliumWeb-Light}"/>
-                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FFFDFDFD">
+                                                       FontSize="16" FontFamily="{StaticResource TitilliumWeb-Light}" Margin="0,-5,0,0"/>
+                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15" Foreground="#FFFDFDFD" Margin="10,0,0,0">
                                                 Open In: <Run Text="{Binding Tools.Count, Mode=OneWay, Converter={StaticResource countToStringConverter}, ConverterParameter=tool}" 
-                                                              Foreground="#FFF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}"/>
+                                                              Foreground="#CCF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}"/>
                                             </TextBlock>
-                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FFFDFDFD">
-                                                Last Saved: <Run Text="{Binding LastSaved, Mode=OneWay}" Foreground="#FFF9F9F9" 
-                                                                 FontFamily="{StaticResource TitilliumWeb-Light}"/>
+                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15" Foreground="#FFFDFDFD" Margin="10,0,0,0">
+                                                Last Saved: <Run Foreground="#FFF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}">
+                                                    <Run.Text>
+                                                        <MultiBinding Converter="{StaticResource relativeDateTimeConverter}">
+                                                            <Binding Path="LastSaved" Mode="OneWay"/>
+                                                            <Binding Source="{StaticResource updater}" Path="Now" Mode="OneWay"/>
+                                                        </MultiBinding>
+                                                    </Run.Text>
+                                                </Run>
                                             </TextBlock>
-                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FFFDFDFD">
+                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15" Foreground="#FFFDFDFD" Margin="10,0,0,0">
                                                 File Size: <Run Text="{Binding FileSize, Mode=OneWay, Converter={StaticResource fileSizeToStringConverter}}"
                                                                 Foreground="#FFF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}"/>
                                             </TextBlock>
-                                            <Button BorderBrush="{x:Null}" Click="saveButton_Click">
+                                            <Button Click="saveButton_Click" HorizontalAlignment="Center" HorizontalContentAlignment="Stretch" Padding="0">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource BorderedButton}">
+                                                        <Setter Property="BorderBrush" Value="{x:Null}"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter Property="BorderBrush" Value="#FF5692A2"/>
@@ -112,7 +130,7 @@
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
-            <Image x:Name="scrollIndicator" Source="../Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4"/>
+            <Image x:Name="scrollIndicator" Source="../Resources/elipsis_icon.ico" Width="24" Height="24" VerticalAlignment="Bottom" Margin="0,0,0,-4" Visibility="Hidden"/>
         </Grid>
     </Grid>
 </UserControl>

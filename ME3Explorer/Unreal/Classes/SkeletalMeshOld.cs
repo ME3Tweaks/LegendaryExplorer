@@ -378,7 +378,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] SerializeToBuffer()
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
+            
             WriteBounds(m);
             WriteMaterials(m);
             WriteOrgRot(m);
@@ -940,7 +940,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void CalcTangentSpace2(LOD l)
         {
-            BitConverter.IsLittleEndian = true;
+            
             int vertexCount = l.Edges.Count();
             Vector3[] vertices = ToVec3(l.Edges);
             Vector3[] normals = new Vector3[vertexCount];

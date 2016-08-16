@@ -308,7 +308,7 @@ namespace ME3Explorer
             DateTime initial = DateTime.Now;
             foreach (var sfar in sfarsToUnpack)
             {
-                string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.MyFileName)));
+                string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.FileName)));
                 if (prettyDLCNames.ContainsKey(dlcName))
                 {
                     dlcName = prettyDLCNames[dlcName];
@@ -366,6 +366,10 @@ namespace ME3Explorer
             unpackOutput.AppendLine("ALL TOCs Generated!");
             unpackProgress.Value = unpackProgress.Maximum;
             completeStep2();
+
+            //temp
+            this.RestoreAndBringToFront();
+            MessageBox.Show((DateTime.Now - initial).ToString());
         }
     }
 }

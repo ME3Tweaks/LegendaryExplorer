@@ -59,7 +59,7 @@ namespace ME3Explorer
 
         private void loadTOCfile(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
             int memsize = (int)fileStream.Length;
             memory = new byte[memsize];

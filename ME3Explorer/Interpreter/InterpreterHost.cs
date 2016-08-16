@@ -13,16 +13,16 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public partial class InterpreterHost : Form
+    public partial class InterpreterHost : WinFormsBase
     {
-        public InterpreterHost(IMEPackage pcc, int index)
+        public InterpreterHost(string fileName, int index)
         {
             InitializeComponent();
-            string className = pcc.getExport(index).ClassName;
+            LoadMEPackage(fileName);
             interpreter1.Pcc = pcc;
             interpreter1.Index = index;
             interpreter1.InitInterpreter();
-            toolStripStatusLabel1.Text = "Class: " + className + ", Export Index: " + index;
+            toolStripStatusLabel1.Text = "Class: " + pcc.getExport(index).ClassName + ", Export Index: " + index;
             toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.FileName);
             interpreter1.hb1.ReadOnly = true;
             interpreter1.saveHexButton.Visible = false;

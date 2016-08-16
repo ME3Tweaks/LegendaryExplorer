@@ -27,7 +27,7 @@ namespace ME3Explorer.Unreal
 
             public PSAPoint(byte[] raw, int offset)
             {
-                BitConverter.IsLittleEndian = true;
+                
                 x = BitConverter.ToSingle(raw, offset);
                 y = BitConverter.ToSingle(raw, offset + 4);
                 z = BitConverter.ToSingle(raw, offset + 8);
@@ -70,7 +70,7 @@ namespace ME3Explorer.Unreal
             }
             public PSAQuad(byte[] raw, int offset)
             {
-                BitConverter.IsLittleEndian = true;
+                
                 x = BitConverter.ToSingle(raw, offset);
                 y = BitConverter.ToSingle(raw, offset + 4);
                 z = BitConverter.ToSingle(raw, offset + 8);
@@ -147,7 +147,7 @@ namespace ME3Explorer.Unreal
         public void ImportPSA(string path)
         {
             data = new PSAData();
-            BitConverter.IsLittleEndian = true;
+            
             FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read);
             do
              {
@@ -176,7 +176,7 @@ namespace ME3Explorer.Unreal
 
         public void ExportPSA(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             MemoryStream m = new MemoryStream();
             WriteAnimHead(m);
             WriteBones(m);
@@ -310,7 +310,7 @@ namespace ME3Explorer.Unreal
 
         public void ReadAnimInfo(FileStream fs, ChunkHeader h)
         {
-            BitConverter.IsLittleEndian = true;
+            
             data.Infos = new List<PSAAnimInfo>();
             for (int i = 0; i < h.count; i++)
             {
@@ -344,7 +344,7 @@ namespace ME3Explorer.Unreal
         public void ReadAnimKeys(FileStream fs, ChunkHeader h)
         {
             data.Keys = new List<PSAAnimKeys>();
-            BitConverter.IsLittleEndian = true;
+            
             for (int i = 0; i < h.count; i++)
             {
                 PSAAnimKeys key = new PSAAnimKeys();

@@ -25,12 +25,23 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        GenericWindow current;
+        public GenericWindow current;
+
+        public event EventHandler Close;
 
         public void setTool(GenericWindow gen)
         {
             this.DataContext = current = gen;
-            screenShot.Source = gen.GetImage();
+            current.Disposing += Current_Disposing;
+            BitmapSource bitmap = gen.GetImage();
+            double scale = screenShot.Width / (bitmap.Width > bitmap.Height ? bitmap.Width : bitmap.Height);
+            screenShot.Source = new TransformedBitmap(bitmap, new ScaleTransform(scale, scale));
+        }
+
+        private void Current_Disposing(object sender, EventArgs e)
+        {
+            current.Disposing -= Current_Disposing;
+            Close?.Invoke(this, EventArgs.Empty);
         }
 
         private void viewButton_Click(object sender, RoutedEventArgs e)

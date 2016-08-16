@@ -101,7 +101,7 @@ namespace ME3Explorer.ScriptDB
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
+                
                 byte[] buff = BitConverter.GetBytes(database.Count());
                 DebugOutput.PrintLn("Creating file in memory...");
                 fs.Write(buff, 0, 4);
@@ -127,7 +127,7 @@ namespace ME3Explorer.ScriptDB
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 DebugOutput.PrintLn("Loading file to memory");
                 byte[] buff = new byte[fs.Length];
                 int cnt;

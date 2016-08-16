@@ -28,7 +28,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public MaterialInstanceConstant(ME3Package Pcc,int Idx)
         {
-            BitConverter.IsLittleEndian = true;
+            
             pcc = Pcc;
             index = Idx;
             memory = pcc.Exports[index].Data;

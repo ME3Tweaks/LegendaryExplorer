@@ -16,7 +16,7 @@ namespace ME3Explorer.DialogEditor
 {
     public partial class AddReply : Form
     {
-        public BioConversation.EntryListReplyListStruct res;
+        public ME3BioConversation.EntryListReplyListStruct res;
         public ME3Package pcc;
         public int state = 0;
 
@@ -32,7 +32,7 @@ namespace ME3Explorer.DialogEditor
 
         private void button1_Click(object sender, EventArgs e)
         {            
-            res = new BioConversation.EntryListReplyListStruct();
+            res = new ME3BioConversation.EntryListReplyListStruct();
             res.Paraphrase = textBox1.Text;
             res.refParaphrase = Int32.Parse(textBox2.Text);
             res.CategoryType = pcc.FindNameOrAdd("EReplyCategory");

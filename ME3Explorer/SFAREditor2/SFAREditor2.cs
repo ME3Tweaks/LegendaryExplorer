@@ -162,7 +162,7 @@ namespace ME3Explorer
                         {
                             System.Diagnostics.Debug.WriteLine("Adding file quick: " + sourcePaths[i] + " " + internalPaths[i]);
                             DLC.AddFileQuick(sourcePaths[i], internalPaths[i]);
-                            DLC = new DLCPackage(DLC.MyFileName);
+                            DLC = new DLCPackage(DLC.FileName);
                             treeView1.Nodes.Clear();
                             treeView1.Nodes.Add(DLC.ToTree());
                         }
@@ -214,7 +214,7 @@ namespace ME3Explorer
                                 return;
                             }
                             DLC.DeleteEntry(t.Index);
-                            DLC = new DLCPackage(DLC.MyFileName);
+                            DLC = new DLCPackage(DLC.FileName);
                             treeView1.Nodes.Clear();
                             treeView1.Nodes.Add(DLC.ToTree());
                         }
@@ -278,7 +278,7 @@ namespace ME3Explorer
         {
             try
             {
-                BitConverter.IsLittleEndian = true;
+                
                 DLC = new DLCPackage(filename);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
@@ -293,7 +293,7 @@ namespace ME3Explorer
         {
             try
             {
-                BitConverter.IsLittleEndian = true;
+                
                 DLC = new DLCPackage(filename);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
@@ -374,7 +374,7 @@ namespace ME3Explorer
                 System.Diagnostics.Debug.WriteLine("Adding file quick: " + d.FileName + " " + path);
 
                 DLC.AddFileQuick(d.FileName, path);
-                DLC = new DLCPackage(DLC.MyFileName);
+                DLC = new DLCPackage(DLC.FileName);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
                 SearchNode(result, treeView1.Nodes[0]);
@@ -388,7 +388,7 @@ namespace ME3Explorer
                 return;
             DebugOutput.StartDebugger("DLCEditor2");
             DLC.ReBuild();
-            DLC = new DLCPackage(DLC.MyFileName);
+            DLC = new DLCPackage(DLC.FileName);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(DLC.ToTree());
             MessageBox.Show("SFAR Rebuilt.");
@@ -441,7 +441,7 @@ namespace ME3Explorer
         {
             DLC.ReplaceEntry(filename, n);
 
-            DLC = new DLCPackage(DLC.MyFileName);
+            DLC = new DLCPackage(DLC.FileName);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(DLC.ToTree());
             SearchNode(filename, treeView1.Nodes[0]);
@@ -460,7 +460,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string file = DLC.MyFileName;               //full path
+                string file = DLC.FileName;               //full path
                 string t1 = Path.GetDirectoryName(file);    //cooked
                 string t2 = Path.GetDirectoryName(t1);      //DLC_Name
                 string t3 = Path.GetDirectoryName(t2);      //DLC
@@ -488,7 +488,7 @@ namespace ME3Explorer
             {
                 int n = t.Index;
                 DLC.DeleteEntry(n);
-                DLC = new DLCPackage(DLC.MyFileName);
+                DLC = new DLCPackage(DLC.FileName);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
                 MessageBox.Show("File Deleted.");
@@ -528,7 +528,7 @@ namespace ME3Explorer
             if (result.EndsWith(";"))
                 result = result.Substring(0, result.Length - 1);
             string[] patt = result.Split(';');
-            string file = DLC.MyFileName;                   //full path
+            string file = DLC.FileName;                   //full path
             string t1 = Path.GetDirectoryName(file);        //cooked
             string t2 = Path.GetDirectoryName(t1);          //DLC_Name
             string t3 = Path.GetDirectoryName(t2);          //DLC
@@ -577,7 +577,7 @@ namespace ME3Explorer
             if (result.EndsWith(";"))
                 result = result.Substring(0, result.Length - 1);
             string[] patt = result.Split(';');
-            string file = dlc.MyFileName;                   //full path
+            string file = dlc.FileName;                   //full path
             string t1 = Path.GetDirectoryName(file);        //cooked
             string t2 = Path.GetDirectoryName(t1);          //DLC_Name
             string t3 = Path.GetDirectoryName(t2);          //DLC

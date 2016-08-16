@@ -47,7 +47,7 @@ namespace ME3Explorer
             if (!HandleCommandLineArgs(args, out exitCode))
             {
                 //if not called with command line arguments, bring window to the fore
-                MainWindow.BringToFront();
+                MainWindow.RestoreAndBringToFront();
             }
             return exitCode;
         }

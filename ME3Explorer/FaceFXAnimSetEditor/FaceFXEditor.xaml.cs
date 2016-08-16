@@ -15,27 +15,24 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 
-namespace ME3Explorer.FaceFXAnimSetEditor
+namespace ME3Explorer.FaceFX
 {
     /// <summary>
     /// Interaction logic for FaceFXEditor.xaml
     /// </summary>
-    public partial class FaceFXEditor : Window
+    public partial class FaceFXEditor : WPFBase
     {
         struct Animation
         {
             public string Name { get; set; }
             public LinkedList<CurvePoint> points;
         }
-
-        IMEPackage pcc;
+        
         public List<IExportEntry> animSets;
-        public FaceFXAnimSet FaceFX;
-        public FaceFXAnimSet.FaceFXLine selectedLine;
+        public IFaceFXAnimSet FaceFX;
+        public ME3FaceFXLine selectedLine;
         private Point dragStart;
 
         public FaceFXEditor()
@@ -51,8 +48,19 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 try
                 {
-                    pcc?.Release(wpfWindow: this);
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName, wpfWindow: this);
+                    LoadMEPackage(d.FileName);
+                    if (pcc.Game == MEGame.ME1)
+                    {
+                        pcc?.Release(wpfWindow: this);
+                        pcc = null;
+                        throw new FormatException("FaceFXEditor does not work on ME1 files.");
+                    }
+                    selectedLine = null;
+                    FaceFX = null;
+                    treeView.Nodes.Clear();
+                    linesListBox.ItemsSource = null;
+                    animationListBox.ItemsSource = null;
+                    graph.Clear();
                     animSets = new List<IExportEntry>();
                     for (int i = 0; i < pcc.Exports.Count; i++)
                         if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
@@ -62,6 +70,8 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 }
                 catch (Exception ex)
                 {
+                    pcc?.Release(wpfWindow: this);
+                    pcc = null;
                     MessageBox.Show("Error:\n" + ex.Message);
                 }
             }
@@ -90,9 +100,18 @@ namespace ME3Explorer.FaceFXAnimSetEditor
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             SaveChanges();
-            FaceFX = new FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-            linesListBox.ItemsSource = FaceFX.Data.Data;
+            if (pcc.Game == MEGame.ME3)
+            {
+                FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                linesListBox.ItemsSource = FaceFX.Data.Data;
+            }
+            else
+            {
+                FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+            }
             treeView.Nodes.Clear();
+            graph.Clear();
         }
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -118,15 +137,23 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 return;
             }
-            selectedLine = (FaceFXAnimSet.FaceFXLine)e.AddedItems[0];
+            selectedLine = (ME3FaceFXLine)e.AddedItems[0];
             updateAnimListBox();
             int tlkID = 0;
             if (int.TryParse(selectedLine.ID, out tlkID))
             {
-                lineText.Text = TalkFiles.findDataById(tlkID);
+                if (pcc.Game == MEGame.ME3)
+                {
+                    lineText.Text = ME3TalkFiles.findDataById(tlkID); 
+                }
+                else
+                {
+                    lineText.Text = ME2Explorer.ME2TalkFiles.findDataById(tlkID);
+                }
             }
             treeView.Nodes.Clear();
-            treeView.Nodes.AddRange(FaceFX.DataToTree2(selectedLine));
+            System.Windows.Forms.TreeNode[] treeNodes = FaceFX.DataToTree2(selectedLine);
+            treeView.Nodes.AddRange(treeNodes);
         }
 
         private void updateAnimListBox()
@@ -151,8 +178,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 pos += animLength;
             }
             animationListBox.ItemsSource = anims;
-            graph.SelectedCurve = new Curve();
-            graph.Paint(true);
+            graph.Clear();
         }
 
         private void SaveChanges()
@@ -160,16 +186,30 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             if (selectedLine != null && animationListBox.ItemsSource != null)
             {
                 List<CurvePoint> curvePoints = new List<CurvePoint>();
-                List<FaceFXAnimSet.NameRef> animations = new List<FaceFXAnimSet.NameRef>();
                 List<int> numKeys = new List<int>();
-                foreach (Animation anim in animationListBox.ItemsSource)
+                if (pcc.Game == MEGame.ME3)
                 {
-                    animations.Add(new FaceFXAnimSet.NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0 });
-                    curvePoints.AddRange(anim.points);
-                    numKeys.Add(anim.points.Count);
+                    List<ME3NameRef> animations = new List<ME3NameRef>();
+                    foreach (Animation anim in animationListBox.ItemsSource)
+                    {
+                        animations.Add(new ME3NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0 });
+                        curvePoints.AddRange(anim.points);
+                        numKeys.Add(anim.points.Count);
+                    }
+                    selectedLine.animations = animations.ToArray();
                 }
-                selectedLine.animations = animations.ToArray();
-                selectedLine.points = curvePoints.Select(x => new FaceFXAnimSet.ControlPoint
+                else
+                {
+                    List<ME2NameRef> animations = new List<ME2NameRef>();
+                    foreach (Animation anim in animationListBox.ItemsSource)
+                    {
+                        animations.Add(new ME2NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0, unk1 = 1 });
+                        curvePoints.AddRange(anim.points);
+                        numKeys.Add(anim.points.Count);
+                    }
+                    selectedLine.animations = animations.ToArray();
+                }
+                selectedLine.points = curvePoints.Select(x => new ControlPoint
                 {
                     time = x.InVal,
                     weight = x.OutVal,
@@ -200,7 +240,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         if (!(e.OriginalSource is ScrollViewer) && linesListBox.SelectedItem != null)
                         {
                             SaveChanges();
-                            FaceFXAnimSet.FaceFXLine d = (linesListBox.SelectedItem as FaceFXAnimSet.FaceFXLine).Clone();
+                            ME3FaceFXLine d = (linesListBox.SelectedItem as ME3FaceFXLine).Clone();
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new { line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
                         }
                     }
@@ -229,16 +269,36 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 dynamic d = e.Data.GetData("FaceFXLine");
                 string[] sourceNames = d.sourceNames;
                 List<string> names = FaceFX.Header.Names.ToList();
-                FaceFXAnimSet.FaceFXLine line = d.line;
+                ME3FaceFXLine line = d.line;
                 line.Name = names.FindOrAdd(sourceNames[line.Name]);
-                line.animations = line.animations.Select(x => new FaceFXAnimSet.NameRef
+                if (pcc.Game == MEGame.ME3)
                 {
-                    index = names.FindOrAdd(sourceNames[x.index]),
-                    unk2 = x.unk2
-                }).ToArray();
-                FaceFX.Header.Names = names.ToArray();
-                FaceFX.Data.Data = FaceFX.Data.Data.Concat(line).ToArray();
-                linesListBox.ItemsSource = FaceFX.Data.Data;
+                    line.animations = line.animations.Select(x => new ME3NameRef
+                    {
+                        index = names.FindOrAdd(sourceNames[x.index]),
+                        unk2 = x.unk2
+                    }).ToArray();
+                    FaceFX.Data.Data = FaceFX.Data.Data.Concat(line).ToArray();
+                    FaceFX.Header.Names = names.ToArray();
+                    linesListBox.ItemsSource = FaceFX.Data.Data;
+                }
+                else
+                {
+                    if (!(line is ME2FaceFXLine))
+                    {
+                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, plase make an issue on the project's Github page");
+                        return;
+                    }
+                    line.animations = line.animations.Select(x => new ME2NameRef
+                    {
+                        index = names.FindOrAdd(sourceNames[x.index]),
+                        unk2 = x.unk2
+                    }).ToArray();
+                    ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
+                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Concat(line as ME2FaceFXLine).ToArray();
+                    FaceFX.Header.Names = names.ToArray();
+                    linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
+                }
             }
         }
 
@@ -292,9 +352,16 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 int group = d.group;
                 Animation a = d.anim;
                 List<string> names = FaceFX.Header.Names.ToList();
-                selectedLine.animations = selectedLine.animations.Concat(new FaceFXAnimSet.NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
+                if (pcc.Game == MEGame.ME3)
+                {
+                    selectedLine.animations = selectedLine.animations.Concat(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
+                }
+                else
+                {
+                    selectedLine.animations = selectedLine.animations.Concat(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
+                }
                 FaceFX.Header.Names = names.ToArray();
-                selectedLine.points = selectedLine.points.Concat(a.points.Select(x => new FaceFXAnimSet.ControlPoint
+                selectedLine.points = selectedLine.points.Concat(a.points.Select(x => new ControlPoint
                 {
                     time = x.InVal,
                     weight = x.OutVal,
@@ -319,11 +386,22 @@ namespace ME3Explorer.FaceFXAnimSetEditor
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
             SaveChanges();
-            FaceFXAnimSet.FaceFXLine line = (FaceFXAnimSet.FaceFXLine)linesListBox.SelectedItem;
-            List<FaceFXAnimSet.FaceFXLine> lines = FaceFX.Data.Data.ToList();
-            lines.Remove(line);
-            FaceFX.Data.Data = lines.ToArray();
-            linesListBox.ItemsSource = FaceFX.Data.Data;
+            ME3FaceFXLine line = (ME3FaceFXLine)linesListBox.SelectedItem;
+            if (pcc.Game == MEGame.ME3)
+            {
+                List<ME3FaceFXLine> lines = FaceFX.Data.Data.ToList();
+                lines.Remove(line);
+                FaceFX.Data.Data = lines.ToArray();
+                linesListBox.ItemsSource = FaceFX.Data.Data; 
+            }
+            else
+            {
+                ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
+                List<ME2FaceFXLine> lines = me2DataAnimSetStruct.Data.ToList();
+                lines.Remove(line as ME2FaceFXLine);
+                me2DataAnimSetStruct.Data = lines.ToArray();
+                linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
+            }
         }
 
         private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -375,10 +453,10 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                     selectedLine.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.ID, 0, 0);
                     break;
                 case 6://unk3
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.unk3.ToString(), 0, 0);
+                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.index.ToString(), 0, 0);
                     i = -1;
                     if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                        selectedLine.unk3 = i;
+                        selectedLine.index = i;
                     break;
                 default:
                     return;

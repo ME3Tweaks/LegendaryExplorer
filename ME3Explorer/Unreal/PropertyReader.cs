@@ -758,7 +758,6 @@ namespace ME3Explorer.Unreal
             switch (pcc.getNameEntry(type))
             {
                 case "IntProperty":
-                case "FloatProperty":
                 case "ObjectProperty":
                 case "StringRefProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
@@ -774,11 +773,6 @@ namespace ME3Explorer.Unreal
                         nameRef.Name += "_" + (nameRef.count - 1);
                     v.NameValue = nameRef;
                     v.len = 8;
-                    break;
-                case "BoolProperty":
-                    if(start < raw.Length)
-                        v.IntValue = raw[start];
-                    v.len = 1;
                     break;
             }
             return v;
@@ -1151,6 +1145,14 @@ namespace ME3Explorer.Unreal
             stream.WriteBytes(value);
         }
 
+        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, MemoryStream value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.StructProperty, (int)value.Length);
+            stream.WriteValueS32(pcc.FindNameOrAdd(structName));
+            stream.WriteValueS32(0);
+            stream.WriteStream(value);
+        }
+
         public static void WriteIntProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
             stream.WritePropHeader(pcc, propName, Type.IntProperty, 4);
@@ -1179,20 +1181,35 @@ namespace ME3Explorer.Unreal
         public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
         {
             stream.WritePropHeader(pcc, propName, Type.BoolProperty, 0);
-            stream.WriteValueB8(value);
+            if (pcc.Game == MEGame.ME3)
+            {
+                stream.WriteValueB8(value);
+            }
+            else
+            {
+                stream.WriteValueB32(value);
+            }
         }
 
         public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, byte value)
         {
             stream.WritePropHeader(pcc, propName, Type.ByteProperty, 1);
+            if (pcc.Game == MEGame.ME3)
+            {
+                stream.WriteValueS32(pcc.FindNameOrAdd("None"));
+                stream.WriteValueS32(0);
+            }
             stream.WriteByte(value);
         }
 
         public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, string enumName, string enumValue, int index = 0)
         {
             stream.WritePropHeader(pcc, propName, Type.ByteProperty, 8);
-            stream.WriteValueS32(pcc.FindNameOrAdd(enumName));
-            stream.WriteValueS32(0);
+            if (pcc.Game == MEGame.ME3)
+            {
+                stream.WriteValueS32(pcc.FindNameOrAdd(enumName));
+                stream.WriteValueS32(0); 
+            }
             stream.WriteValueS32(pcc.FindNameOrAdd(enumValue));
             stream.WriteValueS32(index);
         }
@@ -1204,12 +1221,30 @@ namespace ME3Explorer.Unreal
             stream.WriteBytes(value);
         }
 
+        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)
+        {
+            stream.WritePropHeader(pcc, propName, Type.ArrayProperty, 4 + (int)value.Length);
+            stream.WriteValueS32(count);
+            stream.WriteStream(value);
+        }
+
         public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
         {
-            int strLen = (value.Length + 1) * 2;
-            stream.WritePropHeader(pcc, propName, Type.StrProperty, strLen + 4);
-            stream.WriteValueS32(strLen);
-            stream.WriteStringZ(value);
+            int strLen;
+            if (pcc.Game == MEGame.ME3)
+            {
+                strLen = (value.Length + 1) * 2;
+                stream.WritePropHeader(pcc, propName, Type.StrProperty, strLen + 4);
+                stream.WriteValueS32(strLen);
+                stream.WriteStringUnicode(value);
+            }
+            else
+            {
+                strLen = (value.Length + 1);
+                stream.WritePropHeader(pcc, propName, Type.StrProperty, strLen + 4);
+                stream.WriteValueS32(strLen);
+                stream.WriteStringASCII(value);
+            }
         }
 
         public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, string propName, int value)

@@ -1,33 +1,38 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using ME3Explorer;
 
-namespace ME3Explorer.Unreal.Classes
+namespace ME2Explorer.Unreal.Classes
 {
-    public class BioConversation
+    public class ME2BioConversation
     {
-        public ME3Package pcc;
+        public ME2Package pcc;
         public int MyIndex;
         public int Unk1;
         public byte[] Memory;
         public List<PropertyReader.Property> Props;
         public List<int> StartingList;
-        public List<int> SpeakerList;
+        public List<SpeakerListStruct> SpeakerList;
         public List<int> MaleFaceSets;
         public List<int> FemaleFaceSets;
-        public List<StageDirectionStruct> StageDirections;
+        public List<ScriptListStruct> ScriptList;
         public List<EntryListStuct> EntryList;
         public List<ReplyListStruct> ReplyList;
 
-        public struct StageDirectionStruct
+        public struct ScriptListStruct
         {
             public string Text;
-            public int StringRef;
+            public int ScriptTag;
+        }
+
+        public struct SpeakerListStruct
+        {
+            public string Text;
+            public int SpeakerTag;
         }
 
         public struct EntryListReplyListStruct
@@ -35,7 +40,6 @@ namespace ME3Explorer.Unreal.Classes
             public string Paraphrase;
             public int Index;
             public int refParaphrase;
-            public int CategoryType;
             public int CategoryValue;
         }
 
@@ -59,15 +63,13 @@ namespace ME3Explorer.Unreal.Classes
             public bool Ambient;
             public bool NonTextline;
             public bool IgnoreBodyGestures;
-            public bool AlwaysHideSubtitle;
-            public int GUIStyleType;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, ME3Package pcc)
+            public TreeNode ToTree(int MyIndex, ME2Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
                     s = Text.Substring(0, Text.Length - 1);
-                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + TalkFiles.findDataById(refText));
+                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + ME2TalkFiles.findDataById(refText));
                 TreeNode t = new TreeNode("Reply List");
                 for (int i = 0; i < ReplyList.Count; i++)
                 {
@@ -80,9 +82,9 @@ namespace ME3Explorer.Unreal.Classes
                                   + " " 
                                   + e.refParaphrase 
                                   + " " 
-                                  + TalkFiles.findDataById(e.refParaphrase) 
+                                  + ME2TalkFiles.findDataById(e.refParaphrase) 
                                   + " " 
-                                  + e.Index 
+                                  + e.Index
                                   + " " 
                                   + pcc.getNameEntry(e.CategoryValue));
                 }
@@ -105,10 +107,9 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("Ambient : " + Ambient);
                 res.Nodes.Add("NonTextline : " + NonTextline);
                 res.Nodes.Add("IgnoreBodyGestures : " + IgnoreBodyGestures);
-                res.Nodes.Add("AlwaysHideSubtitle : " + AlwaysHideSubtitle);
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + TalkFiles.findDataById(refText, true));
-                res.Nodes.Add("GUIStyle : (" + pcc.getNameEntry(GUIStyleType) + ") " + pcc.getNameEntry(GUIStyleValue));
+                res.Nodes.Add("refText : " + refText + " " + ME2TalkFiles.findDataById(refText, true));
+                res.Nodes.Add("GUIStyle : " + pcc.getNameEntry(GUIStyleValue));
                 return res;
             }
         }
@@ -118,9 +119,6 @@ namespace ME3Explorer.Unreal.Classes
             public List<int> EntryList;
             public int ListenerIndex;
             public bool Unskippable;
-            public bool IsDefaultAction;
-            public bool IsMajorDecision;
-            public int ReplyTypeType;
             public int ReplyTypeValue;
             public string Text;
             public int refText;
@@ -135,27 +133,23 @@ namespace ME3Explorer.Unreal.Classes
             public bool Ambient;
             public bool NonTextLine;
             public bool IgnoreBodyGestures;
-            public bool AlwaysHideSubtitle;
-            public int GUIStyleType;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, ME3Package pcc)
+            public TreeNode ToTree(int MyIndex, ME2Package pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
                     s = Text.Substring(0, Text.Length - 1);
-                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + TalkFiles.findDataById(refText));
+                TreeNode res = new TreeNode(MyIndex + " : " + s + "  " + ME2TalkFiles.findDataById(refText));
                 TreeNode t = new TreeNode("Entry List");
                 for (int i = 0; i < EntryList.Count; i++)
                     t.Nodes.Add(i + " : " + EntryList[i]);
                 res.Nodes.Add(t);
                 res.Nodes.Add("Listener Index : " + ListenerIndex);
                 res.Nodes.Add("Unskippable : " + Unskippable);
-                res.Nodes.Add("IsDefaultAction : " + IsDefaultAction);
-                res.Nodes.Add("IsMajorDecision : " + IsMajorDecision);
-                res.Nodes.Add("ReplyType : (" + pcc.getNameEntry(ReplyTypeType) + ") " + pcc.getNameEntry(ReplyTypeValue));
+                res.Nodes.Add("ReplyType : " + pcc.getNameEntry(ReplyTypeValue));
                 res.Nodes.Add("Text : " + Text);
-                res.Nodes.Add("refText : " + refText + " " + TalkFiles.findDataById(refText, true));
+                res.Nodes.Add("refText : " + refText + " " + ME2TalkFiles.findDataById(refText, true));
                 res.Nodes.Add("ConditionalFunc : " + ConditionalFunc);
                 res.Nodes.Add("ConditionalParam : " + ConditionalParam);
                 res.Nodes.Add("StateTransition : " + StateTransition);
@@ -167,13 +161,12 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add("Ambient : " + Ambient);
                 res.Nodes.Add("NonTextline : " + NonTextLine);
                 res.Nodes.Add("IgnoreBodyGestures : " + IgnoreBodyGestures);
-                res.Nodes.Add("AlwaysHideSubtitle : " + AlwaysHideSubtitle);
-                res.Nodes.Add("GUIStyle : (" + pcc.getNameEntry(GUIStyleType) + ") " + pcc.getNameEntry(GUIStyleValue));
+                res.Nodes.Add("GUIStyle : " + pcc.getNameEntry(GUIStyleValue));
                 return res;
             }
         }
 
-        public BioConversation(ME3Package Pcc, int Index)
+        public ME2BioConversation(ME2Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
@@ -183,14 +176,14 @@ namespace ME3Explorer.Unreal.Classes
 
         private void ReadData()
         {
-            BitConverter.IsLittleEndian = true;
+            
             Unk1 = BitConverter.ToInt32(Memory, 0);
             Props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
             ReadStartingList();
             ReadEntryList();
             ReadReplyList();
             ReadSpeakerList();
-            ReadStageDirections();
+            ReadScriptList();
             ReadMaleFaceSets();
             ReadFemaleFaceSets();
         }
@@ -231,8 +224,7 @@ namespace ME3Explorer.Unreal.Classes
                 EntryListStuct e = new EntryListStuct();
                 foreach (PropertyReader.Property pp in p)
                 {
-                    string name = pcc.getNameEntry(pp.Name);
-                    switch (name)
+                    switch (pcc.getNameEntry(pp.Name))
                     {
                         case"ReplyListNew":
                             byte[] buff2 = pp.raw;
@@ -256,8 +248,9 @@ namespace ME3Explorer.Unreal.Classes
                                             r.refParaphrase = ppp.Value.IntValue;
                                             break;
                                         case "Category":
-                                            r.CategoryType = BitConverter.ToInt32(ppp.raw, 24);
-                                            r.CategoryValue = BitConverter.ToInt32(ppp.raw, 32);
+                                            r.CategoryValue = BitConverter.ToInt32(ppp.raw, 24);
+                                            break;
+                                        case "None":
                                             break;
                                     }
                                 e.ReplyList.Add(r);
@@ -278,7 +271,7 @@ namespace ME3Explorer.Unreal.Classes
                             e.ListenerIndex = pp.Value.IntValue;
                             break;
                         case "bSkippable":
-                            e.Skippable = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.Skippable = (pp.Value.IntValue == 1);
                             break;
                         case "sText":
                             e.Text = pp.Value.StringValue;
@@ -308,25 +301,22 @@ namespace ME3Explorer.Unreal.Classes
                             e.CameraIntimacy = pp.Value.IntValue;
                             break;
                         case "bFireConditional":
-                            e.FireConditional = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.FireConditional = (pp.Value.IntValue == 1);
                             break;
                         case "bAmbient":
-                            e.Ambient = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.Ambient = (pp.Value.IntValue == 1);
                             break;
                         case "bNonTextLine":
-                            e.NonTextline = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.NonTextline = (pp.Value.IntValue == 1);
                             break;
                         case "bIgnoreBodyGestures":
-                            e.IgnoreBodyGestures = (pp.raw[pp.raw.Length - 1] == 1);
-                            break;
-                        case "bAlwaysHideSubtitle":
-                            e.AlwaysHideSubtitle = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.IgnoreBodyGestures = (pp.Value.IntValue == 1);
                             break;
                         case "eGUIStyle":
-                            e.GUIStyleType = BitConverter.ToInt32(pp.raw, 24);
-                            e.GUIStyleValue = BitConverter.ToInt32(pp.raw, 32);
+                            e.GUIStyleValue = BitConverter.ToInt32(pp.raw, 24);
                             break;
-
+                        case "None":
+                            break;
                     }
                 }
                 EntryList.Add(e);
@@ -349,8 +339,7 @@ namespace ME3Explorer.Unreal.Classes
                 ReplyListStruct e = new ReplyListStruct();
                 foreach (PropertyReader.Property pp in p)
                 {
-                    string name = pcc.getNameEntry(pp.Name);
-                    switch (name)
+                    switch (pcc.getNameEntry(pp.Name))
                     {
                         case "EntryList":
                             byte[] buff2 = pp.raw;
@@ -367,17 +356,10 @@ namespace ME3Explorer.Unreal.Classes
                             e.ListenerIndex = pp.Value.IntValue;
                             break;                        
                         case "bUnskippable":
-                            e.Unskippable = (pp.raw[pp.raw.Length - 1] == 1);
-                            break;
-                        case "bIsDefaultAction":
-                            e.IsDefaultAction = (pp.raw[pp.raw.Length - 1] == 1);
-                            break;
-                        case "bIsMajorDecision":
-                            e.IsMajorDecision = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.Unskippable = (pp.Value.IntValue == 1);
                             break;
                         case "ReplyType":
-                            e.ReplyTypeType = BitConverter.ToInt32(pp.raw, 24);
-                            e.ReplyTypeValue = BitConverter.ToInt32(pp.raw, 32);
+                            e.ReplyTypeValue = BitConverter.ToInt32(pp.raw, 24);
                             break;
                         case "sText":
                             e.Text = pp.Value.StringValue;
@@ -407,25 +389,22 @@ namespace ME3Explorer.Unreal.Classes
                             e.CameraIntimacy = pp.Value.IntValue;
                             break;
                         case "bFireConditional":
-                            e.FireConditional = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.FireConditional = (pp.Value.IntValue == 1);
                             break;
                         case "bAmbient":
-                            e.Ambient = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.Ambient = (pp.Value.IntValue == 1);
                             break;
                         case "bNonTextLine":
-                            e.NonTextLine = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.NonTextLine = (pp.Value.IntValue == 1);
                             break;
                         case "bIgnoreBodyGestures":
-                            e.IgnoreBodyGestures = (pp.raw[pp.raw.Length - 1] == 1);
-                            break;
-                        case "bAlwaysHideSubtitle":
-                            e.AlwaysHideSubtitle = (pp.raw[pp.raw.Length - 1] == 1);
+                            e.IgnoreBodyGestures = (pp.Value.IntValue == 1);
                             break;
                         case "eGUIStyle":
-                            e.GUIStyleType = BitConverter.ToInt32(pp.raw, 24);
-                            e.GUIStyleValue = BitConverter.ToInt32(pp.raw, 32);
+                            e.GUIStyleValue = BitConverter.ToInt32(pp.raw, 24);
                             break;
-
+                        case "None":
+                            break;
                     }
                 }
                 ReplyList.Add(e);
@@ -435,20 +414,8 @@ namespace ME3Explorer.Unreal.Classes
 
         private void ReadSpeakerList()
         {
-            SpeakerList = new List<int>();
-            int f = FindPropByName("m_aSpeakerList");
-            if (f == -1)
-                return;
-            byte[] buff = Props[f].raw;
-            int count = BitConverter.ToInt32(buff, 0x18);
-            for (int i = 0; i < count; i++)
-                SpeakerList.Add(BitConverter.ToInt32(buff, 0x1C + i * 8));
-        }
-
-        private void ReadStageDirections()
-        {
-            StageDirections = new List<StageDirectionStruct>();
-            int f = FindPropByName("m_aStageDirections");
+            SpeakerList = new List<SpeakerListStruct>();
+            int f = FindPropByName("m_SpeakerList");
             if (f == -1)
                 return;
             byte[] buff = Props[f].raw;
@@ -457,10 +424,30 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < count; i++)
             {
                 List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
-                StageDirectionStruct sd = new StageDirectionStruct();
-                sd.Text = p[0].Value.StringValue;
-                sd.StringRef = p[1].Value.IntValue;
-                StageDirections.Add(sd);
+                SpeakerListStruct sp = new SpeakerListStruct();
+                sp.SpeakerTag = p[0].Value.IntValue;
+                sp.Text = pcc.getNameEntry(sp.SpeakerTag);
+                SpeakerList.Add(sp);
+                pos = p[p.Count - 1].offend;
+            }
+        }
+
+        private void ReadScriptList()
+        {
+            ScriptList = new List<ScriptListStruct>();
+            int f = FindPropByName("m_ScriptList");
+            if (f == -1)
+                return;
+            byte[] buff = Props[f].raw;
+            int count = BitConverter.ToInt32(buff, 0x18);
+            int pos = 0x1C;
+            for (int i = 0; i < count; i++)
+            {
+                List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
+                ScriptListStruct sd = new ScriptListStruct();
+                sd.ScriptTag = p[0].Value.IntValue;
+                sd.Text = pcc.getNameEntry(sd.ScriptTag);
+                ScriptList.Add(sd);
                 pos = p[p.Count - 1].offend;
             }
         }
@@ -502,7 +489,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (text != "" && text[text.Length - 1] != 0)
                 text += '\0';
-            int sizetext = text.Length * 2 + 4;
+            int sizetext = text.Length + 4;
             int NAME_name = FindName(name);
             int NAME_StrProperty = FindName("StrProperty");
             m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
@@ -511,9 +498,9 @@ namespace ME3Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(sizetext), 0, 4);
             m.Write(BitConverter.GetBytes(0), 0, 4);
-            m.Write(BitConverter.GetBytes(-text.Length), 0, 4);
+            m.Write(BitConverter.GetBytes(text.Length), 0, 4);
             foreach (char c in text)
-                m.Write(BitConverter.GetBytes((Int16)c), 0, 2);            
+                m.Write(BitConverter.GetBytes(c), 0, 1);            
             return 24 + sizetext;
         }
 
@@ -531,7 +518,22 @@ namespace ME3Explorer.Unreal.Classes
             return 28;
         }
 
-        public int WriteByteProperty(MemoryStream m, string name, int valuetype, int valuename)
+        public int WriteNameProperty(MemoryStream m, string name, int value)
+        {
+            int NAME_name = FindName(name);
+            int NAME_type = FindName("NameProperty");
+            m.Write(BitConverter.GetBytes(NAME_name), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(NAME_type), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(4), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(value), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
+            return 32;
+        }
+
+        public int WriteByteProperty(MemoryStream m, string name, int valuename)
         {
             int NAME_name = FindName(name);
             int NAME_type = FindName("ByteProperty");
@@ -541,11 +543,9 @@ namespace ME3Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(8), 0, 4);
             m.Write(BitConverter.GetBytes(0), 0, 4);
-            m.Write(BitConverter.GetBytes(valuetype), 0, 4);
-            m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(valuename), 0, 4);
             m.Write(BitConverter.GetBytes(0), 0, 4);
-            return 40;
+            return 32;
         }
 
         public int WriteIntArrayProperty(MemoryStream m, string name, List<int> value)
@@ -575,10 +575,10 @@ namespace ME3Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(0), 0, 4);
             if (value)
-                m.WriteByte(1);
+                m.Write(BitConverter.GetBytes(1), 0, 4);
             else
-                m.WriteByte(0);
-            return 25;
+                m.Write(BitConverter.GetBytes(0), 0, 4);
+            return 28;
         }
 
         public int WriteNone(MemoryStream m)
@@ -589,11 +589,18 @@ namespace ME3Explorer.Unreal.Classes
             return 8;
         }
 
-        public int WriteStageDirection(MemoryStream m, StageDirectionStruct sd)
+        public int WriteSpeakerList(MemoryStream m, SpeakerListStruct sp)
         {
-            int size = 0;            
-            size += WriteStrProperty(m, "sText", sd.Text);
-            size += WriteIntProperty(m, "srStrRef", sd.StringRef, "StringRefProperty");
+            int size = 0;
+            size += WriteNameProperty(m, "sSpeakerTag", sp.SpeakerTag);
+            size += WriteNone(m);
+            return size;
+        }
+
+        public int WriteScriptList(MemoryStream m, ScriptListStruct sd)
+        {
+            int size = 0;
+            size += WriteNameProperty(m, "sScriptTag", sd.ScriptTag);
             size += WriteNone(m);
             return size;
         }
@@ -602,25 +609,24 @@ namespace ME3Explorer.Unreal.Classes
         {
             int size = 0;            
             size += WriteEntryReplyList(m, el.ReplyList);
-            size += WriteIntArrayProperty(m, "aSpeakerList", el.SpeakerList);
             size += WriteIntProperty(m, "nSpeakerIndex", el.SpeakerIndex);
             size += WriteIntProperty(m, "nListenerIndex", el.ListenerIndex);
             size += WriteBoolProperty(m, "bSkippable", el.Skippable);
-            size += WriteStrProperty(m, "sText", el.Text);
+            size += WriteIntArrayProperty(m, "aSpeakerList", el.SpeakerList);
             size += WriteIntProperty(m, "srText", el.refText, "StringRefProperty");
+            size += WriteStrProperty(m, "sText", el.Text);
+            size += WriteBoolProperty(m, "bFireConditional", el.FireConditional);
             size += WriteIntProperty(m, "nConditionalFunc", el.ConditionalFunc);
             size += WriteIntProperty(m, "nConditionalParam", el.ConditionalParam);
             size += WriteIntProperty(m, "nStateTransition", el.StateTransition);
             size += WriteIntProperty(m, "nStateTransitionParam", el.StateTransitionParam);
             size += WriteIntProperty(m, "nExportID", el.ExportID);
             size += WriteIntProperty(m, "nScriptIndex", el.ScriptIndex);
-            size += WriteIntProperty(m, "nCameraIntimacy", el.CameraIntimacy);
-            size += WriteBoolProperty(m, "bFireConditional", el.FireConditional);
             size += WriteBoolProperty(m, "bAmbient", el.Ambient);
             size += WriteBoolProperty(m, "bNonTextLine", el.NonTextline);
+            size += WriteByteProperty(m, "eGUIStyle", el.GUIStyleValue);
+            size += WriteIntProperty(m, "nCameraIntimacy", el.CameraIntimacy);
             size += WriteBoolProperty(m, "bIgnoreBodyGestures", el.IgnoreBodyGestures);
-            size += WriteBoolProperty(m, "bAlwaysHideSubtitle", el.AlwaysHideSubtitle);
-            size += WriteByteProperty(m, "eGUIStyle", el.GUIStyleType, el.GUIStyleValue);
             size += WriteNone(m);
             return size;
         }
@@ -641,10 +647,10 @@ namespace ME3Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(list.Count), 0, 4);
             foreach (EntryListReplyListStruct el in list)
             {
-                tmpsize += WriteStrProperty(m, "sParaphrase", el.Paraphrase);
                 tmpsize += WriteIntProperty(m, "nIndex", el.Index);
                 tmpsize += WriteIntProperty(m, "srParaphrase", el.refParaphrase, "StringRefProperty");
-                tmpsize += WriteByteProperty(m, "Category", el.CategoryType, el.CategoryValue);
+                tmpsize += WriteStrProperty(m, "sParaphrase", el.Paraphrase);
+                tmpsize += WriteByteProperty(m, "Category", el.CategoryValue);
                 tmpsize += WriteNone(m);
                 arraysize += tmpsize;
                 size += tmpsize;
@@ -661,26 +667,23 @@ namespace ME3Explorer.Unreal.Classes
         {
             int size = 0;
             size += WriteIntArrayProperty(m, "EntryList", rp.EntryList);
+            size += WriteByteProperty(m, "ReplyType", rp.ReplyTypeValue);
             size += WriteIntProperty(m, "nListenerIndex", rp.ListenerIndex);
             size += WriteBoolProperty(m, "bUnskippable", rp.Unskippable);
-            size += WriteBoolProperty(m, "bIsDefaultAction", rp.IsDefaultAction);
-            size += WriteBoolProperty(m, "bIsMajorDecision", rp.IsMajorDecision);
-            size += WriteByteProperty(m, "ReplyType", rp.ReplyTypeType, rp.ReplyTypeValue);
-            size += WriteStrProperty(m, "sText", rp.Text);
             size += WriteIntProperty(m, "srText", rp.refText, "StringRefProperty");
+            size += WriteStrProperty(m, "sText", rp.Text);
+            size += WriteBoolProperty(m, "bFireConditional", rp.FireConditional);
             size += WriteIntProperty(m, "nConditionalFunc", rp.ConditionalFunc);
             size += WriteIntProperty(m, "nConditionalParam", rp.ConditionalParam);
             size += WriteIntProperty(m, "nStateTransition", rp.StateTransition);
             size += WriteIntProperty(m, "nStateTransitionParam", rp.StateTransitionParam);
             size += WriteIntProperty(m, "nExportID", rp.ExportID);
             size += WriteIntProperty(m, "nScriptIndex", rp.ScriptIndex);
-            size += WriteIntProperty(m, "nCameraIntimacy", rp.CameraIntimacy);
-            size += WriteBoolProperty(m, "bFireConditional", rp.FireConditional);
             size += WriteBoolProperty(m, "bAmbient", rp.Ambient);
             size += WriteBoolProperty(m, "bNonTextLine", rp.NonTextLine);
+            size += WriteByteProperty(m, "eGUIStyle", rp.GUIStyleValue);
+            size += WriteIntProperty(m, "nCameraIntimacy", rp.CameraIntimacy);
             size += WriteBoolProperty(m, "bIgnoreBodyGestures", rp.IgnoreBodyGestures);
-            size += WriteBoolProperty(m, "bAlwaysHideSubtitle", rp.AlwaysHideSubtitle);
-            size += WriteByteProperty(m, "eGUIStyle", rp.GUIStyleType, rp.GUIStyleValue);
             size += WriteNone(m);
             return size;
         }
@@ -730,12 +733,17 @@ namespace ME3Explorer.Unreal.Classes
                         m.Seek(tmp2, 0);
                         break;
                     case "m_aSpeakerList":
+                        tmp1 = (int)m.Position;
                         m.Write(p.raw, 0, 0x10);
-                        m.Write(BitConverter.GetBytes(SpeakerList.Count * 8 + 4), 0, 4);
-                        m.Write(BitConverter.GetBytes(0), 0, 4);
+                        m.Write(new byte[8], 0, 8);//size placeholder
                         m.Write(BitConverter.GetBytes(SpeakerList.Count), 0, 4);
-                        foreach (int i in SpeakerList)
-                            m.Write(BitConverter.GetBytes((long)i), 0, 8);
+                        size = 4;
+                        foreach (SpeakerListStruct sp in SpeakerList)
+                            size += WriteSpeakerList(m, sp);
+                        tmp2 = (int)m.Position;
+                        m.Seek(tmp1 + 0x10, 0);
+                        m.Write(BitConverter.GetBytes(size), 0, 4);
+                        m.Seek(tmp2, 0);
                         break;
                     case "m_aFemaleFaceSets":
                         m.Write(p.raw, 0, 0x10);
@@ -753,14 +761,14 @@ namespace ME3Explorer.Unreal.Classes
                         foreach (int i in MaleFaceSets)
                             m.Write(BitConverter.GetBytes(i), 0, 4);
                         break;
-                    case "m_aStageDirections":
+                    case "m_ScriptList":
                         tmp1 = (int)m.Position;
                         m.Write(p.raw, 0, 0x10);
-                        m.Write(new byte[8], 0, 8);
-                        m.Write(BitConverter.GetBytes(StageDirections.Count), 0, 4);
+                        m.Write(new byte[8], 0, 8);//size placeholder
+                        m.Write(BitConverter.GetBytes(ScriptList.Count), 0, 4);
                         size = 4;
-                        foreach (StageDirectionStruct sd in StageDirections)
-                            size += WriteStageDirection(m, sd);
+                        foreach (ScriptListStruct sd in ScriptList)
+                            size += WriteScriptList(m, sd);
                         tmp2 = (int)m.Position;
                         m.Seek(tmp1 + 0x10, 0);
                         m.Write(BitConverter.GetBytes(size), 0, 4);
@@ -770,9 +778,8 @@ namespace ME3Explorer.Unreal.Classes
                         m.Write(p.raw, 0, p.raw.Length);
                         break;
                 }
-            m.Write(BitConverter.GetBytes(0), 0, 4);
             pcc.Exports[MyIndex].Data = m.ToArray();
-            pcc.save();
+            pcc.save(pcc.FileName);
         }
     }
 }

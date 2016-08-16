@@ -24,7 +24,7 @@ using Gibbed.IO;
 
 namespace ME3Explorer
 {
-    public partial class SequenceEditor : Form
+    public partial class SequenceEditor : WinFormsBase
     {
 
         public SequenceEditor()
@@ -131,7 +131,6 @@ namespace ME3Explorer
         private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
-        public IMEPackage pcc;
         public List<int> CurrentObjects;
         public List<SObj> Objects;
         private List<SaveData> SavedPositions;
@@ -158,8 +157,7 @@ namespace ME3Explorer
         {
             try
             {
-                pcc?.Release(winForm: this);
-                pcc = MEPackageHandler.OpenMEPackage(fileName, winForm: this);
+                LoadMEPackage(fileName);
                 CurrentFile = fileName;
                 toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
                 LoadSequences();
@@ -512,7 +510,7 @@ namespace ME3Explorer
                 }
                 foreach (SObj o in graphEditor.nodeLayer)
                 {
-                    if (o.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
+                    if (o is SAction)
                     {
                         SaveData savedInfo = new SaveData(-1);
                         if (SavedPositions.Count > 0)
@@ -648,7 +646,7 @@ namespace ME3Explorer
             }
             else
                 n = CurrentObjects[n];
-            InterpreterHost ip = new InterpreterHost(pcc, n);
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (SequenceEditor)";
             ip.MdiParent = this.MdiParent;
             ip.interpreter1.PropertyValueChanged += Interpreter_PropertyValueChanged;
@@ -680,7 +678,7 @@ namespace ME3Explorer
                 //break links
                 breakLinksToolStripMenuItem.Enabled = false;
                 breakLinksToolStripMenuItem.DropDown = null;
-                if(sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction") || sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SEvent"))
+                if(sender is SAction || sender is SEvent)
                 {
                     ToolStripMenuItem temp;
                     ArrayList array;
@@ -904,7 +902,7 @@ namespace ME3Explorer
             //add to sequence
             buff = pcc.getExport(SequenceIndex).Data;
             List<byte> ListBuff = new List<byte>(buff);
-            BitConverter.IsLittleEndian = true;
+            
             p = PropertyReader.getPropOrNull(pcc.getExport(SequenceIndex), "SequenceObjects");
             if (p != null)
             {

@@ -42,7 +42,7 @@ namespace ME3Explorer.SubtitleScanner
                 return;
             }
             InitializeComponent();
-            BitConverter.IsLittleEndian = true;
+            
         }
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
@@ -77,10 +77,10 @@ namespace ME3Explorer.SubtitleScanner
                         if (Exports[i].ClassName == "BioConversation")
                         {
                             DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                            BioConversation Dialog = new BioConversation(pcc, i);
-                            foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
+                            ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                            foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                             {
-                                string text = TalkFiles.findDataById(e.refText);
+                                string text = ME3TalkFiles.findDataById(e.refText);
                                 if (text.Length != 7 && text != "No Data")
                                 {
                                     EntryStruct t = new EntryStruct();
@@ -102,9 +102,9 @@ namespace ME3Explorer.SubtitleScanner
                                     DebugOutput.PrintLn("Requ.: ("+ t.speaker + ") " + t.text, false);
                                 }
                             }
-                            foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
+                            foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
                             {
-                                string text = TalkFiles.findDataById(e.refText);
+                                string text = ME3TalkFiles.findDataById(e.refText);
                                 if (text.Length != 7 && text != "No Data")
                                 {
                                     EntryStruct t = new EntryStruct();
@@ -156,10 +156,10 @@ namespace ME3Explorer.SubtitleScanner
                             if (Exports[i].ClassName == "BioConversation")
                             {
                                 DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                BioConversation Dialog = new BioConversation(pcc, i);
-                                foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
+                                ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                 {
-                                    string text = TalkFiles.findDataById(e.refText);
+                                    string text = ME3TalkFiles.findDataById(e.refText);
                                     if (text.Length != 7 && text != "No Data")
                                     {
                                         EntryStruct t = new EntryStruct();
@@ -181,9 +181,9 @@ namespace ME3Explorer.SubtitleScanner
                                         DebugOutput.PrintLn("Requ.: (" + t.speaker + ") " + t.text, false);
                                     }
                                 }
-                                foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
+                                foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
                                 {
-                                    string text = TalkFiles.findDataById(e.refText);
+                                    string text = ME3TalkFiles.findDataById(e.refText);
                                     if (text.Length != 7 && text != "No Data")
                                     {
                                         EntryStruct t = new EntryStruct();
@@ -245,10 +245,10 @@ namespace ME3Explorer.SubtitleScanner
                                     if (Exports[i].ClassName == "BioConversation")
                                     {
                                         DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                        BioConversation Dialog = new BioConversation(pcc, i);
-                                        foreach (BioConversation.EntryListStuct e in Dialog.EntryList)
+                                        ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                        foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                         {
-                                            string text = TalkFiles.findDataById(e.refText);
+                                            string text = ME3TalkFiles.findDataById(e.refText);
                                             if (text.Length != 7 && text != "No Data")
                                             {
                                                 EntryStruct t = new EntryStruct();
@@ -270,9 +270,9 @@ namespace ME3Explorer.SubtitleScanner
                                                 DebugOutput.PrintLn("Requ.: (" + t.speaker + ") " + t.text, false);
                                             }
                                         }
-                                        foreach (BioConversation.ReplyListStruct e in Dialog.ReplyList)
+                                        foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
                                         {
-                                            string text = TalkFiles.findDataById(e.refText);
+                                            string text = ME3TalkFiles.findDataById(e.refText);
                                             if (text.Length != 7 && text != "No Data")
                                             {
                                                 EntryStruct t = new EntryStruct();

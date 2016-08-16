@@ -76,6 +76,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.24.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.24\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -155,6 +159,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="FaceFXAnimSetEditor\IME3FaceFXAnimSet.cs" />
     <Compile Include="GenericWindow.cs" />
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
@@ -185,8 +190,9 @@
     <Compile Include="ME2\FaceFXAnimSetEditor.Designer.cs">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME2\Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -332,7 +338,7 @@
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
       <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TlkManager\TalkFiles.cs" />
+    <Compile Include="TlkManager\ME3TalkFiles.cs" />
     <Compile Include="TlkManager\TlkManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -361,7 +367,7 @@
     <Compile Include="Unreal\Classes\AnimSet.cs" />
     <Compile Include="Unreal\Classes\AnimTree.cs" />
     <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
-    <Compile Include="Unreal\Classes\BioConversation.cs" />
+    <Compile Include="DialogEditor\ME3BioConversation.cs" />
     <Compile Include="Unreal\Classes\BioPathPoint.cs" />
     <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
     <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
@@ -372,7 +378,7 @@
     <Compile Include="Unreal\Classes\DecalActor.cs" />
     <Compile Include="Unreal\Classes\DecalComponent.cs" />
     <Compile Include="Unreal\Classes\Emitter.cs" />
-    <Compile Include="Unreal\Classes\FaceFXAnimSet.cs" />
+    <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\InterpActor.cs" />
     <Compile Include="Unreal\Classes\Level.cs" />
@@ -411,6 +417,10 @@
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="WinFormsBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WPFBase.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -466,12 +476,6 @@
     </Compile>
     <Compile Include="BIKExtract\BIKExtract.Designer.cs">
       <DependentUpon>BIKExtract.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CameraTool\CameraTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CameraTool\CameraTool.Designer.cs">
-      <DependentUpon>CameraTool.cs</DependentUpon>
     </Compile>
     <Compile Include="ClassViewer\ClassViewer.cs">
       <SubType>Form</SubType>
@@ -648,7 +652,7 @@
     <Compile Include="ME1\TlkManager.designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME1\Unreal\Classes\BioConversation.cs" />
+    <Compile Include="ME1\Unreal\Classes\ME1BioConversation.cs" />
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
@@ -665,14 +669,14 @@
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Packages\CompressionHelper.cs" />
-    <Compile Include="ME2\TlkManager\TalkFiles.cs" />
+    <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
     <Compile Include="ME2\TlkManager\TlkManager.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ME2\TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="ME2\Unreal\Classes\BioConversation.cs" />
+    <Compile Include="ME2\Unreal\Classes\ME2BioConversation.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer2\Meshplorer2.cs">
       <SubType>Form</SubType>
@@ -764,9 +768,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CameraTool\CameraTool.resx">
-      <DependentUpon>CameraTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
       <DependentUpon>ClassViewer.cs</DependentUpon>
@@ -1156,6 +1157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\close.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\script_database_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

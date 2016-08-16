@@ -16,7 +16,7 @@ namespace ME2Explorer
 {
     public partial class AddReply : Form
     {
-        public BioConversation.EntryListReplyListStruct res;
+        public ME2BioConversation.EntryListReplyListStruct res;
         public ME2Package pcc;
         public int state = 0;
 
@@ -41,7 +41,7 @@ namespace ME2Explorer
 
         private void button1_Click(object sender, EventArgs e)
         {            
-            res = new BioConversation.EntryListReplyListStruct();
+            res = new ME2BioConversation.EntryListReplyListStruct();
             res.Paraphrase = textBox1.Text;
             res.refParaphrase = Int32.Parse(textBox2.Text);
             res.CategoryValue = pcc.FindNameOrAdd(comboBox1.Text);

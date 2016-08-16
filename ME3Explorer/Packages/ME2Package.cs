@@ -19,7 +19,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return exports.Any(entry => entry.hasChanged == true) || imports.Any(entry => entry.hasChanged == true || namesAdded > 0);
+                return exports.Any(entry => entry.HasChanged == true) || imports.Any(entry => entry.HasChanged == true || namesAdded > 0);
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
@@ -68,7 +68,7 @@ namespace ME3Explorer.Packages
 
         private ME2Package(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
@@ -154,6 +154,7 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < ImportCount; i++)
             {
                 ME2ImportEntry import = new ME2ImportEntry(this, fs.ReadBytes(28));
+                import.Index = i;
                 imports.Add(import);
             }
         }
@@ -182,7 +183,8 @@ namespace ME3Explorer.Packages
                 fs.Seek(exp.DataOffset, SeekOrigin.Begin);
                 fs.Read(buffer, 0, buffer.Length);
                 exp.Data = buffer;
-                exp.hasChanged = false;
+                exp.HasChanged = false;
+                exp.Index = i;
                 exports.Add(exp);
                 fs.Seek(end, SeekOrigin.Begin);
             }
@@ -306,14 +308,14 @@ namespace ME3Explorer.Packages
             int max;
             if (IsAppend)
             {
-                replaceExports = exports.Where(export => export.hasChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
-                appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.hasChanged && export.DataSize > export.OriginalDataSize));
+                replaceExports = exports.Where(export => export.HasChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
+                appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.HasChanged && export.DataSize > export.OriginalDataSize));
                 max = exports.Where(exp => exp.DataOffset < NameOffset).Max(e => e.DataOffset);
             }
             else
             {
                 IEnumerable<ME2ExportEntry> changedExports;
-                changedExports = exports.Where(export => export.hasChanged);
+                changedExports = exports.Where(export => export.HasChanged);
                 replaceExports = changedExports.Where(export => export.DataSize <= export.OriginalDataSize);
                 appendExports = changedExports.Except(replaceExports);
                 max = exports.Max(maxExport => maxExport.DataOffset);
@@ -398,16 +400,16 @@ namespace ME3Explorer.Packages
             AfterSave();
         }
 
-        private void AfterSave()
+        protected override void AfterSave()
         {
-            lastSaved = DateTime.Now;
+            base.AfterSave();
             foreach (var export in exports)
             {
-                export.hasChanged = false;
+                export.HasChanged = false;
             }
             foreach (var import in imports)
             {
-                import.hasChanged = false;
+                import.HasChanged = false;
             }
             namesAdded = 0;
         }
@@ -509,7 +511,7 @@ namespace ME3Explorer.Packages
             if (exportEntry.FileRef != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
 
-            exportEntry.hasChanged = true;
+            exportEntry.HasChanged = true;
 
             exports.Add(exportEntry);
             ExportCount = exports.Count;

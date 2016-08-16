@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class MEPackage
+    public abstract class MEPackage : INotifyPropertyChanged
     {
         protected const int appendFlag = 0x00100000;
 
@@ -50,7 +52,7 @@ namespace ME3Explorer.Packages
         protected List<string> names;
         public IReadOnlyList<string> Names { get { return names; } }
         
-        protected DateTime? lastSaved;
+        private DateTime? lastSaved;
         public DateTime LastSaved
         {
             get
@@ -80,6 +82,13 @@ namespace ME3Explorer.Packages
                 }
                 return 0;
             }
+        }
+
+        protected virtual void AfterSave()
+        {
+            lastSaved = DateTime.Now;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
         }
 
         public bool isName(int index)
@@ -169,5 +178,10 @@ namespace ME3Explorer.Packages
         }
 
         public event EventHandler noLongerOpenInTools;
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected void exportChanged(object sender, PropertyChangedEventArgs e)
+        {
+        }
     }
 }

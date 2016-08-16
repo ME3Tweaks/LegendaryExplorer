@@ -274,7 +274,7 @@ namespace ME3Explorer
 
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
-            BitConverter.IsLittleEndian = true;
+            
         }
     }
 }

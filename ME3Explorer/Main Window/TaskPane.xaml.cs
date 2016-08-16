@@ -24,10 +24,27 @@ namespace ME3Explorer
     {
         public event EventHandler<GenericWindow> ToolMouseOver;
 
+        Button highlightedButton;
+
         public TaskPane()
         {
             InitializeComponent();
             fileList.ItemsSource = MEPackageHandler.packagesInTools;
+            MEPackageHandler.packagesInTools.CollectionChanged += PackagesInTools_CollectionChanged;
+        }
+
+        private async void PackagesInTools_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //wait for the UI to reflect the collection change
+            await Task.Delay(100);
+            if (fileList.ActualHeight > topScrollViewer.ActualHeight)
+            {
+                scrollIndicator.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                scrollIndicator.Visibility = Visibility.Hidden;
+            }
         }
 
         protected virtual void Button_Click(object sender, RoutedEventArgs e)
@@ -50,6 +67,8 @@ namespace ME3Explorer
             Button b = sender as Button;
             if (b != null)
             {
+                deselectButton(highlightedButton);
+                highlightedButton = b;
                 Rectangle r = b.FindName("highlightUnderline") as Rectangle;
                 if (r != null)
                 {
@@ -60,13 +79,12 @@ namespace ME3Explorer
                 {
                     img.Opacity = 1;
                 }
+                ToolMouseOver?.Invoke(sender, b.DataContext as GenericWindow);
             }
-            ToolMouseOver?.Invoke(sender, (sender as Button)?.DataContext as GenericWindow);
         }
 
-        protected virtual void Button_MouseLeave(object sender, MouseEventArgs e)
+        private static void deselectButton(Button b)
         {
-            Button b = sender as Button;
             if (b != null)
             {
                 Rectangle r = b.FindName("highlightUnderline") as Rectangle;
@@ -112,7 +130,7 @@ namespace ME3Explorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot convert back");
         }
     }
 
@@ -130,7 +148,7 @@ namespace ME3Explorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot convert back");
         }
     }
 
@@ -165,7 +183,7 @@ namespace ME3Explorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot convert back");
         }
     }
 
@@ -183,7 +201,7 @@ namespace ME3Explorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot convert back");
         }
     }
 
@@ -205,7 +223,35 @@ namespace ME3Explorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Cannot convert back");
+        }
+    }
+    
+    //Converts DateTime to String
+    //Is only a MultiValueConverter so that second binding can cause updates periodically
+    public class RelativeDateTimeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] is DateTime)
+            {
+                DateTime d = (DateTime)values[0];
+                DateTime now = DateTime.Now;
+                TimeSpan t = now - d;
+                if (t.TotalDays < 1)
+                {
+                    return d.ToString("h:mm tt");
+                }
+                else
+                {
+                    return d.ToString("dd MMM yy");
+                }
+            }
+            return "";
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException("Cannot convert back");
         }
     }
 }

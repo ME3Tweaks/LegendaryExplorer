@@ -16,12 +16,11 @@ using KFreonLib.Debugging;
 
 namespace ME3Explorer.LevelExplorer.LevelEditor
 {
-    public partial class Leveleditor : Form
+    public partial class Leveleditor : WinFormsBase
     {
         public SceneManager SceneMan = new SceneManager();
         public bool MoveWASD = true;
         public bool FocusOnClick = true;
-        public ME3Package pcc;
 
         public Leveleditor()
         {
@@ -40,7 +39,8 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         {
             timer1.Enabled = false;
             DebugOutput.StartDebugger("LevelEditor");
-            SceneMan.AddLevel(path);
+            LoadME3Package(path);
+            SceneMan.AddLevel(pcc as ME3Package);
             timer1.Enabled = true;
         }
 

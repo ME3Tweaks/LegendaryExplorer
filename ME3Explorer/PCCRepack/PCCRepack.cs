@@ -81,8 +81,12 @@ namespace ME3Explorer
                             File.Copy(fileName, backupFile);
                         }
 
-                        ME3Package pccObj = MEPackageHandler.OpenME3Package(fileName);
-                        pccObj.saveByReconstructing(fileName);
+                        MemoryStream m;
+                        using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                        {
+                            m = CompressionHelper.DecompressME3(fs);
+                        }
+                        File.WriteAllBytes(fileName, m.ToArray());
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

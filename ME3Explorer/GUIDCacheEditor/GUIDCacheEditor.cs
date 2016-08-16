@@ -13,7 +13,7 @@ using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.GUIDCacheEditor
 {
-    public partial class GUIDCacheEditor : Form
+    public partial class GUIDCacheEditor : WinFormsBase
     {
         public struct GuidEntry
         {
@@ -24,7 +24,6 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public List<PropertyReader.Property> props;
         public List<GuidEntry> GUIDs;
-        public ME3Package pcc;
         
         public GUIDCacheEditor()
         {
@@ -38,10 +37,10 @@ namespace ME3Explorer.GUIDCacheEditor
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
             }
-            BitConverter.IsLittleEndian = true;
+            
             try
             {
-                pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
+                LoadME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
                 ReadGUIDs(pcc.Exports[0]);
                 RefreshLists();
             }
@@ -168,7 +167,7 @@ namespace ME3Explorer.GUIDCacheEditor
                     m.WriteByte(b);
             }
             pcc.Exports[0].Data = m.ToArray();
-            pcc.appendSave(pcc.FileName);
+            pcc.save(pcc.FileName);
             MessageBox.Show("Done.");
             RefreshLists();
         }

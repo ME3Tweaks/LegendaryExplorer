@@ -15,9 +15,8 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.AnimationExplorer
 {
-    public partial class AnimationExplorer : Form
+    public partial class AnimationExplorer : WinFormsBase
     {
-        public ME3Package pcc;
         public List<AnimTree> AT;
         public List<AnimSet> AS;
         public List<string> filenames = new List<string>();
@@ -39,7 +38,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             try
             {
-                pcc = MEPackageHandler.OpenME3Package(s);
+                LoadME3Package(s);
                 AT = new List<AnimTree>();
                 AS = new List<AnimSet>();
                 for (int i = 0; i < pcc.ExportCount; i++)
@@ -48,10 +47,10 @@ namespace ME3Explorer.AnimationExplorer
                     switch (Exports[i].ClassName)
                     {
                         case "AnimTree":
-                            AT.Add(new AnimTree(pcc, i));
+                            AT.Add(new AnimTree(pcc as ME3Package, i));
                             break;
                         case "AnimSet":
-                            AS.Add(new AnimSet(pcc, i));
+                            AS.Add(new AnimSet(pcc as ME3Package, i));
                             break;
                     }
                     treeView1.Nodes.Clear();
@@ -163,7 +162,7 @@ namespace ME3Explorer.AnimationExplorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
+                
                 fs.Write(BitConverter.GetBytes(filenames.Count), 0, 4);
                 foreach (string s in filenames)
                     WriteString(fs, s);
@@ -179,7 +178,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 filenames = new List<string>();
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 byte[] buff = new byte[4];
                 fs.Read(buff, 0, 4);
                 int count = BitConverter.ToInt32(buff, 0);

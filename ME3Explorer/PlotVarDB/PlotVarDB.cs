@@ -211,7 +211,7 @@ namespace ME3Explorer.PlotVarDB
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
+                
 
                 //Header
                 fs.Write(BitConverter.GetBytes(V2PLUS_MAGIC), 0, 4);
@@ -414,7 +414,7 @@ namespace ME3Explorer.PlotVarDB
         private void loadDatabase(string fileName)
         {
             FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            BitConverter.IsLittleEndian = true;
+            
             int magic = ReadInt(fs);
             if (magic != V2PLUS_MAGIC)
             {

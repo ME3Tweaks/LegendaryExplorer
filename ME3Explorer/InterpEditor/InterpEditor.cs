@@ -9,9 +9,8 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.InterpEditor
 {
-    public partial class InterpEditor : Form
+    public partial class InterpEditor : WinFormsBase
     {
-        public ME3Package pcc;
         public string CurrentFile;
         public List<int> objects;
 
@@ -23,7 +22,7 @@ namespace ME3Explorer.InterpEditor
             timeline.GroupList.ScrollbarH = hScrollBar1;
             timeline.GroupList.tree1 = treeView1;
             timeline.GroupList.tree2 = treeView2;
-            BitConverter.IsLittleEndian = true;
+            
             objects = new List<int>();
         }
 
@@ -41,7 +40,7 @@ namespace ME3Explorer.InterpEditor
         {
             try
             {
-                pcc = MEPackageHandler.OpenME3Package(fileName);
+                LoadME3Package(fileName);
                 objects.Clear();
                 CurrentFile = fileName;
                 for (int i = 0; i < pcc.Exports.Count; i++)
@@ -68,7 +67,7 @@ namespace ME3Explorer.InterpEditor
 
         public void loadInterpData(int index)
         {
-            timeline.GroupList.LoadInterpData(index, pcc);
+            timeline.GroupList.LoadInterpData(index, pcc as ME3Package);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
         }
 
@@ -111,7 +110,7 @@ namespace ME3Explorer.InterpEditor
                 {
                     if (p.GetObjectClass(i).StartsWith("InterpTrackVisibility")) //GetObject(p.Exports[i].idxLink).StartsWith("InterpGroup"))
                     {
-                        BitConverter.IsLittleEndian = true;
+                        
                         List<ME3LibWV.PropertyReader.Property> props = ME3LibWV.PropertyReader.getPropList(p, p.Exports[i].Data);
                         foreach (ME3LibWV.PropertyReader.Property prop in props)
                         {

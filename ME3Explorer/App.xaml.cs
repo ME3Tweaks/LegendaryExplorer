@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
@@ -43,8 +44,8 @@ namespace ME3Explorer
             }
 
             //load in data files
-            TalkFiles.LoadSavedTlkList();
-            ME2Explorer.TalkFiles.LoadSavedTlkList();
+            ME3TalkFiles.LoadSavedTlkList();
+            ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
             ME1UnrealObjectInfo.loadfromJSON();
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
@@ -113,14 +114,20 @@ namespace ME3Explorer
                 {
                     if (args.Count != 3)
                     {
-                        MessageBox.Show("-sfarautotoc command line argument requires 1 parameter:\nSFARFILE.sfar", "Automated SFAR TOC Update Fail", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("-sfarautotoc command line argument requires at least 1 parameter:\nSFARFILE.sfar", "Automated SFAR TOC Update Fail", MessageBoxButton.OK, MessageBoxImage.Error);
                         exitCode = 1;
                         return true;
                     }
-                    BitConverter.IsLittleEndian = true;
-                    DLCPackage DLC = new DLCPackage(args[2]);
-                    DLC.UpdateTOCbin(true);
-                    exitCode = 0;
+                    
+                    var result = Parallel.For(2, args.Count, i =>
+                    {
+                        if (args[i].EndsWith(".sfar") && File.Exists(args[i]))
+                        {
+                            DLCPackage DLC = new DLCPackage(args[2]);
+                            DLC.UpdateTOCbin(true); 
+                        }
+                    });
+                    exitCode = result.IsCompleted ? 0 : 1;
                     return true;
                 }
                 else if (args[1].Equals("-decompresspcc"))
@@ -145,34 +152,6 @@ namespace ME3Explorer
                         return true;
                     }
                     exitCode = PCCRepack.autoCompressPcc(args[2], args[3]);
-                    return true;
-                }
-                else if (args[1].Equals("--help") || args[1].Equals("-h") || args[1].Equals("/?"))
-                {
-                    string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                    string commandLineHelp = "\nME3Explorer v" + version + " Command Line Options\n";
-                    commandLineHelp += " -autotoc rootpath\n";
-                    commandLineHelp += "     Automates the AutoTOC tool to generate a new PCConsoleTOC.bin file in the folder rootpath.\n\n";
-                    commandLineHelp += " -compresspcc pccPath.pcc compressedPath.pcc\n";
-                    commandLineHelp += "     Automates PCCRepacker to compress a pcc to the new location.\n\n";
-                    commandLineHelp += " -decompresspcc pccPath.pcc decompressedPath.pcc\n";
-                    commandLineHelp += "     Automates PCCRepacker to decompress a pcc to the new location.\n\n";
-                    commandLineHelp += " -dlcinject DLC.sfar SearchTerm PathToNewFile [SearchTerm2 PathToNewFile2]...\n";
-                    commandLineHelp += "     Automates injecting pairs of files into a .sfar file using DLCEditor2. SearchTerm is a value you would type into the searchbox with the first result being the file that will be replaced.\n\n";
-                    commandLineHelp += " -dlcextract DLC.sfar SearchTerm ExtractionPath\n";
-                    commandLineHelp += "     Automates DLCEditor2 to extract the specified SearchTerm. SearchTerm is a value you would type into the searchbox with the first result being the file that will be extracted. The file is extracted to the specied ExtractionPath.\n\n";
-                    commandLineHelp += " -dlcaddfiles DLC.sfar InternalPath NewFile [InternalPath2 NewFile2]...\n";
-                    commandLineHelp += "     Automates DLCEditor2 to add the specified new files. InternalPath is the internal path in the SFAR the file NewFile will be placed at.\n\n";
-                    commandLineHelp += " -dlcremovefiles DLC.sfar SearchTerm [SearchTerm2]...\n";
-                    commandLineHelp += "     Automates removing a file or list of files from a DLC. SearchTerm is a value you would type into the Searchbox with the first result being the file that will be removed.\n\n";
-                    commandLineHelp += " -dlcunpack DLC.sfar Unpackpath\n";
-                    commandLineHelp += "     Automates unpacking an SFAR file to the specified directory. Shows the debug interface to show progress. To unpack a game DLC for use by the game, unpack to the Mass Effect 3 directory. Unpacking Patch_001.sfar will cause the game to crash at startup.\n\n";
-                    commandLineHelp += " -dlcunpack-nodebug DLC.sfar Unpackpath\n";
-                    commandLineHelp += "     Same as -dlcunpack but does not show the debugging interface.\n\n";
-                    commandLineHelp += " -toceditorupdate PCConsoleTOC.bin SearchTerm size\n";
-                    commandLineHelp += "     Updates TOC entry for specified file\n\n";
-                    Console.WriteLine(commandLineHelp);
-                    exitCode = 0;
                     return true;
                 }
             }

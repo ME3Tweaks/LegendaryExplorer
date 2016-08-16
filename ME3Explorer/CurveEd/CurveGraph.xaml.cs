@@ -396,7 +396,7 @@ namespace ME3Explorer.CurveEd
             catch (Exception)
             {
                 node = SelectedCurve.CurvePoints.Last;
-                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node.Value.InterpMode), node, false);
+                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveUser), node, false);
             }
             Paint(true);
         }
@@ -486,6 +486,12 @@ namespace ME3Explorer.CurveEd
                 SelectedCurve.RemovePoint(point);
                 Paint();
             }
+        }
+
+        public void Clear()
+        {
+            SelectedCurve = new Curve();
+            Paint(true);
         }
     }
 

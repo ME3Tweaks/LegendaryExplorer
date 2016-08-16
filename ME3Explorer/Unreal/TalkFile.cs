@@ -99,7 +99,7 @@ namespace ME3Explorer
              * 
              * reading first 28 (4 * 7) bytes 
              */
-            BitConverter.IsLittleEndian = true;
+            
             Stream fs = File.OpenRead(fileName);
             BinaryReader r = new BinaryReader(fs);
             Header = new TLKHeader(r);

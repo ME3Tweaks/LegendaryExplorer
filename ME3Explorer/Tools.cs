@@ -199,7 +199,7 @@ namespace ME3Explorer
                 {
                     (new InterpEditor.InterpEditor()).Show();
                 },
-                tags = new List<string> { "utiity", "dialogue", "matinee", "cutscene", "animcutscene" },
+                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene" },
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
@@ -418,12 +418,26 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "ME2 Dialogue Editor",
+                type = typeof(ME2Explorer.DialogEditor),
+                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+                tags = new List<string>(),
+            });
+            set.Add(new Tool
+            {
+                name = "ME3 Dialogue Editor",
+                type = typeof(ME1Explorer.DialogEditor),
+                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+                tags = new List<string>(),
+            });
+            set.Add(new Tool
+            {
                 name = "FaceFX Editor",
-                type = typeof(FaceFXAnimSetEditor.FaceFXEditor),
+                type = typeof(FaceFX.FaceFXEditor),
                 icon = Application.Current.FindResource("iconFaceFXEditor") as ImageSource,
                 open = () =>
                 {
-                    (new FaceFXAnimSetEditor.FaceFXEditor()).Show();
+                    (new FaceFX.FaceFXEditor()).Show();
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
                 subCategory = "Scene Shop",
@@ -432,7 +446,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "FaceFXAnimSet Editor",
-                type = typeof(FaceFXAnimSetEditor.FaceFXAnimSetEditor),
+                type = typeof(FaceFX.FaceFXAnimSetEditor),
                 icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
                 open = () =>
                 {
@@ -440,7 +454,7 @@ namespace ME3Explorer
                     switch (result)
                     {
                         case "ME3":
-                            (new FaceFXAnimSetEditor.FaceFXAnimSetEditor()).Show();
+                            (new FaceFX.FaceFXAnimSetEditor()).Show();
                             break;
                         case "ME2":
                             (new ME2Explorer.FaceFXAnimSetEditor()).Show();
@@ -612,7 +626,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
-                    (new ME1Explorer.TlkManager()).Show();
+                    (new ME1Explorer.TlkManager(true)).Show();
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
                 subCategory = "Scene Shop",

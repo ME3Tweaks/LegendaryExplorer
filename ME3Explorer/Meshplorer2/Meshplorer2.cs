@@ -274,7 +274,7 @@ namespace ME3Explorer.Meshplorer2
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
+                
                 fs.Write(BitConverter.GetBytes(Entries.Count), 0, 4);
                 foreach(EntryStruct es in Entries)
                 {

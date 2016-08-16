@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.FaceFXAnimSetEditor
+﻿namespace ME3Explorer.FaceFX
 {
     partial class FaceFXAnimSetEditor
     {

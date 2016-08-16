@@ -143,7 +143,7 @@ namespace ME3Explorer.Meshplorer
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 int magic = 0x12345678;
-                BitConverter.IsLittleEndian = true;
+                
                 fs.Write(BitConverter.GetBytes(magic), 0, 4);
                 fs.Write(BitConverter.GetBytes(database.Count), 0, 4);
                 foreach (DBEntry ent in database)
@@ -213,7 +213,7 @@ namespace ME3Explorer.Meshplorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 int magic = ReadInt32(fs);
                 if (magic != 0x12345678)
                 {

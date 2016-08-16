@@ -22,7 +22,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public WwiseBank(ME3Package Pcc, int Index)
         {
-            BitConverter.IsLittleEndian = true;
+            
             MyIndex = Index;
             pcc = Pcc;
             memory = pcc.Exports[Index].Data;
@@ -226,7 +226,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public bool ExportAllWEMFiles(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             if (data_data == null || didx_data == null || data_data.Length == 0 || didx_data.Length == 0)
                 return false;
             int len = didx_data.Length - 8;
@@ -260,7 +260,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] RecreateBinary()
         {
-            BitConverter.IsLittleEndian = true;
+            
             MemoryStream res = new MemoryStream();
             res.Write(memory, 0, BinaryOffset);
             int size = 0;

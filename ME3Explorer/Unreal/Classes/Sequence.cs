@@ -36,7 +36,7 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     SequenceObjects = new List<int>();
                     byte[] buff = props[i].raw;
-                    BitConverter.IsLittleEndian = true;
+                    
                     int count = BitConverter.ToInt32(buff, 24);
                     for (int j = 0; j < count; j++)
                         SequenceObjects.Add(BitConverter.ToInt32(buff, 28 + j * 4));

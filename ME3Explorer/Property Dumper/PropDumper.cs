@@ -17,9 +17,6 @@ namespace ME3Explorer.Property_Dumper
 {
     public partial class PropDumper : Form
     {
-
-        ME3Package pcc;
-
         public PropDumper()
         {
             InitializeComponent();
@@ -33,8 +30,7 @@ namespace ME3Explorer.Property_Dumper
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME3Package(d.FileName);
-                    LetsDump();
+                    LetsDump(d.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -43,8 +39,9 @@ namespace ME3Explorer.Property_Dumper
             }
         }
 
-        public void LetsDump()
+        public void LetsDump(string path)
         {
+            ME3Package pcc = MEPackageHandler.OpenME3Package(path);
             pb1.Minimum = 0;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             pb1.Maximum = Exports.Count;
@@ -132,7 +129,7 @@ namespace ME3Explorer.Property_Dumper
 
                         while (pause)
                             Application.DoEvents();
-                        pcc = MEPackageHandler.OpenME3Package(files[i]);
+                        ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]);
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                         pb1.Maximum = Exports.Count;
                         pb2.Value = i;
@@ -249,7 +246,7 @@ namespace ME3Explorer.Property_Dumper
                 {
                     while (pause)
                         Application.DoEvents();
-                    pcc = MEPackageHandler.OpenME3Package(files[i]);
+                    ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]);
                     DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     pb1.Maximum = Exports.Count;

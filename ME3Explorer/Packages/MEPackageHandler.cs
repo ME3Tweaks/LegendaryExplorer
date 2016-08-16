@@ -110,9 +110,11 @@ namespace ME3Explorer.Packages
 
         public static ME3Package OpenME3Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
         {
-            ME3Package pcc = OpenMEPackage(pathToFile, wpfWindow, winForm) as ME3Package;
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            ME3Package pcc = pck as ME3Package;
             if (pcc == null)
             {
+                pck.Release(wpfWindow, winForm);
                 throw new FormatException("Not an ME3 package file.");
             }
             return pcc;
@@ -120,9 +122,11 @@ namespace ME3Explorer.Packages
 
         public static ME2Package OpenME2Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
         {
-            ME2Package pcc = OpenMEPackage(pathToFile, wpfWindow, winForm) as ME2Package;
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            ME2Package pcc = pck as ME2Package;
             if (pcc == null)
             {
+                pck.Release(wpfWindow, winForm);
                 throw new FormatException("Not an ME2 package file.");
             }
             return pcc;
@@ -130,9 +134,11 @@ namespace ME3Explorer.Packages
 
         public static ME1Package OpenME1Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
         {
-            ME1Package pcc = OpenMEPackage(pathToFile, wpfWindow, winForm) as ME1Package;
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            ME1Package pcc = pck as ME1Package;
             if (pcc == null)
             {
+                pck.Release(wpfWindow, winForm);
                 throw new FormatException("Not an ME1 package file.");
             }
             return pcc;

@@ -11,9 +11,11 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Gibbed.IO;
 
 namespace ME3Explorer
 {
@@ -278,10 +280,13 @@ namespace ME3Explorer
         static extern bool IsIconic(IntPtr hwnd);
         [DllImport("user32.dll")]
         static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
-        
-        public static void BringToFront(this Window window)
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, int lParam);
+
+        public static void RestoreAndBringToFront(this Window window)
         {
             WindowInteropHelper helper = new WindowInteropHelper(window);
+            //if window is minimized
             if (IsIconic(helper.Handle))
             {
                 //SW_RESTORE = 9;
@@ -290,14 +295,52 @@ namespace ME3Explorer
             SetForegroundWindow(helper.Handle);
         }
 
-        public static void BringToFront(this System.Windows.Forms.Form form)
+        public static void RestoreAndBringToFront(this System.Windows.Forms.Form form)
         {
+            //if window is minimized
             if (IsIconic(form.Handle))
             {
                 //SW_RESTORE = 9;
                 ShowWindowAsync(form.Handle, 9);
             }
             SetForegroundWindow(form.Handle);
+        }
+
+        //modified from https://social.msdn.microsoft.com/Forums/vstudio/en-US/df4db537-a201-4ab4-bb7e-db38a5c2b6e0/wpf-equivalent-of-winforms-controldrawtobitmap
+        public static BitmapSource DrawToBitmapSource(this Visual target)
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+
+            RenderTargetBitmap renderTarget = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, 96, 96, PixelFormats.Pbgra32);
+
+            DrawingVisual visual = new DrawingVisual();
+
+            using (DrawingContext context = visual.RenderOpen())
+            {
+                VisualBrush visualBrush = new VisualBrush(target);
+                context.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
+            }
+
+            renderTarget.Render(visual);
+            return renderTarget;
+        }
+
+        public static BitmapSource DrawToBitmapSource(this System.Windows.Forms.Control control)
+        {
+            int WM_PRINT = 0x317, PRF_CLIENT = 4,
+            PRF_CHILDREN = 0x10, PRF_NON_CLIENT = 2,
+            COMBINED_PRINTFLAGS = PRF_CLIENT | PRF_CHILDREN | PRF_NON_CLIENT;
+
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(control.Width, control.Height);
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
+
+            // paint control onto graphics
+            IntPtr hWnd = control.Handle;
+            IntPtr hDC = graphics.GetHdc();
+            SendMessage(hWnd, WM_PRINT, hDC, COMBINED_PRINTFLAGS);
+            graphics.ReleaseHdc(hDC);
+
+            return bitmap.ToBitmapImage();
         }
     }
 
@@ -330,6 +373,24 @@ namespace ME3Explorer
         {
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+    }
+
+    public static class IOExtensions
+    {
+        public static void WriteStringASCII(this Stream stream, string value)
+        {
+            stream.WriteStringZ(value, Encoding.ASCII);
+        }
+
+        public static void WriteStringUnicode(this Stream stream, string value)
+        {
+            stream.WriteStringZ(value, Encoding.Unicode);
+        }
+
+        public static void WriteStream(this Stream stream, MemoryStream value)
+        {
+            value.WriteTo(stream);
         }
     }
 }
