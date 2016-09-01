@@ -39,31 +39,36 @@ namespace ME3Explorer.AnimationExplorer
             try
             {
                 LoadME3Package(s);
-                AT = new List<AnimTree>();
-                AS = new List<AnimSet>();
-                for (int i = 0; i < pcc.ExportCount; i++)
-                {
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    switch (Exports[i].ClassName)
-                    {
-                        case "AnimTree":
-                            AT.Add(new AnimTree(pcc as ME3Package, i));
-                            break;
-                        case "AnimSet":
-                            AS.Add(new AnimSet(pcc as ME3Package, i));
-                            break;
-                    }
-                    treeView1.Nodes.Clear();
-                    foreach (AnimTree at in AT)
-                        treeView1.Nodes.Add(at.ToTree());
-                    foreach (AnimSet ans in AS)
-                        treeView1.Nodes.Add(ans.ToTree());
-                }
+                reScan();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error:\n" + ex.Message);
             }
+        }
+
+        private void reScan()
+        {
+            AT = new List<AnimTree>();
+            AS = new List<AnimSet>();
+            for (int i = 0; i < pcc.ExportCount; i++)
+            {
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                switch (Exports[i].ClassName)
+                {
+                    case "AnimTree":
+                        AT.Add(new AnimTree(pcc as ME3Package, i));
+                        break;
+                    case "AnimSet":
+                        AS.Add(new AnimSet(pcc as ME3Package, i));
+                        break;
+                }
+            }
+            treeView1.Nodes.Clear();
+            foreach (AnimTree at in AT)
+                treeView1.Nodes.Add(at.ToTree());
+            foreach (AnimSet ans in AS)
+                treeView1.Nodes.Add(ans.ToTree());
         }
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
@@ -81,19 +86,21 @@ namespace ME3Explorer.AnimationExplorer
             {
                 try
                 {
-                    IMEPackage _pcc = MEPackageHandler.OpenMEPackage(file);
-                    DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
-                    bool found = false;
-                    IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
-                    foreach (IExportEntry ex in Exports)
-                        if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
-                        {
-                            DebugOutput.PrintLn("Found Animation!");
-                            found = true;
-                            break;
-                        }
-                    if (found)
-                        filenames.Add(file);
+                    using (ME3Package _pcc = MEPackageHandler.OpenME3Package(file))
+                    {
+                        DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
+                        bool found = false;
+                        IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
+                        foreach (IExportEntry ex in Exports)
+                            if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
+                            {
+                                DebugOutput.PrintLn("Found Animation!");
+                                found = true;
+                                break;
+                            }
+                        if (found)
+                            filenames.Add(file); 
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -235,5 +242,15 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            if (relevantUpdates.Count() > 0)
+            {
+                reScan();
+            }
+        }
     }
 }

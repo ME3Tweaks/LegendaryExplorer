@@ -395,7 +395,7 @@ namespace ME3Explorer
                 sfarFile entry = dlcBase.fileList[FileNameHash.Compute(node.Name)];
                 listFiles.Add(entry);
             }
-            else if (isFolder(node) && extractFolderDialog.ShowDialog() == DialogResult.OK)
+            else if (isFolder(node) && extractFolderDialog.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
             {
                 foreach (sfarFile entry in dlcBase.fileList)
                 {
@@ -476,7 +476,7 @@ namespace ME3Explorer
                     int indexStr = fileName.IndexOf(node.Text);
                     string chunkPart = fileName.Substring(indexStr);
                     chunkPart = chunkPart.Replace("/", "\\");
-                    fullPath = extractFolderDialog.SelectedPath + "\\" + chunkPart;
+                    fullPath = Path.Combine(extractFolderDialog.FileName, chunkPart);
                     //creating full folder structure
                     if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                         Directory.CreateDirectory(Path.GetDirectoryName(fullPath));

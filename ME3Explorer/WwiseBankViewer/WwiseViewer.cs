@@ -11,6 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using Be.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.WwiseBankEditor
 {
@@ -33,11 +34,6 @@ namespace ME3Explorer.WwiseBankEditor
                 try
                 {
                     LoadME3Package(d.FileName);
-                    objects = new List<int>();
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    for (int i = 0; i < Exports.Count; i++)
-                        if (Exports[i].ClassName == "WwiseBank")
-                            objects.Add(i);
                     ListRefresh();
                 }
                 catch (Exception ex)
@@ -49,6 +45,12 @@ namespace ME3Explorer.WwiseBankEditor
 
         public void ListRefresh()
         {
+            objects = new List<int>();
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
+                if (Exports[i].ClassName == "WwiseBank")
+                    objects.Add(i);
+
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
@@ -83,12 +85,13 @@ namespace ME3Explorer.WwiseBankEditor
         {
             if (bank == null || bank.didx_data == null || bank.didx_data.Length == 0)
                 return;
-             System.Windows.Forms.FolderBrowserDialog m = new FolderBrowserDialog();
-            m.ShowDialog();
-            if (m.SelectedPath != "")
+            CommonOpenFileDialog m = new CommonOpenFileDialog();
+            m.IsFolderPicker = true;
+            m.EnsurePathExists = true;
+            m.Title = "Select Folder to Output to";
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string dir = m.SelectedPath + "\\";
-                if (bank.ExportAllWEMFiles(dir))
+                if (bank.ExportAllWEMFiles(m.FileName))
                     MessageBox.Show("Done.");
                 else
                     MessageBox.Show("Error occured!");
@@ -118,8 +121,7 @@ namespace ME3Explorer.WwiseBankEditor
 
         private void cloneObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
+            if (bank == null)
                 return;
             int m = listBox2.SelectedIndex;
             if (m == -1)
@@ -136,8 +138,7 @@ namespace ME3Explorer.WwiseBankEditor
 
         private void saveHIRCHexEdits()
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
+            if (bank == null)
                 return;
             int m = listBox2.SelectedIndex;
             if (m == -1)
@@ -152,8 +153,7 @@ namespace ME3Explorer.WwiseBankEditor
 
         private void editToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
+            if (bank == null)
                 return;
             int m = listBox2.SelectedIndex;
             if (m == -1)
@@ -203,11 +203,11 @@ namespace ME3Explorer.WwiseBankEditor
 
         private void saveBankToPccToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1 || bank == null)
+            if (bank == null)
                 return;
+            int n = bank.MyIndex;
             byte[] tmp = bank.RecreateBinary();
-            pcc.Exports[objects[n]].Data = tmp;
+            pcc.Exports[n].Data = tmp;
             MessageBox.Show("Done.");
         }
 
@@ -225,6 +225,41 @@ namespace ME3Explorer.WwiseBankEditor
         private void saveHexChangesButton_Click(object sender, EventArgs e)
         {
             saveHIRCHexEdits();
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (updatedExports.Contains(bank.MyIndex))
+            {
+                int index = bank.MyIndex;
+                //loaded sequence is no longer a sequence
+                if (pcc.getExport(index).ClassName != "WwiseBank")
+                {
+                    bank = null;
+                    listBox2.Items.Clear();
+                    rtb1.Text = "";
+                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb2.ByteProvider = new DynamicByteProvider(new List<byte>());
+                }
+                RefreshSelected();
+                updatedExports.Remove(index);
+            }
+            if (updatedExports.Intersect(objects).Count() > 0)
+            {
+                ListRefresh();
+            }
+            foreach (var i in updatedExports)
+            {
+                if (pcc.getExport(i).ClassName.Contains("WwiseBank"))
+                {
+                    ListRefresh();
+                    break;
+                }
+            }
         }
     }
 }

@@ -270,5 +270,10 @@ namespace ME3Explorer.ClassViewer
         {
             output += s + "\n";
         }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //TODO: implement updating
+        }
     }
 }

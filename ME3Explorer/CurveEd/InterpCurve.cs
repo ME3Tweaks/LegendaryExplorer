@@ -44,7 +44,6 @@ namespace ME3Explorer.CurveEd
         public string Name { get; set; }
         public ObservableCollection<Curve> Curves { get; set; }
 
-
         public InterpCurve(IMEPackage _pcc, PropertyReader.Property p)
         {
             pcc = _pcc;

@@ -17,7 +17,7 @@ namespace ME3Explorer.Packages
     /// </summary>
     public static class MEPackageHandler
     {
-        static Dictionary<string, WeakReference<IMEPackage>> openPackages = new Dictionary<string, WeakReference<IMEPackage>>();
+        static Dictionary<string, IMEPackage> openPackages = new Dictionary<string, IMEPackage>();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, ME1Package> ME1ConstructorDelegate;
@@ -31,55 +31,44 @@ namespace ME3Explorer.Packages
             ME3ConstructorDelegate = ME3Package.Initialize();
         }
 
-        public static IMEPackage OpenMEPackage(string pathToFile, Window wpfWindow = null, Form winForm = null)
+        public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage package = null;
-            if (openPackages.ContainsKey(pathToFile))
+            if (!openPackages.ContainsKey(pathToFile))
             {
-                if (openPackages[pathToFile].TryGetTarget(out package))
+                ushort version;
+                ushort licenseVersion;
+                using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
-                    if (wpfWindow != null)
-                    {
-                        package.RegisterTool(new GenericWindow(wpfWindow, Path.GetFileName(pathToFile)));
-                        addToPackagesInTools(package);
-                    }
-                    else if (winForm != null)
-                    {
-                        package.RegisterTool(new GenericWindow(winForm, Path.GetFileName(pathToFile)));
-                        addToPackagesInTools(package);
-                    }
-                    return package;
+                    fs.Seek(4, SeekOrigin.Begin);
+                    version = fs.ReadValueU16();
+                    licenseVersion = fs.ReadValueU16();
+                }
+
+                if (version == 684 && licenseVersion == 194)
+                {
+                    package = ME3ConstructorDelegate(pathToFile);
+                }
+                else if (version == 512 && licenseVersion == 130)
+                {
+                    package = ME2ConstructorDelegate(pathToFile);
+                }
+                else if (version == 491 && licenseVersion == 1008)
+                {
+                    package = ME1ConstructorDelegate(pathToFile);
                 }
                 else
                 {
-                    openPackages.Remove(pathToFile);
+                    throw new FormatException("Not an ME1, ME2, or ME3 package file.");
                 }
-            }
-            ushort version;
-            ushort licenseVersion;
-            using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
-            {
-                fs.Seek(4, SeekOrigin.Begin);
-                version = fs.ReadValueU16();
-                licenseVersion = fs.ReadValueU16();
-            }
-
-            if (version == 684 && licenseVersion == 194)
-            {
-                package = ME3ConstructorDelegate(pathToFile);
-            }
-            else if (version == 512 && licenseVersion == 130)
-            {
-                package = ME2ConstructorDelegate(pathToFile);
-            }
-            else if (version == 491 && licenseVersion == 1008)
-            {
-                package = ME1ConstructorDelegate(pathToFile);
+                package.noLongerUsed += Package_noLongerUsed;
+                openPackages.Add(pathToFile, package);
             }
             else
             {
-                throw new FormatException("Not an ME1, ME2, or ME3 package file.");
+                package = openPackages[pathToFile];
             }
+
             if (wpfWindow != null)
             {
                 package.RegisterTool(new GenericWindow(wpfWindow, Path.GetFileName(pathToFile)));
@@ -90,8 +79,16 @@ namespace ME3Explorer.Packages
                 package.RegisterTool(new GenericWindow(winForm, Path.GetFileName(pathToFile)));
                 addToPackagesInTools(package);
             }
-            openPackages.Add(pathToFile, new WeakReference<IMEPackage>(package));
+            else
+            {
+                package.RegisterUse();
+            }
             return package;
+        }
+
+        private static void Package_noLongerUsed(object sender, EventArgs e)
+        {
+            openPackages.Remove((sender as IMEPackage).FileName);
         }
 
         private static void addToPackagesInTools(IMEPackage package)
@@ -105,10 +102,13 @@ namespace ME3Explorer.Packages
 
         private static void Package_noLongerOpenInTools(object sender, EventArgs e)
         {
-            packagesInTools.Remove(sender as IMEPackage);
+            IMEPackage package = sender as IMEPackage;
+            packagesInTools.Remove(package);
+            package.noLongerOpenInTools -= Package_noLongerOpenInTools;
+            
         }
 
-        public static ME3Package OpenME3Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
+        public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
             ME3Package pcc = pck as ME3Package;
@@ -120,7 +120,7 @@ namespace ME3Explorer.Packages
             return pcc;
         }
 
-        public static ME2Package OpenME2Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
+        public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
             ME2Package pcc = pck as ME2Package;
@@ -132,7 +132,7 @@ namespace ME3Explorer.Packages
             return pcc;
         }
 
-        public static ME1Package OpenME1Package(string pathToFile, Window wpfWindow = null, Form winForm = null)
+        public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
             ME1Package pcc = pck as ME1Package;

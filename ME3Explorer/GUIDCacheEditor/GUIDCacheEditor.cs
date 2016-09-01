@@ -196,5 +196,10 @@ namespace ME3Explorer.GUIDCacheEditor
             GUIDs.Add(g2);
             RefreshLists();
         }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //TODO: handle update
+        }
     }
 }

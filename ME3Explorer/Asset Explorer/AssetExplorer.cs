@@ -435,8 +435,12 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                w = new WwiseStream(MEPackageHandler.OpenME3Package(pcc.pccFileName), index);
-                w.ExtractToFile(pathCooked,pcc.Exports[index].ObjectName);
+
+                using (ME3Package package = MEPackageHandler.OpenME3Package(pcc.pccFileName))
+                {
+                    WwiseStream wwiseStream = new WwiseStream(package, index);
+                    wwiseStream.ExtractToFile(pathCooked, pcc.Exports[index].ObjectName); 
+                }
             }
         }
 
@@ -448,8 +452,11 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                w = new WwiseStream(MEPackageHandler.OpenME3Package(pcc.pccFileName), index);
-                w.Play(pathCooked);
+                using (ME3Package package = MEPackageHandler.OpenME3Package(pcc.pccFileName))
+                {
+                    w = new WwiseStream(package, index);
+                    w.Play(pathCooked);
+                }
             }
         }
 

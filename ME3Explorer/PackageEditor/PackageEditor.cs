@@ -16,11 +16,15 @@ namespace ME3Explorer
 {
     public partial class PackageEditor : WinFormsBase
     {
-        public int CurrentView;
-        public const int NAMES_VIEW = 0;
-        public const int IMPORTS_VIEW = 1;
-        public const int Exports_VIEW = 2;
-        public const int TREE_VIEW = 3;
+        enum View
+        {
+            Names,
+            Imports,
+            Exports,
+            Tree
+        }
+
+        View CurrentView;
         public PropGrid pg;
 
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
@@ -36,8 +40,7 @@ namespace ME3Explorer
             RefreshRecent();
             tabControl1.TabPages.Remove(scriptTab);
 
-            SetView(TREE_VIEW);
-            interpreterControl.PropertyValueChanged += InterpreterControl_PropertyValueChanged;
+            SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
         }
 
@@ -81,11 +84,17 @@ namespace ME3Explorer
             }
         }
 
+        bool pendingMetaDataUpdate;
         public void RefreshMetaData()
         {
             int NameIdx, ClassIdx, LinkIdx, IndexIdx, ArchetypeIdx;
             if (tabControl1.SelectedTab != metaDataPage)
             {
+                return;
+            }
+            if (!this.IsForegroundWindow())
+            {
+                pendingMetaDataUpdate = true;
                 return;
             }
             int n;
@@ -203,30 +212,30 @@ namespace ME3Explorer
             combo1.EndUpdate();
         }
 
-        public void SetView(int n)
+        void SetView(View n)
         {
             CurrentView = n;
             switch (n)
             {
-                case NAMES_VIEW:
+                case View.Names:
                     Button1.Checked = true;
                     Button2.Checked = false;
                     Button3.Checked = false;
                     Button5.Checked = false;
                     break;
-                case IMPORTS_VIEW:
+                case View.Imports:
                     Button1.Checked = false;
                     Button2.Checked = true;
                     Button3.Checked = false;
                     Button5.Checked = false;
                     break;
-                case TREE_VIEW:
+                case View.Tree:
                     Button1.Checked = false;
                     Button2.Checked = false;
                     Button3.Checked = false;
                     Button5.Checked = true;
                     break;
-                case Exports_VIEW:
+                case View.Exports:
                 default:
                     Button1.Checked = false;
                     Button2.Checked = false;
@@ -247,14 +256,14 @@ namespace ME3Explorer
             listBox1.Items.Clear();
             IReadOnlyList<IImportEntry> imports = pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-            if (CurrentView == NAMES_VIEW)
+            if (CurrentView == View.Names)
             {
                 for (int i = 0; i < pcc.Names.Count; i++)
                 {
                     listBox1.Items.Add(i + " : " + pcc.getNameEntry(i));
                 }
             }
-            if (CurrentView == IMPORTS_VIEW)
+            if (CurrentView == View.Imports)
             {
                 for (int i = 0; i < imports.Count; i++)
                 {
@@ -267,23 +276,22 @@ namespace ME3Explorer
                     listBox1.Items.Add(importStr);
                 }
             }
-            string s;
-            if (CurrentView == Exports_VIEW)
+            if (CurrentView == View.Exports)
             {
-                string PackageFullName, ClassName;
                 List<string> exps = new List<string>(Exports.Count);
                 for (int i = 0; i < Exports.Count; i++)
                 {
-                    s = "";
-                    PackageFullName = Exports[i].PackageFullName;
+                    string s = $"{i}:";
+                    IExportEntry exp = pcc.getExport(i);
+                    string PackageFullName = exp.PackageFullName;
                     if (PackageFullName != "Class" && PackageFullName != "Package")
                         s += PackageFullName + ".";
-                    s += Exports[i].ObjectName;
-                    ClassName = Exports[i].ClassName;
+                    s += exp.ObjectName;
+                    string ClassName = exp.ClassName;
                     if (ClassName == "ObjectProperty" || ClassName == "StructProperty")
                     {
                         //attempt to find type
-                        byte[] data = Exports[i].Data;
+                        byte[] data = exp.Data;
                         int importindex = BitConverter.ToInt32(data, data.Length - 4);
                         if (importindex < 0)
                         {
@@ -305,11 +313,11 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    exps.Add(i + " : " + s);
+                    exps.Add(s);
                 }
                 listBox1.Items.AddRange(exps.ToArray());
             }
-            if (CurrentView == TREE_VIEW)
+            if (CurrentView == View.Tree)
             {
                 listBox1.Visible = false;
                 treeView1.Visible = true;
@@ -373,19 +381,19 @@ namespace ME3Explorer
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            SetView(Exports_VIEW);
+            SetView(View.Exports);
             RefreshView();
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            SetView(NAMES_VIEW);
+            SetView(View.Names);
             RefreshView();
         }
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            SetView(IMPORTS_VIEW);
+            SetView(View.Imports);
             RefreshView();
         }
 
@@ -414,7 +422,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            if (CurrentView == IMPORTS_VIEW || CurrentView == Exports_VIEW || CurrentView == TREE_VIEW)
+            if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {
                 tabControl1_SelectedIndexChanged(null, null);
                 PreviewInfo(n);
@@ -431,7 +439,9 @@ namespace ME3Explorer
                     {
                         tabControl1.TabPages.Insert(1, interpreterTab);
                     }
-                    if (pcc.getExport(n).ClassName == "Function" && pcc.Game != MEGame.ME2)
+
+                    IExportEntry exportEntry = pcc.getExport(n);
+                    if (exportEntry.ClassName == "Function" && pcc.Game != MEGame.ME2)
                     {
                         if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
                         {
@@ -439,12 +449,12 @@ namespace ME3Explorer
                         }
                         if (pcc.Game == MEGame.ME3)
                         {
-                            Function func = new Function(pcc.getExport(n).Data, pcc as ME3Package);
+                            Function func = new Function(exportEntry.Data, pcc as ME3Package);
                             rtb1.Text = func.ToRawText();
                         }
                         else
                         {
-                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(pcc.getExport(n).Data, pcc as ME1Package);
+                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
                             rtb1.Text = func.ToRawText();
                         }
                     }
@@ -452,10 +462,10 @@ namespace ME3Explorer
                     {
                         tabControl1.TabPages.Remove(scriptTab);
                     }
-                    hb2.ByteProvider = new DynamicByteProvider(pcc.getExport(n).header);
+                    hb2.ByteProvider = new DynamicByteProvider(exportEntry.header);
                     if (!isRefresh)
                     {
-                        interpreterControl.Index = n;
+                        interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
                     }
                     UpdateStatusEx(n);
@@ -566,17 +576,17 @@ namespace ME3Explorer
 
         private bool GetSelected(out int n)
         {
-            if (CurrentView == TREE_VIEW && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
+            if (CurrentView == View.Tree && treeView1.SelectedNode != null && treeView1.SelectedNode.Name != "")
             {
                 n = Convert.ToInt32(treeView1.SelectedNode.Name);
                 return true;
             }
-            else if (CurrentView == Exports_VIEW && listBox1.SelectedItem != null)
+            else if (CurrentView == View.Exports && listBox1.SelectedItem != null)
             {
                 n = listBox1.SelectedIndex;
                 return true;
             }
-            else if (CurrentView == IMPORTS_VIEW && listBox1.SelectedItem != null)
+            else if (CurrentView == View.Imports && listBox1.SelectedItem != null)
             {
                 n = -listBox1.SelectedIndex - 1;
                 return true;
@@ -588,11 +598,6 @@ namespace ME3Explorer
             }
         }
 
-        private void InterpreterControl_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            Preview(true);
-        }
-
         private void propGrid_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
             int n;
@@ -600,270 +605,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            string name = e.ChangedItem.Label;
-            GridItem parent = e.ChangedItem.Parent;
-            //if (parent != null) name = parent.Label;
-            if (parent.Label == "data")
-            {
-                GridItem parent2 = parent.Parent;
-                if (parent2 != null) name = parent2.Label;
-            }
-            Type parentVal = null;
-            if (parent.Value != null)
-            {
-                parentVal = parent.Value.GetType();
-            }
-            if (name == "nameindex" || name == "index" || parentVal == typeof(ColorProp) || parentVal == typeof(VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
-            {
-                name = parent.Label;
-            }
-            IExportEntry ent = pcc.getExport(n);
-            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
-            int m = -1;
-            for (int i = 0; i < p.Count; i++)
-                if (pcc.getNameEntry(p[i].Name) == name)
-                    m = i;
-            if (m == -1)
-                return;
-            byte[] buff2;
-            switch (p[m].TypeVal)
-            {
-                case PropertyReader.Type.BoolProperty:
-                    byte res = 0;
-                    if ((bool)e.ChangedItem.Value == true)
-                        res = 1;
-                    ent.Data[p[m].offsetval] = res;
-                    break;
-                case PropertyReader.Type.FloatProperty:
-                    buff2 = BitConverter.GetBytes((float)e.ChangedItem.Value);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    break;
-                case PropertyReader.Type.IntProperty:
-                case PropertyReader.Type.StringRefProperty:
-                    int newv = Convert.ToInt32(e.ChangedItem.Value);
-                    int oldv = Convert.ToInt32(e.OldValue);
-                    buff2 = BitConverter.GetBytes(newv);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    break;
-                case PropertyReader.Type.StrProperty:
-                    string s = Convert.ToString(e.ChangedItem.Value);
-                    int stringMultiplier = 1;
-                    int oldLength = BitConverter.ToInt32(ent.Data, p[m].offsetval);
-                    if (oldLength < 0)
-                    {
-                        stringMultiplier = 2;
-                        oldLength *= -2;
-                    }
-                    int oldSize = 4 + oldLength;
-                    List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier);
-                    if (stringMultiplier == 2)
-                    {
-                        for (int j = 0; j < s.Length; j++)
-                        {
-                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
-                        }
-                        stringBuff.Add(0);
-                    }
-                    else
-                    {
-                        for (int j = 0; j < s.Length; j++)
-                        {
-                            stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
-                        }
-                    }
-                    stringBuff.Add(0);
-                    buff2 = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier + 4);
-                    for (int j = 0; j < 4; j++)
-                        ent.Data[p[m].offsetval - 8 + j] = buff2[j];
-                    buff2 = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier == 1 ? 1 : -1);
-                    for (int j = 0; j < 4; j++)
-                        ent.Data[p[m].offsetval + j] = buff2[j];
-                    buff2 = new byte[ent.Data.Length - oldLength + stringBuff.Count];
-                    int startLength = p[m].offsetval + 4;
-                    int startLength2 = startLength + oldLength;
-                    for (int i = 0; i < startLength; i++)
-                    {
-                        buff2[i] = ent.Data[i];
-                    }
-                    for (int i = 0; i < stringBuff.Count; i++)
-                    {
-                        buff2[i + startLength] = stringBuff[i];
-                    }
-                    startLength += stringBuff.Count;
-                    for (int i = 0; i < ent.Data.Length - startLength2; i++)
-                    {
-                        buff2[i + startLength] = ent.Data[i + startLength2];
-                    }
-                    ent.Data = buff2;
-                    break;
-                case PropertyReader.Type.StructProperty:
-                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(ColorProp))
-                    {
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Alpha":
-                                ent.Data[p[m].offsetval + 11] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Red":
-                                ent.Data[p[m].offsetval + 10] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Green":
-                                ent.Data[p[m].offsetval + 9] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Blue":
-                                ent.Data[p[m].offsetval + 8] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            default:
-                                break;
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(VectorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "X":
-                                offset = 8;
-                                break;
-                            case "Y":
-                                offset = 12;
-                                break;
-                            case "Z":
-                                offset = 16;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.RotatorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Pitch":
-                                offset = 8;
-                                break;
-                            case "Yaw":
-                                offset = 12;
-                                break;
-                            case "Roll":
-                                offset = 16;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            int val = Convert.ToInt32(Convert.ToSingle(e.ChangedItem.Value) * 65536f / 360f);
-                            buff2 = BitConverter.GetBytes(val);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.LinearColorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Red":
-                                offset = 8;
-                                break;
-                            case "Green":
-                                offset = 12;
-                                break;
-                            case "Blue":
-                                offset = 16;
-                                break;
-                            case "Alpha":
-                                offset = 20;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Value is int)
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        if (e.ChangedItem.Label == "nameindex")
-                        {
-                            int val1 = Convert.ToInt32(e.ChangedItem.Value);
-                            buff2 = BitConverter.GetBytes(val1);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i] = buff2[i];
-                            int t = listBox1.SelectedIndex;
-                            listBox1.SelectedIndex = -1;
-                            listBox1.SelectedIndex = t;
-                        }
-                        else
-                        {
-                            string sidx = e.ChangedItem.Label.Replace("[", "");
-                            sidx = sidx.Replace("]", "");
-                            int index = Convert.ToInt32(sidx);
-                            buff2 = BitConverter.GetBytes(val);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i];
-                            int t = listBox1.SelectedIndex;
-                            listBox1.SelectedIndex = -1;
-                            listBox1.SelectedIndex = t;
-                        }
-                    }
-                    break;
-                case PropertyReader.Type.ByteProperty:
-                case PropertyReader.Type.NameProperty:
-                    if (e.ChangedItem.Value is int)
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        buff2 = BitConverter.GetBytes(val);
-                        for (int i = 0; i < 4; i++)
-                            ent.Data[p[m].offsetval + i] = buff2[i];
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    break;
-                case PropertyReader.Type.ObjectProperty:
-                    if (e.ChangedItem.Value is int)
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        buff2 = BitConverter.GetBytes(val);
-                        for (int i = 0; i < 4; i++)
-                            ent.Data[p[m].offsetval + i] = buff2[i];
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    break;
-                default:
-                    return;
-            }
-            propGrid.ExpandAllGridItems();
-            Preview();
+            PropGrid.propGridPropertyValueChanged(e, n, pcc);
         }
 
         private void appendSaveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -900,8 +642,6 @@ namespace ME3Explorer
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
             pcc.getExport(n).Data = m.ToArray();
-
-            Preview();
         }
 
         private void Search()
@@ -917,7 +657,7 @@ namespace ME3Explorer
             else
                 start = n + 1;
 
-            if (CurrentView == NAMES_VIEW)
+            if (CurrentView == View.Names)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
                     if (pcc.getNameEntry(i).ToLower().Contains(searchBox.Text.ToLower()))
@@ -926,7 +666,7 @@ namespace ME3Explorer
                         break;
                     }
             }
-            if (CurrentView == IMPORTS_VIEW)
+            if (CurrentView == View.Imports)
             {
                 IReadOnlyList<IImportEntry> imports = pcc.Imports;
                 for (int i = start; i < imports.Count; i++)
@@ -936,7 +676,7 @@ namespace ME3Explorer
                         break;
                     }
             }
-            if (CurrentView == Exports_VIEW)
+            if (CurrentView == View.Exports)
             {
                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                 for (int i = start; i < Exports.Count; i++)
@@ -953,7 +693,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             int n = listBox1.SelectedIndex;
-            if (CurrentView != Exports_VIEW)
+            if (CurrentView != View.Exports)
                 return;
             if (combo1.SelectedIndex == -1)
                 return;
@@ -1064,14 +804,6 @@ namespace ME3Explorer
             if (result != "")
             {
                 int idx = pcc.FindNameOrAdd(result);
-                if (CurrentView == NAMES_VIEW)
-                {
-                    int scrollTo = listBox1.TopIndex + 1;
-                    int selected = listBox1.SelectedIndex;
-                    RefreshView();
-                    listBox1.SelectedIndex = selected;
-                    listBox1.TopIndex = scrollTo;
-                }
                 byte[] buff = BitConverter.GetBytes(idx);
                 string s = "";
                 for (int i = 0; i < 4; i++)
@@ -1178,7 +910,7 @@ namespace ME3Explorer
 
         public void goToNumber(int n)
         {
-            if (CurrentView == TREE_VIEW)
+            if (CurrentView == View.Tree)
             {
                 if (n >= -pcc.ImportCount && n < pcc.ExportCount)
                 {
@@ -1186,7 +918,7 @@ namespace ME3Explorer
                     if (nodes.Length > 0)
                     {
                         treeView1.SelectedNode = nodes[0];
-                        treeView1.Focus();
+                        //treeView1.Focus();
                     }
                 }
             }
@@ -1276,7 +1008,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.FileName, (byte[])pcc.getExport(n).Data.Clone());
+            KFreonLib.Scripting.ModMaker.ModJob mj = KFreonLib.Scripting.ModMaker.GenerateMeshModJob(null, n, pcc.FileName, pcc.getExport(n).Data);
             KFreonLib.Scripting.ModMaker.JobList.Add(mj);
             MessageBox.Show("Done");
         }
@@ -1315,11 +1047,13 @@ namespace ME3Explorer
                     MessageBox.Show("Cannot link an object to itself!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                pcc.getExport(n).idxObjectName = NameIdx;
-                pcc.getExport(n).idxClass = ClassIdx;
-                pcc.getExport(n).idxLink = LinkIdx;
-                pcc.getExport(n).indexValue = IndexIdx;
-                pcc.getExport(n).idxArchtype = ArchetypeIdx;
+
+                IExportEntry exportEntry = pcc.getExport(n);
+                exportEntry.idxObjectName = NameIdx;
+                exportEntry.idxClass = ClassIdx;
+                exportEntry.idxLink = LinkIdx;
+                exportEntry.indexValue = IndexIdx;
+                exportEntry.idxArchtype = ArchetypeIdx;
             }
             else
             {
@@ -1331,19 +1065,18 @@ namespace ME3Explorer
                     return;
                 }
                 n = -n - 1;
-                pcc.getImport(n).idxObjectName = NameIdx;
-                pcc.getImport(n).idxClassName = ClassIdx;
-                pcc.getImport(n).idxLink = LinkIdx;
-                pcc.getImport(n).idxPackageFile = ArchetypeIdx;
+                IImportEntry importEntry = pcc.getImport(n);
+                importEntry.idxObjectName = NameIdx;
+                importEntry.idxClassName = ClassIdx;
+                importEntry.idxLink = LinkIdx;
+                importEntry.idxPackageFile = ArchetypeIdx;
                 n = -n - 1;
             }
-            RefreshView();
-            goToNumber(n);
         }
 
         private void Button5_Click(object sender, EventArgs e)
         {
-            SetView(TREE_VIEW);
+            SetView(View.Tree);
             RefreshView();
         }
 
@@ -1375,7 +1108,8 @@ namespace ME3Explorer
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (CurrentView == NAMES_VIEW)
+                listBox1.SelectedIndex = listBox1.IndexFromPoint(e.X, e.Y);
+                if (CurrentView == View.Names)
                 {
                     nameContextMenuStrip1.Show(MousePosition);
                 }
@@ -1388,7 +1122,7 @@ namespace ME3Explorer
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentView == NAMES_VIEW && listBox1.SelectedIndex != -1)
+            if (CurrentView == View.Names && listBox1.SelectedIndex != -1)
             {
                 Clipboard.SetText(pcc.getNameEntry(listBox1.SelectedIndex));
             }
@@ -1420,9 +1154,6 @@ namespace ME3Explorer
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
             pcc.getExport(n).setHeader(m.ToArray());
-
-            RefreshView();
-            goToNumber(n);
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -1457,7 +1188,7 @@ namespace ME3Explorer
                     IImportEntry ent = pcc.getImport(-n - 1).Clone();
                     pcc.addImport(ent);
                     RefreshView();
-                    goToNumber(CurrentView == TREE_VIEW ? -pcc.ImportCount : pcc.ImportCount - 1);
+                    goToNumber(CurrentView == View.Tree ? -pcc.ImportCount : pcc.ImportCount - 1);
                 }
             }
         }
@@ -1770,6 +1501,63 @@ namespace ME3Explorer
 
         private void PackageEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            List<PackageChange> changes = updates.Select(x => x.change).ToList();
+            bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
+            bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
+            int n = 0;
+            bool hasSelection = GetSelected(out n);
+            if (CurrentView == View.Names && changes.Contains(PackageChange.Names))
+            {
+                int scrollTo = listBox1.TopIndex + 1;
+                int selected = listBox1.SelectedIndex;
+                RefreshView();
+                listBox1.SelectedIndex = selected;
+                listBox1.TopIndex = scrollTo;
+            }
+            else if (CurrentView == View.Imports && importChanges ||
+                     CurrentView == View.Exports && exportNonDataChanges ||
+                     CurrentView == View.Tree && (importChanges || exportNonDataChanges))
+            {
+                RefreshView();
+                if (hasSelection)
+                {
+                    goToNumber(n);
+                }
+            }
+            else if ((CurrentView == View.Exports || CurrentView == View.Tree) &&
+                     hasSelection &&
+                     updates.Contains(new PackageUpdate { index = n, change = PackageChange.ExportData }))
+            {
+                interpreterControl.memory = pcc.getExport(n).Data;
+                interpreterControl.RefreshMem();
+                Preview(true);
+            }
+        }
+
+        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (CurrentView == View.Names && listBox1.SelectedIndex != -1)
+            {
+                int idx = listBox1.SelectedIndex;
+                string result = Microsoft.VisualBasic.Interaction.InputBox("", "Rename", pcc.getNameEntry(idx));
+                if (result != "")
+                {
+                    pcc.replaceName(idx, result);
+                }
+            }
+        }
+
+        private void PackageEditor_Activated(object sender, EventArgs e)
+        {
+            if (pendingMetaDataUpdate)
+            {
+                pendingMetaDataUpdate = false;
+                RefreshMetaData();
+            }
         }
     }
 }

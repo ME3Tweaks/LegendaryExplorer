@@ -41,7 +41,7 @@ namespace ME3Explorer
         }
 
         //
-        public int SignalExternalCommandLineArgs(IList<string> args)
+        public int SignalExternalCommandLineArgs(string[] args)
         {
             int exitCode = 0;
             if (!HandleCommandLineArgs(args, out exitCode))

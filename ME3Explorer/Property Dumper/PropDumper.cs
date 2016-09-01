@@ -41,36 +41,38 @@ namespace ME3Explorer.Property_Dumper
 
         public void LetsDump(string path)
         {
-            ME3Package pcc = MEPackageHandler.OpenME3Package(path);
-            pb1.Minimum = 0;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-            pb1.Maximum = Exports.Count;
-            rtb1.Text = "";
-            int count = 0;
-            string t = "";
-            for (int i = 0; i < Exports.Count; i++)
+            using (ME3Package pcc = MEPackageHandler.OpenME3Package(path))
             {
-                IExportEntry e = Exports[i];
-                string s = "Properties for Object #" + i + " \"" + e.ObjectName + "\" :\n\n";
-                List<PropertyReader.Property> p = PropertyReader.getPropList(e);
-                foreach (PropertyReader.Property prop in p)
-                    s += PropertyReader.PropertyToText(prop, pcc) + "\n";
-                s += "\n";
-                t += s;
-                if (count++ > 100)
-                {                    
-                    count = 0;
-                    pb1.Value = i;
-                    Status.Text = "State : " + i + " / " + Exports.Count;
-                    Application.DoEvents();
+                pb1.Minimum = 0;
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                pb1.Maximum = Exports.Count;
+                rtb1.Text = "";
+                int count = 0;
+                string t = "";
+                for (int i = 0; i < Exports.Count; i++)
+                {
+                    IExportEntry e = Exports[i];
+                    string s = "Properties for Object #" + i + " \"" + e.ObjectName + "\" :\n\n";
+                    List<PropertyReader.Property> p = PropertyReader.getPropList(e);
+                    foreach (PropertyReader.Property prop in p)
+                        s += PropertyReader.PropertyToText(prop, pcc) + "\n";
+                    s += "\n";
+                    t += s;
+                    if (count++ > 100)
+                    {
+                        count = 0;
+                        pb1.Value = i;
+                        Status.Text = "State : " + i + " / " + Exports.Count;
+                        Application.DoEvents();
+                    }
                 }
+                Status.Text = "State : Done";
+                rtb1.Text = t;
+                rtb1.SelectionStart = rtb1.TextLength;
+                rtb1.SelectionLength = 0;
+                rtb1.ScrollToCaret();
+                pb1.Value = 0;
             }
-            Status.Text = "State : Done";
-            rtb1.Text = t;
-            rtb1.SelectionStart = rtb1.TextLength;
-            rtb1.SelectionLength = 0;
-            rtb1.ScrollToCaret();
-            pb1.Value = 0;
         }
 
         public string DumpArray(ME3Package pcc, byte[] raw, int pos, int depth)
@@ -129,58 +131,60 @@ namespace ME3Explorer.Property_Dumper
 
                         while (pause)
                             Application.DoEvents();
-                        ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]);
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                        pb1.Maximum = Exports.Count;
-                        pb2.Value = i;
-                        string s = "String references for file " + files[i] + "\n";
-                        for (int j = 0; j < Exports.Count; j++)
+                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
                         {
-                            IExportEntry ent = Exports[j];
-                            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
-
-                            for (int k = 0; k < p.Count; k++)
+                            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                            pb1.Maximum = Exports.Count;
+                            pb2.Value = i;
+                            string s = "String references for file " + files[i] + "\n";
+                            for (int j = 0; j < Exports.Count; j++)
                             {
-                                PropertyReader.Property prop = p[k];
-                                if (prop.TypeVal == PropertyReader.Type.StringRefProperty)
-                                    s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
+                                IExportEntry ent = Exports[j];
+                                List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
+
+                                for (int k = 0; k < p.Count; k++)
                                 {
-                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, 1);
-                                    if (tt.Length != 0)
+                                    PropertyReader.Property prop = p[k];
+                                    if (prop.TypeVal == PropertyReader.Type.StringRefProperty)
+                                        s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                    if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
                                     {
-                                        s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                        s += tt;
+                                        string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, 1);
+                                        if (tt.Length != 0)
+                                        {
+                                            s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                            s += tt;
+                                        }
+                                    }
+                                    if (prop.TypeVal == PropertyReader.Type.StructProperty)
+                                    {
+                                        string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, 1);
+                                        if (tt.Length != 0)
+                                        {
+                                            s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
+                                            s += tt;
+                                        }
                                     }
                                 }
-                                if (prop.TypeVal == PropertyReader.Type.StructProperty)
+                                if (count++ > 500)
                                 {
-                                    string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, 1);
-                                    if (tt.Length != 0)
+                                    count = 0;
+                                    pb1.Value = j;
+                                    Status.Text = "State : " + j + " / " + Exports.Count;
+                                    if (count2++ > 10)
                                     {
-                                        s += "Object #" + j + " in : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                        s += tt;
+                                        count2 = 0;
+                                        rtb1.Text = t;
+                                        rtb1.SelectionStart = rtb1.TextLength;
+                                        rtb1.ScrollToCaret();
+                                        rtb1.Visible = true;
                                     }
+                                    Application.DoEvents();
                                 }
-                            }
-                            if (count++ > 500)
-                            {
-                                count = 0;
-                                pb1.Value = j;
-                                Status.Text = "State : " + j + " / " + Exports.Count;
-                                if (count2++ > 10)
-                                {
-                                    count2 = 0;
-                                    rtb1.Text = t;
-                                    rtb1.SelectionStart = rtb1.TextLength;
-                                    rtb1.ScrollToCaret();
-                                    rtb1.Visible = true;
-                                }
-                                Application.DoEvents();
-                            }
 
+                            }
+                            t += s + "\n"; 
                         }
-                        t += s + "\n";
                     }
                 }
                 catch (Exception ex)
@@ -246,47 +250,49 @@ namespace ME3Explorer.Property_Dumper
                 {
                     while (pause)
                         Application.DoEvents();
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]);
-                    DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    pb1.Maximum = Exports.Count;
-                    pb2.Value = i;
-                    for (int j = 0; j < Exports.Count; j++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
                     {
-                        IExportEntry ent = Exports[j];
-                        if (ent.ClassName == classname)
+                        DebugOutput.PrintLn(i + "/" + files.Length + " Scanning file : " + Path.GetFileName(files[i]));
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        pb1.Maximum = Exports.Count;
+                        pb2.Value = i;
+                        for (int j = 0; j < Exports.Count; j++)
                         {
-                            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
-                            for (int k = 0; k < p.Count; k++)
+                            IExportEntry ent = Exports[j];
+                            if (ent.ClassName == classname)
                             {
-                                PropertyReader.Property prop = p[k];
-                                int found = -1;
-                                for (int l = 0; l < Names.Count(); l++)
-                                    if (pcc.getNameEntry(prop.Name) == Names[l])
-                                        found = l;
-                                if (found == -1)
+                                List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
+                                for (int k = 0; k < p.Count; k++)
                                 {
-                                    Names.Add(pcc.getNameEntry(prop.Name));
-                                    Types.Add(PropertyReader.TypeToString((int)prop.TypeVal));
-                                    First.Add(Path.GetFileName(files[i]) + " #" + j);
+                                    PropertyReader.Property prop = p[k];
+                                    int found = -1;
+                                    for (int l = 0; l < Names.Count(); l++)
+                                        if (pcc.getNameEntry(prop.Name) == Names[l])
+                                            found = l;
+                                    if (found == -1)
+                                    {
+                                        Names.Add(pcc.getNameEntry(prop.Name));
+                                        Types.Add(PropertyReader.TypeToString((int)prop.TypeVal));
+                                        First.Add(Path.GetFileName(files[i]) + " #" + j);
+                                    }
                                 }
                             }
-                        }
-                        if (j % 500 == 0)
-                        {
-                            pb1.Value = j;
-                            Status.Text = "State : " + j + " / " + Exports.Count;
-                            string s = "Possible properties found so far for class \"" + classname + "\":\n";
-                            for (int k = 0; k < Names.Count(); k++)
-                                s += Types[k] + " : \"" + Names[k] + "\" first found: " + First[k] + "\n";
-                            Action action = () => rtb1.Text = s;
-                            rtb1.Invoke(action);
-                            action = () => rtb1.SelectionStart = s.Length;
-                            rtb1.Invoke(action);
-                            action = () => rtb1.ScrollToCaret();
-                            rtb1.Invoke(action);
-                            Application.DoEvents();
-                        }
+                            if (j % 500 == 0)
+                            {
+                                pb1.Value = j;
+                                Status.Text = "State : " + j + " / " + Exports.Count;
+                                string s = "Possible properties found so far for class \"" + classname + "\":\n";
+                                for (int k = 0; k < Names.Count(); k++)
+                                    s += Types[k] + " : \"" + Names[k] + "\" first found: " + First[k] + "\n";
+                                Action action = () => rtb1.Text = s;
+                                rtb1.Invoke(action);
+                                action = () => rtb1.SelectionStart = s.Length;
+                                rtb1.Invoke(action);
+                                action = () => rtb1.ScrollToCaret();
+                                rtb1.Invoke(action);
+                                Application.DoEvents();
+                            }
+                        } 
                     }
                 }
                 catch (Exception ex)

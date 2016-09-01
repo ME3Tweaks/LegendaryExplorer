@@ -57,44 +57,46 @@ namespace ME3Explorer.Meshplorer
                 DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
-                    DBEntry ent = new DBEntry();
-                    ent.filename = Path.GetFileName(file);
-                    ent.Objects = new List<ObjInf>();
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    for (int i = 0; i < Exports.Count; i++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        IExportEntry ex = Exports[i];
-                        ObjInf obj;
-                        switch (ex.ClassName)
+                        DBEntry ent = new DBEntry();
+                        ent.filename = Path.GetFileName(file);
+                        ent.Objects = new List<ObjInf>();
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        for (int i = 0; i < Exports.Count; i++)
                         {
-                            case "StaticMesh":
-                                obj = new ObjInf();
-                                obj.Index = i;
-                                obj.Type = 0;
-                                obj.name = ex.ObjectName;
-                                ent.Objects.Add(obj);
-                                break;
-                            case "SkeletalMesh":
-                                obj = new ObjInf();
-                                obj.Index = i;
-                                obj.Type = 1;
-                                obj.name = ex.ObjectName;
-                                ent.Objects.Add(obj);
-                                break;
+                            IExportEntry ex = Exports[i];
+                            ObjInf obj;
+                            switch (ex.ClassName)
+                            {
+                                case "StaticMesh":
+                                    obj = new ObjInf();
+                                    obj.Index = i;
+                                    obj.Type = 0;
+                                    obj.name = ex.ObjectName;
+                                    ent.Objects.Add(obj);
+                                    break;
+                                case "SkeletalMesh":
+                                    obj = new ObjInf();
+                                    obj.Index = i;
+                                    obj.Type = 1;
+                                    obj.name = ex.ObjectName;
+                                    ent.Objects.Add(obj);
+                                    break;
+                            }
                         }
-                    }
-                    if (ent.Objects.Count != 0)
-                    {
-                        DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
-                        //foreach (ObjInf o in ent.Objects)
-                        //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
-                        //DebugOutput.Update();
-                        database.Add(ent);
-                    }
-                    else
-                    {
-                        DebugOutput.PrintLn("Nothing...", false);
+                        if (ent.Objects.Count != 0)
+                        {
+                            DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
+                            //foreach (ObjInf o in ent.Objects)
+                            //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
+                            //DebugOutput.Update();
+                            database.Add(ent);
+                        }
+                        else
+                        {
+                            DebugOutput.PrintLn("Nothing...", false);
+                        } 
                     }
                 }
                 catch (Exception ex)

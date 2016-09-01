@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using UsefulThings.WPF;
 
 namespace ME3Explorer.CurveEd
 {
@@ -20,56 +21,42 @@ namespace ME3Explorer.CurveEd
         CIM_CurveAutoClamped,
     }
 
-    public class CurvePoint : INotifyPropertyChanged
+    public class CurvePoint : ViewModelBase
     {
         private float inVal;
-        public float OutVal;
-        public float ArriveTangent;
-        public float LeaveTangent;
+        private float outVal;
+        private float arriveTangent;
+        private float leaveTangent;
         private CurveMode interpMode;
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
-        public event EventHandler SharedValueChanged;
-
-        protected void OnSharedValueChanged(EventArgs e)
-        {
-            SharedValueChanged?.Invoke(this, e);
-        }
         public float InVal
         {
             get { return inVal; }
-            set
-            {
-                //accurate float comparison ( != )
-                if (Math.Abs(value - inVal) > float.Epsilon)
-                {
-                    inVal = value;
-                    OnPropertyChanged();
-                    OnSharedValueChanged(EventArgs.Empty);
-                }
-            }
+            set { SetProperty(ref inVal, value); }
         }
 
         public CurveMode InterpMode
         {
             get { return interpMode; }
-            set
-            {
-                if (value != interpMode)
-                {
-                    interpMode = value;
-                    OnPropertyChanged();
-                    OnSharedValueChanged(EventArgs.Empty);
-                }
-            }
+            set { SetProperty(ref interpMode, value); }
+        }
+
+        public float OutVal
+        {
+            get { return outVal; }
+            set { SetProperty(ref outVal, value); }
+        }
+
+        public float ArriveTangent
+        {
+            get { return arriveTangent; }
+            set { SetProperty(ref arriveTangent, value); }
+        }
+
+        public float LeaveTangent
+        {
+            get { return leaveTangent; }
+            set { SetProperty(ref leaveTangent, value); }
         }
 
         public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent, CurveMode interpMode)
@@ -81,14 +68,14 @@ namespace ME3Explorer.CurveEd
             InterpMode = interpMode;
         }
 
-        public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent)
+        public CurvePoint(float _inVal, float _outVal, float _arriveTangent, float _leaveTangent)
         {
-            InVal = inVal;
-            OutVal = outVal;
-            ArriveTangent = arriveTangent;
-            LeaveTangent = leaveTangent;
+            InVal = _inVal;
+            OutVal = _outVal;
+            ArriveTangent = _arriveTangent;
+            LeaveTangent = _leaveTangent;
             //accurate float comparison ( == )
-            if (Math.Abs(arriveTangent - leaveTangent) < float.Epsilon)
+            if (Math.Abs(_arriveTangent - _leaveTangent) < float.Epsilon)
             {
                 interpMode = CurveMode.CIM_CurveUser;
             }
@@ -109,19 +96,25 @@ namespace ME3Explorer.CurveEd
 
         public event EventHandler<Tuple<bool, int>> ListModified;
 
+        public Action SaveChanges;
+
         public Curve(string name, LinkedList<CurvePoint> points)
         {
             Name = name;
             CurvePoints = points;
             foreach (var point in points)
             {
-                point.SharedValueChanged += Point_SharedValueChanged;
+                point.PropertyChanged += Point_PropertyChanged;
             }
         }
 
-        private void Point_SharedValueChanged(object sender, EventArgs e)
+        private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            SharedValueChanged?.Invoke(this, e);
+            if (e.PropertyName == nameof(CurvePoint.InVal) || e.PropertyName == nameof(CurvePoint.InterpMode))
+            {
+                SharedValueChanged?.Invoke(this, e);
+            }
+            SaveChanges?.Invoke();
         }
 
         public void RemovePoint(LinkedListNode<CurvePoint> p)
@@ -129,10 +122,12 @@ namespace ME3Explorer.CurveEd
             int index = CurvePoints.IndexOf(p);
             CurvePoints.Remove(p);
             ListModified?.Invoke(this, new Tuple<bool, int>(false, index));
+            SaveChanges?.Invoke();
         }
 
         public void AddPoint(CurvePoint newPoint, LinkedListNode<CurvePoint> relTo, bool before = true)
         {
+            newPoint.PropertyChanged += Point_PropertyChanged;
             LinkedListNode<CurvePoint> addedNode;
             if (relTo == null)
             {
@@ -147,6 +142,7 @@ namespace ME3Explorer.CurveEd
                 addedNode = CurvePoints.AddAfter(relTo, newPoint);
             }
             ListModified?.Invoke(this, new Tuple<bool, int>(true, CurvePoints.IndexOf(addedNode)));
+            SaveChanges?.Invoke();
         }
 
         public Curve()

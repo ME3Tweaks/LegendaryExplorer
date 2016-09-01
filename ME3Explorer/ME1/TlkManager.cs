@@ -99,7 +99,7 @@ namespace ME1Explorer
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                packages.Add(new ME1Package(d.FileName));
+                packages.Add(MEPackageHandler.OpenME1Package(d.FileName));
                 refreshFileBox();
             }
         }
@@ -285,7 +285,7 @@ namespace ME1Explorer
             }
             n = packages.FindIndex(x => tlk.pcc.FileName == x.FileName);
             packages.RemoveAt(n);
-            packages.Insert(n, new ME1Package(tlk.pcc.FileName));
+            packages.Insert(n, MEPackageHandler.OpenME1Package(tlk.pcc.FileName));
             refreshFileBox();
         }
     }

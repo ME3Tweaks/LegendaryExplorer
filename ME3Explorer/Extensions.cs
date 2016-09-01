@@ -122,24 +122,29 @@ namespace ME3Explorer
         /// <param name="dest">Array to write to</param>
         /// <param name="offset">Start index in dest</param>
         /// <param name="source">data to write to dest</param>
-        public static void OverwriteRange<T>(this T[] dest, int offset, T[] source)
+        public static void OverwriteRange<T>(this IList<T> dest, int offset, IList<T> source)
         {
             if (offset < 0)
             {
-                offset = dest.Length + offset;
+                offset = dest.Count + offset;
                 if (offset < 0)
                 {
                     throw new IndexOutOfRangeException("Attempt to write before the beginning of the array.");
                 }
             }
-            if (offset + source.Length > dest.Length)
+            if (offset + source.Count > dest.Count)
             {
                 throw new IndexOutOfRangeException("Attempt to write past the end of the array.");
             }
-            for (int i = 0; i < source.Length; i++)
+            for (int i = 0; i < source.Count; i++)
             {
                 dest[offset + i] = source[i];
             }
+        }
+
+        public static T[] TypedClone<T>(this T[] src)
+        {
+            return (T[])src.Clone();
         }
     }
 
@@ -275,6 +280,8 @@ namespace ME3Explorer
     public static class ExternalExtensions
     {
         [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll")]
         static extern bool IsIconic(IntPtr hwnd);
@@ -304,6 +311,17 @@ namespace ME3Explorer
                 ShowWindowAsync(form.Handle, 9);
             }
             SetForegroundWindow(form.Handle);
+        }
+
+        public static bool IsForegroundWindow(this System.Windows.Forms.Form form)
+        {
+            return GetForegroundWindow() == form.Handle;
+        }
+
+        public static bool IsForegroundWindow(this Window window)
+        {
+            WindowInteropHelper helper = new WindowInteropHelper(window);
+            return GetForegroundWindow() == helper.Handle;
         }
 
         //modified from https://social.msdn.microsoft.com/Forums/vstudio/en-US/df4db537-a201-4ab4-bb7e-db38a5c2b6e0/wpf-equivalent-of-winforms-controldrawtobitmap

@@ -7,7 +7,7 @@ using System;
 
 namespace ME1Explorer.Unreal.Classes
 {
-    public class BioConversation
+    public class ME1BioConversation
     {
         public ME1Package pcc;
         public int MyIndex;
@@ -166,7 +166,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public BioConversation(ME1Package Pcc, int Index)
+        public ME1BioConversation(ME1Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
@@ -787,7 +787,6 @@ namespace ME1Explorer.Unreal.Classes
                         break;
                 }
             pcc.Exports[MyIndex].Data = m.ToArray();
-            pcc.save(pcc.FileName);
         }
     }
 }

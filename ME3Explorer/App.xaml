@@ -167,7 +167,8 @@
         <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefx_editor_icon.ico"/>
         <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
         <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
-        <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_editor_64x64.png"/>
+        <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
+        <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>
         <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>

@@ -11,20 +11,20 @@ using KFreonLib.Debugging;
 
 namespace ME3Explorer.Packages
 {
-    public class ME1Package : MEPackage, IMEPackage
+    public sealed class ME1Package : MEPackage, IMEPackage
     {
         public MEGame Game { get { return MEGame.ME1;} }
-        
-        public bool IsModified
+
+        public override bool IsModified
         {
             get
             {
-                return exports.Any(entry => entry.HasChanged == true) || imports.Any(entry => entry.HasChanged == true || namesAdded > 0);
+                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true || namesAdded > 0);
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
 
-        private int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
+        protected override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
         private int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
         public int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
         private int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
@@ -66,7 +66,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public ME1Package(string path)
+        private ME1Package(string path)
         {
             
             DebugOutput.PrintLn("Load file : " + path);
@@ -167,6 +167,7 @@ namespace ME3Explorer.Packages
             {
                 ME1ImportEntry import = new ME1ImportEntry(this, fs.ReadBytes(28));
                 import.Index = i;
+                import.PropertyChanged += importChanged;
                 imports.Add(import);
             }
         }
@@ -196,8 +197,9 @@ namespace ME3Explorer.Packages
                 fs.Seek(exp.DataOffset, SeekOrigin.Begin);
                 fs.Read(buffer, 0, buffer.Length);
                 exp.Data = buffer;
-                exp.HasChanged = false;
+                exp.DataChanged = false;
                 exp.Index = i;
+                exp.PropertyChanged += exportChanged;
                 exports.Add(exp);
                 fs.Seek(end, SeekOrigin.Begin);
             }
@@ -309,11 +311,11 @@ namespace ME3Explorer.Packages
             base.AfterSave();
             foreach (var export in exports)
             {
-                export.HasChanged = false;
+                export.DataChanged = false;
             }
             foreach (var import in imports)
             {
-                import.HasChanged = false;
+                import.HeaderChanged = false;
             }
             namesAdded = 0;
         }
@@ -399,8 +401,11 @@ namespace ME3Explorer.Packages
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another file, it has invalid references!");
 
+            importEntry.PropertyChanged += importChanged;
             imports.Add(importEntry);
             ImportCount = imports.Count;
+
+            updateTools(PackageChange.ImportAdd, ImportCount - 1);
         }
 
         public void addExport(IExportEntry exportEntry)
@@ -420,10 +425,13 @@ namespace ME3Explorer.Packages
             if (exportEntry.FileRef != this)
                 throw new Exception("you cannot add a new export entry from another file, it has invalid references!");
 
-            exportEntry.HasChanged = true;
+            exportEntry.DataChanged = true;
 
+            exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
             ExportCount = exports.Count;
+
+            updateTools(PackageChange.ExportAdd, ExportCount);
         }
 
         public IExportEntry getExport(int index)

@@ -62,14 +62,14 @@
                                                             <StackPanel Orientation="Horizontal" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Button}}">
                                                                 <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding tool.icon}" Opacity="0.85">
                                                                 </Image>
-                                                                <Viewbox Margin="10,0,0,0" VerticalAlignment="Center" StretchDirection="DownOnly" Width="170" HorizontalAlignment="Left">
-                                                                    <StackPanel>
+                                                                <StackPanel Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                    <Viewbox StretchDirection="DownOnly" Width="162" HorizontalAlignment="Left">
                                                                         <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding tool.name}"
                                                                                FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18"/>
-                                                                        <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
-                                                                               Fill="{StaticResource HighlightColor}" Visibility="Hidden"/>
-                                                                    </StackPanel>
-                                                                </Viewbox>
+                                                                    </Viewbox>
+                                                                    <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
+                                                                               Fill="{StaticResource HighlightColor}" Visibility="Hidden" HorizontalAlignment="Left"/>
+                                                                </StackPanel>
                                                             </StackPanel>
                                                         </Button>
                                                     </Grid>
@@ -113,8 +113,22 @@
                                                 </Button.Style>
                                                 <StackPanel Orientation="Horizontal" Height="32">
                                                     <Grid Width="32" Height="32" Background="#7FCFCFCF">
-                                                        <Image Source="/ME3Explorer;component/Resources/diskette_white.ico" Width="24" Height="24" 
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        <Rectangle Width="24" Height="24" 
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Rectangle.Style>
+                                                                <Style TargetType="Rectangle">
+                                                                    <Setter Property="Fill" Value="White"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsModified, Mode=OneWay}" Value="True">
+                                                                            <Setter Property="Fill" Value="#FFF05757"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Rectangle.Style>
+                                                            <Rectangle.OpacityMask>
+                                                                <ImageBrush ImageSource="/ME3Explorer;component/Resources/diskette_white.ico"/>
+                                                            </Rectangle.OpacityMask>
+                                                        </Rectangle>
                                                     </Grid>
                                                     <Grid Width="116" Height="32" Background="#7F808080">
                                                         <TextBlock Text="Save File" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="20"

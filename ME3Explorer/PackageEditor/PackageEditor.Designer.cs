@@ -68,6 +68,7 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.nameContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listBox1 = new System.Windows.Forms.ListBox();
@@ -485,9 +486,10 @@
             // nameContextMenuStrip1
             // 
             this.nameContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem});
+            this.copyToolStripMenuItem,
+            this.editToolStripMenuItem1});
             this.nameContextMenuStrip1.Name = "contextMenuStrip1";
-            this.nameContextMenuStrip1.Size = new System.Drawing.Size(103, 26);
+            this.nameContextMenuStrip1.Size = new System.Drawing.Size(103, 48);
             // 
             // copyToolStripMenuItem
             // 
@@ -495,6 +497,13 @@
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // editToolStripMenuItem1
+            // 
+            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(102, 22);
+            this.editToolStripMenuItem1.Text = "Edit";
+            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
             // 
             // splitContainer1
             // 
@@ -1095,6 +1104,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
+            this.Activated += new System.EventHandler(this.PackageEditor_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PackageEditor_FormClosed);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragDrop);
@@ -1234,5 +1244,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editInCurveEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
     }
 }

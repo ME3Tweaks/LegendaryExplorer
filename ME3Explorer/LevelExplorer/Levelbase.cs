@@ -84,23 +84,26 @@ namespace ME3Explorer.LevelExplorer
                 DebugOutput.PrintLn(i + "/" + (files.Length - 1) + " Scanning : " + Path.GetFileName(file));
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
-                    for (int j = 0; j < pcc.Exports.Count(); j++)
+
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        IExportEntry e = pcc.Exports[j];
-                        if (e.ClassName == "Level")
+                        for (int j = 0; j < pcc.Exports.Count(); j++)
                         {
-                            Level l = new Level(pcc, j, true);
-                            DBEntry entry = new DBEntry();
-                            entry.filepath = file;
-                            entry.index = j;
-                            entry.count = l.Objects.Count();
-                            database.Add(entry);
-                            //foreach(int idx in l.Objects)
-                            //    if (pcc.isExport(idx) && pcc.Exports[idx].ClassName == "BioPlaypenVolumeAdditive")
-                            //        DebugOutput.PrintLn("#############################found");
-                            DebugOutput.PrintLn("\tfound Level with " + entry.count + " Objects");
-                        }
+                            IExportEntry e = pcc.Exports[j];
+                            if (e.ClassName == "Level")
+                            {
+                                Level l = new Level(pcc, j, true);
+                                DBEntry entry = new DBEntry();
+                                entry.filepath = file;
+                                entry.index = j;
+                                entry.count = l.Objects.Count();
+                                database.Add(entry);
+                                //foreach(int idx in l.Objects)
+                                //    if (pcc.isExport(idx) && pcc.Exports[idx].ClassName == "BioPlaypenVolumeAdditive")
+                                //        DebugOutput.PrintLn("#############################found");
+                                DebugOutput.PrintLn("\tfound Level with " + entry.count + " Objects");
+                            }
+                        } 
                     }
                 }
                 catch (Exception ex)
@@ -138,18 +141,20 @@ namespace ME3Explorer.LevelExplorer
 
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(l.filepath);
-                    Level lev = new Level(pcc, l.index, true);
-                    string s = "";
-                    s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";
-                    s += "Object count : " + lev.Objects.Count + "\n==============\n\n";
-                    for (int i = 0; i < lev.Objects.Count(); i++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(l.filepath))
                     {
-                        int index = lev.Objects[i];
-                        s += "(" + i + "/" + (lev.Objects.Count() - 1) + ") ";
-                        s += "#" + index + " : \"" + pcc.Exports[index].ObjectName + "\" Class : \"" + pcc.Exports[index].ClassName + "\"\n";
+                        Level lev = new Level(pcc, l.index, true);
+                        string s = "";
+                        s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";
+                        s += "Object count : " + lev.Objects.Count + "\n==============\n\n";
+                        for (int i = 0; i < lev.Objects.Count(); i++)
+                        {
+                            int index = lev.Objects[i];
+                            s += "(" + i + "/" + (lev.Objects.Count() - 1) + ") ";
+                            s += "#" + index + " : \"" + pcc.Exports[index].ObjectName + "\" Class : \"" + pcc.Exports[index].ClassName + "\"\n";
+                        }
+                        rtb1.Text = s; 
                     }
-                    rtb1.Text = s;
                 }
                 catch (Exception ex)
                 {

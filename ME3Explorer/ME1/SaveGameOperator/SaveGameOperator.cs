@@ -36,9 +36,9 @@ namespace ME1Explorer.SaveGameOperator
 
         public void LoadData()
         {
-            Save.ExtractME1Package(0, "temp.upk");
-            ME1Package pcc = new ME1Package("temp.upk");
-            File.Delete("temp.upk");
+            Save.ExtractME1Package(0, "load.upk");
+            ME1Package pcc = MEPackageHandler.OpenME1Package("load.upk");
+            File.Delete("load.upk");
             byte[] buff = pcc.Exports[1].Data;
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[1]);
             foreach (PropertyReader.Property p in props)
@@ -66,9 +66,9 @@ namespace ME1Explorer.SaveGameOperator
 
         public void SaveData()
         {
-            Save.ExtractME1Package(0, "temp.upk");
-            ME1Package pcc = new ME1Package("temp.upk");
-            File.Delete("temp.upk");
+            Save.ExtractME1Package(0, "save.upk");
+            ME1Package pcc = MEPackageHandler.OpenME1Package("save.upk");
+            File.Delete("save.upk");
             byte[] buff = pcc.Exports[1].Data;
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[1]);
             int v;
@@ -97,9 +97,9 @@ namespace ME1Explorer.SaveGameOperator
                 }
             }
             pcc.Exports[1].Data = buff;
-            pcc.save("temp.upk");
-            Save.ImportME1Package(0, "temp.upk");
-            File.Delete("temp.upk");
+            pcc.save();
+            Save.ImportME1Package(0, "save.upk");
+            File.Delete("save.upk");
             v = Convert.ToInt32(textBox5.Text);
             buff = Save.Files[1].memory.ToArray();
             buff = WriteInt(buff, 0x4A7, v);//Paragon

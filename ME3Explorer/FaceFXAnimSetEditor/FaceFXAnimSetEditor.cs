@@ -32,11 +32,6 @@ namespace ME3Explorer.FaceFX
                 try
                 {
                     LoadME3Package(d.FileName);
-                    Objects = new List<int>();
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    for (int i = 0; i < Exports.Count; i++)
-                        if (Exports[i].ClassName == "FaceFXAnimSet")
-                            Objects.Add(i);
                     ListRefresh();
                 }
                 catch (Exception ex)
@@ -48,16 +43,35 @@ namespace ME3Explorer.FaceFX
 
         public void ListRefresh()
         {
+            Objects = new List<int>();
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
+                if (Exports[i].ClassName == "FaceFXAnimSet")
+                    Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
                 listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
         }
 
-        private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)
+        private void FaceFXRefresh(int n)
         {
-            if (FaceFX == null)
-                return;
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
+            IEnumerable<string> expandedNodes = null;
+            string topNodeName = null;
+            if (FaceFX != null && n == FaceFX.export.Index)
+            {
+                List<TreeNode> allNodes = treeView2.Nodes.Cast<TreeNode>().ToList();
+                //flatten tree of nodes into list.
+                for (int j = 0; j < allNodes.Count(); j++)
+                {
+                    allNodes.AddRange(allNodes[j].Nodes.Cast<TreeNode>());
+                }
+                expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
+                topNodeName = treeView2.TopNode.Name;
+
+            }
+            IExportEntry exportEntry = pcc.Exports[n];
+            FaceFX = new ME3FaceFXAnimSet(pcc, exportEntry);
+            hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
             nameAllNodes(treeView1.Nodes);
@@ -102,17 +116,15 @@ namespace ME3Explorer.FaceFX
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            FaceFX = new ME3FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
-            FaceFXRefresh(n);
+            FaceFXRefresh(Objects[n]);
         }
 
         private void recreateAndDumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
+            if (FaceFX == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.FileName = pcc.Exports[Objects[n]].ObjectName + ".fxa";
+            d.FileName = FaceFX.export.ObjectName + ".fxa";
             d.Filter = "*.fxa|*.fxa";
             if(d.ShowDialog() == DialogResult.OK)
             {
@@ -126,14 +138,6 @@ namespace ME3Explorer.FaceFX
             if (pcc == null)
                 return;
             pcc.save();
-            MessageBox.Show("Done.");
-        }
-
-        private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (FaceFX == null)
-                return;
-            FaceFX.Save();
             MessageBox.Show("Done.");
         }
 
@@ -194,6 +198,7 @@ namespace ME3Explorer.FaceFX
                         return;
                 }
                 FaceFX.Data.Data[entidx] = d;
+                FaceFX.Save();
             }
             else if(t2.Parent.Text == "Entries")
             {
@@ -252,18 +257,8 @@ namespace ME3Explorer.FaceFX
                         break;
                 }
                 FaceFX.Data.Data[entidx] = d;
+                FaceFX.Save();
             }
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            List<TreeNode> allNodes = treeView2.Nodes.Cast<TreeNode>().ToList();
-            //flatten tree of nodes into list.
-            for (int j = 0; j < allNodes.Count(); j++)
-            {
-                allNodes.AddRange(allNodes[j].Nodes.Cast<TreeNode>());
-            }
-            var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            FaceFXRefresh(n, expandedNodes, treeView2.TopNode.Name);
         }
 
         private void cloneEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -276,9 +271,6 @@ namespace ME3Explorer.FaceFX
                 return;
             FaceFX.CloneEntry(t.Index);
             FaceFX.Save();
-            int n = listBox1.SelectedIndex;
-            listBox1.SelectedIndex = -1;
-            listBox1.SelectedIndex = n;
         }
 
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -291,9 +283,6 @@ namespace ME3Explorer.FaceFX
                 return;
             FaceFX.RemoveEntry(t.Index);
             FaceFX.Save();
-            int n = listBox1.SelectedIndex;
-            listBox1.SelectedIndex = -1;
-            listBox1.SelectedIndex = n;
         }
 
         private void moveEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -310,9 +299,6 @@ namespace ME3Explorer.FaceFX
             {
                 FaceFX.MoveEntry(t.Index, i);
                 FaceFX.Save();
-                int n = listBox1.SelectedIndex;
-                listBox1.SelectedIndex = -1;
-                listBox1.SelectedIndex = n;
             }
         }
 
@@ -325,9 +311,47 @@ namespace ME3Explorer.FaceFX
             {
                 FaceFX.AddName(result);
                 FaceFX.Save();
-                int n = listBox1.SelectedIndex;
-                listBox1.SelectedIndex = -1;
-                listBox1.SelectedIndex = n;
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (FaceFX != null && updatedExports.Contains(FaceFX.export.Index))
+            {
+                int index = FaceFX.export.Index;
+                //loaded FaceFXAnimset is no longer a FaceFXAnimset
+                if (FaceFX.export.ClassName != "FaceFXAnimSet")
+                {
+                    FaceFX = null;
+                    treeView1.Nodes.Clear();
+                    treeView2.Nodes.Clear();
+                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    ListRefresh();
+                }
+                else
+                {
+                    FaceFXRefresh(index);
+                }
+                updatedExports.Remove(index);
+            }
+            if (updatedExports.Intersect(Objects).Count() > 0)
+            {
+                ListRefresh();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    {
+                        ListRefresh();
+                        break;
+                    }
+                }
             }
         }
     }

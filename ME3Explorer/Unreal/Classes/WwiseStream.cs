@@ -14,7 +14,6 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public ME3Package pcc;
         int Index;
         public List<PropertyReader.Property> props;
         public SoundPlayer sp;
@@ -31,16 +30,15 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
         
-        public WwiseStream(ME3Package Pcc, int index)
+        public WwiseStream(ME3Package pcc, int index)
         {
-            pcc = Pcc;
             Index = index;
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
-            Deserialize();
+            Deserialize(pcc);
         }
 
-        public void Deserialize()
+        public void Deserialize(ME3Package pcc)
         {
             props = PropertyReader.getPropList(pcc.Exports[Index]);
             int off = props[props.Count - 1].offend + 8;
@@ -145,9 +143,17 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc") && (MEPackageHandler.OpenME3Package(path)).IsCompressed)
+            if (path.EndsWith(".pcc"))
             {
-                fs = CompressionHelper.DecompressME3(fs);
+                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                {
+                    if (package.IsCompressed)
+                    {
+                        Stream result = CompressionHelper.DecompressME3(fs);
+                        fs.Dispose();
+                        fs = result;
+                    }
+                } 
             }
             if (DataOffset + DataSize > fs.Length)
                 return;
@@ -160,6 +166,7 @@ namespace ME3Explorer.Unreal.Classes
                 while (!sp.IsLoadCompleted)
                     Application.DoEvents();
             }
+            fs.Dispose();
         }
 
         private void ExtractWav(string path, string name = "",bool askSave = true)
@@ -168,9 +175,17 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc") && (MEPackageHandler.OpenME3Package(path)).IsCompressed)
+            if (path.EndsWith(".pcc"))
             {
-                fs = CompressionHelper.DecompressME3(fs);
+                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                {
+                    if (package.IsCompressed)
+                    {
+                        Stream result = CompressionHelper.DecompressME3(fs);
+                        fs.Dispose();
+                        fs = result;
+                    }
+                }
             }
             if (DataOffset + DataSize > fs.Length)
                 return;

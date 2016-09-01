@@ -236,7 +236,7 @@ namespace ME3Explorer.Unreal.Classes
                 int id = BitConverter.ToInt32(didx_data, 0x8 + i * 0xC);
                 int start = BitConverter.ToInt32(didx_data, 0xC + i * 0xC) + 0x8;
                 int size = BitConverter.ToInt32(didx_data, 0x10 + i * 0xC);
-                FileStream fs = new FileStream(path + i.ToString("d4") + "_" + id.ToString("X8") + ".wem",FileMode.Create,FileAccess.Write);
+                FileStream fs = new FileStream(Path.Combine(path, i.ToString("d4") + "_" + id.ToString("X8") + ".wem") ,FileMode.Create,FileAccess.Write);
                 fs.Write(data_data, start, size);
                 fs.Close();
             }

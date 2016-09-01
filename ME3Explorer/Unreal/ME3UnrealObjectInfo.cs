@@ -8,6 +8,8 @@ using System.IO;
 using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
+using ME2Explorer.Unreal;
+using ME1Explorer.Unreal;
 
 namespace ME3Explorer.Unreal
 {
@@ -226,80 +228,83 @@ namespace ME3Explorer.Unreal
             {
                 bool immutable = isImmutable(className);
                 ClassInfo info = Structs[className];
-                ME3Package importPCC;
                 try
                 {
-                    importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    {
+                        byte[] buff;
+                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
+                        //thus, I have hardcoded what those default values should be 
+                        if (className == "Plane")
+                        {
+                            buff = PlaneDefault;
+                        }
+                        else if (className == "CoverReference")
+                        {
+                            buff = CoverReferenceDefault;
+                        }
+                        else
+                        {
+                            buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
+                        }
+                        List<PropertyReader.Property> Props = PropertyReader.ReadProp(importPCC, buff, 0);
+                        MemoryStream m = new MemoryStream();
+                        foreach (PropertyReader.Property p in Props)
+                        {
+                            string propName = importPCC.getNameEntry(p.Name);
+                            //check if property is transient, if so, skip (neither of the structs that inherit have transient props)
+                            if (info.properties.ContainsKey(propName) || propName == "None" || info.baseClass != "Class")
+                            {
+                                if (immutable && !fullProps)
+                                {
+                                    PropertyReader.ImportImmutableProperty(pcc, importPCC, p, className, m, true);
+                                }
+                                else
+                                {
+                                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m, true);
+                                }
+                            }
+                        }
+                        return m.ToArray(); 
+                    }
                 }
                 catch (Exception)
                 {
                     return null;
                 }
-                byte[] buff;
-                //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                //thus, I have hardcoded what those default values should be 
-                if (className == "Plane")
-                {
-                    buff = PlaneDefault;
-                }
-                else if (className == "CoverReference")
-                {
-                    buff = CoverReferenceDefault;
-                }
-                else
-                {
-                    buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
-                }
-                List<PropertyReader.Property> Props = PropertyReader.ReadProp(importPCC, buff, 0);
-                MemoryStream m = new MemoryStream();
-                foreach (PropertyReader.Property p in Props)
-                {
-                    string propName = importPCC.getNameEntry(p.Name);
-                    //check if property is transient, if so, skip (neither of the structs that inherit have transient props)
-                    if (info.properties.ContainsKey(propName) || propName == "None" || info.baseClass != "Class")
-                    {
-                        if (immutable && !fullProps)
-                        {
-                            PropertyReader.ImportImmutableProperty(pcc, importPCC, p, className, m, true);
-                        }
-                        else
-                        {
-                            PropertyReader.ImportProperty(pcc, importPCC, p, className, m, true);
-                        }
-                    }
-                }
-                return m.ToArray();
             }
             else if (Classes.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
-                ME3Package importPCC;
                 try
                 {
-                    importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    {
+                        IExportEntry entry = pcc.Exports[info.exportIndex + 1];
+                        List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
+                        MemoryStream m = new MemoryStream(entry.DataSize - 4);
+                        foreach (PropertyReader.Property p in Props)
+                        {
+                            if (!info.properties.ContainsKey(importPCC.getNameEntry(p.Name)))
+                            {
+                                //property is transient
+                                continue;
+                            }
+                            PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
+                        }
+                        return m.ToArray(); 
+                    }
                 }
                 catch (Exception)
                 {
                     return null;
                 }
-                IExportEntry entry = pcc.Exports[info.exportIndex + 1];
-                List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
-                MemoryStream m = new MemoryStream(entry.DataSize - 4);
-                foreach (PropertyReader.Property p in Props)
-                {
-                    if (!info.properties.ContainsKey(importPCC.getNameEntry(p.Name)))
-                    {
-                        //property is transient
-                        continue;
-                    }
-                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
-                }
-                return m.ToArray();
+                
             }
             return null;
         }
 
-        public static bool inheritsFrom(this ME3ExportEntry entry, string baseClass)
+        public static bool inheritsFrom(ME3ExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -317,15 +322,15 @@ namespace ME3Explorer.Unreal
         {
             if (entry is ME1ExportEntry)
             {
-                return (entry as ME1ExportEntry).inheritsFrom(baseClass);
+                return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
             }
             else if (entry is ME2ExportEntry)
             {
-                return (entry as ME2ExportEntry).inheritsFrom(baseClass);
+                return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
             }
             else if (entry is ME3ExportEntry)
             {
-                return (entry as ME3ExportEntry).inheritsFrom(baseClass);
+                return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
             }
             return false;
         }
@@ -335,7 +340,6 @@ namespace ME3Explorer.Unreal
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
-            ME3Package pcc;
             string path = ME3Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
             string objectName;
@@ -344,37 +348,39 @@ namespace ME3Explorer.Unreal
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    pcc = MEPackageHandler.OpenME3Package(files[i]);
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    IExportEntry exportEntry;
-                    for (int j = 0; j < Exports.Count; j++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
                     {
-                        exportEntry = Exports[j];
-                        if (exportEntry.ClassName == "Enum")
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IExportEntry exportEntry;
+                        for (int j = 0; j < Exports.Count; j++)
                         {
-                            generateEnumValues(j, pcc);
-                        }
-                        else if (exportEntry.ClassName == "Class")
-                        {
-                            objectName = exportEntry.ObjectName;
-                            if (!Classes.ContainsKey(objectName))
+                            exportEntry = Exports[j];
+                            if (exportEntry.ClassName == "Enum")
                             {
-                                Classes.Add(objectName, generateClassInfo(j, pcc));
+                                generateEnumValues(j, pcc);
                             }
-                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") ||  objectName.Contains("SequenceLatentAction") ||
-                                objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !SequenceObjects.ContainsKey(objectName))
+                            else if (exportEntry.ClassName == "Class")
                             {
-                                SequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
+                                objectName = exportEntry.ObjectName;
+                                if (!Classes.ContainsKey(objectName))
+                                {
+                                    Classes.Add(objectName, generateClassInfo(j, pcc));
+                                }
+                                if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
+                                    objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !SequenceObjects.ContainsKey(objectName))
+                                {
+                                    SequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
+                                }
                             }
-                        }
-                        else if (exportEntry.ClassName == "ScriptStruct")
-                        {
-                            objectName = exportEntry.ObjectName;
-                            if (!Structs.ContainsKey(objectName))
+                            else if (exportEntry.ClassName == "ScriptStruct")
                             {
-                                Structs.Add(objectName, generateClassInfo(j, pcc));
+                                objectName = exportEntry.ObjectName;
+                                if (!Structs.ContainsKey(objectName))
+                                {
+                                    Structs.Add(objectName, generateClassInfo(j, pcc));
+                                }
                             }
-                        }
+                        } 
                     }
                 }
                 System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");

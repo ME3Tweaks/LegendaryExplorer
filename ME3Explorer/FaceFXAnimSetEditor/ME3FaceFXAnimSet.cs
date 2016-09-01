@@ -6,14 +6,15 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using Gibbed.IO;
 
 namespace ME3Explorer.FaceFX
 {
     public class ME3FaceFXAnimSet : IFaceFXAnimSet
     {
         IMEPackage pcc;
-        IExportEntry entry;
-
+        public IExportEntry export;
+        public IExportEntry Export { get { return export; } }
         ME3HeaderStruct header;
         public HeaderStruct Header
         {
@@ -39,10 +40,10 @@ namespace ME3Explorer.FaceFX
         {
             
             pcc = Pcc;
-            entry = Entry;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(entry);
+            export = Entry;
+            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
             int start = props[props.Count - 1].offend + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(entry.Data.Skip(start).ToArray()));
+            SerializingContainer Container = new SerializingContainer(new MemoryStream(export.Data.Skip(start).ToArray()));
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -293,12 +294,12 @@ namespace ME3Explorer.FaceFX
             Serialize(Container);
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
-            List<PropertyReader.Property> props = PropertyReader.getPropList(entry);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
             int start = props[props.Count - 1].offend;
-            res.Write(entry.Data, 0, start);
-            res.Write(BitConverter.GetBytes((int)m.Length), 0, 4);
-            res.Write(m.ToArray(), 0, (int)m.Length);
-            entry.Data = res.ToArray();
+            res.Write(export.Data, 0, start);
+            res.WriteValueS32((int)m.Length);
+            res.WriteStream(m);
+            export.Data = res.ToArray();
         }
 
         public void CloneEntry(int n)

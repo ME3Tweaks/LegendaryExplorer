@@ -365,6 +365,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Meshplorer2";
             this.Text = "Meshplorer2";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Meshplorer2_FormClosing);
             this.Load += new System.EventHandler(this.Meshplorer2_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Meshplorer2_Paint);
             this.menuStrip1.ResumeLayout(false);

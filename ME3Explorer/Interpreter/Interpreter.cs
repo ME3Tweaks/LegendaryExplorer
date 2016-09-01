@@ -20,10 +20,8 @@ namespace ME3Explorer
 {
     public partial class Interpreter : UserControl
     {
-        public event PropertyValueChangedEventHandler PropertyValueChanged;
-
         public IMEPackage Pcc { get { return pcc; } set {pcc = value; defaultStructValues.Clear(); } }
-        public int Index;
+        public IExportEntry export;
         public string className;
         public byte[] memory;
         public int memsize;
@@ -107,6 +105,8 @@ namespace ME3Explorer
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
+        int? selectedNodePos = null;
+
         public Interpreter()
         {
             InitializeComponent();
@@ -116,17 +116,18 @@ namespace ME3Explorer
 
         public void InitInterpreter(BioTlkFileSet editorTlkSet = null)
         {
-            DynamicByteProvider db = new DynamicByteProvider(pcc.getExport(Index).Data);
+            memory = export.Data;
+            memsize = memory.Length;
+            DynamicByteProvider db = new DynamicByteProvider(export.Data);
             hb1.ByteProvider = db;
-            memory = pcc.getExport(Index).Data;
-            className = pcc.getExport(Index).ClassName;
+            className = export.ClassName;
 
             if (pcc.Game == MEGame.ME1)
             {
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
                 {
-                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(pcc.getExport(Index)).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
+                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(export).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
                     if (tlkSetRef != null)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value.IntValue - 1);
@@ -156,10 +157,10 @@ namespace ME3Explorer
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            readerpos = PropertyReader.detectStart(pcc, memory, pcc.getExport(Index).ObjectFlags);
+            readerpos = PropertyReader.detectStart(pcc, memory, export.ObjectFlags);
             
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            TreeNode topLevelTree = new TreeNode("0000 : " + pcc.getExport(Index).ObjectName);
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
@@ -497,7 +498,7 @@ namespace ME3Explorer
             }
             else
             {
-                //TODO: implement getDefaultClassValue() for ME1 and ME2 so this sin't needed
+                //TODO: implement getDefaultClassValue() for ME1 and ME2 so this isn't needed
                 int pos = readerpos;
                 if (structType == "Vector2d" || structType == "RwVector2")
                 {
@@ -1020,7 +1021,7 @@ namespace ME3Explorer
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.txt|*.txt";
-            d.FileName = pcc.getExport(Index).ObjectName + ".txt";
+            d.FileName = export.ObjectName + ".txt";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -1457,13 +1458,13 @@ namespace ME3Explorer
                         if (byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos] = b;
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafBool:
                     case nodeType.StructLeafBool:
                         memory[pos] = (byte)propDropdown.SelectedIndex;
-                        RefreshMem(pos);
+                        UpdateMem(pos);
                         break;
                     case nodeType.ArrayLeafFloat:
                     case nodeType.StructLeafFloat:
@@ -1471,14 +1472,14 @@ namespace ME3Explorer
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(f));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case nodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafInt:
@@ -1489,14 +1490,14 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos, BitConverter.GetBytes(i));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafEnum:
                     case nodeType.StructLeafEnum:
                         i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
-                        RefreshMem(pos);
+                        UpdateMem(pos);
                         break;
                     case nodeType.ArrayLeafName:
                     case nodeType.StructLeafName:
@@ -1509,7 +1510,7 @@ namespace ME3Explorer
                             }
                             WriteMem(pos, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
                             WriteMem(pos + 4, BitConverter.GetBytes(i));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case nodeType.ArrayLeafString:
@@ -1578,7 +1579,7 @@ namespace ME3Explorer
                             updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
-                        RefreshMem(pos);
+                        UpdateMem(pos);
                         break;
                 }
             }
@@ -1610,7 +1611,7 @@ namespace ME3Explorer
                         if (int.TryParse(proptext.Text, out i))
                         {
                             WriteMem(pos + 24, BitConverter.GetBytes(i));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case "NameProperty":
@@ -1623,7 +1624,7 @@ namespace ME3Explorer
                             }
                             WriteMem(pos + 24, BitConverter.GetBytes(pcc.FindNameOrAdd(nameEntry.Text)));
                             WriteMem(pos + 28, BitConverter.GetBytes(i));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case "FloatProperty":
@@ -1631,12 +1632,12 @@ namespace ME3Explorer
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos + 24, BitConverter.GetBytes(f));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case "BoolProperty":
                         memory[pos + 24] = (byte)propDropdown.SelectedIndex;
-                        RefreshMem(pos);
+                        UpdateMem(pos);
                         break;
                     case "ByteProperty":
                         int valOffset;
@@ -1652,12 +1653,12 @@ namespace ME3Explorer
                         {
                             i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                             WriteMem(pos + valOffset, BitConverter.GetBytes(i));
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         else if(byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos + valOffset] = b;
-                            RefreshMem(pos);
+                            UpdateMem(pos);
                         }
                         break;
                     case "StrProperty":
@@ -1724,7 +1725,7 @@ namespace ME3Explorer
                             updateArrayLength(getPosFromNode(parent.Name), 0, (stringBuff.Count + 4) - oldSize);
                             parent = parent.Parent;
                         }
-                        RefreshMem(pos);
+                        UpdateMem(pos);
                         break;
                 }
             }
@@ -1809,11 +1810,11 @@ namespace ME3Explorer
                 }
                 if (LAST_SELECTED_PROP_TYPE == nodeType.ArrayLeafStruct)
                 {
-                    RefreshMem(-pos);
+                    UpdateMem(-pos);
                 }
                 else
                 {
-                    RefreshMem(pos);
+                    UpdateMem(pos);
                 }
                 return removedBytes;
             }
@@ -1986,7 +1987,7 @@ namespace ME3Explorer
                     updateArrayLength(getPosFromNode(parent.Name), 0, leafSize);
                     parent = parent.Parent;
                 }
-                RefreshMem(arrayType == ArrayType.Struct ? -offset : offset);
+                UpdateMem(arrayType == ArrayType.Struct ? -offset : offset);
             }
             catch (Exception ex)
             {
@@ -2049,9 +2050,14 @@ namespace ME3Explorer
         }
 
 
-        private void RefreshMem(int? selectedNodePos = null)
+        private void UpdateMem(int? _selectedNodePos = null)
         {
-            pcc.getExport(Index).Data = memory;
+            export.Data = memory.TypedClone();
+            selectedNodePos = _selectedNodePos;
+        }
+
+        public void RefreshMem()
+        {
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
             List<TreeNode> allNodes = treeView1.Nodes.Cast<TreeNode>().ToList();
@@ -2062,8 +2068,7 @@ namespace ME3Explorer
             }
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            StartScan(expandedNodes, treeView1.TopNode.Name, selectedNodePos?.ToString());
-            PropertyValueChanged?.Invoke(this, new PropertyValueChangedEventArgs(null, null));
+            StartScan(expandedNodes, treeView1.TopNode?.Name, selectedNodePos?.ToString());
         }
 
         private string CheckSeperator(string s)
@@ -2192,17 +2197,17 @@ namespace ME3Explorer
             }
             if (node.Nodes.Count > 0)
             {
-                RefreshMem(-pos);
+                UpdateMem(-pos);
             }
             else
             {
-                RefreshMem(pos);
+                UpdateMem(pos);
             }
         }
 
         private void addPropButton_Click(object sender, EventArgs e)
         {
-            List<string> props = PropertyReader.getPropList(pcc.getExport(Index)).Select(x => pcc.getNameEntry(x.Name)).ToList();
+            List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
             if (prop != null)
             {
@@ -2333,13 +2338,13 @@ namespace ME3Explorer
                 List<byte> memlist = memory.ToList();
                 memlist.InsertRange(pos, buff);
                 memory = memlist.ToArray();
-                RefreshMem(pos);
+                UpdateMem(pos);
             }
         }
 
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
-            //hack to set max width for SplitContainer1
+            //a hack to set max width for SplitContainer1
             splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
         }
 

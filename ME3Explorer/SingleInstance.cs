@@ -24,7 +24,7 @@ namespace Microsoft.Shell
 
     public interface ISingleInstanceApp
     {
-        int SignalExternalCommandLineArgs(IList<string> args);
+        int SignalExternalCommandLineArgs(string[] args);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ namespace Microsoft.Shell
         /// <summary>
         /// List of command line arguments for the application.
         /// </summary>
-        private static IList<string> commandLineArgs;
+        private static string[] commandLineArgs;
 #pragma warning restore RECS0108
 
         #endregion
@@ -183,7 +183,7 @@ namespace Microsoft.Shell
         /// <param name="args">
         /// Command line arguments for the second instance, passed to the first instance to take appropriate action.
         /// </param>
-        private static int SignalFirstInstance(string channelName, IList<string> args)
+        private static int SignalFirstInstance(string channelName, string[] args)
         {
             IpcClientChannel secondInstanceChannel = new IpcClientChannel();
             ChannelServices.RegisterChannel(secondInstanceChannel, true);
@@ -212,7 +212,7 @@ namespace Microsoft.Shell
         private static object ActivateFirstInstanceCallback(object arg)
         {
             // Get command line args to be passed to first instance
-            IList<string> args = arg as IList<string>;
+            string[] args = arg as string[];
             return ActivateFirstInstance(args);
         }
 
@@ -221,7 +221,7 @@ namespace Microsoft.Shell
         /// </summary>
         /// <param name="args">List of arguments to supply the first instance of the application.</param>
         /// <returns>Exit code</returns>
-        private static int ActivateFirstInstance(IList<string> args)
+        private static int ActivateFirstInstance(string[] args)
         {
             // Set main window state and process command line args
             if (Application.Current == null)
@@ -247,7 +247,7 @@ namespace Microsoft.Shell
             /// </summary>
             /// <param name="args">List of arguments to pass to the first instance.</param>
             /// <returns>Exit code</returns>
-            public int InvokeFirstInstance(IList<string> args)
+            public int InvokeFirstInstance(string[] args)
             {
                 if (Application.Current != null)
                 {

@@ -297,7 +297,7 @@
                         </Border>
                     </Grid>
                 </Grid>
-                <TextBlock x:Name="favoritesWatermark" Text="Shift+Right Click on any tool to add it to Favorites. Repeat to unfavorite. Favorited tools have yellow names."
+                <TextBlock x:Name="favoritesWatermark" Text="Shift+Click on any tool to add it to Favorites. Repeat to unfavorite. Favorited tools have yellow names."
                        HorizontalAlignment="Left" Margin="69,170,0,0" VerticalAlignment="Top" Height="60" Width="474" FontFamily="{StaticResource TitilliumWeb-Light}" Foreground="#4CFDFDFD" FontSize="20" TextWrapping="Wrap"/>
             </Grid>
         </Grid>
@@ -436,6 +436,12 @@
                                     <TextBlock Text="Disable tool descriptions" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
                                     <Image Height="16" Width="16" Source="../Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
 										ToolTip="Prevents display of infopanels containing tool descriptions. Appropriate for more advanced users." Margin="6,0,0,0"/>
+                                </StackPanel>
+                                <TextBlock Text="Always On Top" FontSize="20" Margin="0,16,0,0"/>
+                                <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <CheckBox x:Name="alwaysOnTopCheckBox" VerticalAlignment="Center" Margin="0,1,0,0" IsChecked="{Binding Topmost, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                                    <TextBlock Text="Keep this window on top" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>

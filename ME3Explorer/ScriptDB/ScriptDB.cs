@@ -48,21 +48,23 @@ namespace ME3Explorer.ScriptDB
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
-                    int count2 = 0;
-                    foreach (IExportEntry ent in pcc.Exports)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        if (ent.ClassName == "Function")
+                        int count2 = 0;
+                        foreach (IExportEntry ent in pcc.Exports)
                         {
-                            Function f = new Function(ent.Data, pcc);
-                            ScriptEntry n = new ScriptEntry();
-                            n.file = Path.GetFileName(file);
-                            n.name = ent.PackageFullName + "." + ent.ObjectName;
-                            n.script = f.ToRawText(false);
-                            database.Add(n);
-                            DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
-                        }
-                        count2++;
+                            if (ent.ClassName == "Function")
+                            {
+                                Function f = new Function(ent.Data, pcc);
+                                ScriptEntry n = new ScriptEntry();
+                                n.file = Path.GetFileName(file);
+                                n.name = ent.PackageFullName + "." + ent.ObjectName;
+                                n.script = f.ToRawText(false);
+                                database.Add(n);
+                                DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
+                            }
+                            count2++;
+                        } 
                     }
                 }
                 catch (Exception ex)

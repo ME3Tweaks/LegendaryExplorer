@@ -193,11 +193,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interp Viewer",
-                type = typeof(InterpEditor.InterpEditor),
+                type = typeof(Matinee.InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
-                    (new InterpEditor.InterpEditor()).Show();
+                    (new Matinee.InterpEditor()).Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene" },
                 subCategory = "Explorers",
@@ -224,8 +224,8 @@ namespace ME3Explorer
                 {
                     (new Meshplorer.Meshplorer()).Show();
                 },
-                tags = new List<string> { "utility", "mesh" },
-                subCategory = "Explorers",
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
             });
             set.Add(new Tool
             {
@@ -439,9 +439,9 @@ namespace ME3Explorer
                 {
                     (new FaceFX.FaceFXEditor()).Show();
                 },
-                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
+                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
                 subCategory = "Scene Shop",
-                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit ME3 FaceFX AnimSets (FXEs) and, soon, the corresponding FaceFXAsset.",
+                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit ME3 and ME2 FaceFX AnimSets (FXEs).",
             });
             set.Add(new Tool
             {
@@ -450,16 +450,17 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
                 open = () =>
                 {
-                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3");
-                    switch (result)
-                    {
-                        case "ME3":
-                            (new FaceFX.FaceFXAnimSetEditor()).Show();
-                            break;
-                        case "ME2":
-                            (new ME2Explorer.FaceFXAnimSetEditor()).Show();
-                            break;
-                    }
+                    (new FaceFX.FaceFXAnimSetEditor()).Show();
+                    //string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3");
+                    //switch (result)
+                    //{
+                    //    case "ME3":
+                    //        (new FaceFX.FaceFXAnimSetEditor()).Show();
+                    //        break;
+                    //    case "ME2":
+                    //        (new ME2Explorer.FaceFXAnimSetEditor()).Show();
+                    //        break;
+                    //}
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
                 subCategory = "Scene Shop",
@@ -487,7 +488,15 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Level Editor",
+                name = "Curve Editor",
+                type = typeof(CurveEd.CurveEditor),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                tags = new List<string>(),
+                subCategory = "Other",
+            });
+            set.Add(new Tool
+            {
+                name = "Level Explorer",
                 type = typeof(LevelExplorer.LevelEditor.Leveleditor),
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
                 open = () =>
@@ -523,8 +532,8 @@ namespace ME3Explorer
                 {
                     (new Meshplorer2.Meshplorer2()).Show();
                 },
-                tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
+                tags = new List<string> { "utility", "mesh" },
+                subCategory = "Explorers",
             });
             set.Add(new Tool
             {
@@ -537,7 +546,7 @@ namespace ME3Explorer
                     pck.Show();
                     pck.LoadMostRecent();
                 },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u"},
+                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3" },
                 subCategory = "Core",
                 description = "Package Editor is the toolset’s main tool for editing trilogy package files in various formats (PCC, UPK, SFM). Properties, arrays, names, curve data, and more can all be easily added and edited."
             });

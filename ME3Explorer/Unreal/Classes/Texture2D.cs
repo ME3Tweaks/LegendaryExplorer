@@ -57,7 +57,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 IExportEntry expEntry = pccObj.Exports[texIdx];
                 properties = new Dictionary<string, PropertyReader.Property>();
-                byte[] rawData = (byte[])expEntry.Data.Clone();
+                byte[] rawData = expEntry.Data;
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData, expEntry.ObjectFlags);
                 headerData = new byte[propertiesOffset];
                 Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);

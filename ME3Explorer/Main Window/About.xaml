@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" Height="751">
+        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" SizeToContent="Height">
     <StackPanel Width="600" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
             <Image Width="249" Height="109" Source="../Resources/me3exp_smallbanner_v1.png"/>
@@ -36,8 +36,8 @@
             <StackPanel>
                 <TextBlock Text="Current Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• Kfreon - Lead Designer"/><LineBreak/>
-                    <Run Text="• SirCxyrtyx - Programmer"/><LineBreak/>
+                    <Run Text="• SirCxyrtyx - Lead Developer"/><LineBreak/>
+                    <Run Text="• Kfreon - Programmer"/><LineBreak/>
                     <Run Text="• Giftfish - Coordinater"/>
                 </TextBlock>
                 <Label FontFamily="{StaticResource TitilliumWeb-Light}"
@@ -127,7 +127,7 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Art + Design">
-                    <ScrollViewer>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <TextBlock>
                         ME3Explorer 3.0 GUI Design by Giftfish and SirCxyrtyx                      <LineBreak/>
                                                                                                    <LineBreak/>
@@ -158,7 +158,7 @@
                 as specified by the terms of The MIT License. ME3Explorer is supplied without warranty; any problems incurred through use of the
                 software are your responsibility, not ours.
             </TextBlock>
-            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="195" Margin="0,3,0,0">
+            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="195" Margin="0,3,0,10">
                 <RichTextBox.Document>
                     <FlowDocument>
                         <Paragraph>

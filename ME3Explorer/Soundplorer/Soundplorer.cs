@@ -25,12 +25,6 @@ namespace ME3Explorer
 
         public Soundplorer()
         {
-            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
-            {
-                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
-                this.Close();
-                return;
-            }
             InitializeComponent();
         }
 
@@ -38,7 +32,7 @@ namespace ME3Explorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
@@ -134,7 +128,7 @@ namespace ME3Explorer
 
         private string getPathToAFC()
         {
-             string path = ME3Directory.cookedPath;
+            string path = ME3Directory.cookedPath;
             if (!File.Exists(path + w.FileName + ".afc"))
             {
                 if (!File.Exists(afcPath + w.FileName + ".afc"))
@@ -182,7 +176,7 @@ namespace ME3Explorer
                 d.Filter = "*.wav|*.wav";
                 if(ex.ObjectName.Length > 4)
                     d.FileName = ex.ObjectName.Substring(0, ex.ObjectName.Length - 4);
-                if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (d.ShowDialog() == DialogResult.OK)
                 {
                     string path;
                     if (w.IsPCCStored)
@@ -236,9 +230,7 @@ namespace ME3Explorer
                     {
                         Status.Text = "Importing...";
                         w.ImportFromFile(d.FileName, path);
-                        ex.Data = (byte[])w.memory.Clone();
-                        Status.Text = "Saving...";
-                        pcc.save(CurrentFile);
+                        ex.Data = w.memory.TypedClone();
                         Status.Text = "Ready";
                         MessageBox.Show("Done");
                     }
@@ -249,8 +241,7 @@ namespace ME3Explorer
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (pcc != null)
-                if (CurrentFile != "")
-                    pcc.save(CurrentFile);
+                pcc.save();
         }
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -273,6 +264,30 @@ namespace ME3Explorer
             {
                 dr.textBox3.Text = w.DataOffset.ToString();
                 dr.textBox2.Text = w.FileName + ".afc";
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            
+            if (updatedExports.Intersect(ObjectIndexes).Count() > 0)
+            {
+                LoadObjects();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "WwiseStream")
+                    {
+                        LoadObjects();
+                        break;
+                    }
+                }
             }
         }
     }

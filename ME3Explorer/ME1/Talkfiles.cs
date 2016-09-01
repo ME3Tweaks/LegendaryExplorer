@@ -24,7 +24,7 @@ namespace ME1Explorer
             string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
             try
             {
-                ME1Package pcc = new ME1Package(path);
+                ME1Package pcc = MEPackageHandler.OpenME1Package(path);
                 tlkList.Add(new TalkFile(pcc, 0));
             }
             catch (Exception)

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
 {
@@ -134,11 +135,13 @@ namespace ME3Explorer
 
         private void allToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.FolderBrowserDialog m = new System.Windows.Forms.FolderBrowserDialog();
-            m.ShowDialog();
-            if (m.SelectedPath != "")
+            CommonOpenFileDialog m = new CommonOpenFileDialog();
+            m.IsFolderPicker = true;
+            m.EnsurePathExists = true;
+            m.Title = "Select Folder to Output to";
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string dir = m.SelectedPath +"\\";
+                string dir = m.FileName;
                 for (int i = 0; i < entr.Count; i++)
                 {
                     listBox2.Items.Add("\n#" + i + "/" + (entr.Count-1) + " Extracting " + entr[i].off.ToString("X"));
@@ -173,7 +176,7 @@ namespace ME3Explorer
                     proc.StartInfo = procStartInfo;
                     proc.Start();
                     proc.WaitForExit();
-                    File.Copy(loc + "\\exec\\out.wav", dir + entr[i].off.ToString("X") + ".wav");
+                    File.Copy(loc + "\\exec\\out.wav", Path.Combine(dir, entr[i].off.ToString("X") + ".wav"));
                     File.Delete(loc + "\\exec\\out.ogg");
                     File.Delete(loc + "\\exec\\out.dat");
                     listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Clean up. \nDone.");

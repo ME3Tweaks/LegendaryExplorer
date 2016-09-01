@@ -327,43 +327,6 @@ namespace ME3Explorer
             // KFreon: Ditching this stuff for Fobs ExtractAllDLC function in Texplorer2.cs
             // NOTE that the files are normally collected here, now done in Texplorer2.cs
             return new List<string>();
-
-
-
-
-            List<string> ExtractedFiles = new List<string>();
-            string[] dlcname = file.Split('\\');
-            DebugOutput.PrintLn("Temp extracting DLC: " + dlcname[dlcname.Length - 3]);
-            DLCPackage dlc = new DLCPackage(file);
-            List<string> dlcpath = new List<string>(dlc.FileName.Split('\\'));
-            dlcpath.RemoveRange(dlcpath.Count - 5, 5);
-            string dlcExtractionPath = string.Join("\\", dlcpath.ToArray());
-
-            List<int> Indicies = new List<int>();
-            for (int i = 0; i < dlc.Files.Count(); i++)
-            {
-                DLCPackage.FileEntryStruct entry = dlc.Files[i];
-                if (Path.GetExtension(entry.FileName).ToLower() == ".pcc" || Path.GetExtension(entry.FileName).ToLower() == ".tfc")
-                {
-                    DebugOutput.PrintLn("Extracting: " + dlc.Files[i].FileName);
-                    try
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(dlcExtractionPath + dlc.Files[i].FileName));
-                        using (FileStream fs = new FileStream(dlcExtractionPath + dlc.Files[i].FileName, FileMode.CreateNew))
-                            dlc.DecompressEntry(i).WriteTo(fs);
-
-                        Indicies.Add(i);
-                    }
-                    catch (Exception e)
-                    {
-                        DebugOutput.PrintLn("File " + dlcExtractionPath + entry.FileName + " already exists.  Extra: " + e.Message);
-                        Console.WriteLine(e.Message);
-                    }
-                    ExtractedFiles.Add(dlcExtractionPath + entry.FileName);
-                }
-            }
-            dlc.DeleteEntries(Indicies);
-            return ExtractedFiles;
         }
 
         private void FormClosingEvent(object sender, FormClosingEventArgs e)

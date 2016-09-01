@@ -253,7 +253,7 @@
             this.saveViewToolStripMenuItem.Name = "saveViewToolStripMenuItem";
             this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.saveViewToolStripMenuItem.Text = "Save Image";
-            this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveViewToolStripMenuItem_Click);
+            this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // loadAlternateTLKToolStripMenuItem
             // 

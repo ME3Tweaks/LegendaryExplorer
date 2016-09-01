@@ -11,6 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.Propertydb
 {
@@ -108,68 +109,70 @@ namespace ME3Explorer.Propertydb
                                     + "\"");
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    pb2.Maximum = Exports.Count();
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        pb1.Value = i;
-                        RefreshLists();
-                        Application.DoEvents();
-                    }
-                    for (int j = 0; j < Exports.Count(); j++)
-                    {
-                        if (j % 100 == 0)//refresh
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        pb2.Maximum = Exports.Count();
                         {
                             pb1.Value = i;
-                            pb2.Value = j;
+                            RefreshLists();
                             Application.DoEvents();
                         }
-                        int f = -1;
-                        for (int k = 0; k < Classes.Count(); k++)
-                            if (Classes[k].name == Exports[j].ClassName)
+                        for (int j = 0; j < Exports.Count(); j++)
+                        {
+                            if (j % 100 == 0)//refresh
                             {
-                                f = k;
-                                break;
+                                pb1.Value = i;
+                                pb2.Value = j;
+                                Application.DoEvents();
                             }
-                        if (f == -1)//New Class found, add
-                        {
-                            ClassDef tmp = new ClassDef();
-                            tmp.name = Exports[j].ClassName;
-                            tmp.props = new List<PropDef>();
-                            Classes.Add(tmp);
-                            f = Classes.Count() - 1;
-                            UpdateStatus();
-                        }
-                        List<PropertyReader.Property> props = PropertyReader.getPropList(Exports[j]);
-                        ClassDef res = Classes[f];
-                        foreach (PropertyReader.Property p in props)
-                        {
-                            int f2 = -1;
-                            string name = pcc.getNameEntry(p.Name);
-                            for (int k = 0; k < res.props.Count(); k++)
-                                if (res.props[k].name == name)
+                            int f = -1;
+                            for (int k = 0; k < Classes.Count(); k++)
+                                if (Classes[k].name == Exports[j].ClassName)
                                 {
-                                    f2 = k;
+                                    f = k;
                                     break;
                                 }
-                            if (f2 == -1) //found new prop
+                            if (f == -1)//New Class found, add
                             {
-                                PropDef ptmp = new PropDef();
-                                ptmp.name = name;
-                                ptmp.type = (int)p.TypeVal;
-                                ptmp.ffpath = Path.GetFileName(file);
-                                ptmp.ffidx = j;
-                                res.props.Add(ptmp);
-                                //DebugOutput.PrintLn("\tin object #" 
-                                //                    + j 
-                                //                    + " class \"" 
-                                //                    + pcc.Exports[j].ClassName 
-                                //                    + "\" found property \"" 
-                                //                    + name 
-                                //                    + "\" type " 
-                                //                    + PropertyReader.TypeToString(ptmp.type));
+                                ClassDef tmp = new ClassDef();
+                                tmp.name = Exports[j].ClassName;
+                                tmp.props = new List<PropDef>();
+                                Classes.Add(tmp);
+                                f = Classes.Count() - 1;
+                                UpdateStatus();
                             }
-                        }
+                            List<PropertyReader.Property> props = PropertyReader.getPropList(Exports[j]);
+                            ClassDef res = Classes[f];
+                            foreach (PropertyReader.Property p in props)
+                            {
+                                int f2 = -1;
+                                string name = pcc.getNameEntry(p.Name);
+                                for (int k = 0; k < res.props.Count(); k++)
+                                    if (res.props[k].name == name)
+                                    {
+                                        f2 = k;
+                                        break;
+                                    }
+                                if (f2 == -1) //found new prop
+                                {
+                                    PropDef ptmp = new PropDef();
+                                    ptmp.name = name;
+                                    ptmp.type = (int)p.TypeVal;
+                                    ptmp.ffpath = Path.GetFileName(file);
+                                    ptmp.ffidx = j;
+                                    res.props.Add(ptmp);
+                                    //DebugOutput.PrintLn("\tin object #" 
+                                    //                    + j 
+                                    //                    + " class \"" 
+                                    //                    + pcc.Exports[j].ClassName 
+                                    //                    + "\" found property \"" 
+                                    //                    + name 
+                                    //                    + "\" type " 
+                                    //                    + PropertyReader.TypeToString(ptmp.type));
+                                }
+                            }
+                        } 
                     }
                 }
                 catch (Exception ex)
@@ -322,18 +325,21 @@ namespace ME3Explorer.Propertydb
 
         private void warrantyVoiderMethodToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog d = new FolderBrowserDialog();
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            CommonOpenFileDialog d = new CommonOpenFileDialog();
+            d.IsFolderPicker = true;
+            d.EnsurePathExists = true;
+            d.Title = "Select Folder to Output to";
+            if (d.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string folder = d.SelectedPath + "\\";
+                string folder = d.FileName;
                 string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = System.IO.File.ReadAllText(loc + "\\exec\\template.code");
+                string template = File.ReadAllText(loc + "\\exec\\template.code");
                 DebugOutput.Clear();
                 DebugOutput.PrintLn("Generating SDK into folder: " + folder);
                 foreach (ClassDef c in Classes)
                     if(c.props.Count > 1 && !c.name.StartsWith("Default_"))
                     {
-                        string file = folder + c.name + ".cs";
+                        string file = Path.Combine(folder, c.name + ".cs");
                         DebugOutput.PrintLn(".\\" + c.name + ".cs generated...");
                         FileStream fs = new FileStream(file , FileMode.Create, FileAccess.Write);
                         string tmp = template;

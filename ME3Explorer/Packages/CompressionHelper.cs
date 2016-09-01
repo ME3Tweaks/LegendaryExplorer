@@ -202,7 +202,7 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     decompress an entire ME3 pcc file.
+        ///     decompress an entire ME3 pcc file into a new stream
         /// </summary>
         /// <param name="input">pcc file passed in stream format</param>
         /// <returns>a decompressed array of bytes</returns>

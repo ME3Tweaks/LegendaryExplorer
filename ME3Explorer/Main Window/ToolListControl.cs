@@ -22,17 +22,20 @@ namespace ME3Explorer
 
         protected virtual void Button_Click(object sender, RoutedEventArgs e)
         {
-            ((sender as Button)?.DataContext as Tool)?.open();
-        }
-
-        
-        protected void Button_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
             {
                 Tool t = ((sender as Button)?.DataContext as Tool);
                 t.IsFavorited = !t.IsFavorited;
             }
+            else
+            {
+                ((sender as Button)?.DataContext as Tool)?.open();
+            }
+        }
+
+        
+        protected void Button_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
         }
 
         protected virtual void Button_MouseEnter(object sender, MouseEventArgs e)

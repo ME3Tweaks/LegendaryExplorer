@@ -31,14 +31,14 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 LoadPCC(d.FileName);
         }
 
         public void LoadPCC(string path)
         {
             timer1.Enabled = false;
-            DebugOutput.StartDebugger("LevelEditor");
+            DebugOutput.StartDebugger("LevelExplorer");
             LoadME3Package(path);
             SceneMan.AddLevel(pcc as ME3Package);
             timer1.Enabled = true;
@@ -254,7 +254,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
 
         private void saveAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure?", "Saving Changes", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.Show("Are you sure?", "Saving Changes", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 SceneMan.SaveAllChanges();
                 MessageBox.Show("Done.");
@@ -318,13 +318,18 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.3ds|*.3ds";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 timer1.Enabled = false;
                 SceneMan.Exportscene3DS(d.FileName);
                 timer1.Enabled = true;
                 MessageBox.Show("Done.");
             }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //TODO: implement updating
         }
     }
 }

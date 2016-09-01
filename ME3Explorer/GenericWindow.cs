@@ -8,13 +8,14 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
     public class GenericWindow : IDisposable
     {
-        Window wpf;
-        Form winform;
+        WPFBase wpf;
+        WinFormsBase winform;
         public Tool tool { get; private set; }
         public string fileName { get; private set; }
 
@@ -23,7 +24,7 @@ namespace ME3Explorer
 
         public event EventHandler Disposing;
 
-        public GenericWindow(Window w, string file)
+        public GenericWindow(WPFBase w, string file)
         {
             wpf = w;
             tool = Tools.Items.FirstOrDefault(x => x.type == w.GetType());
@@ -31,12 +32,24 @@ namespace ME3Explorer
             fileName = file;
         }
 
-        public GenericWindow(Form f, string file)
+        public GenericWindow(WinFormsBase f, string file)
         {
             wpf = null;
             winform = f;
             tool = Tools.Items.FirstOrDefault(x => x.type == f.GetType());
             fileName = file;
+        }
+
+        public void handleUpdate(List<PackageUpdate> updates)
+        {
+            if (wpf != null)
+            {
+                wpf.handleUpdate(updates);
+            }
+            else if (winform != null)
+            {
+                winform.handleUpdate(updates);
+            }
         }
 
         public void RegisterClosed(Action handler)
@@ -71,7 +84,6 @@ namespace ME3Explorer
             {
                 winform.Close();
             }
-            Dispose();
         }
 
         public void BringToFront()

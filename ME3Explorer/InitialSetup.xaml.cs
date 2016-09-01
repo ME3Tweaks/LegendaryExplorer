@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shell;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
@@ -300,7 +301,9 @@ namespace ME3Explorer
             unpackDLCButton.Content = "Unpacking...";
             string[] patt = { "pcc", "bik", "tfc", "afc", "cnd", "tlk", "bin", "dlc" };
             string gamebase = ME3Directory.gamePath;
+            taskBarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
             unpackProgress.Maximum = totalUncompressedSize;
+            taskBarItemInfo.ProgressValue = 0;
             timeRemainingTextBlock.Text = "Estimating Time Remaining...";
 
             unpackOutput.AppendLine("DLC unpacking initiated...");
@@ -340,8 +343,9 @@ namespace ME3Explorer
                                 uncompressedSoFar += sfar.Files[i].RealUncompressedSize;
                                 unpackProgress.Value = uncompressedSoFar;
                                 TimeSpan elapsed = DateTime.Now - initial;
-                                double PercentComplete = uncompressedSoFar / totalUncompressedSize * 100;
-                                TimeSpan timeRemaining = TimeSpan.FromSeconds((elapsed.TotalSeconds / PercentComplete) * (100 - PercentComplete));
+                                double percentComplete = uncompressedSoFar / totalUncompressedSize * 100;
+                                taskBarItemInfo.ProgressValue = percentComplete / 100.0;
+                                TimeSpan timeRemaining = TimeSpan.FromSeconds((elapsed.TotalSeconds / percentComplete) * (100 - percentComplete));
                                 if (timeRemaining.TotalMinutes < 1)
                                 {
                                     timeRemainingTextBlock.Text = $"Estimated Time Remaining: < 1 minute";
@@ -364,12 +368,10 @@ namespace ME3Explorer
                 AutoTOC.GenerateAllTOCs();
             });
             unpackOutput.AppendLine("ALL TOCs Generated!");
+            unpackOutput.AppendLine($"Elapsed time: {DateTime.Now - initial}");
             unpackProgress.Value = unpackProgress.Maximum;
+            taskBarItemInfo.ProgressState = TaskbarItemProgressState.None;
             completeStep2();
-
-            //temp
-            this.RestoreAndBringToFront();
-            MessageBox.Show((DateTime.Now - initial).ToString());
         }
     }
 }

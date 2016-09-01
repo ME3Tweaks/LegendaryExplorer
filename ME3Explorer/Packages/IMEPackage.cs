@@ -44,7 +44,7 @@ namespace ME3Explorer.Packages
         }
     }
 
-    public interface IMEPackage
+    public interface IMEPackage : IDisposable
     {
         bool IsCompressed { get; }
         bool CanReconstruct { get; }
@@ -76,6 +76,7 @@ namespace ME3Explorer.Packages
         //editing
         void addName(string name);
         int FindNameOrAdd(string name);
+        void replaceName(int index, string newName);
         void addExport(IExportEntry exportEntry);
         void addImport(IImportEntry importEntry);
         /// <summary>
@@ -92,5 +93,7 @@ namespace ME3Explorer.Packages
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
         event EventHandler noLongerOpenInTools;
+        void RegisterUse();
+        event EventHandler noLongerUsed;
     }
 }

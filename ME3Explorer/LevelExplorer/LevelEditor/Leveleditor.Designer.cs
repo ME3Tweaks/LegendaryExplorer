@@ -126,21 +126,21 @@
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPccToolStripMenuItem.Text = "Open PCC";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // saveAllToolStripMenuItem
             // 
             this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
-            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAllToolStripMenuItem.Text = "Save All";
             this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.saveAllToolStripMenuItem_Click);
             // 
             // unloadAllToolStripMenuItem
             // 
             this.unloadAllToolStripMenuItem.Name = "unloadAllToolStripMenuItem";
-            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.unloadAllToolStripMenuItem.Text = "Unload All";
             this.unloadAllToolStripMenuItem.Click += new System.EventHandler(this.unloadAllToolStripMenuItem_Click);
             // 
@@ -177,7 +177,7 @@
             this.transformToolStripMenuItem.CheckOnClick = true;
             this.transformToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
-            this.transformToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.transformToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.transformToolStripMenuItem.Text = "Transform";
             this.transformToolStripMenuItem.Click += new System.EventHandler(this.transformToolStripMenuItem_Click);
             // 
@@ -659,7 +659,7 @@
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Leveleditor";
-            this.Text = "Leveleditor";
+            this.Text = "Level Explorer";
             this.Activated += new System.EventHandler(this.Leveleditor_Activated);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Leveleditor_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Leveleditor_KeyUp);

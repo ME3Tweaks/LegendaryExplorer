@@ -38,15 +38,7 @@ namespace ME3Explorer.DialogEditor
             try
             {
                 LoadME3Package(fileName);
-                Objs = new List<IExportEntry>();
-                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                foreach (var exp in Exports)
-                {
-                    if (exp.ClassName == "BioConversation")
-                    {
-                        Objs.Add(exp);
-                    }
-                }
+                
                 RefreshCombo();
             }
             catch (Exception ex)
@@ -57,8 +49,15 @@ namespace ME3Explorer.DialogEditor
 
         public void RefreshCombo()
         {
-            if (Objs == null)
-                return;
+            Objs = new List<IExportEntry>();
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            foreach (var exp in Exports)
+            {
+                if (exp.ClassName == "BioConversation")
+                {
+                    Objs.Add(exp);
+                }
+            }
             bioConversationComboBox.Items.Clear();
             foreach (var exp in Objs)
                 bioConversationComboBox.Items.Add("#" + exp.Index + " : " + exp.ObjectName);
@@ -123,6 +122,7 @@ namespace ME3Explorer.DialogEditor
             if (Dialog == null)
                 return;
             Dialog.Save();
+            pcc.save();
             MessageBox.Show("Done.");
         }
 
@@ -136,8 +136,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.StartingList[n] = i;
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void listBox2_DoubleClick(object sender, EventArgs e)
@@ -150,8 +152,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i) && pcc.isName(i))
+            {
                 Dialog.SpeakerList[n] = i;
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void listBox4_DoubleClick(object sender, EventArgs e)
@@ -164,8 +168,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.MaleFaceSets[n] = i;
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void listBox5_DoubleClick(object sender, EventArgs e)
@@ -178,8 +184,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.FemaleFaceSets[n] = i;
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void toStartingListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -191,8 +199,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.StartingList.Add(i);
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void toSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -204,8 +214,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i) && pcc.isName(i))
+            {
                 Dialog.SpeakerList.Add(i);
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void toMaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -217,8 +229,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.MaleFaceSets.Add(i);
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void toFemaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -230,8 +244,10 @@ namespace ME3Explorer.DialogEditor
                 return;
             int i = 0;
             if (int.TryParse(result, out i))
+            {
                 Dialog.FemaleFaceSets.Add(i);
-            RefreshTabs();
+                Dialog.Save();
+            }
         }
 
         private void fromStartingListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -240,7 +256,7 @@ namespace ME3Explorer.DialogEditor
             if (pcc == null || Dialog == null || (n = startingListBox.SelectedIndex) == -1)
                 return;
             Dialog.StartingList.RemoveAt(n);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void fromSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -249,7 +265,7 @@ namespace ME3Explorer.DialogEditor
             if (pcc == null || Dialog == null || (n = speakerListBox.SelectedIndex) == -1)
                 return;
             Dialog.SpeakerList.RemoveAt(n);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void fromMaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -258,7 +274,7 @@ namespace ME3Explorer.DialogEditor
             if (pcc == null || Dialog == null || (n = maleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             Dialog.MaleFaceSets.RemoveAt(n);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void fromFemalFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -267,7 +283,7 @@ namespace ME3Explorer.DialogEditor
             if (pcc == null || Dialog == null || (n = femaleFaceSetsListBox.SelectedIndex) == -1)
                 return;
             Dialog.FemaleFaceSets.RemoveAt(n);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void listBox3_DoubleClick(object sender, EventArgs e)
@@ -287,7 +303,7 @@ namespace ME3Explorer.DialogEditor
             if (int.TryParse(result, out i))
                 sd.StringRef = i;
             Dialog.StageDirections[n] = sd;
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void stageDirectionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -301,7 +317,7 @@ namespace ME3Explorer.DialogEditor
                 sd.Text += c;
             sd.StringRef = Dialog.StageDirections[n].StringRef;
             Dialog.StageDirections.Add(sd);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void treeView2_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -429,6 +445,7 @@ namespace ME3Explorer.DialogEditor
                         break;
                 }
                 Dialog.ReplyList[n] = rp;
+                Dialog.Save();
             }
             #endregion
             #region EntryList
@@ -439,10 +456,13 @@ namespace ME3Explorer.DialogEditor
                 int m = t.Index;
                 result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", Dialog.ReplyList[n].EntryList[m].ToString(), 0, 0);
                 if (result == "") return;
-                if (int.TryParse(result, out i)) rp.EntryList[m] = i;
+                if (int.TryParse(result, out i))
+                {
+                    rp.EntryList[m] = i;
+                    Dialog.Save();
+                }
             }
             #endregion
-            RefreshTabs();
 
         }
 
@@ -460,7 +480,7 @@ namespace ME3Explorer.DialogEditor
                 if (result == "") return;
                 if (int.TryParse(result, out i)) rp.EntryList.Add(i);
                 Dialog.ReplyList[p.Index] = rp;
-                RefreshTabs();
+                Dialog.Save();
             }
             else
             {
@@ -470,7 +490,7 @@ namespace ME3Explorer.DialogEditor
                 if (result == "") return;
                 if (int.TryParse(result, out i)) rp.EntryList.Add(i);
                 Dialog.ReplyList[p.Parent.Index] = rp;
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -483,7 +503,7 @@ namespace ME3Explorer.DialogEditor
             if (p.Parent != null)
             {
                 Dialog.ReplyList[p.Parent.Index].EntryList.RemoveAt(t.Index);
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -519,7 +539,7 @@ namespace ME3Explorer.DialogEditor
             rp.GUIStyleType = Dialog.ReplyList[t.Index].GUIStyleType;
             rp.GUIStyleValue = Dialog.ReplyList[t.Index].GUIStyleValue;
             Dialog.ReplyList.Add(rp);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -633,8 +653,11 @@ namespace ME3Explorer.DialogEditor
                         if (result == "") return;
                         el.GUIStyleValue = pcc.FindNameOrAdd(result);
                         break;
+                    default:
+                        return;
                 }
                 Dialog.EntryList[n] = el;
+                Dialog.Save();
             }
             #endregion
             #region EntryList
@@ -658,16 +681,20 @@ namespace ME3Explorer.DialogEditor
                     if (result == "") return;
                     rpe.CategoryValue = pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;
+                    Dialog.Save();
                 }
                 if (p.Index == 1) //Speaker List
                 {
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", el.SpeakerList[m].ToString(), 0, 0);
                     if (result == "") return;
-                    if (int.TryParse(result, out i)) el.SpeakerList[m] = i;
+                    if (int.TryParse(result, out i))
+                    {
+                        el.SpeakerList[m] = i;
+                        Dialog.Save();
+                    }
                 }
             }
             #endregion
-            RefreshTabs();
         }
 
         private void toEntrysSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -686,7 +713,7 @@ namespace ME3Explorer.DialogEditor
                     el.SpeakerList = new List<int>();
                 if (int.TryParse(result, out i)) el.SpeakerList.Add(i);
                 Dialog.EntryList[p.Index] = el;
-                RefreshTabs();
+                Dialog.Save();
             }
             else
             {
@@ -698,7 +725,7 @@ namespace ME3Explorer.DialogEditor
                     el.SpeakerList = new List<int>();
                 if (int.TryParse(result, out i)) el.SpeakerList.Add(i);
                 Dialog.EntryList[p.Parent.Index] = el;
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -711,7 +738,7 @@ namespace ME3Explorer.DialogEditor
             if (p.Parent != null && p.Index == 1)
             {
                 Dialog.EntryList[p.Parent.Index].SpeakerList.RemoveAt(t.Index);
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -724,7 +751,7 @@ namespace ME3Explorer.DialogEditor
             if (p.Parent != null && p.Index == 0)
             {
                 Dialog.EntryList[p.Parent.Index].ReplyList.RemoveAt(t.Index);
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -734,7 +761,7 @@ namespace ME3Explorer.DialogEditor
             if (t == null || t.Parent != null)
                 return;
             Dialog.ReplyList.RemoveAt(t.Index);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void fromEntryListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -743,7 +770,7 @@ namespace ME3Explorer.DialogEditor
             if (t == null || t.Parent != null)
                 return;
             Dialog.EntryList.RemoveAt(t.Index);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void entryListEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -787,7 +814,7 @@ namespace ME3Explorer.DialogEditor
             el.StateTransitionParam = el0.StateTransitionParam;
             el.Text = "" + el0.Text;
             Dialog.EntryList.Add(el);
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void entrysReplyListEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -808,7 +835,7 @@ namespace ME3Explorer.DialogEditor
                 rpe.refParaphrase = rpe0.refParaphrase;
                 el.ReplyList.Add(rpe);
                 Dialog.EntryList[p.Parent.Index] = el;
-                RefreshTabs();
+                Dialog.Save();
             }
         }
 
@@ -854,7 +881,7 @@ namespace ME3Explorer.DialogEditor
                 el.ReplyList = new List<ME3BioConversation.EntryListReplyListStruct>();
             el.ReplyList.Add(ar.res);
             Dialog.EntryList[Index] = el;
-            RefreshTabs();
+            Dialog.Save();
         }
 
         private void entriesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -891,6 +918,49 @@ namespace ME3Explorer.DialogEditor
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (Dialog != null && updatedExports.Contains(Dialog.export.Index))
+            {
+                //loaded dialog is no longer a dialog
+                if (Dialog.export.ClassName != "BioConversation")
+                {
+                    startingListBox.Items.Clear();
+                    speakerListBox.Items.Clear();
+                    stageDirectionsListBox.Items.Clear();
+                    maleFaceSetsListBox.Items.Clear();
+                    femaleFaceSetsListBox.Items.Clear();
+                    entryListTreeView.Nodes.Clear();
+                    replyListTreeView.Nodes.Clear();
+                }
+                else
+                {
+                    Dialog = new ME3BioConversation(Dialog.export);
+                    RefreshTabs();
+                }
+                updatedExports.Remove(Dialog.export.Index);
+            }
+            if (updatedExports.Intersect(Objs.Select(x => x.Index)).Count() > 0)
+            {
+                RefreshCombo();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "BioConversation")
+                    {
+                        RefreshCombo();
+                        break;
+                    }
+                }
             }
         }
     }

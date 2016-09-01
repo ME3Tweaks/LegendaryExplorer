@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         Title="ME3Explorer Initial Setup" Icon="Resources/meexp_favicon.ico" Background="#FFD8D8D8"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="606" Height="772">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="616" Height="772">
     <Window.Resources>
         <Style x:Key="setupButton" TargetType="Button" BasedOn="{StaticResource BorderedButton}">
             <Setter Property="Background" Value="#FF808080"/>
@@ -28,6 +28,9 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskBarItemInfo" />
+    </Window.TaskbarItemInfo>
     <StackPanel Width="600">
         <StackPanel Orientation="Horizontal">
             <Image Width="249" Height="109" Source="Resources/me3exp_smallbanner_v1.png"/>

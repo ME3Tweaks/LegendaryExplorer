@@ -71,86 +71,8 @@ namespace ME3Explorer.SubtitleScanner
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    ME3Package pcc = MEPackageHandler.OpenME3Package(file);
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    for (int i = 0; i < Exports.Count; i++)
-                        if (Exports[i].ClassName == "BioConversation")
-                        {
-                            DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                            ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
-                            foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
-                            {
-                                string text = ME3TalkFiles.findDataById(e.refText);
-                                if (text.Length != 7 && text != "No Data")
-                                {
-                                    EntryStruct t = new EntryStruct();
-                                    t.inDLC = false;
-                                    t.text = text;
-                                    t.ID = e.refText;
-                                    t.indexpcc = i;
-                                    t.pathafc = "";//Todo
-                                    t.pathdlc = "";
-                                    t.pathpcc = file;
-                                    t.convname = Exports[i].ObjectName;
-                                    if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
-                                        t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
-                                    else
-                                        t.speaker = "unknown";
-                                    if (t.speaker == null || t.speaker == "")
-                                        t.speaker = "unknown";
-                                    Entries.Add(t);
-                                    DebugOutput.PrintLn("Requ.: ("+ t.speaker + ") " + t.text, false);
-                                }
-                            }
-                            foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
-                            {
-                                string text = ME3TalkFiles.findDataById(e.refText);
-                                if (text.Length != 7 && text != "No Data")
-                                {
-                                    EntryStruct t = new EntryStruct();
-                                    t.inDLC = false;
-                                    t.text = text;
-                                    t.ID = e.refText;
-                                    t.indexpcc = i;
-                                    t.pathafc = "";//Todo
-                                    t.pathdlc = "";
-                                    t.pathpcc = file;
-                                    t.convname = Exports[i].ObjectName;
-                                    Entries.Add(t);
-                                    DebugOutput.PrintLn("Reply: " + t.text, false);
-                                }
-                            }
-                        }
-                    if (count % 10 == 0)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        Application.DoEvents();
-                        pbar1.Value = count;
-                    }
-                    count++;
-                }
-                catch (Exception ex)
-                {
-                    DebugOutput.PrintLn("=====ERROR=====\n" + ex.ToString() + "\n=====ERROR=====");
-                }
-            }
-        }
-
-        public void ScanDLCfolder1()
-        {
-            DebugOutput.PrintLn("\n\nDLC Scan for unpacked files...\n", true);
-            string dir = ME3Directory.DLCPath;
-            string[] files = Directory.GetFiles(dir, "*.pcc", SearchOption.AllDirectories);
-            if (files.Length == 0)
-                return;
-            pbar1.Maximum = files.Length - 1;
-            int count = 0;
-            foreach (string file in files)
-                if (!file.ToLower().Contains("patch"))
-                {
-                    DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
-                    try
-                    {
-                        ME3Package pcc = MEPackageHandler.OpenME3Package(file);
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
                             if (Exports[i].ClassName == "BioConversation")
@@ -205,7 +127,89 @@ namespace ME3Explorer.SubtitleScanner
                             Application.DoEvents();
                             pbar1.Value = count;
                         }
-                        count++;
+                        count++; 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DebugOutput.PrintLn("=====ERROR=====\n" + ex.ToString() + "\n=====ERROR=====");
+                }
+            }
+        }
+
+        public void ScanDLCfolder1()
+        {
+            DebugOutput.PrintLn("\n\nDLC Scan for unpacked files...\n", true);
+            string dir = ME3Directory.DLCPath;
+            string[] files = Directory.GetFiles(dir, "*.pcc", SearchOption.AllDirectories);
+            if (files.Length == 0)
+                return;
+            pbar1.Maximum = files.Length - 1;
+            int count = 0;
+            foreach (string file in files)
+                if (!file.ToLower().Contains("patch"))
+                {
+                    DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
+                    try
+                    {
+                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                        {
+                            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                            for (int i = 0; i < Exports.Count; i++)
+                                if (Exports[i].ClassName == "BioConversation")
+                                {
+                                    DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
+                                    ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                    foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
+                                    {
+                                        string text = ME3TalkFiles.findDataById(e.refText);
+                                        if (text.Length != 7 && text != "No Data")
+                                        {
+                                            EntryStruct t = new EntryStruct();
+                                            t.inDLC = false;
+                                            t.text = text;
+                                            t.ID = e.refText;
+                                            t.indexpcc = i;
+                                            t.pathafc = "";//Todo
+                                            t.pathdlc = "";
+                                            t.pathpcc = file;
+                                            t.convname = Exports[i].ObjectName;
+                                            if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
+                                                t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
+                                            else
+                                                t.speaker = "unknown";
+                                            if (t.speaker == null || t.speaker == "")
+                                                t.speaker = "unknown";
+                                            Entries.Add(t);
+                                            DebugOutput.PrintLn("Requ.: (" + t.speaker + ") " + t.text, false);
+                                        }
+                                    }
+                                    foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
+                                    {
+                                        string text = ME3TalkFiles.findDataById(e.refText);
+                                        if (text.Length != 7 && text != "No Data")
+                                        {
+                                            EntryStruct t = new EntryStruct();
+                                            t.inDLC = false;
+                                            t.text = text;
+                                            t.ID = e.refText;
+                                            t.indexpcc = i;
+                                            t.pathafc = "";//Todo
+                                            t.pathdlc = "";
+                                            t.pathpcc = file;
+                                            t.convname = Exports[i].ObjectName;
+                                            Entries.Add(t);
+                                            DebugOutput.PrintLn("Reply: " + t.text, false);
+                                        }
+                                    }
+                                }
+                            if (count % 10 == 0)
+                            {
+                                Application.DoEvents();
+                                pbar1.Value = count;
+                            }
+                            count++; 
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -239,56 +243,58 @@ namespace ME3Explorer.SubtitleScanner
                                 DebugOutput.PrintLn(" " + j.ToString("d4") + " / " + dlc.Files.Length.ToString("d4") + " : opening " + Path.GetFileName(filename),true);
                                 MemoryStream mem = dlc.DecompressEntry(j);
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
-                                ME3Package pcc = MEPackageHandler.OpenME3Package("temp.pcc");
-                                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                                for (int i = 0; i < Exports.Count; i++)
-                                    if (Exports[i].ClassName == "BioConversation")
-                                    {
-                                        DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                        ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
-                                        foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
+                                using (ME3Package pcc = MEPackageHandler.OpenME3Package("temp.pcc"))
+                                {
+                                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                    for (int i = 0; i < Exports.Count; i++)
+                                        if (Exports[i].ClassName == "BioConversation")
                                         {
-                                            string text = ME3TalkFiles.findDataById(e.refText);
-                                            if (text.Length != 7 && text != "No Data")
+                                            DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
+                                            ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                            foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                             {
-                                                EntryStruct t = new EntryStruct();
-                                                t.inDLC = true;
-                                                t.text = text;
-                                                t.ID = e.refText;
-                                                t.indexpcc = i;
-                                                t.pathafc = "";//Todo
-                                                t.pathdlc = file;
-                                                t.pathpcc = filename;
-                                                t.convname = Exports[i].ObjectName;
-                                                if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
-                                                    t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
-                                                else
-                                                    t.speaker = "unknown";
-                                                if (t.speaker == null || t.speaker == "")
-                                                    t.speaker = "unknown";
-                                                Entries.Add(t);
-                                                DebugOutput.PrintLn("Requ.: (" + t.speaker + ") " + t.text, false);
+                                                string text = ME3TalkFiles.findDataById(e.refText);
+                                                if (text.Length != 7 && text != "No Data")
+                                                {
+                                                    EntryStruct t = new EntryStruct();
+                                                    t.inDLC = true;
+                                                    t.text = text;
+                                                    t.ID = e.refText;
+                                                    t.indexpcc = i;
+                                                    t.pathafc = "";//Todo
+                                                    t.pathdlc = file;
+                                                    t.pathpcc = filename;
+                                                    t.convname = Exports[i].ObjectName;
+                                                    if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
+                                                        t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
+                                                    else
+                                                        t.speaker = "unknown";
+                                                    if (t.speaker == null || t.speaker == "")
+                                                        t.speaker = "unknown";
+                                                    Entries.Add(t);
+                                                    DebugOutput.PrintLn("Requ.: (" + t.speaker + ") " + t.text, false);
+                                                }
                                             }
-                                        }
-                                        foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
-                                        {
-                                            string text = ME3TalkFiles.findDataById(e.refText);
-                                            if (text.Length != 7 && text != "No Data")
+                                            foreach (ME3BioConversation.ReplyListStruct e in Dialog.ReplyList)
                                             {
-                                                EntryStruct t = new EntryStruct();
-                                                t.inDLC = true;
-                                                t.text = text;
-                                                t.ID = e.refText;
-                                                t.indexpcc = i;
-                                                t.pathafc = "";//Todo
-                                                t.pathdlc = file;
-                                                t.pathpcc = filename;
-                                                t.convname = Exports[i].ObjectName;
-                                                Entries.Add(t);
-                                                DebugOutput.PrintLn("Reply: " + t.text, false);
+                                                string text = ME3TalkFiles.findDataById(e.refText);
+                                                if (text.Length != 7 && text != "No Data")
+                                                {
+                                                    EntryStruct t = new EntryStruct();
+                                                    t.inDLC = true;
+                                                    t.text = text;
+                                                    t.ID = e.refText;
+                                                    t.indexpcc = i;
+                                                    t.pathafc = "";//Todo
+                                                    t.pathdlc = file;
+                                                    t.pathpcc = filename;
+                                                    t.convname = Exports[i].ObjectName;
+                                                    Entries.Add(t);
+                                                    DebugOutput.PrintLn("Reply: " + t.text, false);
+                                                }
                                             }
-                                        }
-                                    }
+                                        } 
+                                }
                             }
                         }
                         if (count % 10 == 0)

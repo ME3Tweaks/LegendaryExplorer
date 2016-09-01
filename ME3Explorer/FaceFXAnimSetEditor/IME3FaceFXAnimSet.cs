@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal.Classes;
 
 namespace ME3Explorer.FaceFX
@@ -7,6 +8,8 @@ namespace ME3Explorer.FaceFX
     {
         ME3DataAnimSetStruct Data { get; }
         HeaderStruct Header { get; }
+
+        IExportEntry Export { get; }
 
         void AddName(string s);
         void CloneEntry(int n);

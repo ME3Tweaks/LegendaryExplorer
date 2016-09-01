@@ -939,5 +939,10 @@ namespace ME3Explorer.Unreal
             result.Nodes.Add(t);
             return result;
         }
+
+        public int FindFileEntry(string fileName)
+        {
+            return Files.IndexOf(Files.FirstOrDefault(x => x.FileName.Contains(fileName)));
+        }
     }
 }

@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -70,6 +71,7 @@ namespace ME3Explorer
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            Topmost = Properties.Settings.Default.AlwaysOnTop;
             
             if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
@@ -265,8 +267,25 @@ namespace ME3Explorer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            List<GenericWindow> tools = new List<GenericWindow>();
+            foreach (var package in MEPackageHandler.packagesInTools)
+            {
+                foreach (var tool in package.Tools)
+                {
+                    tools.Add(tool);
+                }
+            }
+            foreach (var tool in tools)
+            {
+                tool.Close();
+            }
+            if (MEPackageHandler.packagesInTools.Count > 0)
+            {
+                e.Cancel = true;
+            }
             Properties.Settings.Default.DisableDLCCheckOnStart = disableSetupCheckBox.IsChecked ?? false;
             Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
+            Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }
 
         private void advancedSettings_Click(object sender, RoutedEventArgs e)

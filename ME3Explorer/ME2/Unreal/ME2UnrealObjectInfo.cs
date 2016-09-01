@@ -191,7 +191,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(this ME2ExportEntry entry, string baseClass)
+        public static bool inheritsFrom(ME2ExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))

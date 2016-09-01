@@ -21,254 +21,18 @@ namespace ME3Explorer
     {
         string previousTerm = "";
         DLCPackage DLC;
-        bool automated = false; //Mod Manager 3 automator
-        private string autoUnpackFolder;
 
         public SFAREditor2()
         {
             InitializeComponent();
-
-            //FemShep's Mod Manager 3 automator for DLCEditor2.
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Length > 2)
-            {
-                try
-                {
-                    string cmdCommand = arguments[1];
-                    if (cmdCommand.Equals("-dlcinject", StringComparison.Ordinal))
-                    {
-                        if (arguments.Length % 2 != 1 || arguments.Length < 5)
-                        {
-                            MessageBox.Show("Wrong number of arguments for the -dlcinject switch.:\nSyntax is: <exe> -dlcinject SFARPATH SEARCHTERM NEWFILEPATH [SEARCHTERM2 NEWFILEPATH2]...", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        string dlcFileName = arguments[2];
-                        int numfiles = (arguments.Length - 3) / 2;
-
-                        string[] filesToReplace = new string[numfiles];
-                        string[] newFiles = new string[numfiles];
-
-                        int argnum = 3; //starts at 3
-                        for (int i = 0; i < filesToReplace.Length; i++)
-                        {
-                            filesToReplace[i] = arguments[argnum];
-                            argnum++;
-                            newFiles[i] = arguments[argnum];
-                            argnum++;
-                        }
-                        automated = true;
-                        if (File.Exists(dlcFileName))
-                        {
-                            openSFAR(dlcFileName);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("dlcFilename does not exist: " + dlcFileName);
-                            MessageBox.Show("Failed to autoinject: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        //SFAR was opened.
-                        //Now we search for the element to replace so it is selected...
-                        for (int i = 0; i < numfiles; i++)
-                        {
-                            selectSearchedElement(filesToReplace[i]);
-                            //the element is now selected, hopefully.
-                            TreeNode t = treeView1.SelectedNode;
-                            if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
-                            {
-                                MessageBox.Show("DLCEditor2 automator encountered an error: the file to replace does not exist or the tree has not been initialized.", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            replaceFile(newFiles[i], t.Index);
-                            System.Diagnostics.Debug.WriteLine("Injection complete.");
-                        }
-                    }
-                    else if (cmdCommand.Equals("-dlcextract", StringComparison.Ordinal))
-                    {
-                        if (arguments.Length != 5)
-                        {
-                            //-2 for me3explorer & -dlcextract
-                            MessageBox.Show("Wrong number of arguments for the -dlcinject switch.:\nSyntax is: <exe> -dlcextract SFARPATH SEARCHTERM EXTRACTIONPATH", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        automated = true;
-                        string dlcFileName = arguments[2];
-                        string searchTerm = arguments[3];
-                        string extractionPath = arguments[4];
-                        if (File.Exists(dlcFileName))
-                        {
-                            openSFAR(dlcFileName);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("dlcFilename does not exist: " + dlcFileName);
-                            MessageBox.Show("Failed to autoextract: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        //SFAR was opened.
-                        //Now we search for the element to extract so it is selected...
-                        selectSearchedElement(searchTerm);
-                        //the element is now selected, hopefully.
-                        TreeNode t = treeView1.SelectedNode;
-                        if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
-                        {
-                            MessageBox.Show("DLCEditor2 extraction automator encountered an error:\nThe file to replace does not exist or the tree has not been initialized.", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        extractFile(t.Index, extractionPath);
-                    }
-                    else if (cmdCommand.Equals("-dlcaddfiles", StringComparison.Ordinal))
-                    {
-                        if (arguments.Length % 2 != 1 || arguments.Length < 5)
-                        {
-                            MessageBox.Show("Wrong number of arguments for the -dlcaddfiles switch.:\nSyntax is: <exe> -dlcinject SFARPATH INTERNALPATH NEWFILEPATH [INTERNALPATH2 NEWFILEPATH2]...", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-
-                        automated = true;
-                        string dlcFileName = arguments[2];
-
-                        int numfiles = (arguments.Length - 3) / 2;
-                        string[] internalPaths = new string[numfiles];
-                        string[] sourcePaths = new string[numfiles];
-
-                        int argnum = 3; //starts at 3
-                        for (int i = 0; i < internalPaths.Length; i++)
-                        {
-                            internalPaths[i] = arguments[argnum];
-                            argnum++;
-                            sourcePaths[i] = arguments[argnum];
-                            argnum++;
-                        }
-
-                        if (File.Exists(dlcFileName))
-                        {
-                            openSFAR(dlcFileName);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + dlcFileName);
-                            MessageBox.Show("Failed to autoadd: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        //SFAR was opened.    
-                        for (int i = 0; i < internalPaths.Length; i++)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Adding file quick: " + sourcePaths[i] + " " + internalPaths[i]);
-                            DLC.AddFileQuick(sourcePaths[i], internalPaths[i]);
-                            DLC = new DLCPackage(DLC.FileName);
-                            treeView1.Nodes.Clear();
-                            treeView1.Nodes.Add(DLC.ToTree());
-                        }
-                    }
-                    else if (cmdCommand.Equals("-dlcremovefiles", StringComparison.Ordinal))
-                    {
-                        if (arguments.Length < 4)
-                        {
-                            //-2 for me3explorer & -dlcextract
-                            MessageBox.Show("Wrong number of arguments for the -dlcremovefiles switch.:\nSyntax is: <exe> -dlcinject SFARPATH INTERNALPATH [INTERNALPATH2]...", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        automated = true;
-                        string dlcFileName = arguments[2];
-
-                        int numfiles = (arguments.Length - 3);
-
-                        string[] filesToRemove = new string[numfiles];
-
-                        int argnum = 3; //starts at 3
-                        for (int i = 0; i < filesToRemove.Length; i++)
-                        {
-                            filesToRemove[i] = arguments[argnum];
-                            argnum++;
-                        }
-
-                        if (File.Exists(dlcFileName))
-                        {
-                            openSFAR(dlcFileName);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + dlcFileName);
-                            MessageBox.Show("Failed to autoremove: DLC file does not exist: " + dlcFileName, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        //SFAR was opened.         
-                        for (int i = 0; i < filesToRemove.Length; i++)
-                        {
-                            selectSearchedElement(filesToRemove[i]);
-                            //the element is now selected, hopefully.
-                            TreeNode t = treeView1.SelectedNode;
-                            if (DLC == null || t == null || t.Parent == null || t.Parent.Text != "FileEntries")
-                            {
-                                MessageBox.Show("DLCEditor2 file removal automator encountered an error:\nThe file to remove does not exist or the tree has not been initialized.", "DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                Application.Exit();
-                                return;
-                            }
-                            DLC.DeleteEntry(t.Index);
-                            DLC = new DLCPackage(DLC.FileName);
-                            treeView1.Nodes.Clear();
-                            treeView1.Nodes.Add(DLC.ToTree());
-                        }
-                    }
-                    else if (cmdCommand.Equals("-dlcunpack", StringComparison.Ordinal) || cmdCommand.Equals("-dlcunpack-nodebug", StringComparison.Ordinal))
-                    {
-                        if (arguments.Length != 4)
-                        {
-                            MessageBox.Show("Wrong number of arguments for automated DLC unpacking:\nSyntax is: <exe> -dlcunpack SFARPATH EXTRACTIONPATH", "ME3 DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-
-                       
-                        string sfarPath = arguments[2];
-                        autoUnpackFolder = arguments[3];
-
-                        automated = true;
-                        if (File.Exists(sfarPath))
-                        {
-                            openSFAR(sfarPath);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("DLC does not exist: " + sfarPath);
-                            MessageBox.Show("Failed to autounpack: DLC file does not exist: " + sfarPath, "ME3Explorer DLCEditor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        //SFAR was opened.
-                        if (cmdCommand.Equals("-dlcunpack"))
-                        {
-                            DebugOutput.StartDebugger("DLC Editor 2"); //open debugging window since this operation takes a long time. The main debugger won't start as this will exit before that code can be reached
-                        }
-                        //Simulate Unpack operation click.
-                        unpackSFARToolStripMenuItem.PerformClick();
-                    }
-                }
-                catch (FileNotFoundException exc)
-                {
-                    MessageBox.Show("Failed to run DLCEditor2 Automator with the specified parameters.\n\nA file not found error occured while trying to automate a task.\n" + exc.Message, "DLC Editor2 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(1);
-                    Application.Exit();
-                }
-                Environment.Exit(0);
-                Application.Exit();
-            }
-            DebugOutput.StartDebugger("SFAR Editor 2"); //open debugging window AFTER automation. Otherwise it pops up all weirdlike.
+            DebugOutput.StartDebugger("SFAR Editor 2");
         }
 
         private void openSFARToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.sfar|*.sfar";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 openSFAR(d.FileName);
             }
@@ -363,7 +127,7 @@ namespace ME3Explorer
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.*|*.*";
             string p = Path.GetDirectoryName(DLC.Files[0].FileName) + "\\";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 string path = p + Path.GetFileName(d.FileName);
                 path = path.Replace('\\', '/');
@@ -404,7 +168,7 @@ namespace ME3Explorer
             string filename = DLC.Files[n].FileName;
             d.Filter = Path.GetFileName(filename) + " | " + Path.GetFileName(filename);
             d.FileName = Path.GetFileName(filename);
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 extractFile(n, d.FileName);
                 MessageBox.Show("File extracted.");
@@ -430,7 +194,7 @@ namespace ME3Explorer
             string filename = DLC.Files[n].FileName;
             d.Filter = Path.GetFileName(filename) + " | " + Path.GetFileName(filename);
             d.FileName = Path.GetFileName(filename);
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 replaceFile(d.FileName, n);
                 MessageBox.Show("File Replaced.");
@@ -501,25 +265,19 @@ namespace ME3Explorer
                 return;
             string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
             string unpackFolder;
-            if (!automated) //if automated, just do everything. otherwise prompt user
-            {
-                result = Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
+            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter pattern for unpacking, keep default to unpack everything.", "ME3 Explorer", "pcc; tfc; afc; cnd; tlk; bin; bik; dlc", 0, 0);
 
-                if (result == "")
-                    return;
-                DebugOutput.PrintLn("result : " + result);
-                var dialog = new CommonOpenFileDialog();
-                dialog.IsFolderPicker = true;
-                dialog.EnsurePathExists = true;
-                dialog.Title = "Choose a folder to unpack to. Select ME3 directory to unpack to proper folder";
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                    unpackFolder = dialog.FileName;
-                else
-                    return;
-            } else
-            {
-                unpackFolder = autoUnpackFolder;
-            }
+            if (result == "")
+                return;
+            DebugOutput.PrintLn("result : " + result);
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.EnsurePathExists = true;
+            dialog.Title = "Choose a folder to unpack to. Select ME3 directory to unpack to proper folder";
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                unpackFolder = dialog.FileName;
+            else
+                return;
             if (!unpackFolder.EndsWith("\\"))
                 unpackFolder = unpackFolder + "\\";
             DebugOutput.PrintLn("Extracting DLC to : " + unpackFolder);
@@ -560,23 +318,14 @@ namespace ME3Explorer
 
             // AutoTOC
             AutoTOC.prepareToCreateTOC(t2 + "\\PCConsoleTOC.bin");
-            if (!automated)
-            {
-                MessageBox.Show("SFAR Unpacked.");
-            }
+            MessageBox.Show("SFAR Unpacked.");
         }
 
-        private void unpackSFAR(DLCPackage dlc)
+        public static void unpackSFAR(DLCPackage dlc)
         {
             if (dlc == null || dlc.Files == null)
                 return;
-            string result = "pcc; tfc; afc; cnd; tlk; bin; bik; dlc";
-            if (result == "")
-                return;
-            result = result.Trim();
-            if (result.EndsWith(";"))
-                result = result.Substring(0, result.Length - 1);
-            string[] patt = result.Split(';');
+            string[] patt = { "pcc", "bik", "tfc", "afc", "cnd", "tlk", "bin", "dlc" };
             string file = dlc.FileName;                   //full path
             string t1 = Path.GetDirectoryName(file);        //cooked
             string t2 = Path.GetDirectoryName(t1);          //DLC_Name
@@ -602,7 +351,7 @@ namespace ME3Explorer
 
                             if (!File.Exists(outpath))
                                 using (FileStream fs = new FileStream(outpath, FileMode.Create))
-                                    dlc.DecompressEntry(i).WriteTo(fs);
+                                    dlc.DecompressEntryAsync(i, fs).Wait();
                             Indexes.Add(i);
                             Application.DoEvents();
                             break;
@@ -648,7 +397,7 @@ namespace ME3Explorer
             return retval;
         }
 
-        public string GetRelativePath(string DLCpath)
+        static string GetRelativePath(string DLCpath)
         {
             return DLCpath.Replace("/", "\\");
         }

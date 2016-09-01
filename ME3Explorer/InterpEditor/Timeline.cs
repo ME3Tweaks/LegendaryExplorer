@@ -11,7 +11,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Util;
 using ME3Explorer.Packages;
 
-namespace ME3Explorer.InterpEditor
+namespace ME3Explorer.Matinee
 {
     /// <summary>
     /// Creates a timeline control, with tracks, track groups, and key frames

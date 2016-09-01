@@ -191,7 +191,7 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(this ME1ExportEntry entry, string baseClass)
+        public static bool inheritsFrom(ME1ExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -218,7 +218,7 @@ namespace ME1Explorer.Unreal
             {
                 if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
                 {
-                    pcc = new ME1Package(files[i]);
+                    pcc = MEPackageHandler.OpenME1Package(path);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     IExportEntry exportEntry;
                     for (int j = 0; j < Exports.Count; j++)

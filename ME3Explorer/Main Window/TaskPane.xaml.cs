@@ -37,13 +37,19 @@ namespace ME3Explorer
         {
             //wait for the UI to reflect the collection change
             await Task.Delay(100);
-            if (fileList.ActualHeight > topScrollViewer.ActualHeight)
+             if (fileList.ActualHeight > topScrollViewer.ActualHeight)
             {
                 scrollIndicator.Visibility = Visibility.Visible;
             }
             else
             {
                 scrollIndicator.Visibility = Visibility.Hidden;
+            }
+
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove ||
+                e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true); 
             }
         }
 

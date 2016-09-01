@@ -4,7 +4,7 @@ namespace ME3Explorer.Packages
 {
     public interface IEntry
     {
-        bool HasChanged { get; }
+        bool HeaderChanged { get; }
         int Index { get; set; }
         int UIndex { get; }
         byte[] header { get; }
@@ -29,6 +29,10 @@ namespace ME3Explorer.Packages
 
     public interface IExportEntry : IEntry
     {
+        bool DataChanged { get; }
+        /// <summary>
+        /// RETURNS A CLONE
+        /// </summary>
         byte[] Data { get; set; }
         int DataOffset { get; }
         int DataSize { get; }

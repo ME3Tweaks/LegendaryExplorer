@@ -1059,7 +1059,6 @@
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\me3creator_64x64.png" />
-    <Resource Include="Resources\level_editor_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
@@ -1160,6 +1159,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\script_database_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\level_explorer_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\level_editor_64x64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

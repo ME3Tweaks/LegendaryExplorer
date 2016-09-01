@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.Classes
     public class ME3BioConversation
     {
         ME3Package pcc;
-        ME3ExportEntry export;
+        public ME3ExportEntry export;
         int Unk1;
         List<PropertyReader.Property> Props;
 
@@ -762,7 +762,6 @@ namespace ME3Explorer.Unreal.Classes
                 }
             m.Write(BitConverter.GetBytes(0), 0, 4);
             export.Data = m.ToArray();
-            pcc.save();
         }
     }
 }

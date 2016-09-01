@@ -35,7 +35,6 @@
             this.recreateAndDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,7 +104,6 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveChangesToolStripMenuItem,
             this.cloneEntryToolStripMenuItem,
             this.deleteEntryToolStripMenuItem,
             this.moveEntryToolStripMenuItem,
@@ -114,38 +112,31 @@
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
-            // saveChangesToolStripMenuItem
-            // 
-            this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.saveChangesToolStripMenuItem.Text = "Save Changes";
-            this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
-            // 
             // cloneEntryToolStripMenuItem
             // 
             this.cloneEntryToolStripMenuItem.Name = "cloneEntryToolStripMenuItem";
-            this.cloneEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.cloneEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.cloneEntryToolStripMenuItem.Text = "Clone Entry";
             this.cloneEntryToolStripMenuItem.Click += new System.EventHandler(this.cloneEntryToolStripMenuItem_Click);
             // 
             // deleteEntryToolStripMenuItem
             // 
             this.deleteEntryToolStripMenuItem.Name = "deleteEntryToolStripMenuItem";
-            this.deleteEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.deleteEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteEntryToolStripMenuItem.Text = "Delete Entry";
             this.deleteEntryToolStripMenuItem.Click += new System.EventHandler(this.deleteEntryToolStripMenuItem_Click);
             // 
             // moveEntryToolStripMenuItem
             // 
             this.moveEntryToolStripMenuItem.Name = "moveEntryToolStripMenuItem";
-            this.moveEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.moveEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.moveEntryToolStripMenuItem.Text = "Move Entry";
             this.moveEntryToolStripMenuItem.Click += new System.EventHandler(this.moveEntryToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
             // 
@@ -302,7 +293,6 @@
         private System.Windows.Forms.ToolStripMenuItem recreateAndDumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneEntryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteEntryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveEntryToolStripMenuItem;

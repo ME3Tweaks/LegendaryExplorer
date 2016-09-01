@@ -15,6 +15,7 @@ namespace ME3Explorer.FaceFX
     {
         IMEPackage pcc;
         IExportEntry entry;
+        public IExportEntry Export { get { return entry; } }
         public ME2HeaderStruct header;
         public HeaderStruct Header
         {

@@ -76,7 +76,6 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.extractFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.backgroundWorkerExtractFile = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerEditFile = new System.ComponentModel.BackgroundWorker();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
@@ -85,6 +84,7 @@
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripInfo = new System.Windows.Forms.ToolStripButton();
             this.toolStripAbout = new System.Windows.Forms.ToolStripButton();
+            this.extractFolderDialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog();
             this.contextMenuStripEditor.SuspendLayout();
             this.groupBoxFile.SuspendLayout();
             this.groupBoxSfar.SuspendLayout();
@@ -233,7 +233,7 @@
             // 
             this.textBoxDataOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxDataOffset.Location = new System.Drawing.Point(141, 180);
-            this.textBoxDataOffset.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxDataOffset.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxDataOffset.Name = "textBoxDataOffset";
             this.textBoxDataOffset.ReadOnly = true;
             this.textBoxDataOffset.Size = new System.Drawing.Size(88, 25);
@@ -270,7 +270,7 @@
             // 
             this.textBoxHash.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxHash.Location = new System.Drawing.Point(76, 45);
-            this.textBoxHash.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxHash.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxHash.Name = "textBoxHash";
             this.textBoxHash.ReadOnly = true;
             this.textBoxHash.Size = new System.Drawing.Size(264, 25);
@@ -280,7 +280,7 @@
             // 
             this.textBoxBlockIndex.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxBlockIndex.Location = new System.Drawing.Point(141, 153);
-            this.textBoxBlockIndex.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxBlockIndex.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxBlockIndex.Name = "textBoxBlockIndex";
             this.textBoxBlockIndex.ReadOnly = true;
             this.textBoxBlockIndex.Size = new System.Drawing.Size(88, 25);
@@ -290,7 +290,7 @@
             // 
             this.textBoxComprSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxComprSize.Location = new System.Drawing.Point(141, 99);
-            this.textBoxComprSize.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxComprSize.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxComprSize.Name = "textBoxComprSize";
             this.textBoxComprSize.ReadOnly = true;
             this.textBoxComprSize.Size = new System.Drawing.Size(60, 25);
@@ -300,7 +300,7 @@
             // textBoxFullName
             // 
             this.textBoxFullName.Location = new System.Drawing.Point(76, 19);
-            this.textBoxFullName.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxFullName.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxFullName.Name = "textBoxFullName";
             this.textBoxFullName.ReadOnly = true;
             this.textBoxFullName.Size = new System.Drawing.Size(264, 20);
@@ -328,7 +328,7 @@
             // 
             this.textBoxEntry.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxEntry.Location = new System.Drawing.Point(141, 126);
-            this.textBoxEntry.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxEntry.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxEntry.Name = "textBoxEntry";
             this.textBoxEntry.ReadOnly = true;
             this.textBoxEntry.Size = new System.Drawing.Size(88, 25);
@@ -347,7 +347,7 @@
             // 
             this.textBoxUncSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxUncSize.Location = new System.Drawing.Point(141, 72);
-            this.textBoxUncSize.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxUncSize.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxUncSize.Name = "textBoxUncSize";
             this.textBoxUncSize.ReadOnly = true;
             this.textBoxUncSize.Size = new System.Drawing.Size(60, 25);
@@ -405,7 +405,7 @@
             // 
             this.textBoxCRatio.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxCRatio.Location = new System.Drawing.Point(140, 98);
-            this.textBoxCRatio.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxCRatio.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxCRatio.Name = "textBoxCRatio";
             this.textBoxCRatio.ReadOnly = true;
             this.textBoxCRatio.Size = new System.Drawing.Size(75, 25);
@@ -433,7 +433,7 @@
             // 
             this.textBoxNumOfFiles.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxNumOfFiles.Location = new System.Drawing.Point(140, 17);
-            this.textBoxNumOfFiles.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxNumOfFiles.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxNumOfFiles.Name = "textBoxNumOfFiles";
             this.textBoxNumOfFiles.ReadOnly = true;
             this.textBoxNumOfFiles.Size = new System.Drawing.Size(75, 25);
@@ -461,7 +461,7 @@
             // 
             this.textBoxFirstBlockOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxFirstBlockOffset.Location = new System.Drawing.Point(140, 152);
-            this.textBoxFirstBlockOffset.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxFirstBlockOffset.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxFirstBlockOffset.Name = "textBoxFirstBlockOffset";
             this.textBoxFirstBlockOffset.ReadOnly = true;
             this.textBoxFirstBlockOffset.Size = new System.Drawing.Size(88, 25);
@@ -471,7 +471,7 @@
             // 
             this.textBoxFirstEntryOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxFirstEntryOffset.Location = new System.Drawing.Point(140, 125);
-            this.textBoxFirstEntryOffset.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxFirstEntryOffset.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxFirstEntryOffset.Name = "textBoxFirstEntryOffset";
             this.textBoxFirstEntryOffset.ReadOnly = true;
             this.textBoxFirstEntryOffset.Size = new System.Drawing.Size(88, 25);
@@ -508,7 +508,7 @@
             // 
             this.textBoxTotalUncSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxTotalUncSize.Location = new System.Drawing.Point(140, 44);
-            this.textBoxTotalUncSize.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxTotalUncSize.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxTotalUncSize.Name = "textBoxTotalUncSize";
             this.textBoxTotalUncSize.ReadOnly = true;
             this.textBoxTotalUncSize.Size = new System.Drawing.Size(75, 25);
@@ -519,7 +519,7 @@
             // 
             this.textBoxTotalComprSize.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxTotalComprSize.Location = new System.Drawing.Point(140, 71);
-            this.textBoxTotalComprSize.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxTotalComprSize.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxTotalComprSize.Name = "textBoxTotalComprSize";
             this.textBoxTotalComprSize.ReadOnly = true;
             this.textBoxTotalComprSize.Size = new System.Drawing.Size(75, 25);
@@ -539,7 +539,7 @@
             // 
             this.textBoxFirstDataOffset.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxFirstDataOffset.Location = new System.Drawing.Point(140, 179);
-            this.textBoxFirstDataOffset.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.textBoxFirstDataOffset.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxFirstDataOffset.Name = "textBoxFirstDataOffset";
             this.textBoxFirstDataOffset.ReadOnly = true;
             this.textBoxFirstDataOffset.Size = new System.Drawing.Size(88, 25);
@@ -583,10 +583,6 @@
             this.toolStripStatusLabel.Size = new System.Drawing.Size(112, 17);
             this.toolStripStatusLabel.Text = "toolStripStatusLabel";
             this.toolStripStatusLabel.Visible = false;
-            // 
-            // extractFolderDialog
-            // 
-            this.extractFolderDialog.Description = "Select the destination folder";
             // 
             // backgroundWorkerExtractFile
             // 
@@ -661,6 +657,12 @@
             this.toolStripAbout.Size = new System.Drawing.Size(28, 28);
             this.toolStripAbout.Text = "About";
             this.toolStripAbout.Click += new System.EventHandler(this.toolStripAbout_Click);
+            // 
+            // extractFolderDialog
+            // 
+            this.extractFolderDialog.Title = "Select the destination folder";
+            this.extractFolderDialog.IsFolderPicker = true;
+            this.extractFolderDialog.EnsurePathExists = true;
             // 
             // SFARBasicEditor
             // 
@@ -737,7 +739,6 @@
         public System.Windows.Forms.StatusStrip statusStrip;
         public System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         public System.Windows.Forms.TextBox textBoxCRatio;
-        public System.Windows.Forms.FolderBrowserDialog extractFolderDialog;
         public System.ComponentModel.BackgroundWorker backgroundWorkerExtractFile;
         public System.ComponentModel.BackgroundWorker backgroundWorkerEditFile;
         public System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
@@ -753,6 +754,7 @@
         public System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         public System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.ComponentModel.IContainer components;
+        public Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog extractFolderDialog;
     }
 }
 

@@ -390,7 +390,6 @@ namespace ME3Creator
         }
 
         //structs that are serialized down to just their values.
-        //TODO: write a general deserializer for these instead of a bunch of bespoke ones that don't even cover all the cases.
         private void GenerateSpecialStruct(TreeNode t, string structType, int size)
         {
             TreeNode node;

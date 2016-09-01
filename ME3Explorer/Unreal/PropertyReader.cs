@@ -772,6 +772,7 @@ namespace ME3Explorer.Unreal
                     if (nameRef.count > 0)
                         nameRef.Name += "_" + (nameRef.count - 1);
                     v.NameValue = nameRef;
+                    v.StringValue = nameRef.Name;
                     v.len = 8;
                     break;
             }

@@ -61,12 +61,7 @@ namespace ME3Explorer.FaceFX
                     linesListBox.ItemsSource = null;
                     animationListBox.ItemsSource = null;
                     graph.Clear();
-                    animSets = new List<IExportEntry>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
-                            animSets.Add(pcc.Exports[i]);
-                    FaceFXAnimSetComboBox.ItemsSource = animSets;
-                    FaceFXAnimSetComboBox.SelectedIndex = 0;
+                    RefreshComboBox();
                 }
                 catch (Exception ex)
                 {
@@ -74,6 +69,21 @@ namespace ME3Explorer.FaceFX
                     pcc = null;
                     MessageBox.Show("Error:\n" + ex.Message);
                 }
+            }
+        }
+
+        private void RefreshComboBox()
+        {
+            var item = FaceFXAnimSetComboBox.SelectedItem as IExportEntry;
+            animSets = new List<IExportEntry>();
+            for (int i = 0; i < pcc.Exports.Count; i++)
+                if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
+                    animSets.Add(pcc.Exports[i]);
+            FaceFXAnimSetComboBox.ItemsSource = animSets;
+            FaceFXAnimSetComboBox.SelectedIndex = 0;
+            if (animSets.Contains(item))
+            {
+                FaceFXAnimSetComboBox.SelectedItem = item;
             }
         }
 
@@ -100,6 +110,11 @@ namespace ME3Explorer.FaceFX
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             SaveChanges();
+            loadFaceFXAnimset();
+        }
+
+        private void loadFaceFXAnimset()
+        {
             if (pcc.Game == MEGame.ME3)
             {
                 FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
@@ -122,14 +137,14 @@ namespace ME3Explorer.FaceFX
             }
             Animation a = (Animation)e.AddedItems[0];
 
-            graph.SelectedCurve = new Curve(a.Name, a.points);
+            Curve curve = new Curve(a.Name, a.points);
+            curve.SaveChanges = () => SaveChanges();
+            graph.SelectedCurve = curve;
             graph.Paint(true);
         }
 
         private void linesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SaveChanges();
-
             animationListBox.ItemsSource = null;
             lineText.Text = null;
 
@@ -239,7 +254,6 @@ namespace ME3Explorer.FaceFX
                         dragStart = new Point(0, 0);
                         if (!(e.OriginalSource is ScrollViewer) && linesListBox.SelectedItem != null)
                         {
-                            SaveChanges();
                             ME3FaceFXLine d = (linesListBox.SelectedItem as ME3FaceFXLine).Clone();
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new { line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
                         }
@@ -263,7 +277,7 @@ namespace ME3Explorer.FaceFX
 
         private void linesListBox_Drop(object sender, DragEventArgs e)
         {
-            SaveChanges();
+            this.RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXLine"))
             {
                 dynamic d = e.Data.GetData("FaceFXLine");
@@ -300,6 +314,7 @@ namespace ME3Explorer.FaceFX
                     linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
                 }
             }
+            SaveChanges();
         }
 
         #endregion
@@ -322,7 +337,6 @@ namespace ME3Explorer.FaceFX
                         dragStart = new Point(0,0);
                         if (!(e.OriginalSource is ScrollViewer) && animationListBox.SelectedItem != null)
                         {
-                            SaveChanges();
                             Animation a = (Animation)animationListBox.SelectedItem;
                             DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new { anim = a, group = selectedLine.numKeys[animationListBox.SelectedIndex] }), DragDropEffects.Copy);
                         }
@@ -345,7 +359,7 @@ namespace ME3Explorer.FaceFX
 
         private void animationListBox_Drop(object sender, DragEventArgs e)
         {
-            SaveChanges();
+            this.RestoreAndBringToFront();
             if (e.Data.GetDataPresent("FaceFXAnim"))
             {
                 dynamic d = e.Data.GetData("FaceFXAnim");
@@ -371,6 +385,7 @@ namespace ME3Explorer.FaceFX
                 selectedLine.numKeys = selectedLine.numKeys.Concat(group).ToArray();
                 updateAnimListBox();
             }
+            SaveChanges();
         }
         #endregion
 
@@ -385,7 +400,6 @@ namespace ME3Explorer.FaceFX
 
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
-            SaveChanges();
             ME3FaceFXLine line = (ME3FaceFXLine)linesListBox.SelectedItem;
             if (pcc.Game == MEGame.ME3)
             {
@@ -402,6 +416,7 @@ namespace ME3Explorer.FaceFX
                 me2DataAnimSetStruct.Data = lines.ToArray();
                 linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
             }
+            SaveChanges();
         }
 
         private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -470,6 +485,48 @@ namespace ME3Explorer.FaceFX
             if (e.Key == Key.Delete || e.Key == Key.Back)
             {
                 graph.DeleteSelectedKey();
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (FaceFX != null && updatedExports.Contains(FaceFX.Export.Index))
+            {
+                int index = FaceFX.Export.Index;
+                //loaded FaceFXAnimset is no longer a FaceFXAnimset
+                if (FaceFX.Export.ClassName != "FaceFXAnimSet")
+                {
+                    selectedLine = null;
+                    FaceFX = null;
+                    treeView.Nodes.Clear();
+                    linesListBox.ItemsSource = null;
+                    animationListBox.ItemsSource = null;
+                    graph.Clear();
+                }
+                else if (!this.IsForegroundWindow())
+                {
+                    loadFaceFXAnimset();
+                }
+                updatedExports.Remove(index);
+            }
+            if (updatedExports.Intersect(animSets.Select(x => x.Index)).Count() > 0)
+            {
+                RefreshComboBox();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    {
+                        RefreshComboBox();
+                        break;
+                    }
+                }
             }
         }
     }
