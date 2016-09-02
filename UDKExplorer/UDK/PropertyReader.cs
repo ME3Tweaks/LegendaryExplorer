@@ -359,21 +359,21 @@ namespace UDKExplorer.UDK
             string s = "";
             s = "Name: " + udk.getName(p.Name);
             s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Value.len.ToString();
+            s += " Size: " + p.Value.len;
             switch (p.TypeVal)
             {
                 case Type.StructProperty:
-                    s += " \"" + udk.getName (p.Value.IntValue) + "\" with " + p.Value.Array.Count.ToString() + " bytes";
+                    s += " \"" + udk.getName (p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
                 case Type.IntProperty:                
                 case Type.ObjectProperty:
                 case Type.BoolProperty:
-                    s += " Value: " + p.Value.IntValue.ToString();
+                    s += " Value: " + p.Value.IntValue;
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff,0);
-                    s += " Value: " + f.ToString();
+                    s += " Value: " + f;
                     break;
                 case Type.NameProperty:
                     s += " " + udk.getName(p.Value.IntValue);
@@ -393,25 +393,25 @@ namespace UDKExplorer.UDK
             return s;
         }
 
-        public static KFreonLib.Misc.CustomProperty PropertyToGrid(Property p, UDKFile udk)
+        public static ME3LibWV.CustomProperty PropertyToGrid(Property p, UDKFile udk)
         {
             string cat = p.TypeVal.ToString();
-            KFreonLib.Misc.CustomProperty pg;
+            ME3LibWV.CustomProperty pg;
             NameProp pp;
             switch (p.TypeVal)
             {
                 case Type.BoolProperty :
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, (p.Value.IntValue == 1), typeof(bool), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, (p.Value.IntValue == 1), typeof(bool), false, true);
                     break;
                 case Type.FloatProperty:
                     byte[] buff = BitConverter.GetBytes(p.Value.IntValue);
                     float f = BitConverter.ToSingle(buff, 0);
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, f, typeof(float), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, f, typeof(float), false, true);
                     break;
                 case Type.ByteProperty:
                     if (p.Size != 8)
                     {
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, (byte)p.Value.IntValue, typeof(byte), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, (byte)p.Value.IntValue, typeof(byte), false, true);
                     }
                     else
                     {
@@ -419,26 +419,26 @@ namespace UDKExplorer.UDK
                         pp = new NameProp();
                         pp.name = udk.getName(p.Value.IntValue);
                         pp.nameindex = p.Value.IntValue;
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, pp, typeof(NameProp), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, pp, typeof(NameProp), false, true);
                     }
                     break;
                 case Type.NameProperty:
                     pp = new NameProp();
                     pp.name = udk.getName(p.Value.IntValue);
                     pp.nameindex = p.Value.IntValue;
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, pp, typeof(NameProp), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, pp, typeof(NameProp), false, true);
                     break;
                 case Type.ObjectProperty:
                     ObjectProp ppo = new ObjectProp();
                     ppo.objectName = udk.getObjectName(p.Value.IntValue);
                     ppo.index = p.Value.IntValue;
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, ppo, typeof(ObjectProp), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, ppo, typeof(ObjectProp), false, true);
                     break;
                 case Type.StrProperty:
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, p.Value.StringValue, typeof(string), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, p.Value.StringValue, typeof(string), false, true);
                     break;
                 case Type.ArrayProperty:
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, BitConverter.ToInt32(p.raw,24) + " elements", typeof(string), false, true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, BitConverter.ToInt32(p.raw,24) + " elements", typeof(string), false, true);
                     break;
                 case Type.StructProperty:
                     string structType = udk.getName(p.Value.IntValue);
@@ -451,7 +451,7 @@ namespace UDKExplorer.UDK
                         cp.Red = color.R;
                         cp.Green = color.G;
                         cp.Blue = color.B;
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, cp, typeof(ColorProp), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, cp, typeof(ColorProp), false, true);
                     }
                     else if (structType == "Vector")
                     {
@@ -461,17 +461,17 @@ namespace UDKExplorer.UDK
                         vp.X = BitConverter.ToSingle(p.raw, 32);
                         vp.Y = BitConverter.ToSingle(p.raw, 36);
                         vp.Z = BitConverter.ToSingle(p.raw, 40);
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, vp, typeof(VectorProp), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, vp, typeof(VectorProp), false, true);
                     }
                     else if (structType == "Rotator")
                     {
                         RotatorProp rp = new RotatorProp();
                         rp.name = structType;
                         rp.nameindex = p.Value.IntValue;
-                        rp.Pitch = (float)BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
-                        rp.Yaw = (float)BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
-                        rp.Roll = (float)BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, rp, typeof(RotatorProp), false, true);
+                        rp.Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
+                        rp.Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
+                        rp.Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, rp, typeof(RotatorProp), false, true);
                     }
                     else if (structType == "LinearColor")
                     {
@@ -482,7 +482,7 @@ namespace UDKExplorer.UDK
                         lcp.Green = BitConverter.ToSingle(p.raw, 36);
                         lcp.Blue = BitConverter.ToSingle(p.raw, 40);
                         lcp.Alpha = BitConverter.ToSingle(p.raw, 44);
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, lcp, typeof(VectorProp), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, lcp, typeof(VectorProp), false, true);
                     }
                     else {
                         StructProp ppp = new StructProp();
@@ -495,11 +495,11 @@ namespace UDKExplorer.UDK
                         for (int i = 0; i < p.Value.Array.Count() / 4; i++)
                             buf2.Add(BitConverter.ToInt32(buf ,i * 4));
                         ppp.data = buf2.ToArray();
-                        pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name), cat, ppp, typeof(StructProp), false, true);
+                        pg = new ME3LibWV.CustomProperty(udk.getName(p.Name), cat, ppp, typeof(StructProp), false, true);
                     }
                     break;                    
                 default:
-                    pg = new KFreonLib.Misc.CustomProperty(udk.getName(p.Name),cat,p.Value.IntValue,typeof(int),false,true);
+                    pg = new ME3LibWV.CustomProperty(udk.getName(p.Name),cat,p.Value.IntValue,typeof(int),false,true);
                     break;
             }
             return pg;

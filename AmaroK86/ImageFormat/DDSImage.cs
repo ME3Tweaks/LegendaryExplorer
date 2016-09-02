@@ -539,14 +539,14 @@ namespace AmaroK86.ImageFormat
                                 if (colour0 > colour1)
                                     colVals[k] = (byte)((2 * colour0 + 5 * colour1) / 7);
                                 else
-                                    colVals[k] = (byte)0;
+                                    colVals[k] = 0;
                             }
                             else if ((tempLong ^ (ulong)ATI2BitCodes.interpColor5) == (ulong)ATI2BitCodes.result)
                             {
                                 if (colour0 > colour1)
                                     colVals[k] = (byte)((colour0 + 6 * colour1) / 7);
                                 else
-                                    colVals[k] = (byte)255;
+                                    colVals[k] = 255;
                             }
                             else
                             {

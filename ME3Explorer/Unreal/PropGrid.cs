@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Forms;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
@@ -39,17 +41,263 @@ namespace ME3Explorer.Unreal
 			}
 			set
 			{
-				base.List[index] = (CustomProperty)value;
+				base.List[index] = value;
 			}
 		}
 
 
-		#region "TypeDescriptor Implementation"
-		/// <summary>
-		/// Get Class Name
-		/// </summary>
-		/// <returns>String</returns>
-		public String GetClassName()
+
+        public static void propGridPropertyValueChanged(PropertyValueChangedEventArgs e, int n, IMEPackage pcc)
+        {
+            string name = e.ChangedItem.Label;
+            GridItem parent = e.ChangedItem.Parent;
+            //if (parent != null) name = parent.Label;
+            if (parent.Label == "data")
+            {
+                GridItem parent2 = parent.Parent;
+                if (parent2 != null) name = parent2.Label;
+            }
+            Type parentVal = null;
+            if (parent.Value != null)
+            {
+                parentVal = parent.Value.GetType();
+            }
+            if (name == "nameindex" || name == "index" || parentVal == typeof(ColorProp) || parentVal == typeof(VectorProp) || parentVal == typeof(Unreal.RotatorProp) || parentVal == typeof(Unreal.LinearColorProp))
+            {
+                name = parent.Label;
+            }
+            IExportEntry ent = pcc.getExport(n);
+            byte[] data = ent.Data;
+            List<PropertyReader.Property> p = PropertyReader.getPropList(ent);
+            int m = -1;
+            for (int i = 0; i < p.Count; i++)
+                if (pcc.getNameEntry(p[i].Name) == name)
+                    m = i;
+            if (m == -1)
+                return;
+            byte[] buff2;
+            switch (p[m].TypeVal)
+            {
+                case PropertyReader.Type.BoolProperty:
+                    byte res = 0;
+                    if ((bool)e.ChangedItem.Value == true)
+                        res = 1;
+                    data[p[m].offsetval] = res;
+                    break;
+                case PropertyReader.Type.FloatProperty:
+                    buff2 = BitConverter.GetBytes((float)e.ChangedItem.Value);
+                    for (int i = 0; i < 4; i++)
+                        data[p[m].offsetval + i] = buff2[i];
+                    break;
+                case PropertyReader.Type.IntProperty:
+                case PropertyReader.Type.StringRefProperty:
+                    int newv = Convert.ToInt32(e.ChangedItem.Value);
+                    int oldv = Convert.ToInt32(e.OldValue);
+                    buff2 = BitConverter.GetBytes(newv);
+                    for (int i = 0; i < 4; i++)
+                        data[p[m].offsetval + i] = buff2[i];
+                    break;
+                case PropertyReader.Type.StrProperty:
+                    string s = Convert.ToString(e.ChangedItem.Value);
+                    int stringMultiplier = 1;
+                    int oldLength = BitConverter.ToInt32(data, p[m].offsetval);
+                    if (oldLength < 0)
+                    {
+                        stringMultiplier = 2;
+                        oldLength *= -2;
+                    }
+                    int oldSize = 4 + oldLength;
+                    List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier);
+                    if (stringMultiplier == 2)
+                    {
+                        for (int j = 0; j < s.Length; j++)
+                        {
+                            stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                        }
+                        stringBuff.Add(0);
+                    }
+                    else
+                    {
+                        for (int j = 0; j < s.Length; j++)
+                        {
+                            stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
+                        }
+                    }
+                    stringBuff.Add(0);
+                    buff2 = BitConverter.GetBytes((s.Length + 1) * stringMultiplier + 4);
+                    for (int j = 0; j < 4; j++)
+                        data[p[m].offsetval - 8 + j] = buff2[j];
+                    buff2 = BitConverter.GetBytes((s.Length + 1) * stringMultiplier == 1 ? 1 : -1);
+                    for (int j = 0; j < 4; j++)
+                        data[p[m].offsetval + j] = buff2[j];
+                    buff2 = new byte[data.Length - oldLength + stringBuff.Count];
+                    int startLength = p[m].offsetval + 4;
+                    int startLength2 = startLength + oldLength;
+                    for (int i = 0; i < startLength; i++)
+                    {
+                        buff2[i] = data[i];
+                    }
+                    for (int i = 0; i < stringBuff.Count; i++)
+                    {
+                        buff2[i + startLength] = stringBuff[i];
+                    }
+                    startLength += stringBuff.Count;
+                    for (int i = 0; i < data.Length - startLength2; i++)
+                    {
+                        buff2[i + startLength] = data[i + startLength2];
+                    }
+                    data = buff2;
+                    break;
+                case PropertyReader.Type.StructProperty:
+                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(ColorProp))
+                    {
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Alpha":
+                                data[p[m].offsetval + 11] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Red":
+                                data[p[m].offsetval + 10] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Green":
+                                data[p[m].offsetval + 9] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            case "Blue":
+                                data[p[m].offsetval + 8] = Convert.ToByte(e.ChangedItem.Value);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(VectorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "X":
+                                offset = 8;
+                                break;
+                            case "Y":
+                                offset = 12;
+                                break;
+                            case "Z":
+                                offset = 16;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
+                            for (int i = 0; i < 4; i++)
+                                data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.RotatorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Pitch":
+                                offset = 8;
+                                break;
+                            case "Yaw":
+                                offset = 12;
+                                break;
+                            case "Roll":
+                                offset = 16;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            int val = Convert.ToInt32(Convert.ToSingle(e.ChangedItem.Value) * 65536f / 360f);
+                            buff2 = BitConverter.GetBytes(val);
+                            for (int i = 0; i < 4; i++)
+                                data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                    }
+                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.LinearColorProp))
+                    {
+                        int offset = 0;
+                        switch (e.ChangedItem.Label)
+                        {
+                            case "Red":
+                                offset = 8;
+                                break;
+                            case "Green":
+                                offset = 12;
+                                break;
+                            case "Blue":
+                                offset = 16;
+                                break;
+                            case "Alpha":
+                                offset = 20;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (offset != 0)
+                        {
+                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
+                            for (int i = 0; i < 4; i++)
+                                data[p[m].offsetval + offset + i] = buff2[i];
+                        }
+                    }
+                    else if (e.ChangedItem.Value is int)
+                    {
+                        int val = Convert.ToInt32(e.ChangedItem.Value);
+                        if (e.ChangedItem.Label == "nameindex")
+                        {
+                            int val1 = Convert.ToInt32(e.ChangedItem.Value);
+                            buff2 = BitConverter.GetBytes(val1);
+                            for (int i = 0; i < 4; i++)
+                                data[p[m].offsetval + i] = buff2[i];
+                        }
+                        else
+                        {
+                            string sidx = e.ChangedItem.Label.Replace("[", "");
+                            sidx = sidx.Replace("]", "");
+                            int index = Convert.ToInt32(sidx);
+                            buff2 = BitConverter.GetBytes(val);
+                            for (int i = 0; i < 4; i++)
+                                data[p[m].offsetval + i + index * 4 + 8] = buff2[i];
+                        }
+                    }
+                    break;
+                case PropertyReader.Type.ByteProperty:
+                case PropertyReader.Type.NameProperty:
+                    if (e.ChangedItem.Value is int)
+                    {
+                        int val = Convert.ToInt32(e.ChangedItem.Value);
+                        buff2 = BitConverter.GetBytes(val);
+                        for (int i = 0; i < 4; i++)
+                            data[p[m].offsetval + i] = buff2[i];
+                    }
+                    break;
+                case PropertyReader.Type.ObjectProperty:
+                    if (e.ChangedItem.Value is int)
+                    {
+                        int val = Convert.ToInt32(e.ChangedItem.Value);
+                        buff2 = BitConverter.GetBytes(val);
+                        for (int i = 0; i < 4; i++)
+                            data[p[m].offsetval + i] = buff2[i];
+                    }
+                    break;
+                default:
+                    return;
+            }
+            ent.Data = data;
+        }
+
+
+        #region "TypeDescriptor Implementation"
+        /// <summary>
+        /// Get Class Name
+        /// </summary>
+        /// <returns>String</returns>
+        public string GetClassName()
 		{
 			return TypeDescriptor.GetClassName(this,true);
 		}
@@ -67,7 +315,7 @@ namespace ME3Explorer.Unreal
 		/// GetComponentName
 		/// </summary>
 		/// <returns>String</returns>
-		public String GetComponentName()
+		public string GetComponentName()
 		{
 			return TypeDescriptor.GetComponentName(this, true);
 		}
@@ -124,7 +372,7 @@ namespace ME3Explorer.Unreal
 			PropertyDescriptor[] newProps = new PropertyDescriptor[this.Count];
 			for (int i = 0; i < this.Count; i++)
 			{
-				CustomProperty  prop = (CustomProperty) this[i];
+				CustomProperty  prop = this[i];
 				newProps[i] = new CustomPropertyDescriptor(ref prop, attributes);
 			}
 

@@ -145,42 +145,6 @@ namespace ME3Explorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ME3InstallDir {
-            get {
-                return ((string)(this["ME3InstallDir"]));
-            }
-            set {
-                this["ME3InstallDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ME2InstallDir {
-            get {
-                return ((string)(this["ME2InstallDir"]));
-            }
-            set {
-                this["ME2InstallDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ME1InstallDir {
-            get {
-                return ((string)(this["ME1InstallDir"]));
-            }
-            set {
-                this["ME1InstallDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DisableDLCCheckOnStart {
             get {
@@ -200,6 +164,30 @@ namespace ME3Explorer.Properties {
             }
             set {
                 this["PlotVarDBPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisableToolDescriptions {
+            get {
+                return ((bool)(this["DisableToolDescriptions"]));
+            }
+            set {
+                this["DisableToolDescriptions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlwaysOnTop {
+            get {
+                return ((bool)(this["AlwaysOnTop"]));
+            }
+            set {
+                this["AlwaysOnTop"] = value;
             }
         }
     }

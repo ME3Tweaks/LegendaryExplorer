@@ -31,13 +31,6 @@ namespace ME3Explorer.PlotVarDB
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlotVarDB));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +71,6 @@ namespace ME3Explorer.PlotVarDB
             this.menuStrip1.Size = new System.Drawing.Size(1015, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -134,7 +126,7 @@ namespace ME3Explorer.PlotVarDB
             this.toolStripButton1,
             this.toolStripSeparator2,
             this.deleteRowButton});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1015, 25);
             this.toolStrip1.TabIndex = 1;
@@ -202,10 +194,10 @@ namespace ME3Explorer.PlotVarDB
             this.me2me3Column,
             this.notesColumn});
             this.plotVarTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.plotVarTable.Location = new System.Drawing.Point(0, 25);
+            this.plotVarTable.Location = new System.Drawing.Point(0, 49);
             this.plotVarTable.MultiSelect = false;
             this.plotVarTable.Name = "plotVarTable";
-            this.plotVarTable.Size = new System.Drawing.Size(1015, 237);
+            this.plotVarTable.Size = new System.Drawing.Size(1015, 213);
             this.plotVarTable.TabIndex = 4;
             this.plotVarTable.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.cellClicked);
             this.plotVarTable.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.plotVarTable_CellValidating);
@@ -214,8 +206,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // plotIDColumn
             // 
-            dataGridViewCellStyle1.NullValue = "";
-            this.plotIDColumn.DefaultCellStyle = dataGridViewCellStyle1;
             this.plotIDColumn.Frozen = true;
             this.plotIDColumn.HeaderText = "Plot ID";
             this.plotIDColumn.Name = "plotIDColumn";
@@ -248,8 +238,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // categoryColumn
             // 
-            dataGridViewCellStyle2.NullValue = "";
-            this.categoryColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.categoryColumn.Frozen = true;
             this.categoryColumn.HeaderText = "Category 1";
             this.categoryColumn.Name = "categoryColumn";
@@ -258,8 +246,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // category2column
             // 
-            dataGridViewCellStyle3.NullValue = "";
-            this.category2column.DefaultCellStyle = dataGridViewCellStyle3;
             this.category2column.Frozen = true;
             this.category2column.HeaderText = "Category 2";
             this.category2column.Name = "category2column";
@@ -268,8 +254,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // stateColumn
             // 
-            dataGridViewCellStyle4.NullValue = "";
-            this.stateColumn.DefaultCellStyle = dataGridViewCellStyle4;
             this.stateColumn.Frozen = true;
             this.stateColumn.HeaderText = "State/Values";
             this.stateColumn.Name = "stateColumn";
@@ -290,8 +274,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // me1me2Column
             // 
-            dataGridViewCellStyle5.NullValue = "";
-            this.me1me2Column.DefaultCellStyle = dataGridViewCellStyle5;
             this.me1me2Column.Frozen = true;
             this.me1me2Column.HeaderText = "ME1->ME2 ID";
             this.me1me2Column.Name = "me1me2Column";
@@ -300,8 +282,6 @@ namespace ME3Explorer.PlotVarDB
             // 
             // me2me3Column
             // 
-            dataGridViewCellStyle6.NullValue = "";
-            this.me2me3Column.DefaultCellStyle = dataGridViewCellStyle6;
             this.me2me3Column.Frozen = true;
             this.me2me3Column.HeaderText = "ME2->ME3 ID";
             this.me2me3Column.Name = "me2me3Column";
@@ -311,8 +291,6 @@ namespace ME3Explorer.PlotVarDB
             // notesColumn
             // 
             this.notesColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle7.NullValue = "";
-            this.notesColumn.DefaultCellStyle = dataGridViewCellStyle7;
             this.notesColumn.HeaderText = "Notes";
             this.notesColumn.Name = "notesColumn";
             this.notesColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Be.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-//using KFreonLib.Misc;
+//using ME3LibWV;
 using UDKExplorer.UDK;
 using UDKExplorer.UDK.Classes;
 
@@ -25,7 +25,7 @@ namespace UDKExplorer
         public const int EXPORTS_VIEW = 2;
         public const int TREE_VIEW = 3;
 
-        public KFreonLib.Misc.PropGrid pg;
+        public ME3LibWV.PropGrid pg;
         private string currentFile;
         private bool haveCloned;
 
@@ -264,14 +264,14 @@ namespace UDKExplorer
             {
                 for (int i = 0; i < udk.Names.Count; i++)
                 {
-                    listBox1.Items.Add(i.ToString() + " : " + udk.getName(i));
+                    listBox1.Items.Add(i + " : " + udk.getName(i));
                 }
             }
             if (CurrentView == IMPORTS_VIEW)
             {
                 for (int i = 0; i < udk.Imports.Count; i++)
                 {
-                    string importStr = i.ToString() + " (0x" + (udk.ImportOffset + (i * UDKFile.ImportEntry.
+                    string importStr = i + " (0x" + (udk.ImportOffset + (i * UDKFile.ImportEntry.
                         byteSize)).ToString("X4") + "): (" + udk.Imports[i].PackageFile + ") ";
                     if (udk.Imports[i].PackageFullName != "Class" && udk.Imports[i].PackageFullName != "Package")
                     {
@@ -323,7 +323,7 @@ namespace UDKExplorer
                             }
                         }
                     }
-                    exports.Add(i.ToString() + " : " + s);
+                    exports.Add(i + " : " + s);
                 }
                 listBox1.Items.AddRange(exports.ToArray());
             }
@@ -540,12 +540,12 @@ namespace UDKExplorer
         public void PreviewProps(int n)
         {
             List<PropertyReader.Property> p = PropertyReader.getPropList(udk, udk.Exports[n]);
-            pg = new KFreonLib.Misc.PropGrid();
+            pg = new ME3LibWV.PropGrid();
             propGrid.SelectedObject = pg;
-            pg.Add(new KFreonLib.Misc.CustomProperty("Name", "_Meta", udk.Exports[n].ObjectName, typeof(string), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Class", "_Meta", udk.Exports[n].ClassName, typeof(string), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Data Offset", "_Meta", udk.Exports[n].DataOffset, typeof(int), true, true));
-            pg.Add(new KFreonLib.Misc.CustomProperty("Data Size", "_Meta", udk.Exports[n].DataSize, typeof(int), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Name", "_Meta", udk.Exports[n].ObjectName, typeof(string), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Class", "_Meta", udk.Exports[n].ClassName, typeof(string), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Data Offset", "_Meta", udk.Exports[n].DataOffset, typeof(int), true, true));
+            pg.Add(new ME3LibWV.CustomProperty("Data Size", "_Meta", udk.Exports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
                 pg.Add(PropertyReader.PropertyToGrid(p[l], udk));            
             propGrid.Refresh();
@@ -782,7 +782,7 @@ namespace UDKExplorer
                         listBox1.SelectedIndex = -1;
                         listBox1.SelectedIndex = t;
                     }
-                    else if (e.ChangedItem.Value.GetType() == typeof(int))
+                    else if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         if (e.ChangedItem.Label == "nameindex")
@@ -811,7 +811,7 @@ namespace UDKExplorer
                     break;
                 case PropertyReader.Type.ByteProperty:
                 case PropertyReader.Type.NameProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -823,7 +823,7 @@ namespace UDKExplorer
                     }
                     break;
                 case PropertyReader.Type.ObjectProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
+                    if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
                         buff2 = BitConverter.GetBytes(val);
@@ -1388,7 +1388,7 @@ namespace UDKExplorer
                     MemoryStream m = new MemoryStream();
                     m.Write(buff, 0, start);
                     byte[] import = File.ReadAllBytes(d.FileName);
-                    m.Write(BitConverter.GetBytes((int)import.Length), 0, 4);
+                    m.Write(BitConverter.GetBytes(import.Length), 0, 4);
                     m.Write(import, 0, import.Length);
                     udk.Exports[n].Data = m.ToArray();
                     udk.save();

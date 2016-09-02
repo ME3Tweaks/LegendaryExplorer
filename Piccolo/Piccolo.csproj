@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -41,50 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PiccoloX\Activities\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Activities\PPathActivity.cs" />
-    <Compile Include="PiccoloX\Activities\PPositionPathActivity.cs" />
     <Compile Include="Piccolo\GraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PiccoloX\Components\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Components\PCacheCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Components\PDefaultScrollDirector.cs" />
-    <Compile Include="PiccoloX\Components\PScrollableControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Components\PScrollDirector.cs" />
-    <Compile Include="PiccoloX\Events\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Events\PControlEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PNavigationEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PNotification.cs" />
-    <Compile Include="PiccoloX\Events\PNotificationCenter.cs" />
-    <Compile Include="PiccoloX\Events\PSelectionEventHandler.cs" />
-    <Compile Include="PiccoloX\Events\PZoomToEventHandler.cs" />
-    <Compile Include="PiccoloX\Handles\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Handles\PBoundsHandle.cs" />
-    <Compile Include="PiccoloX\Handles\PHandle.cs" />
-    <Compile Include="PiccoloX\Handles\PStickyHandleManager.cs" />
-    <Compile Include="PiccoloX\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Nodes\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Nodes\P3DRectangle.cs" />
-    <Compile Include="PiccoloX\Nodes\PCacheCamera.cs" />
-    <Compile Include="PiccoloX\Nodes\PClip.cs" />
-    <Compile Include="PiccoloX\Nodes\PComposite.cs" />
-    <Compile Include="PiccoloX\Nodes\PControl.cs" />
-    <Compile Include="PiccoloX\Nodes\PLens.cs" />
-    <Compile Include="PiccoloX\Nodes\PNodeCache.cs" />
-    <Compile Include="PiccoloX\PForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PiccoloX\Util\NamespaceDoc.cs" />
-    <Compile Include="PiccoloX\Util\PBoundsLocator.cs" />
-    <Compile Include="PiccoloX\Util\PLocator.cs" />
-    <Compile Include="PiccoloX\Util\PNodeLocator.cs" />
-    <Compile Include="PiccoloX\Util\POcclusionDetection.cs" />
-    <Compile Include="PiccoloX\Util\PXUtil.cs" />
     <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
     <Compile Include="Piccolo\Activities\PActivity.cs" />
     <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
@@ -130,18 +89,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PiccoloX\Components\PScrollableControl.resx">
-      <DependentUpon>PScrollableControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PiccoloX\PForm.resx">
-      <DependentUpon>PForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Piccolo\PCanvas.resx">
       <DependentUpon>PCanvas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PiccoloX\UMD.HCIL.PiccoloX.xml" />
     <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -333,7 +333,7 @@ namespace ME3Explorer
                 string size = UsefulThings.General.GetFileSizeAsString(len);
                 names[i] = (job.Name + "  --> Size: " + size);
 
-                DebugOutput.PrintLn(String.Format("Job: {0}  size:  {1}", job.Name, job.Length));
+                DebugOutput.PrintLn(string.Format("Job: {0}  size:  {1}", job.Name, job.Length));
                 DebugOutput.PrintLn("Getting further job info...");
 
                 var result = job.GetJobDetails(autoupdate == true, out versionConflict, version);
@@ -838,14 +838,12 @@ namespace ME3Explorer
         private List<string> InstallJob(ModJob job)
         {
             List<string> results = new List<string>();
-
-            ScriptCompiler sc = new ScriptCompiler();
+            
             KFreonLib.Scripting.ModMaker.ModData = job.data;
-            sc.rtb1.Text = job.Script;
 
             try
             {
-                results.Add(sc.Compile());
+                results.Add(ScriptCompiler.CompileAndRun(job.Script));
             }
             catch (Exception e)
             {
@@ -1427,7 +1425,7 @@ namespace ME3Explorer
             string searchElement = null;
 
             // KFreon: Only look if search is provided
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 searchElement = searchString.Substring(2).ToUpperInvariant();
                 Predicate<ModJob> Searcher = j =>
@@ -1552,7 +1550,7 @@ namespace ME3Explorer
             int jobCount = 0;
             for (int i = 0; i < basePCC.ExportCount; i++)
             {
-                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding exports just yet.
+                if (modifiedPCC.Exports.Count == i)  // KFreon: Not adding Exports just yet.
                     break;
 
 

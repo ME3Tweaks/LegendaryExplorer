@@ -40,18 +40,15 @@ namespace KFreonLib.MEDirectories
                     _gamePath = KFreonLib.Misc.Methods.SelectGameLoc(1);*/
                 return _gamePath;
             }
-            private set { _gamePath = value; }
-        }
-        public static string GamePath(string path = null)
-        {
-            if (path != null)
+            set
             {
-                if (path.Contains("BioGame"))
-                    path = path.Substring(0, path.LastIndexOf("BioGame"));
-                _gamePath = path;
+                if (value != null)
+                {
+                    if (value.Contains("BioGame"))
+                        value = value.Substring(0, value.LastIndexOf("BioGame"));
+                }
+                _gamePath = value;
             }
-
-            return _gamePath;
         }
         public static string BioGamePath { get { return (gamePath != null) ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BioGame\") : null; } }
         public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath, gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? @"CookedPC\" : @"BioGame\CookedPC\") : null; } }
@@ -72,31 +69,38 @@ namespace KFreonLib.MEDirectories
 
         static ME1Directory()
         {
-            string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-            string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-            string subkey = @"BioWare\Mass Effect";
-            string keyName;
-
-            keyName = hkey32 + subkey;
-            string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
-            if (test != null)
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME1Directory))
             {
-                gamePath = test;
-                return;
+                gamePath = Properties.Settings.Default.ME1Directory;
             }
+            else
+	        {
+                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
+                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                string subkey = @"BioWare\Mass Effect";
+                string keyName;
 
-            /*if (gamePath != null)
-            {
-                gamePath = gamePath + "\\";
-                return;
-            }*/
+                keyName = hkey32 + subkey;
+                string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                if (test != null)
+                {
+                    gamePath = test;
+                    return;
+                }
 
-            keyName = hkey64 + subkey;
-            gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
-            if (gamePath != null)
-            {
-                gamePath = gamePath + "\\";
-                return;
+                /*if (gamePath != null)
+                {
+                    gamePath = gamePath + "\\";
+                    return;
+                }*/
+
+                keyName = hkey64 + subkey;
+                gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                if (gamePath != null)
+                {
+                    gamePath = gamePath + "\\";
+                    return;
+                } 
             }
         }
     }

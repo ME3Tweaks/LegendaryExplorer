@@ -282,7 +282,7 @@ namespace ME3Explorer
             string s = "";
             for (int i = 0; i < tokenlist.Count; i++)
             {
-                s += i.ToString() + " Type:" + tokenlist[i].type.ToString() + " Value:" + tokenlist[i].Value + "\n";
+                s += i + " Type:" + tokenlist[i].type + " Value:" + tokenlist[i].Value + "\n";
                 if (i >= 7 && (tokenlist[i].Value == "true" || tokenlist[i].Value == "false"))
                 {
                     if (tokenlist[i - 1].Value != "bool")
@@ -509,7 +509,7 @@ namespace ME3Explorer
                     {
                         TreeNode tmp = new TreeNode("expr");
                         node.Nodes.Add(tmp);
-                        return ReadExpression(pos, tmp); ;
+                        return ReadExpression(pos, tmp);
                     }
                     break;
                 default:
@@ -944,7 +944,7 @@ namespace ME3Explorer
             rtb1.Text = code;
             for (int i = 0; i < code.Length; i++)
             {
-                switch ((char)code[i])
+                switch (code[i])
                 {
                     case '(':
                         crbo++;
@@ -1070,11 +1070,6 @@ namespace ME3Explorer
         {
             if (Code.Length == 0) return;
             cond.ReplaceData(Code, currnr);
-        }
-
-        private void CondEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
         }
 
         private void compileAndReplaceToolStripMenuItem_Click(object sender, EventArgs e)

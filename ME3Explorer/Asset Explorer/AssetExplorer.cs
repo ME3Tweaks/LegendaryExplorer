@@ -13,6 +13,7 @@ using AmaroK86.ImageFormat;
 using KFreonLib.Textures;
 using KFreonLib.MEDirectories;
 using KFreonLib.PCCObjects;
+using ME3Explorer.Packages;
 
 
 namespace ME3Explorer
@@ -24,7 +25,6 @@ namespace ME3Explorer
         public string pathBIOGame;
         public string currentPCC;
         ME3PCCObject pcc = null;
-        AmaroK86.MassEffect3.DLCBase currentDLC = null;
         ME3SaltTexture2D tex2D;
         WwiseStream w;
         public Clipboard clip;
@@ -33,13 +33,13 @@ namespace ME3Explorer
         public class ClipboardDependency
         {
             public string Name;
-            public PCCObject.ImportEntry classimp;
+            public Packages.ME3ImportEntry classimp;
             public ClipboardDependency child;
         }
 
         public struct Clipboard
         {
-            public PCCObject.ExportEntry entry;
+            public Packages.ME3ExportEntry entry;
             public ClipboardDependency dep; //for class
             public string Name;
             public bool isFilled;
@@ -144,7 +144,7 @@ namespace ME3Explorer
             TreeNode root = TV1.Nodes.Add(pcc.pccFileName, pcc.pccFileName);
             root.ImageIndex = 1;
 
-            foreach (ME3ExportEntry exportEntry in pcc.Exports)
+            foreach (KFreonLib.PCCObjects.ME3ExportEntry exportEntry in pcc.Exports)
             {
                 string[] pathChunks = (exportEntry.PackageFullName).Split('.');
 
@@ -210,7 +210,7 @@ namespace ME3Explorer
         public void Println(int i)
         {
             string sout = rtb1.Text;
-            sout += i.ToString() + "\n";
+            sout += i + "\n";
             rtb1.Text = sout;
         }
 
@@ -337,8 +337,8 @@ namespace ME3Explorer
             //for (int i = 0; i < pcc.ExportCount; i++)
                 if (pcc.Exports[l].ObjectName == name)
                 {
-                    string s = "SIZE: " + pcc.Exports[l].DataSize.ToString();
-                    s += " bytes  OFFSET: " + pcc.Exports[l].DataOffset.ToString();
+                    string s = "SIZE: " + pcc.Exports[l].DataSize;
+                    s += " bytes  OFFSET: " + pcc.Exports[l].DataOffset;
                     s += "  CLASS: " + pcc.Exports[l].ClassName;
                     s += "  NAME: " + pcc.Exports[l].ObjectName;
                     s += "  INDEX: " + l;
@@ -435,8 +435,12 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(new PCCObject(pcc.pccFileName), index);
-                w.ExtractToFile(pathCooked,pcc.Exports[index].ObjectName);
+
+                using (ME3Package package = MEPackageHandler.OpenME3Package(pcc.pccFileName))
+                {
+                    WwiseStream wwiseStream = new WwiseStream(package, index);
+                    wwiseStream.ExtractToFile(pathCooked, pcc.Exports[index].ObjectName); 
+                }
             }
         }
 
@@ -448,8 +452,11 @@ namespace ME3Explorer
             int index = Convert.ToInt32(item.Name);
             if (pcc.Exports[index].ClassName == "WwiseStream")
             {
-                w = new WwiseStream(new PCCObject(pcc.pccFileName), index);
-                w.Play(pathCooked);
+                using (ME3Package package = MEPackageHandler.OpenME3Package(pcc.pccFileName))
+                {
+                    w = new WwiseStream(package, index);
+                    w.Play(pathCooked);
+                }
             }
         }
 
@@ -530,38 +537,6 @@ namespace ME3Explorer
             listView1.Visible = true;
         }
 
-        public void ExecuteCommandSync(object command)
-        {
-            try
-            {
-                // create the ProcessStartInfo using "cmd" as the program to be run,
-                // and "/c " as the parameters.
-                // Incidentally, /c tells cmd that we want it to execute the command that follows,
-                // and then exit.
-                System.Diagnostics.ProcessStartInfo procStartInfo =
-                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
-
-                // The following commands are needed to redirect the standard output.
-                // This means that it will be redirected to the Process.StandardOutput StreamReader.
-                procStartInfo.RedirectStandardOutput = true;
-                procStartInfo.UseShellExecute = false;
-                // Do not create the black window.
-                procStartInfo.CreateNoWindow = true;
-                // Now we create a process, assign its ProcessStartInfo and start it
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = procStartInfo;
-                proc.Start();
-                // Get the output into a string
-                string result = proc.StandardOutput.ReadToEnd();
-                // Display the command output.
-                Console.WriteLine(result);
-            }
-            catch
-            {
-                // Log the exception
-            }
-        }
-
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             ListView.SelectedIndexCollection n = listView1.SelectedIndices;
@@ -599,12 +574,7 @@ namespace ME3Explorer
             p.WindowState = FormWindowState.Maximized;
             p.Show();
             p.LoadFile(currentPCC);
-            p.listBox1.SelectedIndex = l;
-        }
-
-        private void AssetExplorer_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
+            p.goToNumber(l);
         }
 
         private void removeTopImageToolStripMenuItem_Click(object sender, EventArgs e)

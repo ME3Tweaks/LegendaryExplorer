@@ -800,7 +800,7 @@
         private System.Windows.Forms.Button HideShowButton;
         private System.Windows.Forms.Button ExpandScriptButton;
         private System.Windows.Forms.RichTextBox ScriptPane;
-        private System.Windows.Forms.ToolStrip ContextMenuStrip;
+        private new System.Windows.Forms.ToolStrip ContextMenuStrip;
         private System.Windows.Forms.ToolStrip MainContextStrip;
         private System.Windows.Forms.ToolStripButton RunSelectedButton;
         private System.Windows.Forms.ToolStripButton MoveUpButton;
@@ -830,7 +830,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SplitContainer ScriptPaneSplitter;
         private System.Windows.Forms.SplitContainer MiddleSplitter;
-        private System.Windows.Forms.ToolStripButton HelpButton;
+        private new System.Windows.Forms.ToolStripButton HelpButton;
         private System.Windows.Forms.ToolTip PrimaryToolTip;
         private System.Windows.Forms.ComboBox GameVersionBox;
         private System.Windows.Forms.ToolStripButton ExtractDataButton;

@@ -52,27 +52,26 @@
             this.menuStrip1.Size = new System.Drawing.Size(292, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openUDKPackageToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openUDKPackageToolStripMenuItem
             // 
             this.openUDKPackageToolStripMenuItem.Name = "openUDKPackageToolStripMenuItem";
-            this.openUDKPackageToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.openUDKPackageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.openUDKPackageToolStripMenuItem.Text = "Open UDK Package";
             this.openUDKPackageToolStripMenuItem.Click += new System.EventHandler(this.openUDKPackageToolStripMenuItem_Click);
             // 
             // importLODToolStripMenuItem
             // 
             this.importLODToolStripMenuItem.Name = "importLODToolStripMenuItem";
-            this.importLODToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.importLODToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.importLODToolStripMenuItem.Text = "Import LOD";
             this.importLODToolStripMenuItem.Click += new System.EventHandler(this.importLODToolStripMenuItem_Click);
             // 

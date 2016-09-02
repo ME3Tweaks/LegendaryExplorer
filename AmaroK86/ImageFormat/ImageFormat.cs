@@ -210,7 +210,7 @@ namespace AmaroK86.ImageFormat
                 if (h < 4)
                     h = 4;
             }
-            return (long)((float)(w * h) * BytesPerPixel);
+            return (long)(w * h * BytesPerPixel);
         }
 
         public static bool CprFormat(string format)

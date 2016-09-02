@@ -77,32 +77,35 @@
             this.entriesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.repliesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.treeView2 = new System.Windows.Forms.TreeView();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.listBox2 = new System.Windows.Forms.ListBox();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.listBox3 = new System.Windows.Forms.ListBox();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.listBox4 = new System.Windows.Forms.ListBox();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.listBox5 = new System.Windows.Forms.ListBox();
+            this.startingListTab = new System.Windows.Forms.TabPage();
+            this.startingListBox = new System.Windows.Forms.ListBox();
+            this.entryListTab = new System.Windows.Forms.TabPage();
+            this.entryListTreeView = new System.Windows.Forms.TreeView();
+            this.replyListTab = new System.Windows.Forms.TabPage();
+            this.replyListTreeView = new System.Windows.Forms.TreeView();
+            this.speakerListTab = new System.Windows.Forms.TabPage();
+            this.speakerListBox = new System.Windows.Forms.ListBox();
+            this.stageDirectionsTab = new System.Windows.Forms.TabPage();
+            this.stageDirectionsListBox = new System.Windows.Forms.ListBox();
+            this.maleFaceSetsTab = new System.Windows.Forms.TabPage();
+            this.maleFaceSetsListBox = new System.Windows.Forms.ListBox();
+            this.femaleFaceSetsTab = new System.Windows.Forms.TabPage();
+            this.femaleFaceSetsListBox = new System.Windows.Forms.ListBox();
+            this.scriptListTab = new System.Windows.Forms.TabPage();
+            this.scriptListBox = new System.Windows.Forms.ListBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.bioConversationComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.loadButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            this.tabPage6.SuspendLayout();
-            this.tabPage7.SuspendLayout();
+            this.startingListTab.SuspendLayout();
+            this.entryListTab.SuspendLayout();
+            this.replyListTab.SuspendLayout();
+            this.speakerListTab.SuspendLayout();
+            this.stageDirectionsTab.SuspendLayout();
+            this.maleFaceSetsTab.SuspendLayout();
+            this.femaleFaceSetsTab.SuspendLayout();
+            this.scriptListTab.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,7 +119,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(610, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -462,208 +464,231 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPage5);
-            this.tabControl1.Controls.Add(this.tabPage6);
-            this.tabControl1.Controls.Add(this.tabPage7);
+            this.tabControl1.Controls.Add(this.startingListTab);
+            this.tabControl1.Controls.Add(this.entryListTab);
+            this.tabControl1.Controls.Add(this.replyListTab);
+            this.tabControl1.Controls.Add(this.speakerListTab);
+            this.tabControl1.Controls.Add(this.stageDirectionsTab);
+            this.tabControl1.Controls.Add(this.maleFaceSetsTab);
+            this.tabControl1.Controls.Add(this.femaleFaceSetsTab);
+            this.tabControl1.Controls.Add(this.scriptListTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 25);
+            this.tabControl1.Location = new System.Drawing.Point(0, 49);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(610, 413);
+            this.tabControl1.Size = new System.Drawing.Size(610, 389);
             this.tabControl1.TabIndex = 1;
             // 
-            // tabPage1
+            // startingListTab
             // 
-            this.tabPage1.Controls.Add(this.listBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(602, 387);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Starting List";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.startingListTab.Controls.Add(this.startingListBox);
+            this.startingListTab.Location = new System.Drawing.Point(4, 22);
+            this.startingListTab.Name = "startingListTab";
+            this.startingListTab.Padding = new System.Windows.Forms.Padding(3);
+            this.startingListTab.Size = new System.Drawing.Size(602, 363);
+            this.startingListTab.TabIndex = 0;
+            this.startingListTab.Text = "Starting List";
+            this.startingListTab.UseVisualStyleBackColor = true;
             // 
-            // listBox1
+            // startingListBox
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.IntegralHeight = false;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(3, 3);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(596, 381);
-            this.listBox1.TabIndex = 0;
-            this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
+            this.startingListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.startingListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startingListBox.FormattingEnabled = true;
+            this.startingListBox.IntegralHeight = false;
+            this.startingListBox.ItemHeight = 16;
+            this.startingListBox.Location = new System.Drawing.Point(3, 3);
+            this.startingListBox.Name = "startingListBox";
+            this.startingListBox.Size = new System.Drawing.Size(596, 357);
+            this.startingListBox.TabIndex = 0;
+            this.startingListBox.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
             // 
-            // tabPage2
+            // entryListTab
             // 
-            this.tabPage2.Controls.Add(this.treeView1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(602, 387);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Entry List";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.entryListTab.Controls.Add(this.entryListTreeView);
+            this.entryListTab.Location = new System.Drawing.Point(4, 22);
+            this.entryListTab.Name = "entryListTab";
+            this.entryListTab.Padding = new System.Windows.Forms.Padding(3);
+            this.entryListTab.Size = new System.Drawing.Size(602, 363);
+            this.entryListTab.TabIndex = 1;
+            this.entryListTab.Text = "Entry List";
+            this.entryListTab.UseVisualStyleBackColor = true;
             // 
-            // treeView1
+            // entryListTreeView
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeView1.Location = new System.Drawing.Point(3, 3);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(596, 381);
-            this.treeView1.TabIndex = 0;
-            this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
+            this.entryListTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.entryListTreeView.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.entryListTreeView.Location = new System.Drawing.Point(3, 3);
+            this.entryListTreeView.Name = "entryListTreeView";
+            this.entryListTreeView.Size = new System.Drawing.Size(596, 357);
+            this.entryListTreeView.TabIndex = 0;
+            this.entryListTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             // 
-            // tabPage3
+            // replyListTab
             // 
-            this.tabPage3.Controls.Add(this.treeView2);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(602, 387);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Reply List";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.replyListTab.Controls.Add(this.replyListTreeView);
+            this.replyListTab.Location = new System.Drawing.Point(4, 22);
+            this.replyListTab.Name = "replyListTab";
+            this.replyListTab.Padding = new System.Windows.Forms.Padding(3);
+            this.replyListTab.Size = new System.Drawing.Size(602, 363);
+            this.replyListTab.TabIndex = 2;
+            this.replyListTab.Text = "Reply List";
+            this.replyListTab.UseVisualStyleBackColor = true;
             // 
-            // treeView2
+            // replyListTreeView
             // 
-            this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeView2.HideSelection = false;
-            this.treeView2.Location = new System.Drawing.Point(3, 3);
-            this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(596, 381);
-            this.treeView2.TabIndex = 0;
-            this.treeView2.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView2_NodeMouseDoubleClick);
+            this.replyListTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.replyListTreeView.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.replyListTreeView.HideSelection = false;
+            this.replyListTreeView.Location = new System.Drawing.Point(3, 3);
+            this.replyListTreeView.Name = "replyListTreeView";
+            this.replyListTreeView.Size = new System.Drawing.Size(596, 357);
+            this.replyListTreeView.TabIndex = 0;
+            this.replyListTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView2_NodeMouseDoubleClick);
             // 
-            // tabPage4
+            // speakerListTab
             // 
-            this.tabPage4.Controls.Add(this.listBox2);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(602, 387);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Speaker List";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.speakerListTab.Controls.Add(this.speakerListBox);
+            this.speakerListTab.Location = new System.Drawing.Point(4, 22);
+            this.speakerListTab.Name = "speakerListTab";
+            this.speakerListTab.Padding = new System.Windows.Forms.Padding(3);
+            this.speakerListTab.Size = new System.Drawing.Size(602, 363);
+            this.speakerListTab.TabIndex = 3;
+            this.speakerListTab.Text = "Speaker List";
+            this.speakerListTab.UseVisualStyleBackColor = true;
             // 
-            // listBox2
+            // speakerListBox
             // 
-            this.listBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.IntegralHeight = false;
-            this.listBox2.ItemHeight = 16;
-            this.listBox2.Location = new System.Drawing.Point(3, 3);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(596, 381);
-            this.listBox2.TabIndex = 0;
-            this.listBox2.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
+            this.speakerListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.speakerListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.speakerListBox.FormattingEnabled = true;
+            this.speakerListBox.IntegralHeight = false;
+            this.speakerListBox.ItemHeight = 16;
+            this.speakerListBox.Location = new System.Drawing.Point(3, 3);
+            this.speakerListBox.Name = "speakerListBox";
+            this.speakerListBox.Size = new System.Drawing.Size(596, 357);
+            this.speakerListBox.TabIndex = 0;
+            this.speakerListBox.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
             // 
-            // tabPage5
+            // stageDirectionsTab
             // 
-            this.tabPage5.Controls.Add(this.listBox3);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(602, 387);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Stage Directions";
-            this.tabPage5.UseVisualStyleBackColor = true;
+            this.stageDirectionsTab.Controls.Add(this.stageDirectionsListBox);
+            this.stageDirectionsTab.Location = new System.Drawing.Point(4, 22);
+            this.stageDirectionsTab.Name = "stageDirectionsTab";
+            this.stageDirectionsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.stageDirectionsTab.Size = new System.Drawing.Size(602, 363);
+            this.stageDirectionsTab.TabIndex = 4;
+            this.stageDirectionsTab.Text = "Stage Directions";
+            this.stageDirectionsTab.UseVisualStyleBackColor = true;
             // 
-            // listBox3
+            // stageDirectionsListBox
             // 
-            this.listBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox3.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox3.FormattingEnabled = true;
-            this.listBox3.IntegralHeight = false;
-            this.listBox3.ItemHeight = 16;
-            this.listBox3.Location = new System.Drawing.Point(3, 3);
-            this.listBox3.Name = "listBox3";
-            this.listBox3.Size = new System.Drawing.Size(596, 381);
-            this.listBox3.TabIndex = 0;
-            this.listBox3.DoubleClick += new System.EventHandler(this.listBox3_DoubleClick);
+            this.stageDirectionsListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stageDirectionsListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stageDirectionsListBox.FormattingEnabled = true;
+            this.stageDirectionsListBox.IntegralHeight = false;
+            this.stageDirectionsListBox.ItemHeight = 16;
+            this.stageDirectionsListBox.Location = new System.Drawing.Point(3, 3);
+            this.stageDirectionsListBox.Name = "stageDirectionsListBox";
+            this.stageDirectionsListBox.Size = new System.Drawing.Size(596, 357);
+            this.stageDirectionsListBox.TabIndex = 0;
+            this.stageDirectionsListBox.DoubleClick += new System.EventHandler(this.listBox3_DoubleClick);
             // 
-            // tabPage6
+            // maleFaceSetsTab
             // 
-            this.tabPage6.Controls.Add(this.listBox4);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(602, 387);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Male Face Sets";
-            this.tabPage6.UseVisualStyleBackColor = true;
+            this.maleFaceSetsTab.Controls.Add(this.maleFaceSetsListBox);
+            this.maleFaceSetsTab.Location = new System.Drawing.Point(4, 22);
+            this.maleFaceSetsTab.Name = "maleFaceSetsTab";
+            this.maleFaceSetsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.maleFaceSetsTab.Size = new System.Drawing.Size(602, 363);
+            this.maleFaceSetsTab.TabIndex = 5;
+            this.maleFaceSetsTab.Text = "Male Face Sets";
+            this.maleFaceSetsTab.UseVisualStyleBackColor = true;
             // 
-            // listBox4
+            // maleFaceSetsListBox
             // 
-            this.listBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox4.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox4.FormattingEnabled = true;
-            this.listBox4.IntegralHeight = false;
-            this.listBox4.ItemHeight = 16;
-            this.listBox4.Location = new System.Drawing.Point(3, 3);
-            this.listBox4.Name = "listBox4";
-            this.listBox4.Size = new System.Drawing.Size(596, 381);
-            this.listBox4.TabIndex = 0;
-            this.listBox4.DoubleClick += new System.EventHandler(this.listBox4_DoubleClick);
+            this.maleFaceSetsListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.maleFaceSetsListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.maleFaceSetsListBox.FormattingEnabled = true;
+            this.maleFaceSetsListBox.IntegralHeight = false;
+            this.maleFaceSetsListBox.ItemHeight = 16;
+            this.maleFaceSetsListBox.Location = new System.Drawing.Point(3, 3);
+            this.maleFaceSetsListBox.Name = "maleFaceSetsListBox";
+            this.maleFaceSetsListBox.Size = new System.Drawing.Size(596, 357);
+            this.maleFaceSetsListBox.TabIndex = 0;
+            this.maleFaceSetsListBox.DoubleClick += new System.EventHandler(this.listBox4_DoubleClick);
             // 
-            // tabPage7
+            // femaleFaceSetsTab
             // 
-            this.tabPage7.Controls.Add(this.listBox5);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(602, 387);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Female Face Sets";
-            this.tabPage7.UseVisualStyleBackColor = true;
+            this.femaleFaceSetsTab.Controls.Add(this.femaleFaceSetsListBox);
+            this.femaleFaceSetsTab.Location = new System.Drawing.Point(4, 22);
+            this.femaleFaceSetsTab.Name = "femaleFaceSetsTab";
+            this.femaleFaceSetsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.femaleFaceSetsTab.Size = new System.Drawing.Size(602, 363);
+            this.femaleFaceSetsTab.TabIndex = 6;
+            this.femaleFaceSetsTab.Text = "Female Face Sets";
+            this.femaleFaceSetsTab.UseVisualStyleBackColor = true;
             // 
-            // listBox5
+            // femaleFaceSetsListBox
             // 
-            this.listBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox5.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox5.FormattingEnabled = true;
-            this.listBox5.IntegralHeight = false;
-            this.listBox5.ItemHeight = 16;
-            this.listBox5.Location = new System.Drawing.Point(3, 3);
-            this.listBox5.Name = "listBox5";
-            this.listBox5.Size = new System.Drawing.Size(596, 381);
-            this.listBox5.TabIndex = 0;
-            this.listBox5.DoubleClick += new System.EventHandler(this.listBox5_DoubleClick);
+            this.femaleFaceSetsListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.femaleFaceSetsListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.femaleFaceSetsListBox.FormattingEnabled = true;
+            this.femaleFaceSetsListBox.IntegralHeight = false;
+            this.femaleFaceSetsListBox.ItemHeight = 16;
+            this.femaleFaceSetsListBox.Location = new System.Drawing.Point(3, 3);
+            this.femaleFaceSetsListBox.Name = "femaleFaceSetsListBox";
+            this.femaleFaceSetsListBox.Size = new System.Drawing.Size(596, 357);
+            this.femaleFaceSetsListBox.TabIndex = 0;
+            this.femaleFaceSetsListBox.DoubleClick += new System.EventHandler(this.listBox5_DoubleClick);
+            // 
+            // scriptListTab
+            // 
+            this.scriptListTab.Controls.Add(this.scriptListBox);
+            this.scriptListTab.Location = new System.Drawing.Point(4, 22);
+            this.scriptListTab.Name = "scriptListTab";
+            this.scriptListTab.Size = new System.Drawing.Size(602, 363);
+            this.scriptListTab.TabIndex = 7;
+            this.scriptListTab.Text = "Script List";
+            this.scriptListTab.UseVisualStyleBackColor = true;
+            // 
+            // scriptListBox
+            // 
+            this.scriptListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scriptListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scriptListBox.FormattingEnabled = true;
+            this.scriptListBox.IntegralHeight = false;
+            this.scriptListBox.ItemHeight = 16;
+            this.scriptListBox.Location = new System.Drawing.Point(0, 0);
+            this.scriptListBox.Name = "scriptListBox";
+            this.scriptListBox.Size = new System.Drawing.Size(602, 363);
+            this.scriptListBox.TabIndex = 1;
             // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripComboBox1,
-            this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.bioConversationComboBox,
+            this.loadButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(610, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripComboBox1
+            // bioConversationComboBox
             // 
-            this.toolStripComboBox1.Name = "toolStripComboBox1";
-            this.toolStripComboBox1.Size = new System.Drawing.Size(300, 25);
+            this.bioConversationComboBox.Name = "bioConversationComboBox";
+            this.bioConversationComboBox.Size = new System.Drawing.Size(300, 25);
             // 
-            // toolStripButton1
+            // loadButton
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(37, 22);
-            this.toolStripButton1.Text = "Load";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.loadButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.loadButton.Image = ((System.Drawing.Image)(resources.GetObject("loadButton.Image")));
+            this.loadButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(37, 22);
+            this.loadButton.Text = "Load";
+            this.loadButton.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // DialogEditor
             // 
@@ -677,19 +702,20 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DialogEditor";
-            this.Text = "Dialog Editor";
+            this.Text = "Dialog Editor (ME3)";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DialogEditor_DragEnter);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
-            this.tabPage6.ResumeLayout(false);
-            this.tabPage7.ResumeLayout(false);
+            this.startingListTab.ResumeLayout(false);
+            this.entryListTab.ResumeLayout(false);
+            this.replyListTab.ResumeLayout(false);
+            this.speakerListTab.ResumeLayout(false);
+            this.stageDirectionsTab.ResumeLayout(false);
+            this.maleFaceSetsTab.ResumeLayout(false);
+            this.femaleFaceSetsTab.ResumeLayout(false);
+            this.scriptListTab.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -701,25 +727,25 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabPage startingListTab;
+        private System.Windows.Forms.TabPage entryListTab;
+        private System.Windows.Forms.ListBox startingListBox;
+        private System.Windows.Forms.TabPage replyListTab;
+        private System.Windows.Forms.TabPage speakerListTab;
+        private System.Windows.Forms.TabPage stageDirectionsTab;
+        private System.Windows.Forms.TabPage maleFaceSetsTab;
+        private System.Windows.Forms.TabPage femaleFaceSetsTab;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
+        private System.Windows.Forms.ToolStripComboBox bioConversationComboBox;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openPCCToolStripMenuItem;
-        private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.TreeView treeView2;
-        private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.ListBox listBox3;
-        private System.Windows.Forms.ListBox listBox4;
-        private System.Windows.Forms.ListBox listBox5;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.TreeView entryListTreeView;
+        private System.Windows.Forms.TreeView replyListTreeView;
+        private System.Windows.Forms.ListBox speakerListBox;
+        private System.Windows.Forms.ListBox stageDirectionsListBox;
+        private System.Windows.Forms.ListBox maleFaceSetsListBox;
+        private System.Windows.Forms.ListBox femaleFaceSetsListBox;
+        private System.Windows.Forms.ToolStripButton loadButton;
         private System.Windows.Forms.ToolStripMenuItem saveChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
@@ -764,5 +790,7 @@
         private System.Windows.Forms.ToolStripMenuItem collapseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem entriesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem repliesToolStripMenuItem1;
+        private System.Windows.Forms.TabPage scriptListTab;
+        private System.Windows.Forms.ListBox scriptListBox;
     }
 }

@@ -85,7 +85,7 @@ namespace KFreonLib.Helpers
             CompressedChunkBlock[] newChunks = new CompressedChunkBlock[noChunks];
             for (int i = 0; i < noChunks; i++)
             {
-                newChunks[i].rawData = LZO1X.Compress(chunks[i].rawData);
+                MiniLZO.Compress(chunks[i].rawData, out newChunks[i].rawData);
                 if (newChunks[i].rawData.Length == 0)
                     throw new Exception("LZO compression failed!");
                 newChunks[i].cprSize = newChunks[i].rawData.Length;
@@ -95,7 +95,7 @@ namespace KFreonLib.Helpers
             byte[] result;
             using (MemoryStream stream = new MemoryStream())
             {
-                byte[] magic = new byte[] { 0xC1, 0x83, 0x2A, 0x9E, 0x00, 0x00, 0x02, 0x00 };
+                byte[] magic = { 0xC1, 0x83, 0x2A, 0x9E, 0x00, 0x00, 0x02, 0x00 };
                 pos = Gibbed.IO.NumberHelpers.LittleEndian(pos);
                 BinaryWriter bin = new BinaryWriter(stream);
                 bin.Write(magic);
@@ -182,7 +182,7 @@ namespace KFreonLib.Helpers
                 byte[] tempResult = new byte[chunk.uncSize];
                 try
                 {
-                    LZO1X.Decompress(chunk.rawData, tempResult);
+                    MiniLZO.Decompress(chunk.rawData, tempResult);
                 }
                 catch
                 {
@@ -262,7 +262,7 @@ namespace KFreonLib.Helpers
 
                     try
                     {
-                        LZO1X.Decompress(datain, dataout);
+                        MiniLZO.Decompress(datain, dataout);
                     }
                     catch
                     {
@@ -318,7 +318,7 @@ namespace KFreonLib.Helpers
                 }
 
                 Buffer.BlockCopy(chunk.Uncompressed, pos, temp, 0, temp.Length);
-                result = LZO1X.Compress(temp);
+                MiniLZO.Compress(temp, out result);
                 if (result.Length == 0)
                     throw new Exception("LZO compression error!");
                 block.compressedsize = result.Length;

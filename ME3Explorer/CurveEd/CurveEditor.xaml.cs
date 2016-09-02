@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gibbed.IO;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer.CurveEd
@@ -20,21 +21,25 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveEditor.xaml
     /// </summary>
-    public partial class CurveEditor : Window
+    public partial class CurveEditor : WPFBase
     {
-        private PCCObject pcc;
-        private PCCObject.ExportEntry expEntry;
+        private IExportEntry expEntry;
 
         public List<InterpCurve> InterpCurveTracks;
 
-        public CurveEditor(PCCObject.ExportEntry exp)
+        public CurveEditor(IExportEntry exp)
         {
             InitializeComponent();
             expEntry = exp;
-            pcc = expEntry.pccRef;
+            LoadMEPackage(expEntry.FileRef.FileName);
+            Load();
+        }
+
+        private void Load()
+        {
             InterpCurveTracks = new List<InterpCurve>();
 
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, expEntry);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(expEntry);
             CurveType throwaway = CurveType.InterpCurveVector;
             foreach (var p in props)
             {
@@ -44,6 +49,15 @@ namespace ME3Explorer.CurveEd
                     {
                         InterpCurveTracks.Add(new InterpCurve(pcc, p));
                     }
+                }
+            }
+
+            Action saveChanges = () => Commit();
+            foreach (var interpCurve in InterpCurveTracks)
+            {
+                foreach (var curve in interpCurve.Curves)
+                {
+                    curve.SaveChanges = saveChanges;
                 }
             }
 
@@ -128,7 +142,7 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, expEntry);
+            List<PropertyReader.Property> props = PropertyReader.getPropList(expEntry);
             int diff = 0;
             foreach (var p in props)
             {
@@ -161,6 +175,17 @@ namespace ME3Explorer.CurveEd
             Commit();
             pcc.save();
             MessageBox.Show("Done");
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change == PackageChange.ExportData);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (updatedExports.Contains(expEntry.Index) && !this.IsForegroundWindow())
+            {
+                graph.Clear();
+                Load();
+            }
         }
     }
 }

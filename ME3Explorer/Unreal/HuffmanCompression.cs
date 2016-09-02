@@ -20,9 +20,9 @@ namespace ME3Explorer
         {
             public int StringID;
             public int position;
-            public String data;
+            public string data;
 
-            public TLKEntry(int StringID, int position, String data)
+            public TLKEntry(int StringID, int position, string data)
             {
                 this.StringID = StringID;
                 this.position = position;
@@ -63,9 +63,9 @@ namespace ME3Explorer
         /// Loads a file into memory and prepares for compressing it to TLK
         /// </summary>
         /// <param name="fileName"></param>
-        /// <param name="ff"></param>
         /// <param name="debugVersion"></param>
-        public void LoadInputData(string fileName, TalkFile.Fileformat ff, bool debugVersion)
+        /// 
+        public void LoadInputData(string fileName, bool debugVersion)
         {
             _inputData.Clear();
             LoadXmlInputData(fileName, debugVersion);
@@ -376,8 +376,8 @@ namespace ME3Explorer
 
             foreach (HuffmanNode node in indices.Values)
             {
-                output.Add((Int32)node.Left.ID);
-                output.Add((Int32)node.Right.ID);
+                output.Add(node.Left.ID);
+                output.Add(node.Right.ID);
             }
 
             return output;

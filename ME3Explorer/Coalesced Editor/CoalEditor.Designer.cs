@@ -68,7 +68,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(613, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -107,7 +106,7 @@
             this.toolStripButton1,
             this.toolStripTextBox1,
             this.toolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(613, 25);
             this.toolStrip1.TabIndex = 3;
@@ -141,7 +140,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -151,7 +150,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer1.Size = new System.Drawing.Size(613, 451);
+            this.splitContainer1.Size = new System.Drawing.Size(613, 427);
             this.splitContainer1.SplitterDistance = 204;
             this.splitContainer1.TabIndex = 4;
             // 
@@ -164,7 +163,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(204, 451);
+            this.listBox1.Size = new System.Drawing.Size(204, 427);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -177,7 +176,7 @@
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
             this.rtb1.ShortcutsEnabled = false;
-            this.rtb1.Size = new System.Drawing.Size(405, 451);
+            this.rtb1.Size = new System.Drawing.Size(405, 427);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;

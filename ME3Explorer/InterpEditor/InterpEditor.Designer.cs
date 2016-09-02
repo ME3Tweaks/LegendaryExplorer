@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.InterpEditor
+﻿namespace ME3Explorer.Matinee
 {
     partial class InterpEditor
     {
@@ -51,7 +51,7 @@
             this.treeView2 = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.timeline = new ME3Explorer.InterpEditor.Timeline();
+            this.timeline = new ME3Explorer.Matinee.Timeline();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -75,7 +75,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(812, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -115,7 +114,7 @@
             this.toolStripComboBox1,
             this.toolStripButton1,
             this.InterpTrackScan});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(812, 25);
             this.toolStrip1.TabIndex = 3;
@@ -153,7 +152,7 @@
             this.vScrollBar1.LargeChange = 100;
             this.vScrollBar1.Location = new System.Drawing.Point(0, 0);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 349);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 331);
             this.vScrollBar1.SmallChange = 10;
             this.vScrollBar1.TabIndex = 4;
             // 
@@ -163,7 +162,7 @@
             this.openInPackageEditorToolStripMenuItem,
             this.addKeyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 48);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -181,7 +180,7 @@
             // 
             this.hScrollBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.hScrollBar1.LargeChange = 100;
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 349);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 331);
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.Size = new System.Drawing.Size(812, 17);
             this.hScrollBar1.SmallChange = 10;
@@ -212,7 +211,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(565, 145);
+            this.treeView1.Size = new System.Drawing.Size(565, 139);
             this.treeView1.TabIndex = 7;
             this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             // 
@@ -221,7 +220,7 @@
             this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView2.Location = new System.Drawing.Point(0, 0);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(243, 145);
+            this.treeView2.Size = new System.Drawing.Size(243, 139);
             this.treeView2.TabIndex = 7;
             // 
             // splitContainer1
@@ -237,14 +236,14 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView2);
-            this.splitContainer1.Size = new System.Drawing.Size(812, 145);
+            this.splitContainer1.Size = new System.Drawing.Size(812, 139);
             this.splitContainer1.SplitterDistance = 565;
             this.splitContainer1.TabIndex = 8;
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer2.Location = new System.Drawing.Point(0, 49);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -257,8 +256,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer2.Size = new System.Drawing.Size(812, 515);
-            this.splitContainer2.SplitterDistance = 366;
+            this.splitContainer2.Size = new System.Drawing.Size(812, 491);
+            this.splitContainer2.SplitterDistance = 348;
             this.splitContainer2.TabIndex = 9;
             // 
             // timeline
@@ -270,7 +269,7 @@
             this.timeline.Location = new System.Drawing.Point(17, 0);
             this.timeline.Name = "timeline";
             this.timeline.RegionManagement = true;
-            this.timeline.Size = new System.Drawing.Size(795, 349);
+            this.timeline.Size = new System.Drawing.Size(795, 331);
             this.timeline.TabIndex = 2;
             this.timeline.Text = "timeline1";
             // 

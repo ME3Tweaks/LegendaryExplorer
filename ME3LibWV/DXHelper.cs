@@ -56,7 +56,7 @@ namespace ME3LibWV
                                 + "\n\n" + ex.ToString()
                                 + "\n\n" + presentParams.ToString();
                 if (device != null)
-                    s += "\n\n" + device.DeviceCaps.ToString();
+                    s += "\n\n" + device.DeviceCaps;
                 DebugLog.PrintLn(s);
                 error = true;
             }

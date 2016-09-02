@@ -55,7 +55,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(292, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -136,9 +135,9 @@
             this.rtb1.DetectUrls = false;
             this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtb1.Location = new System.Drawing.Point(0, 0);
+            this.rtb1.Location = new System.Drawing.Point(0, 24);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(292, 251);
+            this.rtb1.Size = new System.Drawing.Size(292, 227);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;

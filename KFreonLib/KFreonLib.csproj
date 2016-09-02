@@ -22,10 +22,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -70,55 +70,18 @@
     <Compile Include="GUI\VersionPickDialog.xaml.cs">
       <DependentUpon>VersionPickDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\KFreonMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Helpers\KFreonMessageBox.Designer.cs">
-      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
-    <Compile Include="Misc\Interpreter2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Misc\Interpreter2.Designer.cs">
-      <DependentUpon>Interpreter2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TalkFile.cs" />
     <Compile Include="Debugging\DebugWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Debugging\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\PathChanger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Helpers\PathChanger.Designer.cs">
-      <DependentUpon>PathChanger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Scripting\ScriptCompiler.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Scripting\ScriptCompiler.Designer.cs">
-      <DependentUpon>ScriptCompiler.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\SelectionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Helpers\SelectionForm.Designer.cs">
-      <DependentUpon>SelectionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Misc\TOCEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Misc\TOCEditor.Designer.cs">
-      <DependentUpon>TOCEditor.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Scripting\ScriptCompiler.cs" />
     <Compile Include="Helpers\MiniLZO.cs" />
     <Compile Include="Helpers\SaltLZOHelper.cs" />
-    <Compile Include="Textures\Targa.cs" />
     <Compile Include="Helpers\UnrealFlags.cs" />
     <Compile Include="Misc\Ini.cs" />
     <Compile Include="Scripting\IScript.cs" />
@@ -145,23 +108,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Misc\PropGrid.cs" />
-    <Compile Include="GUI\taskbar.cs" />
     <Compile Include="Textures\IImageInfo.cs" />
     <Compile Include="Textures\ITexture2D.cs" />
     <Compile Include="Textures\ME1Texture2D.cs" />
     <Compile Include="Textures\ME2Texture2D.cs" />
     <Compile Include="Textures\ME3SaltTexture2D.cs" />
-    <Compile Include="Textures\ME3Texture2D.cs" />
-    <Compile Include="Textures\SaltDDSPreview.cs" />
     <Compile Include="Textures\TexInfo.cs" />
     <Compile Include="Textures\Misc.cs" />
-    <Compile Include="TOCComparison.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOCComparison.Designer.cs">
-      <DependentUpon>TOCComparison.cs</DependentUpon>
-    </Compile>
     <Compile Include="TreeDB.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -193,24 +146,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Debugging\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Helpers\KFreonMessageBox.resx">
-      <DependentUpon>KFreonMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Helpers\PathChanger.resx">
-      <DependentUpon>PathChanger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Misc\Interpreter2.resx">
-      <DependentUpon>Interpreter2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Misc\TOCEditor.resx">
-      <DependentUpon>TOCEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Scripting\ScriptCompiler.resx">
-      <DependentUpon>ScriptCompiler.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TOCComparison.resx">
-      <DependentUpon>TOCComparison.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using KFreonLib.Textures;
 using UsefulThings;
+using AmaroK86.MassEffect3.ZlibBlock;
+using Gibbed.IO;
 
 namespace KFreonLib.PCCObjects
 {
@@ -114,6 +116,120 @@ namespace KFreonLib.PCCObjects
         public static bool ValidTexClass(string ClassName)
         {
             return ClassName == "Texture2D" || ClassName == "LightMapTexture2D" || ClassName == "TextureFlipBook";
+        }
+
+        /// <summary>
+        ///     decompress an entire pcc file.
+        /// </summary>
+        /// <param name="input">pcc file passed in stream format</param>
+        /// <returns>a decompressed array of bytes</returns>
+        public static byte[] Decompress(Stream input)
+        {
+            input.Seek(0, SeekOrigin.Begin);
+            var magic = input.ReadValueU32(Endian.Little);
+            if (magic != 0x9E2A83C1 &&
+                magic.Swap() != 0x9E2A83C1)
+            {
+                throw new FormatException("not a pcc file");
+            }
+            var endian = magic == 0x9E2A83C1 ? Endian.Little : Endian.Big;
+
+            var versionLo = input.ReadValueU16(endian);
+            var versionHi = input.ReadValueU16(endian);
+
+            if (versionLo != 684 &&
+                versionHi != 194)
+            {
+                throw new FormatException("unsupported pcc version");
+            }
+
+            long headerSize = 8;
+
+            input.Seek(4, SeekOrigin.Current);
+            headerSize += 4;
+
+            var folderNameLength = input.ReadValueS32(endian);
+            headerSize += 4;
+
+            var folderNameByteLength =
+                folderNameLength >= 0 ? folderNameLength : (-folderNameLength * 2);
+            input.Seek(folderNameByteLength, SeekOrigin.Current);
+            headerSize += folderNameByteLength;
+
+            var packageFlagsOffset = input.Position;
+            var packageFlags = input.ReadValueU32(endian);
+            headerSize += 4;
+
+            if ((packageFlags & 0x02000000u) == 0)
+            {
+                throw new FormatException("pcc file is already decompressed");
+            }
+
+            if ((packageFlags & 8) != 0)
+            {
+                input.Seek(4, SeekOrigin.Current);
+                headerSize += 4;
+            }
+
+            uint nameCount = input.ReadValueU32(endian);
+            uint nameOffset = input.ReadValueU32(endian);
+
+            input.Seek(52, SeekOrigin.Current);
+            headerSize += 60;
+
+            var generationsCount = input.ReadValueU32(endian);
+            input.Seek(generationsCount * 12, SeekOrigin.Current);
+            headerSize += generationsCount * 12;
+
+            input.Seek(20, SeekOrigin.Current);
+            headerSize += 24;
+
+            var blockCount = input.ReadValueU32(endian);
+            int headBlockOff = (int)input.Position;
+            var afterBlockTableOffset = headBlockOff + (blockCount * 16);
+            var indataOffset = afterBlockTableOffset + 8;
+            byte[] buff;
+
+            input.Seek(0, SeekOrigin.Begin);
+            using (MemoryStream output = new MemoryStream())
+            {
+                output.Seek(0, SeekOrigin.Begin);
+
+                output.WriteFromStream(input, headerSize);
+                output.WriteValueU32(0, endian); // block count
+
+                input.Seek(afterBlockTableOffset, SeekOrigin.Begin);
+                output.WriteFromStream(input, 8);
+
+                //check if has extra name list (don't know it's usage...)
+                if ((packageFlags & 0x10000000) != 0)
+                {
+                    long curPos = output.Position;
+                    output.WriteFromStream(input, nameOffset - curPos);
+                }
+
+                for (int i = 0; i < blockCount; i++)
+                {
+                    input.Seek(headBlockOff, SeekOrigin.Begin);
+                    var uncompressedOffset = input.ReadValueU32(endian);
+                    var uncompressedSize = input.ReadValueU32(endian);
+                    var compressedOffset = input.ReadValueU32(endian);
+                    var compressedSize = input.ReadValueU32(endian);
+                    headBlockOff = (int)input.Position;
+
+                    buff = new byte[compressedSize];
+                    input.Seek(compressedOffset, SeekOrigin.Begin);
+                    input.Read(buff, 0, buff.Length);
+
+                    byte[] temp = ZBlock.Decompress(buff, 0, buff.Length);
+                    output.Seek(uncompressedOffset, SeekOrigin.Begin);
+                    output.Write(temp, 0, temp.Length);
+                }
+
+                output.Seek(packageFlagsOffset, SeekOrigin.Begin);
+                output.WriteValueU32(packageFlags & ~0x02000000u, endian);
+                return output.ToArray();
+            }
         }
 
 

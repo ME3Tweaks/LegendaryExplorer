@@ -1,19 +1,17 @@
-﻿using KFreonLib.MEDirectories;
-using ME3Explorer.SequenceObjects;
-using ME3Explorer.Unreal;
-using System;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
+using System.IO;
 using System.Windows.Forms;
+using KFreonLib.MEDirectories;
+using ME3Explorer.SequenceObjects;
 using ME3LibWV;
+using ME3Explorer.Packages;
+using System.Linq;
 
-namespace ME3Explorer.InterpEditor
+namespace ME3Explorer.Matinee
 {
-    public partial class InterpEditor : Form
+    public partial class InterpEditor : WinFormsBase
     {
-        public PCCObject pcc;
-        public string CurrentFile;
         public List<int> objects;
 
         public InterpEditor()
@@ -24,7 +22,7 @@ namespace ME3Explorer.InterpEditor
             timeline.GroupList.ScrollbarH = hScrollBar1;
             timeline.GroupList.tree1 = treeView1;
             timeline.GroupList.tree2 = treeView2;
-            BitConverter.IsLittleEndian = true;
+            
             objects = new List<int>();
         }
 
@@ -42,12 +40,7 @@ namespace ME3Explorer.InterpEditor
         {
             try
             {
-                pcc = new PCCObject(fileName);
-                objects.Clear();
-                CurrentFile = fileName;
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "InterpData")
-                        objects.Add(i);
+                LoadME3Package(fileName);
                 RefreshCombo();
             }
             catch (Exception ex)
@@ -58,8 +51,10 @@ namespace ME3Explorer.InterpEditor
 
         public void RefreshCombo()
         {
-            if (objects == null)
-                return;
+            objects.Clear();
+            for (int i = 0; i < pcc.Exports.Count; i++)
+                if (pcc.Exports[i].ClassName == "InterpData")
+                    objects.Add(i);
             toolStripComboBox1.Items.Clear();
             foreach (int i in objects)
                 toolStripComboBox1.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
@@ -69,7 +64,7 @@ namespace ME3Explorer.InterpEditor
 
         public void loadInterpData(int index)
         {
-            timeline.GroupList.LoadInterpData(index, pcc);
+            timeline.GroupList.LoadInterpData(index, pcc as ME3Package);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
         }
 
@@ -83,7 +78,6 @@ namespace ME3Explorer.InterpEditor
 
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-
         }
 
         private void loadAlternateTlkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -113,7 +107,7 @@ namespace ME3Explorer.InterpEditor
                 {
                     if (p.GetObjectClass(i).StartsWith("InterpTrackVisibility")) //GetObject(p.Exports[i].idxLink).StartsWith("InterpGroup"))
                     {
-                        BitConverter.IsLittleEndian = true;
+                        
                         List<ME3LibWV.PropertyReader.Property> props = ME3LibWV.PropertyReader.getPropList(p, p.Exports[i].Data);
                         foreach (ME3LibWV.PropertyReader.Property prop in props)
                         {
@@ -173,6 +167,42 @@ namespace ME3Explorer.InterpEditor
                 return;
             pcc.save();
             MessageBox.Show("Done");
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (updatedExports.Contains(timeline.GroupList.index))
+            {
+                //loaded InterpData is no longer an InterpData
+                if (pcc.getExport(timeline.GroupList.index).ClassName != "InterpData")
+                {
+                    //?
+                }
+                else
+                {
+                    timeline.GroupList.LoadInterpData(timeline.GroupList.index, pcc as ME3Package);
+                }
+                updatedExports.Remove(timeline.GroupList.index);
+            }
+            if (updatedExports.Intersect(objects).Count() > 0)
+            {
+                RefreshCombo();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "InterpData")
+                    {
+                        RefreshCombo();
+                        break;
+                    }
+                }
+            }
         }
     }
 }

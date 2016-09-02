@@ -84,7 +84,7 @@ namespace ME3Explorer.CurveEd
             line.bind(Line.Y1Property, a, "Y", new YConverter(), a.graph.ActualHeight);
             line.bind(Line.X2Property, this, "X");
             line.bind(Line.Y2Property, this, "Y", new YConverter(), a.graph.ActualHeight);
-            line.bind(Line.VisibilityProperty, this, "Visibility");
+            line.bind(VisibilityProperty, this, "Visibility");
             line.Style = a.graph.FindResource("HandleLine") as Style;
             a.graph.graph.Children.Add(line); 
             this.DragDelta += OnDragDelta;

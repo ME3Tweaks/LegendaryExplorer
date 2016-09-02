@@ -8,8 +8,9 @@ using System.Windows.Forms;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
+using ME3Explorer.Packages;
 
-namespace ME3Explorer.InterpEditor
+namespace ME3Explorer.Matinee
 {
     public struct byteprop
     {
@@ -35,7 +36,7 @@ namespace ME3Explorer.InterpEditor
             type = BitConverter.ToInt32(raw, 24);
             val = BitConverter.ToInt32(raw, 32);
         }
-        public string ToString(PCCObject p)
+        public string ToString(ME3Package p)
         {
             if (val == -1)
                 return enumName + ", " + values[0];
@@ -84,7 +85,7 @@ namespace ME3Explorer.InterpEditor
         public Vector LeaveTangent;
         public byteprop InterpMode;
 
-        public TreeNode ToTree(int index, PCCObject pcc)
+        public TreeNode ToTree(int index, ME3Package pcc)
         {
             TreeNode root = new TreeNode(index + " : " + InVal);
             root.Nodes.Add("InVal : " + InVal);
@@ -104,7 +105,7 @@ namespace ME3Explorer.InterpEditor
         public float LeaveTangent;
         public byteprop InterpMode;
 
-        public TreeNode ToTree(int index, PCCObject pcc)
+        public TreeNode ToTree(int index, ME3Package pcc)
         {
             TreeNode root = new TreeNode(index + " : " + InVal);
             root.Nodes.Add("InVal : " + InVal);
@@ -120,7 +121,7 @@ namespace ME3Explorer.InterpEditor
     {
         public List<InterpCurvePointVector> Points;
 
-        public TreeNode ToTree(string name, PCCObject pcc)
+        public TreeNode ToTree(string name, ME3Package pcc)
         {
             TreeNode root = new TreeNode(name);
             TreeNode t = new TreeNode("Points");
@@ -140,7 +141,7 @@ namespace ME3Explorer.InterpEditor
     {
         public List<InterpCurvePointFloat> Points;
 
-        public TreeNode ToTree(string name, PCCObject pcc)
+        public TreeNode ToTree(string name, ME3Package pcc)
         {
             TreeNode root = new TreeNode(name);
             TreeNode t = new TreeNode("Points");
@@ -163,7 +164,7 @@ namespace ME3Explorer.InterpEditor
 
         public TreeView propView;
         public TreeView keyPropView;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public int index;
 
         private SText title;
@@ -208,7 +209,7 @@ namespace ME3Explorer.InterpEditor
         public bool bImportedTrack;
         public bool bDisableTrack;
 
-        public InterpTrack(int idx, PCCObject pccobj)
+        public InterpTrack(int idx, ME3Package pccobj)
         {
             index = idx;
             pcc = pccobj;
@@ -233,8 +234,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadGenericData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 
@@ -275,7 +276,7 @@ namespace ME3Explorer.InterpEditor
             }
             timelineEntry.Height = Timeline.TrackHeight;
             if (timelineEntry.ChildrenCount != 0)
-                timelineEntry.Width = (float)timelineEntry[timelineEntry.ChildrenCount - 1].OffsetX + 10;
+                timelineEntry.Width = timelineEntry[timelineEntry.ChildrenCount - 1].OffsetX + 10;
         }
 
         //key click handler
@@ -337,8 +338,8 @@ namespace ME3Explorer.InterpEditor
             //p.MdiParent = Form.MdiParent;
             p.WindowState = FormWindowState.Maximized;
             p.Show();
-            p.LoadFile(pcc.pccFileName);
-            p.listBox1.SelectedIndex = index;
+            p.LoadFile(pcc.FileName);
+            p.goToNumber(index);
         }
 
         public virtual void ToTree()
@@ -366,7 +367,7 @@ namespace ME3Explorer.InterpEditor
             propView.Nodes.Add(t);
         }
 
-        public static InterpCurveVector GetCurveVector(PropertyReader.Property p, PCCObject pcc)
+        public static InterpCurveVector GetCurveVector(PropertyReader.Property p, ME3Package pcc)
         {
             InterpCurveVector vec = new InterpCurveVector();
             vec.Points = new List<InterpCurvePointVector>();
@@ -407,7 +408,7 @@ namespace ME3Explorer.InterpEditor
             return vec;
         }
 
-        public static InterpCurveFloat GetCurveFloat(PropertyReader.Property p, PCCObject pcc)
+        public static InterpCurveFloat GetCurveFloat(PropertyReader.Property p, ME3Package pcc)
         {
             InterpCurveFloat CurveFloat = new InterpCurveFloat();
             CurveFloat.Points = new List<InterpCurvePointFloat>();
@@ -452,7 +453,7 @@ namespace ME3Explorer.InterpEditor
             public NameReference KeyName;
             public float fTime;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + " : " + fTime);
                 root.Nodes.Add("KeyName : " + KeyName.Name);
@@ -463,7 +464,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<TrackKey> m_aTrackKeys;
 
-        public BioInterpTrack(int idx, PCCObject pccobj)
+        public BioInterpTrack(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -474,8 +475,8 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aTrackKeys = new List<TrackKey>();
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTrackKeys")
@@ -522,7 +523,7 @@ namespace ME3Explorer.InterpEditor
     {
         public NameReference m_nmFindActor;
 
-        public SFXGameActorInterpTrack(int idx, PCCObject pccobj)
+        public SFXGameActorInterpTrack(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -533,8 +534,8 @@ namespace ME3Explorer.InterpEditor
             m_nmFindActor = new NameReference();
             m_nmFindActor.index = -1;
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_nmFindActor")
@@ -558,7 +559,7 @@ namespace ME3Explorer.InterpEditor
             public int PlaceHolder;
             public byteprop m_eState;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + " : " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -569,7 +570,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<MovieKey> m_aMovieKeyData;
 
-        public SFXInterpTrackMovieBase(int idx, PCCObject pccobj)
+        public SFXInterpTrackMovieBase(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -579,8 +580,8 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aMovieKeyData = new List<MovieKey>();
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aMovieKeyData")
@@ -636,7 +637,7 @@ namespace ME3Explorer.InterpEditor
         public List<int> m_aTarget;
         public int m_TargetActor;  
 
-        public SFXInterpTrackToggleBase(int idx, PCCObject pccobj)
+        public SFXInterpTrackToggleBase(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -647,8 +648,8 @@ namespace ME3Explorer.InterpEditor
             m_aToggleKeyData = new List<ToggleKey>();
             m_aTarget = new List<int>();         
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -706,7 +707,7 @@ namespace ME3Explorer.InterpEditor
         public InterpCurveFloat FloatTrack;
         public float CurveTension;
 
-        public InterpTrackFloatBase(int idx, PCCObject pccobj)
+        public InterpTrackFloatBase(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -715,8 +716,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "FloatTrack")
@@ -746,7 +747,7 @@ namespace ME3Explorer.InterpEditor
     {
         public InterpCurveVector VectorTrack;
 
-        public InterpTrackVectorBase(int idx, PCCObject pccobj)
+        public InterpTrackVectorBase(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -755,8 +756,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "VectorTrack")
@@ -783,7 +784,7 @@ namespace ME3Explorer.InterpEditor
     {
         public NameReference FacingController;
 
-        public BioInterpTrackMove(int idx, PCCObject pccobj)
+        public BioInterpTrackMove(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -796,8 +797,8 @@ namespace ME3Explorer.InterpEditor
             FacingController = new NameReference();
             FacingController.index = -1;
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "FacingController")
@@ -819,7 +820,7 @@ namespace ME3Explorer.InterpEditor
         public int PropertyName;
         public int m_pParentEffect; //unused?
 
-        public BioScalarParameterTrack(int idx, PCCObject pccobj)
+        public BioScalarParameterTrack(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -834,8 +835,8 @@ namespace ME3Explorer.InterpEditor
             PropertyName = -1;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "InterpValue")
@@ -872,7 +873,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<InterruptKey> m_aInterruptData;
 
-        public BioEvtSysTrackInterrupt(int idx, PCCObject pccobj)
+        public BioEvtSysTrackInterrupt(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -885,8 +886,8 @@ namespace ME3Explorer.InterpEditor
             m_aInterruptData = new List<InterruptKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aInterruptData")
@@ -928,10 +929,10 @@ namespace ME3Explorer.InterpEditor
             public bool bShowAtTop;
             public bool bUseOnlyAsReplyWheelHint;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
-                root.Nodes.Add("nStrRefID : " + TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
+                root.Nodes.Add("nStrRefID : " + ME3TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
                 root.Nodes.Add("fLength : " + fLength);
                 root.Nodes.Add("bShowAtTop : " + bShowAtTop);
                 root.Nodes.Add("bUseOnlyAsReplyWheelHint : " + bUseOnlyAsReplyWheelHint);
@@ -941,7 +942,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<SubtitleKey> m_aSubtitleData;
 
-        public BioEvtSysTrackSubtitles(int idx, PCCObject pccobj)
+        public BioEvtSysTrackSubtitles(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -955,8 +956,8 @@ namespace ME3Explorer.InterpEditor
             m_aSubtitleData = new List<SubtitleKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aSubtitleData")
@@ -1003,7 +1004,7 @@ namespace ME3Explorer.InterpEditor
             public bool bForceCrossingLineOfAction;
             public bool bUseForNextCamera;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + nmStageSpecificCam.Name));
@@ -1015,7 +1016,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<CameraSwitchKey> m_aCameras;
 
-        public BioEvtSysTrackSwitchCamera(int idx, PCCObject pccobj)
+        public BioEvtSysTrackSwitchCamera(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1028,8 +1029,8 @@ namespace ME3Explorer.InterpEditor
             m_aCameras = new List<CameraSwitchKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aCameras")
@@ -1071,7 +1072,7 @@ namespace ME3Explorer.InterpEditor
         public int m_nStrRefID;
         public float m_fJCutOffset;
 
-        public BioEvtSysTrackVOElements(int idx, PCCObject pccobj)
+        public BioEvtSysTrackVOElements(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1085,8 +1086,8 @@ namespace ME3Explorer.InterpEditor
             m_fJCutOffset = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_nStrRefID")
@@ -1099,7 +1100,7 @@ namespace ME3Explorer.InterpEditor
         public override void ToTree()
         {
             base.ToTree();
-            AddToTree("m_nStrRefID : " + TalkFiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
+            AddToTree("m_nStrRefID : " + ME3TalkFiles.findDataById(m_nStrRefID) + " (" + m_nStrRefID + ")");
             AddToTree("m_fJCutOffset : " + m_fJCutOffset);
         }
     }
@@ -1111,7 +1112,7 @@ namespace ME3Explorer.InterpEditor
             public NameReference FindActorTag; //name
             public float InterpTime;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + FindActorTag.Name));
@@ -1122,7 +1123,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<RotationModeKey> EventTrack;
 
-        public BioInterpTrackRotationMode(int idx, PCCObject pccobj)
+        public BioInterpTrackRotationMode(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1135,8 +1136,8 @@ namespace ME3Explorer.InterpEditor
             EventTrack = new List<RotationModeKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "EventTrack")
@@ -1201,7 +1202,7 @@ namespace ME3Explorer.InterpEditor
             public byteprop eGestureFilter;
             public byteprop eGesture;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 TreeNode t = new TreeNode("aChainedGestures");
@@ -1248,7 +1249,7 @@ namespace ME3Explorer.InterpEditor
         public byteprop ePoseFilter = new byteprop("EBioTrackAllPoseGroups", new string[] { "None" });
         public byteprop eStartingPose = new byteprop("EBioGestureAllPoses", new string[] { "None" });
 
-        public BioEvtSysTrackGesture(int idx, PCCObject pccobj)
+        public BioEvtSysTrackGesture(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1264,8 +1265,8 @@ namespace ME3Explorer.InterpEditor
             m_fStartPoseOffset = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1406,7 +1407,7 @@ namespace ME3Explorer.InterpEditor
             public byteprop RimLightControl;
             public byteprop LightingType;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("TargetBoneName : " + TargetBoneName.Name);
@@ -1440,7 +1441,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<LightingKey> m_aLightingKeys;
 
-        public BioEvtSysTrackLighting(int idx, PCCObject pccobj)
+        public BioEvtSysTrackLighting(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1452,8 +1453,8 @@ namespace ME3Explorer.InterpEditor
         {   //default values
             m_aLightingKeys = new List<LightingKey>();
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1536,7 +1537,7 @@ namespace ME3Explorer.InterpEditor
             public bool bLockedToTarget;
             public byteprop eFindActorMode;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nmFindActor : " + nmFindActor.Name);
@@ -1550,7 +1551,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<LookAtKey> m_aLookAtKeys;
 
-        public BioEvtSysTrackLookAt(int idx, PCCObject pccobj)
+        public BioEvtSysTrackLookAt(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1563,8 +1564,8 @@ namespace ME3Explorer.InterpEditor
             m_aLookAtKeys = new List<LookAtKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1620,7 +1621,7 @@ namespace ME3Explorer.InterpEditor
             public bool bEquip;
             public bool bForceGenericWeapon;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pWeaponClass : " + pWeaponClass);
@@ -1637,7 +1638,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<PropKey> m_aPropKeys;
 
-        public BioEvtSysTrackProp(int idx, PCCObject pccobj)
+        public BioEvtSysTrackProp(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1650,8 +1651,8 @@ namespace ME3Explorer.InterpEditor
             m_aPropKeys = new List<PropKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -1709,7 +1710,7 @@ namespace ME3Explorer.InterpEditor
             public bool bApplyOrientation;
             public byteprop eCurrentStageNode;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nmStageNode : " + nmStageNode.Name);
@@ -1722,7 +1723,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<FacingKey> m_aFacingKeys;
 
-        public BioEvtSysTrackSetFacing(int idx, PCCObject pccobj)
+        public BioEvtSysTrackSetFacing(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1735,8 +1736,8 @@ namespace ME3Explorer.InterpEditor
             m_aFacingKeys = new List<FacingKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aFacingKeys")
@@ -1783,7 +1784,7 @@ namespace ME3Explorer.InterpEditor
             public float m_fSmoothingFactor;
             public bool m_bStart;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("m_fMaxThreshold : " + m_fMaxThreshold);
@@ -1796,7 +1797,7 @@ namespace ME3Explorer.InterpEditor
         public List<ProcFoleyStartStopKey> m_aProcFoleyStartStopKeys;
         public int m_TrackFoleySound; //unused?
 
-        public SFXGameInterpTrackProcFoley(int idx, PCCObject pccobj)
+        public SFXGameInterpTrackProcFoley(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1810,8 +1811,8 @@ namespace ME3Explorer.InterpEditor
             m_TrackFoleySound = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_TrackFoleySound")
@@ -1868,7 +1869,7 @@ namespace ME3Explorer.InterpEditor
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pConversation : " + pConversation);
-                root.Nodes.Add("nLineStrRef : " + TalkFiles.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
+                root.Nodes.Add("nLineStrRef : " + ME3TalkFiles.findDataById(nLineStrRef) + " (" + nLineStrRef + ")");
                 root.Nodes.Add("srActorNameOverride : " + srActorNameOverride);
                 root.Nodes.Add("bForceHideSubtitles : " + bForceHideSubtitles);
                 root.Nodes.Add("bPlaySoundOnly : " + bPlaySoundOnly);
@@ -1881,7 +1882,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<FOVOKey> m_aFOVOKeys;
 
-        public SFXInterpTrackPlayFaceOnlyVO(int idx, PCCObject pccobj)
+        public SFXInterpTrackPlayFaceOnlyVO(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1894,8 +1895,8 @@ namespace ME3Explorer.InterpEditor
             m_aFOVOKeys = new List<FOVOKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aFOVOKeys")
@@ -1962,7 +1963,7 @@ namespace ME3Explorer.InterpEditor
         public List<int> m_aTarget;
         public int oEffect;
 
-        public SFXInterpTrackAttachCrustEffect(int idx, PCCObject pccobj)
+        public SFXInterpTrackAttachCrustEffect(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1977,8 +1978,8 @@ namespace ME3Explorer.InterpEditor
             oEffect = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "oEffect")
@@ -2042,7 +2043,7 @@ namespace ME3Explorer.InterpEditor
         public bool bUseRelativeOffset;
         public bool bUseRelativeRotation;
 
-        public SFXInterpTrackAttachToActor(int idx, PCCObject pccobj)
+        public SFXInterpTrackAttachToActor(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2056,8 +2057,8 @@ namespace ME3Explorer.InterpEditor
             BoneName = -1;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -2120,7 +2121,7 @@ namespace ME3Explorer.InterpEditor
         public int m_nmSocketOrBone;
         public int m_oEffect;
 
-        public SFXInterpTrackAttachVFXToObject(int idx, PCCObject pccobj)
+        public SFXInterpTrackAttachVFXToObject(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2135,8 +2136,8 @@ namespace ME3Explorer.InterpEditor
             m_nmSocketOrBone = -1;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aAttachToTarget")
@@ -2187,7 +2188,7 @@ namespace ME3Explorer.InterpEditor
             public int PlaceHolder;
             public byteprop BlackScreenState;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -2199,7 +2200,7 @@ namespace ME3Explorer.InterpEditor
         public List<BlackScreenKey> m_aBlackScreenKeyData;
         public int m_BlackScreenSeq;
 
-        public SFXInterpTrackBlackScreen(int idx, PCCObject pccobj)
+        public SFXInterpTrackBlackScreen(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2213,8 +2214,8 @@ namespace ME3Explorer.InterpEditor
             m_BlackScreenSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_BlackScreenSeq")
@@ -2256,7 +2257,7 @@ namespace ME3Explorer.InterpEditor
     {
         public List<int> m_aTarget;
 
-        public SFXInterpTrackDestroy(int idx, PCCObject pccobj)
+        public SFXInterpTrackDestroy(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2269,8 +2270,8 @@ namespace ME3Explorer.InterpEditor
             m_aTarget = new List<int>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aTarget")
@@ -2301,7 +2302,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int m_SeqForceUpdateLight;
 
-        public SFXInterpTrackForceLightEnvUpdate(int idx, PCCObject pccobj)
+        public SFXInterpTrackForceLightEnvUpdate(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2314,8 +2315,8 @@ namespace ME3Explorer.InterpEditor
             m_SeqForceUpdateLight = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_SeqForceUpdateLight")
@@ -2337,7 +2338,7 @@ namespace ME3Explorer.InterpEditor
             public int PlaceHolder;
             public byteprop Quality;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -2349,7 +2350,7 @@ namespace ME3Explorer.InterpEditor
         public List<LightEnvKey> m_aLightEnvKeyData;
         public int m_LightEnvSeq;
 
-        public SFXInterpTrackLightEnvQuality(int idx, PCCObject pccobj)
+        public SFXInterpTrackLightEnvQuality(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2363,8 +2364,8 @@ namespace ME3Explorer.InterpEditor
             m_LightEnvSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_LightEnvSeq")
@@ -2412,7 +2413,7 @@ namespace ME3Explorer.InterpEditor
         public bool m_bIgnoreShrinking;
         public bool m_bIgnoreGrowing;
 
-        public SFXInterpTrackMovieBink(int idx, PCCObject pccobj)
+        public SFXInterpTrackMovieBink(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2423,8 +2424,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -2454,7 +2455,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int m_oTextureMovie;
 
-        public SFXInterpTrackMovieTexture(int idx, PCCObject pccobj)
+        public SFXInterpTrackMovieTexture(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2467,8 +2468,8 @@ namespace ME3Explorer.InterpEditor
             m_oTextureMovie = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_oTextureMovie")
@@ -2501,7 +2502,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<NearClipKey> m_aNearClipKeyData;
 
-        public SFXInterpTrackSetPlayerNearClipPlane(int idx, PCCObject pccobj)
+        public SFXInterpTrackSetPlayerNearClipPlane(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2514,8 +2515,8 @@ namespace ME3Explorer.InterpEditor
             m_aNearClipKeyData = new List<NearClipKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_aNearClipKeyData")
@@ -2568,7 +2569,7 @@ namespace ME3Explorer.InterpEditor
         public int m_PawnRefTag;
         public int m_Pawn;
 
-        public SFXInterpTrackSetWeaponInstant(int idx, PCCObject pccobj)
+        public SFXInterpTrackSetWeaponInstant(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2583,8 +2584,8 @@ namespace ME3Explorer.InterpEditor
             m_Pawn = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_PawnRefTag")
@@ -2625,7 +2626,7 @@ namespace ME3Explorer.InterpEditor
 
     public class SFXInterpTrackToggleAffectedByHitEffects : SFXInterpTrackToggleBase
     {
-        public SFXInterpTrackToggleAffectedByHitEffects(int idx, PCCObject pccobj)
+        public SFXInterpTrackToggleAffectedByHitEffects(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "")
@@ -2635,7 +2636,7 @@ namespace ME3Explorer.InterpEditor
 
     public class SFXInterpTrackToggleHidden : SFXInterpTrackToggleBase
     {
-        public SFXInterpTrackToggleHidden(int idx, PCCObject pccobj)
+        public SFXInterpTrackToggleHidden(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "")
@@ -2647,7 +2648,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int m_LightEnvSeq;
 
-        public SFXInterpTrackToggleLightEnvironment(int idx, PCCObject pccobj)
+        public SFXInterpTrackToggleLightEnvironment(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2660,8 +2661,8 @@ namespace ME3Explorer.InterpEditor
             m_LightEnvSeq = 0;
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_LightEnvSeq")
@@ -2684,7 +2685,7 @@ namespace ME3Explorer.InterpEditor
             public bool m_bLock;
             public byteprop m_eFindActorMode;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("m_nmFindActor : " + m_nmFindActor.Name);
@@ -2697,7 +2698,7 @@ namespace ME3Explorer.InterpEditor
         public List<MicLockKey> m_aMicLockKeys;
         public bool m_bUnlockAtEnd;
 
-        public SFXGameInterpTrackWwiseMicLock(int idx, PCCObject pccobj)
+        public SFXGameInterpTrackWwiseMicLock(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2708,8 +2709,8 @@ namespace ME3Explorer.InterpEditor
             m_aMicLockKeys = new List<MicLockKey>();
 
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "m_bUnlockAtEnd")
@@ -2756,7 +2757,7 @@ namespace ME3Explorer.InterpEditor
             public NameReference EventName; //name
             public float Time;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("EventName : " + EventName.Name);
@@ -2770,7 +2771,7 @@ namespace ME3Explorer.InterpEditor
         public bool bFireEventsWhenBackwards = true;
         public bool bFireEventsWhenJumpingForwards;
 
-        public InterpTrackEvent(int idx, PCCObject pccobj)
+        public InterpTrackEvent(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2783,8 +2784,8 @@ namespace ME3Explorer.InterpEditor
         {
             EventTrack = new List<EventTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -2858,7 +2859,7 @@ namespace ME3Explorer.InterpEditor
         {
             public int FaceFXSoundCue; //object
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("FaceFXSoundCue : " + FaceFXSoundCue);
@@ -2887,7 +2888,7 @@ namespace ME3Explorer.InterpEditor
             public int fxaAnimSet;//unused?
             public byteprop eAnimSequence;
 
-            public TreeNode ToTree(PCCObject pcc)
+            public TreeNode ToTree(ME3Package pcc)
             {
                 TreeNode root = new TreeNode("OverrideAnimSet");
                 TreeNode t = new TreeNode("aBioMaleSets");
@@ -2919,7 +2920,7 @@ namespace ME3Explorer.InterpEditor
         public byteprop m_eSFXFindActorMode;
         public bool m_bSFXEnableClipToClipBlending;
 
-        public InterpTrackFaceFX(int idx, PCCObject pccobj)
+        public InterpTrackFaceFX(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2937,8 +2938,8 @@ namespace ME3Explorer.InterpEditor
             m_aBioFemaleAnimSets = new List<int>();
 
             byte[] buff = pcc.Exports[index].Data;
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3100,7 +3101,7 @@ namespace ME3Explorer.InterpEditor
             public bool bLooping;
             public bool bReverse;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + StartTime + " : AnimControlTrackKey");
                 root.Nodes.Add("AnimSeqName : " + AnimSeqName.Name);
@@ -3116,7 +3117,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<AnimControlTrackKey> AnimSeqs;
 
-        public InterpTrackAnimControl(int idx, PCCObject pccobj)
+        public InterpTrackAnimControl(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3129,8 +3130,8 @@ namespace ME3Explorer.InterpEditor
         {
             AnimSeqs = new List<AnimControlTrackKey>();
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "AnimSeqs")
@@ -3192,7 +3193,7 @@ namespace ME3Explorer.InterpEditor
                 public NameReference GroupName; //name
                 public float Time;
 
-                public TreeNode ToTree(int index, PCCObject pcc)
+                public TreeNode ToTree(int index, ME3Package pcc)
                 {
                     TreeNode root = new TreeNode(index + ": " + Time);
                     root.Nodes.Add("GroupName : " + GroupName.Name);
@@ -3203,7 +3204,7 @@ namespace ME3Explorer.InterpEditor
 
             public List<Point> Points;
 
-            public TreeNode ToTree(PCCObject pcc)
+            public TreeNode ToTree(ME3Package pcc)
             {
                 TreeNode root = new TreeNode("LookupTrack");
                 TreeNode t = new TreeNode("Points");
@@ -3224,7 +3225,7 @@ namespace ME3Explorer.InterpEditor
         public int LookAtGroupName = -1;
         public float AngCurveTension = 0f;
 
-        public InterpTrackMove(int idx, PCCObject pccobj)
+        public InterpTrackMove(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3238,8 +3239,8 @@ namespace ME3Explorer.InterpEditor
             LookupTrack = new InterpLookupTrack();
             LookupTrack.Points = new List<InterpLookupTrack.Point>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3320,7 +3321,7 @@ namespace ME3Explorer.InterpEditor
             public byteprop Action;
             public byteprop ActiveCondition;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3335,7 +3336,7 @@ namespace ME3Explorer.InterpEditor
         public bool bFireEventsWhenBackwards = true;//unused?
         public bool bFireEventsWhenJumpingForwards = true;//unused?
 
-        public InterpTrackVisibility(int idx, PCCObject pccobj)
+        public InterpTrackVisibility(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3348,8 +3349,8 @@ namespace ME3Explorer.InterpEditor
         {
             VisibilityTrack = new List<VisibilityTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -3410,7 +3411,7 @@ namespace ME3Explorer.InterpEditor
             public float Time;
             public byteprop ToggleAction;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3425,7 +3426,7 @@ namespace ME3Explorer.InterpEditor
         public bool bFireEventsWhenJumpingForwards = true;
         public bool bActivateSystemEachUpdate;
 
-        public InterpTrackToggle(int idx, PCCObject pccobj)
+        public InterpTrackToggle(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3438,8 +3439,8 @@ namespace ME3Explorer.InterpEditor
         {
             ToggleTrack = new List<ToggleTrackKey>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bFireEventsWhenForwards")
@@ -3512,7 +3513,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<WwiseEvent> WwiseEvents = new List<WwiseEvent>();
 
-        public InterpTrackWwiseEvent(int idx, PCCObject pccobj)
+        public InterpTrackWwiseEvent(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3525,8 +3526,8 @@ namespace ME3Explorer.InterpEditor
         {
             WwiseEvent key = new WwiseEvent();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "WwiseEvents")
@@ -3570,7 +3571,7 @@ namespace ME3Explorer.InterpEditor
 
     public class InterpTrackWwiseSoundEffect : InterpTrackWwiseEvent
     {
-        public InterpTrackWwiseSoundEffect(int idx, PCCObject pccobj)
+        public InterpTrackWwiseSoundEffect(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "WwiseEvent")
@@ -3583,7 +3584,7 @@ namespace ME3Explorer.InterpEditor
     {
         public string Param;
 
-        public InterpTrackWwiseRTPC(int idx, PCCObject pccobj)
+        public InterpTrackWwiseRTPC(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3594,8 +3595,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "Param")
@@ -3614,7 +3615,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int PropertyName; //name
 
-        public InterpTrackVectorProp(int idx, PCCObject pccobj)
+        public InterpTrackVectorProp(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3625,8 +3626,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3660,7 +3661,7 @@ namespace ME3Explorer.InterpEditor
         public List<MeshMaterialRef> AffectedMaterialRefs = new List<MeshMaterialRef>(); //unused?
         public int ParamName = -1; //name
 
-        public InterpTrackVectorMaterialParam(int idx, PCCObject pccobj)
+        public InterpTrackVectorMaterialParam(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3672,8 +3673,8 @@ namespace ME3Explorer.InterpEditor
         {
             AffectedMaterialRefs = new List<MeshMaterialRef>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3720,7 +3721,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int PropertyName = -1; //name
 
-        public InterpTrackColorProp(int idx, PCCObject pccobj)
+        public InterpTrackColorProp(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3731,8 +3732,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3752,7 +3753,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int PropertyName; //name
 
-        public InterpTrackFloatProp(int idx, PCCObject pccobj)
+        public InterpTrackFloatProp(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3764,8 +3765,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "PropertyName")
@@ -3785,7 +3786,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int ParamName; //name
 
-        public InterpTrackFloatMaterialParam(int idx, PCCObject pccobj)
+        public InterpTrackFloatMaterialParam(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3795,8 +3796,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3816,7 +3817,7 @@ namespace ME3Explorer.InterpEditor
     {
         public int ParamName; //name
 
-        public InterpTrackFloatParticleParam(int idx, PCCObject pccobj)
+        public InterpTrackFloatParticleParam(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "Generic Float Track")
@@ -3825,8 +3826,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "ParamName")
@@ -3849,7 +3850,7 @@ namespace ME3Explorer.InterpEditor
         public bool m_bStopAllMatchingEffects = true;
         public bool m_bAllowCooldown = true;
 
-        public SFXInterpTrackClientEffect(int idx, PCCObject pccobj)
+        public SFXInterpTrackClientEffect(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3859,8 +3860,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -3899,7 +3900,7 @@ namespace ME3Explorer.InterpEditor
             public float Pitch;
             public int Sound; //object
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3915,7 +3916,7 @@ namespace ME3Explorer.InterpEditor
         public bool bContinueSoundOnMatineeEnd;
         public bool bSuppressSubtitles;
 
-        public InterpTrackSound(int idx, PCCObject pccobj)
+        public InterpTrackSound(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3926,8 +3927,8 @@ namespace ME3Explorer.InterpEditor
         public void LoadData()
         {
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bContinueSoundOnMatineeEnd")
@@ -3987,7 +3988,7 @@ namespace ME3Explorer.InterpEditor
             public float fInterpolateSeconds;
             public bool bEnableDOF;
 
-            public TreeNode ToTree(int index, float time, PCCObject pcc)
+            public TreeNode ToTree(int index, float time, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(vFocusPosition.ToTree("vFocusPosition"));
@@ -4011,7 +4012,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<BioDOFTrackData> m_aDOFData;
 
-        public BioEvtSysTrackDOF(int idx, PCCObject pccobj)
+        public BioEvtSysTrackDOF(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4023,8 +4024,8 @@ namespace ME3Explorer.InterpEditor
         {
             m_aDOFData = new List<BioDOFTrackData>();
             
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             string name;
             foreach (PropertyReader.Property p in props)
             {
@@ -4090,7 +4091,7 @@ namespace ME3Explorer.InterpEditor
             public float TransitionTime;
             public bool bSkipCameraReset;
 
-            public TreeNode ToTree(int index, PCCObject pcc)
+            public TreeNode ToTree(int index, ME3Package pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("TargetCamGroup : " + TargetCamGroup.Name);
@@ -4103,7 +4104,7 @@ namespace ME3Explorer.InterpEditor
 
         public List<DirectorTrackCut> CutTrack;
 
-        public InterpTrackDirector(int idx, PCCObject pccobj)
+        public InterpTrackDirector(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4116,8 +4117,8 @@ namespace ME3Explorer.InterpEditor
         {
             CutTrack = new List<DirectorTrackCut>();
 
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "CutTrack")
@@ -4168,7 +4169,7 @@ namespace ME3Explorer.InterpEditor
     {
         public bool bPersistFade;
 
-        public InterpTrackFade(int idx, PCCObject pccobj)
+        public InterpTrackFade(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4178,8 +4179,8 @@ namespace ME3Explorer.InterpEditor
 
         public void LoadData()
         {
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            
+            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
             {
                 if (pcc.getNameEntry(p.Name) == "bPersistFade")
@@ -4197,7 +4198,7 @@ namespace ME3Explorer.InterpEditor
     public class InterpTrackColorScale : InterpTrackVectorBase
     {
 
-        public InterpTrackColorScale(int idx, PCCObject pccobj)
+        public InterpTrackColorScale(int idx, ME3Package pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "Generic Vector Track")

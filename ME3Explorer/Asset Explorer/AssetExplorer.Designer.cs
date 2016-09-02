@@ -80,7 +80,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(832, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem1
             // 
@@ -145,7 +144,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -156,8 +155,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer1.Size = new System.Drawing.Size(832, 399);
-            this.splitContainer1.SplitterDistance = 328;
+            this.splitContainer1.Size = new System.Drawing.Size(832, 375);
+            this.splitContainer1.SplitterDistance = 308;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
@@ -174,7 +173,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.panelImage);
             this.splitContainer2.Panel2.Controls.Add(this.listView1);
-            this.splitContainer2.Size = new System.Drawing.Size(832, 328);
+            this.splitContainer2.Size = new System.Drawing.Size(832, 308);
             this.splitContainer2.SplitterDistance = 275;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -186,7 +185,7 @@
             this.TV1.Location = new System.Drawing.Point(0, 0);
             this.TV1.Name = "TV1";
             this.TV1.SelectedImageIndex = 0;
-            this.TV1.Size = new System.Drawing.Size(275, 328);
+            this.TV1.Size = new System.Drawing.Size(275, 308);
             this.TV1.TabIndex = 0;
             this.TV1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TV1_AfterSelect);
             this.TV1.DoubleClick += new System.EventHandler(this.TV1_DoubleClick);
@@ -208,7 +207,7 @@
             this.panelImage.Controls.Add(this.pictureBox);
             this.panelImage.Location = new System.Drawing.Point(0, 0);
             this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(553, 328);
+            this.panelImage.Size = new System.Drawing.Size(553, 308);
             this.panelImage.TabIndex = 2;
             this.panelImage.Visible = false;
             this.panelImage.Click += new System.EventHandler(this.panelImage_Click);
@@ -232,7 +231,7 @@
             this.listView1.LargeImageList = this.imageList2;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(553, 328);
+            this.listView1.Size = new System.Drawing.Size(553, 308);
             this.listView1.TabIndex = 0;
             this.listView1.TileSize = new System.Drawing.Size(128, 196);
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -255,7 +254,7 @@
             this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(832, 67);
+            this.rtb1.Size = new System.Drawing.Size(832, 63);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             // 
@@ -266,7 +265,7 @@
             this.textureToolStripMenuItem,
             this.soundsToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -342,7 +341,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AssetExplorer";
             this.Text = "Asset Explorer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AssetExplorer_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.status.ResumeLayout(false);

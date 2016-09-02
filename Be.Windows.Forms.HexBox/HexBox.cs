@@ -143,16 +143,16 @@ namespace Be.Windows.Forms
             #region Activate, Deactive methods
             public virtual void Activate()
             {
-                _hexBox.MouseDown += new MouseEventHandler(BeginMouseSelection);
-                _hexBox.MouseMove += new MouseEventHandler(UpdateMouseSelection);
-                _hexBox.MouseUp += new MouseEventHandler(EndMouseSelection);
+                _hexBox.MouseDown += BeginMouseSelection;
+                _hexBox.MouseMove += UpdateMouseSelection;
+                _hexBox.MouseUp += EndMouseSelection;
             }
 
             public virtual void Deactivate()
             {
-                _hexBox.MouseDown -= new MouseEventHandler(BeginMouseSelection);
-                _hexBox.MouseMove -= new MouseEventHandler(UpdateMouseSelection);
-                _hexBox.MouseUp -= new MouseEventHandler(EndMouseSelection);
+                _hexBox.MouseDown -= BeginMouseSelection;
+                _hexBox.MouseMove -= UpdateMouseSelection;
+                _hexBox.MouseUp -= EndMouseSelection;
             }
             #endregion
 
@@ -1353,12 +1353,12 @@ namespace Be.Windows.Forms
         public HexBox()
         {
             this._vScrollBar = new VScrollBar();
-            this._vScrollBar.Scroll += new ScrollEventHandler(_vScrollBar_Scroll);
+            this._vScrollBar.Scroll += _vScrollBar_Scroll;
 
             this._builtInContextMenu = new BuiltInContextMenu(this);
 
             BackColor = Color.White;
-            Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+            Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
 
@@ -1370,7 +1370,7 @@ namespace Be.Windows.Forms
             SetStyle(ControlStyles.ResizeRedraw, true);
 
             _thumbTrackTimer.Interval = 50;
-            _thumbTrackTimer.Tick += new EventHandler(PerformScrollThumbTrack);
+            _thumbTrackTimer.Tick += PerformScrollThumbTrack;
         }
 
         #endregion
@@ -1444,7 +1444,7 @@ namespace Be.Windows.Forms
             // calc scroll bar info
             if (VScrollBarVisible && _byteProvider != null && _byteProvider.Length > 0 && _iHexMaxHBytes != 0)
             {
-                long scrollmax = (long)Math.Ceiling((double)(_byteProvider.Length + 1) / (double)_iHexMaxHBytes - (double)_iHexMaxVBytes);
+                long scrollmax = (long)Math.Ceiling((_byteProvider.Length + 1) / (double)_iHexMaxHBytes - _iHexMaxVBytes);
                 scrollmax = Math.Max(0, scrollmax);
 
                 long scrollpos = _startByte / _iHexMaxHBytes;
@@ -1502,8 +1502,8 @@ namespace Be.Windows.Forms
                 return (int)value;
             else
             {
-                double valperc = (double)value / (double)_scrollVmax * (double)100;
-                int res = (int)Math.Floor((double)max / (double)100 * valperc);
+                double valperc = value / (double)_scrollVmax * 100;
+                int res = (int)Math.Floor(max / (double)100 * valperc);
                 res = (int)Math.Max(_scrollVmin, res);
                 res = (int)Math.Min(_scrollVmax, res);
                 return res;
@@ -1515,12 +1515,12 @@ namespace Be.Windows.Forms
             int max = 65535;
             if (_scrollVmax < max)
             {
-                return (long)value;
+                return value;
             }
             else
             {
-                double valperc = (double)value / (double)max * (double)100;
-                long res = (int)Math.Floor((double)_scrollVmax / (double)100 * valperc);
+                double valperc = value / (double)max * 100;
+                long res = (int)Math.Floor(_scrollVmax / (double)100 * valperc);
                 return res;
             }
         }
@@ -1622,12 +1622,12 @@ namespace Be.Windows.Forms
 
             if (index < _startByte)
             {
-                long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
+                long line = (long)Math.Floor(index / (double)_iHexMaxHBytes);
                 PerformScrollThumpPosition(line);
             }
             else if (index > _endByte)
             {
-                long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
+                long line = (long)Math.Floor(index / (double)_iHexMaxHBytes);
                 line -= _iHexMaxVBytes - 1;
                 PerformScrollThumpPosition(line);
             }
@@ -1844,8 +1844,8 @@ namespace Be.Windows.Forms
             long bytePos;
             int byteCharaterPos;
 
-            float x = ((float)(p.X - _recHex.X) / _charSize.Width);
-            float y = ((float)(p.Y - _recHex.Y) / _charSize.Height);
+            float x = (p.X - _recHex.X) / _charSize.Width;
+            float y = (p.Y - _recHex.Y) / _charSize.Height;
             int iX = (int)x;
             int iY = (int)y;
 
@@ -1872,8 +1872,8 @@ namespace Be.Windows.Forms
             long bytePos;
             int byteCharacterPos;
 
-            float x = ((float)(p.X - _recStringView.X) / _charSize.Width);
-            float y = ((float)(p.Y - _recStringView.Y) / _charSize.Height);
+            float x = (p.X - _recStringView.X) / _charSize.Width;
+            float y = (p.Y - _recStringView.Y) / _charSize.Height;
             int iX = (int)x;
             int iY = (int)y;
 
@@ -2539,7 +2539,7 @@ namespace Be.Windows.Forms
                                 Rectangle betweenLines = new Rectangle(
                                     _recStringView.X,
                                     (int)(startSelPointF.Y + _charSize.Height),
-                                    (int)(_recStringView.Width),
+                                    _recStringView.Width,
                                     (int)(_charSize.Height * (multiLine - 1)));
                                 if (betweenLines.IntersectsWith(_recStringView))
                                 {
@@ -2672,7 +2672,7 @@ namespace Be.Windows.Forms
                 return;
 
             _startByte = (_scrollVpos + 1) * _iHexMaxHBytes - _iHexMaxHBytes;
-            _endByte = (long)Math.Min(_byteProvider.Length - 1, _startByte + _iHexMaxBytes);
+            _endByte = Math.Min(_byteProvider.Length - 1, _startByte + _iHexMaxBytes);
         }
         #endregion
 
@@ -2727,7 +2727,7 @@ namespace Be.Windows.Forms
             }
             else
             {
-                int hmax = (int)Math.Floor((double)(_recHex.Width - (_vScrollBarVisible ? _vScrollBar.Width : 0))/ (double)_charSize.Width);
+                int hmax = (int)Math.Floor((_recHex.Width - (_vScrollBarVisible ? _vScrollBar.Width : 0)) / (double)_charSize.Width);
                 if (hmax > 1)
                 {
                     if (_stringViewVisible)
@@ -2756,7 +2756,7 @@ namespace Be.Windows.Forms
                 _recStringView = Rectangle.Empty;
             }
 
-            int vmax = (int)Math.Floor((double)_recHex.Height / (double)_charSize.Height);
+            int vmax = (int)Math.Floor(_recHex.Height / (double)_charSize.Height);
             SetVerticalByteCount(vmax);
 
             _iHexMaxBytes = _iHexMaxHBytes * _iHexMaxVBytes;
@@ -2789,7 +2789,7 @@ namespace Be.Windows.Forms
 
         Point GetGridBytePoint(long byteIndex)
         {
-            int row = (int)Math.Floor((double)byteIndex / (double)_iHexMaxHBytes);
+            int row = (int)Math.Floor(byteIndex / (double)_iHexMaxHBytes);
             int column = (int)(byteIndex + _iHexMaxHBytes - _iHexMaxHBytes * (row + 1));
 
             Point res = new Point(column, row);
@@ -3016,11 +3016,11 @@ namespace Be.Windows.Forms
                     ActivateKeyInterpreter();
 
                 if (_byteProvider != null)
-                    _byteProvider.LengthChanged -= new EventHandler(_byteProvider_LengthChanged);
+                    _byteProvider.LengthChanged -= _byteProvider_LengthChanged;
 
                 _byteProvider = value;
                 if (_byteProvider != null)
-                    _byteProvider.LengthChanged += new EventHandler(_byteProvider_LengthChanged);
+                    _byteProvider.LengthChanged += _byteProvider_LengthChanged;
 
                 OnByteProviderChanged(EventArgs.Empty);
 
@@ -3501,7 +3501,7 @@ namespace Be.Windows.Forms
 
         void CheckCurrentLineChanged()
         {
-            long currentLine = (long)Math.Floor((double)_bytePos / (double)_iHexMaxHBytes) + 1;
+            long currentLine = (long)Math.Floor(_bytePos / (double)_iHexMaxHBytes) + 1;
 
             if (_byteProvider == null && _currentLine != 0)
             {

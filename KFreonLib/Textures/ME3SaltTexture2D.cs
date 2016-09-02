@@ -143,7 +143,7 @@ namespace KFreonLib.Textures
                 int propertiesOffset = SaltPropertyReader.detectStart(pccObj, rawData);
                 headerData = new byte[propertiesOffset];
                 Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
-                pccOffset = (uint)expEntry.DataOffset;
+                pccOffset = expEntry.DataOffset;
                 List<SaltPropertyReader.Property> tempProperties = SaltPropertyReader.getPropList(pccObj, rawData);
                 texName = expEntry.ObjectName;
                 for (int i = 0; i < tempProperties.Count; i++)
@@ -303,7 +303,7 @@ namespace KFreonLib.Textures
                                 tempStream.WriteByte((byte)prop.Value.Array[i].IntValue);
                             break;
                         default:
-                            throw new NotImplementedException("Property type: " + prop.TypeVal.ToString() + ", not yet implemented. TELL ME ABOUT THIS!");
+                            throw new NotImplementedException("Property type: " + prop.TypeVal + ", not yet implemented. TELL ME ABOUT THIS!");
                     }
                 }
 
@@ -326,7 +326,7 @@ namespace KFreonLib.Textures
                     if (imgInfo.storageType == storage.pccSto)
                     {
                         tempStream.WriteValueS32((int)(imgInfo.offset + pccExportDataOffset + dataOffset));
-                        tempStream.Write(imageData, (int)imgInfo.offset, imgInfo.uncSize);
+                        tempStream.Write(imageData, imgInfo.offset, imgInfo.uncSize);
                     }
                     else
                         tempStream.WriteValueS32(imgInfo.offset);
@@ -518,7 +518,7 @@ namespace KFreonLib.Textures
             {
                 case storage.pccSto:
                     imgBuffer = new byte[imgInfo.uncSize];
-                    Buffer.BlockCopy(imageData, (int)imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
+                    Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
                     break;
                 case storage.arcCpr:
                 case storage.arcUnc:
@@ -1227,7 +1227,7 @@ namespace KFreonLib.Textures
                                 tempMem.WriteByte((byte)prop.Value.Array[k].IntValue);
                             break;
                         default:
-                            throw new NotImplementedException("Property type: " + prop.TypeVal.ToString() + ", not yet implemented. TELL ME ABOUT THIS!");
+                            throw new NotImplementedException("Property type: " + prop.TypeVal + ", not yet implemented. TELL ME ABOUT THIS!");
                     }
                 }
                 buff = tempMem.ToArray();
@@ -1282,7 +1282,7 @@ namespace KFreonLib.Textures
             {
                 int i = 0;
                 string CustCache = "CustTextures";
-                while (i < 10)
+                while (i < 100)
                 {
                     FileInfo cacheInfo;
                     List<string> parts = new List<string>(bioPath.Split('\\'));
@@ -1444,7 +1444,7 @@ namespace KFreonLib.Textures
             {
                 case storage.pccSto:
                     imgBuff = new byte[imgInfo.uncSize];
-                    Buffer.BlockCopy(imageData, (int)imgInfo.offset, imgBuff, 0, imgInfo.uncSize);
+                    Buffer.BlockCopy(imageData, imgInfo.offset, imgBuff, 0, imgInfo.uncSize);
                     break;
                 case storage.arcCpr:
                 case storage.arcUnc:
@@ -1610,7 +1610,7 @@ namespace KFreonLib.Textures
 
         public IImageInfo GenerateImageInfo()
         {
-            IImageInfo imginfo = privateimgList.First(img => (int)img.storageType != (int)ME3Texture2D.storage.empty);
+            IImageInfo imginfo = privateimgList.First(img => (int)img.storageType != (int)storage.empty);
             imginfo.GameVersion = 3;
             return imginfo;
         }

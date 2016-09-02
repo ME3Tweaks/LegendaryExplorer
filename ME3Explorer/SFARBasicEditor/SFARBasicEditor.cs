@@ -53,7 +53,7 @@ namespace ME3Explorer
         private void setSize(long byteVal, out float outVal, ref string byteSize)
         {
             int count = 0;
-            outVal = (float)byteVal;
+            outVal = byteVal;
             while (outVal > 1024)
             {
                 outVal /= 1024;
@@ -148,7 +148,7 @@ namespace ME3Explorer
             textBoxTotalComprSize.Text = fileSize.ToString("0.0", CultureInfo.InvariantCulture);
             labelTotalComprBytes.Text = strFileSize;
 
-            textBoxCRatio.Text = ((float)dlcBase.totalComprSize / (float)dlcBase.totalUncSize * (float)100).ToString("0.#") + "%";
+            textBoxCRatio.Text = (dlcBase.totalComprSize / (float)dlcBase.totalUncSize * 100).ToString("0.#") + "%";
             textBoxFirstEntryOffset.Text = "0x" + dlcBase.entryOffset.ToString("X8");
             textBoxFirstBlockOffset.Text = "0x" + dlcBase.blockTableOffset.ToString("X8");
             textBoxFirstDataOffset.Text = "0x" + dlcBase.dataOffset.ToString("X8");
@@ -211,7 +211,7 @@ namespace ME3Explorer
             textBoxFullName.Text = node.Name;
             textBoxHash.Text = entry.nameHash.ToString();
 
-            setSize((long)entry.uncompressedSize, out fileSize, ref strFileSize);
+            setSize(entry.uncompressedSize, out fileSize, ref strFileSize);
             textBoxUncSize.Text = fileSize.ToString("0.0", CultureInfo.InvariantCulture);
             labelUncSizeBytes.Text = strFileSize;
 
@@ -220,13 +220,13 @@ namespace ME3Explorer
                 for (int i = 0; i < entry.blockSizeArray.Length; i++)
                     fileComprSize += entry.blockSizeArray[i];
 
-                setSize((long)fileComprSize, out fileSize, ref strFileSize);
+                setSize(fileComprSize, out fileSize, ref strFileSize);
                 textBoxComprSize.Text = fileSize.ToString("0.0", CultureInfo.InvariantCulture);
                 labelComprSizeBytes.Text = strFileSize;
             }
             else
             {
-                setSize((long)entry.uncompressedSize, out fileSize, ref strFileSize);
+                setSize(entry.uncompressedSize, out fileSize, ref strFileSize);
                 textBoxComprSize.Text = fileSize.ToString("0.0", CultureInfo.InvariantCulture);
                 labelComprSizeBytes.Text = strFileSize;
             }
@@ -350,7 +350,7 @@ namespace ME3Explorer
             if (isFile(node) && DialogSelectFileToReplace.ShowDialog() == DialogResult.OK)
             {
                 string selectedFile = Path.GetFileName(DialogSelectFileToReplace.FileName);
-                if (String.Compare(selectedFile, node.Text) != 0)
+                if (string.Compare(selectedFile, node.Text) != 0)
                 {
                     DialogResult replaceQuestion = MessageBox.Show("Warning: " + selectedFile + " has a different name from the original " + node.Text + ", would you like to continue?", "Warning, different file names", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                     if (replaceQuestion == DialogResult.No)
@@ -395,7 +395,7 @@ namespace ME3Explorer
                 sfarFile entry = dlcBase.fileList[FileNameHash.Compute(node.Name)];
                 listFiles.Add(entry);
             }
-            else if (isFolder(node) && extractFolderDialog.ShowDialog() == DialogResult.OK)
+            else if (isFolder(node) && extractFolderDialog.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
             {
                 foreach (sfarFile entry in dlcBase.fileList)
                 {
@@ -476,7 +476,7 @@ namespace ME3Explorer
                     int indexStr = fileName.IndexOf(node.Text);
                     string chunkPart = fileName.Substring(indexStr);
                     chunkPart = chunkPart.Replace("/", "\\");
-                    fullPath = extractFolderDialog.SelectedPath + "\\" + chunkPart;
+                    fullPath = Path.Combine(extractFolderDialog.FileName, chunkPart);
                     //creating full folder structure
                     if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                         Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
@@ -500,12 +500,15 @@ namespace ME3Explorer
         private void backgroundWorkerExtractFile_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if(e.UserState != null)
-                toolStripStatusLabel.Text = e.UserState as String;
+                toolStripStatusLabel.Text = e.UserState as string;
             try
             {
                 this.toolStripProgressBar.Value = e.ProgressPercentage;
             }
-            catch { }
+            catch
+            {
+                return;
+            }
         }
 
         private void backgroundWorkerReplaceFile_DoWork(object sender, DoWorkEventArgs e)
@@ -523,19 +526,21 @@ namespace ME3Explorer
         private void backgroundWorkerReplaceFile_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null)
-                toolStripStatusLabel.Text = e.UserState as String;
+                toolStripStatusLabel.Text = e.UserState as string;
             try
             {
                 this.toolStripProgressBar.Value = e.ProgressPercentage;
             }
-            catch { }
+            catch
+            {
+                return;
+            }
         }
 
         #endregion
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            taskbar.RemoveTool(this);
             //exit immediately if no files were loaded
             if (dlcBase == null)
                 return;
@@ -607,7 +612,7 @@ namespace ME3Explorer
                 message += "\n\nCompressed size: " + fileSize.ToString("0.0", CultureInfo.InvariantCulture) + " " + strFileSize;
                 message += " (" + compressedSize.ToString("0,0", CultureInfo.InvariantCulture) + " Bytes)";
 
-                comprRatio = (float)compressedSize / (float)entry.uncompressedSize * (float)100;
+                comprRatio = compressedSize / (float)entry.uncompressedSize * 100;
                 message += "\n\nCompression Ratio: " + comprRatio.ToString("0.#") + "%";
 
                 MessageBox.Show(message, "Properties - " + node.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
@@ -636,7 +641,7 @@ namespace ME3Explorer
                 message += "\n\nCompressed files size: " + fileSize.ToString("0.0", CultureInfo.InvariantCulture) + " " + strFileSize;
                 message += " (" + dlcBase.totalComprSize.ToString("0,0", CultureInfo.InvariantCulture) + " Bytes)";
 
-                comprRatio = (float)dlcBase.totalComprSize / (float)dlcBase.totalUncSize * (float)100;
+                comprRatio = dlcBase.totalComprSize / (float)dlcBase.totalUncSize * 100;
                 message += "\n\nCompression Ratio: " + comprRatio.ToString("0.#") + "%";
 
                 message += "\n\nOffsets:";

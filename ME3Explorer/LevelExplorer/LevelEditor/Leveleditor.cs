@@ -9,18 +9,18 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
 
 namespace ME3Explorer.LevelExplorer.LevelEditor
 {
-    public partial class Leveleditor : Form
+    public partial class Leveleditor : WinFormsBase
     {
         public SceneManager SceneMan = new SceneManager();
         public bool MoveWASD = true;
         public bool FocusOnClick = true;
-        public PCCObject pcc;
 
         public Leveleditor()
         {
@@ -31,15 +31,16 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 LoadPCC(d.FileName);
         }
 
         public void LoadPCC(string path)
         {
             timer1.Enabled = false;
-            DebugOutput.StartDebugger("LevelEditor");
-            SceneMan.AddLevel(path);
+            DebugOutput.StartDebugger("LevelExplorer");
+            LoadME3Package(path);
+            SceneMan.AddLevel(pcc as ME3Package);
             timer1.Enabled = true;
         }
 
@@ -199,7 +200,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             {
                 f = Convert.ToSingle(s);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 s = "0";
             }
@@ -253,7 +254,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
 
         private void saveAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure?", "Saving Changes", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.Show("Are you sure?", "Saving Changes", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 SceneMan.SaveAllChanges();
                 MessageBox.Show("Done.");
@@ -313,17 +314,22 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             SceneMan.ApplyRotation(new Vector3(0, 0, -rz));
         }
 
-        private void exportSceneTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExportsceneTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.3ds|*.3ds";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 timer1.Enabled = false;
-                SceneMan.ExportScene3DS(d.FileName);
+                SceneMan.Exportscene3DS(d.FileName);
                 timer1.Enabled = true;
                 MessageBox.Show("Done.");
             }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //TODO: implement updating
         }
     }
 }

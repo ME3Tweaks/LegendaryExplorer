@@ -7,6 +7,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
@@ -33,7 +34,7 @@ namespace ME3Explorer.Unreal.Classes
             public ImageSize imgSize;
         }
 
-        PCCObject pccRef;
+        ME3Package pccRef;
         public const string className = "Texture2D";
         public string texName { get; private set; }
         public string arcName { get; private set; }
@@ -48,20 +49,20 @@ namespace ME3Explorer.Unreal.Classes
         public Dictionary<string,PropertyReader.Property> properties;
         public List<ImageInfo> imgList { get; private set; } // showable image list
 
-        public Texture2D(PCCObject pccObj, int texIdx)
+        public Texture2D(ME3Package pccObj, int texIdx)
         {
             pccRef = pccObj;
             // check if texIdx is an Export index and a Texture2D class
             if (pccObj.isExport(texIdx) && (pccObj.Exports[texIdx].ClassName == className))
             {
-                PCCObject.ExportEntry expEntry = pccObj.Exports[texIdx];
+                IExportEntry expEntry = pccObj.Exports[texIdx];
                 properties = new Dictionary<string, PropertyReader.Property>();
-                byte[] rawData = (byte[])expEntry.Data.Clone();
+                byte[] rawData = expEntry.Data;
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData, expEntry.ObjectFlags);
                 headerData = new byte[propertiesOffset];
                 Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
                 pccOffset = (uint)expEntry.DataOffset;
-                List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(pccObj, expEntry);
+                List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(expEntry);
                 texName = expEntry.ObjectName;
                 for (int i = 0; i < tempProperties.Count; i++)
                 {
@@ -461,12 +462,11 @@ namespace ME3Explorer.Unreal.Classes
 
             string newTextureGroupName = "TEXTUREGROUP_Shadowmap";
             textureGroupName = newTextureGroupName;
-            if(!pccRef.Names.Exists(name => name == newTextureGroupName))
-                pccRef.Names.Add(newTextureGroupName);
+            int nameIndex = pccRef.FindNameOrAdd(newTextureGroupName);
             using (MemoryStream rawStream = new MemoryStream(LODGroup.raw))
             {
                 rawStream.Seek(32, SeekOrigin.Begin);
-                rawStream.WriteValueS32(pccRef.Names.FindIndex(name => name == newTextureGroupName));
+                rawStream.WriteValueS32(nameIndex);
                 //rawStream.Seek(32, SeekOrigin.Begin);
                 rawStream.WriteValueS32(0);
                 properties["LODGroup"].raw = rawStream.ToArray();

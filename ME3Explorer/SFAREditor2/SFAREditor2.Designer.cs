@@ -42,6 +42,9 @@
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.tOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateTOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateTOCAndRebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,13 +53,13 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.searchToolStripMenuItem});
+            this.searchToolStripMenuItem,
+            this.tOCToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(614, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -155,6 +158,29 @@
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // tOCToolStripMenuItem
+            // 
+            this.tOCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.updateTOCToolStripMenuItem,
+            this.updateTOCAndRebuildToolStripMenuItem});
+            this.tOCToolStripMenuItem.Name = "tOCToolStripMenuItem";
+            this.tOCToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.tOCToolStripMenuItem.Text = "TOC";
+            // 
+            // updateTOCToolStripMenuItem
+            // 
+            this.updateTOCToolStripMenuItem.Name = "updateTOCToolStripMenuItem";
+            this.updateTOCToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.updateTOCToolStripMenuItem.Text = "Update TOC";
+            this.updateTOCToolStripMenuItem.Click += new System.EventHandler(this.updateTOCToolStripMenuItem_Click);
+            // 
+            // updateTOCAndRebuildToolStripMenuItem
+            // 
+            this.updateTOCAndRebuildToolStripMenuItem.Name = "updateTOCAndRebuildToolStripMenuItem";
+            this.updateTOCAndRebuildToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.updateTOCAndRebuildToolStripMenuItem.Text = "Update TOC and rebuild";
+            this.updateTOCAndRebuildToolStripMenuItem.Click += new System.EventHandler(this.updateTOCAndRebuildToolStripMenuItem_Click);
+            // 
             // SFAREditor2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,5 +215,8 @@
         private System.Windows.Forms.ToolStripMenuItem deleteSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackSFARToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackAllDLCsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tOCToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem updateTOCToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem updateTOCAndRebuildToolStripMenuItem;
     }
 }

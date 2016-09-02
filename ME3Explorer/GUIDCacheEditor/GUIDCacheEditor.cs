@@ -8,11 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.GUIDCacheEditor
 {
-    public partial class GUIDCacheEditor : Form
+    public partial class GUIDCacheEditor : WinFormsBase
     {
         public struct GuidEntry
         {
@@ -23,7 +24,6 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public List<PropertyReader.Property> props;
         public List<GuidEntry> GUIDs;
-        public PCCObject pcc;
         
         public GUIDCacheEditor()
         {
@@ -32,15 +32,15 @@ namespace ME3Explorer.GUIDCacheEditor
 
         private void openGUIDCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
             }
-            BitConverter.IsLittleEndian = true;
+            
             try
             {
-                pcc = new PCCObject(ME3Directory.cookedPath + "GuidCache.pcc");
+                LoadME3Package(ME3Directory.cookedPath + "GuidCache.pcc");
                 ReadGUIDs(pcc.Exports[0]);
                 RefreshLists();
             }
@@ -50,9 +50,9 @@ namespace ME3Explorer.GUIDCacheEditor
             }
         }
 
-        public void ReadGUIDs(PCCObject.ExportEntry export)
+        public void ReadGUIDs(IExportEntry export)
         {
-            props = PropertyReader.getPropList(pcc, export);
+            props = PropertyReader.getPropList(export);
             byte[] buff = export.Data;
             int pos = props[props.Count - 1].offend;
             int count = BitConverter.ToInt32(buff, pos);
@@ -145,7 +145,7 @@ namespace ME3Explorer.GUIDCacheEditor
 
         public static int GetHexVal(char hex)
         {
-            int val = (int)hex;
+            int val = hex;
             return val - (val < 58 ? 48 : 55);
         }
 
@@ -155,20 +155,19 @@ namespace ME3Explorer.GUIDCacheEditor
                 return;
             MemoryStream m = new MemoryStream();
             byte[] buff = pcc.Exports[0].Data;
-            props = PropertyReader.getPropList(pcc, pcc.Exports[0]);
+            props = PropertyReader.getPropList(pcc.Exports[0]);
             int pos = props[props.Count - 1].offend;
             m.Write(buff, 0, pos);
             m.Write(BitConverter.GetBytes(GUIDs.Count), 0, 4);
             foreach (GuidEntry g in GUIDs)
             {
                 m.Write(BitConverter.GetBytes(g.NameIdx), 0, 4);
-                m.Write(BitConverter.GetBytes((int)0), 0, 4);
+                m.Write(BitConverter.GetBytes(0), 0, 4);
                 foreach (byte b in g.GUID)
                     m.WriteByte(b);
             }
             pcc.Exports[0].Data = m.ToArray();
-            pcc.Exports[0].hasChanged = true;
-            pcc.appendSave(pcc.pccFileName, true, 30); //weird header!
+            pcc.save(pcc.FileName);
             MessageBox.Show("Done.");
             RefreshLists();
         }
@@ -196,6 +195,11 @@ namespace ME3Explorer.GUIDCacheEditor
                 g2.GUID[i] = g.GUID[i];
             GUIDs.Add(g2);
             RefreshLists();
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //TODO: handle update
         }
     }
 }

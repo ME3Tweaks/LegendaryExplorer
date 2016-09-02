@@ -21,7 +21,7 @@ namespace ME3Explorer
         {
             myTexplorer = callingForm as Texplorer2;
             InitializeComponent();
-            this.HandleCreated += new EventHandler(Search_HandleCreated);
+            this.HandleCreated += Search_HandleCreated;
             SearchCount.Text = listBox1.Items.Count.ToString();
         }
 

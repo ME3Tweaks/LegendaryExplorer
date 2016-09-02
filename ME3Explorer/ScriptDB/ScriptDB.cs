@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 using KFreonLib.Debugging;
 
@@ -32,7 +33,7 @@ namespace ME3Explorer.ScriptDB
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -47,21 +48,23 @@ namespace ME3Explorer.ScriptDB
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
-                    int count2 = 0;
-                    foreach (PCCObject.ExportEntry ent in pcc.Exports)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        if (ent.ClassName == "Function")
+                        int count2 = 0;
+                        foreach (IExportEntry ent in pcc.Exports)
                         {
-                            Function f = new Function(ent.Data, pcc);
-                            ScriptEntry n = new ScriptEntry();
-                            n.file = Path.GetFileName(file);
-                            n.name = ent.PackageFullName + "." + ent.ObjectName;
-                            n.script = f.ToRawText(false);
-                            database.Add(n);
-                            DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
-                        }
-                        count2++;
+                            if (ent.ClassName == "Function")
+                            {
+                                Function f = new Function(ent.Data, pcc);
+                                ScriptEntry n = new ScriptEntry();
+                                n.file = Path.GetFileName(file);
+                                n.name = ent.PackageFullName + "." + ent.ObjectName;
+                                n.script = f.ToRawText(false);
+                                database.Add(n);
+                                DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
+                            }
+                            count2++;
+                        } 
                     }
                 }
                 catch (Exception ex)
@@ -100,8 +103,8 @@ namespace ME3Explorer.ScriptDB
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
-                byte[] buff = BitConverter.GetBytes((int)database.Count());
+                
+                byte[] buff = BitConverter.GetBytes(database.Count());
                 DebugOutput.PrintLn("Creating file in memory...");
                 fs.Write(buff, 0, 4);
                 MemoryStream m = new MemoryStream();
@@ -126,7 +129,7 @@ namespace ME3Explorer.ScriptDB
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 DebugOutput.PrintLn("Loading file to memory");
                 byte[] buff = new byte[fs.Length];
                 int cnt;
@@ -158,7 +161,7 @@ namespace ME3Explorer.ScriptDB
 
         public void WriteString(MemoryStream fs, string s)
         {
-            byte[] buff = BitConverter.GetBytes((int)s.Length);
+            byte[] buff = BitConverter.GetBytes(s.Length);
             fs.Write(buff, 0, 4);
             foreach (char c in s)
                 fs.WriteByte((byte)c);

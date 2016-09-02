@@ -141,7 +141,7 @@ namespace AmaroK86.ImageFormat
                 if (h < 4)
                     h = 4;
             }
-            return (long)((float)(w * h) * BytesPerPixel);
+            return (long)(w * h * BytesPerPixel);
 
             /*long totalBytes = (long)((float)(imgsize.width * imgsize.height) * BytesPerPixel);
             switch (format)
@@ -182,7 +182,7 @@ namespace AmaroK86.ImageFormat
                 if (h < 4)
                     h = 4;
             }
-            long totalBytes = (long)((float)(w * h) * BytesPerPixel);
+            long totalBytes = (long)(w * h * BytesPerPixel);
             w = imgsize.width;
             h = imgsize.height;
             if (w == 1 && h == 1)
@@ -222,10 +222,10 @@ namespace AmaroK86.ImageFormat
                     for (int k = 0; k < BPP; k++)
                     {
                         final[(i * (imgsize.width * BPP) / 4) + j * BPP / 2 + k] = (byte)
-                          (((int)imageData[i * (imgsize.width * BPP) + j * BPP + k] +
-                            (int)imageData[i * (imgsize.width * BPP) + j * BPP + BPP + k] +
-                            (int)imageData[(i + 1) * (imgsize.width * BPP) + j * BPP + k] +
-                            (int)imageData[(i + 1) * (imgsize.width * BPP) + j * BPP + BPP + k]) / 4);
+                          ((imageData[i * (imgsize.width * BPP) + j * BPP + k] +
+                            imageData[i * (imgsize.width * BPP) + j * BPP + BPP + k] +
+                            imageData[(i + 1) * (imgsize.width * BPP) + j * BPP + k] +
+                            imageData[(i + 1) * (imgsize.width * BPP) + j * BPP + BPP + k]) / 4);
                     }
                 }
             }

@@ -441,7 +441,7 @@ namespace UMD.HCIL.Piccolo.Event {
 				StringBuilder result = new StringBuilder();
 		
 				result.Append("minDragStartDistance=" + minDragStartDistance);
-				result.Append(",mousePressedCanvasPoint=" + mousePressedCanvasPoint.ToString());
+				result.Append(",mousePressedCanvasPoint=" + mousePressedCanvasPoint);
 				result.Append(",sequenceInitiatedButton=" + sequenceInitiatedButton);
 				if (dragging) result.Append(",dragging");
 				result.Append(',');

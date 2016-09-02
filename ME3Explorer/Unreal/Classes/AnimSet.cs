@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
@@ -32,19 +33,19 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public BioAnimSetData SetData;
 
-        public AnimSet(PCCObject Pcc, int Index)
+        public AnimSet(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
+            
             Sequences = new List<int>();
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
@@ -155,7 +156,7 @@ namespace ME3Explorer.Unreal.Classes
                         Vector4 erotQ = seqn.CompressedTrackOffsets[k].Rot;
                         Quaternion q1 = Vec4ToQ(srotQ);
                         Quaternion q2 = Vec4ToQ(erotQ);
-                        float t = (float)j / (float)(inf.NumRawFrames - 1);
+                        float t = j / (float)(inf.NumRawFrames - 1);
                         Vector3 currV = Vector3.Lerp(fromV, toV, t);
                         Quaternion qc = Quaternion.Slerp(q1, q2, t);
                         PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();
@@ -190,7 +191,7 @@ namespace ME3Explorer.Unreal.Classes
                     Vector4 erotQ = s2.CompressedTrackOffsets[k].Rot;
                     Quaternion q1 = Vec4ToQ(srotQ);
                     Quaternion q2 = Vec4ToQ(erotQ);
-                    float t = (float)j / (float)(inf2.NumRawFrames - 1);
+                    float t = j / (float)(inf2.NumRawFrames - 1);
                     Vector3 currV = Vector3.Lerp(fromV, toV, t);
                     Quaternion qc = Quaternion.Slerp(q1, q2, t);
                     PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();

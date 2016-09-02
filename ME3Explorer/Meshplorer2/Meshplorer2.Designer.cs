@@ -89,7 +89,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(653, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // globalTreeToolStripMenuItem
             // 
@@ -98,7 +97,7 @@
             this.scanToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.globalTreeToolStripMenuItem.Name = "globalTreeToolStripMenuItem";
-            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
             this.globalTreeToolStripMenuItem.Text = "Global Tree";
             // 
             // loadToolStripMenuItem
@@ -138,7 +137,7 @@
             this.previewWithTreeToolStripMenuItem.CheckOnClick = true;
             this.previewWithTreeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.previewWithTreeToolStripMenuItem.Name = "previewWithTreeToolStripMenuItem";
-            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.previewWithTreeToolStripMenuItem.Text = "Preview with Tree";
             // 
             // rotateToolStripMenuItem
@@ -147,14 +146,14 @@
             this.rotateToolStripMenuItem.CheckOnClick = true;
             this.rotateToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
             // importBonesToolStripMenuItem
             // 
             this.importBonesToolStripMenuItem.Name = "importBonesToolStripMenuItem";
-            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.importBonesToolStripMenuItem.Text = "Import Bones";
             this.importBonesToolStripMenuItem.Click += new System.EventHandler(this.importBonesToolStripMenuItem_Click);
             // 
@@ -163,7 +162,7 @@
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromUDKToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // importFromUDKToolStripMenuItem
@@ -202,7 +201,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox1,
             this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(653, 25);
             this.toolStrip1.TabIndex = 1;
@@ -227,7 +226,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -237,7 +236,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(653, 368);
+            this.splitContainer1.Size = new System.Drawing.Size(653, 344);
             this.splitContainer1.SplitterDistance = 217;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -248,7 +247,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(217, 368);
+            this.treeView1.Size = new System.Drawing.Size(217, 344);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -266,8 +265,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.treeView2);
-            this.splitContainer2.Size = new System.Drawing.Size(432, 368);
-            this.splitContainer2.SplitterDistance = 213;
+            this.splitContainer2.Size = new System.Drawing.Size(432, 344);
+            this.splitContainer2.SplitterDistance = 199;
             this.splitContainer2.TabIndex = 0;
             // 
             // pb1
@@ -275,7 +274,7 @@
             this.pb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pb1.Location = new System.Drawing.Point(0, 0);
             this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(432, 213);
+            this.pb1.Size = new System.Drawing.Size(432, 199);
             this.pb1.TabIndex = 0;
             this.pb1.TabStop = false;
             this.pb1.MouseHover += new System.EventHandler(this.pb1_MouseHover);
@@ -286,7 +285,7 @@
             this.treeView2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView2.Location = new System.Drawing.Point(0, 0);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(432, 151);
+            this.treeView2.Size = new System.Drawing.Size(432, 141);
             this.treeView2.TabIndex = 0;
             // 
             // statusStrip1
@@ -312,7 +311,7 @@
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer3.Location = new System.Drawing.Point(0, 49);
             this.splitContainer3.Name = "splitContainer3";
             // 
             // splitContainer3.Panel1
@@ -322,7 +321,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.listBox2);
-            this.splitContainer3.Size = new System.Drawing.Size(653, 368);
+            this.splitContainer3.Size = new System.Drawing.Size(653, 344);
             this.splitContainer3.SplitterDistance = 217;
             this.splitContainer3.TabIndex = 4;
             this.splitContainer3.Visible = false;
@@ -336,7 +335,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(217, 368);
+            this.listBox1.Size = new System.Drawing.Size(217, 344);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -349,7 +348,7 @@
             this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(0, 0);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(432, 368);
+            this.listBox2.Size = new System.Drawing.Size(432, 344);
             this.listBox2.TabIndex = 0;
             // 
             // Meshplorer2
@@ -366,6 +365,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Meshplorer2";
             this.Text = "Meshplorer2";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Meshplorer2_FormClosing);
             this.Load += new System.EventHandler(this.Meshplorer2_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Meshplorer2_Paint);
             this.menuStrip1.ResumeLayout(false);
@@ -410,7 +410,6 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewWithTreeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFromUDKToolStripMenuItem;

@@ -64,7 +64,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(487, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -79,21 +78,21 @@
             // loadCodeToolStripMenuItem
             // 
             this.loadCodeToolStripMenuItem.Name = "loadCodeToolStripMenuItem";
-            this.loadCodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadCodeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.loadCodeToolStripMenuItem.Text = "Load Code";
             this.loadCodeToolStripMenuItem.Click += new System.EventHandler(this.loadCodeToolStripMenuItem_Click);
             // 
             // saveCodeToolStripMenuItem
             // 
             this.saveCodeToolStripMenuItem.Name = "saveCodeToolStripMenuItem";
-            this.saveCodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveCodeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.saveCodeToolStripMenuItem.Text = "Save Code";
             this.saveCodeToolStripMenuItem.Click += new System.EventHandler(this.saveCodeToolStripMenuItem_Click);
             // 
             // saveBinaryToolStripMenuItem
             // 
             this.saveBinaryToolStripMenuItem.Name = "saveBinaryToolStripMenuItem";
-            this.saveBinaryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveBinaryToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.saveBinaryToolStripMenuItem.Text = "Save Binary";
             this.saveBinaryToolStripMenuItem.Click += new System.EventHandler(this.saveBinaryToolStripMenuItem_Click);
             // 
@@ -204,7 +203,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CondEditor";
             this.Text = "Condition Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CondEditor_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

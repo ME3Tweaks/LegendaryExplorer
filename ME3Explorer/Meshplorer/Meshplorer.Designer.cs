@@ -94,7 +94,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(639, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -189,7 +188,7 @@
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToPSKToolStripMenuItem
@@ -293,7 +292,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox1,
             this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(639, 25);
             this.toolStrip1.TabIndex = 2;
@@ -324,7 +323,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -335,8 +334,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(639, 453);
-            this.splitContainer1.SplitterDistance = 340;
+            this.splitContainer1.Size = new System.Drawing.Size(639, 429);
+            this.splitContainer1.SplitterDistance = 321;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
@@ -353,7 +352,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.rtb1);
             this.splitContainer2.Panel2.Controls.Add(this.pb1);
-            this.splitContainer2.Size = new System.Drawing.Size(639, 340);
+            this.splitContainer2.Size = new System.Drawing.Size(639, 321);
             this.splitContainer2.SplitterDistance = 438;
             this.splitContainer2.TabIndex = 4;
             // 
@@ -370,7 +369,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(438, 340);
+            this.splitContainer3.Size = new System.Drawing.Size(438, 321);
             this.splitContainer3.SplitterDistance = 100;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -385,7 +384,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(100, 340);
+            this.listBox1.Size = new System.Drawing.Size(100, 321);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -395,7 +394,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(334, 340);
+            this.treeView1.Size = new System.Drawing.Size(334, 321);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -406,7 +405,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(197, 340);
+            this.rtb1.Size = new System.Drawing.Size(197, 321);
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "";
             this.rtb1.Visible = false;
@@ -417,7 +416,7 @@
             this.pb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pb1.Location = new System.Drawing.Point(0, 0);
             this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(197, 340);
+            this.pb1.Size = new System.Drawing.Size(197, 321);
             this.pb1.TabIndex = 0;
             this.pb1.TabStop = false;
             // 
@@ -432,7 +431,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(639, 109);
+            this.hb1.Size = new System.Drawing.Size(639, 104);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;

@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.FaceFXAnimSetEditor
+﻿namespace ME3Explorer.FaceFX
 {
     partial class FaceFXAnimSetEditor
     {
@@ -35,7 +35,6 @@
             this.recreateAndDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,7 +69,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(635, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -106,7 +104,6 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveChangesToolStripMenuItem,
             this.cloneEntryToolStripMenuItem,
             this.deleteEntryToolStripMenuItem,
             this.moveEntryToolStripMenuItem,
@@ -115,45 +112,38 @@
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
-            // saveChangesToolStripMenuItem
-            // 
-            this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.saveChangesToolStripMenuItem.Text = "Save Changes";
-            this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
-            // 
             // cloneEntryToolStripMenuItem
             // 
             this.cloneEntryToolStripMenuItem.Name = "cloneEntryToolStripMenuItem";
-            this.cloneEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.cloneEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.cloneEntryToolStripMenuItem.Text = "Clone Entry";
             this.cloneEntryToolStripMenuItem.Click += new System.EventHandler(this.cloneEntryToolStripMenuItem_Click);
             // 
             // deleteEntryToolStripMenuItem
             // 
             this.deleteEntryToolStripMenuItem.Name = "deleteEntryToolStripMenuItem";
-            this.deleteEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.deleteEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteEntryToolStripMenuItem.Text = "Delete Entry";
             this.deleteEntryToolStripMenuItem.Click += new System.EventHandler(this.deleteEntryToolStripMenuItem_Click);
             // 
             // moveEntryToolStripMenuItem
             // 
             this.moveEntryToolStripMenuItem.Name = "moveEntryToolStripMenuItem";
-            this.moveEntryToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.moveEntryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.moveEntryToolStripMenuItem.Text = "Move Entry";
             this.moveEntryToolStripMenuItem.Click += new System.EventHandler(this.moveEntryToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -163,7 +153,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(635, 413);
+            this.splitContainer1.Size = new System.Drawing.Size(635, 389);
             this.splitContainer1.SplitterDistance = 315;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -176,7 +166,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(315, 413);
+            this.listBox1.Size = new System.Drawing.Size(315, 389);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -189,7 +179,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(316, 413);
+            this.tabControl1.Size = new System.Drawing.Size(316, 389);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -198,7 +188,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(308, 387);
+            this.tabPage1.Size = new System.Drawing.Size(308, 363);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Header";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -209,7 +199,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(3, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(302, 381);
+            this.treeView1.Size = new System.Drawing.Size(302, 357);
             this.treeView1.TabIndex = 0;
             // 
             // tabPage2
@@ -270,7 +260,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FaceFXAnimSetEditor";
-            this.Text = "FaceFXAnimSetEditor";
+            this.Text = "FaceFXAnimSetEditor (ME3)";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -303,7 +293,6 @@
         private System.Windows.Forms.ToolStripMenuItem recreateAndDumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneEntryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteEntryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveEntryToolStripMenuItem;

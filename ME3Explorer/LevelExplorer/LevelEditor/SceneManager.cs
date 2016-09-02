@@ -9,6 +9,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
@@ -20,7 +21,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
         public struct Levelfile
         {
             public string path;
-            public PCCObject pcc;
+            public ME3Package pcc;
             public Level level;
         }
 
@@ -84,7 +85,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             material.Specular = Color.LightGray;
             material.SpecularSharpness = 15.0F;
             device.Material = material;
-            float aspect = (float)device.PresentationParameters.BackBufferWidth / (float)device.PresentationParameters.BackBufferHeight;
+            float aspect = device.PresentationParameters.BackBufferWidth / (float)device.PresentationParameters.BackBufferHeight;
             device.Transform.Projection = Matrix.PerspectiveFovLH(1f / aspect, aspect, 1.0f, 1000000.0f);
             device.SetRenderState(RenderStates.ShadeMode, 1);
             device.RenderState.Lighting = true;
@@ -100,23 +101,22 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
         }
 
-        public void AddLevel(string path)
+        public void AddLevel(ME3Package pcc)
         {
-            if (!File.Exists(path))
-                return;
             try
             {
                 Levelfile l = new Levelfile();
-                l.path = path;
-                l.pcc = new PCCObject(path);
-                for (int i = 0; i < l.pcc.Exports.Count; i++)
+                l.path = pcc.FileName;
+                l.pcc = pcc;
+                IReadOnlyList<IExportEntry> Exports = l.pcc.Exports;
+                for (int i = 0; i < Exports.Count; i++)
                 {
-                    PCCObject.ExportEntry e = l.pcc.Exports[i];
+                    IExportEntry e = Exports[i];
                     if (e.ClassName == "Level")
                     {
                         DebugOutput.Clear();
                         l.level = new Level(l.pcc, i);
-                        TreeNode t = new TreeNode(Path.GetFileName(path));
+                        TreeNode t = new TreeNode(Path.GetFileName(pcc.FileName));
                         t.Nodes.Add(l.level.ToTree(i));
                         GlobalTree.Visible = false;
                         GlobalTree.Nodes.Add(t);
@@ -259,7 +259,7 @@ namespace ME3Explorer.LevelExplorer.LevelEditor
             return s;
         }
 
-        public void ExportScene3DS(string path)
+        public void Exportscene3DS(string path)
         {
             Lib3dsFile f = Helper3DS.EmptyFile();
             foreach (Levelfile l in Levels)

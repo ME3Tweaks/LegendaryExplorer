@@ -1,8 +1,183 @@
 ﻿<Application x:Class="ME3Explorer.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    StartupUri="MainWindow.xaml">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
-         
+        <FontFamily x:Key="TitilliumWeb-Italic">/ME3Explorer;component/Resources/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="TitilliumWeb-Light">/ME3Explorer;component/Resources/TitilliumWeb-Light.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="TitilliumWeb-SemiBold">/ME3Explorer;component/Resources/TitilliumWeb-SemiBold.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="TitilliumWeb-Regular">/ME3Explorer;component/Resources/TitilliumWeb-Regular.ttf#Titillium Web</FontFamily>
+        <FontFamily x:Key="Exo-SemiBold">/ME3Explorer;component/Resources/Exo-SemiBold.ttf#Exo</FontFamily>
+        <FontFamily x:Key="Exo-Regular">/ME3Explorer;component/Resources/Exo-Regular.ttf#Exo</FontFamily>
+
+        <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
+        <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
+        
+        <System:Double x:Key="InfoPanelWidth">300</System:Double>
+
+        <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BorderedButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WindowManagementButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Rectangle Name="rect1" Fill="#FFD9D9D9" Height="12" Width="12">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{Binding Path=Source}"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                                <Setter TargetName="rect1" Property="Fill" Value="White"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="styleButtonLabel" TargetType="{x:Type Label}" >
+            <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-SemiBold}"/>
+            <Setter Property="Foreground" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource HighlightColor}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="styleButtonLine" TargetType="{x:Type Line}" >
+            <Setter Property="Stroke" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                    <Setter Property="Stroke" Value="{StaticResource HighlightColor}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="styleButtonRectangle" TargetType="{x:Type Rectangle}" >
+            <Setter Property="Fill" Value="{Binding OpacityMask, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True">
+                    <Setter Property="Fill" Value="{StaticResource HighlightColor}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="styleFavoritable" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFF9F9F9"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsFavorited}" Value="True">
+                    <Setter Property="Foreground" Value="#FFEBC86A"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <BitmapImage x:Key="iconME1" UriSource="/ME3Explorer;component/Resources/ME1Game.ico"/>
+        <BitmapImage x:Key="iconME2" UriSource="/ME3Explorer;component/Resources/ME2Game.ico"/>
+        <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
+
+        <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
+        <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
+        <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
+        <BitmapImage x:Key="iconBatchRenamer" UriSource="Icons/batch_rename_64x64.png"/>
+        <BitmapImage x:Key="iconClassViewer" UriSource="Resources/class_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_icon64x64.png"/>
+        <BitmapImage x:Key="iconImageEngine" UriSource="Resources/ImageEngine_icon_64x64.png"/>
+        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
+        <BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_icon.ico"/>
+        <BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>
+        <BitmapImage x:Key="iconPlotDatabase" UriSource="Icons/plot_DB_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/property_database_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyDumper" UriSource="Resources/property_dumper_64x64.png"/>
+        <BitmapImage x:Key="iconPropertyManager" UriSource="Resources/property_manager_64x64.png"/>
+        <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psa_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>
+        <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>
+        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_icon.ico"/>
+        <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
+        <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
+        <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
+        <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebank_editor_64x64.png"/>
+
+        <BitmapImage x:Key="iconAutoTOC" UriSource="Icons/autotoc_64x64.png"/>
+        <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
+        <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
+        <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
+
+        <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
+        <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
+        <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64x64.png"/>
+        <BitmapImage x:Key="iconConditionalsEditor" UriSource="Resources/conditionals_editor_64x64.png"/>
+        <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
+        <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
+        <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefx_editor_icon.ico"/>
+        <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
+        <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
+        <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
+        <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>
+        <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
+        <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
+        <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
+        <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
+        <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
+        <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon.ico"/>
+        <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
+        <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
+        <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/TLK_editor_64x64.png"/>
+        <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
     </Application.Resources>
 </Application>

@@ -1,13 +1,13 @@
-﻿<Window x:Class="ME3Explorer.FaceFXAnimSetEditor.FaceFXEditor"
+﻿<local:WPFBase x:Class="ME3Explorer.FaceFX.FaceFXEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ME3Explorer.FaceFXAnimSetEditor"
+             xmlns:local="clr-namespace:ME3Explorer"
              xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
-             d:DesignHeight="411.124" d:DesignWidth="827.446">
+             d:DesignHeight="411.124" d:DesignWidth="827.446" Icon="/ME3Explorer;component/Resources/fxa_editor_64x64.png" Title="FaceFX Editor" KeyDown="Window_KeyDown">
     <Window.CommandBindings>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
@@ -89,7 +89,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <curveEd:CurveGraph x:Name="graph" DockPanel.Dock="Right"/>
-            <TextBlock x:Name="lineText" Grid.Row="1"/>
+            <TextBlock x:Name="lineText" Grid.Row="1" TextWrapping="Wrap"/>
         </Grid>
     </DockPanel>
-</Window>
+</local:WPFBase>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
@@ -28,25 +29,27 @@ namespace ME3Explorer
                 {
                     try
                     {
-                        PCCObject pccObj = new PCCObject(fileName);
-                        if (!pccObj.canReconstruct)
+                        using (ME3Package pccObj = MEPackageHandler.OpenME3Package(fileName))
                         {
-                            var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
-                                "Do you want to visit a forum thread with more information and a possible solution?",
-                                "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
-                            if (res == DialogResult.Yes)
+                            if (!pccObj.CanReconstruct)
                             {
-                                System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
+                                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Compressing will cause a crash when ME3 attempts to load this file.\n" +
+                                    "Do you want to visit a forum thread with more information and a possible solution?",
+                                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+                                if (res == DialogResult.Yes)
+                                {
+                                    System.Diagnostics.Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-pcc-into-a-vanilla-one-t2264.html");
+                                }
+                                return;
                             }
-                            return;
-                        }
-                        DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            File.Copy(fileName, backupFile);
-                        }
+                            DialogResult dialogResult = MessageBox.Show("Do you want to make a backup file?", "Make Backup", MessageBoxButtons.YesNo);
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                File.Copy(fileName, backupFile);
+                            }
 
-                        pccObj.saveByReconstructing(fileName, true);
+                            pccObj.saveByReconstructing(fileName, true); 
+                        }
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully compressed.", "Succeed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -80,8 +83,12 @@ namespace ME3Explorer
                             File.Copy(fileName, backupFile);
                         }
 
-                        PCCObject pccObj = new PCCObject(fileName);
-                        pccObj.saveByReconstructing(fileName);
+                        MemoryStream m;
+                        using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                        {
+                            m = CompressionHelper.DecompressME3(fs);
+                        }
+                        File.WriteAllBytes(fileName, m.ToArray());
 
                         MessageBox.Show("File " + Path.GetFileName(fileName) + " was successfully decompressed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -109,15 +116,16 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to decompress does not exist:\n" + sourceFile, "Auto Decompression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            Console.WriteLine("Automating Pcc Decompressor: " + sourceFile + " => " + outputFile);
             try
             {
-                PCCObject pccObj = new PCCObject(sourceFile);
-                pccObj.saveByReconstructing(outputFile);
+                using (ME3Package pccObj = MEPackageHandler.OpenME3Package(sourceFile))
+                {
+                    pccObj.saveByReconstructing(outputFile); 
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error:\n" + ex.Message);
+                MessageBox.Show("Error:\n" + ex.Message);
                 return 1;
             }
             return 0;
@@ -133,20 +141,14 @@ namespace ME3Explorer
                 MessageBox.Show("PCC to compress does not exist:\n" + sourceFile, "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            Console.WriteLine("Automating Pcc Compressor: " + sourceFile + " => " + outputFile);
-            try
+            using (ME3Package pccObj = MEPackageHandler.OpenME3Package(sourceFile))
             {
-                PCCObject pccObj = new PCCObject(sourceFile);
-                if (!pccObj.canReconstruct)
+                if (!pccObj.CanReconstruct)
                 {
-                    throw new Exception("Cannot compress files with a SeekFreeShaderCache");
+                    MessageBox.Show("Cannot compress files with a SeekFreeShaderCache", "Auto Compression Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return 1;
                 }
-                pccObj.saveByReconstructing(outputFile, true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error:\n" + ex.Message);
-                return 1;
+                pccObj.saveByReconstructing(outputFile, true); 
             }
             return 0;
         }

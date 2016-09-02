@@ -9,14 +9,14 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Be.Windows.Forms;
+using ME3Explorer.Packages;
 
-namespace ME3Explorer.FaceFXAnimSetEditor
+namespace ME3Explorer.FaceFX
 {
-    public partial class FaceFXAnimSetEditor : Form
+    public partial class FaceFXAnimSetEditor : WinFormsBase
     {
-        public PCCObject pcc;
         public List<int> Objects;
-        public FaceFXAnimSet FaceFX;
+        public ME3FaceFXAnimSet FaceFX;
 
         public FaceFXAnimSetEditor()
         {
@@ -31,11 +31,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
-                    Objects = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
-                            Objects.Add(i);
+                    LoadME3Package(d.FileName);
                     ListRefresh();
                 }
                 catch (Exception ex)
@@ -47,16 +43,35 @@ namespace ME3Explorer.FaceFXAnimSetEditor
 
         public void ListRefresh()
         {
+            Objects = new List<int>();
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i = 0; i < Exports.Count; i++)
+                if (Exports[i].ClassName == "FaceFXAnimSet")
+                    Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
                 listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
         }
 
-        private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)
+        private void FaceFXRefresh(int n)
         {
-            if (FaceFX == null)
-                return;
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
+            IEnumerable<string> expandedNodes = null;
+            string topNodeName = null;
+            if (FaceFX != null && n == FaceFX.export.Index)
+            {
+                List<TreeNode> allNodes = treeView2.Nodes.Cast<TreeNode>().ToList();
+                //flatten tree of nodes into list.
+                for (int j = 0; j < allNodes.Count(); j++)
+                {
+                    allNodes.AddRange(allNodes[j].Nodes.Cast<TreeNode>());
+                }
+                expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
+                topNodeName = treeView2.TopNode.Name;
+
+            }
+            IExportEntry exportEntry = pcc.Exports[n];
+            FaceFX = new ME3FaceFXAnimSet(pcc, exportEntry);
+            hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
             nameAllNodes(treeView1.Nodes);
@@ -101,17 +116,15 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            FaceFX = new FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
-            FaceFXRefresh(n);
+            FaceFXRefresh(Objects[n]);
         }
 
         private void recreateAndDumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
+            if (FaceFX == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.FileName = pcc.Exports[Objects[n]].ObjectName + ".fxa";
+            d.FileName = FaceFX.export.ObjectName + ".fxa";
             d.Filter = "*.fxa|*.fxa";
             if(d.ShowDialog() == DialogResult.OK)
             {
@@ -125,14 +138,6 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             if (pcc == null)
                 return;
             pcc.save();
-            MessageBox.Show("Done.");
-        }
-
-        private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (FaceFX == null)
-                return;
-            FaceFX.Save();
             MessageBox.Show("Done.");
         }
 
@@ -152,7 +157,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 int entidx = t1.Index;
                 int subidx = t.Index;
-                FaceFXAnimSet.FaceFXLine d = FaceFX.Data.Data[entidx];
+                ME3FaceFXLine d = FaceFX.Data.Data[entidx];
                 switch (subidx)
                 {
                     case 0://unk1
@@ -184,26 +189,27 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         d.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.ID, 0, 0);
                         break;
                     case 9://unk3
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk3.ToString(), 0, 0);
+                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.index.ToString(), 0, 0);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                            d.unk3 = i;
+                            d.index = i;
                         break;
                     default:
                         return;
                 }
                 FaceFX.Data.Data[entidx] = d;
+                FaceFX.Save();
             }
             else if(t2.Parent.Text == "Entries")
             {
                 int entidx = t2.Index;
                 int subidx = t1.Index;
                 int subsubidx = t.Index;
-                FaceFXAnimSet.FaceFXLine d = FaceFX.Data.Data[entidx];
+                ME3FaceFXLine d = FaceFX.Data.Data[entidx];
                 switch (subidx)
                 {
                     case 1:
-                        FaceFXAnimSet.NameRef u = d.animations[subsubidx];
+                        ME3NameRef u = d.animations[subsubidx];
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, 0, 0);
                         string[] reslist = result.Split(';');
                         if (reslist.Length != 2)
@@ -219,7 +225,7 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         d.animations[subsubidx] = u;
                         break;
                     case 2:
-                        FaceFXAnimSet.ControlPoint u2 = d.points[subsubidx];
+                        ControlPoint u2 = d.points[subsubidx];
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, 0, 0);
                         reslist = result.Split(';');
                         if (reslist.Length != 4)
@@ -251,18 +257,8 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                         break;
                 }
                 FaceFX.Data.Data[entidx] = d;
+                FaceFX.Save();
             }
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            List<TreeNode> allNodes = treeView2.Nodes.Cast<TreeNode>().ToList();
-            //flatten tree of nodes into list.
-            for (int j = 0; j < allNodes.Count(); j++)
-            {
-                allNodes.AddRange(allNodes[j].Nodes.Cast<TreeNode>());
-            }
-            var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            FaceFXRefresh(n, expandedNodes, treeView2.TopNode.Name);
         }
 
         private void cloneEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -275,9 +271,6 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 return;
             FaceFX.CloneEntry(t.Index);
             FaceFX.Save();
-            int n = listBox1.SelectedIndex;
-            listBox1.SelectedIndex = -1;
-            listBox1.SelectedIndex = n;
         }
 
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -290,9 +283,6 @@ namespace ME3Explorer.FaceFXAnimSetEditor
                 return;
             FaceFX.RemoveEntry(t.Index);
             FaceFX.Save();
-            int n = listBox1.SelectedIndex;
-            listBox1.SelectedIndex = -1;
-            listBox1.SelectedIndex = n;
         }
 
         private void moveEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -309,9 +299,6 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 FaceFX.MoveEntry(t.Index, i);
                 FaceFX.Save();
-                int n = listBox1.SelectedIndex;
-                listBox1.SelectedIndex = -1;
-                listBox1.SelectedIndex = n;
             }
         }
 
@@ -324,9 +311,47 @@ namespace ME3Explorer.FaceFXAnimSetEditor
             {
                 FaceFX.AddName(result);
                 FaceFX.Save();
-                int n = listBox1.SelectedIndex;
-                listBox1.SelectedIndex = -1;
-                listBox1.SelectedIndex = n;
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (FaceFX != null && updatedExports.Contains(FaceFX.export.Index))
+            {
+                int index = FaceFX.export.Index;
+                //loaded FaceFXAnimset is no longer a FaceFXAnimset
+                if (FaceFX.export.ClassName != "FaceFXAnimSet")
+                {
+                    FaceFX = null;
+                    treeView1.Nodes.Clear();
+                    treeView2.Nodes.Clear();
+                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    ListRefresh();
+                }
+                else
+                {
+                    FaceFXRefresh(index);
+                }
+                updatedExports.Remove(index);
+            }
+            if (updatedExports.Intersect(Objects).Count() > 0)
+            {
+                ListRefresh();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    {
+                        ListRefresh();
+                        break;
+                    }
+                }
             }
         }
     }

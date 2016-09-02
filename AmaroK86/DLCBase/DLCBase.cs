@@ -127,7 +127,7 @@ namespace AmaroK86.MassEffect3
                 }
                 else
                 {
-                    int numBlocks = (int)Math.Ceiling((double)entry.uncompressedSize / (double)MaximumBlockSize);
+                    int numBlocks = (int)Math.Ceiling(entry.uncompressedSize / (double)MaximumBlockSize);
                     entry.dataOffset = new long[numBlocks];
                     entry.blockSizeArray = new ushort[numBlocks];
                     entry.dataOffset[0] = input.ReadValueU32(endian);
@@ -190,7 +190,7 @@ namespace AmaroK86.MassEffect3
 
         private long getBlockOffset(int blockIndex, uint entryOffset, uint numEntries)
         {
-            return (long)(entryOffset + (numEntries * 0x1E) + (blockIndex * 2));
+            return entryOffset + (numEntries * 0x1E) + (blockIndex * 2);
         }
 
         public void extractFile(string selectedFileName, string outputName)
@@ -237,7 +237,7 @@ namespace AmaroK86.MassEffect3
             {
                 while (left > 0)
                 {
-                    uint compressedBlockSize = (uint)entry.blockSizeArray[count];
+                    uint compressedBlockSize = entry.blockSizeArray[count];
                     if (compressedBlockSize == 0)
                     {
                         compressedBlockSize = MaximumBlockSize;
@@ -304,7 +304,7 @@ namespace AmaroK86.MassEffect3
 #if (WITH_GUI)
                             if (BWork != null)
                             {
-                                int perc = (int)(((float)count / (float)(entry.blockSizeArray.Length)) * 100);
+                                int perc = (int)(count / (float)entry.blockSizeArray.Length * 100);
                                 if (perc > maxPerc)
                                 {
                                     maxPerc = perc;
@@ -430,7 +430,7 @@ namespace AmaroK86.MassEffect3
                         //if the file is a .bik or .afc it's not counted
                         if ((extension.CompareTo(".bik") != 0 && extension.CompareTo(".afc") != 0) || forceCompress)
                         {
-                            aux = (uint)Math.Ceiling((double)Getsize(show) / (double)sfarMaxBlockSize);
+                            aux = (uint)Math.Ceiling(Getsize(show) / (double)sfarMaxBlockSize);
                             totBlockSize += aux;
                         }
                     }
@@ -442,7 +442,7 @@ namespace AmaroK86.MassEffect3
                         temp = temp.Replace("\\", "/");
                         allFileList += temp;
                     }
-                    aux = (uint)Math.Ceiling((double)allFileList.Length / (double)sfarMaxBlockSize);
+                    aux = (uint)Math.Ceiling(allFileList.Length / (double)sfarMaxBlockSize);
                     totBlockSize += aux;
                     //---------------------------------------------------------------------------------------------
 
@@ -505,7 +505,7 @@ namespace AmaroK86.MassEffect3
                                 CompressFile(streamRead, out blockSizeArray, encStream);
 
                                 //seeking the sfar to the last Block Size offset
-                                stream.Seek((long)pointerBlockSize, SeekOrigin.Begin);
+                                stream.Seek(pointerBlockSize, SeekOrigin.Begin);
                                 for (int i = 0; i < blockSizeArray.Length; i++)
                                 {
                                     writer.Write(blockSizeArray[i]);
@@ -516,20 +516,20 @@ namespace AmaroK86.MassEffect3
                             }
 
                             //seeking the sfar to the last entry offset
-                            stream.Seek((long)pointerEntry, SeekOrigin.Begin);
+                            stream.Seek(pointerEntry, SeekOrigin.Begin);
                             writer.Write(fileNameHash.A.Swap());
                             writer.Write(fileNameHash.B.Swap());
                             writer.Write(fileNameHash.C.Swap());
                             writer.Write(fileNameHash.D.Swap());
                             writer.Write(initialPosBlock);
-                            writer.Write((uint)fileLength);
+                            writer.Write(fileLength);
                             writer.Write((byte)0);
-                            writer.Write((uint)pointerData);
+                            writer.Write(pointerData);
                             writer.Write((byte)0);
                             pointerEntry = (uint)stream.Position;
 
                             //seeking the sfar to the last data offset
-                            stream.Seek((long)pointerData, SeekOrigin.Begin);
+                            stream.Seek(pointerData, SeekOrigin.Begin);
                             encStream.WriteTo(stream);
                             pointerData += (uint)encStream.Length;
 
@@ -559,7 +559,7 @@ namespace AmaroK86.MassEffect3
                     CompressFile(streamRead, out blockSizeArray, encStream);
 
                     //seeking the sfar to the last Block Size offset
-                    stream.Seek((long)pointerBlockSize, SeekOrigin.Begin);
+                    stream.Seek(pointerBlockSize, SeekOrigin.Begin);
                     for (int i = 0; i < blockSizeArray.Length; i++)
                     {
                         writer.Write(blockSizeArray[i]);
@@ -569,19 +569,19 @@ namespace AmaroK86.MassEffect3
                     posBlockSize += blockSizeArray.Length;
 
                     //write the file list entry block
-                    stream.Seek((long)fileListPointerEntry, SeekOrigin.Begin);
+                    stream.Seek(fileListPointerEntry, SeekOrigin.Begin);
                     writer.Write(fileNameHash.A.Swap());
                     writer.Write(fileNameHash.B.Swap());
                     writer.Write(fileNameHash.C.Swap());
                     writer.Write(fileNameHash.D.Swap());
                     writer.Write(initialPosBlock);
-                    writer.Write((uint)fileLength);
+                    writer.Write(fileLength);
                     writer.Write((byte)0);
-                    writer.Write((uint)pointerData);
+                    writer.Write(pointerData);
                     writer.Write((byte)0);
 
                     //seeking the sfar to the last data offset
-                    stream.Seek((long)pointerData, SeekOrigin.Begin);
+                    stream.Seek(pointerData, SeekOrigin.Begin);
                     encStream.WriteTo(stream);
                     pointerData += (uint)encStream.Length;
 
@@ -655,7 +655,7 @@ namespace AmaroK86.MassEffect3
                 throw new IOException("Error: not an output writable stream");
 
             int fileLength = (int)inStream.Length;
-            blockSizes = new ushort[(int)Math.Ceiling((double)fileLength / (double)sfarMaxBlockSize)];
+            blockSizes = new ushort[(int)Math.Ceiling(fileLength / (double)sfarMaxBlockSize)];
 
             byte[] inputBlock;
             byte[] outputBlock = new byte[sfarMaxBlockSize + 100];
@@ -686,7 +686,7 @@ namespace AmaroK86.MassEffect3
 #if (WITH_GUI)
                 if (worker != null)
                 {
-                    int perc = (int)Math.Ceiling((float)count++ / (float)blockSizes.Length * 100);
+                    int perc = (int)Math.Ceiling(count++ / (float)blockSizes.Length * 100);
                     if (perc > highPerc)
                     {
                         highPerc = perc;
@@ -872,7 +872,7 @@ namespace AmaroK86.MassEffect3
             {
                 inStream = infile;
                 fileLength = (int)infile.Length;
-                blockSizes = new ushort[(int)Math.Ceiling((double)fileLength / (double)sfarMaxBlockSize)];
+                blockSizes = new ushort[(int)Math.Ceiling(fileLength / (double)sfarMaxBlockSize)];
                 compressedArray = new byte[blockSizes.Length][];
 
                 tempLength = (uint)fileLength;
@@ -1059,7 +1059,7 @@ namespace AmaroK86.MassEffect3
             var left = entry.uncompressedSize;
             input.Seek(entry.dataOffset[0], SeekOrigin.Begin);
 
-            int numBlocks = (int)(Math.Ceiling((float)entry.uncompressedSize / (float)DLCBase.MaximumBlockSize));
+            int numBlocks = (int)(Math.Ceiling(entry.uncompressedSize / (float)DLCBase.MaximumBlockSize));
 
             if (entry.blockSizeIndex == -1)
             {
@@ -1069,7 +1069,7 @@ namespace AmaroK86.MassEffect3
             {
                 while (left > 0)
                 {
-                    uint compressedBlockSize = (uint)entry.blockSizeArray[count];
+                    uint compressedBlockSize = entry.blockSizeArray[count];
                     if (compressedBlockSize == 0)
                     {
                         compressedBlockSize = DLCBase.MaximumBlockSize;
@@ -1142,7 +1142,7 @@ namespace AmaroK86.MassEffect3
 #if (WITH_GUI)
                     if (worker != null)
                     {
-                        int perc = (int)Math.Ceiling((float)count++ / (float)numBlocks * 100);
+                        int perc = (int)Math.Ceiling(count++ / (float)numBlocks * 100);
                         if (perc > highPerc)
                         {
                             highPerc = perc;

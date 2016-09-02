@@ -8,12 +8,14 @@ using ME3Explorer.Unreal;
 using SevenZip.Compression.LZMA;
 using KFreonLib.Debugging;
 using UsefulThings;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace ME3Explorer.Unreal
 {
     public class DLCPackage
     {
-        public string MyFileName;
+        public string FileName;
         public struct HeaderStruct
         {
             public uint Magic;
@@ -102,7 +104,7 @@ namespace ME3Explorer.Unreal
                 }
                 else
                 {
-                    int numBlocks = (int)Math.Ceiling((double)UncompressedSize / (double)header.MaxBlockSize);
+                    int numBlocks = (int)Math.Ceiling(UncompressedSize / (double)header.MaxBlockSize);
                     if (con.isLoading)
                     {
                         BlockOffsets = new long[numBlocks];
@@ -124,7 +126,7 @@ namespace ME3Explorer.Unreal
 
             private long getBlockOffset(int blockIndex, uint entryOffset, uint numEntries)
             {
-                return (long)(entryOffset + (numEntries * 0x1E) + (blockIndex * 2));
+                return entryOffset + (numEntries * 0x1E) + (blockIndex * 2);
             }
 
             public TreeNode ToTree(int MyIndex)
@@ -155,6 +157,19 @@ namespace ME3Explorer.Unreal
         public HeaderStruct Header;
         public FileEntryStruct[] Files;
 
+        public long UncompressedSize
+        {
+            get
+            {
+                long size = 0;
+                foreach (var file in Files)
+                {
+                    size += file.RealUncompressedSize;
+                }
+                return size;
+            }
+        }
+
         public DLCPackage(string FileName)
         {
             Load(FileName);
@@ -162,7 +177,7 @@ namespace ME3Explorer.Unreal
 
         public void Load(string FileName)
         {
-            MyFileName = FileName;
+            this.FileName = FileName;
             SerializingFile con = new SerializingFile(new FileStream(FileName, FileMode.Open, FileAccess.Read));
             Serialize(con);
             con.Memory.Close();
@@ -179,7 +194,7 @@ namespace ME3Explorer.Unreal
             for (int i = 0; i < Header.FileCount; i++)
                 Files[i].Serialize(con, Header);
             if (con.isLoading)
-                ReadFileNames(con);
+                ReadFileNames();
         }
 
         public bool CompareByteArray(byte[] a1, byte[] a2)
@@ -192,7 +207,7 @@ namespace ME3Explorer.Unreal
             return true;
         }
 
-        public void ReadFileNames(SerializingFile con)
+        public void ReadFileNames()
         {
             FileEntryStruct e;
             int f = -1;
@@ -234,7 +249,7 @@ namespace ME3Explorer.Unreal
             byte[] inputBlock;
             byte[] outputBlock = new byte[Header.MaxBlockSize];
             long left = e.RealUncompressedSize;
-            FileStream fs = new FileStream(MyFileName, FileMode.Open, FileAccess.Read);
+            FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
             byte[] buff;
             if (e.BlockSizeIndex == 0xFFFFFFFF)
@@ -249,7 +264,7 @@ namespace ME3Explorer.Unreal
             {
                 while (left > 0)
                 {
-                    uint compressedBlockSize = (uint)e.BlockSizes[count];
+                    uint compressedBlockSize = e.BlockSizes[count];
                     if (compressedBlockSize == 0)
                         compressedBlockSize = Header.MaxBlockSize;
                     if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
@@ -286,7 +301,7 @@ namespace ME3Explorer.Unreal
             byte[] inputBlock;
             byte[] outputBlock = new byte[Header.MaxBlockSize];
             long left = e.RealUncompressedSize;
-            FileStream fs = new FileStream(MyFileName, FileMode.Open, FileAccess.Read);
+            FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
             byte[] buff;
             if (e.BlockSizeIndex == 0xFFFFFFFF)
@@ -299,7 +314,7 @@ namespace ME3Explorer.Unreal
             {
                 while (left > 0)
                 {
-                    uint compressedBlockSize = (uint)e.BlockSizes[count];
+                    uint compressedBlockSize = e.BlockSizes[count];
                     if (compressedBlockSize == 0)
                         compressedBlockSize = Header.MaxBlockSize;
                     if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
@@ -333,6 +348,92 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
+        internal class InputBlock
+        {
+            public const long Uncompressed = -1;
+
+            public byte[] Data { get; }
+            public long UncompressedSize { get; }
+            public bool IsCompressed { get; }
+
+            public InputBlock(byte[] data, long uncompressedSize)
+            {
+                Data = data;
+                UncompressedSize = uncompressedSize;
+                IsCompressed = uncompressedSize > 0;
+            }
+        }
+
+        public async Task DecompressEntryAsync(int index, Stream output)
+        {
+            var entry = Files[index];
+            using (var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.None, 4096, useAsync: true))
+            {
+                fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
+
+                //not compressed
+                if (entry.BlockSizeIndex == 0xFFFFFFFF)
+                {
+                    var uncompressed = new byte[entry.RealUncompressedSize];
+                    await fs.ReadAsync(uncompressed, 0, uncompressed.Length).ConfigureAwait(continueOnCapturedContext: false);
+                    await output.WriteAsync(uncompressed, 0, uncompressed.Length).ConfigureAwait(continueOnCapturedContext: false);
+
+                    return;
+                }
+
+                var decompressor = new TransformBlock<InputBlock, byte[]>(
+                    input => input.IsCompressed
+                        ? SevenZipHelper.Decompress(input.Data, input.UncompressedSize)
+                        : input.Data
+                    , new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded }
+                    );
+
+                var outputWriter = new ActionBlock<byte[]>(
+                    data => output.Write(data, 0, data.Length)
+                    );
+
+                decompressor.LinkTo(outputWriter, new DataflowLinkOptions { PropagateCompletion = true });
+
+                uint count = 0;
+                long left = entry.RealUncompressedSize;
+                while (left > 0)
+                {
+                    uint compressedBlockSize = entry.BlockSizes[count];
+                    if (compressedBlockSize == 0)
+                    {
+                        compressedBlockSize = Header.MaxBlockSize;
+                    }
+
+                    if (compressedBlockSize == Header.MaxBlockSize ||
+                        compressedBlockSize == left)
+                    {
+                        left -= compressedBlockSize;
+                        var uncompressedData = new byte[compressedBlockSize];
+                        await fs.ReadAsync(uncompressedData, 0, uncompressedData.Length).ConfigureAwait(continueOnCapturedContext: false);
+                        decompressor.Post(new InputBlock(uncompressedData, InputBlock.Uncompressed));
+                    }
+                    else
+                    {
+                        var uncompressedBlockSize = Math.Min(left, Header.MaxBlockSize);
+                        left -= uncompressedBlockSize;
+                        if (compressedBlockSize < 5)
+                        {
+                            throw new Exception("compressed block size smaller than 5");
+                        }
+
+                        var compressedData = new byte[compressedBlockSize];
+                        await fs.ReadAsync(compressedData, 0, (int)compressedBlockSize).ConfigureAwait(continueOnCapturedContext: false);
+
+                        decompressor.Post(new InputBlock(compressedData, uncompressedBlockSize));
+                    }
+                    count++;
+                }
+
+                decompressor.Complete();
+                await outputWriter.Completion;
+            }
+        }
+
         public MemoryStream DecompressEntry(int Index, FileStream fs)
         {
             MemoryStream result = new MemoryStream();
@@ -353,7 +454,7 @@ namespace ME3Explorer.Unreal
             {
                 while (left > 0)
                 {
-                    uint compressedBlockSize = (uint)e.BlockSizes[count];
+                    uint compressedBlockSize = e.BlockSizes[count];
                     if (compressedBlockSize == 0)
                         compressedBlockSize = Header.MaxBlockSize;
                     if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
@@ -426,17 +527,17 @@ namespace ME3Explorer.Unreal
             long bytes = Math.Abs(byteCount);
             int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
             double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-            return (Math.Sign(byteCount) * num).ToString() + suf[place];
+            return (Math.Sign(byteCount) * num) + suf[place];
         }
 
         public void ReBuild()
         {
-            string path = Path.GetDirectoryName(MyFileName) + "\\" + Path.GetFileNameWithoutExtension(MyFileName) + ".tmp";
+            string path = Path.GetDirectoryName(FileName) + "\\" + Path.GetFileNameWithoutExtension(FileName) + ".tmp";
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            BitConverter.IsLittleEndian = true;
+            
             DebugOutput.PrintLn("Creating Header Dummy...");
             for (int i = 0; i < 8; i++)
-                fs.Write(BitConverter.GetBytes((int)0), 0, 4);
+                fs.Write(BitConverter.GetBytes(0), 0, 4);
             Header.EntryOffset = 0x20;
             DebugOutput.PrintLn("Creating File Table...");
             for (int i = 0; i < Header.FileCount; i++)
@@ -509,8 +610,8 @@ namespace ME3Explorer.Unreal
             foreach (char c in Header.CompressionScheme)
                 fs.WriteByte((byte)c);
             fs.Close();
-            File.Delete(MyFileName);
-            File.Move(path, MyFileName);
+            File.Delete(FileName);
+            File.Move(path, FileName);
         }
 
         private int FindTOC()
@@ -528,7 +629,7 @@ namespace ME3Explorer.Unreal
         {
             try
             {
-                FileStream fs = new FileStream(MyFileName, FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
                 DebugOutput.PrintLn("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
@@ -558,13 +659,13 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public void DeleteEntry(List<int> Index)
+        public void DeleteEntries(List<int> Index)
         {
             try
             {
                 Index.Sort();
                 Index.Reverse();
-                FileStream fs = new FileStream(MyFileName, FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
                 DebugOutput.PrintLn("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
@@ -602,8 +703,8 @@ namespace ME3Explorer.Unreal
 
         public void AddFileQuick(string filein, string path)
         {
-            BitConverter.IsLittleEndian = true;
-            string DLCPath = MyFileName;
+            
+            string DLCPath = FileName;
             FileStream fs = new FileStream(DLCPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             byte[] FileIN = File.ReadAllBytes(filein);            
             //Create Entry
@@ -681,11 +782,11 @@ namespace ME3Explorer.Unreal
                 e = Files[i];
                 fs.Write(e.Hash, 0, 16);
                 if (e.BlockSizeIndex == 0xFFFFFFFF || i==f)
-                    fs.Write(BitConverter.GetBytes((int)-1), 0, 4);
+                    fs.Write(BitConverter.GetBytes(-1), 0, 4);
                 else
                 {
                     fs.Write(BitConverter.GetBytes(blocksizeindex), 0, 4);
-                    e.BlockSizeIndex = (uint)blocksizeindex;
+                    e.BlockSizeIndex = blocksizeindex;
                     blocksizeindex += (uint)e.BlockSizes.Length;                    
                     Files[i] = e;
                 }
@@ -731,8 +832,8 @@ namespace ME3Explorer.Unreal
 
         public void ReplaceEntry(byte[] FileIN,int Index)
         {
-            BitConverter.IsLittleEndian = true;
-            string DLCPath = MyFileName;
+            
+            string DLCPath = FileName;
             FileStream fs = new FileStream(DLCPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             fs.Seek(0, SeekOrigin.End);
             uint offset = (uint)fs.Length;
@@ -785,10 +886,10 @@ namespace ME3Explorer.Unreal
                 ////////////////////////////// KFREON TEMPORARY STUFF WV :)
                 if (f == -1)
                 {
-                    List<string> parts = new List<string>(this.MyFileName.Split('\\'));
+                    List<string> parts = new List<string>(this.FileName.Split('\\'));
                     parts.RemoveAt(parts.Count - 1);
                     parts.RemoveAt(parts.Count - 1);
-                    string path = String.Join("\\", parts) + "\\" + e.name;
+                    string path = string.Join("\\", parts) + "\\" + e.name;
                     if (File.Exists(path))
                     {
                         FileInfo fi = new FileInfo(path);
@@ -821,7 +922,7 @@ namespace ME3Explorer.Unreal
             if (Rebuild)
             {
                 DebugOutput.PrintLn("Reopening SFAR...");
-                Load(MyFileName);
+                Load(FileName);
                 DebugOutput.PrintLn("Rebuild...");
                 ReBuild();
             }
@@ -830,13 +931,18 @@ namespace ME3Explorer.Unreal
 
         public TreeNode ToTree()
         {
-            TreeNode result = new TreeNode(MyFileName);
+            TreeNode result = new TreeNode(FileName);
             result.Nodes.Add(Header.ToTree());
             TreeNode t = new TreeNode("FileEntries");
             for (int i = 0; i < Header.FileCount; i++)
                 t.Nodes.Add(Files[i].ToTree(i));
             result.Nodes.Add(t);
             return result;
+        }
+
+        public int FindFileEntry(string fileName)
+        {
+            return Files.IndexOf(Files.FirstOrDefault(x => x.FileName.Contains(fileName)));
         }
     }
 }

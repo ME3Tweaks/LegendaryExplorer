@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
 {
@@ -77,7 +78,7 @@ namespace ME3Explorer
                 }
                 listBox1.Items.Clear();
                 for (int i = 0; i < entr.Count; i++)
-                    listBox1.Items.Add("#" + i.ToString() + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
+                    listBox1.Items.Add("#" + i + " Offset:" + entr[i].off.ToString("X") + " Size:" + entr[i].size.ToString("X"));
                 listBox2.Items.Clear();
                 listBox2.Items.Add("Loaded " + Path.GetFileName(path) + "\nCount: " + entr.Count);
             }
@@ -103,16 +104,19 @@ namespace ME3Explorer
 
         private void allToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.FolderBrowserDialog m = new System.Windows.Forms.FolderBrowserDialog();
-            m.ShowDialog();
-            if (m.SelectedPath != "")
+            CommonOpenFileDialog m = new CommonOpenFileDialog();
+            m.IsFolderPicker = true;
+            m.EnsurePathExists = true;
+            m.Title = "Select Folder to Output to";
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string dir = m.SelectedPath + "\\";
+                string dir = m.FileName;
                 for (int i = 0; i < entr.Count; i++)
                 {
                     Entry t = entr[i];
-                    FileStream fileStream = new FileStream(dir + t.off.ToString("X") + ".bik", FileMode.Create, FileAccess.Write);
-                    listBox2.Items.Add("Extracting " + dir + t.off.ToString("X") + ".bik");
+                    string filePath = Path.Combine(dir, t.off.ToString("X") + ".bik");
+                    FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+                    listBox2.Items.Add("Extracting " + filePath);
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
                     Application.DoEvents(); 
                     for (int j = 0; j < t.size; j++)
@@ -121,11 +125,6 @@ namespace ME3Explorer
                 }
             }
             MessageBox.Show("Done.");
-        }
-
-        private void BIKExtract_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            taskbar.RemoveTool(this);
         }
     }
 }

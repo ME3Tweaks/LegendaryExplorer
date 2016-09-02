@@ -11,12 +11,12 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.AnimationExplorer
 {
-    public partial class AnimationExplorer : Form
+    public partial class AnimationExplorer : WinFormsBase
     {
-        public PCCObject pcc;
         public List<AnimTree> AT;
         public List<AnimSet> AS;
         public List<string> filenames = new List<string>();
@@ -30,7 +30,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 LoadPcc(d.FileName);
         }
 
@@ -38,24 +38,8 @@ namespace ME3Explorer.AnimationExplorer
         {
             try
             {
-                pcc = new PCCObject(s);
-                AT = new List<AnimTree>();
-                AS = new List<AnimSet>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    switch (pcc.Exports[i].ClassName)
-                    {
-                        case "AnimTree":
-                            AT.Add(new AnimTree(pcc, i));
-                            break;
-                        case "AnimSet":
-                            AS.Add(new AnimSet(pcc, i));
-                            break;
-                    }
-                treeView1.Nodes.Clear();
-                foreach (AnimTree at in AT)
-                    treeView1.Nodes.Add(at.ToTree());
-                foreach (AnimSet ans in AS)
-                    treeView1.Nodes.Add(ans.ToTree());
+                LoadME3Package(s);
+                reScan();
             }
             catch (Exception ex)
             {
@@ -63,10 +47,34 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
+        private void reScan()
+        {
+            AT = new List<AnimTree>();
+            AS = new List<AnimSet>();
+            for (int i = 0; i < pcc.ExportCount; i++)
+            {
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                switch (Exports[i].ClassName)
+                {
+                    case "AnimTree":
+                        AT.Add(new AnimTree(pcc as ME3Package, i));
+                        break;
+                    case "AnimSet":
+                        AS.Add(new AnimSet(pcc as ME3Package, i));
+                        break;
+                }
+            }
+            treeView1.Nodes.Clear();
+            foreach (AnimTree at in AT)
+                treeView1.Nodes.Add(at.ToTree());
+            foreach (AnimSet ans in AS)
+                treeView1.Nodes.Add(ans.ToTree());
+        }
+
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string path = ME3Directory.cookedPath;
-            if (String.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -78,18 +86,21 @@ namespace ME3Explorer.AnimationExplorer
             {
                 try
                 {
-                    PCCObject _pcc = new PCCObject(file);
-                    DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
-                    bool found = false;
-                    foreach (PCCObject.ExportEntry ex in _pcc.Exports)
-                        if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
-                        {
-                            DebugOutput.PrintLn("Found Animation!");
-                            found = true;
-                            break;
-                        }
-                    if (found)
-                        filenames.Add(file);
+                    using (ME3Package _pcc = MEPackageHandler.OpenME3Package(file))
+                    {
+                        DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
+                        bool found = false;
+                        IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
+                        foreach (IExportEntry ex in Exports)
+                            if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
+                            {
+                                DebugOutput.PrintLn("Found Animation!");
+                                found = true;
+                                break;
+                            }
+                        if (found)
+                            filenames.Add(file); 
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -117,7 +128,7 @@ namespace ME3Explorer.AnimationExplorer
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 
@@ -158,8 +169,8 @@ namespace ME3Explorer.AnimationExplorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
-                fs.Write(BitConverter.GetBytes((int)filenames.Count), 0, 4);
+                
+                fs.Write(BitConverter.GetBytes(filenames.Count), 0, 4);
                 foreach (string s in filenames)
                     WriteString(fs, s);
                 fs.Close();
@@ -174,7 +185,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 filenames = new List<string>();
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 byte[] buff = new byte[4];
                 fs.Read(buff, 0, 4);
                 int count = BitConverter.ToInt32(buff, 0);
@@ -231,5 +242,15 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            if (relevantUpdates.Count() > 0)
+            {
+                reScan();
+            }
+        }
     }
 }

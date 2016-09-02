@@ -861,7 +861,7 @@ namespace KFreonLib.Textures
         public void ChangeTexFormat(string newFormat, ME1PCCObject pcc)
         {
             SaltPropertyReader.Property prop = properties["Format"];
-            Int64 formatID = (Int64)pcc.AddName(newFormat);
+            Int64 formatID = pcc.AddName(newFormat);
             byte[] buff = BitConverter.GetBytes(formatID);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)formatID];
@@ -874,7 +874,7 @@ namespace KFreonLib.Textures
             if (!properties.ContainsKey("CompressionSettings"))
                 throw new KeyNotFoundException("Texture doesn't have a compression property");
             SaltPropertyReader.Property prop = properties["CompressionSettings"];
-            Int64 comp = (Int64)pcc.AddName(newComp);
+            Int64 comp = pcc.AddName(newComp);
             byte[] buff = BitConverter.GetBytes(comp);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)comp];
@@ -1301,7 +1301,7 @@ namespace KFreonLib.Textures
             ImageInfo existingImg = privateimgList.First(img => img.storageType != storage.empty);
             if (containsmips)
             {
-                if ((float)mipmaps.imageList[0].imgSize.width / (float)mipmaps.imageList[0].imgSize.height != (float)existingImg.imgSize.width / (float)existingImg.imgSize.height)
+                if (mipmaps.imageList[0].imgSize.width / (float)mipmaps.imageList[0].imgSize.height != existingImg.imgSize.width / (float)existingImg.imgSize.height)
                     throw new FormatException("Input texture not correct aspect ratio");
 
                 if (mipmaps.imageList[0].format == "PF_R8G8B8") // Convert to 32-bit if necessary
@@ -1345,7 +1345,7 @@ namespace KFreonLib.Textures
             {
                 ImageFile ddsfile = new DDS("", data);
 
-                if ((float)ddsfile.imgSize.width / (float)ddsfile.imgSize.height != (float)existingImg.imgSize.width / (float)existingImg.imgSize.height) // Check dimensions
+                if (ddsfile.imgSize.width / (float)ddsfile.imgSize.height != existingImg.imgSize.width / (float)existingImg.imgSize.height) // Check dimensions
                     throw new FormatException("Input texture not correct aspect ratio");
 
                 if (ddsfile.format == "R8G8B8")
@@ -1401,7 +1401,7 @@ namespace KFreonLib.Textures
             newImg.imgSize = imgSize;
             imageData = ddsfile.resize();
             newImg.uncSize = imageData.Length;
-            if ((long)newImg.uncSize != ImageFile.ImageDataSize(imgSize, ddsfile.format, ddsfile.BPP))
+            if (newImg.uncSize != ImageFile.ImageDataSize(imgSize, ddsfile.format, ddsfile.BPP))
                 throw new FormatException("Input texture not correct length!");
 
             switch (newImg.storageType)
@@ -1447,7 +1447,7 @@ namespace KFreonLib.Textures
             {
                 ms.WriteBytes(imageData);
                 imgInfo.uncSize = imgBuff.Length;
-                if ((long)imgInfo.uncSize != ImageFile.ImageDataSize(ddsfile.imgSize, ddsfile.format, ddsfile.BPP))
+                if (imgInfo.uncSize != ImageFile.ImageDataSize(ddsfile.imgSize, ddsfile.format, ddsfile.BPP))
                     throw new FormatException("Input texture not correct length!");
 
                 if (imgInfo.storageType == storage.pccCpr)

@@ -201,8 +201,8 @@ namespace UMD.HCIL.Piccolo.Activities {
 			get {
 				StringBuilder result = new StringBuilder();
 
-				result.Append("source=" + source.ToString());
-				result.Append(",destination=" + destination.ToString());
+				result.Append("source=" + source);
+				result.Append(",destination=" + destination);
 				result.Append(',');
 				result.Append(base.ParamString);
 

@@ -14,6 +14,7 @@ using ME3Explorer.Unreal;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -42,7 +43,7 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public CustomVertex.PositionColored[] points;
@@ -55,12 +56,12 @@ namespace ME3Explorer.Unreal.Classes
         public bool isSelected = false;
         public bool isEdited = false;
 
-        public static Vector3 GetLocation(PCCObject Pcc, int Index)
+        public static Vector3 GetLocation(ME3Package Pcc, int Index)
         {
             Vector3 r = new Vector3();
             if (!Pcc.isExport(Index))
                 return new Vector3();
-            List<PropertyReader.Property> pp = PropertyReader.getPropList(Pcc, Pcc.Exports[Index]);
+            List<PropertyReader.Property> pp = PropertyReader.getPropList(Pcc.Exports[Index]);
             foreach (PropertyReader.Property p in pp)
                 switch (Pcc.getNameEntry(p.Name))
                 {
@@ -73,14 +74,14 @@ namespace ME3Explorer.Unreal.Classes
             return r;
         }
 
-        public SplineActor(PCCObject Pcc, int Index)
+        public SplineActor(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
+            
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
                 {
@@ -144,7 +145,7 @@ namespace ME3Explorer.Unreal.Classes
             foreach (PropertyReader.Property p in Props)
                 if (pcc.getNameEntry(p.Name) == "LinksFrom")
                     buff = GetArrayContent(p.raw);
-            BitConverter.IsLittleEndian = true;
+            
             for (int i = 0; i < buff.Length / 4; i++)
             {
                 int Idx = BitConverter.ToInt32(buff, i * 4) - 1;
@@ -280,7 +281,7 @@ namespace ME3Explorer.Unreal.Classes
                     DebugOutput.PrintLn(MyIndex + " : cant find location property");
                 }
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
+                string currfile = Path.GetFileName(pcc.FileName);
                 mj.data = data;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
                 string lc = Path.GetDirectoryName(Application.ExecutablePath);
@@ -296,7 +297,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] Vector3ToBuff(Vector3 v)
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
+            
             m.Write(BitConverter.GetBytes(v.X), 0, 4);
             m.Write(BitConverter.GetBytes(v.Y), 0, 4);
             m.Write(BitConverter.GetBytes(v.Z), 0, 4);

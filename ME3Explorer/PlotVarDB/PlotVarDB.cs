@@ -121,7 +121,7 @@ namespace ME3Explorer.PlotVarDB
             foreach (PlotVarEntry p in entries)
             {
                 //defines row data. If you add columns, you need to add them here in order
-                object[] row = new object[] { p.id.ToString(), TypeToString(p.type), GameToString(p.game), p.category1, p.category2, p.state, p.broken, p.me2id > 0 ? p.me2id.ToString() : "", p.me3id > 0 ? p.me3id.ToString() : "", p.notes };
+                object[] row = { p.id.ToString(), TypeToString(p.type), GameToString(p.game), p.category1, p.category2, p.state, p.broken, p.me2id > 0 ? p.me2id.ToString() : "", p.me3id > 0 ? p.me3id.ToString() : "", p.notes };
                 plotVarTable.Rows.Add(row);
             }
             status.Text = "Number of entries: " + (plotVarTable.Rows.Count - 1);
@@ -211,7 +211,7 @@ namespace ME3Explorer.PlotVarDB
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
+                
 
                 //Header
                 fs.Write(BitConverter.GetBytes(V2PLUS_MAGIC), 0, 4);
@@ -351,7 +351,7 @@ namespace ME3Explorer.PlotVarDB
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 
@@ -414,7 +414,7 @@ namespace ME3Explorer.PlotVarDB
         private void loadDatabase(string fileName)
         {
             FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            BitConverter.IsLittleEndian = true;
+            
             int magic = ReadInt(fs);
             if (magic != V2PLUS_MAGIC)
             {
