@@ -164,7 +164,11 @@ namespace ME3Explorer.FaceFX
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.Name.ToString(), 0, 0);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
+                        {
                             d.Name = i;
+                            d.NameAsString = FaceFX.Header.Names[d.Name];
+                        }
+
                         break;
                     case 4://FadeInTime
                         result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), 0, 0);

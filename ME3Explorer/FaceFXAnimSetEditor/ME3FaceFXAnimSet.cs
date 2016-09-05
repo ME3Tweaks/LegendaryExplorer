@@ -122,6 +122,10 @@ namespace ME3Explorer.FaceFX
                     data.Data[i] = new ME3FaceFXLine();
                 ME3FaceFXLine d = data.Data[i];
                 d.Name = Container + d.Name;
+                if (Container.isLoading)
+                {
+                    d.NameAsString = header.Names[d.Name];
+                }
                 int count2 = 0;
                 if (!Container.isLoading)
                     count2 = d.animations.Length;
@@ -154,14 +158,21 @@ namespace ME3Explorer.FaceFX
                     u.leaveTangent = Container + u.leaveTangent;
                     d.points[j] = u;
                 }
-                count2 = 0;
-                if (!Container.isLoading)
-                    count2 = d.numKeys.Length;
-                count2 = Container + count2;
-                if (Container.isLoading)
-                    d.numKeys = new int[count2];
-                for (int j = 0; j < count2; j++)
-                    d.numKeys[j] = Container + d.numKeys[j];
+                if (d.animations.Length > 0)
+                {
+                    count2 = 0;
+                    if (!Container.isLoading)
+                        count2 = d.numKeys.Length;
+                    count2 = Container + count2;
+                    if (Container.isLoading)
+                        d.numKeys = new int[count2];
+                    for (int j = 0; j < count2; j++)
+                        d.numKeys[j] = Container + d.numKeys[j]; 
+                }
+                else if (Container.isLoading)
+                {
+                    d.numKeys = new int[0];
+                }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;
                 d.unk2 = Container + d.unk2;

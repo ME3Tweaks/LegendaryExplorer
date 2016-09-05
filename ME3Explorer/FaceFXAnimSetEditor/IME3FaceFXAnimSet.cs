@@ -82,6 +82,7 @@ namespace ME3Explorer.FaceFX
     public class ME3FaceFXLine
     {
         public int Name;
+        public string NameAsString { get; set; }
         public ME3NameRef[] animations;
         public ControlPoint[] points;
         public int[] numKeys;

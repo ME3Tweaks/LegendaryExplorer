@@ -50,7 +50,8 @@
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding path}">
+                            <TextBlock>
+                                <Run Text="{Binding NameAsString}"/>
                                 <TextBlock.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Delete" Click="DeleteLine_Click"/>

@@ -117,6 +117,10 @@ namespace ME3Explorer.FaceFX
                 d.unk0 = Container + d.unk0;
                 d.unk1 = Container + d.unk1;
                 d.Name = Container + d.Name;
+                if (Container.isLoading)
+                {
+                    d.NameAsString = header.Names[d.Name];
+                }
                 d.unk6 = Container + d.unk6;
                 int count2 = 0;
                 if (!Container.isLoading)
