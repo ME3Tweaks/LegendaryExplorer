@@ -114,9 +114,11 @@ namespace ME3Explorer.Meshplorer
             Preview3D.StatMesh = stm;
             //Preview3D.SkelMesh = null;
             Preview3D.CamOffset = new Vector3(0, 0, 0);
+            treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(stm.ToTree());
             treeView1.Nodes[0].Expand();
+            treeView1.EndUpdate();
         }
 
         public void LoadSkeletalMesh(int index)
@@ -131,9 +133,11 @@ namespace ME3Explorer.Meshplorer
                 Preview3D.SkelMesh = skm;
                 Preview3D.CamDistance = skm.Bounding.r * 2.0f;
                 Preview3D.CamOffset = skm.Bounding.origin;
+                treeView1.BeginUpdate();
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(skm.ToTree());
                 treeView1.Nodes[0].Expand();
+                treeView1.EndUpdate();
                 lODToolStripMenuItem.Visible = true;
                 lOD1ToolStripMenuItem.Enabled = true;
                 lOD1ToolStripMenuItem.Checked = true;
@@ -494,19 +498,12 @@ namespace ME3Explorer.Meshplorer
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            int n;
-            if (stm != null)
-            {
-                n = stm.index;
-            }
-            else if (skm != null)
-            {
-                n = skm.MyIndex;
-            }
-            else
+            int n = listBox1.SelectedIndex;
+            if (n == -1)
             {
                 return;
             }
+            n = Objects[n];
             lODToolStripMenuItem.Visible = false;
             UnCheckLODs();
             stm = null;
@@ -514,9 +511,9 @@ namespace ME3Explorer.Meshplorer
             skmold = null;
             Preview3D.SkelMesh = null;
             Preview3D.StatMesh = null;
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (pcc.getExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (pcc.getExport(n).ClassName == "SkeletalMesh")
                 LoadSkeletalMesh(n);
         }
 
