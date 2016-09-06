@@ -3,9 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using ME3Explorer.Unreal;
+using Microsoft.Win32;
 
 namespace ME3Explorer
 {
@@ -53,7 +51,7 @@ namespace ME3Explorer
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
             openFileDialog.Filter = Properties.Resources.TlkFilesFilter;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 _inputTlkFilePath = openFileDialog.FileName;
                 TextInputTlkFilePath.Text = _inputTlkFilePath;
@@ -64,7 +62,7 @@ namespace ME3Explorer
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = Properties.Resources.TextFilesFilter;
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == true)
             {
                 _outputTextFilePath = saveFileDialog.FileName;
                 TextOutputTextFilePath.Text = _outputTextFilePath;
@@ -76,7 +74,7 @@ namespace ME3Explorer
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
             openFileDialog.Filter = Properties.Resources.XmlFilesFilter;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 _inputXmlFilePath = openFileDialog.FileName;
                 TextInputXmlFilePath.Text = _inputXmlFilePath;
@@ -87,7 +85,7 @@ namespace ME3Explorer
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = Properties.Resources.TlkFilesFilter;
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == true)
             {
                 _outputTlkFilePath = saveFileDialog.FileName;
                 TextOutputTlkFilePath.Text = _outputTlkFilePath;
@@ -96,13 +94,12 @@ namespace ME3Explorer
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void StartReadingTlkButton_Click(object sender, RoutedEventArgs e)
         {
             BusyReading(true);
-            TalkFile.Fileformat ff = TalkFile.Fileformat.Xml;
 
             var loadingWorker = new BackgroundWorker();
             loadingWorker.WorkerReportsProgress = true;
@@ -120,20 +117,20 @@ namespace ME3Explorer
                     tf.LoadTlkData(_inputTlkFilePath);
 
                     tf.ProgressChanged += loadingWorker.ReportProgress;
-                    tf.DumpToFile(_outputTextFilePath, ff);
+                    tf.DumpToFile(_outputTextFilePath);
                     // debug
                     // tf.PrintHuffmanTree();
                     tf.ProgressChanged -= loadingWorker.ReportProgress;
                 }
                 catch (FileNotFoundException)
                 {
-                    System.Windows.MessageBox.Show(
+                    MessageBox.Show(
                         Properties.Resources.AlertExceptionTlkNotFound, Properties.Resources.Error,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch (IOException)
                 {
-                    System.Windows.MessageBox.Show(
+                    MessageBox.Show(
                         Properties.Resources.AlertExceptionTlkFormat, Properties.Resources.Error,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -141,7 +138,7 @@ namespace ME3Explorer
                 {
                     string message = Properties.Resources.AlertExceptionGeneric;
                     message += Properties.Resources.AlertExceptionGenericDescription + ex.Message;
-                    System.Windows.MessageBox.Show(message, Properties.Resources.Error,
+                    MessageBox.Show(message, Properties.Resources.Error,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             };
@@ -149,7 +146,7 @@ namespace ME3Explorer
             loadingWorker.RunWorkerCompleted += delegate
             {
                 BusyReading(false);
-                System.Windows.MessageBox.Show(Properties.Resources.AlertTlkLoadingFinished, Properties.Resources.Done,
+                MessageBox.Show(Properties.Resources.AlertTlkLoadingFinished, Properties.Resources.Done,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             };
 
@@ -175,22 +172,26 @@ namespace ME3Explorer
                 }
                 catch (FileNotFoundException)
                 {
-                    System.Windows.MessageBox.Show(
+                    MessageBox.Show(
                         Properties.Resources.AlertExceptionXmlNotFound, Properties.Resources.Error,
                         MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (System.Xml.XmlException ex)
+                {
+                    MessageBox.Show($"Parse Error: {ex.Message}");
                 }
                 catch (Exception ex)
                 {
                     string message = Properties.Resources.AlertExceptionGeneric;
                     message += Properties.Resources.AlertExceptionGenericDescription + ex.Message;
-                    System.Windows.MessageBox.Show(message, Properties.Resources.Error,
+                    MessageBox.Show(message, Properties.Resources.Error,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             };
             writingWorker.RunWorkerCompleted += delegate
             {
                 BusyWriting(false);
-                System.Windows.MessageBox.Show(Properties.Resources.AlertWritingTlkFinished, Properties.Resources.Done,
+                MessageBox.Show(Properties.Resources.AlertWritingTlkFinished, Properties.Resources.Done,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             };
 

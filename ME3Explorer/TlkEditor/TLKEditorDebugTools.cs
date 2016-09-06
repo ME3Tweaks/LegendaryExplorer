@@ -39,8 +39,8 @@ namespace ME3Explorer
             Console.WriteLine("magic: " + Header.magic);
             Console.WriteLine("ver: " + Header.ver);
             Console.WriteLine("min_ver: " + Header.min_ver);
-            Console.WriteLine("entry1Count: " + Header.entry1Count);
-            Console.WriteLine("entry2Count: " + Header.entry2Count);
+            Console.WriteLine("entry1Count: " + Header.MaleEntryCount);
+            Console.WriteLine("entry2Count: " + Header.FemaleEntryCount);
             Console.WriteLine("treeNodeLength: " + Header.treeNodeCount);
             Console.WriteLine("dataLen: " + Header.dataLen);
         }

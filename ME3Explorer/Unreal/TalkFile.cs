@@ -10,20 +10,13 @@ namespace ME3Explorer
 {
     public class TalkFile
     {
-        public enum Fileformat
-        {
-            Txt,
-            Csv,
-            Xml
-        }
-        
         public struct TLKHeader
         {
             public int magic;
             public int ver;
             public int min_ver;
-            public int entry1Count;
-            public int entry2Count;
+            public int MaleEntryCount;
+            public int FemaleEntryCount;
             public int treeNodeCount;
             public int dataLen;
 
@@ -33,8 +26,8 @@ namespace ME3Explorer
                 magic = r.ReadInt32();
                 ver = r.ReadInt32();
                 min_ver = r.ReadInt32();
-                entry1Count = r.ReadInt32();
-                entry2Count = r.ReadInt32();
+                MaleEntryCount = r.ReadInt32();
+                FemaleEntryCount = r.ReadInt32();
                 treeNodeCount = r.ReadInt32();
                 dataLen = r.ReadInt32();
             }
@@ -111,7 +104,7 @@ namespace ME3Explorer
              */
             /* jumping to the beginning of Huffmann Tree stored in TLK file */
             long pos = r.BaseStream.Position;
-            r.BaseStream.Seek(pos + (Header.entry1Count + Header.entry2Count) * 8, SeekOrigin.Begin);
+            r.BaseStream.Seek(pos + (Header.MaleEntryCount + Header.FemaleEntryCount) * 8, SeekOrigin.Begin);
 
             CharacterTree = new List<HuffmanNode>();
             for (int i = 0; i < Header.treeNodeCount; i++)
@@ -158,7 +151,7 @@ namespace ME3Explorer
              * of another String present in rawStrings. 
              */
             StringRefs = new List<TLKStringRef>();
-            for (int i = 0; i < Header.entry1Count + Header.entry2Count; i++)
+            for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
                 TLKStringRef sref = new TLKStringRef(r);
                 sref.position = i;
@@ -214,16 +207,13 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="ff"></param>
-        public void DumpToFile(string fileName, Fileformat ff)
+        public void DumpToFile(string fileName)
         {
             File.Delete(fileName);
             /* for now, it's better not to sort, to preserve original order */
             // StringRefs.Sort(CompareTlkStringRef);
 
-            if (ff == Fileformat.Xml)
-                SaveToXmlFile(fileName);
-            else
-                SaveToTextFile(fileName);
+            SaveToXmlFile(fileName);
         }
 
         /// <summary>
@@ -298,30 +288,32 @@ namespace ME3Explorer
             xr.WriteStartElement("tlkFile");
             xr.WriteAttributeString("TLKToolVersion", App.GetVersion());
 
-            xr.WriteComment("Male entries section begin (ends at position " + (Header.entry1Count - 1) + ")");
+            xr.WriteComment("Male entries section begin");
 
             foreach (var s in StringRefs)
             {
-                if (s.position == Header.entry1Count)
+                if (s.position == Header.MaleEntryCount)
                 {
                     xr.WriteComment("Male entries section end");
-                    xr.WriteComment("Female entries section begin (ends at position " + (Header.entry1Count + Header.entry2Count - 1) + ")");
+                    xr.WriteComment("Female entries section begin");
                 }
                 
-                xr.WriteStartElement("string");
+                xr.WriteStartElement("String");
 
-                xr.WriteStartElement("id");
+                xr.WriteStartAttribute("id");
                 xr.WriteValue(s.StringID);
-                xr.WriteEndElement(); // </id>
-
-                xr.WriteStartElement("position");
-                xr.WriteValue(s.position);
-                xr.WriteEndElement(); // </position>
+                xr.WriteEndAttribute();
 
                 if (s.BitOffset < 0)
-                    xr.WriteElementString("data", "-1");
+                {
+                    xr.WriteStartAttribute("calculatedID");
+                    xr.WriteValue(-(Int32.MinValue - s.StringID));
+                    xr.WriteEndAttribute();
+
+                    xr.WriteString("-1");
+                }
                 else
-                    xr.WriteElementString("data", s.Data);
+                    xr.WriteString(s.Data);
 
                 xr.WriteEndElement(); // </string> 
 
@@ -336,33 +328,6 @@ namespace ME3Explorer
             xr.WriteEndElement(); // </tlkFile>
             xr.Flush();
             xr.Close();
-        }
-
-        /// <summary>
-        /// Writing data in a normal text format.
-        /// </summary>
-        /// <remarks>
-        /// Currently not used by main application, but it works ok.
-        /// </remarks>
-        /// <param name="fileName"></param>
-        private void SaveToTextFile(string fileName)
-        {
-            int totalCount = StringRefs.Count();
-            int count = 0;
-            int lastProgress = -1;
-
-            foreach (var s in StringRefs)
-            {
-                string line = s.StringID + ": " + s.Data + "\r\n";
-                File.AppendAllText(fileName, line);
-
-                int progress = (++count * 100) / totalCount;
-                if (progress > lastProgress)
-                {
-                    lastProgress = progress;
-                    OnProgressChanged(lastProgress);
-                }
-            }
         }
 
         /* for sorting */

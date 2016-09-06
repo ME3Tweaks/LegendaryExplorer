@@ -180,37 +180,66 @@ namespace ME3Explorer
                 {
                     string toolVersion = xmlReader.GetAttribute("TLKToolVersion");
                     if (toolVersion != null)
-                        _inputFileVersion = new Version("1.0.3");
+                        _inputFileVersion = new Version(toolVersion);
                     break;
                 }
             }
-
-            while (xmlReader.Read())
+            if (_inputFileVersion >= new Version("2.0.12"))
             {
-                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "string")
+                int position = 0;
+                while (xmlReader.Read())
                 {
-                    int id = 0, position = 0;
-                    string data = "";
-                    while (xmlReader.Name != "string" || xmlReader.NodeType != XmlNodeType.EndElement)
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "String")
                     {
-                        if (!xmlReader.Read() || xmlReader.NodeType != XmlNodeType.Element)
-                            continue;
-                        if (xmlReader.Name == "id")
-                            id = xmlReader.ReadElementContentAsInt();
-                        else if (xmlReader.Name == "position")
-                            position = xmlReader.ReadElementContentAsInt();
-                        else if (xmlReader.Name == "data")
-                            data = xmlReader.ReadString();
+                        int id = 0;
+                        if (!int.TryParse(xmlReader.GetAttribute("id"), out id))
+                        {
+                            throw new XmlException("id not an integer.", null, xmlReader.LineNumber, xmlReader.LinePosition);
+                        }
+                        string data = xmlReader.ReadElementContentAsString();
+
+                        data = data.Replace("\r\n", "\n");
+                        /* every string should be NULL-terminated */
+                        if (id >= 0)
+                            data += '\0';
+                        /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
+                        if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
+                            _inputData.Add(new TLKEntry(id, position, "(#" + id + ") " + data));
+                        else
+                            _inputData.Add(new TLKEntry(id, position, data));
+                        position++;
                     }
-                    data = data.Replace("\r\n", "\n");
-                    /* every string should be NULL-terminated */
-                    if (id >= 0)
-                        data += '\0';
-                    /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
-                    if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
-                        _inputData.Add(new TLKEntry(id, position, "(#" + id + ") " + data));
-                    else
-                        _inputData.Add(new TLKEntry(id, position, data));
+                } 
+            }
+            else //legacy support
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "string")
+                    {
+                        int id = 0, position = 0;
+                        string data = "";
+                        while (xmlReader.Name != "string" || xmlReader.NodeType != XmlNodeType.EndElement)
+                        {
+                            if (!xmlReader.Read() || xmlReader.NodeType != XmlNodeType.Element)
+                                continue;
+                            if (xmlReader.Name == "id")
+                                id = xmlReader.ReadElementContentAsInt();
+                            else if (xmlReader.Name == "position")
+                                position = xmlReader.ReadElementContentAsInt();
+                            else if (xmlReader.Name == "data")
+                                data = xmlReader.ReadString();
+                        }
+                        data = data.Replace("\r\n", "\n");
+                        /* every string should be NULL-terminated */
+                        if (id >= 0)
+                            data += '\0';
+                        /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
+                        if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
+                            _inputData.Add(new TLKEntry(id, position, "(#" + id + ") " + data));
+                        else
+                            _inputData.Add(new TLKEntry(id, position, data));
+                    }
                 }
             }
             xmlReader.Close();

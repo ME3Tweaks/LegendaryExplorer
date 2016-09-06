@@ -135,7 +135,7 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are trying to read an XML file, which was created in an earlier version of this program! To make it fully compatible with current version, follow instructions in this thread: http://social.bioware.com/project/3492/discussion/2571/ !.
+        ///   Looks up a localized string similar to You are trying to read an XML file, which was created in an earlier version of this program! To make it fully compatible with current version, follow instructions in this document: http://goo.gl/8AcR9F.
         /// </summary>
         public static string AlertPre103XML {
             get {
