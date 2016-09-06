@@ -38,8 +38,8 @@ namespace KFreonLib.MEDirectories
         }
         public static string BIOGamePath { get { return (gamePath != null) ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BIOGame\") : null; } }
         public static string tocFile { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\PCConsoleTOC.bin") : null; } }
-        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : null; } }
-        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath , @"BIOGame\DLC\") : null; } }
+        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : "Not Found"; } }
+        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath , @"BIOGame\DLC\") : "Not Found"; } }
 
         // "C:\...\MyDocuments\BioWare\Mass Effect 3\" folder
         public static string BioWareDocPath { get { return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\BioWare\Mass Effect 3\"; } }

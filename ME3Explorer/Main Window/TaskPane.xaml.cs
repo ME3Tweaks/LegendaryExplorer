@@ -179,10 +179,8 @@ namespace ME3Explorer
                     int startIndex = path.IndexOf("DLC_");
                     return path.Substring(startIndex, path.Skip(startIndex).ToList().IndexOf('\\'));
                 }
-                else
-                {
-                    return "External";
-                }
+
+                return "External";
             }
             return "";
         }
