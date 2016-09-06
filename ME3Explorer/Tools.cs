@@ -654,6 +654,23 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
             });
+            set.Add(new Tool
+            {
+                name = "UDK Explorer",
+                type = typeof(UDKExplorer.MainWindow),
+                icon = Application.Current.FindResource("iconUDKExplorer") as ImageSource,
+                open = () =>
+                {
+                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                    if (File.Exists(loc + "\\UDKExplorer.exe"))
+                    {
+                        Process.Start(loc + "\\UDKExplorer.exe");
+                    }
+                },
+                tags = new List<string> { "developer" },
+                subCategory = "Other",
+                description = "Edits .udk and .upk files created by the UDK."
+            });
             #endregion
 
             items = set;

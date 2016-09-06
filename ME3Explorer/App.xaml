@@ -179,5 +179,6 @@
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
         <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/TLK_editor_64x64.png"/>
         <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
+        <BitmapImage x:Key="iconUDKExplorer" UriSource="Icons/udk_explorer_64x64.png"/>
     </Application.Resources>
 </Application>
