@@ -2565,8 +2565,12 @@ namespace ME3Explorer
                     string name = tex.TexName;
                     if (string.IsNullOrEmpty(name))
                         name = tex.FileName;
-                    fs.WriteString(hash + "|" + name + "_" + hash + Path.GetExtension(tex.FileName) + "\n");
+                    string append = "_" + hash + Path.GetExtension(tex.FileName);
+                    if (name.Contains(hash))
+                        append = "";
+                    fs.WriteString(hash + "|" + name + append + Environment.NewLine);
                 }
+                fs.WriteString("\0");
                 Extractor(extractPath, null, t => texes.Contains(t));
             }
         }

@@ -49,6 +49,10 @@ namespace SaltTPF
                     //Header
                     fs.Write(BitConverter.GetBytes(ZipReader.filemagic), 0, 4);
                     fs.Write(BitConverter.GetBytes(MinVers), 0, 2);
+
+                    // TEST build version?
+                    //fs.Write(BitConverter.GetBytes(20), 0, 2);
+
                     fs.Write(BitConverter.GetBytes(BitFlag), 0, 2);
                     fs.Write(BitConverter.GetBytes(ComprMethod), 0, 2);
 
@@ -86,8 +90,13 @@ namespace SaltTPF
 
                         fs.Seek(4, SeekOrigin.Current); // Skip compressed size
                         fs.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
+
+                        if (entry.Filename.ToLower().Contains("meresults"))
+                            entry.Filename = "texmod.log";
+
                         fs.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
                         fs.Write(BitConverter.GetBytes((ushort)0), 0, 2);
+
                         foreach (char c in entry.Filename)
                             fs.WriteByte((byte)c);
                         temppos = fs.Position;
@@ -96,9 +105,7 @@ namespace SaltTPF
                         using (MemoryStream ms = new MemoryStream())
                         {
                             using (DeflateStream deflator = new DeflateStream(ms, CompressionMode.Compress))
-                            {
                                 fs2.CopyTo(deflator);
-                            }
 
                             comprData = ms.ToArray();
                         }
@@ -135,7 +142,9 @@ namespace SaltTPF
                     fs.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
                     fs.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
                     fs.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
-                    fs.Write(BitConverter.GetBytes(0), 0, 4); // 0 for extra field, 0 for comment
+
+                    fs.Write(BitConverter.GetBytes(0), 0, 4); // 0 for extra field
+
                     fs.Write(BitConverter.GetBytes(0), 0, 4); // 0 for disk no, 0 for internal attributes
                     fs.Write(BitConverter.GetBytes(0x81B40020), 0, 4);
                     fs.Write(BitConverter.GetBytes((int)entry.MainOffset), 0, 4);
@@ -151,7 +160,16 @@ namespace SaltTPF
                 fs.Write(BitConverter.GetBytes((ushort)Entries.Count), 0, 2);
                 fs.Write(BitConverter.GetBytes(cdlen), 0, 4);
                 fs.Write(BitConverter.GetBytes(cdpos), 0, 4);
-                fs.Write(BitConverter.GetBytes(0), 0, 2);
+
+                string createdBy = " ";
+                string comment = " ";
+
+                string fullString = createdBy + "\n" + comment;
+
+                fs.Write(BitConverter.GetBytes(fullString.Length), 0, 2);
+                byte[] bytes = Encoding.Default.GetBytes(fullString);
+                fs.Write(bytes, 0, bytes.Length);
+
 
                 long streamlen = fs.Length;
                 fs.Seek(0, SeekOrigin.Begin); // XOR the file
