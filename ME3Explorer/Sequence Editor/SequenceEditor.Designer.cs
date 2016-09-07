@@ -297,9 +297,7 @@
             // 
             // autoSaveViewToolStripMenuItem
             // 
-            this.autoSaveViewToolStripMenuItem.Checked = true;
             this.autoSaveViewToolStripMenuItem.CheckOnClick = true;
-            this.autoSaveViewToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoSaveViewToolStripMenuItem.Name = "autoSaveViewToolStripMenuItem";
             this.autoSaveViewToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.autoSaveViewToolStripMenuItem.Text = "Auto-Save View";
