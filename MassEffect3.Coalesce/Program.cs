@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Gammtek.Conduit.CommandLine;
 using Gammtek.Conduit.Extensions;
 using Gammtek.Conduit.IO;
 using MassEffect3.Coalesce.Xml;
@@ -15,7 +14,7 @@ using MassEffect3.FileFormats.Coalesced;
 
 namespace MassEffect3.Coalesce
 {
-	public static class Program
+    public static class Program
 	{
 		public static readonly SortedSet<string> ProperNames =
 			new SortedSet<string>

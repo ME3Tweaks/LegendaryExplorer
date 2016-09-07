@@ -2,13 +2,10 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:cal="http://www.caliburnproject.org"
-	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-	xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:codexMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;assembly=Gammtek.Conduit.MassEffect3"
-	xmlns:data="clr-namespace:MassEffect.Windows.Data;assembly=MassEffect.Windows"
 	xmlns:viewModels="clr-namespace:MassEffect.NativesEditor.ViewModels"
 	xmlns:local="clr-namespace:MassEffect.NativesEditor"
 	mc:Ignorable="d"
@@ -54,25 +51,21 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="ListBoxItem">
-								<Setter Property="Tag" Value="{Binding DataContext, ElementName=CodexPagesListBox}" />
-								<Setter Property="ContextMenu">
-									<Setter.Value>
-										<ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-											<MenuItem Header="Change Id" cal:Message.Attach="ChangeCodexPageId()" />
-											<MenuItem Header="Copy" cal:Message.Attach="CopyCodexPage()" />
-											<MenuItem Header="Remove" cal:Message.Attach="RemoveCodexPage()" />
-										</ContextMenu>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListBox.ItemContainerStyle>
-
-						<i:Interaction.Behaviors>
-							<local:ListBoxSelectedItemsBehavior />
-						</i:Interaction.Behaviors>
-					</ListBox>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Tag" Value="{Binding DataContext, ElementName=CodexPagesListBox}" />
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                            <MenuItem Header="Change Id" cal:Message.Attach="ChangeCodexPageId()" />
+                                            <MenuItem Header="Copy" cal:Message.Attach="CopyCodexPage()" />
+                                            <MenuItem Header="Remove" cal:Message.Attach="RemoveCodexPage()" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
 
 					<Grid Grid.Column="0" Grid.Row="1" Margin="0,5,0,0">
 						<!-- Grid Definitions -->
@@ -176,25 +169,21 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="ListBoxItem">
-								<Setter Property="Tag" Value="{Binding DataContext, ElementName=CodexSectionsListBox}" />
-								<Setter Property="ContextMenu">
-									<Setter.Value>
-										<ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-											<MenuItem Header="Change Id" cal:Message.Attach="ChangeCodexSectionId()" />
-											<MenuItem Header="Copy" cal:Message.Attach="CopyCodexSection()" />
-											<MenuItem Header="Remove" cal:Message.Attach="RemoveCodexSection()" />
-										</ContextMenu>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListBox.ItemContainerStyle>
-
-						<i:Interaction.Behaviors>
-							<local:ListBoxSelectedItemsBehavior />
-						</i:Interaction.Behaviors>
-					</ListBox>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Tag" Value="{Binding DataContext, ElementName=CodexSectionsListBox}" />
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu cal:Action.TargetWithoutContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                            <MenuItem Header="Change Id" cal:Message.Attach="ChangeCodexSectionId()" />
+                                            <MenuItem Header="Copy" cal:Message.Attach="CopyCodexSection()" />
+                                            <MenuItem Header="Remove" cal:Message.Attach="RemoveCodexSection()" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
 
 					<Grid Grid.Column="0" Grid.Row="1" Margin="0,5,0,0">
 						<!-- Grid Definitions -->

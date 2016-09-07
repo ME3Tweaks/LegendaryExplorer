@@ -35,7 +35,7 @@ namespace Gammtek.Conduit.Extensions
 				}
 				default:
 				{
-					throw new ArgumentOutOfRangeException("comparison");
+					throw new ArgumentOutOfRangeException(nameof(comparison));
 				}
 			}
 		}

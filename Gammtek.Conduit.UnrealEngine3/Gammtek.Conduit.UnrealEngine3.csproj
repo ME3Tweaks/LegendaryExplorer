@@ -61,10 +61,6 @@
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gammtek.Conduit.UnrealEngine.Core\Gammtek.Conduit.UnrealEngine.Core.csproj">
-      <Project>{c9b84cd2-f63b-4c05-8c9c-1789e2167c72}</Project>
-      <Name>Gammtek.Conduit.UnrealEngine.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />

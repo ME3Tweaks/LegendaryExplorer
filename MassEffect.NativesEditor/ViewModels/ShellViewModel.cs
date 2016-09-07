@@ -8,7 +8,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3LibWV;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.Win32;
 
 namespace MassEffect.NativesEditor.ViewModels
 {
@@ -194,7 +194,7 @@ namespace MassEffect.NativesEditor.ViewModels
 		{
 			if (path == null)
 			{
-				throw new ArgumentNullException("path");
+				throw new ArgumentNullException(nameof(path));
 			}
 
 			if (!File.Exists(path))
@@ -326,16 +326,16 @@ namespace MassEffect.NativesEditor.ViewModels
 
 		public void SaveFileAs()
 		{
-			var dlg = new CommonSaveFileDialog();
-			dlg.Filters.Add(new CommonFileDialogFilter("PCC File", "pcc"));
+			var dlg = new SaveFileDialog();
+			dlg.Filter = "PCC File |*.pcc";
 
 			if (!FileName.IsNullOrWhiteSpace())
 			{
 				dlg.InitialDirectory = Path.GetDirectoryName(FileName);
-				dlg.DefaultFileName = Path.GetFileName(FileName);
+				dlg.FileName = Path.GetFileName(FileName);
 			}
 
-			if (dlg.ShowDialog() != CommonFileDialogResult.Ok || dlg.FileName.IsNullOrWhiteSpace())
+			if (dlg.ShowDialog() != true || dlg.FileName.IsNullOrWhiteSpace())
 			{
 				return;
 			}

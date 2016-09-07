@@ -203,7 +203,7 @@ namespace MassEffect.NativesEditor
 
 			public ListViewResizeBehavior(ListView element)
 			{
-				if (element == null) throw new ArgumentNullException("element");
+				if (element == null) throw new ArgumentNullException(nameof(element));
 				_element = element;
 				element.Loaded += OnLoaded;
 

@@ -56,7 +56,7 @@ namespace Gammtek.Conduit.Extensions
 		{
 			if (value == null)
 			{
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 
 			return value.Substring(0, count.Clamp(0, value.Length));
@@ -66,7 +66,7 @@ namespace Gammtek.Conduit.Extensions
 		{
 			if (value == null)
 			{
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 
 			return value.Substring((value.Length - count).Clamp(0, value.Length));
@@ -76,7 +76,7 @@ namespace Gammtek.Conduit.Extensions
 		{
 			if (value == null)
 			{
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 
 			return value.Substring(0, value.Length - count.Clamp(0, value.Length));
@@ -86,7 +86,7 @@ namespace Gammtek.Conduit.Extensions
 		{
 			if (value == null)
 			{
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 			
 			return value.Substring(value.Length - count.Clamp(0, value.Length));
