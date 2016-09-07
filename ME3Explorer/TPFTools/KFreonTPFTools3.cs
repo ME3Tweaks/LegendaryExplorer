@@ -2502,9 +2502,9 @@ namespace ME3Explorer
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = "Select location to save TPF";
-                sfd.Filter = "Texplorer TPF|*.metpf";
+                sfd.Filter = "TPF|*.tpf";
                 sfd.FileName = "";
-                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (sfd.ShowDialog() == DialogResult.OK)
                     path = sfd.FileName;
                 else
                     return;
@@ -2573,60 +2573,6 @@ namespace ME3Explorer
                 fs.WriteString("\0");
                 Extractor(extractPath, null, t => texes.Contains(t));
             }
-        }
-
-        private async void RepackWithTexmod(List<TPFTexInfo> texes)
-        {
-            bool success = false;
-
-            // KFreon: Must have valid textures.
-            if (!texes.Any(tex => tex.Hash != 0))
-            {
-                Overall.UpdateText("No valid textures to use.");
-                return;
-            }
-
-            // KFreon: Extract all valid textures and build .def
-            ExtractAndBuildLog(Path.Combine(TemporaryPath, "TexmodRebuild"), texes);
-
-            await Task.Run(() => backbone.GetCurrentJob().Wait());
-
-            ProcessStartInfo pc = null;
-
-            // KFreon: Begin voodoo computer control chanting
-            string texmodLocFile = Path.Combine(ExecFolder, "texmod.exe");
-            string builder = Path.Combine(ExecFolder, "Texmod_Builder.exe");
-            string logloc = '\"' + Path.Combine(TemporaryPath, "TexmodRebuild\\MEresults.log") + '\"';
-            if (!File.Exists(texmodLocFile))
-            {
-                MessageBox.Show("Texmod not found at: " + texmodLocFile);
-                return;
-            }
-
-            
-
-            pc = new ProcessStartInfo(texmodLocFile);
-            Process.Start(pc);
-            pc = new ProcessStartInfo(builder, logloc);
-
-            // KFreon: If texmod found
-            if (pc != null)
-            {
-                System.Threading.Thread.Sleep(2000);
-
-                try
-                {
-                    Process.Start(pc).WaitForExit();
-                    success = true;
-                }
-                catch (Exception e)
-                {
-                    DebugOutput.PrintLn("Weird stuff happening with ExecFolder. Let me know what this is ->  " + ExecFolder);
-                    DebugOutput.PrintLn("Also: " + e.Message);
-                }
-            }
-
-            Overall.UpdateText(success ? "Build complete." : "Build failed.");
         }
 
         // Heff: this is obsolete, the "Load" button can handle .mod as well.
@@ -3185,11 +3131,7 @@ namespace ME3Explorer
 
         private void TPFBuild(List<TPFTexInfo> texes)
         {
-            var result = MessageBox.Show("Do you want a TPF that is compatible with Texmod? NOTE: Both are compatible with TPFTools.", "You must choose, Shepard.", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-            if (result == System.Windows.Forms.DialogResult.No)
-                RepackWithTexplorer(texes);
-            else if (result == System.Windows.Forms.DialogResult.Yes)
-                RepackWithTexmod(texes);
+            RepackWithTexplorer(texes);
         }
 
         private void allTexturesToolStripMenuItem_Click(object sender, EventArgs e)
