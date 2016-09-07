@@ -80,30 +80,6 @@ namespace SevenZip.Compression.LZMA
             return decompressed.ToArray();
         }
 
-        public static Task<byte[]> DecompressAsync(byte[] inputBytes, int outSize)
-        {
-            return Task.Run(() =>
-            {
-                MemoryStream newInStream = new MemoryStream(inputBytes);
-
-                Decoder decoder = new Decoder();
-
-                newInStream.Seek(0, 0);
-
-                byte[] properties2 = new byte[5];
-                if (newInStream.Read(properties2, 0, 5) != 5)
-                    throw (new Exception("input .lzma is too short"));
-                decoder.SetDecoderProperties(properties2);
-
-                long compressedSize = newInStream.Length - newInStream.Position;
-                MemoryStream newOutStream = new MemoryStream();
-                decoder.Code(newInStream, newOutStream, compressedSize, outSize, null);
-                if (newOutStream.Length != outSize)
-                    throw new Exception("Decompression Error");
-                return newOutStream.ToArray();
-            });
-        }
-
         public static void SetFastByte(Int32 val)
 		{
 			if(val < 5) val = 5;
