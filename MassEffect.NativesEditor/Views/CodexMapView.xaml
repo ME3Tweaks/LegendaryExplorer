@@ -5,7 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	xmlns:codexMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;assembly=Gammtek.Conduit.MassEffect3"
+	xmlns:codexMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.CodexMap"
 	xmlns:viewModels="clr-namespace:MassEffect.NativesEditor.ViewModels"
 	xmlns:local="clr-namespace:MassEffect.NativesEditor"
 	mc:Ignorable="d"

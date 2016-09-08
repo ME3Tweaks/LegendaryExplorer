@@ -17,9 +17,6 @@ namespace MassEffect3.CoalesceTool
 	/// </summary>
 	public partial class MainWindow : INotifyPropertyChanged
 	{
-		private const string DefaultCoalesceExe = "MassEffect3.Coalesce.exe";
-		private string _coalesceExe;
-
 		private string _destinationPath;
 		private CoalescedType _destinationType;
 		private string _sourcePath;
@@ -30,13 +27,6 @@ namespace MassEffect3.CoalesceTool
 			InitializeComponent();
 
 			DataContext = this;
-			CoalesceExe = DefaultCoalesceExe;
-		}
-
-		public string CoalesceExe
-		{
-			get { return _coalesceExe; }
-			set { SetProperty(ref _coalesceExe, value); }
 		}
 
 		public string DestinationPath
@@ -245,68 +235,27 @@ namespace MassEffect3.CoalesceTool
 				throw new FileNotFoundException("Source file not found.");
 			}
 
-			ProgramCoalesceMode sourceTypeArg;
-
 			switch (DestinationType)
 			{
 				case CoalescedType.Binary:
-				{
-					sourceTypeArg = ProgramCoalesceMode.ToBin;
-
 					if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
 					}
-
+                    Converter.ConvertToBin(SourcePath, DestinationPath);
 					break;
-				}
 				case CoalescedType.Xml:
-				{
-					sourceTypeArg = ProgramCoalesceMode.ToXml;
-
 					if (!Directory.Exists(DestinationPath))
 					{
 						Directory.CreateDirectory(DestinationPath);
 					}
-
+                    Converter.ConvertToXML(SourcePath, DestinationPath);
 					break;
-				}
 				default:
-				{
-					throw new ArgumentOutOfRangeException();
-				}
+                    throw new ArgumentOutOfRangeException();
 			}
-
-			if (!File.Exists(CoalesceExe))
-			{
-				var dlg = new CommonOpenFileDialog("Open File")
-				{
-					DefaultFileName = DefaultCoalesceExe
-				};
-
-				dlg.Filters.Add(new CommonFileDialogFilter("Executable Files", "*.exe"));
-
-				if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
-				{
-					throw new FileNotFoundException($"Cannot find {DefaultCoalesceExe}");
-				}
-
-				CoalesceExe = dlg.FileName;
-			}
-
-            Program.Convert(SourcePath, DestinationPath, sourceTypeArg);
 
             MessageBox.Show("Done");
-		}
-
-		private void DirectoryBrowse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		private void DirectoryBrowse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			//
 		}
 
 		private void Exit_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -317,16 +266,6 @@ namespace MassEffect3.CoalesceTool
 		private void Exit_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			Application.Current.Shutdown();
-		}
-
-		private void FileBrowse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		private void FileBrowse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			//
 		}
 
 		[NotifyPropertyChangedInvocator]

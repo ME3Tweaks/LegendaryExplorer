@@ -72,7 +72,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CoalesceAsset.cs" />
+    <Compile Include="CoalesceAssetType.cs" />
     <Compile Include="CoalescedType.cs" />
+    <Compile Include="Converter.cs" />
+    <Compile Include="FileFormats\CoalescedFileXml.cs" />
+    <Compile Include="FileFormats\Coalesced\FileEntry.cs" />
+    <Compile Include="FileFormats\Coalesced\PropertyValue.cs" />
+    <Compile Include="FileFormats\Crc32.cs" />
+    <Compile Include="FileFormats\Huffman\Decoder.cs" />
+    <Compile Include="FileFormats\Huffman\Encoder.cs" />
+    <Compile Include="FileFormats\Huffman\Node.cs" />
+    <Compile Include="FileFormats\Huffman\Pair.cs" />
+    <Compile Include="FileFormats\StreamHelpers.cs" />
+    <Compile Include="FileFormats\StringHelpers.cs" />
+    <Compile Include="UpdateActions.cs" />
+    <Compile Include="Xml\CoalesceInclude.cs" />
+    <Compile Include="Xml\CoalesceIncludeTarget.cs" />
+    <Compile Include="Xml\XmlCoalesceAsset.cs" />
+    <Compile Include="Xml\XmlCoalesceFile.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -81,6 +99,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CoalesceFile.cs" />
+    <Compile Include="CoalesceParseAction.cs" />
+    <Compile Include="CoalesceProperty.cs" />
+    <Compile Include="CoalesceSection.cs" />
+    <Compile Include="CoalesceSections.cs" />
+    <Compile Include="CoalesceSettings.cs" />
+    <Compile Include="CoalesceValue.cs" />
+    <Compile Include="CoalesceValueType.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="EnumValuesExtension.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -89,6 +115,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Namespace.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -119,14 +146,6 @@
     <ProjectReference Include="..\Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj">
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gammtek.Conduit.MassEffect3\Gammtek.Conduit.MassEffect3.csproj">
-      <Project>{0f92728e-2b24-4f9e-bf9b-16a2866bd964}</Project>
-      <Name>Gammtek.Conduit.MassEffect3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MassEffect3.Coalesce\MassEffect3.Coalesce.csproj">
-      <Project>{078940d0-27eb-4148-b673-f3be9f90c735}</Project>
-      <Name>MassEffect3.Coalesce</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

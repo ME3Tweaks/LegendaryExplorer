@@ -73,11 +73,6 @@
     <Compile Include="Collections\Generic\PriorityQueueOrder.cs" />
     <Compile Include="Collections\ObjectModel\ObservableDictionary.cs" />
     <Compile Include="ComponentModel\BindableBase.cs" />
-    <Compile Include="Compression\Huffman\DynamicHuffman.cs" />
-    <Compile Include="Compression\Huffman\Huffman.cs" />
-    <Compile Include="Compression\Huffman\HuffmanDelegateTypes.cs" />
-    <Compile Include="Compression\Huffman\HuffmanNode.cs" />
-    <Compile Include="Compression\Huffman\StaticHuffman.cs" />
     <Compile Include="Conversion\DoubleConverter.cs" />
     <Compile Include="Data\IValueValidator.cs" />
     <Compile Include="Dynamic\Collections\DynamicDictionary.cs" />
@@ -90,7 +85,6 @@
     <Compile Include="Dynamic\NodeType.cs" />
     <Compile Include="Dynamic\SimpleHierarchyWrapper.cs" />
     <Compile Include="Enum.cs" />
-    <Compile Include="Exceptions\Argument.cs" />
     <Compile Include="Extensions\Collections\Generic\DictionaryExtensions.cs" />
     <Compile Include="Extensions\Collections\Generic\EnumerableExtensions.Imperative.cs" />
     <Compile Include="Extensions\Collections\Generic\EnumerableExtensions.Multiple.cs" />
@@ -189,16 +183,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reflection\DynamicBaseType.cs" />
-    <Compile Include="Reflection\DynamicBaseType`1.cs" />
     <Compile Include="Collections\Specialized\EnumInitializationException.cs" />
     <Compile Include="Collections\Specialized\EnumSet.cs" />
     <Compile Include="Collections\Specialized\Incrementer.cs" />
     <Compile Include="Collections\Specialized\PolymorphicEnum.cs" />
-    <Compile Include="Reflection\PropertySupport.cs" />
     <Compile Include="Collections\Specialized\UnregisteredEnumException.cs" />
-    <Compile Include="Security\Cryptography\MD5Hash.cs" />
-    <Compile Include="Singleton.cs" />
     <Compile Include="Text\Formatting\ArrayFormatInfo.cs" />
     <Compile Include="Text\Formatting\CompactArrayFormatEnumerator.cs" />
     <Compile Include="Text\Formatting\CompactArrayFormatInfo.cs" />
@@ -247,10 +236,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Xml\Dynamic\StripNamespace.xslt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="Generics\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

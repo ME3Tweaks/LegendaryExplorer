@@ -6,7 +6,7 @@
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:nativesEditor="clr-namespace:MassEffect.NativesEditor"
-    xmlns:questMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;assembly=Gammtek.Conduit.MassEffect3"
+    xmlns:questMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.QuestMap"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:viewModels="clr-namespace:MassEffect.NativesEditor.ViewModels"
     mc:Ignorable="d" 

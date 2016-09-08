@@ -4,7 +4,7 @@
 	xmlns:cal="http://www.caliburnproject.org"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:questMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;assembly=Gammtek.Conduit.MassEffect3"
+	xmlns:questMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.QuestMap"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:viewModels="clr-namespace:MassEffect.NativesEditor.ViewModels"
 	xmlns:local="clr-namespace:MassEffect.NativesEditor"

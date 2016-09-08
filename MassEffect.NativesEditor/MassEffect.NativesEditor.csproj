@@ -101,6 +101,49 @@
     </Compile>
     <Compile Include="PCCPackage.cs" />
     <Compile Include="PropertyReader.cs" />
+    <Compile Include="SFXGame\BioVersionedNativeObject.cs" />
+    <Compile Include="SFXGame\CodexMap\BinaryBioCodexMap.cs" />
+    <Compile Include="SFXGame\CodexMap\BioCodexEntry.cs" />
+    <Compile Include="SFXGame\CodexMap\BioCodexMap.cs" />
+    <Compile Include="SFXGame\CodexMap\BioCodexPage.cs" />
+    <Compile Include="SFXGame\CodexMap\BioCodexSection.cs" />
+    <Compile Include="SFXGame\CodexMap\XmlBioCodexMap.cs" />
+    <Compile Include="SFXGame\ConsequenceMap\BioConsequenceMap.cs" />
+    <Compile Include="SFXGame\DiscoveredCodexMap\BioDiscoveredCodex.cs" />
+    <Compile Include="SFXGame\DiscoveredCodexMap\BioDiscoveredCodexMap.cs" />
+    <Compile Include="SFXGame\DiscoveredCodexMap\BioDiscoveredCodexPage.cs" />
+    <Compile Include="SFXGame\IBioVersionedNativeObject.cs" />
+    <Compile Include="SFXGame\OutcomeMap\BioOutcomeMap.cs" />
+    <Compile Include="SFXGame\QuestMap\BinaryBioQuestMap.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuest.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuestGoal.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuestMap.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuestPlotItem.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuestProgress.cs" />
+    <Compile Include="SFXGame\QuestMap\BioQuestTask.cs" />
+    <Compile Include="SFXGame\QuestMap\BioStateTaskList.cs" />
+    <Compile Include="SFXGame\QuestMap\BioTaskEval.cs" />
+    <Compile Include="SFXGame\QuestMap\XmlBioQuestMap.cs" />
+    <Compile Include="SFXGame\QuestProgressionMap\BioQuestProgressionMap.cs" />
+    <Compile Include="SFXGame\StateEventMap\BinaryBioStateEventMap.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEvent.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElement.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementBool.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementConsequence.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementFloat.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementFunction.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementInt.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementLocal.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementLocalBool.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementLocalFloat.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementLocalInt.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementSubstate.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventElementType.cs" />
+    <Compile Include="SFXGame\StateEventMap\BioStateEventMap.cs" />
+    <Compile Include="TypeConverter.cs" />
+    <Compile Include="TypeConverterExtension.cs" />
+    <Compile Include="TypeOfConverter.cs" />
+    <Compile Include="TypeOfConverterExtension.cs" />
     <Compile Include="ViewModels\FindObjectUsagesViewModel.cs" />
     <Compile Include="Views\FindObjectUsagesView.xaml.cs">
       <DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
@@ -161,14 +204,6 @@
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gammtek.Conduit.MassEffect3\Gammtek.Conduit.MassEffect3.csproj">
-      <Project>{0f92728e-2b24-4f9e-bf9b-16a2866bd964}</Project>
-      <Name>Gammtek.Conduit.MassEffect3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MassEffect.Windows\MassEffect.Windows.csproj">
-      <Project>{f97172f7-771a-47e6-b4b2-187439e101f2}</Project>
-      <Name>MassEffect.Windows</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -217,8 +252,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\StateEventMapView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StateTaskListsView.xaml">
       <SubType>Designer</SubType>
@@ -227,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="SFXGame\BioDefine\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

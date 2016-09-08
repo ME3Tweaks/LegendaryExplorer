@@ -8,11 +8,9 @@
 		d:DataContext="{d:DesignInstance local:MainWindow}">
 	<Window.CommandBindings>
 		<CommandBinding Command="local:Commands.Browse" CanExecute="Browse_OnCanExecute" Executed="Browse_OnExecuted" />
-		<CommandBinding Command="local:Commands.ConvertTo" CanExecute="ConvertTo_OnCanExecute" Executed="ConvertTo_OnExecuted" />
-		<CommandBinding Command="local:Commands.DirectoryBrowse" CanExecute="DirectoryBrowse_OnCanExecute" Executed="DirectoryBrowse_OnExecuted" />
-		<CommandBinding Command="local:Commands.Exit" CanExecute="Exit_OnCanExecute" Executed="Exit_OnExecuted" />
-		<CommandBinding Command="local:Commands.FileBrowse" CanExecute="FileBrowse_OnCanExecute" Executed="FileBrowse_OnExecuted" />
-	</Window.CommandBindings>
+        <CommandBinding Command="local:Commands.ConvertTo" CanExecute="ConvertTo_OnCanExecute" Executed="ConvertTo_OnExecuted" />
+        <CommandBinding Command="local:Commands.Exit" CanExecute="Exit_OnCanExecute" Executed="Exit_OnExecuted" />
+    </Window.CommandBindings>
 	<Grid Margin="5">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
