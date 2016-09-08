@@ -41,7 +41,7 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (bufferSize < 1)
 			{
-				throw new ArgumentOutOfRangeException("bufferSize");
+				throw new ArgumentOutOfRangeException(nameof(bufferSize));
 			}
 
 			Copy(input, output, new byte[bufferSize]);
@@ -63,7 +63,7 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 
 			Copy(input, output, buffer.Bytes);
@@ -86,17 +86,17 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 
 			if (input == null)
 			{
-				throw new ArgumentNullException("input");
+				throw new ArgumentNullException(nameof(input));
 			}
 
 			if (output == null)
 			{
-				throw new ArgumentNullException("output");
+				throw new ArgumentNullException(nameof(output));
 			}
 
 			if (buffer.Length == 0)
@@ -150,7 +150,7 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (length < 0)
 			{
-				throw new ArgumentOutOfRangeException("length");
+				throw new ArgumentOutOfRangeException(nameof(length));
 			}
 
 			var data = new byte[length];
@@ -388,22 +388,22 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (input == null)
 			{
-				throw new ArgumentNullException("input");
+				throw new ArgumentNullException(nameof(input));
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 
 			if (startIndex < 0 || startIndex >= buffer.Length)
 			{
-				throw new ArgumentOutOfRangeException("startIndex");
+				throw new ArgumentOutOfRangeException(nameof(startIndex));
 			}
 
 			if (bytesToRead < 1 || startIndex + bytesToRead > buffer.Length)
 			{
-				throw new ArgumentOutOfRangeException("bytesToRead");
+				throw new ArgumentOutOfRangeException(nameof(bytesToRead));
 			}
 
 			var index = 0;
@@ -450,7 +450,7 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (bufferSize < 1)
 			{
-				throw new ArgumentOutOfRangeException("bufferSize");
+				throw new ArgumentOutOfRangeException(nameof(bufferSize));
 			}
 			return ReadFully(input, new byte[bufferSize]);
 		}
@@ -471,7 +471,7 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 			return ReadFully(input, buffer.Bytes);
 		}
@@ -493,11 +493,11 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 			if (input == null)
 			{
-				throw new ArgumentNullException("input");
+				throw new ArgumentNullException(nameof(input));
 			}
 			if (buffer.Length == 0)
 			{
@@ -804,7 +804,7 @@ namespace Gammtek.Conduit.Extensions.IO
 				}
 				default:
 				{
-					throw new ArgumentException("unsupported endianness", "byteOrder");
+					throw new ArgumentException("unsupported endianness", nameof(byteOrder));
 				}
 			}
 		}
@@ -1130,7 +1130,7 @@ namespace Gammtek.Conduit.Extensions.IO
 			{
 				if (!type.IsEnum)
 				{
-					throw new ArgumentException("unknown enum type", "type");
+					throw new ArgumentException("unknown enum type", nameof(type));
 				}
 
 				var underlyingType = Enum.GetUnderlyingType(type);
@@ -1151,7 +1151,7 @@ namespace Gammtek.Conduit.Extensions.IO
 					}
 				}
 
-				throw new ArgumentException("unknown enum type", "type");
+				throw new ArgumentException("unknown enum type", nameof(type));
 			}
 		}
 	}

@@ -53,7 +53,6 @@
     <Compile Include="Annotations.cs" />
     <Compile Include="Argument.cs" />
     <Compile Include="Argument.Expression.cs" />
-    <Compile Include="Attributes\EnumAttributes\StringValueAttribute.cs" />
     <Compile Include="CMath.cs" />
     <Compile Include="Collections\ComponentModel\ObservableInt16Collection.cs" />
     <Compile Include="Collections\ComponentModel\ObservableInt32Collection.cs" />
@@ -171,7 +170,6 @@
     <Compile Include="Extensions\UInt32Extensions.cs" />
     <Compile Include="Extensions\UInt64Extensions.cs" />
     <Compile Include="Extensions\UIntPtrExtensions.cs" />
-    <Compile Include="Half.cs" />
     <Compile Include="IO\BufferAcquisitionException.cs" />
     <Compile Include="IO\ByteBufferReader.cs" />
     <Compile Include="IO\ByteOrder.cs" />

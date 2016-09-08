@@ -73,10 +73,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CoalescedType.cs" />
-    <Compile Include="EnumHelper.cs" />
-    <Compile Include="EnumValuesExtension.cs" />
-    <Compile Include="LocalizableDescriptionAttribute.cs" />
-    <Compile Include="PropertySupport.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,6 +82,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="EnumValuesExtension.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

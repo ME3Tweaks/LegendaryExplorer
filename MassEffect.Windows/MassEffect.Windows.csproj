@@ -51,18 +51,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\SelectorPanel.cs" />
     <Compile Include="Data\TypeOfConverter.cs" />
     <Compile Include="Data\TypeOfConverterExtension.cs" />
     <Compile Include="Extensions\DependencyObjectExtensions.cs" />
-    <Compile Include="Prism\AsyncResult.cs" />
-    <Compile Include="Prism\DesignDataCollectionView.cs" />
     <Compile Include="Data\ListIndexConverter.cs" />
     <Compile Include="TypeConverter.cs" />
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="ArgumentHelper.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
     <Compile Include="CaseConverter.cs" />
@@ -123,12 +116,6 @@
     <Compile Include="Extensions\EventHelperExtensions.cs" />
     <Compile Include="FallbackBehavior.cs" />
     <Compile Include="FormatConverter.cs" />
-    <Compile Include="Forms\InputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\InputBox.designer.cs">
-      <DependentUpon>InputBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="MapConverter.cs" />
     <Compile Include="Mapping.cs" />
     <Compile Include="Markup\BooleanToVisibilityConverterExtension.cs" />

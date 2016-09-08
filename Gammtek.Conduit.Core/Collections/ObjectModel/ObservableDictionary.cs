@@ -451,7 +451,7 @@ namespace Gammtek.Conduit.Collections.ObjectModel
 		{
 			if (array == null)
 			{
-				throw new ArgumentNullException("array", "CopyTo() failed:  array parameter was null");
+				throw new ArgumentNullException(nameof(array), "CopyTo() failed:  array parameter was null");
 			}
 			if ((index < 0) || (index > array.Length))
 			{
@@ -545,7 +545,7 @@ namespace Gammtek.Conduit.Collections.ObjectModel
 		{
 			if (info == null)
 			{
-				throw new ArgumentNullException("info");
+				throw new ArgumentNullException(nameof(info));
 			}
 
 			var entries = new Collection<DictionaryEntry>();

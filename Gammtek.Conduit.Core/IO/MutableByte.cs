@@ -60,11 +60,11 @@ namespace Gammtek.Conduit.IO
 		{
 			if (buf1 == null || buf1.Length == 0)
 			{
-				throw new ArgumentNullException("buf1");
+				throw new ArgumentNullException(nameof(buf1));
 			}
 			if (buf2 == null || buf2.Length == 0)
 			{
-				throw new ArgumentNullException("buf2");
+				throw new ArgumentNullException(nameof(buf2));
 			}
 
 			_buffer = new byte[buf1.Length + buf2.Length];
@@ -230,7 +230,7 @@ namespace Gammtek.Conduit.IO
 			_buffer = null;
 			if (buf == null || buf.Length == 0)
 			{
-				throw new ArgumentNullException("buf", "Byte array is null.");
+				throw new ArgumentNullException(nameof(buf), "Byte array is null.");
 			}
 
 			_buffer = new byte[length];
@@ -343,11 +343,11 @@ namespace Gammtek.Conduit.IO
 		{
 			if (position < 0 || position >= Length)
 			{
-				throw new ArgumentOutOfRangeException("position", "Index outside of the buffer scope");
+				throw new ArgumentOutOfRangeException(nameof(position), "Index outside of the buffer scope");
 			}
 			if (buf == null)
 			{
-				throw new ArgumentNullException("buf");
+				throw new ArgumentNullException(nameof(buf));
 			}
 			if (position == 0)
 			{
@@ -370,7 +370,7 @@ namespace Gammtek.Conduit.IO
 		{
 			if (position < 0 || position >= Length)
 			{
-				throw new ArgumentOutOfRangeException("position", "Index outside of the buffer scope");
+				throw new ArgumentOutOfRangeException(nameof(position), "Index outside of the buffer scope");
 			}
 			if (position == 0)
 			{
@@ -433,11 +433,11 @@ namespace Gammtek.Conduit.IO
 		{
 			if (Length == 0)
 			{
-				throw new ArgumentOutOfRangeException("count", "Buffer is length 0. Unable to remove members.");
+				throw new ArgumentOutOfRangeException(nameof(count), "Buffer is length 0. Unable to remove members.");
 			}
 			if (count > _buffer.Length)
 			{
-				throw new ArgumentOutOfRangeException("count", "Byte count is greater then the length of the array");
+				throw new ArgumentOutOfRangeException(nameof(count), "Byte count is greater then the length of the array");
 			}
 			if (count == Length)
 			{
@@ -459,11 +459,11 @@ namespace Gammtek.Conduit.IO
 		{
 			if (Length == 0)
 			{
-				throw new ArgumentOutOfRangeException("count", "Buffer is length 0. Unable to remove members.");
+				throw new ArgumentOutOfRangeException(nameof(count), "Buffer is length 0. Unable to remove members.");
 			}
 			if (count > _buffer.Length)
 			{
-				throw new ArgumentOutOfRangeException("count", "Byte count is greater then the length of the array");
+				throw new ArgumentOutOfRangeException(nameof(count), "Byte count is greater then the length of the array");
 			}
 			if (count == Length)
 			{
@@ -488,15 +488,15 @@ namespace Gammtek.Conduit.IO
 		{
 			if (_buffer.Length == 0)
 			{
-				throw new ArgumentOutOfRangeException("start", "Byte array is empty. Unable to remove members.");
+				throw new ArgumentOutOfRangeException(nameof(start), "Byte array is empty. Unable to remove members.");
 			}
 			if (start < 0 || start >= Length)
 			{
-				throw new ArgumentOutOfRangeException("start", "Start argument is beyond the bounds of the array.");
+				throw new ArgumentOutOfRangeException(nameof(start), "Start argument is beyond the bounds of the array.");
 			}
 			if (count > Length || (start + count) > Length || count < 1)
 			{
-				throw new ArgumentOutOfRangeException("count", "Length argument is beyond the bounds of the array.");
+				throw new ArgumentOutOfRangeException(nameof(count), "Length argument is beyond the bounds of the array.");
 			}
 			if (start == 0)
 			{
@@ -784,7 +784,7 @@ namespace Gammtek.Conduit.IO
 			}
 			if (_buffer.Length <= start || _buffer.Length < (start + length))
 			{
-				throw new ArgumentOutOfRangeException("start", "Range specification past boundaries of the buffer.");
+				throw new ArgumentOutOfRangeException(nameof(start), "Range specification past boundaries of the buffer.");
 			}
 			var output = new StringBuilder();
 			var dec = new StringBuilder();

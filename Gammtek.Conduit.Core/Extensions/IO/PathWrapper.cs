@@ -10,12 +10,12 @@ namespace Gammtek.Conduit.Extensions.IO
 		{
 			if (path1 == null)
 			{
-				throw new ArgumentNullException("path1");
+				throw new ArgumentNullException(nameof(path1));
 			}
 
 			if (path2 == null)
 			{
-				throw new ArgumentNullException("path2");
+				throw new ArgumentNullException(nameof(path2));
 			}
 
 			Func<FileSystemInfo, string> getFullName = delegate(FileSystemInfo path)

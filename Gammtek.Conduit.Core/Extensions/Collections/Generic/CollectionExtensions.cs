@@ -24,12 +24,12 @@ namespace Gammtek.Conduit.Extensions.Collections.Generic
 		{
 			if (collection == null)
 			{
-				throw new ArgumentNullException("collection");
+				throw new ArgumentNullException(nameof(collection));
 			}
 
 			if (items == null)
 			{
-				throw new ArgumentNullException("items");
+				throw new ArgumentNullException(nameof(items));
 			}
 
 			foreach (var each in items)
@@ -49,7 +49,7 @@ namespace Gammtek.Conduit.Extensions.Collections.Generic
 		{
 			if (source == null)
 			{
-				throw new ArgumentNullException("source");
+				throw new ArgumentNullException(nameof(source));
 			}
 
 			comparer = comparer ?? EqualityComparer<TSource>.Default;
@@ -68,12 +68,12 @@ namespace Gammtek.Conduit.Extensions.Collections.Generic
 		{
 			if (source == null)
 			{
-				throw new ArgumentNullException("source");
+				throw new ArgumentNullException(nameof(source));
 			}
 
 			if (predicate == null)
 			{
-				throw new ArgumentNullException("predicate");
+				throw new ArgumentNullException(nameof(predicate));
 			}
 
 			var removedItems = source.Where(predicate).ToList();

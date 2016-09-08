@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using MassEffect3.Coalesce;
 using MassEffect3.CoalesceTool.Annotations;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -244,13 +245,13 @@ namespace MassEffect3.CoalesceTool
 				throw new FileNotFoundException("Source file not found.");
 			}
 
-			string sourceTypeArg;
+			ProgramCoalesceMode sourceTypeArg;
 
 			switch (DestinationType)
 			{
 				case CoalescedType.Binary:
 				{
-					sourceTypeArg = "-m ToBin";
+					sourceTypeArg = ProgramCoalesceMode.ToBin;
 
 					if (!Directory.Exists(Path.GetDirectoryName(DestinationPath) ?? DestinationPath))
 					{
@@ -261,7 +262,7 @@ namespace MassEffect3.CoalesceTool
 				}
 				case CoalescedType.Xml:
 				{
-					sourceTypeArg = "-m ToXml";
+					sourceTypeArg = ProgramCoalesceMode.ToXml;
 
 					if (!Directory.Exists(DestinationPath))
 					{
@@ -293,21 +294,9 @@ namespace MassEffect3.CoalesceTool
 				CoalesceExe = dlg.FileName;
 			}
 
-			var process = new Process
-			{
-				StartInfo =
-				{
-					Arguments = $"\"{SourcePath}\" \"{DestinationPath}\" {sourceTypeArg}",
-					FileName = CoalesceExe,
-					CreateNoWindow = true,
-					UseShellExecute = false
-				},
-				EnableRaisingEvents = true
-			};
+            Program.Convert(SourcePath, DestinationPath, sourceTypeArg);
 
-			process.Exited += (o, args) => MessageBox.Show("Done");
-
-			process.Start();
+            MessageBox.Show("Done");
 		}
 
 		private void DirectoryBrowse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -364,17 +353,6 @@ namespace MassEffect3.CoalesceTool
 			var handler = PropertyChanged;
 
 			handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		[NotifyPropertyChangedInvocator]
-		protected void OnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
-		{
-			var propertyName = PropertySupport.ExtractPropertyName(propertyExpression);
-
-			if (propertyName != null)
-			{
-				OnPropertyChanged(propertyName);
-			}
 		}
 	}
 }

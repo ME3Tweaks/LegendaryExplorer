@@ -27,28 +27,28 @@ namespace Gammtek.Conduit.Reflection
 		{
 			if (propertyExpression == null)
 			{
-				throw new ArgumentNullException("propertyExpression");
+				throw new ArgumentNullException(nameof(propertyExpression));
 			}
 
 			var memberExpression = propertyExpression.Body as MemberExpression;
 
 			if (memberExpression == null)
 			{
-				throw new ArgumentException(Resources.PropertySupport_NotMemberAccessExpression_Exception, "propertyExpression");
+				throw new ArgumentException(Resources.PropertySupport_NotMemberAccessExpression_Exception, nameof(propertyExpression));
 			}
 
 			var property = memberExpression.Member as PropertyInfo;
 
 			if (property == null)
 			{
-				throw new ArgumentException(Resources.PropertySupport_ExpressionNotProperty_Exception, "propertyExpression");
+				throw new ArgumentException(Resources.PropertySupport_ExpressionNotProperty_Exception, nameof(propertyExpression));
 			}
 
 			var getMethod = property.GetMethod;
 
 			if (getMethod.IsStatic)
 			{
-				throw new ArgumentException(Resources.PropertySupport_StaticExpression_Exception, "propertyExpression");
+				throw new ArgumentException(Resources.PropertySupport_StaticExpression_Exception, nameof(propertyExpression));
 			}
 
 			return memberExpression.Member.Name;

@@ -71,7 +71,7 @@ namespace Gammtek.Conduit.IO
 		{
 			if (length < 0)
 			{
-				throw new ArgumentOutOfRangeException("length");
+				throw new ArgumentOutOfRangeException(nameof(length));
 			}
 
 			SetLength(length);
@@ -98,7 +98,7 @@ namespace Gammtek.Conduit.IO
 
 			if (lcount < 0)
 			{
-				throw new ArgumentOutOfRangeException("count", lcount, "Number of bytes to copy cannot be negative.");
+				throw new ArgumentOutOfRangeException(nameof(count), lcount, "Number of bytes to copy cannot be negative.");
 			}
 
 			var remaining = (_length - Position);
@@ -109,11 +109,11 @@ namespace Gammtek.Conduit.IO
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer", "Buffer cannot be null.");
+				throw new ArgumentNullException(nameof(buffer), "Buffer cannot be null.");
 			}
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException("offset", offset, "Destination offset cannot be negative.");
+				throw new ArgumentOutOfRangeException(nameof(offset), offset, "Destination offset cannot be negative.");
 			}
 
 			var read = 0;

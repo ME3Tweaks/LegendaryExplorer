@@ -248,7 +248,7 @@ namespace Gammtek.Conduit.Collections.Generic
 		{
 			if (Equals(item, default(T)) || item.CompareTo(data[index]) < 0)
 			{
-				throw new ArgumentException(@"New item is smaller than the current item", "item");
+				throw new ArgumentException(@"New item is smaller than the current item", nameof(item));
 			}
 
 			data[index] = item;
@@ -403,7 +403,7 @@ namespace Gammtek.Conduit.Collections.Generic
 		{
 			if (Equals(item, default(T)) || item.CompareTo(data[index]) > 0)
 			{
-				throw new ArgumentException(@"New item is greater than the current item", "item");
+				throw new ArgumentException(@"New item is greater than the current item", nameof(item));
 			}
 
 			data[index] = item;

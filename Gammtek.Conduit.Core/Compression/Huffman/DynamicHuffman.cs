@@ -479,7 +479,7 @@ namespace Gammtek.Conduit.Compression.Huffman
 		{
 			if (uint.MaxValue - _entries[index].Weight < weightModifier)
 			{
-				throw new ArgumentOutOfRangeException("weightModifier");
+				throw new ArgumentOutOfRangeException(nameof(weightModifier));
 			}
 
 			// If we are increasing the weight substantially, we may have to do the same 
@@ -656,7 +656,7 @@ namespace Gammtek.Conduit.Compression.Huffman
 			if (weightModifier < 0
 				&& _entries[index].Weight < -weightModifier)
 			{
-				throw new ArgumentOutOfRangeException("weightModifier");
+				throw new ArgumentOutOfRangeException(nameof(weightModifier));
 			}
 
 			if (weightModifier < 0)

@@ -1,27 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gammtek.Conduit.Attributes.EnumAttributes;
 
 namespace Gammtek.Conduit.Extensions
 {
 	public static class EnumExtensions
 	{
-		public static string GetStringValue(this Enum value)
-		{
-			// Get the type
-			var type = value.GetType();
-
-			// Get fieldinfo for this type
-			var fieldInfo = type.GetField(value.ToString());
-
-			// Get the stringvalue attributes
-			var attribs = fieldInfo.GetCustomAttributes(typeof (StringValueAttribute), false) as StringValueAttribute[];
-
-			// Return the first if there was a match.
-			return ((attribs != null) && (attribs.Length > 0)) ? attribs[0].StringValue : null;
-		}
-
 		public static Array Values(this Enum value)
 		{
 			return Enum.GetValues(value.GetType());

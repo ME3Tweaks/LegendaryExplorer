@@ -48,7 +48,7 @@ namespace Gammtek.Conduit.Collections.Specialized
 
 			if (!RegisteredInstances.TryGetValue(x, out enumInstance))
 			{
-				throw new ArgumentException(string.Format("PolymorphicEnum value {0} not found", x), "x");
+				throw new ArgumentException(string.Format("PolymorphicEnum value {0} not found", x), nameof(x));
 			}
 
 			return enumInstance;
@@ -75,7 +75,7 @@ namespace Gammtek.Conduit.Collections.Specialized
 
 			if (!TryParse(value, ignoreCase, out result))
 			{
-				throw new ArgumentException(string.Format("PolymorphicEnum value {0} not found", value), "value");
+				throw new ArgumentException(string.Format("PolymorphicEnum value {0} not found", value), nameof(value));
 			}
 
 			return result;
@@ -115,7 +115,7 @@ namespace Gammtek.Conduit.Collections.Specialized
 
 			if (typedTarget == null)
 			{
-				throw new ArgumentException(@"Comparison can only occur between compatible enums.", "target");
+				throw new ArgumentException(@"Comparison can only occur between compatible enums.", nameof(target));
 			}
 
 			return Ordinal.CompareTo(typedTarget.Ordinal);
