@@ -58,7 +58,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SevenZipHelper.cs" />
     <Compile Include="7zip\ICoder.cs" />
-    <Compile Include="7zip\Common\CommandLineParser.cs" />
     <Compile Include="7zip\Common\CRC.cs" />
     <Compile Include="7zip\Common\InBuffer.cs" />
     <Compile Include="7zip\Common\OutBuffer.cs" />

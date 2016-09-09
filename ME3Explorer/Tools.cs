@@ -367,15 +367,15 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Coalesced Editor",
-                type = typeof(Coalesced_Editor.CoalEditor),
+                type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
                 open = () =>
                 {
-                    (new Coalesced_Editor.CoalEditor()).Show();
+                    (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
                 },
                 tags = new List<string> { "developer", "coalesced", "ini", "bin" },
                 subCategory = "Core",
-                description = "Coalesced Editor is used to create and edit ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.\n\nAttention: This tool is deprecated and does not work correctly for DLC. It will be updated soon. Use with caution.",
+                description = "Coalesced Editor converts between xml and bin formats for ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.",
             });
             set.Add(new Tool
             {

@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using MassEffect3.Coalesce;
-using MassEffect3.CoalesceTool.Annotations;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace MassEffect3.CoalesceTool
@@ -15,14 +14,14 @@ namespace MassEffect3.CoalesceTool
 	/// <summary>
 	///     Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : INotifyPropertyChanged
+	public partial class CoalescedEditor : INotifyPropertyChanged
 	{
 		private string _destinationPath;
 		private CoalescedType _destinationType;
 		private string _sourcePath;
 		private CoalescedType _sourceType;
 
-		public MainWindow()
+		public CoalescedEditor()
 		{
 			InitializeComponent();
 
@@ -267,8 +266,7 @@ namespace MassEffect3.CoalesceTool
 		{
 			Application.Current.Shutdown();
 		}
-
-		[NotifyPropertyChangedInvocator]
+        
 		protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
 		{
 			if (Equals(storage, value))
@@ -285,8 +283,7 @@ namespace MassEffect3.CoalesceTool
 
 			return true;
 		}
-
-		[NotifyPropertyChangedInvocator]
+        
 		protected void OnPropertyChanged(string propertyName)
 		{
 			var handler = PropertyChanged;

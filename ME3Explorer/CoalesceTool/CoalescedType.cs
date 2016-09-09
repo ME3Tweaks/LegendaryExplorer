@@ -5,11 +5,11 @@ namespace MassEffect3.CoalesceTool
 {
 	public enum CoalescedType
 	{
-		[Display(Name = "Binary")]
+		//[Display(Name = "Binary")]
 		[Description("Binary Coalesced file.")]
 		Binary,
 
-		[Display(Name = "Xml")]
+		//[Display(Name = "Xml")]
 		[Description("Xml Coalesced file.")]
 		Xml
 	}

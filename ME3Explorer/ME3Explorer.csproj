@@ -152,6 +152,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CoalesceTool\Coalesced Editor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Main Window\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -160,19 +164,44 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="CoalesceTool\CoalesceAsset.cs" />
+    <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
+    <Compile Include="CoalesceTool\CoalescedType.cs" />
+    <Compile Include="CoalesceTool\CoalesceFile.cs" />
+    <Compile Include="CoalesceTool\CoalesceParseAction.cs" />
+    <Compile Include="CoalesceTool\CoalesceProperty.cs" />
+    <Compile Include="CoalesceTool\CoalesceSection.cs" />
+    <Compile Include="CoalesceTool\CoalesceSections.cs" />
+    <Compile Include="CoalesceTool\CoalesceSettings.cs" />
+    <Compile Include="CoalesceTool\CoalesceValue.cs" />
+    <Compile Include="CoalesceTool\CoalesceValueType.cs" />
+    <Compile Include="CoalesceTool\Commands.cs" />
+    <Compile Include="CoalesceTool\Converter.cs" />
+    <Compile Include="CoalesceTool\EnumValuesExtension.cs" />
+    <Compile Include="CoalesceTool\Coalesced Editor.xaml.cs">
+      <DependentUpon>Coalesced Editor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CoalesceTool\FileFormats\CoalescedFileXml.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Coalesced\FileEntry.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Coalesced\PropertyValue.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Crc32.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Huffman\Decoder.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Huffman\Encoder.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Huffman\Node.cs" />
+    <Compile Include="CoalesceTool\FileFormats\Huffman\Pair.cs" />
+    <Compile Include="CoalesceTool\FileFormats\StreamHelpers.cs" />
+    <Compile Include="CoalesceTool\FileFormats\StringHelpers.cs" />
+    <Compile Include="CoalesceTool\Namespace.cs" />
+    <Compile Include="CoalesceTool\UpdateActions.cs" />
+    <Compile Include="CoalesceTool\Xml\CoalesceInclude.cs" />
+    <Compile Include="CoalesceTool\Xml\CoalesceIncludeTarget.cs" />
+    <Compile Include="CoalesceTool\Xml\XmlCoalesceAsset.cs" />
+    <Compile Include="CoalesceTool\Xml\XmlCoalesceFile.cs" />
     <Compile Include="FaceFXAnimSetEditor\IME3FaceFXAnimSet.cs" />
     <Compile Include="GenericWindow.cs" />
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Coalesced Editor\CoalEditor.Designer.cs">
-      <DependentUpon>CoalEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Coalesced Editor\FileWrapper.cs" />
-    <Compile Include="Coalesced Editor\Setup.cs" />
     <Compile Include="DirectXGlobal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InitialSetup.xaml.cs">
@@ -773,9 +802,6 @@
     <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
       <DependentUpon>ClassViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Coalesced Editor\CoalEditor.resx">
-      <DependentUpon>CoalEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -970,6 +996,10 @@
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj">
+      <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
+      <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\HexConverter\HexConverter.csproj">
       <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
@@ -1167,6 +1197,7 @@
   <ItemGroup>
     <Resource Include="Resources\level_editor_64x64.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
