@@ -27,8 +27,9 @@ namespace ME3Explorer
             Close();
         }
 
-        public static string GetValue(string promptText, IEnumerable<string> items, string defaultValue = "") {
+        public static string GetValue(string promptText, IEnumerable<string> items, string defaultValue = "", bool topMost = false) {
             InputComboBox prompt = new InputComboBox();
+            prompt.TopMost = topMost;
             prompt.label1.Text = promptText;
             prompt.comboBox1.Items.AddRange(items.ToArray());
             prompt.comboBox1.SelectedItem = defaultValue;

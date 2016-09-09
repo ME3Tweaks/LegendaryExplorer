@@ -397,7 +397,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
-                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2", "ME1" }, "ME3");
+                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2", "ME1" }, "ME3", true);
                     switch (result)
                     {
                         case "ME3":
@@ -451,7 +451,7 @@ namespace ME3Explorer
                 open = () =>
                 {
                     (new FaceFX.FaceFXAnimSetEditor()).Show();
-                    //string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3");
+                    //string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3", true);
                     //switch (result)
                     //{
                     //    case "ME3":
