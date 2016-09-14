@@ -26,8 +26,19 @@ namespace ME3Explorer.Meshplorer
         public static Texture DefaultTex;
         public static Texture CurrentTex;
         public static StaticMesh StatMesh;
-        public static SkeletalMesh SkelMesh;
+        private static SkeletalMesh skelMesh;
         public static int LOD;
+
+        public static SkeletalMesh SkelMesh
+        {
+            get { return skelMesh; }
+
+            set
+            {
+                LOD = 0;
+                skelMesh = value;
+            }
+        }
 
         public struct DXCube
         {
