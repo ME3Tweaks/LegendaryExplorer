@@ -53,11 +53,14 @@ namespace ME3Explorer
         private void SequenceEditor_Load(object sender, EventArgs e)
         {
             Dictionary<string, object> options = null;
-            
+            string OldME3SequenceViews = Path.Combine(ME3Directory.cookedPath, @"SequenceViews\");
+            string OldME2SequenceViews = Path.Combine(ME2Directory.cookedPath, @"SequenceViews\");
+            string OldME1SequenceViews = Path.Combine(ME1Directory.cookedPath, @"SequenceViews\");
+
             #region Migrate data from legacy locations
-            if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\") ||
-                    Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\") ||
-                    Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
+            if (Directory.Exists(OldME3SequenceViews) ||
+                    Directory.Exists(OldME2SequenceViews) ||
+                    Directory.Exists(OldME1SequenceViews))
             {
                 try
                 {
@@ -75,30 +78,49 @@ namespace ME3Explorer
                         File.Delete(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
                     }
 
-
-                    var comp = new Microsoft.VisualBasic.Devices.Computer();
-                    if (Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews\"))
+                }
+                catch
+                {
+                }
+                var comp = new Microsoft.VisualBasic.Devices.Computer();
+                try
+                {
+                    if (Directory.Exists(OldME3SequenceViews))
                     {
                         Directory.CreateDirectory(ME3ViewsPath);
-                        comp.FileSystem.CopyDirectory(ME3Directory.cookedPath + @"\SequenceViews\", ME3ViewsPath);
-                        comp.FileSystem.DeleteDirectory(ME3Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
-                    }
-                    if (Directory.Exists(ME2Directory.cookedPath + @"\SequenceViews\"))
-                    {
-                        Directory.CreateDirectory(ME2ViewsPath);
-                        comp.FileSystem.CopyDirectory(ME2Directory.cookedPath + @"\SequenceViews\", ME2ViewsPath);
-                        comp.FileSystem.DeleteDirectory(ME2Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
-                    }
-                    if (Directory.Exists(ME1Directory.cookedPath + @"\SequenceViews\"))
-                    {
-                        Directory.CreateDirectory(ME1ViewsPath);
-                        comp.FileSystem.CopyDirectory(ME1Directory.cookedPath + @"\SequenceViews\", ME1ViewsPath);
-                        comp.FileSystem.DeleteDirectory(ME1Directory.cookedPath + @"\SequenceViews\", Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                        comp.FileSystem.CopyDirectory(OldME3SequenceViews, ME3ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME3SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show($"Error migrating old data, Previously created sequence views may not be available:\n{ex.Message}");
+                    MessageBox.Show($"Error migrating old ME3 data, Previously created sequence views may not be available.\nAttempted migration from {OldME3SequenceViews} to {ME3ViewsPath}");
+                }
+                try
+                {
+                    if (Directory.Exists(OldME2SequenceViews))
+                    {
+                        Directory.CreateDirectory(ME2ViewsPath);
+                        comp.FileSystem.CopyDirectory(OldME2SequenceViews, ME2ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME2SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show($"Error migrating old data, Previously created sequence views may not be available:\nAttempted migration from {OldME2SequenceViews} to {ME2ViewsPath}");
+                }
+                try
+                {
+                    if (Directory.Exists(OldME1SequenceViews))
+                    {
+                        Directory.CreateDirectory(ME1ViewsPath);
+                        comp.FileSystem.CopyDirectory(OldME1SequenceViews, ME1ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME1SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show($"Error migrating old data, Previously created sequence views may not be available:\nAttempted migration from {OldME1SequenceViews} to {ME1ViewsPath}");
                 }
             } 
             #endregion
