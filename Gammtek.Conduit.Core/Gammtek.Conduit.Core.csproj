@@ -73,7 +73,6 @@
     <Compile Include="Collections\Generic\PriorityQueueOrder.cs" />
     <Compile Include="Collections\ObjectModel\ObservableDictionary.cs" />
     <Compile Include="ComponentModel\BindableBase.cs" />
-    <Compile Include="Conversion\DoubleConverter.cs" />
     <Compile Include="Data\IValueValidator.cs" />
     <Compile Include="Dynamic\Collections\DynamicDictionary.cs" />
     <Compile Include="Dynamic\Collections\DynamicKeyValuePair.cs" />

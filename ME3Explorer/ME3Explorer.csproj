@@ -130,10 +130,6 @@
       <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
@@ -150,6 +146,10 @@
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
@@ -221,6 +221,79 @@
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
+    <Compile Include="NativesEditor\CodexMapCommands.cs" />
+    <Compile Include="NativesEditor\Commands.cs" />
+    <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
+      <DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Dialogs\CopyObjectDialog.xaml.cs">
+      <DependentUpon>CopyObjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Dialogs\NewObjectDialog.xaml.cs">
+      <DependentUpon>NewObjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\QuestMapCommands.cs" />
+    <Compile Include="NativesEditor\SFXGame\BioVersionedNativeObject.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\BinaryBioCodexMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexEntry.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexPage.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\BioCodexSection.cs" />
+    <Compile Include="NativesEditor\SFXGame\CodexMap\XmlBioCodexMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\ConsequenceMap\BioConsequenceMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodex.cs" />
+    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\DiscoveredCodexMap\BioDiscoveredCodexPage.cs" />
+    <Compile Include="NativesEditor\SFXGame\IBioVersionedNativeObject.cs" />
+    <Compile Include="NativesEditor\SFXGame\OutcomeMap\BioOutcomeMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BinaryBioQuestMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuest.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestGoal.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestPlotItem.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestProgress.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioQuestTask.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioStateTaskList.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\BioTaskEval.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestMap\XmlBioQuestMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\QuestProgressionMap\BioQuestProgressionMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BinaryBioStateEventMap.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEvent.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElement.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementBool.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementConsequence.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementFloat.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementFunction.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementInt.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocal.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalBool.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalFloat.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementLocalInt.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementSubstate.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventElementType.cs" />
+    <Compile Include="NativesEditor\SFXGame\StateEventMap\BioStateEventMap.cs" />
+    <Compile Include="NativesEditor\TypeConverter.cs" />
+    <Compile Include="NativesEditor\TypeConverterExtension.cs" />
+    <Compile Include="NativesEditor\TypeOfConverter.cs" />
+    <Compile Include="NativesEditor\TypeOfConverterExtension.cs" />
+    <Compile Include="NativesEditor\Views\CodexMapView.xaml.cs">
+      <DependentUpon>CodexMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Views\FindObjectUsagesView.xaml.cs">
+      <DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Views\QuestMapView.xaml.cs">
+      <DependentUpon>QuestMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Views\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Views\StateEventMapView.xaml.cs">
+      <DependentUpon>StateEventMapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
+      <DependentUpon>StateTaskListsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -621,6 +694,42 @@
     <Page Include="Main Window\TaskPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Dialogs\CopyObjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Dialogs\NewObjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\CodexMapView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\FindObjectUsagesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\QuestMapView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\ShellView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\StateEventMapView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NativesEditor\Views\StateTaskListsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1197,7 +1306,12 @@
   <ItemGroup>
     <Resource Include="Resources\level_editor_64x64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="NativesEditor\SFXGame\BioDefine\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\plot_editor_icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"

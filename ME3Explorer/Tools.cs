@@ -552,6 +552,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Plot Editor",
+                type = typeof(MassEffect.NativesEditor.Views.ShellView),
+                icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
+                open = () =>
+                {
+                    var shellView = new MassEffect.NativesEditor.Views.ShellView();
+                    shellView.Show();
+                },
+                tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
+                subCategory = "Core",
+            });
+            set.Add(new Tool
+            {
                 name = "Sequence Editor",
                 type = typeof(SequenceEditor),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
