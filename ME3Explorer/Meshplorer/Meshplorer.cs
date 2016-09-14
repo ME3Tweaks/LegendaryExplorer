@@ -621,13 +621,8 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            MPOpt.SelectedObject = n;
-            MPOpt.pcc = pcc as ME3Package;
-            MPOpt.SelectedLOD = getLOD();
-            UDKCopy u = new UDKCopy();
-            u.MdiParent = this.MdiParent;
+            UDKCopy u = new UDKCopy(pcc as ME3Package, n, getLOD());
             u.Show();
-            u.WindowState = FormWindowState.Maximized;
         }
 
         private void selectMatForSectionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -785,6 +780,14 @@ namespace ME3Explorer.Meshplorer
                     }
                 }
             }
+        }
+
+        private void savePCCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            pcc.save();
+            MessageBox.Show("Done");
         }
     }
 }

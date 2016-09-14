@@ -23,9 +23,5 @@ namespace ME3Explorer
         public static bool SKM_biflipZ = true;
         public static bool SKM_biflipW = false;
         public static bool SKM_tnW100 = true;
-
-        public static ME3Package pcc;
-        public static int SelectedObject;
-        public static int SelectedLOD;
     }
 }

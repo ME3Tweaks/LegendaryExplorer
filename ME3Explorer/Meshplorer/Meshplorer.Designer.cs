@@ -63,6 +63,7 @@
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.pb1 = new System.Windows.Forms.PictureBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
+            this.savePCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -99,7 +100,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadPCCToolStripMenuItem,
-            this.loadFromDatabaseToolStripMenuItem});
+            this.loadFromDatabaseToolStripMenuItem,
+            this.savePCCToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -437,6 +439,13 @@
             this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
             // 
+            // savePCCToolStripMenuItem
+            // 
+            this.savePCCToolStripMenuItem.Name = "savePCCToolStripMenuItem";
+            this.savePCCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePCCToolStripMenuItem.Text = "Save PCC";
+            this.savePCCToolStripMenuItem.Click += new System.EventHandler(this.savePCCToolStripMenuItem_Click);
+            // 
             // Meshplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -517,5 +526,6 @@
         private System.Windows.Forms.ToolStripMenuItem selectMatForSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;
     }
 }
