@@ -21,7 +21,7 @@ namespace MassEffect.NativesEditor.Views
 	{
 		public ShellView()
 		{
-            WindowTitle = "Natives Editor";
+            WindowTitle = "Plot Editor";
 			InitializeComponent();
         }
 
