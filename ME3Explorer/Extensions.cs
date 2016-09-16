@@ -16,6 +16,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Gibbed.IO;
+using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
@@ -153,9 +155,7 @@ namespace ME3Explorer
         public static bool isNumericallyEqual(this string first, string second)
         {
             double a = 0, b = 0;
-            return double.TryParse(first, out a) && double.TryParse(second, out b) &&
-                //accurate floating point comparison
-                (Math.Abs(a - b) < double.Epsilon);
+            return double.TryParse(first, out a) && double.TryParse(second, out b) && (Math.Abs(a - b) < double.Epsilon);
         }
 
         //based on algorithm described here: http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
@@ -409,6 +409,20 @@ namespace ME3Explorer
         public static void WriteStream(this Stream stream, MemoryStream value)
         {
             value.WriteTo(stream);
+        }
+    }
+
+    public static class ME3ExplorerExtensions
+    {
+        public static byte[] getBinaryData(this IExportEntry export)
+        {
+            byte[] data = export.Data;
+            return data.Skip(PropertyReader.propsEnd(export)).ToArray();
+        }
+        public static void setBinaryData(this IExportEntry export, byte[] binaryData)
+        {
+            byte[] data = export.Data;
+            export.Data = data.Take(PropertyReader.propsEnd(export)).Concat(binaryData).ToArray();
         }
     }
 }

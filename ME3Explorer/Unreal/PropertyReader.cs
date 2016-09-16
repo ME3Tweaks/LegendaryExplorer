@@ -327,8 +327,9 @@ namespace ME3Explorer.Unreal
         public static List<Property> getPropList(IExportEntry export)
         {
             Application.DoEvents();
-            int start = detectStart(export.FileRef, export.Data, export.ObjectFlags);
-            return ReadProp(export.FileRef, export.Data, start);
+            byte[] data = export.Data;
+            int start = detectStart(export.FileRef, data, export.ObjectFlags);
+            return ReadProp(export.FileRef, data, start);
         }
 
         public static string TypeToString(int type)
@@ -799,7 +800,18 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
-        public static void ImportProperty(IMEPackage pcc, IMEPackage importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
+        public static int propsEnd(IExportEntry export)
+        {
+            var props = getPropList(export);
+            if (props.Any())
+            {
+                return props.Last().offend;
+            }
+            return detectStart(export.FileRef, export.Data, export.ObjectFlags);
+        }
+
+
+        public static void ImportProperty(IMEPackage pcc, IMEPackage importpcc, Property p, string className, MemoryStream m, bool inStruct = false)
         {
             string name = importpcc.getNameEntry(p.Name);
             int idxname = pcc.FindNameOrAdd(name);
@@ -992,7 +1004,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void ImportImmutableProperty(ME3Package pcc, ME3Package importpcc, Property p, string className, System.IO.MemoryStream m, bool inStruct = false)
+        public static void ImportImmutableProperty(ME3Package pcc, ME3Package importpcc, Property p, string className, MemoryStream m, bool inStruct = false)
         {
             string name = importpcc.getNameEntry(p.Name);
             int idxname = pcc.FindNameOrAdd(name);

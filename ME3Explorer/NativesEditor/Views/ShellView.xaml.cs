@@ -23,6 +23,7 @@ namespace MassEffect.NativesEditor.Views
 		{
             WindowTitle = "Plot Editor";
 			InitializeComponent();
+            FindObjectUsagesControl.parentRef = this;
         }
 
         private string _windowTitle;
@@ -108,10 +109,6 @@ namespace MassEffect.NativesEditor.Views
 
                 if (CodexMapView.TryFindCodexMap(pcc, out export, out dataOffset))
                 {
-                    var mapData = export.Data;
-
-                    byte[] bytes;
-
                     using (var stream = new MemoryStream())
                     {
                         var codexMap = CodexMapControl.ToCodexMap();
@@ -119,13 +116,8 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryCodexMap.Save(stream);
 
-                        bytes = stream.ToArray();
+                        export.setBinaryData(stream.ToArray());
                     }
-
-                    Array.Resize(ref mapData, dataOffset + bytes.Length);
-                    bytes.CopyTo(mapData, dataOffset);
-
-                    export.Data = mapData;
                 }
             }
 
@@ -136,10 +128,6 @@ namespace MassEffect.NativesEditor.Views
 
                 if (QuestMapControl.TryFindQuestMap(pcc, out export, out dataOffset))
                 {
-                    var mapData = export.Data;
-
-                    byte[] bytes;
-
                     using (var stream = new MemoryStream())
                     {
                         var questMap = QuestMapControl.ToQuestMap();
@@ -147,13 +135,8 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryQuestMap.Save(stream);
 
-                        bytes = stream.ToArray();
+                        export.setBinaryData(stream.ToArray());
                     }
-
-                    Array.Resize(ref mapData, dataOffset + bytes.Length);
-                    bytes.CopyTo(mapData, dataOffset);
-
-                    export.Data = mapData;
                 }
             }
 
@@ -164,10 +147,6 @@ namespace MassEffect.NativesEditor.Views
 
                 if (StateEventMapControl.TryFindStateEventMap(pcc, out export, out dataOffset))
                 {
-                    var mapData = export.Data;
-
-                    byte[] bytes;
-
                     using (var stream = new MemoryStream())
                     {
                         var stateEventMap = StateEventMapControl.ToStateEventMap();
@@ -175,13 +154,8 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryStateEventMap.Save(stream);
 
-                        bytes = stream.ToArray();
+                        export.setBinaryData(stream.ToArray());
                     }
-
-                    Array.Resize(ref mapData, dataOffset + bytes.Length);
-                    bytes.CopyTo(mapData, dataOffset);
-
-                    export.Data = mapData;
                 }
             }
 

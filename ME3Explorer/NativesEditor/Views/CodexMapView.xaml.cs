@@ -294,16 +294,7 @@ namespace MassEffect.NativesEditor.Views
                 return false;
             }
 
-
-            var mapProperties = PropertyReader.getPropList(export);
-
-            if (mapProperties.Count <= 0)
-            {
-                return false;
-            }
-
-            var mapProperty = mapProperties.Find(property => property.TypeVal == PropertyReader.Type.None);
-            dataOffset = mapProperty.offend;
+            dataOffset = PropertyReader.propsEnd(export);
 
             return true;
         }

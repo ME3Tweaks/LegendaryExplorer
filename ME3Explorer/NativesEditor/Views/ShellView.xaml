@@ -41,8 +41,8 @@
 			<TabItem Header="State Event Map">
 				<views:StateEventMapView x:Name="StateEventMapControl" />
 			</TabItem>
-			<TabItem Header="Find Usages" Visibility="Collapsed">
-				<views:FindObjectUsagesView x:Name="FindObjectUsagesViewModel" />
+			<TabItem Header="Find Usages">
+				<views:FindObjectUsagesView x:Name="FindObjectUsagesControl" />
 			</TabItem>
 		</TabControl>
 	</Grid>

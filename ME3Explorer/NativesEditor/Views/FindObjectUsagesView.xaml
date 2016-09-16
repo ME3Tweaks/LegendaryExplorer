@@ -6,6 +6,7 @@
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:views="clr-namespace:MassEffect.NativesEditor.Views"
 	xmlns:local="clr-namespace:MassEffect.NativesEditor"
+	xmlns:stateEventMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap"
 	mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	d:DesignHeight="600" d:DesignWidth="800">
@@ -26,14 +27,13 @@
 		<!-- Find -->
 		<Label Grid.Column="0" Grid.Row="0" Margin="5,5,5,0"
 			Content="Find:" />
-		<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0" />
+		<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
 
 		<!-- Look in -->
-		<Label Grid.Column="0" Grid.Row="2" Margin="5,5,5,0"
+		<!--<Label Grid.Column="0" Grid.Row="2" Margin="5,5,5,0"
 			Content="Look in:" />
-		<ComboBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,5,5,0">
-			
-		</ComboBox>
+        <ComboBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,5,5,0">
+        </ComboBox>-->
 
 		<!-- Find Options -->
 		<GroupBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Margin="5,5,5,0"
@@ -52,17 +52,21 @@
 
 				<Label Grid.Column="0" Grid.Row="0" Margin="5,5,5,0"
 					Content="Object type:" />
-				
-				<ComboBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0">
-					<ComboBoxItem Content="Codex Page Id" />
-					<ComboBoxItem Content="Codex Section Id" />
-					<ComboBoxItem Content="Quest Id" />
-					<ComboBoxItem Content="Bool State Task List Id" />
-					<ComboBoxItem Content="Float State Task List Id" />
-					<ComboBoxItem Content="Int State Task List Id" />
-					<ComboBoxItem Content="State Event Id" />
-				</ComboBox>
+
+                <ComboBox x:Name="objectTypeCombo" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0" SelectedIndex="0" SelectionChanged="objectTypeCombo_SelectionChanged">
+                    <ComboBoxItem Content="Plot Bool" />
+                    <ComboBoxItem Content="Plot Int" />
+                    <ComboBoxItem Content="Plot Float" />
+                </ComboBox>
 			</Grid>
 		</GroupBox>
+
+        <ListBox x:Name="searchResultsListBox" Grid.Row="5" Grid.Column="1" Margin="10" MouseDoubleClick="searchResultsListBox_MouseDoubleClick">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type stateEventMap:BioStateEvent}">
+                    <TextBlock Text="StateEvent" />
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
 	</Grid>
 </UserControl>

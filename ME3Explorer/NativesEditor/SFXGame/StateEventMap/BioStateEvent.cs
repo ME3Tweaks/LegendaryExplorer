@@ -112,5 +112,10 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 		{
 			get { return Elements.Any(); }
 		}
-	}
+
+        public override string ToString()
+        {
+            return "StateEvent";
+        }
+    }
 }

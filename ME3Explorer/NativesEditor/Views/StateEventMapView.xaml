@@ -120,19 +120,19 @@
 					<!-- Resources -->
 					<ListBox.Resources>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementBool}">
-							<TextBlock Text="Bool" />
+                            <TextBlock Text="{Binding GlobalBool, StringFormat='Bool: \{0\}'}" />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementConsequence}">
 							<TextBlock Text="Consequence" />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementFloat}">
-							<TextBlock Text="Float" />
+                            <TextBlock Text="{Binding GlobalFloat, StringFormat='Float: \{0\}'}" />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementFunction}">
 							<TextBlock Text="Function" />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementInt}">
-							<TextBlock Text="Int" />
+                            <TextBlock Text="{Binding GlobalInt, StringFormat='Int: \{0\}'}" />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementLocalBool}">
 							<TextBlock Text="Local Bool" />
