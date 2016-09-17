@@ -585,6 +585,7 @@ namespace ME3Explorer.Unreal.Classes
         public int Flags;
         public BoundingStruct Bounding = new BoundingStruct();
         public List<int> Materials;
+        public List<MaterialInstanceConstant> MatInsts;
         public Vector3 Origin;
         public Vector3 Rotation;
         public List<BoneStruct> Bones;
@@ -622,6 +623,17 @@ namespace ME3Explorer.Unreal.Classes
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);
+            try
+            {
+                for (int i = 0; i < Materials.Count; i++)
+                {
+
+                    MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
+                }
+            }
+            catch
+            {
+            }
             GenerateDXMeshes();
         }
 
@@ -656,11 +668,16 @@ namespace ME3Explorer.Unreal.Classes
             if (Container.isLoading)
             {
                 Materials = new List<int>();
+                MatInsts = new List<MaterialInstanceConstant>();
                 for (int i = 0; i < count; i++)
+                {
                     Materials.Add(0);
+                }
             }
             for (int i = 0; i < count; i++)
+            {
                 Materials[i] = Container + Materials[i];
+            }
         }
 
         private void SerializeOrgRot(SerializingContainer Container)

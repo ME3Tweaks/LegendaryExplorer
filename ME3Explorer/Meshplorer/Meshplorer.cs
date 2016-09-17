@@ -111,6 +111,24 @@ namespace ME3Explorer.Meshplorer
         public void LoadStaticMesh(int index)
         {
             stm = new StaticMesh(pcc as ME3Package, index);
+            List<MaterialInstanceConstant> matInsts = stm.Mesh.Mat.MatInst;
+            bool foundTex = false;
+            for (int i = 0; i < matInsts.Count; i++)
+            {
+                for (int j = 0; j < matInsts[i].Textures.Count; j++)
+                {
+                    if (matInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                    {
+                        Preview3D.setTex(matInsts[i].Textures[j].Texture);
+                        foundTex = true;
+                        break;
+                    }
+                }
+            }
+            if (!foundTex)
+            {
+                Preview3D.setTex();
+            }
             Preview3D.StatMesh = stm;
             //Preview3D.SkelMesh = null;
             Preview3D.CamOffset = new Vector3(0, 0, 0);
@@ -129,6 +147,23 @@ namespace ME3Explorer.Meshplorer
                 skm = new SkeletalMesh(pcc as ME3Package, index);
                 skmold = new SkeletalMeshOld(pcc as ME3Package, index);
                 hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
+                bool foundTex = false;
+                for (int i = 0; i < skm.MatInsts.Count; i++)
+                {
+                    for (int j = 0; j < skm.MatInsts[i].Textures.Count; j++)
+                    {
+                        if (skm.MatInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                        {
+                            Preview3D.setTex(skm.MatInsts[i].Textures[j].Texture);
+                            foundTex = true;
+                            break;
+                        }
+                    }
+                }
+                if (!foundTex)
+                {
+                    Preview3D.setTex();
+                }
                 Preview3D.StatMesh = null;
                 Preview3D.SkelMesh = skm;
                 Preview3D.CamDistance = skm.Bounding.r * 2.0f;

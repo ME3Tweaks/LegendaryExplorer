@@ -388,11 +388,13 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     Section s = new Section();
                     string q = "Section [" + j + "] : {(Name)";
-                    //s.Name = BitConverter.ToInt32(memory, readerpos);
-                    //if (s.Name > 0)
-                    //    m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
-                    //    q += pcc.getObjectName(s.Name) + " ; ";
-                    //else
+                    s.Name = BitConverter.ToInt32(memory, readerpos);
+                    if (s.Name > 0)
+                    {
+                        m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
+                        q += pcc.getObjectName(s.Name) + " ; ";
+                    }
+
                     q += s.Name + " ; ";
                     s.Unk1 = BitConverter.ToInt32(memory, readerpos + 4);
                     q += s.Unk1 + " ; ";
@@ -1203,10 +1205,6 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
             {
                 Section sec = Mesh.Mat.Lods[0].Sections[i];
-                if (DirectXGlobal.Tex_Default != null)
-                    device.SetTexture(0, DirectXGlobal.Tex_Default);
-                else
-                    DirectXGlobal.Tex_Default = TextureLoader.FromFile(device, Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\Default.bmp");
                 if (sec.RawTriangles == null)
                 {
                     sec.RawTriangles = new CustomVertex.PositionNormalTextured[sec.NumFaces1 * 3];
