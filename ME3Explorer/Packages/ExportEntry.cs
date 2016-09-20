@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using ME3Explorer.Unreal;
 using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
@@ -98,7 +101,13 @@ namespace ME3Explorer.Packages
         {
             get { return _data.TypedClone(); }
 
-            set { _data = value; DataSize = value.Length; DataChanged = true; }
+            set
+            {
+                _data = value;
+                DataSize = value.Length;
+                DataChanged = true;
+                //Properties = GetProperties();
+            }
         }
 
         public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
@@ -139,6 +148,71 @@ namespace ME3Explorer.Packages
                     OnPropertyChanged();
                 }
             }
+        }
+
+        PropertyCollection Properties;
+
+        public PropertyCollection GetProperties()
+        {
+            int start = detectStart();
+            MemoryStream stream = new MemoryStream(_data, false);
+            stream.Seek(start, SeekOrigin.Current);
+            return PropertyCollection.ReadProps(FileRef, stream, ClassName);
+        }
+
+        public void WriteProperties(PropertyCollection props)
+        {
+            MemoryStream m = new MemoryStream();
+            IMEPackage pcc = FileRef;
+            foreach (var prop in props)
+            {
+                prop.WriteTo(m, pcc);
+            }
+            
+            int propStart = detectStart();
+            int propEnd = propsEnd();
+            this.Data = _data.Take(propStart).Concat(m.ToArray()).Concat(_data.Skip(propEnd)).ToArray();
+        }
+
+        public int detectStart()
+        {
+            IMEPackage pcc = FileRef;
+            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            {
+                if (pcc.Game != MEGame.ME3)
+                {
+                    return 32;
+                }
+                return 30;
+            }
+            int result = 8;
+            int test1 = BitConverter.ToInt32(_data, 4);
+            int test2 = BitConverter.ToInt32(_data, 8);
+            if (pcc.isName(test1) && test2 == 0)
+                result = 4;
+            if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
+                result = 8;
+            return result;
+        }
+
+        public int propsEnd()
+        {
+            var props = GetProperties();
+            if (props.Any())
+            {
+                return props.endOffset;
+            }
+            return detectStart();
+        }
+
+        public byte[] getBinaryData()
+        {
+            return _data.Skip(propsEnd()).ToArray();
+        }
+
+        public void setBinaryData(byte[] binaryData)
+        {
+            this.Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
     }
 

@@ -13,6 +13,90 @@ using ME1Explorer.Unreal;
 
 namespace ME3Explorer.Unreal
 {
+    public static class UnrealObjectInfo
+    {
+
+        public static bool inheritsFrom(this IExportEntry entry, string baseClass)
+        {
+            if (entry.FileRef.Game == MEGame.ME1)
+            {
+                return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
+            }
+            else if (entry.FileRef.Game == MEGame.ME1)
+            {
+                return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
+            }
+            else if (entry.FileRef.Game == MEGame.ME1)
+            {
+                return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
+            }
+            return false;
+        }
+
+        public static string GetEnumType(MEGame game, string propName, string typeName)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+            }
+            return null;
+        }
+
+        public static ArrayType GetArrayType(MEGame game, string propName, string typeName)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getArrayType(typeName, propName);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getArrayType(typeName, propName);
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.getArrayType(typeName, propName);
+            }
+            return ArrayType.Int;
+        }
+
+        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string typeName)
+        {
+            bool inStruct = false;
+            PropertyInfo p = null;
+            switch (game)
+            {
+                case MEGame.ME1:
+                    p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    break;
+                case MEGame.ME2:
+                    p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    break;
+                case MEGame.ME3:
+                    p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    break;
+            }
+            if (p == null)
+            {
+                inStruct = true;
+                switch (game)
+                {
+                    case MEGame.ME1:
+                        p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        break;
+                    case MEGame.ME2:
+                        p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        break;
+                    case MEGame.ME3:
+                        p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        break;
+                }
+            }
+            return p;
+        }
+    }
+
     public static class ME3UnrealObjectInfo
     {
 
@@ -108,6 +192,12 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
+        {
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            return p?.reference;
+        }
+
         public static List<string> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
@@ -199,7 +289,7 @@ namespace ME3Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyReader.Type.StructProperty || p.type == PropertyReader.Type.ArrayProperty)
+                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
                             PropertyInfo val = getPropertyInfo(p.reference, propName, true);
                             if (val != null)
@@ -314,23 +404,6 @@ namespace ME3Explorer.Unreal
                     return true;
                 }
                 className = Classes[className].baseClass;
-            }
-            return false;
-        }
-
-        public static bool inheritsFrom(this IExportEntry entry, string baseClass)
-        {
-            if (entry is ME1ExportEntry)
-            {
-                return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
-            }
-            else if (entry is ME2ExportEntry)
-            {
-                return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
-            }
-            else if (entry is ME3ExportEntry)
-            {
-                return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
             }
             return false;
         }
@@ -459,70 +532,70 @@ namespace ME3Explorer.Unreal
             switch (entry.ClassName)
             {
                 case "IntProperty":
-                    p.type = PropertyReader.Type.IntProperty;
+                    p.type = PropertyType.IntProperty;
                     break;
                 case "StringRefProperty":
-                    p.type = PropertyReader.Type.StringRefProperty;
+                    p.type = PropertyType.StringRefProperty;
                     break;
                 case "FloatProperty":
-                    p.type = PropertyReader.Type.FloatProperty;
+                    p.type = PropertyType.FloatProperty;
                     break;
                 case "BoolProperty":
-                    p.type = PropertyReader.Type.BoolProperty;
+                    p.type = PropertyType.BoolProperty;
                     break;
                 case "StrProperty":
-                    p.type = PropertyReader.Type.StrProperty;
+                    p.type = PropertyType.StrProperty;
                     break;
                 case "NameProperty":
-                    p.type = PropertyReader.Type.NameProperty;
+                    p.type = PropertyType.NameProperty;
                     break;
                 case "DelegateProperty":
-                    p.type = PropertyReader.Type.DelegateProperty;
+                    p.type = PropertyType.DelegateProperty;
                     break;
                 case "ObjectProperty":
                 case "ClassProperty":
                 case "ComponentProperty":
-                    p.type = PropertyReader.Type.ObjectProperty;
+                    p.type = PropertyType.ObjectProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "StructProperty":
-                    p.type = PropertyReader.Type.StructProperty;
+                    p.type = PropertyType.StructProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
-                    p.type = PropertyReader.Type.ByteProperty;
+                    p.type = PropertyType.ByteProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "ArrayProperty":
-                    p.type = PropertyReader.Type.ArrayProperty;
+                    p.type = PropertyType.ArrayProperty;
                     PropertyInfo arrayTypeProp = getProperty(pcc, pcc.Exports[BitConverter.ToInt32(entry.Data, 44) - 1]);
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.type)
                         {
-                            case PropertyReader.Type.ObjectProperty:
-                            case PropertyReader.Type.StructProperty:
-                            case PropertyReader.Type.ArrayProperty:
+                            case PropertyType.ObjectProperty:
+                            case PropertyType.StructProperty:
+                            case PropertyType.ArrayProperty:
                                 p.reference = arrayTypeProp.reference;
                                 break;
-                            case PropertyReader.Type.ByteProperty:
+                            case PropertyType.ByteProperty:
                                 if (arrayTypeProp.reference == "")
                                     p.reference = arrayTypeProp.type.ToString();
                                 else
                                     p.reference = arrayTypeProp.reference;
                                 break;
-                            case PropertyReader.Type.IntProperty:
-                            case PropertyReader.Type.FloatProperty:
-                            case PropertyReader.Type.NameProperty:
-                            case PropertyReader.Type.BoolProperty:
-                            case PropertyReader.Type.StrProperty:
-                            case PropertyReader.Type.StringRefProperty:
-                            case PropertyReader.Type.DelegateProperty:
+                            case PropertyType.IntProperty:
+                            case PropertyType.FloatProperty:
+                            case PropertyType.NameProperty:
+                            case PropertyType.BoolProperty:
+                            case PropertyType.StrProperty:
+                            case PropertyType.StringRefProperty:
+                            case PropertyType.DelegateProperty:
                                 p.reference = arrayTypeProp.type.ToString();
                                 break;
-                            case PropertyReader.Type.None:
-                            case PropertyReader.Type.Unknown:
+                            case PropertyType.None:
+                            case PropertyType.Unknown:
                             default:
                                 System.Diagnostics.Debugger.Break();
                                 p = null;

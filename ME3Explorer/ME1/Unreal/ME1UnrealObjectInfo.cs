@@ -39,6 +39,12 @@ namespace ME1Explorer.Unreal
             }
         }
 
+        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
+        {
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            return p?.reference;
+        }
+
         public static List<string> getEnumfromProp(string className, string propName, bool inStruct = false)
         {
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
@@ -59,7 +65,7 @@ namespace ME1Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyReader.Type.StructProperty || p.type == PropertyReader.Type.ArrayProperty)
+                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
                             List<string> vals = getEnumfromProp(p.reference, propName, true);
                             if(vals != null)
@@ -168,7 +174,7 @@ namespace ME1Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyReader.Type.StructProperty || p.type == PropertyReader.Type.ArrayProperty)
+                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
                             PropertyInfo val = getPropertyInfo(p.reference, propName, true);
                             if (val != null)
@@ -298,68 +304,68 @@ namespace ME1Explorer.Unreal
             switch (entry.ClassName)
             {
                 case "IntProperty":
-                    p.type = PropertyReader.Type.IntProperty;
+                    p.type = PropertyType.IntProperty;
                     break;
                 case "StringRefProperty":
-                    p.type = PropertyReader.Type.StringRefProperty;
+                    p.type = PropertyType.StringRefProperty;
                     break;
                 case "FloatProperty":
-                    p.type = PropertyReader.Type.FloatProperty;
+                    p.type = PropertyType.FloatProperty;
                     break;
                 case "BoolProperty":
-                    p.type = PropertyReader.Type.BoolProperty;
+                    p.type = PropertyType.BoolProperty;
                     break;
                 case "StrProperty":
-                    p.type = PropertyReader.Type.StrProperty;
+                    p.type = PropertyType.StrProperty;
                     break;
                 case "NameProperty":
-                    p.type = PropertyReader.Type.NameProperty;
+                    p.type = PropertyType.NameProperty;
                     break;
                 case "DelegateProperty":
-                    p.type = PropertyReader.Type.DelegateProperty;
+                    p.type = PropertyType.DelegateProperty;
                     break;
                 case "ObjectProperty":
-                    p.type = PropertyReader.Type.ObjectProperty;
+                    p.type = PropertyType.ObjectProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "StructProperty":
-                    p.type = PropertyReader.Type.StructProperty;
+                    p.type = PropertyType.StructProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
-                    p.type = PropertyReader.Type.ByteProperty;
+                    p.type = PropertyType.ByteProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "ArrayProperty":
-                    p.type = PropertyReader.Type.ArrayProperty;
+                    p.type = PropertyType.ArrayProperty;
                     PropertyInfo arrayTypeProp = getProperty(pcc, pcc.Exports[BitConverter.ToInt32(entry.Data, 44) - 1]);
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.type)
                         {
-                            case PropertyReader.Type.ObjectProperty:
-                            case PropertyReader.Type.StructProperty:
-                            case PropertyReader.Type.ArrayProperty:
+                            case PropertyType.ObjectProperty:
+                            case PropertyType.StructProperty:
+                            case PropertyType.ArrayProperty:
                                 p.reference = arrayTypeProp.reference;
                                 break;
-                            case PropertyReader.Type.ByteProperty:
+                            case PropertyType.ByteProperty:
                                 if (arrayTypeProp.reference == "")
                                     p.reference = arrayTypeProp.type.ToString();
                                 else
                                     p.reference = arrayTypeProp.reference;
                                 break;
-                            case PropertyReader.Type.IntProperty:
-                            case PropertyReader.Type.FloatProperty:
-                            case PropertyReader.Type.NameProperty:
-                            case PropertyReader.Type.BoolProperty:
-                            case PropertyReader.Type.StrProperty:
-                            case PropertyReader.Type.StringRefProperty:
-                            case PropertyReader.Type.DelegateProperty:
+                            case PropertyType.IntProperty:
+                            case PropertyType.FloatProperty:
+                            case PropertyType.NameProperty:
+                            case PropertyType.BoolProperty:
+                            case PropertyType.StrProperty:
+                            case PropertyType.StringRefProperty:
+                            case PropertyType.DelegateProperty:
                                 p.reference = arrayTypeProp.type.ToString();
                                 break;
-                            case PropertyReader.Type.None:
-                            case PropertyReader.Type.Unknown:
+                            case PropertyType.None:
+                            case PropertyType.Unknown:
                             default:
                                 System.Diagnostics.Debugger.Break();
                                 p = null;

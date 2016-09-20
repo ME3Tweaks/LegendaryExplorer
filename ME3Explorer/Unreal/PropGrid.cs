@@ -78,26 +78,26 @@ namespace ME3Explorer.Unreal
             byte[] buff2;
             switch (p[m].TypeVal)
             {
-                case PropertyReader.Type.BoolProperty:
+                case PropertyType.BoolProperty:
                     byte res = 0;
                     if ((bool)e.ChangedItem.Value == true)
                         res = 1;
                     data[p[m].offsetval] = res;
                     break;
-                case PropertyReader.Type.FloatProperty:
+                case PropertyType.FloatProperty:
                     buff2 = BitConverter.GetBytes((float)e.ChangedItem.Value);
                     for (int i = 0; i < 4; i++)
                         data[p[m].offsetval + i] = buff2[i];
                     break;
-                case PropertyReader.Type.IntProperty:
-                case PropertyReader.Type.StringRefProperty:
+                case PropertyType.IntProperty:
+                case PropertyType.StringRefProperty:
                     int newv = Convert.ToInt32(e.ChangedItem.Value);
                     int oldv = Convert.ToInt32(e.OldValue);
                     buff2 = BitConverter.GetBytes(newv);
                     for (int i = 0; i < 4; i++)
                         data[p[m].offsetval + i] = buff2[i];
                     break;
-                case PropertyReader.Type.StrProperty:
+                case PropertyType.StrProperty:
                     string s = Convert.ToString(e.ChangedItem.Value);
                     int stringMultiplier = 1;
                     int oldLength = BitConverter.ToInt32(data, p[m].offsetval);
@@ -148,7 +148,7 @@ namespace ME3Explorer.Unreal
                     }
                     data = buff2;
                     break;
-                case PropertyReader.Type.StructProperty:
+                case PropertyType.StructProperty:
                     if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(ColorProp))
                     {
                         switch (e.ChangedItem.Label)
@@ -266,8 +266,8 @@ namespace ME3Explorer.Unreal
                         }
                     }
                     break;
-                case PropertyReader.Type.ByteProperty:
-                case PropertyReader.Type.NameProperty:
+                case PropertyType.ByteProperty:
+                case PropertyType.NameProperty:
                     if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);
@@ -276,7 +276,7 @@ namespace ME3Explorer.Unreal
                             data[p[m].offsetval + i] = buff2[i];
                     }
                     break;
-                case PropertyReader.Type.ObjectProperty:
+                case PropertyType.ObjectProperty:
                     if (e.ChangedItem.Value is int)
                     {
                         int val = Convert.ToInt32(e.ChangedItem.Value);

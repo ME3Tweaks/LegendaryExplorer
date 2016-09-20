@@ -156,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Interpreter\PropertyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main Window\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -199,6 +203,9 @@
     <Compile Include="CoalesceTool\Xml\XmlCoalesceFile.cs" />
     <Compile Include="FaceFXAnimSetEditor\IME3FaceFXAnimSet.cs" />
     <Compile Include="GenericWindow.cs" />
+    <Compile Include="Interpreter\PropertyEditor.xaml.cs">
+      <DependentUpon>PropertyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -511,6 +518,7 @@
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Packages\ME3Package.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
+    <Compile Include="Unreal\PropertyCollection.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\PSAFile.cs" />
     <Compile Include="Unreal\PSKFile.cs" />

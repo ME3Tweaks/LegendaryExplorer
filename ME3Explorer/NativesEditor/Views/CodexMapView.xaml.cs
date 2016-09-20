@@ -294,7 +294,7 @@ namespace MassEffect.NativesEditor.Views
                 return false;
             }
 
-            dataOffset = PropertyReader.propsEnd(export);
+            dataOffset = export.propsEnd();
 
             return true;
         }
@@ -384,7 +384,7 @@ namespace MassEffect.NativesEditor.Views
                 return;
             }
 
-            var codexMapProperty = codexMapProperties.Find(property => property.TypeVal == PropertyReader.Type.None);
+            var codexMapProperty = codexMapProperties.Find(property => property.TypeVal == PropertyType.None);
             var codexMapDataOffset = codexMapProperty.offend;
 
             byte[] bytes;

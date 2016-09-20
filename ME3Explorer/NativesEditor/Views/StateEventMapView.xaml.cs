@@ -332,7 +332,7 @@ namespace MassEffect.NativesEditor.Views
                 return false;
             }
 
-            dataOffset = PropertyReader.propsEnd(export);
+            dataOffset = export.propsEnd();
 
             return true;
         }

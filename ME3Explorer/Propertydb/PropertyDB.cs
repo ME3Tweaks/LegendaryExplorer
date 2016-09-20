@@ -169,7 +169,7 @@ namespace ME3Explorer.Propertydb
                                     //                    + "\" found property \"" 
                                     //                    + name 
                                     //                    + "\" type " 
-                                    //                    + PropertyReader.TypeToString(ptmp.type));
+                                    //                    + PropertyTypeToString(ptmp.type));
                                 }
                             }
                         } 

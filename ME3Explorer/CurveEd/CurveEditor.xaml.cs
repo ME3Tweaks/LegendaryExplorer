@@ -43,7 +43,7 @@ namespace ME3Explorer.CurveEd
             CurveType throwaway = CurveType.InterpCurveVector;
             foreach (var p in props)
             {
-                if (p.TypeVal == PropertyReader.Type.StructProperty)
+                if (p.TypeVal == PropertyType.StructProperty)
                 {
                     if (Enum.TryParse(pcc.getNameEntry(p.Value.IntValue), out throwaway))
                     {
@@ -146,7 +146,7 @@ namespace ME3Explorer.CurveEd
             int diff = 0;
             foreach (var p in props)
             {
-                if (p.TypeVal == PropertyReader.Type.StructProperty)
+                if (p.TypeVal == PropertyType.StructProperty)
                 {
                     foreach (InterpCurve item in InterpCurveTracks)
                     {

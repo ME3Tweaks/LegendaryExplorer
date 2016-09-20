@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="ME3Explorer.PropertyEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
+             mc:Ignorable="d" 
+	         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="Border">
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Height" Value="{Binding RowHeight}"/>
+            <Setter Property="Margin" Value="{Binding RowMargin}"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="#FFE4E4E4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ItemsControl ItemsSource="{Binding Props}" Grid.Column="0" VerticalContentAlignment="Center">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border>
+                        <TextBlock Text="{Binding Name}"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Props}" Grid.Column="1" VerticalContentAlignment="Center">
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type unreal:IntProperty}">
+                    <Border>
+                        <xctk:IntegerUpDown Value="{Binding Value}" Height="{Binding RowHeight}"/>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type unreal:FloatProperty}">
+                    <Border>
+                        <xctk:SingleUpDown Value="{Binding Value}" Height="{Binding RowHeight}"/>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type unreal:ByteProperty}">
+                    <Border>
+                        <xctk:ByteUpDown Value="{Binding Value}" Height="{Binding RowHeight}"/>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type unreal:StrProperty}">
+                    <Border>
+                        <TextBox Text="{Binding Value}" Height="{Binding RowHeight}"/>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type unreal:BoolProperty}">
+                    <Border>
+                        <CheckBox IsChecked="{Binding Value}"/>
+                    </Border>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type unreal:NameProperty}">
+                    <Border>
+                        <TextBlock Text="{Binding Value}"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </Grid>
+</UserControl>

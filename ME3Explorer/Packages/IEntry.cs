@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
@@ -49,5 +50,12 @@ namespace ME3Explorer.Packages
         void setHeader(byte[] v);
 
         event PropertyChangedEventHandler PropertyChanged;
+
+        PropertyCollection GetProperties();
+        void WriteProperties(PropertyCollection props);
+        int propsEnd();
+        int detectStart();
+        byte[] getBinaryData();
+        void setBinaryData(byte[] v);
     }
 }

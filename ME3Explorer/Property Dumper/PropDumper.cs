@@ -2,7 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -81,20 +80,20 @@ namespace ME3Explorer.Property_Dumper
             List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, raw, pos);
             for (int i = 0; i < p.Count; i++)
             {
-                if (p[i].TypeVal == PropertyReader.Type.StringRefProperty)
+                if (p[i].TypeVal == PropertyType.StringRefProperty)
                 {
                     for (int j = 0; j < depth; j++)
                         res += "\t";
                     res += i + " : " + PropertyReader.PropertyToText(p[i], pcc) + "\n";
                 }
-                if (p[i].TypeVal == PropertyReader.Type.ArrayProperty)
+                if (p[i].TypeVal == PropertyType.ArrayProperty)
                 {
                     //for (int j = 0; j < depth; j++)
                     //    res += "\t";
                     //res += "in Property #" + i + " : " + PropertyReader.PropertyToText(p[i], pcc) + "\n";
                     res += DumpArray(pcc, raw, p[i].offsetval + 4, depth + 1);
                 }
-                if (p[i].TypeVal == PropertyReader.Type.StructProperty)
+                if (p[i].TypeVal == PropertyType.StructProperty)
                 {
                     //for (int j = 0; j < depth; j++)
                     //    res += "\t";
@@ -145,9 +144,9 @@ namespace ME3Explorer.Property_Dumper
                                 for (int k = 0; k < p.Count; k++)
                                 {
                                     PropertyReader.Property prop = p[k];
-                                    if (prop.TypeVal == PropertyReader.Type.StringRefProperty)
+                                    if (prop.TypeVal == PropertyType.StringRefProperty)
                                         s += "Object #" + j + " : " + PropertyReader.PropertyToText(prop, pcc) + "\n";
-                                    if (prop.TypeVal == PropertyReader.Type.ArrayProperty)
+                                    if (prop.TypeVal == PropertyType.ArrayProperty)
                                     {
                                         string tt = DumpArray(pcc, ent.Data, prop.offsetval + 4, 1);
                                         if (tt.Length != 0)
@@ -156,7 +155,7 @@ namespace ME3Explorer.Property_Dumper
                                             s += tt;
                                         }
                                     }
-                                    if (prop.TypeVal == PropertyReader.Type.StructProperty)
+                                    if (prop.TypeVal == PropertyType.StructProperty)
                                     {
                                         string tt = DumpArray(pcc, ent.Data, prop.offsetval + 8, 1);
                                         if (tt.Length != 0)

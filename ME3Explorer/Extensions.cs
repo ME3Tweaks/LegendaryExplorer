@@ -411,18 +411,4 @@ namespace ME3Explorer
             value.WriteTo(stream);
         }
     }
-
-    public static class ME3ExplorerExtensions
-    {
-        public static byte[] getBinaryData(this IExportEntry export)
-        {
-            byte[] data = export.Data;
-            return data.Skip(PropertyReader.propsEnd(export)).ToArray();
-        }
-        public static void setBinaryData(this IExportEntry export, byte[] binaryData)
-        {
-            byte[] data = export.Data;
-            export.Data = data.Take(PropertyReader.propsEnd(export)).Concat(binaryData).ToArray();
-        }
-    }
 }

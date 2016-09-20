@@ -157,7 +157,7 @@ namespace ME3Explorer
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            readerpos = PropertyReader.detectStart(pcc, memory, export.ObjectFlags);
+            readerpos = export.detectStart();
             
             List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
@@ -665,7 +665,7 @@ namespace ME3Explorer
             PropertyInfo propInfo;
             switch (prop.TypeVal)
             {
-                case PropertyReader.Type.FloatProperty:
+                case PropertyType.FloatProperty:
                     s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
@@ -673,7 +673,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
-                case PropertyReader.Type.IntProperty:
+                case PropertyType.IntProperty:
                     s += BitConverter.ToInt32(memory, pos).ToString();
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
@@ -681,7 +681,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
-                case PropertyReader.Type.ObjectProperty:
+                case PropertyType.ObjectProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     s += n + " (" + pcc.getObjectName(n) + ")";
                     node = new TreeNode(s);
@@ -690,7 +690,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
-                case PropertyReader.Type.StringRefProperty:
+                case PropertyType.StringRefProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     s += "#" + n + ": ";
                     s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(n);
@@ -700,7 +700,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
-                case PropertyReader.Type.NameProperty:
+                case PropertyType.NameProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     pos += 4;
                     s += "\"" + pcc.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
@@ -710,7 +710,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
-                case PropertyReader.Type.BoolProperty:
+                case PropertyType.BoolProperty:
                     s += (memory[pos] > 0).ToString();
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
@@ -718,7 +718,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += 1;
                     break;
-                case PropertyReader.Type.ByteProperty:
+                case PropertyType.ByteProperty:
                     if (prop.Size != 1)
                     {
                         string enumName = GetPropertyInfo(prop.Name)?.reference;
@@ -743,7 +743,7 @@ namespace ME3Explorer
                         pos += 1;
                     }
                     break;
-                case PropertyReader.Type.StrProperty:
+                case PropertyType.StrProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     pos += 4;
                     s += "\"";
@@ -756,7 +756,7 @@ namespace ME3Explorer
                     t.Nodes.Add(node);
                     pos += n * 2;
                     break;
-                case PropertyReader.Type.ArrayProperty:
+                case PropertyType.ArrayProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     s += n + " elements";
                     node = new TreeNode(s);
@@ -782,34 +782,34 @@ namespace ME3Explorer
                         else
                         {
                             s2 = "";
-                            PropertyReader.Type type = PropertyReader.Type.None;
+                            PropertyType type = PropertyType.None;
                             int size = 0;
                             switch (arrayType)
                             {
                                 case ArrayType.Object:
-                                    type = PropertyReader.Type.ObjectProperty;
+                                    type = PropertyType.ObjectProperty;
                                     break;
                                 case ArrayType.Name:
-                                    type = PropertyReader.Type.NameProperty;
+                                    type = PropertyType.NameProperty;
                                     break;
                                 case ArrayType.Byte:
-                                    type = PropertyReader.Type.ByteProperty;
+                                    type = PropertyType.ByteProperty;
                                     size = 1;
                                     break;
                                 case ArrayType.Enum:
-                                    type = PropertyReader.Type.ByteProperty;
+                                    type = PropertyType.ByteProperty;
                                     break;
                                 case ArrayType.Bool:
-                                    type = PropertyReader.Type.BoolProperty;
+                                    type = PropertyType.BoolProperty;
                                     break;
                                 case ArrayType.String:
-                                    type = PropertyReader.Type.StrProperty;
+                                    type = PropertyType.StrProperty;
                                     break;
                                 case ArrayType.Float:
-                                    type = PropertyReader.Type.FloatProperty;
+                                    type = PropertyType.FloatProperty;
                                     break;
                                 case ArrayType.Int:
-                                    type = PropertyReader.Type.IntProperty;
+                                    type = PropertyType.IntProperty;
                                     break;
                             }
                             pos = GenerateSpecialStructProp(node, s2, pos, new PropertyReader.Property { TypeVal = type, Size = size });
@@ -817,7 +817,7 @@ namespace ME3Explorer
                     }
                     t.Nodes.Add(node);
                     break;
-                case PropertyReader.Type.StructProperty:
+                case PropertyType.StructProperty:
                     propInfo = GetPropertyInfo(prop.Name);
                     s += propInfo.reference;
                     node = new TreeNode(s);
@@ -828,11 +828,11 @@ namespace ME3Explorer
                     pos = readerpos;
                     t.Nodes.Add(node);
                     break;
-                case PropertyReader.Type.DelegateProperty:
+                case PropertyType.DelegateProperty:
                     throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Delegate property of Immutable struct");
-                case PropertyReader.Type.Unknown:
-                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unkown property of Immutable struct");
-                case PropertyReader.Type.None:
+                case PropertyType.Unknown:
+                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unknown property of Immutable struct");
+                case PropertyType.None:
                 default:
                     break;
             }
@@ -2212,7 +2212,7 @@ namespace ME3Explorer
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
-                if (info.type == PropertyReader.Type.StructProperty && pcc.Game != MEGame.ME3)
+                if (info.type == PropertyType.StructProperty && pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files.", "Sorry :(");
                     return;
@@ -2227,18 +2227,18 @@ namespace ME3Explorer
 
                 switch (info.type)
                 {
-                    case PropertyReader.Type.IntProperty:
-                    case PropertyReader.Type.StringRefProperty:
-                    case PropertyReader.Type.FloatProperty:
-                    case PropertyReader.Type.ObjectProperty:
-                    case PropertyReader.Type.ArrayProperty:
+                    case PropertyType.IntProperty:
+                    case PropertyType.StringRefProperty:
+                    case PropertyType.FloatProperty:
+                    case PropertyType.ObjectProperty:
+                    case PropertyType.ArrayProperty:
                         //size
                         buff.AddRange(BitConverter.GetBytes(4));
                         buff.AddRange(new byte[4]);
                         //value
                         buff.AddRange(BitConverter.GetBytes(0));
                         break;
-                    case PropertyReader.Type.NameProperty:
+                    case PropertyType.NameProperty:
                         //size
                         buff.AddRange(BitConverter.GetBytes(8));
                         buff.AddRange(new byte[4]);
@@ -2246,7 +2246,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(pcc.FindNameOrAdd("None")));
                         buff.AddRange(BitConverter.GetBytes(0));
                         break;
-                    case PropertyReader.Type.BoolProperty:
+                    case PropertyType.BoolProperty:
                         //size
                         buff.AddRange(BitConverter.GetBytes(0));
                         buff.AddRange(new byte[4]);
@@ -2260,7 +2260,7 @@ namespace ME3Explorer
                             buff.AddRange(new byte[4]);
                         }
                         break;
-                    case PropertyReader.Type.StrProperty:
+                    case PropertyType.StrProperty:
                         //size
                         buff.AddRange(BitConverter.GetBytes(6));
                         buff.AddRange(new byte[4]);
@@ -2276,7 +2276,7 @@ namespace ME3Explorer
                         }
                         buff.Add(0);
                         break;
-                    case PropertyReader.Type.DelegateProperty:
+                    case PropertyType.DelegateProperty:
                         //size
                         buff.AddRange(BitConverter.GetBytes(12));
                         buff.AddRange(new byte[4]);
@@ -2285,7 +2285,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(0));
                         buff.AddRange(BitConverter.GetBytes(0));
                         break;
-                    case PropertyReader.Type.ByteProperty:
+                    case PropertyType.ByteProperty:
                         if (info.reference == null)
                         {
                             //size
@@ -2316,7 +2316,7 @@ namespace ME3Explorer
                             buff.AddRange(new byte[4]);
                         }
                         break;
-                    case PropertyReader.Type.StructProperty:
+                    case PropertyType.StructProperty:
                         byte[] structBuff = ME3UnrealObjectInfo.getDefaultClassValue(pcc as ME3Package, info.reference);
                         if (structBuff == null)
                         {

@@ -33,7 +33,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 
 		/// <summary>
 		/// </summary>
-		public const string DefaultWaypointTag = null;
+		public const string DefaultWaypointTag = "";
 
 		private int _description;
 		private int _name;
