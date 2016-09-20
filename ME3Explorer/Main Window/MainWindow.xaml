@@ -33,15 +33,12 @@
         <Rectangle Grid.Column="0" Grid.ColumnSpan="3" MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
         <StackPanel>
             <DockPanel Height="24">
-                <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="20" Style="{DynamicResource WindowManagementButton}">
+                <Button Command="{x:Static SystemCommands.CloseWindowCommand}"  Width="25" Style="{DynamicResource WindowManagementButton}">
                     <Image Source="../Resources/close_icon.ico"/>
                 </Button>
-                <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
+                <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"  Width="25" Style="{DynamicResource WindowManagementButton}">
                     <Image Source="../Resources/minimize_icon.ico" Height="12" Width="12"/>
                 </Button>
-                <!--<Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"  Width="15" Style="{DynamicResource WindowManagementButton}">
-                    <Image Source="../Resources/resize_icon.ico" Height="12" Width="12"/>
-                </Button>-->
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
             <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand">

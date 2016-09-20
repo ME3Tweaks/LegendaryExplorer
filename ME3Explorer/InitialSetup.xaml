@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         Title="ME3Explorer Initial Setup" Icon="Resources/meexp_favicon.ico" Background="#FFD8D8D8"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="616" Height="772">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="616" Height="735">
     <Window.Resources>
         <Style x:Key="setupButton" TargetType="Button" BasedOn="{StaticResource BorderedButton}">
             <Setter Property="Background" Value="#FF808080"/>
@@ -40,9 +40,9 @@
                            Width="293" VerticalAlignment="Center"/>
             </Grid>
         </StackPanel>
-        <Rectangle Height="6" Fill="#FFF3F3F3"/>
+        <Rectangle Height="4" Fill="#FFF3F3F3"/>
         <Label Content="This wizard will guide you through the setup process for ME3Explorer." FontFamily="{StaticResource Exo-SemiBold}" 
-               Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Height="42" VerticalContentAlignment="Center"/>
+               Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Height="35" VerticalContentAlignment="Center"/>
         <Grid>
             <StackPanel x:Name="step1Section">
                 <Label Height="32" Background="#FFBFBFBF">
@@ -56,7 +56,7 @@
                     The install path for each Mass Effect game on your PC is listed below. Click &quot;Paths Ok&quot;, if <LineBreak/>
                     the paths are correct. If incorrect, click &quot;Change Paths&quot; &amp; navigate to the correct location(s).
                 </TextBlock>
-                <Grid Margin="0,0,0,20">
+                <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -105,7 +105,7 @@
                         <Run Text=" DLC Unpacking " FontFamily="{StaticResource TitilliumWeb-Regular}"/>
                     </TextBlock>
                 </Label>
-                <Grid Margin="0,0,0,10">
+                <Grid Margin="0,0,0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="255"/>
@@ -171,7 +171,7 @@
                 see the <Hyperlink NavigateUri="http://me3explorer.wikia.com/wiki/ME3Explorer_Wiki" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">ME3Explorer Wiki</Hyperlink> on Wikia.
             </TextBlock>
             <Button x:Name="doneButton" Content="ME3Explorer setup in progress..." Width="480" Height="45" IsEnabled="False" Click="DoneButton_Click"
-                    Foreground="#FFD8D8D8" FontSize="18" Background="#FF1F283C" Margin="60,10" FontFamily="{StaticResource Exo-SemiBold}">
+                    Foreground="#FFD8D8D8" FontSize="18" Background="#FF1F283C" Margin="60,5" FontFamily="{StaticResource Exo-SemiBold}">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource setupButton}">
                         <Style.Triggers>

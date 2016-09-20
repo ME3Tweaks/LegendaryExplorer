@@ -38,7 +38,7 @@
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
                     <Run Text="• SirCxyrtyx - Lead Developer"/><LineBreak/>
                     <Run Text="• Kfreon - Programmer"/><LineBreak/>
-                    <Run Text="• Giftfish - Coordinater"/>
+                    <Run Text="• Giftfish - Coordinator"/>
                 </TextBlock>
                 <Label FontFamily="{StaticResource TitilliumWeb-Light}"
                        FontSize="14" Foreground="#FF808080" BorderBrush="#FFA8A8A8" BorderThickness="2" Width="179" HorizontalAlignment="Center"
@@ -158,7 +158,7 @@
                 as specified by the terms of The MIT License. ME3Explorer is supplied without warranty; any problems incurred through use of the
                 software are your responsibility, not ours.
             </TextBlock>
-            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="195" Margin="0,3,0,10">
+            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="175" Margin="0,3,0,10">
                 <RichTextBox.Document>
                     <FlowDocument>
                         <Paragraph>

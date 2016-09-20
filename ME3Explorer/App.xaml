@@ -72,7 +72,8 @@
             </Setter>
         </Style>
         <Style x:Key="WindowManagementButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
-            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#00FFFFFF"/>
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -89,6 +90,11 @@
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#40FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="styleButtonLabel" TargetType="{x:Type Label}" >
             <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-SemiBold}"/>
