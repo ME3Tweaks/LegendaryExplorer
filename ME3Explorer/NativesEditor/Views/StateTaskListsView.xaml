@@ -97,7 +97,7 @@
 										Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 				<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-										Text="{Binding Path=SelectedStateTaskList.Value.InstanceVersion, Mode=TwoWay}"
+										Text="{Binding Path=SelectedStateTaskList.Value.InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 			</Grid>
@@ -177,7 +177,7 @@
 										Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-										Text="{Binding Path=SelectedTaskEval.Quest, Mode=TwoWay}"
+										Text="{Binding Path=SelectedTaskEval.Quest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<!-- Task Planet Name -->
@@ -185,7 +185,7 @@
 										Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-										Text="{Binding Path=SelectedTaskEval.State, Mode=TwoWay}"
+										Text="{Binding Path=SelectedTaskEval.State, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<!-- Task -->
@@ -193,7 +193,7 @@
 										Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-										Text="{Binding Path=SelectedTaskEval.Task, Mode=TwoWay}"
+										Text="{Binding Path=SelectedTaskEval.Task, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<!-- Task Instance Version -->
@@ -201,7 +201,7 @@
 										Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-										Text="{Binding Path=SelectedTaskEval.InstanceVersion, Mode=TwoWay}"
+										Text="{Binding Path=SelectedTaskEval.InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 					</Grid>
 				</Grid>

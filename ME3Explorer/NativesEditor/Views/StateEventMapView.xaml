@@ -245,7 +245,7 @@
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.GlobalBool), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.GlobalBool), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" Minimum="0" VerticalAlignment="Center" Width="150" />
 
 							<!-- New State -->
@@ -276,7 +276,7 @@
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.InstanceVersion), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" VerticalAlignment="Center" Width="150" />
 						</Grid>
 					</TabItem>
@@ -299,7 +299,7 @@
 								Content="Consequence" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.Consequence), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.Consequence), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!-- Instance Version -->
@@ -307,7 +307,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.InstanceVersion), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
 					</TabItem>
@@ -333,7 +333,7 @@
 								Content="Global Float" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.GlobalFloat), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.GlobalFloat), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -341,7 +341,7 @@
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.NewValue), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" ParsingNumberStyle="Float" />
 
 							<!---->
@@ -366,7 +366,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.InstanceVersion), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
@@ -393,7 +393,7 @@
 								Content="Function Package (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionPackageName), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionPackageName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -402,7 +402,7 @@
 								Content="Function Class (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionClassName), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionClassName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -411,7 +411,7 @@
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionName), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -420,7 +420,7 @@
 								Content="Parameter" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.Parameter), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.Parameter), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -428,7 +428,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.InstanceVersion), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
@@ -455,7 +455,7 @@
 								Content="Global Int" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.GlobalInt), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.GlobalInt), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -464,7 +464,7 @@
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.NewValue), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -488,7 +488,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.InstanceVersion), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
 					</TabItem>
@@ -515,7 +515,7 @@
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.FunctionName), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -545,7 +545,7 @@
 								Content="Object Type (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.ObjectType), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -563,7 +563,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.InstanceVersion), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
@@ -591,7 +591,7 @@
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.FunctionName), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -600,7 +600,7 @@
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.NewValue), Mode=TwoWay}" Width="150" Margin="5,5"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -617,7 +617,7 @@
 								Content="Object Type (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.ObjectType), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -635,7 +635,7 @@
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.InstanceVersion), Mode=TwoWay}" Width="150"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
@@ -664,7 +664,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.FunctionName), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -673,7 +673,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.NewValue), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -691,7 +691,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.ObjectType), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!---->
@@ -709,7 +709,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.InstanceVersion), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
 					</TabItem>
@@ -738,7 +738,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.GlobalBool), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.GlobalBool), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!-- New State -->
@@ -760,7 +760,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.ParentIndex), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.ParentIndex), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<!-- Parent Type Or (Needs new name) -->
@@ -833,7 +833,7 @@
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="6"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.InstanceVersion), Mode=TwoWay}"
+								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
 						</Grid>
 					</TabItem>
