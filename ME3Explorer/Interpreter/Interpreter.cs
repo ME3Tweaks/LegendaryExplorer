@@ -853,7 +853,26 @@ namespace ME3Explorer
             {
                 case nodeType.IntProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx.ToString();
+                    if (pcc.getNameEntry(p.name) == "m_nStrRefID")
+                    {
+                        s += "#" + idx + ": ";
+                        if (pcc.Game == MEGame.ME3)
+                        {
+                            s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
+                        }
+                        else if (pcc.Game == MEGame.ME2)
+                        {
+                            s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
+                        }
+                        else if (pcc.Game == MEGame.ME1)
+                        {
+                            s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
+                        }
+                    }
+                    else
+                    {
+                        s += idx.ToString();
+                    }
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
