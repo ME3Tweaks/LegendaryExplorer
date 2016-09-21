@@ -85,7 +85,7 @@ namespace KFreonLib.Helpers
             CompressedChunkBlock[] newChunks = new CompressedChunkBlock[noChunks];
             for (int i = 0; i < noChunks; i++)
             {
-                MiniLZO.Compress(chunks[i].rawData, out newChunks[i].rawData);
+                newChunks[i].rawData = LZO1X.Compress(chunks[i].rawData);
                 if (newChunks[i].rawData.Length == 0)
                     throw new Exception("LZO compression failed!");
                 newChunks[i].cprSize = newChunks[i].rawData.Length;
@@ -182,7 +182,7 @@ namespace KFreonLib.Helpers
                 byte[] tempResult = new byte[chunk.uncSize];
                 try
                 {
-                    MiniLZO.Decompress(chunk.rawData, tempResult);
+                    LZO1X.Decompress(chunk.rawData, tempResult);
                 }
                 catch
                 {
@@ -262,7 +262,7 @@ namespace KFreonLib.Helpers
 
                     try
                     {
-                        MiniLZO.Decompress(datain, dataout);
+                        LZO1X.Decompress(datain, dataout);
                     }
                     catch
                     {
@@ -318,7 +318,7 @@ namespace KFreonLib.Helpers
                 }
 
                 Buffer.BlockCopy(chunk.Uncompressed, pos, temp, 0, temp.Length);
-                MiniLZO.Compress(temp, out result);
+                result = LZO1X.Compress(temp);
                 if (result.Length == 0)
                     throw new Exception("LZO compression error!");
                 block.compressedsize = result.Length;
