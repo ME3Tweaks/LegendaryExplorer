@@ -94,7 +94,7 @@ namespace ME3Explorer
                 }
                 catch
                 {
-                    MessageBox.Show($"Error migrating old ME3 data, Previously created sequence views may not be available.\nAttempted migration from {OldME3SequenceViews} to {ME3ViewsPath}");
+                    MessageBox.Show($"Error migrating old ME3 data.\nPlease manually move all files from {OldME3SequenceViews} to {ME3ViewsPath}\nThen delete the original SequenceViews directory.");
                 }
                 try
                 {
@@ -107,7 +107,7 @@ namespace ME3Explorer
                 }
                 catch
                 {
-                    MessageBox.Show($"Error migrating old data, Previously created sequence views may not be available:\nAttempted migration from {OldME2SequenceViews} to {ME2ViewsPath}");
+                    MessageBox.Show($"Error migrating old ME2 data.\nPlease manually move all files from {OldME2SequenceViews} to {ME2ViewsPath}\nThen delete the original SequenceViews directory.");
                 }
                 try
                 {
@@ -120,7 +120,7 @@ namespace ME3Explorer
                 }
                 catch
                 {
-                    MessageBox.Show($"Error migrating old data, Previously created sequence views may not be available:\nAttempted migration from {OldME1SequenceViews} to {ME1ViewsPath}");
+                    MessageBox.Show($"Error migrating old ME1 data.\nPlease manually move all files from  {OldME1SequenceViews} to {ME1ViewsPath}\nThen delete the original SequenceViews directory.");
                 }
             } 
             #endregion
