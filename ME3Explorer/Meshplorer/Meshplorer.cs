@@ -113,17 +113,23 @@ namespace ME3Explorer.Meshplorer
             stm = new StaticMesh(pcc as ME3Package, index);
             List<MaterialInstanceConstant> matInsts = stm.Mesh.Mat.MatInst;
             bool foundTex = false;
-            for (int i = 0; i < matInsts.Count; i++)
+            try
             {
-                for (int j = 0; j < matInsts[i].Textures.Count; j++)
+                for (int i = 0; i < matInsts.Count; i++)
                 {
-                    if (matInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                    for (int j = 0; j < matInsts[i].Textures.Count; j++)
                     {
-                        Preview3D.setTex(matInsts[i].Textures[j].Texture);
-                        foundTex = true;
-                        break;
+                        if (matInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                        {
+                            Preview3D.setTex(matInsts[i].Textures[j].Texture);
+                            foundTex = true;
+                            break;
+                        }
                     }
                 }
+            }
+            catch
+            {
             }
             if (!foundTex)
             {
@@ -144,21 +150,28 @@ namespace ME3Explorer.Meshplorer
             try
             {
                 DisableLODs();
+                UnCheckLODs();
                 skm = new SkeletalMesh(pcc as ME3Package, index);
                 skmold = new SkeletalMeshOld(pcc as ME3Package, index);
                 hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
                 bool foundTex = false;
-                for (int i = 0; i < skm.MatInsts.Count; i++)
+                try
                 {
-                    for (int j = 0; j < skm.MatInsts[i].Textures.Count; j++)
+                    for (int i = 0; i < skm.MatInsts.Count; i++)
                     {
-                        if (skm.MatInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                        for (int j = 0; j < skm.MatInsts[i].Textures.Count; j++)
                         {
-                            Preview3D.setTex(skm.MatInsts[i].Textures[j].Texture);
-                            foundTex = true;
-                            break;
+                            if (skm.MatInsts[i].Textures[j].Desc.Contains("Diffuse"))
+                            {
+                                Preview3D.setTex(skm.MatInsts[i].Textures[j].Texture);
+                                foundTex = true;
+                                break;
+                            }
                         }
                     }
+                }
+                catch
+                {
                 }
                 if (!foundTex)
                 {
@@ -657,7 +670,7 @@ namespace ME3Explorer.Meshplorer
                 return;
             }
             UDKCopy u = new UDKCopy(pcc as ME3Package, n, getLOD());
-            u.Show();
+            u.ShowDialog();
         }
 
         private void selectMatForSectionToolStripMenuItem_Click(object sender, EventArgs e)
