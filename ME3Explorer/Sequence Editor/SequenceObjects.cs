@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Collections;
 using System.Drawing;
@@ -24,7 +23,13 @@ namespace ME3Explorer.SequenceObjects
         public IMEPackage pcc;
         public GraphEditor g;
         public static ME1Explorer.TalkFiles talkfiles { get; set; }
-        protected static Color commentColor = Color.FromArgb(74, 63, 190);
+        static Color commentColor = Color.FromArgb(74, 63, 190);
+        static Color intColor = Color.FromArgb(34, 218, 218);//cyan
+        static Color floatColor = Color.FromArgb(23, 23, 213);//blue
+        static Color boolColor = Color.FromArgb(215, 37, 33); //red
+        static Color objectColor = Color.FromArgb(219, 39, 217);//purple
+        static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool draggingOutlink = false;
@@ -42,7 +47,6 @@ namespace ME3Explorer.SequenceObjects
         protected SText comment;
 
         protected SObj(int idx, IMEPackage p, GraphEditor grapheditor)
-            : base()
         {
             pcc = p;
             g = grapheditor;
@@ -57,7 +61,6 @@ namespace ME3Explorer.SequenceObjects
         }
 
         protected SObj(int idx, IMEPackage p)
-            : base()
         {
             pcc = p;
             index = idx;
@@ -78,30 +81,13 @@ namespace ME3Explorer.SequenceObjects
         protected string GetComment()
         {
             string res = "";
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "m_aObjComment");
-            if (p != null)
+            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
+            if (comments != null)
             {
-                byte[] buff2 = p.raw;
-                
-                int count = BitConverter.ToInt32(buff2, 24);
-                int pos = 28;
-                int stringMult = 1;
-                if (pcc.Game == MEGame.ME3)
+                foreach (var s in comments)
                 {
-                    stringMult = 2;
-                }
-                for (int i = 0; i < count; i++)
-                {
-                    int len = BitConverter.ToInt32(buff2, pos);
-                    pos += 4;
-                    while (pos < buff2.Length && buff2[pos] != 0)
-                    {
-                        res += (char)buff2[pos];
-                        pos += stringMult;
-                    }
-                    res += "\n";
-                    pos += stringMult;
-                }
+                    res += s + "\n";
+                } 
             }
             return res;
         }
@@ -111,15 +97,15 @@ namespace ME3Explorer.SequenceObjects
             switch (t)
             {
                 case VarTypes.Int:
-                    return Color.FromArgb(34, 218, 218);//cyan
+                    return intColor;
                 case VarTypes.Float:
-                    return Color.FromArgb(23, 23, 213);//blue
+                    return floatColor;
                 case VarTypes.Bool:
-                    return Color.FromArgb(215, 37, 33); //red
+                    return boolColor;
                 case VarTypes.Object:
-                    return Color.FromArgb(219, 39, 217);//purple
+                    return objectColor;
                 case VarTypes.MatineeData:
-                    return Color.FromArgb(222, 123, 26);//orange
+                    return interpDataColor;
                 default:
                     return Color.Black;
             }
@@ -176,12 +162,12 @@ namespace ME3Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
+                if (prop.Name == "VarName" || prop.Name == "varName")
                 {
-                    SText VarName = new SText(pcc.getNameEntry(prop.Value.IntValue), Color.Red, false);
+                    SText VarName = new SText((prop as NameProperty).Value, Color.Red, false);
                     VarName.Pickable = false;
                     VarName.TextAlignment = StringAlignment.Center;
                     VarName.X = w / 2 - VarName.Width / 2;
@@ -199,148 +185,128 @@ namespace ME3Explorer.SequenceObjects
         {
             try
             {
-                List<PropertyReader.Property> p = PropertyReader.getPropList(export);
-                PropertyReader.Property property;
+                var props = export.GetProperties();
                 switch (type)
                 {
                     case VarTypes.Int:
                         if (export.ObjectName == "BioSeqVar_StoryManagerInt")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += property.Value.StringValue + "\n";
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue + "\n";
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Int\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Int\n#" + m_nIndex.Value;
+                            }
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("IntValue"));
-                        if (property != null)
-                            return property.Value.IntValue.ToString();
-                        else
-                            return "0";
+                        var intValue = props.GetProp<IntProperty>("IntValue");
+                        if (intValue != null)
+                        {
+                            return intValue.Value.ToString();
+                        }
+                        return "0";
                     case VarTypes.Float:
                         if (export.ObjectName == "BioSeqVar_StoryManagerFloat")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += "\n" + property.Value.StringValue;
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue;
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Float\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Float\n#" + m_nIndex.Value;
+                            }
                         }
-                        foreach (PropertyReader.Property prop in p)
+                        var floatValue = props.GetProp<FloatProperty>("FloatValue");
+                        if (floatValue != null)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FloatValue")
-                            {
-                                return BitConverter.ToSingle(prop.raw, 24).ToString();
-                            }
+                            return floatValue.Value.ToString();
                         }
                         return "0.00";
                     case VarTypes.Bool:
                         if (export.ObjectName == "BioSeqVar_StoryManagerBool")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += "\n" + property.Value.StringValue;
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue;
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Bool\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Bool\n#" + m_nIndex.Value;
+                            }
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("bValue"));
-                        if (property != null)
-                            return property.Value.IntValue > 0 ? "True" : "False";
-                        else
-                            return "False";
+                        var bValue = props.GetProp<IntProperty>("bValue");
+                        if (bValue != null)
+                        {
+                            return (bValue.Value == 1).ToString();
+                        }
+                        return "False";
                     case VarTypes.Object:
                         if (export.ObjectName == "SeqVar_Player")
                             return "Player";
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (var prop in props)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_sObjectTagToFind")
+                            if (prop.Name == "m_sObjectTagToFind")
                             {
-                                return prop.Value.StringValue;
+                                return (prop as StrProperty).Value;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "ObjValue")
+                            else if (prop.Name == "ObjValue")
                             {
-                                return pcc.getEntry(prop.Value.IntValue)?.ObjectName ?? "???";
+                                return pcc.getEntry((prop as ObjectProperty).Value)?.ObjectName ?? "???";
                             }
                         }
                         return "???";
                     case VarTypes.StrRef:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (var prop in props)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
+                            if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                             {
-                                switch (pcc.Game)
+                                StringRefProperty strRefProp = prop as StringRefProperty;
+                                if (strRefProp != null)
                                 {
-                                    case MEGame.ME1:
-                                        return talkfiles.findDataById(prop.Value.IntValue);
-                                    case MEGame.ME2:
-                                        return ME2Explorer.ME2TalkFiles.findDataById(prop.Value.IntValue);
-                                    case MEGame.ME3:
-                                        return ME3Explorer.ME3TalkFiles.findDataById(prop.Value.IntValue);
-                                    default:
-                                        break;
+                                    switch (pcc.Game)
+                                    {
+                                        case MEGame.ME1:
+                                            return talkfiles.findDataById(strRefProp.Value);
+                                        case MEGame.ME2:
+                                            return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
+                                        case MEGame.ME3:
+                                            return ME3TalkFiles.findDataById(strRefProp.Value);
+                                        default:
+                                            break;
+                                    }
                                 }
                             }
                         }
                         return "???";
                     case VarTypes.String:
-                        foreach (PropertyReader.Property prop in p)
+                        var strValue = props.GetProp<StrProperty>("StrValue");
+                        if (strValue != null)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "StrValue")
-                            {
-                                return prop.Value.StringValue;
-                            }
+                            return strValue.Value;
                         }
                         return "???";
                     case VarTypes.Extern:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (var prop in props)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FindVarName")//Named Variable
+                            if (prop.Name == "FindVarName")//Named Variable
                             {
-                                return "< " + pcc.getNameEntry(prop.Value.IntValue) + " >";
+                                return "< " + (prop as NameProperty) + " >";
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "NameValue")//SeqVar_Name
+                            else if (prop.Name == "NameValue")//SeqVar_Name
                             {
-                                return pcc.getNameEntry(prop.Value.IntValue);
+                                return (prop as NameProperty)?.Value;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "VariableLabel")//External
+                            else if (prop.Name == "VariableLabel")//External
                             {
-                                return "Extern:\n" + prop.Value.StringValue;
+                                return "Extern:\n" + (prop as StrProperty);
                             }
                         }
                         return "???";
@@ -353,6 +319,20 @@ namespace ME3Explorer.SequenceObjects
             catch (Exception)
             {
                 return "???";
+            }
+        }
+
+        void appendToComment(string s)
+        {
+            if (comment.Text.Length > 0)
+            {
+                comment.TranslateBy(0, -1 * comment.Height);
+                comment.Text += s + "\n";
+            }
+            else
+            {
+                comment.Text += s + "\n";
+                comment.TranslateBy(0, -1 * comment.Height);
             }
         }
 
@@ -401,16 +381,16 @@ namespace ME3Explorer.SequenceObjects
             string s = export.ObjectName;
             float w = 0;
             float h = 0;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "SizeX")
+                if (prop.Name == "SizeX")
                 {
-                    w = prop.Value.IntValue;
+                    w = (prop as IntProperty);
                 }
-                if (pcc.getNameEntry(prop.Name) == "SizeY")
+                if (prop.Name == "SizeY")
                 {
-                    h = prop.Value.IntValue;
+                    h = (prop as IntProperty);
                 }
             }
             MakeTitleBox(s);
@@ -457,7 +437,6 @@ namespace ME3Explorer.SequenceObjects
             public List<int> Links;
             public List<int> InputIndices;
             public string Desc;
-            public List<int> offsets;
         }
 
         public struct VarLink
@@ -579,71 +558,51 @@ namespace ME3Explorer.SequenceObjects
         protected void GetVarLinks()
         {
             Varlinks = new List<VarLink>();
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "VariableLinks");
-            if (p != null)
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                int pos = 28;
-                byte[] global = p.raw;
-                
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                foreach (var prop in varLinksProp)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    PropertyCollection props = prop.Properties;
+                    var linkedVars = props.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                    if (linkedVars != null)
                     {
-                        pos += p2[i].raw.Length;
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables")
+                        VarLink l = new VarLink();
+                        l.Links = new List<int>();
+                        l.Desc = props.GetProp<StrProperty>("LinkDesc");
+                        if (linkedVars.Count != 0)
                         {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            VarLink l = new VarLink();
-                            l.Links = new List<int>();
-                            l.offsets = new List<int>();
-                            l.Desc = p2[i + 1].Value.StringValue;
-                            if (count2 != 0)
+                            foreach (var objProp in linkedVars)
                             {
-                                for (int k = 0; k < count2; k += 1)
-                                {
-                                    l.Links.Add(BitConverter.ToInt32(p2[i].raw, 28 + k*4) - 1);
-                                    l.offsets.Add(pos + 28 + k*4 - p2[i].raw.Length);
-                                }
+                                l.Links.Add(objProp.Value - 1);
                             }
-                            else
-                            {
-                                l.Links.Add(-1);
-                                l.offsets.Add(-1);
-                            }
-                            switch (pcc.Game)
-                            {
-                                case MEGame.ME1:
-                                case MEGame.ME2:
-                                    l.type = getType(pcc.getClassName(p2[i - 1].Value.IntValue));
-                                    l.writeable = p2[i + 4].Value.IntValue == 1;
-                                    break;
-                                case MEGame.ME3:
-                                    l.type = getType(pcc.getClassName(p2[i + 2].Value.IntValue));
-                                    l.writeable = p2[i + 7].Value.IntValue == 1;
-                                    break;
-                            }
-                            if (l.writeable)
-                            {//downward pointing triangle
-                                l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
-                                l.node.AddChild(PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
-                            }
-                            else
-                            {
-                                l.node = PPath.CreateRectangle(-4, 0, 8, 10);
-                                l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
-                            }
-                            l.node.Brush = new SolidBrush(getColor(l.type));
-                            l.node.Pen = new Pen(getColor(l.type));
-                            l.node.Pickable = false;
-                            l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-                            ((PPath)l.node[0]).Pen = l.node.Pen;
-                            l.node[0].X = l.node.X;
-                            l.node[0].Y = l.node.Y;
-                            l.node[0].AddInputEventListener(new VarDragHandler());
-                            Varlinks.Add(l);
                         }
+                        else
+                        {
+                            l.Links.Add(-1);
+                        }
+                        l.type = getType(pcc.getClassName(props.GetProp<ObjectProperty>("ExpectedType").Value));
+                        l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
+                        if (l.writeable)
+                        {   
+                            //downward pointing triangle
+                            l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
+                            l.node.AddChild(PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
+                        }
+                        else
+                        {
+                            l.node = PPath.CreateRectangle(-4, 0, 8, 10);
+                            l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
+                        }
+                        l.node.Brush = new SolidBrush(getColor(l.type));
+                        l.node.Pen = new Pen(getColor(l.type));
+                        l.node.Pickable = false;
+                        l.node[0].Brush = mostlyTransparentBrush;
+                        ((PPath)l.node[0]).Pen = l.node.Pen;
+                        l.node[0].X = l.node.X;
+                        l.node[0].Y = l.node.Y;
+                        l.node[0].AddInputEventListener(new VarDragHandler());
+                        Varlinks.Add(l);
                     }
                 }
             }
@@ -652,58 +611,46 @@ namespace ME3Explorer.SequenceObjects
         protected void GetOutputLinks()
         {
             Outlinks = new List<OutputLink>();
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "OutputLinks");
-            if (p != null)
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                int pos = 28;
-                byte[] global = p.raw;
-                
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                foreach (var prop in outLinksProp)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    PropertyCollection props = prop.Properties;
+                    var linksProp = props.GetProp<ArrayProperty<StructProperty>>("Links");
+                    if (linksProp != null)
                     {
-                        pos += p2[i].raw.Length;
-                        string nm = pcc.getNameEntry(p2[i].Name);
-                        if (nm == "Links")
+                        OutputLink l = new OutputLink();
+                        l.Links = new List<int>();
+                        l.InputIndices = new List<int>();
+                        l.Desc = props.GetProp<StrProperty>("LinkDesc");
+                        if (linksProp.Count != 0)
                         {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            OutputLink l = new OutputLink();
-                            l.Links = new List<int>();
-                            l.InputIndices = new List<int>();
-                            l.offsets = new List<int>();
-                            l.Desc = p2[i + 1].Value.StringValue;
-                            if (count2 != 0)
+                            for (int i = 0; i < linksProp.Count; i += 1)
                             {
-                                for (int k = 0; k < count2; k += 1)
-                                {
-                                    List<PropertyReader.Property> p3 = PropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
-                                    l.Links.Add(p3[0].Value.IntValue - 1);
-                                    l.InputIndices.Add(p3[1].Value.IntValue);
-                                    l.offsets.Add(pos + p3[0].offsetval - p2[i].raw.Length);
-                                    if(OutputNumbers)
-                                        l.Desc = l.Desc + (k > 0 ? "," : ": ") + "#" + (p3[0].Value.IntValue - 1);
-                                }
-                            }
-                            else
-                            {
-                                l.Links.Add(-1);
-                                l.InputIndices.Add(0);
-                                l.offsets.Add(-1);
+                                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value - 1;
+                                l.Links.Add(linkedOp);
+                                l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
                                 if (OutputNumbers)
-                                    l.Desc = l.Desc + ": #-1";
+                                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + (linkedOp);
                             }
-                            l.node = PPath.CreateRectangle(0, -4, 10, 8);
-                            l.node.Brush = outputBrush;
-                            l.node.Pickable = false;
-                            l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
-                            l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-                            l.node[0].X = l.node.X;
-                            l.node[0].Y = l.node.Y;
-                            l.node[0].AddInputEventListener(new OutputDragHandler());
-                            Outlinks.Add(l);
                         }
+                        else
+                        {
+                            l.Links.Add(-1);
+                            l.InputIndices.Add(0);
+                            if (OutputNumbers)
+                                l.Desc = l.Desc + ": #-1";
+                        }
+                        l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                        l.node.Brush = outputBrush;
+                        l.node.Pickable = false;
+                        l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
+                        l.node[0].Brush = mostlyTransparentBrush;
+                        l.node[0].X = l.node.X;
+                        l.node[0].Y = l.node.Y;
+                        l.node[0].AddInputEventListener(new OutputDragHandler());
+                        Outlinks.Add(l);
                     }
                 }
             }
@@ -819,82 +766,43 @@ namespace ME3Explorer.SequenceObjects
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
             IExportEntry startExport = pcc.getExport(start.Index);
-            List<byte> ListBuff = new List<byte>(startExport.Data);
-            OutputLink link = new OutputLink();
-            bool firstLink = false;
+            string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
                 if (l.node == n1)
                 {
                     if (l.Links.Contains(end.Index))
                         return;
-                    if (l.Links[0] == -1)
-                    {
-                        firstLink = true;
-                        l.Links.RemoveAt(0);
-                        l.offsets.RemoveAt(0);
-                        l.InputIndices.RemoveAt(0);
-                    }
-                    else
-                    {
-                        l.offsets.Add(l.offsets[l.offsets.Count - 1] + 64);
-                    }
-                    l.Links.Add(end.Index);
-                    link = l;
+                    linkDesc = l.Desc;
                     break;
                 }
             }
-            if (link.Links == null)
+            if (linkDesc == null)
                 return;
+            linkDesc = OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc;
             int inputIndex = -1;
             foreach (InputLink l in end.InLinks)
             {
                 if (l.node == n2)
                 {
                     inputIndex = l.index;
-                    link.InputIndices.Add(inputIndex);
                 }
             }
             if (inputIndex == -1)
                 return;
-            
-            PropertyReader.Property p = PropertyReader.getPropOrNull(startExport, "OutputLinks");
-            if (p != null)
+            var outLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) + 64);
-                for (int j = 0; j < 4; j++)
+                foreach (var prop in outLinksProp)
                 {
-                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
-                }
-                int pos = 28;
-                byte[] global = p.raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
-                        {
-                            if (firstLink)
-                                link.offsets.Add(pos + 52);
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 + 1);
-                            sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) + 64);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p.offsetval + pos + k] = countbuff[k];
-                                ListBuff[p.offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            MemoryStream m = new MemoryStream();
-                            m.WriteObjectProperty(pcc, "LinkedOp", end.Index + 1);
-                            m.WriteIntProperty(pcc, "InputLinkIdx", inputIndex);
-                            m.WriteNoneProperty(pcc);
-                            ListBuff.InsertRange(p.offsetval + pos + 4 + count2 * 64, m.ToArray());
-                            startExport.Data = ListBuff.ToArray();
-                            return;
-                        }
-                        pos += p2[i].raw.Length;
+                        var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
+                        linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
+                            new ObjectProperty(end.index + 1, "LinkedOp"),
+                            new IntProperty(inputIndex, "InputLinkIdx")));
+                        startExport.WriteProperty(outLinksProp);
+                        return;
                     }
                 }
             }
@@ -904,66 +812,28 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
             IExportEntry startExport = pcc.getExport(start.Index);
-            List<byte> ListBuff = new List<byte>(startExport.Data);
-            VarLink link = new VarLink();
-            bool firstLink = false;
+            string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
                 if (l.node == p1)
                 {
                     if (l.Links.Contains(end.Index))
                         return;
-                    if (l.Links[0] == -1)
-                    {
-                        firstLink = true;
-                        l.Links.RemoveAt(0);
-                        l.offsets.RemoveAt(0);
-                    }
-                    else
-                    {
-                        l.offsets.Add(l.offsets[l.offsets.Count -1] + 4);
-                    }
-                    l.Links.Add(end.Index);
-                    link = l;
+                    linkDesc = l.Desc;
                     break;
                 }
             }
-            if(link.Links == null)
+            if(linkDesc == null)
                 return;
-            
-            PropertyReader.Property p = PropertyReader.getPropOrNull(startExport, "VariableLinks");
-            if (p != null)
+            var varLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) + 4);
-                for (int j = 0; j < 4; j++)
+                foreach (var prop in varLinksProp)
                 {
-                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
-                }
-                int pos = 28;
-                byte[] global = p.raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for(int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
-                        {
-                            if (firstLink)
-                                link.offsets.Add(pos + 28);
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 + 1);
-                            sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) + 4);
-                            for(int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p.offsetval + pos + k] = countbuff[k];
-                                ListBuff[p.offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.InsertRange(p.offsetval + pos + 4 + count2 * 4, BitConverter.GetBytes(end.Index + 1));
-                            startExport.Data = ListBuff.ToArray();
-                            return;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Index + 1));
+                        startExport.WriteProperty(varLinksProp);
                     }
                 }
             }
@@ -971,40 +841,18 @@ namespace ME3Explorer.SequenceObjects
 
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
-            List<byte> ListBuff = new List<byte>(export.Data);
-            
-            OutputLink link = Outlinks[linkconnection];
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "OutputLinks");
-            if (p != null)
+            string linkDesc = Outlinks[linkconnection].Desc;
+            linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) - 64);
-                for (int j = 0; j < 4; j++)
+                foreach (var prop in outLinksProp)
                 {
-                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
-                }
-                int pos = 28;
-                byte[] global = p.raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc))
-                        {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 - 1);
-                            sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) - 64);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p.offsetval + pos + k] = countbuff[k];
-                                ListBuff[p.offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.RemoveRange(p.offsetval + pos + 4 + linkIndex * 64, 64);
-                            export.Data = ListBuff.ToArray();
-                            return;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<StructProperty>>("Links").RemoveAt(linkIndex);
+                        export.WriteProperty(outLinksProp);
+                        return;
                     }
                 }
             }
@@ -1012,41 +860,17 @@ namespace ME3Explorer.SequenceObjects
 
         public void RemoveVarlink(int linkconnection, int linkIndex)
         {
-            List<byte> ListBuff = new List<byte>(export.Data);
-            
-            VarLink link = Varlinks[linkconnection];
-            
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "VariableLinks");
-            if (p != null)
+            string linkDesc = Varlinks[linkconnection].Desc;
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p.raw, 16) - 4);
-                for (int j = 0; j < 4; j++)
+                foreach (var prop in varLinksProp)
                 {
-                    ListBuff[p.offsetval - 8 + j] = sizebuff[j];
-                }
-                int pos = 28;
-                byte[] global = p.raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc)
-                        {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 - 1);
-                            sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) - 4);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p.offsetval + pos + k] = countbuff[k];
-                                ListBuff[p.offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.RemoveRange(p.offsetval + pos + 4 + linkIndex * 4, 4);
-                            export.Data = ListBuff.ToArray();
-                            return;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").RemoveAt(linkIndex);
+                        export.WriteProperty(varLinksProp);
+                        return;
                     }
                 }
             }
@@ -1109,13 +933,13 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "InputLabel" || pcc.getNameEntry(prop.Name) == "sEvent")
-                    s += "\n\"" + prop.Value.StringValue + "\"";
+                if (prop.Name.Name.Contains("EventName") || prop.Name == "sScriptName")
+                    s += "\n\"" + (prop as NameProperty) + "\"";
+                else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
+                    s += "\n\"" + (prop as StrProperty) + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1159,9 +983,9 @@ namespace ME3Explorer.SequenceObjects
 
         //public override bool Intersects(RectangleF bounds)
         //{
-        //    Region hitregion = new Region(titleBox.PathReference);
-        //    hitregion.Complement(outLinkBox.PathReference);
-        //    hitregion.Complement(varLinkBox.PathReference);
+        //    Region hitregion = new Region(outLinkBox.PathReference);
+        //    //hitregion.Union(titleBox.PathReference);
+        //    //hitregion.Union(varLinkBox.PathReference);
         //    return hitregion.IsVisible(bounds);
         //}
     }
@@ -1286,47 +1110,45 @@ namespace ME3Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
+                if (prop.Name == "oSequenceReference")
                 {
+                    ObjectProperty objectProperty = (prop as ObjectProperty);
                     if (pcc.Game == MEGame.ME1)
                     {
+                        if (objectProperty.Value > 0)
                         {
-                            if (prop.Value.IntValue > 0)
+                            string seqName = pcc.getEntry(objectProperty.Value).ObjectName;
+                            if (seqName == "Sequence")
                             {
-                                string seqName = pcc.getExport(prop.Value.IntValue - 1).ObjectName;
-                                if (seqName == "Sequence")
+                                var objNameProp = pcc.getExport(objectProperty.Value - 1).GetProperty<StrProperty>("ObjName");
+                                if (objNameProp != null)
                                 {
-                                    PropertyReader.Property prop2 = PropertyReader.getPropOrNull(pcc.getExport(prop.Value.IntValue - 1), "ObjName");
-                                    if (prop2 != null)
-                                    {
-                                        seqName = prop2.Value.StringValue;
-                                    }
+                                    seqName = objNameProp;
                                 }
-                                s += "\n\"" + seqName + "\"";
                             }
-                            else
-                            {
-                                s += "\n\"" + pcc.getImport(-prop.Value.IntValue - 1).ObjectName + "\"";
-                            }
+                            s += "\n\"" + seqName + "\"";
+                        }
+                        else
+                        {
+                            s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\"";
                         }
                     }
                     else
                     {
-                        s += "\n\"" + pcc.getExport(prop.Value.IntValue - 1).ObjectName + "\""; 
+                        s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\""; 
                     }
                 }
-                else if (pcc.getNameEntry(prop.Name) == "EventName" || pcc.getNameEntry(prop.Name) == "StateName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "OutputLabel" || pcc.getNameEntry(prop.Name) == "m_sMovieName")
-                    s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "m_pEffect")
-                    if (prop.Value.IntValue > 0)
-                        s += "\n\"" + pcc.getExport(prop.Value.IntValue - 1).ObjectName + "\"";
-                    else
-                        s += "\n\"" + pcc.getImport(-prop.Value.IntValue - 1).ObjectName + "\"";
+                else if (prop.Name == "EventName" || prop.Name == "StateName")
+                    s += "\n\"" + (prop as NameProperty) + "\"";
+                else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
+                    s += "\n\"" + (prop as StrProperty) + "\"";
+                else if (prop.Name == "m_pEffect")
+                {
+                    s += "\n\"" + pcc.getEntry((prop as ObjectProperty).Value).ObjectName + "\"";
+                }
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1358,35 +1180,29 @@ namespace ME3Explorer.SequenceObjects
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            PropertyReader.Property p = PropertyReader.getPropOrNull(export, "InputLinks");
+            var inputLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
             if (export.ClassName == "SequenceReference")
             {
-                PropertyReader.Property prop = PropertyReader.getPropOrNull(export, "oSequenceReference");
-                if (prop != null)
+                var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSequenceReference != null)
                 {
-                    p = PropertyReader.getPropOrNull(pcc.getExport(prop.Value.IntValue - 1), "InputLinks");
+                    inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                 }
             }
-            if (p != null)
+            if (inputLinksProp != null)
             {
-                int pos = 28;
-                
-                int count = BitConverter.ToInt32(p.raw, 24);
-                for (int j = 0; j < count; j++)
+                for (int i = 0; i < inputLinksProp.Count; i++)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, p.raw, pos);
                     InputLink l = new InputLink();
-                    l.Desc = p2[0].Value.StringValue;
+                    l.Desc = inputLinksProp[i].GetProp<StrProperty>("LinkDesc");
                     l.hasName = true;
-                    l.index = j;
+                    l.index = i;
                     l.node = PPath.CreateRectangle(0, -4, 10, 8);
                     l.node.Brush = outputBrush;
                     l.node.MouseEnter += OnMouseEnter;
                     l.node.MouseLeave += OnMouseLeave;
                     l.node.AddInputEventListener(new InputDragHandler());
                     InLinks.Add(l);
-                    for (int i = 0; i < p2.Count(); i++)
-                        pos += p2[i].raw.Length;
                 }
             }
             else if (pcc.Game == MEGame.ME3)

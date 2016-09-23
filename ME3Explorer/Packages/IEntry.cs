@@ -56,6 +56,8 @@ namespace ME3Explorer.Packages
         int propsEnd();
         int detectStart();
         byte[] getBinaryData();
-        void setBinaryData(byte[] v);
+        void setBinaryData(byte[] binaryData);
+        T GetProperty<T>(string name) where T : UProperty;
+        void WriteProperty(UProperty prop);
     }
 }

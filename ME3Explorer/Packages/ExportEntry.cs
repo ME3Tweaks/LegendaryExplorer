@@ -106,7 +106,7 @@ namespace ME3Explorer.Packages
                 _data = value;
                 DataSize = value.Length;
                 DataChanged = true;
-                //Properties = GetProperties();
+                properties = null;
             }
         }
 
@@ -150,28 +150,43 @@ namespace ME3Explorer.Packages
             }
         }
 
-        PropertyCollection Properties;
+        PropertyCollection properties;
 
         public PropertyCollection GetProperties()
         {
-            int start = detectStart();
-            MemoryStream stream = new MemoryStream(_data, false);
-            stream.Seek(start, SeekOrigin.Current);
-            return PropertyCollection.ReadProps(FileRef, stream, ClassName);
+            if (properties != null)
+            {
+                return properties;
+            }
+            else
+            {
+                int start = detectStart();
+                MemoryStream stream = new MemoryStream(_data, false);
+                stream.Seek(start, SeekOrigin.Current);
+                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName); 
+            }
+        }
+
+        public T GetProperty<T>(string name) where T : UProperty
+        {
+            return GetProperties().GetProp<T>(name);
         }
 
         public void WriteProperties(PropertyCollection props)
         {
             MemoryStream m = new MemoryStream();
-            IMEPackage pcc = FileRef;
-            foreach (var prop in props)
-            {
-                prop.WriteTo(m, pcc);
-            }
+            props.WriteTo(m, FileRef);
             
             int propStart = detectStart();
             int propEnd = propsEnd();
             this.Data = _data.Take(propStart).Concat(m.ToArray()).Concat(_data.Skip(propEnd)).ToArray();
+        }
+
+        public void WriteProperty(UProperty prop)
+        {
+            var props = GetProperties();
+            props.AddOrReplaceProp(prop);
+            WriteProperties(props);
         }
 
         public int detectStart()
@@ -198,11 +213,7 @@ namespace ME3Explorer.Packages
         public int propsEnd()
         {
             var props = GetProperties();
-            if (props.Any())
-            {
-                return props.endOffset;
-            }
-            return detectStart();
+            return props.endOffset;
         }
 
         public byte[] getBinaryData()

@@ -257,7 +257,7 @@ namespace ME3Explorer.Unreal
         public int count;
         public string Name;
 
-        public static explicit operator NameReference(string s)
+        public static implicit operator NameReference(string s)
         {
             return new NameReference { Name = s, index = -1 };
         }
@@ -270,6 +270,16 @@ namespace ME3Explorer.Unreal
         public override string ToString()
         {
             return Name ?? string.Empty;
+        }
+
+        public static bool operator ==(NameReference r, string s)
+        {
+            return s == r.Name;
+        }
+
+        public static bool operator !=(NameReference r, string s)
+        {
+            return s != r.Name;
         }
     }
 
@@ -291,7 +301,7 @@ namespace ME3Explorer.Unreal
         BioMask4Property
     }
 
-    [Obsolete("Use PropertyCollection instead")]
+    [Obsolete("Use IExportEntry's GetProperties() instead")]
     public static class PropertyReader
     {
         public class Property
@@ -1278,17 +1288,15 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
         {
-            int strLen;
+            int strLen = value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
-                strLen = (value.Length + 1) * 2;
-                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4);
-                stream.WriteValueS32(strLen);
+                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
+                stream.WriteValueS32(-strLen);
                 stream.WriteStringUnicode(value);
             }
             else
             {
-                strLen = (value.Length + 1);
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4);
                 stream.WriteValueS32(strLen);
                 stream.WriteStringASCII(value);

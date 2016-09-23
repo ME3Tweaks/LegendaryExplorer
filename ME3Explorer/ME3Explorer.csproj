@@ -496,7 +496,6 @@
     <Compile Include="Unreal\Classes\MantleMarker.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\PathNode.cs" />
-    <Compile Include="Unreal\Classes\Sequence.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
     <Compile Include="Unreal\Classes\SkeletalMeshOld.cs" />
     <Compile Include="Unreal\Classes\SplineActor.cs" />

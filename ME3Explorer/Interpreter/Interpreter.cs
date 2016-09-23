@@ -159,12 +159,12 @@ namespace ME3Explorer
             treeView1.Nodes.Clear();
             readerpos = export.detectStart();
             
-            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
             {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
                 GenerateTree(topLevelTree, topLevelHeaders);
             }
             catch (Exception ex)

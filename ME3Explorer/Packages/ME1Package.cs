@@ -401,6 +401,7 @@ namespace ME3Explorer.Packages
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another file, it has invalid references!");
 
+            importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
             imports.Add(importEntry);
             ImportCount = imports.Count;
@@ -426,7 +427,7 @@ namespace ME3Explorer.Packages
                 throw new Exception("you cannot add a new export entry from another file, it has invalid references!");
 
             exportEntry.DataChanged = true;
-
+            exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
             ExportCount = exports.Count;

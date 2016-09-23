@@ -22,11 +22,11 @@ namespace ME3Explorer.Unreal
             {
                 return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
             }
-            else if (entry.FileRef.Game == MEGame.ME1)
+            else if (entry.FileRef.Game == MEGame.ME2)
             {
                 return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
             }
-            else if (entry.FileRef.Game == MEGame.ME1)
+            else if (entry.FileRef.Game == MEGame.ME3)
             {
                 return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
             }
