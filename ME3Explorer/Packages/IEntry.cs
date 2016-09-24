@@ -19,15 +19,6 @@ namespace ME3Explorer.Packages
         string PackageName { get; }
     }
 
-    public interface IImportEntry : IEntry
-    {
-        int idxClassName { get; set; }
-        int idxPackageFile { get; set; }
-        string PackageFile { get; }
-
-        IImportEntry Clone();
-    }
-
     public interface IExportEntry : IEntry
     {
         bool DataChanged { get; }
@@ -54,7 +45,7 @@ namespace ME3Explorer.Packages
         PropertyCollection GetProperties();
         void WriteProperties(PropertyCollection props);
         int propsEnd();
-        int detectStart();
+        int GetPropertyStart();
         byte[] getBinaryData();
         void setBinaryData(byte[] binaryData);
         T GetProperty<T>(string name) where T : UProperty;

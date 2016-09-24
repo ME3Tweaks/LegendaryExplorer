@@ -19,7 +19,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true || namesAdded > 0);
+                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
@@ -28,13 +28,12 @@ namespace ME3Explorer.Packages
         private int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
         public int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
         private int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
-        public int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
+        public override int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
         private int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
         private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
         
-        private List<ME1ImportEntry> imports;
         private List<ME1ExportEntry> exports;
         
         public IReadOnlyList<IExportEntry> Exports
@@ -42,13 +41,6 @@ namespace ME3Explorer.Packages
             get
             {
                 return exports;
-            }
-        }
-        public IReadOnlyList<IImportEntry> Imports
-        {
-            get
-            {
-                return imports;
             }
         }
 
@@ -161,11 +153,11 @@ namespace ME3Explorer.Packages
         private void ReadImports(MemoryStream fs)
         {
             DebugOutput.PrintLn("Reading Imports...");
-            imports = new List<ME1ImportEntry>();
+            imports = new List<ImportEntry>();
             fs.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
-                ME1ImportEntry import = new ME1ImportEntry(this, fs.ReadBytes(28));
+                ImportEntry import = new ImportEntry(this, fs);
                 import.Index = i;
                 import.PropertyChanged += importChanged;
                 imports.Add(import);
@@ -262,7 +254,7 @@ namespace ME3Explorer.Packages
                 //import table
                 ImportOffset = (int)m.Position;
                 ImportCount = imports.Count;
-                foreach (ME1ImportEntry e in imports)
+                foreach (ImportEntry e in imports)
                 {
                     m.WriteBytes(e.header);
                 }
@@ -319,12 +311,7 @@ namespace ME3Explorer.Packages
             }
             namesAdded = 0;
         }
-
-        public bool isImport(int Index)
-        {
-            return (Index >= 0 && Index < ImportCount);
-        }
-
+        
         public bool isExport(int Index)
         {
             return (Index >= 0 && Index < ExportCount);
@@ -383,31 +370,6 @@ namespace ME3Explorer.Packages
                 return imports[-index - 1].ClassName;
             return "";
         }
-        
-        public void addImport(IImportEntry importEntry)
-        {
-            if (importEntry is ME1ImportEntry)
-            {
-                addImport(importEntry as ME1ImportEntry);
-            }
-            else
-            {
-                throw new FormatException("Cannot add import to an ME1 package that is not from ME1");
-            }
-        }
-
-        public void addImport(ME1ImportEntry importEntry)
-        {
-            if (importEntry.FileRef != this)
-                throw new Exception("you cannot add a new import entry from another file, it has invalid references!");
-
-            importEntry.Index = imports.Count;
-            importEntry.PropertyChanged += importChanged;
-            imports.Add(importEntry);
-            ImportCount = imports.Count;
-
-            updateTools(PackageChange.ImportAdd, ImportCount - 1);
-        }
 
         public void addExport(IExportEntry exportEntry)
         {
@@ -438,16 +400,6 @@ namespace ME3Explorer.Packages
         public IExportEntry getExport(int index)
         {
             return exports[index];
-        }
-
-        public IImportEntry getImport(int index)
-        {
-            return imports[index];
-        }
-
-        public void setNames(List<string> list)
-        {
-            names = list;
         }
     }
 }

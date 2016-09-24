@@ -33,7 +33,7 @@ namespace ME3Explorer
         public class ClipboardDependency
         {
             public string Name;
-            public Packages.ME3ImportEntry classimp;
+            public Packages.ImportEntry classimp;
             public ClipboardDependency child;
         }
 

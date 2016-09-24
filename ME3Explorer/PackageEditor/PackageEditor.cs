@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -111,7 +110,7 @@ namespace ME3Explorer
             linkComboBox.Items.Clear();
             archetypeComboBox.Items.Clear();
             List<string> Classes = new List<string>();
-            IReadOnlyList<IImportEntry> imports = pcc.Imports;
+            IReadOnlyList<ImportEntry> imports = pcc.Imports;
             for (int i = imports.Count - 1; i >= 0; i--)
             {
                 Classes.Add(-(i + 1) + " : " + imports[i].ObjectName);
@@ -254,7 +253,7 @@ namespace ME3Explorer
             listBox1.BeginUpdate();
             treeView1.BeginUpdate();
             listBox1.Items.Clear();
-            IReadOnlyList<IImportEntry> imports = pcc.Imports;
+            IReadOnlyList<ImportEntry> imports = pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             if (CurrentView == View.Names)
             {
@@ -502,19 +501,20 @@ namespace ME3Explorer
                 textBox5.Visible = label5.Visible = true;
                 textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = true;
-                textBox1.Text = pcc.getExport(n).ObjectName;
-                textBox2.Text = pcc.getExport(n).ClassName;
-                superclassTextBox.Text = pcc.getExport(n).ClassParent;
-                textBox3.Text = pcc.getExport(n).PackageFullName;
-                textBox4.Text = pcc.getExport(n).header.Length + " bytes";
-                textBox5.Text = pcc.getExport(n).indexValue.ToString();
-                textBox6.Text = pcc.getExport(n).ArchtypeName;
-                if (pcc.getExport(n).idxArchtype != 0)
-                    textBox6.Text += " (" + ((pcc.getExport(n).idxArchtype < 0) ? "imported" : "local") + " class) " + pcc.getExport(n).idxArchtype;
-                textBox10.Text = "0x" + pcc.getExport(n).ObjectFlags.ToString("X16");
-                textBox7.Text = pcc.getExport(n).DataSize + " bytes";
-                textBox8.Text = "0x" + pcc.getExport(n).DataOffset.ToString("X8");
-                textBox9.Text = pcc.getExport(n).DataOffset.ToString();
+                IExportEntry exportEntry = pcc.getExport(n);
+                textBox1.Text = exportEntry.ObjectName;
+                textBox2.Text = exportEntry.ClassName;
+                superclassTextBox.Text = exportEntry.ClassParent;
+                textBox3.Text = exportEntry.PackageFullName;
+                textBox4.Text = exportEntry.header.Length + " bytes";
+                textBox5.Text = exportEntry.indexValue.ToString();
+                textBox6.Text = exportEntry.ArchtypeName;
+                if (exportEntry.idxArchtype != 0)
+                    textBox6.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                textBox10.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
+                textBox7.Text = exportEntry.DataSize + " bytes";
+                textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
+                textBox9.Text = exportEntry.DataOffset.ToString();
             }
             else
             {
@@ -525,10 +525,11 @@ namespace ME3Explorer
                 textBox5.Visible = label5.Visible = false;
                 textBox10.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = false;
-                textBox1.Text = pcc.getImport(n).ObjectName;
-                textBox2.Text = pcc.getImport(n).ClassName;
-                textBox3.Text = pcc.getImport(n).PackageFullName;
-                textBox4.Text = pcc.getImport(n).header.Length + " bytes";
+                ImportEntry importEntry = pcc.getImport(n);
+                textBox1.Text = importEntry.ObjectName;
+                textBox2.Text = importEntry.ClassName;
+                textBox3.Text = importEntry.PackageFullName;
+                textBox4.Text = importEntry.header.Length + " bytes";
             }
         }
 
@@ -668,7 +669,7 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Imports)
             {
-                IReadOnlyList<IImportEntry> imports = pcc.Imports;
+                IReadOnlyList<ImportEntry> imports = pcc.Imports;
                 for (int i = start; i < imports.Count; i++)
                     if (imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
                     {
@@ -1065,7 +1066,7 @@ namespace ME3Explorer
                     return;
                 }
                 n = -n - 1;
-                IImportEntry importEntry = pcc.getImport(n);
+                ImportEntry importEntry = pcc.getImport(n);
                 importEntry.idxObjectName = NameIdx;
                 importEntry.idxClassName = ClassIdx;
                 importEntry.idxLink = LinkIdx;
@@ -1185,7 +1186,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    IImportEntry ent = pcc.getImport(-n - 1).Clone();
+                    ImportEntry ent = pcc.getImport(-n - 1).Clone();
                     pcc.addImport(ent);
                     RefreshView();
                     goToNumber(CurrentView == View.Tree ? -pcc.ImportCount : pcc.ImportCount - 1);
@@ -1212,7 +1213,7 @@ namespace ME3Explorer
                 else
                 {
                     nextIndex = -pcc.ImportCount - 1;
-                    IImportEntry imp = pcc.getImport(-n - 1).Clone();
+                    ImportEntry imp = pcc.getImport(-n - 1).Clone();
                     pcc.addImport(imp);
 
                     n = nextIndex;
@@ -1243,7 +1244,7 @@ namespace ME3Explorer
                     else
                     {
                         nextIndex = -pcc.ImportCount - 1;
-                        IImportEntry imp = pcc.getImport(-index - 1).Clone();
+                        ImportEntry imp = pcc.getImport(-index - 1).Clone();
                         imp.idxLink = n;
                         pcc.addImport(imp);
                     }
@@ -1351,20 +1352,8 @@ namespace ME3Explorer
 
         private void importImport(IMEPackage importpcc, int n, int link)
         {
-            IImportEntry imp = importpcc.getImport(n);
-            IImportEntry nimp = null;
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    nimp = new ME1ImportEntry(pcc as ME1Package, imp.header);
-                    break;
-                case MEGame.ME2:
-                    nimp = new ME2ImportEntry(pcc as ME2Package, imp.header);
-                    break;
-                case MEGame.ME3:
-                    nimp = new ME3ImportEntry(pcc as ME3Package, imp.header);
-                    break;
-            }
+            ImportEntry imp = importpcc.getImport(n);
+            ImportEntry nimp = new ImportEntry(pcc, imp.header);
             nimp.idxLink = link;
             nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
@@ -1389,13 +1378,9 @@ namespace ME3Explorer
                     break;
             }
             byte[] idata = ex.Data;
-            List<PropertyReader.Property> Props = PropertyReader.getPropList(ex);
-            int start = PropertyReader.detectStart(importpcc, idata, importpcc.getExport(n).ObjectFlags);
-            int end = start;
-            if (Props.Count != 0)
-            {
-                end = Props[Props.Count - 1].offend;
-            }
+            PropertyCollection props = ex.GetProperties();
+            int start = ex.GetPropertyStart();
+            int end = props.endOffset;
             MemoryStream res = new MemoryStream();
             if ((importpcc.getExport(n).ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
@@ -1416,10 +1401,7 @@ namespace ME3Explorer
             List<string> names = pcc.Names.ToList();
             try
             {
-                foreach (PropertyReader.Property p in Props)
-                {
-                    PropertyReader.ImportProperty(pcc, importpcc, p, importpcc.getObjectName(ex.idxClass), res);
-                }
+                props.WriteTo(res, pcc);
             }
             catch (Exception exception)
             {
@@ -1453,8 +1435,7 @@ namespace ME3Explorer
             }
             else
             {
-                for (int i = end; i < idata.Length; i++)
-                    res.WriteByte(idata[i]);
+                res.Write(idata, end, idata.Length - end);
             }
             nex.setHeader((byte[])ex.header.Clone());
             nex.Data = res.ToArray();

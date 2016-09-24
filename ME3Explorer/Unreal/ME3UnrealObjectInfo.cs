@@ -394,6 +394,56 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static PropertyCollection getDefaultStructValue(string className)
+        {
+            if (Structs.ContainsKey(className))
+            {
+                bool immutable = isImmutable(className);
+                ClassInfo info = Structs[className];
+                try
+                {
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    {
+                        byte[] buff;
+                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
+                        //thus, I have hardcoded what those default values should be 
+                        if (className == "Plane")
+                        {
+                            buff = PlaneDefault;
+                        }
+                        else if (className == "CoverReference")
+                        {
+                            buff = CoverReferenceDefault;
+                        }
+                        else
+                        {
+                            buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
+                        }
+                        PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                        List<UProperty> toRemove = new List<UProperty>();
+                        foreach (var prop in props)
+                        {
+                            //remove transient props
+                            if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class" )
+                            {
+                                toRemove.Add(prop);
+                            }
+                        }
+                        foreach (var prop in toRemove)
+                        {
+                            props.Remove(prop);
+                        }
+                        return props;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
         public static bool inheritsFrom(ME3ExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;

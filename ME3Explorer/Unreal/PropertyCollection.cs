@@ -77,7 +77,7 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
-                NameReference nameRef = new NameReference { index = nameIdx, Name = name, count = stream.ReadValueS32() };
+                NameReference nameRef = new NameReference {Name = name, count = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);
                 int size = stream.ReadValueS32();
@@ -133,13 +133,11 @@ namespace ME3Explorer.Unreal
                                 NameReference enumType = new NameReference();
                                 if (pcc.Game == MEGame.ME3)
                                 {
-                                    enumType.index = stream.ReadValueS32();
+                                    enumType.Name = pcc.getNameEntry(stream.ReadValueS32());
                                     enumType.count = stream.ReadValueS32();
-                                    enumType.Name = pcc.getNameEntry(enumType.index);
                                 }
                                 else
                                 {
-                                    enumType.index = -1;
                                     enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                 }
                                 props.Add(new EnumProperty(stream, pcc, enumType, nameRef));
@@ -168,6 +166,8 @@ namespace ME3Explorer.Unreal
                         props.Add(new StringRefProperty(stream, nameRef));
                         break;
                     case PropertyType.DelegateProperty:
+                        props.Add(new DelegateProperty(stream, pcc, nameRef));
+                        break;
                     case PropertyType.Unknown:
                         {
                             props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef));
@@ -207,13 +207,12 @@ namespace ME3Explorer.Unreal
                     }
                     else
                     {
-                        byte[] defaultValue = ME3UnrealObjectInfo.getDefaultClassValue(pcc as ME3Package, structType, true);
-                        if (defaultValue == null)
+                        defaultProps = ME3UnrealObjectInfo.getDefaultStructValue(structType);
+                        if (defaultProps == null)
                         {
                             props.Add(new UnknownProperty(stream, size));
                             return props;
                         }
-                        defaultProps = ReadProps(pcc, new MemoryStream(defaultValue), structType);
                         defaultStructValues.Add(structType, defaultProps);
                     }
                     for (int i = 0; i < defaultProps.Count; i++)
@@ -233,7 +232,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "Pitch", "Yaw", "Roll" };
                 for (int i = 0; i < 3; i++)
                 {
-                    props.Add(new IntProperty(stream, (NameReference)labels[i]));
+                    props.Add(new IntProperty(stream, labels[i]));
                 }
             }
             else if (structType == "Vector2d" || structType == "RwVector2")
@@ -241,7 +240,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y" };
                 for (int i = 0; i < 2; i++)
                 {
-                    props.Add(new FloatProperty(stream, (NameReference)labels[i]));
+                    props.Add(new FloatProperty(stream, labels[i]));
                 }
             }
             else if (structType == "Vector" || structType == "RwVector3")
@@ -249,7 +248,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z" };
                 for (int i = 0; i < 3; i++)
                 {
-                    props.Add(new FloatProperty(stream, (NameReference)labels[i]));
+                    props.Add(new FloatProperty(stream, labels[i]));
                 }
             }
             else if (structType == "Color")
@@ -257,7 +256,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "B", "G", "R", "A" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new ByteProperty(stream, (NameReference)labels[i]));
+                    props.Add(new ByteProperty(stream, labels[i]));
                 }
             }
             else if (structType == "LinearColor")
@@ -265,7 +264,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "R", "G", "B", "A" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new FloatProperty(stream, (NameReference)labels[i]));
+                    props.Add(new FloatProperty(stream, labels[i]));
                 }
             }
             //uses EndsWith to support RwQuat, RwVector4, and RwPlane
@@ -274,7 +273,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z", "W" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new FloatProperty(stream, (NameReference)labels[i]));
+                    props.Add(new FloatProperty(stream, labels[i]));
                 }
             }
             else if (structType == "TwoVectors")
@@ -282,7 +281,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z", "X", "Y", "Z" };
                 for (int i = 0; i < 6; i++)
                 {
-                    props.Add(new FloatProperty(stream, (NameReference)labels[i]));
+                    props.Add(new FloatProperty(stream, labels[i]));
                 }
             }
             else if (structType == "Matrix" || structType == "RwMatrix44")
@@ -294,9 +293,9 @@ namespace ME3Explorer.Unreal
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 4; j++)
                     {
-                        structProps.Add(new FloatProperty(stream, (NameReference)labels2[j]));
+                        structProps.Add(new FloatProperty(stream, labels2[j]));
                     }
-                    props.Add(new StructProperty("Plane", structProps, (NameReference)labels[i], true));
+                    props.Add(new StructProperty("Plane", structProps, labels[i], true));
                 }
             }
             else if (structType == "Guid")
@@ -304,7 +303,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "A", "B", "C", "D" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new IntProperty(stream, (NameReference)labels[i]));
+                    props.Add(new IntProperty(stream, labels[i]));
                 }
             }
             else if (structType == "IntPoint")
@@ -312,7 +311,7 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y" };
                 for (int i = 0; i < 2; i++)
                 {
-                    props.Add(new IntProperty(stream, (NameReference)labels[i]));
+                    props.Add(new IntProperty(stream, labels[i]));
                 }
             }
             else if (structType == "Box" || structType == "BioRwBox")
@@ -324,11 +323,11 @@ namespace ME3Explorer.Unreal
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 3; j++)
                     {
-                        structProps.Add(new FloatProperty(stream, (NameReference)labels2[j]));
+                        structProps.Add(new FloatProperty(stream, labels2[j]));
                     }
-                    props.Add(new StructProperty("Vector", structProps, (NameReference)labels[i], true));
+                    props.Add(new StructProperty("Vector", structProps, labels[i], true));
                 }
-                props.Add(new ByteProperty(stream, (NameReference)"IsValid"));
+                props.Add(new ByteProperty(stream, "IsValid"));
             }
             else
             {
@@ -361,10 +360,7 @@ namespace ME3Explorer.Unreal
                     if (template is EnumProperty)
                     {
                         string enumType = UnrealObjectInfo.GetEnumType(pcc.Game, template.Name, structType);
-                        NameReference enumVal = new NameReference();
-                        enumVal.index = stream.ReadValueS32();
-                        enumVal.count = stream.ReadValueS32();
-                        return new EnumProperty(stream, pcc, (NameReference)enumType, template.Name);
+                        return new EnumProperty(stream, pcc, enumType, template.Name);
                     }
                     return new ByteProperty(stream, template.Name);
                 case PropertyType.BioMask4Property:
@@ -413,7 +409,7 @@ namespace ME3Explorer.Unreal
                 case ArrayType.Enum:
                     {
                         var props = new List<EnumProperty>();
-                        NameReference enumType = new NameReference { Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType), index = -1 };
+                        NameReference enumType = new NameReference { Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType)};
                         for (int i = 0; i < count; i++)
                         {
                             props.Add(new EnumProperty(stream, pcc, enumType));
@@ -512,7 +508,7 @@ namespace ME3Explorer.Unreal
 
         protected UProperty(NameReference? name)
         {
-            _name = name ?? new NameReference { index = -1 };
+            _name = name ?? new NameReference();
         }
         
         public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
@@ -732,9 +728,8 @@ namespace ME3Explorer.Unreal
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             NameReference nameRef = new NameReference();
-            nameRef.index = stream.ReadValueS32();
+            nameRef.Name = pcc.getNameEntry(stream.ReadValueS32());
             nameRef.count = stream.ReadValueS32();
-            nameRef.Name = pcc.getNameEntry(nameRef.index);
             Value = nameRef;
             PropType = PropertyType.NameProperty;
         }
@@ -876,9 +871,8 @@ namespace ME3Explorer.Unreal
         {
             EnumType = enumType;
             NameReference enumVal = new NameReference();
-            enumVal.index = stream.ReadValueS32();
+            enumVal.Name = pcc.getNameEntry(stream.ReadValueS32());
             enumVal.count = stream.ReadValueS32();
-            enumVal.Name = pcc.getNameEntry(enumVal.index);
             Value = enumVal;
             PropType = PropertyType.ByteProperty;
         }
@@ -1091,6 +1085,36 @@ namespace ME3Explorer.Unreal
             else
             {
                 stream.WriteValueS32(Value);
+            }
+        }
+    }
+
+    public class DelegateProperty : UProperty
+    {
+        public int unk;
+        public NameReference Value;
+
+        public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        {
+            unk = stream.ReadValueS32();
+            NameReference val = new NameReference();
+            val.Name = pcc.getNameEntry(stream.ReadValueS32());
+            val.count = stream.ReadValueS32();
+            Value = val;
+            PropType = PropertyType.DelegateProperty;
+        }
+
+        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        {
+            if (!valueOnly)
+            {
+                stream.WriteDelegateProperty(pcc, Name, unk, Value);
+            }
+            else
+            {
+                stream.WriteValueS32(unk);
+                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteValueS32(Value.count);
             }
         }
     }

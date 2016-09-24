@@ -53,7 +53,7 @@ namespace ME3Explorer.Packages
         int ImportCount { get; }
         int ImportOffset { get; }
         IReadOnlyList<IExportEntry> Exports { get; }
-        IReadOnlyList<IImportEntry> Imports { get; }
+        IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
         MEGame Game { get; }
         string FileName { get; }
@@ -70,7 +70,7 @@ namespace ME3Explorer.Packages
         /// <param name="index">unreal index</param>
         IEntry getEntry(int index);
         IExportEntry getExport(int index);
-        IImportEntry getImport(int index);
+        ImportEntry getImport(int index);
         int findName(string nameToFind);
         string getClassName(int index);
         string getNameEntry(int index);
@@ -82,7 +82,7 @@ namespace ME3Explorer.Packages
         int FindNameOrAdd(string name);
         void replaceName(int index, string newName);
         void addExport(IExportEntry exportEntry);
-        void addImport(IImportEntry importEntry);
+        void addImport(ImportEntry importEntry);
         /// <summary>
         ///     exposed so that the property import function can restore the namelist after a failure.
         ///     please don't use it anywhere else.

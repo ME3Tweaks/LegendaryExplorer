@@ -4,12 +4,24 @@ using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ImportEntry : ViewModelBase
+    public class ImportEntry : ViewModelBase, IEntry
     {
+        public ImportEntry(IMEPackage pccFile, byte[] importData)
+        {
+            FileRef = pccFile;
+            header = (byte[])importData.Clone();
+        }
+
+        public ImportEntry(IMEPackage pccFile, Stream importData)
+        {
+            FileRef = pccFile;
+            header = new byte[byteSize];
+            importData.Read(header, 0, header.Length);
+        }
+
         public int Index { get; set; }
         public int UIndex { get { return -Index - 1; } }
-
-
+        
         public IMEPackage FileRef { get; protected set; }
 
         public const int byteSize = 28;
@@ -86,59 +98,10 @@ namespace ME3Explorer.Packages
                 }
             }
         }
-    }
 
-    public class ME3ImportEntry : ImportEntry, IImportEntry
-    {
-
-        public ME3ImportEntry(ME3Package pccFile, byte[] importData)
+        public ImportEntry Clone()
         {
-            FileRef = pccFile;
-            header = (byte[])importData.Clone();
-        }
-
-        public ME3ImportEntry(ME3Package pccFile, Stream importData)
-        {
-            FileRef = pccFile;
-            header = new byte[byteSize];
-            importData.Read(header, 0, header.Length);
-        }
-
-        public IImportEntry Clone()
-        {
-            ME3ImportEntry newImport = (ME3ImportEntry)MemberwiseClone();
-            newImport.header = (byte[])header.Clone();
-            return newImport;
-        }
-    }
-
-    public class ME2ImportEntry : ImportEntry, IImportEntry
-    {
-        public ME2ImportEntry(ME2Package pccFile, byte[] importData)
-        {
-            FileRef = pccFile;
-            header = (byte[])importData.Clone();
-        }
-
-        public IImportEntry Clone()
-        {
-            ME2ImportEntry newImport = (ME2ImportEntry)MemberwiseClone();
-            newImport.header = (byte[])header.Clone();
-            return newImport;
-        }
-    }
-
-    public class ME1ImportEntry : ImportEntry, IImportEntry
-    {
-        public ME1ImportEntry(ME1Package pccFile, byte[] importData)
-        {
-            FileRef = pccFile;
-            header = (byte[])importData.Clone();
-        }
-
-        public IImportEntry Clone()
-        {
-            ME1ImportEntry newImport = (ME1ImportEntry)MemberwiseClone();
+            ImportEntry newImport = (ImportEntry)MemberwiseClone();
             newImport.header = (byte[])header.Clone();
             return newImport;
         }

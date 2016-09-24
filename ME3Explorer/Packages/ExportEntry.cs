@@ -15,14 +15,17 @@ namespace ME3Explorer.Packages
         public int Index { get; set; }
         public int UIndex { get { return Index + 1; } }
 
-        protected ExportEntry(byte[] headerData)
+        protected ExportEntry(IMEPackage file, byte[] headerData, uint exportOffset)
         {
+            FileRef = file;
             header = (byte[])headerData.Clone();
+            headerOffset = exportOffset;
             OriginalDataSize = DataSize;
         }
 
-        protected ExportEntry()
+        protected ExportEntry(IMEPackage file)
         {
+            FileRef = file;
             OriginalDataSize = 0;
         }
 
@@ -43,6 +46,15 @@ namespace ME3Explorer.Packages
         public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); HeaderChanged = true; } }
         public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); HeaderChanged = true; } }
         public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); HeaderChanged = true; } }
+        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
+        //if me1 or me2: int unkcount1
+        //if me1 or me2: unkcount1 * 12 bytes
+        //int unk1 
+        //int unkcount2 
+        //int unk2 
+        //Guid packageGuid 
+        //unkcount2 * 4 bytes 
 
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -110,8 +122,6 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
         public readonly int OriginalDataSize;
 
         bool dataChanged;
@@ -160,7 +170,7 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                int start = detectStart();
+                int start = GetPropertyStart();
                 MemoryStream stream = new MemoryStream(_data, false);
                 stream.Seek(start, SeekOrigin.Current);
                 return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName); 
@@ -177,7 +187,7 @@ namespace ME3Explorer.Packages
             MemoryStream m = new MemoryStream();
             props.WriteTo(m, FileRef);
             
-            int propStart = detectStart();
+            int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             this.Data = _data.Take(propStart).Concat(m.ToArray()).Concat(_data.Skip(propEnd)).ToArray();
         }
@@ -189,7 +199,7 @@ namespace ME3Explorer.Packages
             WriteProperties(props);
         }
 
-        public int detectStart()
+        public int GetPropertyStart()
         {
             IMEPackage pcc = FileRef;
             if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
@@ -230,15 +240,12 @@ namespace ME3Explorer.Packages
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
         public ME3ExportEntry(ME3Package pccFile, byte[] headerData, uint exportOffset) :
-            base(headerData)
+            base(pccFile, headerData, exportOffset)
         {
-            FileRef = pccFile;
-            headerOffset = exportOffset;
         }
 
-        public ME3ExportEntry(ME3Package pccFile)
+        public ME3ExportEntry(ME3Package pccFile) : base(pccFile)
         {
-            FileRef = pccFile;
         }
 
         public IExportEntry Clone()
@@ -265,15 +272,12 @@ namespace ME3Explorer.Packages
     public class ME2ExportEntry : ExportEntry, IExportEntry
     {
         public ME2ExportEntry(ME2Package pccFile, byte[] headerData, uint exportOffset) :
-            base(headerData)
+            base(pccFile, headerData, exportOffset)
         {
-            FileRef = pccFile;
-            headerOffset = exportOffset;
         }
 
-        public ME2ExportEntry(ME2Package pccFile)
+        public ME2ExportEntry(ME2Package pccFile) : base(pccFile)
         {
-            FileRef = pccFile;
         }
 
         public IExportEntry Clone()
@@ -300,15 +304,12 @@ namespace ME3Explorer.Packages
     public class ME1ExportEntry : ExportEntry, IExportEntry
     {
         public ME1ExportEntry(ME1Package pccFile, byte[] headerData, uint exportOffset) :
-            base(headerData)
+            base(pccFile, headerData, exportOffset)
         {
-            FileRef = pccFile;
-            headerOffset = exportOffset;
         }
 
-        public ME1ExportEntry(ME1Package file)
+        public ME1ExportEntry(ME1Package file) : base(file)
         {
-            FileRef = file;
         }
 
         public IExportEntry Clone()

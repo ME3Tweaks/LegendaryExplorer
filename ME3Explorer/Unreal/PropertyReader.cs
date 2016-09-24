@@ -253,13 +253,12 @@ namespace ME3Explorer.Unreal
 
     public struct NameReference
     {
-        public int index;
-        public int count;
         public string Name;
+        public int count;
 
         public static implicit operator NameReference(string s)
         {
-            return new NameReference { Name = s, index = -1 };
+            return new NameReference { Name = s};
         }
 
         public static implicit operator string(NameReference n)
@@ -794,9 +793,8 @@ namespace ME3Explorer.Unreal
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
                     var nameRef = new NameReference();
-                    nameRef.index = v.IntValue;
+                    nameRef.Name = pcc.getNameEntry(v.IntValue);
                     nameRef.count = BitConverter.ToInt32(raw, start + 4);
-                    nameRef.Name = pcc.getNameEntry(nameRef.index);
                     if (nameRef.count > 0)
                         nameRef.Name += "_" + (nameRef.count - 1);
                     v.NameValue = nameRef;
@@ -1205,13 +1203,6 @@ namespace ME3Explorer.Unreal
             stream.WriteValueS32(value);
         }
 
-        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, string value, int index = 0)
-        {
-            stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
-            stream.WriteValueS32(pcc.FindNameOrAdd(value));
-            stream.WriteValueS32(index);
-        }
-
         public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, NameReference value)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
@@ -1264,7 +1255,7 @@ namespace ME3Explorer.Unreal
                 stream.WriteValueS32(enumName.count);
             }
             stream.WriteValueS32(pcc.FindNameOrAdd(enumValue.Name));
-            stream.WriteValueS32(enumName.count);
+            stream.WriteValueS32(enumValue.count);
         }
 
         public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, byte[] value)
@@ -1307,6 +1298,14 @@ namespace ME3Explorer.Unreal
         {
             stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4);
             stream.WriteValueS32(value);
+        }
+
+        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, string propName, int unk, NameReference value)
+        {
+            stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12);
+            stream.WriteValueS32(unk);
+            stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
+            stream.WriteValueS32(value.count);
         }
 
         public static void WriteStructPropVector(this Stream stream, IMEPackage pcc, string propName, float x, float y, float z)

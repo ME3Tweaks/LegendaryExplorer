@@ -532,8 +532,6 @@ namespace ME3Explorer.Matinee
         public void LoadData()
         {   //default values
             m_nmFindActor = new NameReference();
-            m_nmFindActor.index = -1;
-
             
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
             foreach (PropertyReader.Property p in props)
@@ -546,7 +544,7 @@ namespace ME3Explorer.Matinee
         public override void ToTree()
         {
             base.ToTree();
-            if (m_nmFindActor.index != -1)
+            if (m_nmFindActor.Name != null)
                 AddToTree("m_nmFindActor : " + m_nmFindActor.Name);
             AddToTree("m_eFindActorMode : " + m_eFindActorMode.ToString(pcc));
         }
@@ -795,7 +793,6 @@ namespace ME3Explorer.Matinee
         public void LoadData()
         {   //default values
             FacingController = new NameReference();
-            FacingController.index = -1;
             
             
             List<PropertyReader.Property> props = PropertyReader.getPropList(pcc.Exports[index]);
@@ -809,7 +806,7 @@ namespace ME3Explorer.Matinee
         public override void ToTree()
         {
             base.ToTree();
-            if (FacingController.index != -1)
+            if (FacingController.Name != null)
                 AddToTree("FacingController : " + FacingController.Name);
         }
     }

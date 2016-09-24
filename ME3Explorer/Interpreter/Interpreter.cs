@@ -157,7 +157,7 @@ namespace ME3Explorer
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            readerpos = export.detectStart();
+            readerpos = export.GetPropertyStart();
             
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;

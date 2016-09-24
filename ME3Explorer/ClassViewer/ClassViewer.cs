@@ -235,7 +235,7 @@ namespace ME3Explorer.ClassViewer
             if (i < 0)
             {
                 i = -i - 1;
-                IImportEntry importEntry = pcc.Imports[i];
+                ImportEntry importEntry = pcc.Imports[i];
                 if (importEntry.PackageFullName != "Class" && importEntry.PackageFullName != "Package")
                     s += importEntry.PackageFullName + ".";
                 s += importEntry.ObjectName;

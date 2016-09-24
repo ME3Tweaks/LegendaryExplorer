@@ -20,7 +20,7 @@ namespace ME3Explorer.Packages
         public override bool IsModified {
             get
             {
-                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true || namesAdded > 0);
+                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
@@ -54,12 +54,11 @@ namespace ME3Explorer.Packages
             }
         }
         private int ExportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
-        public int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
+        public override int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
         private int FreeZoneStart { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
         private int FreeZoneEnd { get { return BitConverter.ToInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
         
-        private List<ME3ImportEntry> imports;
         private List<ME3ExportEntry> exports;
 
         public IReadOnlyList<IExportEntry> Exports
@@ -67,14 +66,6 @@ namespace ME3Explorer.Packages
             get
             {
                 return exports;
-            }
-        }
-
-        public IReadOnlyList<IImportEntry> Imports
-        {
-            get
-            {
-                return imports;
             }
         }
 
@@ -101,7 +92,7 @@ namespace ME3Explorer.Packages
             FileName = Path.GetFullPath(pccFilePath);
             MemoryStream listsStream;
             names = new List<string>();
-            imports = new List<ME3ImportEntry>();
+            imports = new List<ImportEntry>();
             exports = new List<ME3ExportEntry>();
             using (FileStream pccStream = File.OpenRead(FileName))
             {
@@ -145,12 +136,11 @@ namespace ME3Explorer.Packages
 
             // fill import list
             listsStream.Seek(ImportOffset, SeekOrigin.Begin);
-            byte[] buffer = new byte[ImportEntry.byteSize];
             for (int i = 0; i < ImportCount; i++)
             {
 
                 long offset = listsStream.Position;
-                ME3ImportEntry imp = new ME3ImportEntry(this, listsStream);
+                ImportEntry imp = new ImportEntry(this, listsStream);
                 imp.Index = i;
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
@@ -158,6 +148,7 @@ namespace ME3Explorer.Packages
 
             // fill export list
             listsStream.Seek(ExportOffset, SeekOrigin.Begin);
+            byte[] buffer;
             for (int i = 0; i < ExportCount; i++)
             {
                 uint expInfoOffset = (uint)listsStream.Position;
@@ -251,7 +242,7 @@ namespace ME3Explorer.Packages
                 //import table
                 ImportOffset = (int)m.Position;
                 ImportCount = imports.Count;
-                foreach (ME3ImportEntry e in imports)
+                foreach (ImportEntry e in imports)
                 {
                     m.WriteBytes(e.header);
                 }
@@ -377,7 +368,7 @@ namespace ME3Explorer.Packages
                 //Write the import list
                 ImportOffset = (int)newPCCStream.Position;
                 ImportCount = imports.Count;
-                foreach (ME3ImportEntry import in imports)
+                foreach (ImportEntry import in imports)
                 {
                     newPCCStream.WriteBytes(import.header);
                 }
@@ -414,11 +405,6 @@ namespace ME3Explorer.Packages
             {
                 export.DataChanged = false;
             }
-            foreach (var import in imports)
-            {
-                import.HeaderChanged = false;
-            }
-            namesAdded = 0;
         }
 
         public string getObjectName(int index)
@@ -470,38 +456,9 @@ namespace ME3Explorer.Packages
             return null;
         }
 
-        public bool isImport(int index)
-        {
-            return (index >= 0 && index < imports.Count);
-        }
         public bool isExport(int index)
         {
             return (index >= 0 && index < exports.Count);
-        }
-
-        public void addImport(IImportEntry importEntry)
-        {
-            if (importEntry is ME3ImportEntry)
-            {
-                addImport(importEntry as ME3ImportEntry);
-            }
-            else
-            {
-                throw new FormatException("Cannot add import to an ME3 package that is not from ME3");
-            }
-        }
-
-        public void addImport(ME3ImportEntry importEntry)
-        {
-            if (importEntry.FileRef != this)
-                throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
-
-            importEntry.Index = imports.Count;
-            importEntry.PropertyChanged += importChanged;
-            imports.Add(importEntry);
-            ImportCount = imports.Count;
-
-            updateTools(PackageChange.ImportAdd, ImportCount - 1);
         }
 
         public void addExport(IExportEntry exportEntry)
@@ -533,16 +490,6 @@ namespace ME3Explorer.Packages
         public IExportEntry getExport(int index)
         {
             return exports[index];
-        }
-
-        public IImportEntry getImport(int index)
-        {
-            return imports[index];
-        }
-        
-        public void setNames(List<string> list)
-        {
-            names = list;
         }
     }
 }

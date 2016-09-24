@@ -43,7 +43,9 @@ namespace ME3Explorer.Packages
         protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } }
         protected uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
+
         protected abstract int NameCount { get; set; }
+        public abstract int ImportCount { get; protected set; }
 
         public bool IsCompressed
         {
@@ -69,49 +71,10 @@ namespace ME3Explorer.Packages
             }
         }
 
+        #region Names
         protected uint namesAdded;
         protected List<string> names;
         public IReadOnlyList<string> Names { get { return names; } }
-        
-        private DateTime? lastSaved;
-        public DateTime LastSaved
-        {
-            get
-            {
-                if (lastSaved.HasValue)
-                {
-                    return lastSaved.Value;
-                }
-                else if (File.Exists(FileName))
-                {
-                    return (new FileInfo(FileName)).LastWriteTime;
-                }
-                else
-                {
-                    return DateTime.MinValue;
-                }
-            }
-        }
-
-        public long FileSize
-        {
-            get
-            {
-                if (File.Exists(FileName))
-                {
-                    return (new FileInfo(FileName)).Length;
-                }
-                return 0;
-            }
-        }
-
-        protected virtual void AfterSave()
-        {
-            lastSaved = DateTime.Now;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
-        }
 
         public bool isName(int index)
         {
@@ -171,6 +134,94 @@ namespace ME3Explorer.Packages
             return -1;
         }
 
+        public void setNames(List<string> list)
+        {
+            names = list;
+        }
+        #endregion
+
+        #region Imports
+        protected List<ImportEntry> imports;
+        public IReadOnlyList<ImportEntry> Imports
+        {
+            get
+            {
+                return imports;
+            }
+        }
+
+        public bool isImport(int index)
+        {
+            return (index >= 0 && index < imports.Count);
+        }
+
+        public void addImport(ImportEntry importEntry)
+        {
+            if (importEntry.FileRef != this)
+                throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
+
+            importEntry.Index = imports.Count;
+            importEntry.PropertyChanged += importChanged;
+            imports.Add(importEntry);
+            ImportCount = imports.Count;
+
+            updateTools(PackageChange.ImportAdd, ImportCount - 1);
+        }
+
+        public ImportEntry getImport(int index)
+        {
+            return imports[index];
+        }
+
+        #endregion
+
+        private DateTime? lastSaved;
+        public DateTime LastSaved
+        {
+            get
+            {
+                if (lastSaved.HasValue)
+                {
+                    return lastSaved.Value;
+                }
+                else if (File.Exists(FileName))
+                {
+                    return (new FileInfo(FileName)).LastWriteTime;
+                }
+                else
+                {
+                    return DateTime.MinValue;
+                }
+            }
+        }
+
+        public long FileSize
+        {
+            get
+            {
+                if (File.Exists(FileName))
+                {
+                    return (new FileInfo(FileName)).Length;
+                }
+                return 0;
+            }
+        }
+
+        protected virtual void AfterSave()
+        {
+            foreach (var import in imports)
+            {
+                import.HeaderChanged = false;
+            }
+            namesAdded = 0;
+
+            lastSaved = DateTime.Now;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
+        }
+
+        #region packageHandler stuff
         public ObservableCollection<GenericWindow> Tools { get; private set; } = new ObservableCollection<GenericWindow>();
 
         public void RegisterTool(GenericWindow gen)
@@ -211,7 +262,7 @@ namespace ME3Explorer.Packages
 
         public event EventHandler noLongerOpenInTools;
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
             IExportEntry exp = sender as IExportEntry;
@@ -224,13 +275,13 @@ namespace ME3Explorer.Packages
                 else if (e.PropertyName == nameof(ExportEntry.HeaderChanged))
                 {
                     updateTools(PackageChange.ExportHeader, exp.Index);
-                } 
+                }
             }
         }
 
         protected void importChanged(object sender, PropertyChangedEventArgs e)
         {
-            IImportEntry imp = sender as IImportEntry;
+            ImportEntry imp = sender as ImportEntry;
             if (imp != null)
             {
                 if (e.PropertyName == nameof(ImportEntry.HeaderChanged))
@@ -292,6 +343,7 @@ namespace ME3Explorer.Packages
             {
                 noLongerUsed?.Invoke(this, EventArgs.Empty);
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -12,9 +12,6 @@ using System.Collections.ObjectModel;
 
 namespace ME3Explorer.Packages
 {
-    /// <summary>
-    ///     Class used to Compress/Decompress pcc files.
-    /// </summary>
     public static class MEPackageHandler
     {
         static Dictionary<string, IMEPackage> openPackages = new Dictionary<string, IMEPackage>();
