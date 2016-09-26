@@ -232,7 +232,7 @@ namespace ME3Explorer.Packages
                     {
                         text += "\0";
                     }
-                    m.Write(BitConverter.GetBytes(-text.Length), 0, 4);
+                    m.WriteValueS32(-text.Length);
                     foreach (char c in text)
                     {
                         m.WriteByte((byte)c);
@@ -266,13 +266,24 @@ namespace ME3Explorer.Packages
                     ME3ExportEntry e = exports[i];
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
+
+                    //update offsets for pcc-stored audio in wwisestreams
+                    if (e.ClassName == "WwiseStream" && e.GetProperty<NameProperty>("Filename") == null)
+                    {
+                        byte[] binData = e.getBinaryData();
+                        binData.OverwriteRange(12, BitConverter.GetBytes(e.DataOffset + e.propsEnd() + 16));
+                        e.setBinaryData(binData);
+                    }
+
                     m.WriteBytes(e.Data);
                     long pos = m.Position;
                     m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
-                    m.Write(BitConverter.GetBytes(e.DataSize), 0, 4);
-                    m.Write(BitConverter.GetBytes(e.DataOffset), 0, 4);
+                    m.WriteValueS32(e.DataSize);
+                    m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
+                
+                
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
                 m.WriteBytes(header);
@@ -378,6 +389,15 @@ namespace ME3Explorer.Packages
                 {
                     export.DataOffset = (int)newPCCStream.Position;
                     export.DataSize = export.Data.Length;
+
+                    //update offsets for pcc-stored audio in wwisestreams
+                    if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+                    {
+                        byte[] binData = export.getBinaryData();
+                        binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                        export.setBinaryData(binData);
+                    }
+
                     newPCCStream.WriteBytes(export.Data);
                 }
 

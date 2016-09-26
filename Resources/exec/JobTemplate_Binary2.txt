@@ -69,7 +69,7 @@ namespace SimpleScripts
                 return "Error";
             }
             bf.DebugPrintln("Found!");
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.saveToFile(pcc.pccFileName);
             bf.DebugPrintln("Done.");
             return "Success";
         }

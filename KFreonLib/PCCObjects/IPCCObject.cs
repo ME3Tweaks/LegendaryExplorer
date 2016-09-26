@@ -26,7 +26,6 @@ namespace KFreonLib.PCCObjects
         int ImportOffset { get; set; }
         int Generator { get; set; }
         int Compression { get; set; }
-        int ExportDataEnd { get; set; }
         uint PackageFlags { get; set; }
         int NumChunks { get; set; }
         MemoryStream listsStream { get; set; }
@@ -53,8 +52,6 @@ namespace KFreonLib.PCCObjects
         void saveToFile(string newFileName = null, bool WriteToMemoryStream = false);
         string getClassName(int classname);
         void addExport(IExportEntry entry);
-
-        long expDataEndOffset { get; set; }
 
         IExportEntry LastExport { get; set; }
 

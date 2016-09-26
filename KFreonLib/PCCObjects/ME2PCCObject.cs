@@ -51,13 +51,6 @@ namespace KFreonLib.PCCObjects
         public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
         public int Generator { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         public int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
-        public int ExportDataEnd
-        {
-            get
-            {
-                return (int)(LastExport.DataOffset + LastExport.DataSize);
-            }
-        }
         public IExportEntry LastExport { get; set; }
 
         public uint PackageFlags;
@@ -180,7 +173,7 @@ namespace KFreonLib.PCCObjects
 
         public void SaveToFile(string path)
         {
-            listsStream.Seek(ExportDataEnd, SeekOrigin.Begin); // Write names
+            listsStream.Seek(0, SeekOrigin.End); // Write names
             NameOffset = (int)listsStream.Position;
             //NameCount = Names.Where(nam => nam != null).Count();
             NameCount = Names.Count;
@@ -413,18 +406,6 @@ namespace KFreonLib.PCCObjects
             get
             {
                 return Generator;
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        int IPCCObject.ExportDataEnd
-        {
-            get
-            {
-                return ExportDataEnd;
             }
             set
             {

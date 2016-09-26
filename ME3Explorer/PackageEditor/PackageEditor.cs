@@ -67,7 +67,7 @@ namespace ME3Explorer
 
         public void LoadFile(string s)
         {
-            try
+            //try
             {
                 currentFile = s;
                 LoadMEPackage(s);
@@ -77,9 +77,9 @@ namespace ME3Explorer
                 InitStuff();
                 status2.Text = "@" + Path.GetFileName(s);
             }
-            catch (Exception e)
+            //catch (Exception e)
             {
-                MessageBox.Show("Error:\n" + e.Message);
+                //MessageBox.Show("Error:\n" + e.Message);
             }
         }
 
