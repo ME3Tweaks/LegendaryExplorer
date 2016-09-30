@@ -177,6 +177,7 @@ namespace ME3Explorer.Meshplorer
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
             pcc.Exports[SelectedObject].Data = mem.ToArray();
             MessageBox.Show("Done");
+            Close();
         }
     }
 }

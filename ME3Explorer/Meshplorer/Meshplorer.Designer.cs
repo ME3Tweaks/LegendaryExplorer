@@ -30,13 +30,14 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFromDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savePCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectMatForSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lOD0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lOD4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,6 @@
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.pb1 = new System.Windows.Forms.PictureBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
-            this.savePCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -120,6 +120,13 @@
             this.loadFromDatabaseToolStripMenuItem.Text = "Load from Database";
             this.loadFromDatabaseToolStripMenuItem.Click += new System.EventHandler(this.loadFromDatabaseToolStripMenuItem_Click);
             // 
+            // savePCCToolStripMenuItem
+            // 
+            this.savePCCToolStripMenuItem.Name = "savePCCToolStripMenuItem";
+            this.savePCCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePCCToolStripMenuItem.Text = "Save PCC";
+            this.savePCCToolStripMenuItem.Click += new System.EventHandler(this.savePCCToolStripMenuItem_Click);
+            // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -138,10 +145,10 @@
             // lODToolStripMenuItem
             // 
             this.lODToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lOD0ToolStripMenuItem,
             this.lOD1ToolStripMenuItem,
             this.lOD2ToolStripMenuItem,
-            this.lOD3ToolStripMenuItem,
-            this.lOD4ToolStripMenuItem});
+            this.lOD3ToolStripMenuItem});
             this.lODToolStripMenuItem.Name = "lODToolStripMenuItem";
             this.lODToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.lODToolStripMenuItem.Text = "LOD";
@@ -149,35 +156,35 @@
             // 
             // lOD1ToolStripMenuItem
             // 
-            this.lOD1ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
-            this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD1ToolStripMenuItem.Text = "LOD 1";
-            this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
+            this.lOD0ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
+            this.lOD0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD0ToolStripMenuItem.Text = "LOD 0";
+            this.lOD0ToolStripMenuItem.Click += new System.EventHandler(this.lOD0ToolStripMenuItem_Click);
             // 
             // lOD2ToolStripMenuItem
             // 
-            this.lOD2ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
-            this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD2ToolStripMenuItem.Text = "LOD 2";
-            this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
+            this.lOD1ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
+            this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD1ToolStripMenuItem.Text = "LOD 1";
+            this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
             // 
             // lOD3ToolStripMenuItem
             // 
-            this.lOD3ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
-            this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD3ToolStripMenuItem.Text = "LOD 3";
-            this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
+            this.lOD2ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
+            this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD2ToolStripMenuItem.Text = "LOD 2";
+            this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
             // 
             // lOD4ToolStripMenuItem
             // 
-            this.lOD4ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
-            this.lOD4ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.lOD4ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD4ToolStripMenuItem.Text = "LOD 4";
-            this.lOD4ToolStripMenuItem.Click += new System.EventHandler(this.lOD4ToolStripMenuItem_Click);
+            this.lOD3ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
+            this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD3ToolStripMenuItem.Text = "LOD 3";
+            this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
             // 
             // transferToolStripMenuItem
             // 
@@ -439,13 +446,6 @@
             this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
             // 
-            // savePCCToolStripMenuItem
-            // 
-            this.savePCCToolStripMenuItem.Name = "savePCCToolStripMenuItem";
-            this.savePCCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.savePCCToolStripMenuItem.Text = "Save PCC";
-            this.savePCCToolStripMenuItem.Click += new System.EventHandler(this.savePCCToolStripMenuItem_Click);
-            // 
             // Meshplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -499,10 +499,10 @@
         public System.Windows.Forms.ToolStripMenuItem serializeToFileToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem importFromPSKToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lODToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem lOD0ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD1ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD2ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD3ToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem lOD4ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem rotatingToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;

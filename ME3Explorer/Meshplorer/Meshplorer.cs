@@ -187,14 +187,14 @@ namespace ME3Explorer.Meshplorer
                 treeView1.Nodes[0].Expand();
                 treeView1.EndUpdate();
                 lODToolStripMenuItem.Visible = true;
-                lOD1ToolStripMenuItem.Enabled = true;
-                lOD1ToolStripMenuItem.Checked = true;
+                lOD0ToolStripMenuItem.Enabled = true;
+                lOD0ToolStripMenuItem.Checked = true;
                 if (skm.LODModels.Count > 1)
-                    lOD2ToolStripMenuItem.Enabled = true;
+                    lOD1ToolStripMenuItem.Enabled = true;
                 if (skm.LODModels.Count > 2)
-                    lOD3ToolStripMenuItem.Enabled = true;
+                    lOD2ToolStripMenuItem.Enabled = true;
                 if (skm.LODModels.Count > 3)
-                    lOD4ToolStripMenuItem.Enabled = true;
+                    lOD3ToolStripMenuItem.Enabled = true;
             }
             catch
             {
@@ -262,9 +262,9 @@ namespace ME3Explorer.Meshplorer
         public int getLOD()
         {
             int res = 0;
-            if (lOD2ToolStripMenuItem.Checked) res = 1;
-            if (lOD3ToolStripMenuItem.Checked) res = 2;
-            if (lOD4ToolStripMenuItem.Checked) res = 3;
+            if (lOD1ToolStripMenuItem.Checked) res = 1;
+            if (lOD2ToolStripMenuItem.Checked) res = 2;
+            if (lOD3ToolStripMenuItem.Checked) res = 3;
             return res;
         }
 
@@ -413,48 +413,48 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void lOD1ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void lOD0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Preview3D.LOD = 0;
+            UnCheckLODs();
+            lOD0ToolStripMenuItem.Checked = true;
+        }
+
+        private void lOD1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Preview3D.LOD = 1;
             UnCheckLODs();
             lOD1ToolStripMenuItem.Checked = true;
         }
 
         private void lOD2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 1;
+            Preview3D.LOD = 2;
             UnCheckLODs();
             lOD2ToolStripMenuItem.Checked = true;
         }
 
         private void lOD3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 2;
+            Preview3D.LOD = 3;
             UnCheckLODs();
             lOD3ToolStripMenuItem.Checked = true;
         }
 
-        private void lOD4ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Preview3D.LOD = 3;
-            UnCheckLODs();
-            lOD4ToolStripMenuItem.Checked = true;
-        }
-
         public void UnCheckLODs()
         {
+            lOD0ToolStripMenuItem.Checked = false;
             lOD1ToolStripMenuItem.Checked = false;
             lOD2ToolStripMenuItem.Checked = false;
             lOD3ToolStripMenuItem.Checked = false;
-            lOD4ToolStripMenuItem.Checked = false;
         }
 
         public void DisableLODs()
         {
-            lOD1ToolStripMenuItem.Enabled= false;
+            lOD0ToolStripMenuItem.Enabled= false;
+            lOD1ToolStripMenuItem.Enabled = false;
             lOD2ToolStripMenuItem.Enabled = false;
             lOD3ToolStripMenuItem.Enabled = false;
-            lOD4ToolStripMenuItem.Enabled = false;
         }
 
         private void rotatingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -670,7 +670,7 @@ namespace ME3Explorer.Meshplorer
                 return;
             }
             UDKCopy u = new UDKCopy(pcc as ME3Package, n, getLOD());
-            u.ShowDialog();
+            u.Show();
         }
 
         private void selectMatForSectionToolStripMenuItem_Click(object sender, EventArgs e)
