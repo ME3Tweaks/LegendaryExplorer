@@ -27,13 +27,20 @@ namespace ME3Explorer.Packages
         public int index;
     }
 
-    public abstract class MEPackage : INotifyPropertyChanged, IDisposable
+    public abstract class MEPackage : ViewModelBase, INotifyPropertyChanged, IDisposable
     {
         protected const int appendFlag = 0x00100000;
 
         public string FileName { get; protected set; }
-
-        public abstract bool IsModified { get; }
+        
+        public bool IsModified
+        {
+            get
+            {
+                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
+            }
+        }
+        public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
 
         protected byte[] header;
         protected uint magic { get { return BitConverter.ToUInt32(header, 0); } }
@@ -44,8 +51,9 @@ namespace ME3Explorer.Packages
         protected uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
 
-        protected abstract int NameCount { get; set; }
+        public abstract int NameCount { get; protected set; }
         public abstract int ImportCount { get; protected set; }
+        public abstract int ExportCount { get; protected set; }
 
         public bool IsCompressed
         {
@@ -106,6 +114,7 @@ namespace ME3Explorer.Packages
                 NameCount = names.Count;
 
                 updateTools(PackageChange.Names, NameCount);
+                OnPropertyChanged(nameof(NameCount));
             }
         }
 
@@ -140,6 +149,42 @@ namespace ME3Explorer.Packages
         }
         #endregion
 
+        #region Exports
+        protected List<IExportEntry> exports;
+        public IReadOnlyList<IExportEntry> Exports
+        {
+            get
+            {
+                return exports;
+            }
+        }
+
+        public bool isExport(int index)
+        {
+            return (index >= 0 && index < exports.Count);
+        }
+
+        public void addExport(IExportEntry exportEntry)
+        {
+            if (exportEntry.FileRef != this)
+                throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
+
+            exportEntry.DataChanged = true;
+            exportEntry.Index = exports.Count;
+            exportEntry.PropertyChanged += exportChanged;
+            exports.Add(exportEntry);
+            ExportCount = exports.Count;
+
+            updateTools(PackageChange.ExportAdd, ExportCount - 1);
+            OnPropertyChanged(nameof(ExportCount));
+        }
+
+        public IExportEntry getExport(int index)
+        {
+            return exports[index];
+        }
+        #endregion
+
         #region Imports
         protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports
@@ -166,6 +211,7 @@ namespace ME3Explorer.Packages
             ImportCount = imports.Count;
 
             updateTools(PackageChange.ImportAdd, ImportCount - 1);
+            OnPropertyChanged(nameof(ImportCount));
         }
 
         public ImportEntry getImport(int index)
@@ -173,6 +219,49 @@ namespace ME3Explorer.Packages
             return imports[index];
         }
 
+        #endregion
+
+        #region IEntry
+        /// <summary>
+        ///     gets Export or Import name
+        /// </summary>
+        /// <param name="index">unreal index</param>
+        public string getObjectName(int index)
+        {
+            if (index > 0 && index <= ExportCount)
+                return exports[index - 1].ObjectName;
+            if (-index > 0 && -index <= ImportCount)
+                return imports[-index - 1].ObjectName;
+            if (index == 0)
+                return "Class";
+            return "";
+        }
+
+        /// <summary>
+        ///     gets Export or Import class
+        /// </summary>
+        /// <param name="index">unreal index</param>
+        public string getObjectClass(int index)
+        {
+            if (index > 0 && index <= ExportCount)
+                return exports[index - 1].ClassName;
+            if (-index > 0 && -index <= ImportCount)
+                return imports[-index - 1].ClassName;
+            return "";
+        }
+
+        /// <summary>
+        ///     gets Export or Import entry
+        /// </summary>
+        /// <param name="index">unreal index</param>
+        public IEntry getEntry(int index)
+        {
+            if (index > 0 && index <= ExportCount)
+                return exports[index - 1];
+            if (-index > 0 && -index <= ImportCount)
+                return imports[-index - 1];
+            return null;
+        } 
         #endregion
 
         private DateTime? lastSaved;
@@ -209,6 +298,10 @@ namespace ME3Explorer.Packages
 
         protected virtual void AfterSave()
         {
+            foreach (var export in exports)
+            {
+                export.DataChanged = false;
+            }
             foreach (var import in imports)
             {
                 import.HeaderChanged = false;
@@ -216,9 +309,9 @@ namespace ME3Explorer.Packages
             namesAdded = 0;
 
             lastSaved = DateTime.Now;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
+            OnPropertyChanged(nameof(LastSaved));
+            OnPropertyChanged(nameof(FileSize));
+            OnPropertyChanged(nameof(IsModified));
         }
 
         #region packageHandler stuff
@@ -261,7 +354,6 @@ namespace ME3Explorer.Packages
         }
 
         public event EventHandler noLongerOpenInTools;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -316,7 +408,7 @@ namespace ME3Explorer.Packages
                             item.handleUpdate(pendingUpdates.ToList());
                         }
                         pendingUpdates.Clear();
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
+                        OnPropertyChanged(nameof(IsModified));
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }

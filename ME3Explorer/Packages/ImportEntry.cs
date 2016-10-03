@@ -6,12 +6,6 @@ namespace ME3Explorer.Packages
 {
     public class ImportEntry : ViewModelBase, IEntry
     {
-        public ImportEntry(IMEPackage pccFile, byte[] importData)
-        {
-            FileRef = pccFile;
-            header = (byte[])importData.Clone();
-        }
-
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {
             FileRef = pccFile;
@@ -27,14 +21,16 @@ namespace ME3Explorer.Packages
         public const int byteSize = 28;
         public byte[] header { get; protected set; }
 
-        public int idxPackageFile { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); HeaderChanged = true; } }
+        public int idxPackageName { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); HeaderChanged = true; } }
+        //int PackageNameNumber
         public int idxClassName { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); HeaderChanged = true; } }
+        //int ClassNameNumber
         public int idxLink { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); HeaderChanged = true; } }
         public int idxObjectName { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); HeaderChanged = true; } }
-        public int ObjectFlags { get { return BitConverter.ToInt32(header, 24); } }
+        //int ObjectNameNumber
 
         public string ClassName { get { return FileRef.Names[idxClassName]; } }
-        public string PackageFile { get { return FileRef.Names[idxPackageFile] + ".pcc"; } }
+        public string PackageFile { get { return FileRef.Names[idxPackageName] + ".pcc"; } }
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
 
         public string PackageName

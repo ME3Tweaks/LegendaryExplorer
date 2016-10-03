@@ -724,7 +724,7 @@ namespace ME3Explorer.Matinee
         public virtual void ToTree()
         {
             propView.Nodes.Clear();
-            TreeNode t = new TreeNode("Group Name : \"" + GroupName + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
+            TreeNode t = new TreeNode("Group Name : \"" + GroupName + "\" (#" + index + " " + pcc.getObjectName(index + 1) + ")");
             t.Name = "GroupName";
             propView.Nodes.Add(t);
             t = new TreeNode("GroupColor");
@@ -833,7 +833,7 @@ namespace ME3Explorer.Matinee
         public override void ToTree()
         {
             propView.Nodes.Clear();
-            TreeNode t = new TreeNode("SFXSceneGroup: \"" + GroupName + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
+            TreeNode t = new TreeNode("SFXSceneGroup: \"" + GroupName + "\" (#" + index + " " + pcc.getObjectName(index + 1) + ")");
             t.Name = "GroupName";
             propView.Nodes.Add(t);
             t = new TreeNode("m_aBioPreloadData");

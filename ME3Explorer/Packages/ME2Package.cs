@@ -15,18 +15,9 @@ namespace ME3Explorer.Packages
     {
         public MEGame Game { get { return MEGame.ME2; } }
 
-        public override bool IsModified
-        {
-            get
-            {
-                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
-            }
-        }
-        public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
-
-        protected override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
+        public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
         private int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
-        public int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
+        public override int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
         private int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
         public override int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
         public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
@@ -34,16 +25,6 @@ namespace ME3Explorer.Packages
         private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
         
-        private List<ME2ExportEntry> exports;
-        
-        public IReadOnlyList<IExportEntry> Exports
-        {
-            get
-            {
-                return exports;
-            }
-        }
-
         static bool isInitialized;
         public static Func<string, ME2Package> Initialize()
         {
@@ -119,65 +100,35 @@ namespace ME3Explorer.Packages
                 listsStream = tempStream;
             }
 
-            ReadNames(listsStream);
-            ReadImports(listsStream);
-            ReadExports(listsStream);
-        }
-
-        void ReadNames(MemoryStream fs)
-        {
-            fs.Seek(NameOffset, SeekOrigin.Begin);
             names = new List<string>();
+            listsStream.Seek(NameOffset, SeekOrigin.Begin);
             for (int i = 0; i < NameCount; i++)
             {
-                int len = fs.ReadValueS32();
-                string s = fs.ReadString((uint)(len - 1));
-                fs.Seek(5, SeekOrigin.Current);
+                int len = listsStream.ReadValueS32();
+                string s = listsStream.ReadString((uint)(len - 1));
+                //skipping irrelevant data
+                listsStream.Seek(5, SeekOrigin.Current);
                 names.Add(s);
             }
-        }
 
-        void ReadImports(MemoryStream fs)
-        {
             imports = new List<ImportEntry>();
-            fs.Seek(ImportOffset, SeekOrigin.Begin);
+            listsStream.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry import = new ImportEntry(this, fs);
+                ImportEntry import = new ImportEntry(this, listsStream);
                 import.Index = i;
                 import.PropertyChanged += importChanged;
                 imports.Add(import);
             }
-        }
 
-        void ReadExports(MemoryStream fs)
-        {
-            fs.Seek(ExportOffset, SeekOrigin.Begin);
-            exports = new List<ME2ExportEntry>();
-            byte[] buffer;
+            exports = new List<IExportEntry>();
+            listsStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                long start = fs.Position;
-
-                fs.Seek(40, SeekOrigin.Current);
-                int count = fs.ReadValueS32();
-                fs.Seek(4 + count * 12, SeekOrigin.Current);
-                count = fs.ReadValueS32();
-                fs.Seek(4 + count * 4, SeekOrigin.Current);
-                fs.Seek(16, SeekOrigin.Current);
-                long end = fs.Position;
-                fs.Seek(start, SeekOrigin.Begin);
-
-                ME2ExportEntry exp = new ME2ExportEntry(this, fs.ReadBytes((int)(end - start)), (uint)start);
-                buffer = new byte[exp.DataSize];
-                fs.Seek(exp.DataOffset, SeekOrigin.Begin);
-                fs.Read(buffer, 0, buffer.Length);
-                exp.Data = buffer;
-                exp.DataChanged = false;
+                ME2ExportEntry exp = new ME2ExportEntry(this, listsStream);
                 exp.Index = i;
                 exp.PropertyChanged += exportChanged;
                 exports.Add(exp);
-                fs.Seek(end, SeekOrigin.Begin);
             }
         }
 
@@ -222,17 +173,14 @@ namespace ME3Explorer.Packages
                 //Write the magic number
                 m.WriteValueS32(1026281201);
                 //Write 8 bytes of 0
-                m.WriteValueS32(0);
-                m.WriteValueS32(0);
+                m.WriteValueS64(0);
 
                 //name table
                 NameOffset = (int)m.Position;
                 NameCount = names.Count;
                 foreach (string name in names)
                 {
-                    m.WriteValueS32(name.Length + 1);
-                    m.WriteString(name);
-                    m.WriteByte(0);
+                    m.WriteStringASCII(name);
                     m.WriteValueS32(-14);
                 }
                 //import table
@@ -247,7 +195,7 @@ namespace ME3Explorer.Packages
                 ExportCount = exports.Count;
                 for (int i = 0; i < exports.Count; i++)
                 {
-                    ME2ExportEntry e = exports[i];
+                    IExportEntry e = exports[i];
                     e.headerOffset = (uint)m.Position;
                     m.WriteBytes(e.header);
                 }
@@ -259,7 +207,7 @@ namespace ME3Explorer.Packages
                 //export data
                 for (int i = 0; i < exports.Count; i++)
                 {
-                    ME2ExportEntry e = exports[i];
+                    IExportEntry e = exports[i];
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
@@ -292,8 +240,8 @@ namespace ME3Explorer.Packages
         /// 
         public void appendSave(string newFileName)
         {
-            IEnumerable<ME2ExportEntry> replaceExports;
-            IEnumerable<ME2ExportEntry> appendExports;
+            IEnumerable<IExportEntry> replaceExports;
+            IEnumerable<IExportEntry> appendExports;
 
             int lastDataOffset;
             int max;
@@ -305,14 +253,14 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                IEnumerable<ME2ExportEntry> changedExports;
+                IEnumerable<IExportEntry> changedExports;
                 changedExports = exports.Where(export => export.DataChanged);
                 replaceExports = changedExports.Where(export => export.DataSize <= export.OriginalDataSize);
                 appendExports = changedExports.Except(replaceExports);
                 max = exports.Max(maxExport => maxExport.DataOffset);
             }
 
-            ME2ExportEntry lastExport = exports.Find(export => export.DataOffset == max);
+            IExportEntry lastExport = exports.Find(export => export.DataOffset == max);
             lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
 
             byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
@@ -389,100 +337,6 @@ namespace ME3Explorer.Packages
                 newPCCStream.WriteBytes(header);
             }
             AfterSave();
-        }
-
-        protected override void AfterSave()
-        {
-            base.AfterSave();
-            foreach (var export in exports)
-            {
-                export.DataChanged = false;
-            }
-        }
-
-        /// <summary>
-        ///     gets Export or Import entry
-        /// </summary>
-        /// <param name="index">unreal index</param>
-        public IEntry getEntry(int index)
-        {
-            if (index > 0 && index <= ExportCount)
-                return exports[index - 1];
-            if (-index > 0 && -index <= ImportCount)
-                return imports[-index - 1];
-            return null;
-        }
-
-        public bool isExport(int Index)
-        {
-            return (Index >= 0 && Index < ExportCount);
-        }
-
-        public string getObjectName(int index)
-        {
-            if (index > 0 && index < ExportCount)
-                return exports[index - 1].ObjectName;
-            if (index * -1 > 0 && index * -1 < ImportCount)
-                return imports[index * -1 - 1].ObjectName;
-            return "";
-        }
-
-        public string getClassName(int index)
-        {
-            string s = "";
-            if (index > 0)
-            {
-                s = names[exports[index - 1].idxObjectName];
-            }
-            if (index < 0)
-            {
-                s = names[imports[index * -1 - 1].idxObjectName];
-            }
-            if (index == 0)
-            {
-                s = "Class";
-            }
-            return s;
-        }
-
-        public string getObjectClass(int index)
-        {
-            if (index > 0 && index <= ExportCount)
-                return exports[index - 1].ClassName;
-            if (-index > 0 && -index <= ImportCount)
-                return imports[-index - 1].ClassName;
-            return "";
-        }
-
-        public void addExport(IExportEntry exportEntry)
-        {
-            if (exportEntry is ME2ExportEntry)
-            {
-                addExport(exportEntry as ME2ExportEntry);
-            }
-            else
-            {
-                throw new FormatException("Cannot add export to an ME2 package that is not from ME2");
-            }
-        }
-
-        public void addExport(ME2ExportEntry exportEntry)
-        {
-            if (exportEntry.FileRef != this)
-                throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
-
-            exportEntry.DataChanged = true;
-            exportEntry.Index = exports.Count;
-            exportEntry.PropertyChanged += exportChanged;
-            exports.Add(exportEntry);
-            ExportCount = exports.Count;
-
-            updateTools(PackageChange.ExportAdd, ExportCount);
-        }
-
-        public IExportEntry getExport(int index)
-        {
-            return exports[index];
         }
     }
 }

@@ -581,7 +581,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             l.Links.Add(-1);
                         }
-                        l.type = getType(pcc.getClassName(props.GetProp<ObjectProperty>("ExpectedType").Value));
+                        l.type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value));
                         l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
                         if (l.writeable)
                         {   

@@ -166,7 +166,7 @@ namespace ME3Explorer
                 NameIdx = imports[n].idxObjectName;
                 ClassIdx = imports[n].idxClassName;
                 LinkIdx = imports[n].idxLink;
-                ArchetypeIdx = imports[n].idxPackageFile;
+                ArchetypeIdx = imports[n].idxPackageName;
 
                 archetypeLabel.Text = "Package File";
                 indexTextBox.Visible = indexLabel.Visible = false;
@@ -203,7 +203,7 @@ namespace ME3Explorer
             {
                 ClassNames.Add(Exports[i].idxClass);
             }
-            List<string> names = ClassNames.Distinct().Select(x => pcc.getClassName(x)).ToList();
+            List<string> names = ClassNames.Distinct().Select(x => pcc.getObjectName(x)).ToList();
             names.Sort();
             combo1.BeginUpdate();
             combo1.Items.Clear();
@@ -1070,7 +1070,7 @@ namespace ME3Explorer
                 importEntry.idxObjectName = NameIdx;
                 importEntry.idxClassName = ClassIdx;
                 importEntry.idxLink = LinkIdx;
-                importEntry.idxPackageFile = ArchetypeIdx;
+                importEntry.idxPackageName = ArchetypeIdx;
                 n = -n - 1;
             }
         }
@@ -1353,11 +1353,11 @@ namespace ME3Explorer
         private void importImport(IMEPackage importpcc, int n, int link)
         {
             ImportEntry imp = importpcc.getImport(n);
-            ImportEntry nimp = new ImportEntry(pcc, imp.header);
+            ImportEntry nimp = new ImportEntry(pcc, new MemoryStream(imp.header));
             nimp.idxLink = link;
             nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
-            nimp.idxPackageFile = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageFile));
+            nimp.idxPackageName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageName));
             pcc.addImport(nimp);
         }
 

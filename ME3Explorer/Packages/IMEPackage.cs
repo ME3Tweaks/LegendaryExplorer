@@ -72,10 +72,9 @@ namespace ME3Explorer.Packages
         IExportEntry getExport(int index);
         ImportEntry getImport(int index);
         int findName(string nameToFind);
-        string getClassName(int index);
+        string getObjectName(int index);
         string getNameEntry(int index);
         string getObjectClass(int index);
-        string getObjectName(int index);
 
         //editing
         void addName(string name);
