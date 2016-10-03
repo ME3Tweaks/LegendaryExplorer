@@ -98,7 +98,7 @@
     <Compile Include="PCCObjects\IPCCObject.cs" />
     <Compile Include="PCCObjects\ME1PCCObject.cs" />
     <Compile Include="PCCObjects\ME2PCCObject.cs" />
-    <Compile Include="PCCObjects\ME3PCCObjectSALTPCC.cs" />
+    <Compile Include="PCCObjects\ME3PCCObject.cs" />
     <Compile Include="PCCObjects\PCCHandler.cs" />
     <Compile Include="PCCObjects\PCCMisc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
