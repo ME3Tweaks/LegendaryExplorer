@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class Function
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] memory;
         public byte[] script;
         public int memsize;
@@ -30,7 +31,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, PCCObject Pcc)
+        public Function(byte[] raw, ME3Package Pcc)
         {
             pcc = Pcc;
             memory = raw;
@@ -42,13 +43,13 @@ namespace ME3Explorer.Unreal.Classes
 
         public int GetNatIdx()
         {
-            BitConverter.IsLittleEndian = true;
+            
             return BitConverter.ToInt16(memory, memsize - 6);
         }
 
         public int GetFlagInt()
         {
-            BitConverter.IsLittleEndian = true;
+            
             return BitConverter.ToInt32(memory, memsize - 4);
         }
 
@@ -71,7 +72,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            BitConverter.IsLittleEndian = true;
+            
             ReadHeader();
             script = new byte[memsize - 32];
             for (int i = 32; i < memsize; i++)
@@ -94,12 +95,12 @@ namespace ME3Explorer.Unreal.Classes
         public string ToRawText(bool debug = true)
         {
             string s = "";
-            s += "Childindex : " + child.ToString() + "\n";
-            s += "Unknown1 : " + unk1.ToString() + "\n";
-            s += "Unknown2 : " + unk2.ToString() + "\n";
-            s += "Script Size : " + size.ToString() + "\n";
+            s += "Childindex : " + child + "\n";
+            s += "Unknown1 : " + unk1 + "\n";
+            s += "Unknown2 : " + unk2 + "\n";
+            s += "Script Size : " + size + "\n";
             s += GetFlags() + "\n";
-            s += "Native Index: " + nativeindex.ToString() + "\n";
+            s += "Native Index: " + nativeindex + "\n";
             s += "Script:\n";
             s += Bytecode.ToRawText(script, pcc,debug);
             return s;

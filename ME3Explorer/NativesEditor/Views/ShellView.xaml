@@ -1,0 +1,49 @@
+﻿<global:WPFBase x:Class="MassEffect.NativesEditor.Views.ShellView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:views="clr-namespace:MassEffect.NativesEditor.Views"
+    xmlns:global="clr-namespace:ME3Explorer"
+	mc:Ignorable="d"
+	DataContext="{Binding RelativeSource={RelativeSource Self}}"
+	Title="{Binding WindowTitle}" Height="600" Width="800" SizeToContent="Manual" Icon="/ME3Explorer;component/Resources/plot_editor_icon.ico">
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+        <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+    </Window.CommandBindings>
+    <!-- Content -->
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- Main Menu -->
+		<Menu x:Name="MainMenu" Margin="0,0,0,5">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" x:Name="OpenFileMenuItem" Command="Open" />
+                <MenuItem Header="_Save" x:Name="SaveFileMenuItem" Command="Save" />
+            </MenuItem>
+		</Menu>
+
+		<!-- Main Tab Control -->
+		<TabControl Grid.Row="1" x:Name="MainTabControl">
+			<TabItem Header="Codex Map">
+				<views:CodexMapView x:Name="CodexMapControl" />
+			</TabItem>
+			<TabItem Header="Quest Map">
+				<views:QuestMapView x:Name="QuestMapControl" />
+			</TabItem>
+			<TabItem Header="State Event Map">
+				<views:StateEventMapView x:Name="StateEventMapControl" />
+			</TabItem>
+			<TabItem Header="Find Usages">
+				<views:FindObjectUsagesView x:Name="FindObjectUsagesControl" />
+			</TabItem>
+		</TabControl>
+	</Grid>
+</global:WPFBase>

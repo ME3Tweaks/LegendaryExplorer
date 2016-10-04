@@ -30,13 +30,14 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFromDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savePCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectMatForSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lOD0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lOD4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,13 +95,13 @@
             this.menuStrip1.Size = new System.Drawing.Size(639, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadPCCToolStripMenuItem,
-            this.loadFromDatabaseToolStripMenuItem});
+            this.loadFromDatabaseToolStripMenuItem,
+            this.savePCCToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -118,6 +119,13 @@
             this.loadFromDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadFromDatabaseToolStripMenuItem.Text = "Load from Database";
             this.loadFromDatabaseToolStripMenuItem.Click += new System.EventHandler(this.loadFromDatabaseToolStripMenuItem_Click);
+            // 
+            // savePCCToolStripMenuItem
+            // 
+            this.savePCCToolStripMenuItem.Name = "savePCCToolStripMenuItem";
+            this.savePCCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePCCToolStripMenuItem.Text = "Save PCC";
+            this.savePCCToolStripMenuItem.Click += new System.EventHandler(this.savePCCToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -137,10 +145,10 @@
             // lODToolStripMenuItem
             // 
             this.lODToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lOD0ToolStripMenuItem,
             this.lOD1ToolStripMenuItem,
             this.lOD2ToolStripMenuItem,
-            this.lOD3ToolStripMenuItem,
-            this.lOD4ToolStripMenuItem});
+            this.lOD3ToolStripMenuItem});
             this.lODToolStripMenuItem.Name = "lODToolStripMenuItem";
             this.lODToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.lODToolStripMenuItem.Text = "LOD";
@@ -148,35 +156,35 @@
             // 
             // lOD1ToolStripMenuItem
             // 
-            this.lOD1ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
-            this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD1ToolStripMenuItem.Text = "LOD 1";
-            this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
+            this.lOD0ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
+            this.lOD0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD0ToolStripMenuItem.Text = "LOD 0";
+            this.lOD0ToolStripMenuItem.Click += new System.EventHandler(this.lOD0ToolStripMenuItem_Click);
             // 
             // lOD2ToolStripMenuItem
             // 
-            this.lOD2ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
-            this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD2ToolStripMenuItem.Text = "LOD 2";
-            this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
+            this.lOD1ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
+            this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD1ToolStripMenuItem.Text = "LOD 1";
+            this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
             // 
             // lOD3ToolStripMenuItem
             // 
-            this.lOD3ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
-            this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD3ToolStripMenuItem.Text = "LOD 3";
-            this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
+            this.lOD2ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
+            this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD2ToolStripMenuItem.Text = "LOD 2";
+            this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
             // 
             // lOD4ToolStripMenuItem
             // 
-            this.lOD4ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
-            this.lOD4ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.lOD4ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.lOD4ToolStripMenuItem.Text = "LOD 4";
-            this.lOD4ToolStripMenuItem.Click += new System.EventHandler(this.lOD4ToolStripMenuItem_Click);
+            this.lOD3ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
+            this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD3ToolStripMenuItem.Text = "LOD 3";
+            this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
             // 
             // transferToolStripMenuItem
             // 
@@ -189,7 +197,7 @@
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToPSKToolStripMenuItem
@@ -293,7 +301,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox1,
             this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(639, 25);
             this.toolStrip1.TabIndex = 2;
@@ -324,7 +332,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -335,8 +343,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(639, 453);
-            this.splitContainer1.SplitterDistance = 340;
+            this.splitContainer1.Size = new System.Drawing.Size(639, 429);
+            this.splitContainer1.SplitterDistance = 321;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
@@ -353,7 +361,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.rtb1);
             this.splitContainer2.Panel2.Controls.Add(this.pb1);
-            this.splitContainer2.Size = new System.Drawing.Size(639, 340);
+            this.splitContainer2.Size = new System.Drawing.Size(639, 321);
             this.splitContainer2.SplitterDistance = 438;
             this.splitContainer2.TabIndex = 4;
             // 
@@ -370,7 +378,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(438, 340);
+            this.splitContainer3.Size = new System.Drawing.Size(438, 321);
             this.splitContainer3.SplitterDistance = 100;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -385,7 +393,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(100, 340);
+            this.listBox1.Size = new System.Drawing.Size(100, 321);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -395,7 +403,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(334, 340);
+            this.treeView1.Size = new System.Drawing.Size(334, 321);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -406,7 +414,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(197, 340);
+            this.rtb1.Size = new System.Drawing.Size(197, 321);
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "";
             this.rtb1.Visible = false;
@@ -417,7 +425,7 @@
             this.pb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pb1.Location = new System.Drawing.Point(0, 0);
             this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(197, 340);
+            this.pb1.Size = new System.Drawing.Size(197, 321);
             this.pb1.TabIndex = 0;
             this.pb1.TabStop = false;
             // 
@@ -432,7 +440,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(639, 109);
+            this.hb1.Size = new System.Drawing.Size(639, 104);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -491,10 +499,10 @@
         public System.Windows.Forms.ToolStripMenuItem serializeToFileToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem importFromPSKToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lODToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem lOD0ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD1ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD2ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD3ToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem lOD4ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem rotatingToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
@@ -518,5 +526,6 @@
         private System.Windows.Forms.ToolStripMenuItem selectMatForSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;
     }
 }

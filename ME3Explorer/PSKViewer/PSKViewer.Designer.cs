@@ -50,7 +50,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(292, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.Visible = false;
             // 
             // fileToolStripMenuItem
             // 
@@ -102,9 +101,9 @@
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Location = new System.Drawing.Point(0, 24);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(292, 266);
+            this.treeView1.Size = new System.Drawing.Size(292, 242);
             this.treeView1.TabIndex = 1;
             // 
             // PSKViewer

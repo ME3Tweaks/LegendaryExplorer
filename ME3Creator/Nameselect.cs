@@ -12,7 +12,6 @@ namespace ME3Creator
 {
     public partial class Nameselect : Form
     {
-        public int Result = -1;
         public PCCPackage pcc;
 
         public Nameselect()
@@ -20,7 +19,7 @@ namespace ME3Creator
             InitializeComponent();
         }
 
-        public void Init(PCCPackage p, int index = 0)
+        public void Init(PCCPackage p, int index)
         {
             pcc = p;
             comboBox1.Items.Clear();
@@ -31,36 +30,43 @@ namespace ME3Creator
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Close();
+        }
+
+        private int returnValue()
+        {
+            int result = -1;
             if (r1.Checked)
-                Result = comboBox1.SelectedIndex;
+                result = comboBox1.SelectedIndex;
             if (r2.Checked)
             {
-                pcc.Names.Add(textBox1.Text);
-                Result = (int)pcc.Header.NameCount++;
+                
+                result = pcc.FindNameOrAdd(textBox1.Text);
             }
+            return result;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Result = -2;
+            Close();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void textBox1_Enter(object sender, EventArgs e)
         {
-            this.TopMost = true;
+            r2.Checked = true;
         }
 
-        private void Nameselect_Shown(object sender, EventArgs e)
+        private void comboBox1_Enter(object sender, EventArgs e)
         {
-            this.Activate();
-            this.WindowState = FormWindowState.Normal;
-            this.TopMost = true;
-            this.Focus();
+            r1.Checked = true;
         }
 
-        private void Nameselect_FormClosing(object sender, FormClosingEventArgs e)
+        public static int GetValue(PCCPackage p, int index)
         {
-            Result = -2;
+            Nameselect prompt = new Nameselect();
+            prompt.Init(p, index);
+
+            return prompt.ShowDialog() == DialogResult.OK ? prompt.returnValue() : -1;
         }
     }
 }

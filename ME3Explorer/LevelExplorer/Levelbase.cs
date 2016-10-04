@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -16,8 +17,8 @@ namespace ME3Explorer.LevelExplorer
 {
     public partial class Levelbase : Form
     {
-        public string DataBaseFile;
-        public string location;
+        public static readonly string LevelDatabaseDataFolder = Path.Combine(App.AppDataFolder, @"LevelDatabase\");
+        public static readonly string DatabaseFile = Path.Combine(LevelDatabaseDataFolder, "levels.dbs"); 
 
         public struct DBEntry
         {            
@@ -35,8 +36,8 @@ namespace ME3Explorer.LevelExplorer
 
         public void LoadDataBase()
         {
-            FileStream fs = new FileStream(DataBaseFile, FileMode.Open, FileAccess.Read);
-            BitConverter.IsLittleEndian = true;
+            FileStream fs = new FileStream(DatabaseFile, FileMode.Open, FileAccess.Read);
+            
             database = new List<DBEntry>();
             byte[] buff = new byte[4];
             fs.Read(buff, 0, 4);
@@ -67,12 +68,12 @@ namespace ME3Explorer.LevelExplorer
 
         public void CreateDataBase()
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
             }
-            FileStream fs = new FileStream(DataBaseFile, FileMode.Create, FileAccess.Write);
+            FileStream fs = new FileStream(DatabaseFile, FileMode.Create, FileAccess.Write);
             string pathcook = ME3Directory.cookedPath;
             DebugOutput.Clear();
             DebugOutput.PrintLn("Levelbase.cs: Loading files from :" + pathcook);
@@ -83,23 +84,26 @@ namespace ME3Explorer.LevelExplorer
                 DebugOutput.PrintLn(i + "/" + (files.Length - 1) + " Scanning : " + Path.GetFileName(file));
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
-                    for (int j = 0; j < pcc.Exports.Count(); j++)
+
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        PCCObject.ExportEntry e = pcc.Exports[j];
-                        if (e.ClassName == "Level")
+                        for (int j = 0; j < pcc.Exports.Count(); j++)
                         {
-                            Level l = new Level(pcc, j, true);
-                            DBEntry entry = new DBEntry();
-                            entry.filepath = file;
-                            entry.index = j;
-                            entry.count = l.Objects.Count();
-                            database.Add(entry);
-                            //foreach(int idx in l.Objects)
-                            //    if (pcc.isExport(idx) && pcc.Exports[idx].ClassName == "BioPlaypenVolumeAdditive")
-                            //        DebugOutput.PrintLn("#############################found");
-                            DebugOutput.PrintLn("\tfound Level with " + entry.count + " Objects");
-                        }
+                            IExportEntry e = pcc.Exports[j];
+                            if (e.ClassName == "Level")
+                            {
+                                Level l = new Level(pcc, j, true);
+                                DBEntry entry = new DBEntry();
+                                entry.filepath = file;
+                                entry.index = j;
+                                entry.count = l.Objects.Count();
+                                database.Add(entry);
+                                //foreach(int idx in l.Objects)
+                                //    if (pcc.isExport(idx) && pcc.Exports[idx].ClassName == "BioPlaypenVolumeAdditive")
+                                //        DebugOutput.PrintLn("#############################found");
+                                DebugOutput.PrintLn("\tfound Level with " + entry.count + " Objects");
+                            }
+                        } 
                     }
                 }
                 catch (Exception ex)
@@ -109,7 +113,7 @@ namespace ME3Explorer.LevelExplorer
                 }
             }
             database.Sort((a,b) => a.filepath.CompareTo(b.filepath));
-            BitConverter.IsLittleEndian = true;
+            
             byte[] buff = BitConverter.GetBytes(database.Count());
             fs.Write(buff, 0, 4);
             foreach (DBEntry e in database)
@@ -126,21 +130,6 @@ namespace ME3Explorer.LevelExplorer
             fs.Close();
         }
 
-        private void Levelbase_Activated(object sender, EventArgs e)
-        {
-            location = Path.GetDirectoryName(Application.ExecutablePath);
-            DataBaseFile = location + "\\exec\\levelz.dbs";
-            if (File.Exists(DataBaseFile))
-                LoadDataBase();
-            else
-            {
-                DialogResult res = MessageBox.Show("No database found. Do you want to start a scan and create one?\n (this may take a while, so have debug window open)", "No database found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (res == System.Windows.Forms.DialogResult.Yes)
-                    CreateDataBase();
-            }
-            RefreshList();
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
@@ -152,18 +141,20 @@ namespace ME3Explorer.LevelExplorer
 
                 try
                 {
-                    PCCObject pcc = new PCCObject(l.filepath);
-                    Level lev = new Level(pcc, l.index, true);
-                    string s = "";
-                    s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";
-                    s += "Object count : " + lev.Objects.Count + "\n==============\n\n";
-                    for (int i = 0; i < lev.Objects.Count(); i++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(l.filepath))
                     {
-                        int index = lev.Objects[i];
-                        s += "(" + i + "/" + (lev.Objects.Count() - 1) + ") ";
-                        s += "#" + index + " : \"" + pcc.Exports[index].ObjectName + "\" Class : \"" + pcc.Exports[index].ClassName + "\"\n";
+                        Level lev = new Level(pcc, l.index, true);
+                        string s = "";
+                        s += "Loading Level from : " + Path.GetFileName(l.filepath) + "\n";
+                        s += "Object count : " + lev.Objects.Count + "\n==============\n\n";
+                        for (int i = 0; i < lev.Objects.Count(); i++)
+                        {
+                            int index = lev.Objects[i];
+                            s += "(" + i + "/" + (lev.Objects.Count() - 1) + ") ";
+                            s += "#" + index + " : \"" + pcc.Exports[index].ObjectName + "\" Class : \"" + pcc.Exports[index].ClassName + "\"\n";
+                        }
+                        rtb1.Text = s; 
                     }
-                    rtb1.Text = s;
                 }
                 catch (Exception ex)
                 {
@@ -189,6 +180,19 @@ namespace ME3Explorer.LevelExplorer
             led.Show();
             led.WindowState = FormWindowState.Maximized;
             led.LoadPCC(d.filepath);
+        }
+
+        private void Levelbase_Load(object sender, EventArgs e)
+        {
+            if (File.Exists(DatabaseFile))
+                LoadDataBase();
+            else
+            {
+                DialogResult res = MessageBox.Show("No database found. Do you want to start a scan and create one?\n (this may take a while, so have debug window open)", "No database found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (res == System.Windows.Forms.DialogResult.Yes)
+                    CreateDataBase();
+            }
+            RefreshList();
         }
     }
 }

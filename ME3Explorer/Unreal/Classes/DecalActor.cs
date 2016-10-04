@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -40,20 +41,20 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public DecalComponent DC;
         public Matrix MyMatrix;
 
-        public DecalActor(PCCObject Pcc, int Index)
+        public DecalActor(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
+            
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
                 {

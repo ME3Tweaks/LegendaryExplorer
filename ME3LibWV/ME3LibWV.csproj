@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -26,7 +26,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -35,6 +35,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Microsoft.DirectX.dll</HintPath>
@@ -48,6 +52,10 @@
       <HintPath>..\Libraries\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualC" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -59,23 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="7zip\Common\CommandLineParser.cs" />
-    <Compile Include="7zip\Common\CRC.cs" />
-    <Compile Include="7zip\Common\InBuffer.cs" />
-    <Compile Include="7zip\Common\OutBuffer.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7zip\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7zip\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7zip\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7zip\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7zip\ICoder.cs" />
     <Compile Include="DebugLog.cs" />
-    <Compile Include="DLCPackage.cs" />
     <Compile Include="DXHelper.cs" />
     <Compile Include="PCCPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,69 +79,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SerializingContainer.cs" />
-    <Compile Include="SevenZipHelper.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2Constants.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2Exception.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2InputStream.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2OutputStream.cs" />
-    <Compile Include="SharpZip\Checksums\Adler32.cs" />
-    <Compile Include="SharpZip\Checksums\CRC32.cs" />
-    <Compile Include="SharpZip\Checksums\IChecksum.cs" />
-    <Compile Include="SharpZip\Checksums\StrangeCRC.cs" />
-    <Compile Include="SharpZip\Core\FileSystemScanner.cs" />
-    <Compile Include="SharpZip\Core\INameTransform.cs" />
-    <Compile Include="SharpZip\Core\IScanFilter.cs" />
-    <Compile Include="SharpZip\Core\NameFilter.cs" />
-    <Compile Include="SharpZip\Core\PathFilter.cs" />
-    <Compile Include="SharpZip\Core\StreamUtils.cs" />
-    <Compile Include="SharpZip\Core\WindowsPathUtils.cs" />
-    <Compile Include="SharpZip\Encryption\PkzipClassic.cs" />
-    <Compile Include="SharpZip\Encryption\ZipAESStream.cs" />
-    <Compile Include="SharpZip\Encryption\ZipAESTransform.cs" />
-    <Compile Include="SharpZip\GZip\GZIPConstants.cs" />
-    <Compile Include="SharpZip\GZip\GZipException.cs" />
-    <Compile Include="SharpZip\GZip\GzipInputStream.cs" />
-    <Compile Include="SharpZip\GZip\GzipOutputStream.cs" />
-    <Compile Include="SharpZip\Lzw\LzwConstants.cs" />
-    <Compile Include="SharpZip\Lzw\LzwException.cs" />
-    <Compile Include="SharpZip\Lzw\LzwInputStream.cs" />
-    <Compile Include="SharpZip\SharpZipBaseException.cs" />
-    <Compile Include="SharpZip\Tar\InvalidHeaderException.cs" />
-    <Compile Include="SharpZip\Tar\TarArchive.cs" />
-    <Compile Include="SharpZip\Tar\TarBuffer.cs" />
-    <Compile Include="SharpZip\Tar\TarEntry.cs" />
-    <Compile Include="SharpZip\Tar\TarException.cs" />
-    <Compile Include="SharpZip\Tar\TarHeader.cs" />
-    <Compile Include="SharpZip\Tar\TarInputStream.cs" />
-    <Compile Include="SharpZip\Tar\TarOutputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Deflater.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterConstants.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterEngine.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterHuffman.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterPending.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Inflater.cs" />
-    <Compile Include="SharpZip\Zip\Compression\InflaterDynHeader.cs" />
-    <Compile Include="SharpZip\Zip\Compression\InflaterHuffmanTree.cs" />
-    <Compile Include="SharpZip\Zip\Compression\PendingBuffer.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\DeflaterOutputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\InflaterInputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\OutputWindow.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\StreamManipulator.cs" />
-    <Compile Include="SharpZip\Zip\FastZip.cs" />
-    <Compile Include="SharpZip\Zip\IEntryFactory.cs" />
-    <Compile Include="SharpZip\Zip\WindowsNameTransform.cs" />
-    <Compile Include="SharpZip\Zip\ZipConstants.cs" />
-    <Compile Include="SharpZip\Zip\ZipEntry.cs" />
-    <Compile Include="SharpZip\Zip\ZipEntryFactory.cs" />
-    <Compile Include="SharpZip\Zip\ZipException.cs" />
-    <Compile Include="SharpZip\Zip\ZipExtraData.cs" />
-    <Compile Include="SharpZip\Zip\ZipFile.cs" />
-    <Compile Include="SharpZip\Zip\ZipHelperStream.cs" />
-    <Compile Include="SharpZip\Zip\ZipInputStream.cs" />
-    <Compile Include="SharpZip\Zip\ZipNameTransform.cs" />
-    <Compile Include="SharpZip\Zip\ZipOutputStream.cs" />
-    <Compile Include="TOCBinFile.cs" />
+    <Compile Include="UnrealClasses\SkeletalMesh.cs" />
     <Compile Include="UnrealClasses\Level.cs" />
     <Compile Include="UnrealClasses\ModelComponent.cs" />
     <Compile Include="UnrealClasses\Sequence.cs" />
@@ -158,6 +88,7 @@
     <Compile Include="UnrealClasses\StaticMeshCollectionActor.cs" />
     <Compile Include="UnrealClasses\StaticMeshComponent.cs" />
     <Compile Include="UnrealClasses\_DXRenderableObject.cs" />
+    <Compile Include="UnrealObjectInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -167,7 +98,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Default.dds" />
+    <None Include="packages.config" />
     <None Include="Select.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
+      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
+      <Name>KFreonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
+      <Project>{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}</Project>
+      <Name>SevenZip</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

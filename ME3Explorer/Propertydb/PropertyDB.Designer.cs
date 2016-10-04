@@ -68,9 +68,9 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startScanToolStripMenuItem,
+            this.loadDBToolStripMenuItem,
             this.saveDBToolStripMenuItem,
-            this.loadDBToolStripMenuItem});
+            this.startScanToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -78,21 +78,21 @@
             // startScanToolStripMenuItem
             // 
             this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startScanToolStripMenuItem.Text = "Start Scan";
             this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
             // saveDBToolStripMenuItem
             // 
             this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
-            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveDBToolStripMenuItem.Text = "Save DB";
             this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
             // 
             // loadDBToolStripMenuItem
             // 
             this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
-            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadDBToolStripMenuItem.Text = "Load DB";
             this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
             // 
@@ -102,20 +102,20 @@
             this.warrantyVoiderMethodToolStripMenuItem,
             this.amaroksMethodToolStripMenuItem});
             this.generateTemplatesToolStripMenuItem.Name = "generateTemplatesToolStripMenuItem";
-            this.generateTemplatesToolStripMenuItem.Size = new System.Drawing.Size(123, 20);
+            this.generateTemplatesToolStripMenuItem.Size = new System.Drawing.Size(124, 20);
             this.generateTemplatesToolStripMenuItem.Text = "Generate Templates";
             // 
             // warrantyVoiderMethodToolStripMenuItem
             // 
             this.warrantyVoiderMethodToolStripMenuItem.Name = "warrantyVoiderMethodToolStripMenuItem";
-            this.warrantyVoiderMethodToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.warrantyVoiderMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.warrantyVoiderMethodToolStripMenuItem.Text = "Warranty Voiders Method";
             this.warrantyVoiderMethodToolStripMenuItem.Click += new System.EventHandler(this.warrantyVoiderMethodToolStripMenuItem_Click);
             // 
             // amaroksMethodToolStripMenuItem
             // 
             this.amaroksMethodToolStripMenuItem.Name = "amaroksMethodToolStripMenuItem";
-            this.amaroksMethodToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.amaroksMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.amaroksMethodToolStripMenuItem.Text = "Amaroks Method";
             // 
             // statistiksToolStripMenuItem

@@ -844,7 +844,7 @@ namespace KFreonLib.Textures
         public void ChangeTexFormat(string newFormat, ME2PCCObject pcc)
         {
             SaltPropertyReader.Property prop = properties["Format"];
-            Int64 formatID = (Int64)pcc.AddName(newFormat);
+            Int64 formatID = pcc.AddName(newFormat);
             byte[] buff = BitConverter.GetBytes(formatID);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)formatID];
@@ -859,7 +859,7 @@ namespace KFreonLib.Textures
                 throw new KeyNotFoundException("Texture doesn't have a compression property");
             }
             SaltPropertyReader.Property prop = properties["CompressionSettings"];
-            Int64 comp = (Int64)pcc.AddName(newComp);
+            Int64 comp = pcc.AddName(newComp);
             byte[] buff = BitConverter.GetBytes(comp);
             Buffer.BlockCopy(buff, 0, prop.raw, 24, sizeof(Int64));
             prop.Value.StringValue = pcc.Names[(int)comp];
@@ -1050,7 +1050,7 @@ namespace KFreonLib.Textures
             {
                 int i = 0;
                 string CustCache = "CustTextures";
-                while (i < 10)
+                while (i < 100)
                 {
                     FileInfo cacheInfo = new FileInfo(Path.Combine(bioPath, "CookedPC", CustCache + i + ".tfc"));
 

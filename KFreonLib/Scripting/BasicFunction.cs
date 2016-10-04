@@ -86,21 +86,6 @@ namespace KFreonLib.Scripting
             return len;
         }
 
-        public void DecompressPCC(string path)
-        {
-            if (!File.Exists(path))
-                return;
-            PCCObjects.Misc.PCCDecompress(path);
-            string filen = Path.GetFileName(path);
-            FileStream fs2 = new FileStream(path, FileMode.Open, FileAccess.Read);
-            uint fsize = (uint)fs2.Length;
-            fs2.Close();
-            TOCeditor tc = new TOCeditor();
-            if (!tc.UpdateFile(filen, fsize))
-                MessageBox.Show("Didn't found Entry");
-            tc.Close();
-        }
-
         public string getExecPath()
         {
             string loc = Path.GetDirectoryName(Application.ExecutablePath);

@@ -4,6 +4,7 @@ using ME3Explorer;
 using ME3Explorer.Unreal;
 using KFreonLib.Scripting;
 using KFreonLib.MEDirectories;
+using KFreonLib.PCCObjects;
 using KFreonLib.Debugging;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ namespace SimpleScripts
                 return "Error";
             }
 			
-            PCCObject pcc = new PCCObject(file);
+            ME3PCCObject pcc = new ME3PCCObject(file);
             bool found = true;
 			
 			// KFreon: Add names as necessary to PCC (Used for Modmaker PCC Compare)
@@ -53,7 +54,6 @@ namespace SimpleScripts
 			
             try
             {
-                PCCObject.ExportEntry e = pcc.Exports[objidx];
                 byte[] temp = KFreonLib.Scripting.ModMaker.ModData;
                 pcc.Exports[objidx].Data = temp;
             }
@@ -69,7 +69,7 @@ namespace SimpleScripts
                 return "Error";
             }
             bf.DebugPrintln("Found!");
-            pcc.altSaveToFile(pcc.pccFileName, true);
+            pcc.saveToFile(pcc.pccFileName);
             bf.DebugPrintln("Done.");
             return "Success";
         }

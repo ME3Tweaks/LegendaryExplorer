@@ -6,12 +6,13 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] memory;
         public int memsize;
         public int index;
@@ -25,9 +26,9 @@ namespace ME3Explorer.Unreal.Classes
             public Texture Texture;
         }
 
-        public MaterialInstanceConstant(PCCObject Pcc,int Idx)
+        public MaterialInstanceConstant(ME3Package Pcc,int Idx)
         {
-            BitConverter.IsLittleEndian = true;
+            
             pcc = Pcc;
             index = Idx;
             memory = pcc.Exports[index].Data;
@@ -37,7 +38,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadProperties()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
             Textures = new List<TextureParam>();
             for (int i = 0; i < props.Count(); i++)
             {
@@ -100,7 +101,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode(pcc.Exports[index].ObjectName);
             for (int i = 0; i < Textures.Count(); i++)
             {
-                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1).ToString();
+                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1);
                 s += " " + pcc.getObjectName(Textures[i].TexIndex);
                 res.Nodes.Add(s);
             }

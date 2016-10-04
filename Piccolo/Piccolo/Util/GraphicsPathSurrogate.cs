@@ -88,7 +88,7 @@ namespace UMD.HCIL.Piccolo.Util {
 
 				for(int i = 0; i < pointCount; i++) {
 					points[i] = (PointF)info.GetValue("pt" + i, typeof(PointF));
-					types[i] = (Byte)info.GetByte("type" + i);
+					types[i] = info.GetByte("type" + i);
 				}
 
 				path = new GraphicsPath(points, types, fillMode);

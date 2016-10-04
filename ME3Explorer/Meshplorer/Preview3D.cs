@@ -18,7 +18,6 @@ namespace ME3Explorer.Meshplorer
         public static float CamDistance;
         public static Vector3 CamOffset = new Vector3(0,0,0);
         public static Vector3 boxorigin;
-        public static Vector3 box;
         public static bool init;
         public static bool rotate=true;
         public static int BodySetup;
@@ -27,8 +26,19 @@ namespace ME3Explorer.Meshplorer
         public static Texture DefaultTex;
         public static Texture CurrentTex;
         public static StaticMesh StatMesh;
-        public static SkeletalMesh SkelMesh;
+        private static SkeletalMesh skelMesh;
         public static int LOD;
+
+        public static SkeletalMesh SkelMesh
+        {
+            get { return skelMesh; }
+
+            set
+            {
+                LOD = 0;
+                skelMesh = value;
+            }
+        }
 
         public struct DXCube
         {
@@ -134,6 +144,21 @@ namespace ME3Explorer.Meshplorer
 
         private static float fAngle=0;
 
+        public static void setTex(Texture tex = null)
+        {
+            if (device == null)
+                return;
+
+            if (tex == null)
+            {
+                device.SetTexture(0, DefaultTex); 
+            }
+            else
+            {
+                device.SetTexture(0, tex);
+            }
+        }
+
         private static void Render()
         {
             if (device == null)
@@ -159,7 +184,7 @@ namespace ME3Explorer.Meshplorer
                     device.Transform.View = Matrix.LookAtLH(new Vector3(0.0f, CamDistance, CamDistance / 2) + CamOffset, new Vector3(0, 0, 0) + CamOffset, new Vector3(0.0f, 0.0f, 1.0f));
                     device.Transform.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, 1.0f, 1.0f, 100000.0f);
                     
-                    device.SetTexture(0, null);
+                    //device.SetTexture(0, null);
                     device.VertexFormat = CustomVertex.PositionColored.Format;
                     device.RenderState.Lighting = false;
                     if(Cubes != null)
@@ -168,7 +193,6 @@ namespace ME3Explorer.Meshplorer
 
                     if (StatMesh != null)
                         StatMesh.DrawMesh(device);
-                    device.SetTexture(0, DefaultTex);
                     if (SkelMesh != null)
                         SkelMesh.DrawMesh(device, LOD);
                 device.EndScene();

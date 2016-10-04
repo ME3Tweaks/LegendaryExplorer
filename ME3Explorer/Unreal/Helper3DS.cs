@@ -13,11 +13,10 @@ namespace ME3Explorer.Unreal
 {
     public static class Helper3DS
     {
-        public static string loc;
 
         public static Lib3dsFile EmptyFile()
         {
-            return LIB3DS.lib3ds_file_open(loc + "\\exec\\cube.3ds");
+            return LIB3DS.lib3ds_file_open(Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\cube.3ds");
         }
 
         public static void ConvertPSKto3DS(PSKFile f, string path)
@@ -38,7 +37,7 @@ namespace ME3Explorer.Unreal
         public static void AddMeshTo3DS(Lib3dsFile res, PSKFile f, Matrix m)
         {
             Lib3dsMesh mesh = new Lib3dsMesh();
-            string name =  "Box00" + res.meshes.Count.ToString();
+            string name =  "Box00" + res.meshes.Count;
             mesh.name = name;
             mesh.matrix = Matrix2FA(Matrix.Identity);
             mesh.vertices = new List<Lib3dsVertex>();

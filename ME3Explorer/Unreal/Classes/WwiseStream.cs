@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Media;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -13,7 +14,6 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public PCCObject pcc;
         int Index;
         public List<PropertyReader.Property> props;
         public SoundPlayer sp;
@@ -24,22 +24,23 @@ namespace ME3Explorer.Unreal.Classes
         public int Id;
         public string FileName;
 
+        public bool IsPCCStored { get { return FileName == null; } }
+
         public WwiseStream()
         {
         }
         
-        public WwiseStream(PCCObject Pcc, int index)
+        public WwiseStream(ME3Package pcc, int index)
         {
-            pcc = Pcc;
             Index = index;
             memory = pcc.Exports[Index].Data;
             memsize = memory.Length;
-            Deserialize();
+            Deserialize(pcc);
         }
 
-        public void Deserialize()
+        public void Deserialize(ME3Package pcc)
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
+            props = PropertyReader.getPropList(pcc.Exports[Index]);
             int off = props[props.Count - 1].offend + 8;
             ValueOffset = off;
             DataSize = BitConverter.ToInt32(memory, off);
@@ -57,16 +58,20 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (FileName == "")
                 return;
-            if (pathtoafc != "")
+            if (FileName == null)
+            {
+                ExtractWav(pathtoafc, name, askSaveLoc);
+            }
+            else if (pathtoafc != "")
             {
                 if (File.Exists(pathtoafc + FileName + ".afc"))
-                    ExtractWav(pathtoafc + FileName + ".afc", DataOffset, DataSize,name,askSaveLoc);
+                    ExtractWav(pathtoafc + FileName + ".afc", name, askSaveLoc);
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
                     d.Filter = FileName + ".afc|" + FileName + ".afc";
                     if (d.ShowDialog() == DialogResult.OK)
-                        ExtractWav(d.FileName, DataOffset, DataSize, name, askSaveLoc);
+                        ExtractWav(d.FileName, name, askSaveLoc);
                 }
             }
             else
@@ -74,7 +79,7 @@ namespace ME3Explorer.Unreal.Classes
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = FileName + ".afc|" + FileName + ".afc";
                 if (d.ShowDialog() == DialogResult.OK)
-                    ExtractWav(d.FileName, DataOffset, DataSize, name, askSaveLoc);
+                    ExtractWav(d.FileName, name, askSaveLoc);
             }
         }
 
@@ -107,16 +112,20 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (FileName == "")
                 return;
-            if (pathtoafc != "")
+            if (FileName == null)
+            {
+                PlayWave(pathtoafc);
+            }
+            else if (pathtoafc != "")
             {
                 if (File.Exists(pathtoafc + FileName + ".afc"))
-                    PlayWave(pathtoafc + FileName + ".afc", DataOffset, DataSize);
+                    PlayWave(pathtoafc + FileName + ".afc");
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
                     d.Filter = FileName + ".afc|" + FileName + ".afc";
                     if (d.ShowDialog() == DialogResult.OK)
-                        PlayWave(d.FileName, DataOffset, DataSize);
+                        PlayWave(d.FileName);
                 }
             }
             else
@@ -124,107 +133,117 @@ namespace ME3Explorer.Unreal.Classes
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = FileName + ".afc|" + FileName + ".afc";
                 if (d.ShowDialog() == DialogResult.OK)
-                    PlayWave(d.FileName, DataOffset, DataSize);
+                    PlayWave(d.FileName);
             }
         }
 
-        private void PlayWave(string path, int off, int size)
+        private void PlayWave(string path)
         {
             if (!File.Exists(path))
                 return;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + "\\exec\\out.dat"))
-                File.Delete(loc + "\\exec\\out.dat");
-            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (off + size > fs.Length)
-                return;
-            FileStream fs2 = new FileStream(loc + "\\exec\\out.dat", FileMode.Create, FileAccess.Write);
-            fs.Seek(off, SeekOrigin.Begin);
-            for (int i = 0; i < size; i++)
-                fs2.WriteByte((byte)fs.ReadByte());
-            fs.Close();
-            fs2.Close();
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\ww2ogg.exe", "out.dat");
-            procStartInfo.WorkingDirectory = loc + "\\exec";
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
-            proc.Close();
-            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "out.ogg");
-            procStartInfo.WorkingDirectory = loc + "\\exec";
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
-            if (File.Exists(loc + "\\exec\\out.wav"))
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            if (path.EndsWith(".pcc"))
             {
-                sp = new SoundPlayer(loc + "\\exec\\out.wav");
+                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                {
+                    if (package.IsCompressed)
+                    {
+                        Stream result = CompressionHelper.DecompressME3(fs);
+                        fs.Dispose();
+                        fs = result;
+                    }
+                } 
+            }
+            if (DataOffset + DataSize > fs.Length)
+                return;
+            ExtractRawFromStream(fs);
+            ConvertRiffToWav();
+            if (File.Exists(loc + "\\out.wav"))
+            {
+                sp = new SoundPlayer(loc + "\\out.wav");
                 sp.Play();
                 while (!sp.IsLoadCompleted)
                     Application.DoEvents();
             }
-            File.Delete(loc + "\\exec\\out.ogg");
-            File.Delete(loc + "\\exec\\out.dat");
+            fs.Dispose();
         }
 
-        private void ExtractWav(string path, int off, int size, string name = "",bool askSave = true)
+        private void ExtractWav(string path, string name = "",bool askSave = true)
         {
             if (!File.Exists(path))
                 return;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + "\\exec\\out.dat"))
-                File.Delete(loc + "\\exec\\out.dat");
-            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (off + size > fs.Length)
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            if (path.EndsWith(".pcc"))
+            {
+                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                {
+                    if (package.IsCompressed)
+                    {
+                        Stream result = CompressionHelper.DecompressME3(fs);
+                        fs.Dispose();
+                        fs = result;
+                    }
+                }
+            }
+            if (DataOffset + DataSize > fs.Length)
                 return;
-            FileStream fs2 = new FileStream(loc + "\\exec\\out.dat", FileMode.Create, FileAccess.Write);
-            fs.Seek(off, SeekOrigin.Begin);
-            for (int i = 0; i < size; i++)
-                fs2.WriteByte((byte)fs.ReadByte());
-            fs.Close();
-            fs2.Close();
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\ww2ogg.exe", "out.dat");
-            procStartInfo.WorkingDirectory = loc + "\\exec";
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
-            proc.Close();
-            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "out.ogg");
-            procStartInfo.WorkingDirectory = loc + "\\exec";
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
+            ExtractRawFromStream(fs);
+            ConvertRiffToWav();
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "Wave Files(*.wav)|*.wav";
             d.FileName = name + ".wav";
             if (askSave)
             {
                 if (d.ShowDialog() == DialogResult.OK)
-                    File.Copy(loc + "\\exec\\out.wav", d.FileName);
+                    File.Copy(loc + "\\out.wav", d.FileName);
             }
             else
-            {                
-                File.Copy(loc + "\\exec\\out.wav", name,true);
+            {
+                File.Copy(loc + "\\out.wav", name, true);
             }
-            File.Delete(loc + "\\exec\\out.ogg");
-            File.Delete(loc + "\\exec\\out.dat");
-            if(askSave)
+            if (askSave)
                 MessageBox.Show("Done.");
+        }
+
+        private static void ConvertRiffToWav()
+        {
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "out.dat");
+            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
+            proc.WaitForExit();
+            proc.Close();
+            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "out.ogg");
+            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
+            proc.WaitForExit();
+            File.Delete(loc + "\\out.ogg");
+            File.Delete(loc + "\\out.dat");
+        }
+
+        private void ExtractRawFromStream(Stream fs)
+        {
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            if (File.Exists(loc + "\\out.dat"))
+                File.Delete(loc + "\\out.dat");
+            FileStream fs2 = new FileStream(loc + "\\out.dat", FileMode.Create, FileAccess.Write);
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            for (int i = 0; i < DataSize; i++)
+                fs2.WriteByte((byte)fs.ReadByte());
+            fs.Close();
+            fs2.Close();
         }
 
         private void ImportWav(string pathafc, string pathwav, int off)

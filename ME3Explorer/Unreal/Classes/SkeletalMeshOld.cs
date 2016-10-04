@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -14,7 +15,7 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -147,12 +148,12 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion 
 
-        public SkeletalMeshOld(PCCObject Pcc, int index)
+        public SkeletalMeshOld(ME3Package Pcc, int index)
         {
             pcc = Pcc;
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
             Deserialize();
         }
 
@@ -377,7 +378,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] SerializeToBuffer()
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
+            
             WriteBounds(m);
             WriteMaterials(m);
             WriteOrgRot(m);
@@ -532,9 +533,9 @@ namespace ME3Explorer.Unreal.Classes
                     m.Write(BitConverter.GetBytes(X.Unk1), 0, 4);
                     m.Write(BitConverter.GetBytes(X.Unk2), 0, 4);
                     for (int j = 0; j < 4; j++)
-                        m.WriteByte((byte)X.Influences[j].bone);
+                        m.WriteByte(X.Influences[j].bone);
                     for (int j = 0; j < 4; j++)
-                        m.WriteByte((byte)X.Influences[j].weight);
+                        m.WriteByte(X.Influences[j].weight);
                     //Took me a while for this!
                     
                     WriteVector(m, X.Position);
@@ -939,7 +940,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void CalcTangentSpace2(LOD l)
         {
-            BitConverter.IsLittleEndian = true;
+            
             int vertexCount = l.Edges.Count();
             Vector3[] vertices = ToVec3(l.Edges);
             Vector3[] normals = new Vector3[vertexCount];
@@ -1302,7 +1303,7 @@ namespace ME3Explorer.Unreal.Classes
             t.Nodes.Add(t1);
             t1 = new TreeNode("Active Bones");
             for (int i = 0; i < sec.ActiveBones.Count; i++)
-                t1.Nodes.Add(new TreeNode(i.ToString() + " : " + sec.ActiveBones[i]));
+                t1.Nodes.Add(new TreeNode(i + " : " + sec.ActiveBones[i]));
             t.Nodes.Add(t1);
             t1 = new TreeNode("Edges");
             t1 = ToTreeEdges(t1, sec.Edges);
@@ -1320,7 +1321,7 @@ namespace ME3Explorer.Unreal.Classes
                 string s = i.ToString("d4") + " : Tangents(" + TanToStr(e.Unk1) + "; " + TanToStr(e.Unk2) + " ) ";
                 s += "Influences(";
                 for (int j = 0; j < 4; j++)
-                    s += "{" + e.Influences[j].bone + " ; " + (float)(e.Influences[j].weight / 255f) + "}";
+                    s += "{" + e.Influences[j].bone + " ; " + e.Influences[j].weight / 255f + "}";
                 s += " Position(" + e.Position.X + "; " + e.Position.Y + "; " + e.Position.Z + " )";
                 s += " UV(" + e.UV.X + "; " + e.UV.Y + " )";
                 TreeNode t2 = new TreeNode(s);
@@ -1335,8 +1336,8 @@ namespace ME3Explorer.Unreal.Classes
             string s = "[";
             byte[] buff = BitConverter.GetBytes(t);
             for (int i = 0; i < 3; i++)
-                s += String.Format("{0:0.000}", ((buff[i] - 128) / 256f) * 2f) + " ; ";
-            s += String.Format("{0:0.000}", ((buff[3] - 128) / 256f) * 2f) + "]";
+                s += string.Format("{0:0.000}", ((buff[i] - 128) / 256f) * 2f) + " ; ";
+            s += string.Format("{0:0.000}", ((buff[3] - 128) / 256f) * 2f) + "]";
             return s;
         }
 

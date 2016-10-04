@@ -2,52 +2,135 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Collections;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using ME3Explorer.SequenceObjects;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
+using Gibbed.IO;
 
 
 namespace ME3Explorer
 {
-    public partial class SequenceEditor : Form
+    public partial class SequenceEditor : WinFormsBase
     {
 
         public SequenceEditor()
         {
-            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
-            {
-                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
-                this.Close();
-                return;
-            }
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
             
-            if(SText.fontcollection == null)
-                SText.LoadFont("KismetFont.ttf");
-            if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+            SText.LoadFont();
+            if (SObj.talkfiles == null)
             {
-                Dictionary<string, object> options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
-                if (options.ContainsKey("AutoSave")) 
+                talkFiles = new ME1Explorer.TalkFiles();
+                talkFiles.LoadGlobalTlk();
+                SObj.talkfiles = talkFiles; 
+            }
+            else
+            {
+                talkFiles = SObj.talkfiles;
+            }
+        }
+
+        private void SequenceEditor_Load(object sender, EventArgs e)
+        {
+            Dictionary<string, object> options = null;
+            string OldME3SequenceViews = Path.Combine(ME3Directory.cookedPath, @"SequenceViews\");
+            string OldME2SequenceViews = Path.Combine(ME2Directory.cookedPath, @"SequenceViews\");
+            string OldME1SequenceViews = Path.Combine(ME1Directory.cookedPath, @"SequenceViews\");
+
+            #region Migrate data from legacy locations
+            if (Directory.Exists(OldME3SequenceViews) ||
+                    Directory.Exists(OldME2SequenceViews) ||
+                    Directory.Exists(OldME1SequenceViews))
+            {
+                try
+                {
+                    if (File.Exists(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                    {
+                        options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"));
+                        File.Delete(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                    }
+                    if (File.Exists(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                    {
+                        File.Delete(ME2Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                    }
+                    if (File.Exists(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON"))
+                    {
+                        File.Delete(ME1Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON");
+                    }
+
+                }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+                {
+                }
+                var comp = new Microsoft.VisualBasic.Devices.Computer();
+                try
+                {
+                    if (Directory.Exists(OldME3SequenceViews))
+                    {
+                        Directory.CreateDirectory(ME3ViewsPath);
+                        comp.FileSystem.CopyDirectory(OldME3SequenceViews, ME3ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME3SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show($"Error migrating old ME3 data.\nPlease manually move all files from {OldME3SequenceViews} to {ME3ViewsPath}\nThen delete the original SequenceViews directory.");
+                }
+                try
+                {
+                    if (Directory.Exists(OldME2SequenceViews))
+                    {
+                        Directory.CreateDirectory(ME2ViewsPath);
+                        comp.FileSystem.CopyDirectory(OldME2SequenceViews, ME2ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME2SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show($"Error migrating old ME2 data.\nPlease manually move all files from {OldME2SequenceViews} to {ME2ViewsPath}\nThen delete the original SequenceViews directory.");
+                }
+                try
+                {
+                    if (Directory.Exists(OldME1SequenceViews))
+                    {
+                        Directory.CreateDirectory(ME1ViewsPath);
+                        comp.FileSystem.CopyDirectory(OldME1SequenceViews, ME1ViewsPath);
+                        comp.FileSystem.DeleteDirectory(OldME1SequenceViews, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show($"Error migrating old ME1 data.\nPlease manually move all files from  {OldME1SequenceViews} to {ME1ViewsPath}\nThen delete the original SequenceViews directory.");
+                }
+            } 
+            #endregion
+
+            if (File.Exists(OptionsPath))
+            {
+                options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
+            }
+            if (options != null)
+            {
+                if (options.ContainsKey("AutoSave"))
                     autoSaveViewToolStripMenuItem.Checked = (bool)options["AutoSave"];
                 if (options.ContainsKey("OutputNumbers"))
                     showOutputNumbersToolStripMenuItem.Checked = (bool)options["OutputNumbers"];
@@ -63,18 +146,34 @@ namespace ME3Explorer
             public int index;
             public float X;
             public float Y;
+
+            public SaveData(int i) : this()
+            {
+                index = i;
+            }
         }
-        
+
+        public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
+        public static readonly string OptionsPath = Path.Combine(SequenceEditorDataFolder, "SequenceEditorOptions.JSON");
+        public static readonly string ME3ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME3SequenceViews\");
+        public static readonly string ME2ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME2SequenceViews\");
+        public static readonly string ME1ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME1SequenceViews\");
+
+        private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
+
+        private ME1Explorer.TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         private ZoomController zoomController;
         public TreeNode SeqTree;
         public PropGrid pg;
-        public PCCObject pcc;
-        public List<int> CurrentObjects;
+        /// <summary>
+        /// List of export-indices of exports in loaded sequence.
+        /// </summary>
+        public List<int> CurrentObjects = new List<int>();
         public List<SObj> Objects;
         private List<SaveData> SavedPositions;
-        public int SequenceIndex;
+        IExportEntry Sequence;
         public bool RefOrRefChild;
 
         public string CurrentFile;
@@ -86,134 +185,222 @@ namespace ME3Explorer
             if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "PCC Files(*.pcc)|*.pcc";
+            d.Filter = App.FileFilter;
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try {
-                    pcc = new PCCObject(d.FileName);
-                    CurrentFile = d.FileName;
-                    toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
-                    LoadSequences();
-                    graphEditor.nodeLayer.RemoveAllChildren();
-                    graphEditor.edgeLayer.RemoveAllChildren();
-                    if(CurrentObjects != null)
-                        CurrentObjects.Clear();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        private void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadMEPackage(fileName);
+                CurrentFile = fileName;
+                toolStripStatusLabel1.Text = CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1);
+                LoadSequences();
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                CurrentObjects.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
         private void LoadSequences()
         {
-            int f = -1;
             treeView1.Nodes.Clear();
-
-            // Search for a main sequence.
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if ((pcc.Exports[i].ObjectName == "Main_Sequence") &&
-                   pcc.Exports[i].ClassName == "Sequence")
-                    f = i;
-
-            if (f > -1)
+            Dictionary<string, TreeNode> prefabs = new Dictionary<string, TreeNode>();
+            for (int i = 0; i < pcc.ExportCount; i++)
             {
-                // Found a main sequence.  Add it and its children.
-                SeqTree = FindSequences(pcc, f);
-                treeView1.Nodes.Add(SeqTree);
+                IExportEntry exportEntry = pcc.getExport(i);
+                if (exportEntry.ClassName == "Sequence" && !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"))
+                {
+                    treeView1.Nodes.Add(FindSequences(pcc, i, !(exportEntry.ObjectName == "Main_Sequence")));
+                }
+                if (exportEntry.ClassName == "Prefab")
+                {
+                    prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                }
             }
-            else
+            if (prefabs.Count > 0)
             {
-                // No main sequence.  Try searching for others -- we may be in a dialogue-driving file (LOC_INT) which have no main sequence.
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "Sequence") // (pcc.Exports[i].ObjectName == "Node_Data_Sequence") &&
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    IExportEntry exportEntry = pcc.getExport(i);
+                    if (exportEntry.ClassName == "PrefabSequence" && pcc.getObjectClass(exportEntry.idxLink) == "Prefab")
                     {
-                        treeView1.Nodes.Add(FindSequences(pcc, i, true));
-                        f = -2; // Dirty flag so we don't display error message.  Yes, I am a lazy coder.
+                        string parentName = pcc.getObjectName(exportEntry.idxLink);
+                        if (prefabs.ContainsKey(parentName))
+                        {
+                            prefabs[parentName].Nodes.Add(FindSequences(pcc, i, false));
+                        }
                     }
+                }
+                foreach (var item in prefabs.Values)
+                {
+                    if (item.Nodes.Count > 0)
+                    {
+                        treeView1.Nodes.Add(item);
+                    }
+                }
             }
-            if (f == -1)
+            if (treeView1.Nodes.Count == 0)
             {
-                MessageBox.Show("No Main Sequence found!");
+                MessageBox.Show("No Sequences found!");
                 return;
             }
 
             treeView1.ExpandAll();
+            if (treeView1.Nodes.Count > 0)
+            {
+                treeView1.TopNode = treeView1.Nodes[0];
+            }
         }
-        public TreeNode FindSequences(PCCObject pcc, int index, bool wantFullName = false)
+        public TreeNode FindSequences(IMEPackage pcc, int index, bool wantFullName = false)
         {
-            TreeNode ret = new TreeNode("#" + index.ToString() + ": " + (wantFullName ? pcc.Exports[index].GetFullPath : pcc.Exports[index].ObjectName));
+            TreeNode ret = new TreeNode("#" + index + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
             ret.Name = index.ToString();
-            Sequence seq = new Sequence(pcc, index);
-            if (seq.SequenceObjects != null)
-                for (int i = 0; i < seq.SequenceObjects.Count(); i++)
-                    if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "Sequence" || pcc.Exports[seq.SequenceObjects[i] - 1].ClassName.StartsWith("PrefabSequence"))
+            var seqObjs = pcc.getExport(index).GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                IExportEntry exportEntry;
+                foreach (ObjectProperty seqObj in seqObjs)
+                {
+                    exportEntry = pcc.getExport(seqObj.Value - 1);
+                    if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
-                        TreeNode t = FindSequences(pcc, seq.SequenceObjects[i] - 1, wantFullName);
+                        TreeNode t = FindSequences(pcc, seqObj.Value - 1, false);
                         ret.Nodes.Add(t);
                     }
-                    else if (pcc.Exports[seq.SequenceObjects[i] - 1].ClassName == "SequenceReference")
+                    else if (exportEntry.ClassName == "SequenceReference")
                     {
-                        var props = PropertyReader.getPropList(pcc, pcc.Exports[seq.SequenceObjects[i] - 1]);
-                        var propSequenceReference = props.FirstOrDefault(p => pcc.getNameEntry(p.Name).Equals("oSequenceReference"));
+                        var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
                         if (propSequenceReference != null)
                         {
-                            TreeNode t = FindSequences(pcc, propSequenceReference.Value.IntValue - 1, wantFullName);
+                            TreeNode t = FindSequences(pcc, propSequenceReference.Value - 1, false);
                             ret.Nodes.Add(t);
                         }
                     }
+                }
+            }
             return ret;
         }
+
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if(autoSaveViewToolStripMenuItem.Checked)
                 saveView();
-            LoadSequence(Convert.ToInt32(e.Node.Name));
+            SavedPositions = null;
+            if (e.Node.Name != "")
+            {
+                LoadSequence(pcc.getExport(Convert.ToInt32(e.Node.Name)));
+            }
         }
 
         public void RefreshView()
         {
             saveView(false);
-            LoadSequence(SequenceIndex, false);
+            LoadSequence(Sequence, false);
         }
 
-        private void LoadSequence(int index, bool fromFile = true)
+        private void LoadSequence(IExportEntry seqExport, bool fromFile = true)
         {
-            SequenceIndex = index;
-            toolStripStatusLabel2.Text = "\t#" + SequenceIndex + pcc.Exports[index].ObjectName;
-            GetProperties(SequenceIndex);
-            GetObjects(SequenceIndex);
-            SetupJSON(index);
+            graphEditor.Enabled = false;
+            graphEditor.UseWaitCursor = true;
+            Sequence = seqExport;
+            toolStripStatusLabel2.Text = "\t#" + Sequence.Index + Sequence.ObjectName;
+            GetProperties(Sequence);
+            GetObjects(Sequence);
+            SetupJSON(Sequence);
             if(SavedPositions == null)
                 SavedPositions = new List<SaveData>();
             if (fromFile && File.Exists(JSONpath))
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
-            GenerateGraph(SequenceIndex);
+            GenerateGraph();
             selectedIndex = -1;
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
         }
 
-        private void SetupJSON(int index)
+        private void SetupJSON(IExportEntry export)
         {
-            string objectName = System.Text.RegularExpressions.Regex.Replace(pcc.Exports[index].ObjectName, @"[<>:""/\\|?*]", "");
-            if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && pcc.Exports[index].PackageFullName.Contains("SequenceReference"))
+            string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
+            bool isClonedSeqRef = false;
+            var defaultViewZoomProp = export.GetProperty<FloatProperty>("DefaultViewZoom");
+            if (defaultViewZoomProp != null && Math.Abs(defaultViewZoomProp.Value - CLONED_SEQREF_MAGIC) < 1.0E-30f)
             {
-                JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + pcc.Exports[index].PackageFullName.Substring(pcc.Exports[index].PackageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON";
+                isClonedSeqRef = true;
+            }
+
+            string packageFullName = export.PackageFullName;
+            if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
+            {
+                if (pcc.Game == MEGame.ME3)
+                {
+                    JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON"; 
+                }
+                else
+                {
+                    string packageName = export.PackageFullName.Substring(export.PackageFullName.LastIndexOf("SequenceReference"));
+                    packageName = packageName.Replace("SequenceReference", "");
+                    int idx = export.Index;
+                    string ObjName = "";
+                    while (idx > 0)
+                    {
+                        if (pcc.getExport(pcc.getExport(idx).idxLink - 1).ClassName == "SequenceReference")
+                        {
+                            var objNameProp = pcc.getExport(idx).GetProperty<StrProperty>("ObjName");
+                            if (objNameProp != null)
+                            {
+                                ObjName = objNameProp.Value;
+                                break;
+                            }
+                        }
+                        idx = pcc.getExport(idx).idxLink - 1;
+
+                    }
+                    if (objectName == "Sequence")
+                    {
+                        objectName = ObjName;
+                        packageName = "." + packageName;
+                    }
+                    else
+                        packageName = packageName.Replace("Sequence", ObjName) + ".";
+                    if (pcc.Game == MEGame.ME2)
+                    {
+                        JSONpath = ME2ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
+                    }
+                    else
+                    {
+                        JSONpath = ME1ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
+                    }
+                }
                 RefOrRefChild = true;
             }
             else
             {
-
-                JSONpath = ME3Directory.cookedPath + @"\SequenceViews\" + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + SequenceIndex + objectName + ".JSON";
+                string viewsPath = ME3ViewsPath;
+                if (pcc.Game == MEGame.ME2)
+                {
+                    viewsPath = ME2ViewsPath;
+                }
+                else if (pcc.Game == MEGame.ME1)
+                {
+                    viewsPath = ME1ViewsPath;
+                }
+                JSONpath = viewsPath + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + export.Index + objectName + ".JSON";
                 RefOrRefChild = false;
             }
         }
 
-        public void GenerateGraph(int n)
+        public void GenerateGraph()
         {
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
-            Sequence seq = new Sequence(pcc, n);
             StartPosEvents = 0;
             StartPosActions = 0;
             StartPosVars = 0;
@@ -222,16 +409,15 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < CurrentObjects.Count(); i++)
                 {
-                    LoadObjects(CurrentObjects[i]);
+                    LoadObject(CurrentObjects[i]);
                 }
                 CreateConnections();
             }
             foreach (SObj o in Objects)
             {
-                o.refreshView = RefreshView;
-                o.MouseDown += new PInputEventHandler(node_MouseDown);
+                o.MouseDown += node_MouseDown;
             }
-            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT"))
+            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.Game != MEGame.ME1)
             {
                 LoadDialogueObjects();
             }
@@ -240,14 +426,28 @@ namespace ME3Explorer
         public float StartPosEvents;
         public float StartPosActions;
         public float StartPosVars;
-        public void LoadObjects(int index)
+        public void LoadObject(int index)
         {
-            string s = pcc.Exports[index].ObjectName;
-            SaveData savedInfo;
-            if (RefOrRefChild)
-                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
-            else
-                savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
+            string s = pcc.getExport(index).ObjectName;
+            int x = 0, y = 0;
+            SaveData savedInfo = new SaveData(-1);
+            if (SavedPositions.Count > 0)
+            {
+                if (RefOrRefChild)
+                    savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
+                else
+                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
+            }
+            PropertyCollection props = pcc.getExport(index).GetProperties();
+            foreach (var prop in props)
+            {
+                if (prop.Name == "ObjPosX")
+                {
+                    x = (prop as IntProperty).Value;
+                }
+                else if (prop.Name == "ObjPosY")
+                    y = (prop as IntProperty).Value;
+            }
 
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
             {
@@ -257,8 +457,15 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    Objects.Add(new SEvent(index, StartPosEvents, 0, pcc, graphEditor));
-                    StartPosEvents += Objects[Objects.Count - 1].Width + 20;
+                    if (pcc.Game == MEGame.ME1)
+                    {
+                        Objects.Add(new SEvent(index, x, y, pcc, graphEditor));
+                    }
+                    else
+                    {
+                        Objects.Add(new SEvent(index, StartPosEvents, 0, pcc, graphEditor));
+                        StartPosEvents += Objects[Objects.Count - 1].Width + 20; 
+                    }
                 }
             }
              else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
@@ -267,13 +474,31 @@ namespace ME3Explorer
                     Objects.Add(new SVar(index, savedInfo.X, savedInfo.Y, pcc, graphEditor));
                 else
                 {
-                    Objects.Add(new SVar(index, StartPosVars, 500, pcc, graphEditor));
-                    StartPosVars += Objects[Objects.Count - 1].Width + 20;
+                    if (pcc.Game == MEGame.ME1)
+                    {
+                        Objects.Add(new SVar(index, x, y, pcc, graphEditor));
+                    }
+                    else
+                    {
+                        Objects.Add(new SVar(index, StartPosVars, 500, pcc, graphEditor));
+                        StartPosVars += Objects[Objects.Count - 1].Width + 20; 
+                    }
                 }
             }
-            else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.Exports[index].ClassName == "Sequence" || pcc.Exports[index].ClassName == "SequenceReference")
+            else if (pcc.getExport(index).ClassName == "SequenceFrame" && pcc.Game == MEGame.ME1)
             {
-                Objects.Add(new SAction(index, -1, -1, pcc, graphEditor));
+                Objects.Add(new SFrame(index, x, y, pcc, graphEditor));
+            }
+            else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
+            {
+                if (pcc.Game == MEGame.ME1)
+                {
+                    Objects.Add(new SAction(index, x, y, pcc, graphEditor));
+                }
+                else
+                {
+                    Objects.Add(new SAction(index, -1, -1, pcc, graphEditor)); 
+                }
             }
         }
 
@@ -285,7 +510,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
-                    if (pcc.Exports[CurrentObjects[i]].ObjectName.StartsWith("BioSeqEvt_ConvNode"))
+                    if (pcc.getExport(CurrentObjects[i]).ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         Objects[i].SetOffset(StartPosDialog, 600);//Startconv event
                         InterpIndex = CurrentObjects.IndexOf(((SEvent)Objects[i]).Outlinks[0].Links[0]);
@@ -301,6 +526,8 @@ namespace ME3Explorer
             }
             catch (Exception)
             {
+                foreach (PPath edge in graphEditor.edgeLayer)
+                    GraphEditor.UpdateEdge(edge);
                 return false;
             }
             return true;
@@ -319,19 +546,29 @@ namespace ME3Explorer
                 }
                 foreach (SObj o in graphEditor.nodeLayer)
                 {
-                    if (o.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
+                    if (o is SAction)
                     {
-                        SaveData savedInfo = new SaveData();
-                        if(RefOrRefChild)
-                            savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
-                        else
-                            savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
+                        SaveData savedInfo = new SaveData(-1);
+                        if (SavedPositions.Count > 0)
+                        {
+                            if (RefOrRefChild)
+                                savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
+                            else
+                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index); 
+                        }
                         if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
                             o.Layout(savedInfo.X, savedInfo.Y);
                         else
                         {
-                            o.Layout(StartPosActions, 250);
-                            StartPosActions += o.Width + 20;
+                            if (pcc.Game == MEGame.ME1)
+                            {
+                                o.Layout(-0.1f, -0.1f);
+                            }
+                            else
+                            {
+                                o.Layout(StartPosActions, 250);
+                                StartPosActions += o.Width + 20; 
+                            }
                         }
                     }
                 }
@@ -342,60 +579,60 @@ namespace ME3Explorer
             }
         }
 
-        public void GetObjects(int n)
+        public void GetObjects(IExportEntry export)
         {
             CurrentObjects = new List<int>();
             listBox1.Items.Clear();
-            Sequence seq = new Sequence(pcc, n);
-            if (seq.SequenceObjects != null)
-                for (int i = 0; i < seq.SequenceObjects.Count(); i++)
+            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+                foreach (ObjectProperty seqObj in seqObjs)
                 {
-                    int m = seq.SequenceObjects[i] - 1;
+                    int m = seqObj.Value - 1;
                     CurrentObjects.Add(m);
-                    listBox1.Items.Add("#" + m.ToString() + " :" + pcc.Exports[m].ObjectName + " class: " + pcc.Exports[m].ClassName);
+                    listBox1.Items.Add("#" + m + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
                 }
         }
-        public void GetProperties(int n)
+
+        public void GetProperties(IExportEntry export)
         {
             List<PropertyReader.Property> p;
-            switch (pcc.Exports[n].ClassName)
+            switch (export.ClassName)
             {
                 default:
-                    p = PropertyReader.getPropList(pcc, pcc.Exports[n]);
+                    p = PropertyReader.getPropList(export);
                     break;
             }
             pg = new PropGrid();
             pg1.SelectedObject = pg;
-            pg.Add(new CustomProperty("Name", "_Meta", pcc.Exports[n].ObjectName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Class", "_Meta", pcc.Exports[n].ClassName, typeof(string), true, true));
-            pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.Exports[n].DataOffset, typeof(int), true, true));
-            pg.Add(new CustomProperty("Data Size", "_Meta", pcc.Exports[n].DataSize, typeof(int), true, true));
             for (int l = 0; l < p.Count; l++)
                 pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
             pg1.Refresh();
         }
+
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
             if (n == -1 || n < 0 || n >= CurrentObjects.Count())
                 return;
-            GetProperties(CurrentObjects[n]);
             SObj s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
             if (s != null)
             {
-                s.Select();
                 if (selectedIndex != -1)
                 {
                     SObj d = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectedIndex]);
                     if (d != null)
                         d.Deselect();
                 }
+                s.Select();
                 if (!selectedByNode)
                     graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
             }
+            GetProperties(pcc.getExport(CurrentObjects[n]));
             selectedIndex = n;
             selectedByNode = false;
+            graphEditor.Refresh();
         }
+
         private void SequenceEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if(autoSaveViewToolStripMenuItem.Checked)
@@ -406,17 +643,14 @@ namespace ME3Explorer
             options.Add("AutoSave", autoSaveViewToolStripMenuItem.Checked);
             options.Add("GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked);
             string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(ME3Directory.cookedPath + @"\SequenceViews"))
-                Directory.CreateDirectory(ME3Directory.cookedPath + @"\SequenceViews");
-            File.WriteAllText(ME3Directory.cookedPath + @"\SequenceViews\SequenceEditorOptions.JSON", outputFile);
-
-          
-            taskbar.RemoveTool(this);
+            if (!Directory.Exists(SequenceEditorDataFolder))
+                Directory.CreateDirectory(SequenceEditorDataFolder);
+            File.WriteAllText(OptionsPath, outputFile);
         }
 
-        private void saveViewToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentObjects == null)
+            if (CurrentObjects.Count == 0)
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "Bmp Files (*.bmp)|*.bmp";
@@ -436,19 +670,6 @@ namespace ME3Explorer
             }
         }
 
-        private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pcc == null)
-                return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == DialogResult.OK)
-            {
-                pcc.altSaveToFile(d.FileName, true);
-                MessageBox.Show("Done");
-            }
-        }
-
         private void interpretToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
@@ -461,14 +682,9 @@ namespace ME3Explorer
             }
             else
                 n = CurrentObjects[n];
-            Interpreter2.Interpreter2 ip = new Interpreter2.Interpreter2();
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (SequenceEditor)";
-            ip.MdiParent = this.MdiParent;
-            ip.pcc = pcc;
-            ip.Index = n;
-            ip.InitInterpreter();
             ip.Show();
-            taskbar.AddTool(ip, Properties.Resources.interpreter_icon_64x64);
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
@@ -483,66 +699,73 @@ namespace ME3Explorer
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
-                string className = pcc.Exports[((SObj)sender).Index].ClassName;
+                string className = pcc.getExport(((SObj)sender).Index).ClassName;
                 if (className == "SeqAct_Interp" || className == "InterpData")
                     openInInterpEditorToolStripMenuItem.Visible = true;
                 else
                     openInInterpEditorToolStripMenuItem.Visible = false;
-                //add inputs
-                if (sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
-                {
-                    addInputLinkToolStripMenuItem.Enabled = true;
-                }
-                else
-                {
-                    addInputLinkToolStripMenuItem.Enabled = false;
-                }
                 //break links
                 breakLinksToolStripMenuItem.Enabled = false;
                 breakLinksToolStripMenuItem.DropDown = null;
-                if(sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction") || sender.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SEvent"))
+                if(sender is SAction || sender is SEvent)
                 {
                     ToolStripMenuItem temp;
-                    ArrayList array;
                     ToolStripDropDown submenu = new ToolStripDropDown();
-                    for(int i = 0; i < ((SBox)sender).Varlinks.Count; i++)
+                    ToolStripDropDown varLinkMenu = new ToolStripDropDown();
+                    ToolStripDropDown outLinkMenu = new ToolStripDropDown();
+                    SBox sBox = ((SBox)sender);
+                    for (int i = 0; i < sBox.Varlinks.Count; i++)
                     {
-                        for (int j = 0; j < ((SBox)sender).Varlinks[i].Links.Count; j++)
+                        for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
                         {
-                            if (((SBox)sender).Varlinks[i].Links[j] != -1)
+                            if (sBox.Varlinks[i].Links[j] != -1)
                             {
-                                temp = new ToolStripMenuItem("Break link from " + ((SBox)sender).Varlinks[i].Desc + " to " + ((SBox)sender).Varlinks[i].Links[j]);
-                                temp.Click += new EventHandler(removeLink_handler);
-                                array = new ArrayList();
-                                array.Add(sender);
-                                array.Add(0);
-                                array.Add(i);
-                                array.Add(j);
-                                temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                temp = new ToolStripMenuItem("Break link from " + sBox.Varlinks[i].Desc + " to " + sBox.Varlinks[i].Links[j]);
+                                int linkConnection = i;
+                                int linkIndex = j;
+                                temp.Click += (object o, EventArgs args) =>
+                                {
+                                    sBox.RemoveVarlink(linkConnection, linkIndex);
+                                };
+                                varLinkMenu.Items.Add(temp);
                             }
                         }
                     }
-                    for (int i = 0; i < ((SBox)sender).Outlinks.Count; i++)
+                    for (int i = 0; i < sBox.Outlinks.Count; i++)
                     {
-                        for (int j = 0; j < ((SBox)sender).Outlinks[i].Links.Count; j++)
+                        for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
                         {
-                            if (((SBox)sender).Outlinks[i].Links[j] != -1)
+                            if (sBox.Outlinks[i].Links[j] != -1)
                             {
-                                temp = new ToolStripMenuItem("Break link from " + ((SBox)sender).Outlinks[i].Desc + " to " + ((SBox)sender).Outlinks[i].Links[j] + " :" + ((SBox)sender).Outlinks[i].InputIndices[j]);
-                                temp.Click += new EventHandler(removeLink_handler);
-                                array = new ArrayList();
-                                array.Add(sender);
-                                array.Add(1);
-                                array.Add(i);
-                                array.Add(j);
-                                temp.Tag = array;
-                                submenu.Items.Add(temp);
+                                temp = new ToolStripMenuItem("Break link from " + sBox.Outlinks[i].Desc + " to " + sBox.Outlinks[i].Links[j] + " :" + sBox.Outlinks[i].InputIndices[j]);
+                                int linkConnection = i;
+                                int linkIndex = j;
+                                temp.Click += (object o, EventArgs args) =>
+                                {
+                                    sBox.RemoveOutlink(linkConnection, linkIndex);
+                                };
+                                outLinkMenu.Items.Add(temp);
                             }
                         }
                     }
-                    if(submenu.Items.Count > 0)
+                    if(varLinkMenu.Items.Count > 0)
                     {
+                        temp = new ToolStripMenuItem("Variable Links");
+                        temp.DropDown = varLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (outLinkMenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Output Links");
+                        temp.DropDown = outLinkMenu;
+                        submenu.Items.Add(temp);
+                    }
+                    if (submenu.Items.Count > 0)
+                    {
+                        temp = new ToolStripMenuItem("Break all Links");
+                        temp.Click += removeAllLinks_handler;
+                        temp.Tag = sender;
+                        submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
                     }
@@ -550,27 +773,47 @@ namespace ME3Explorer
             }
         }
 
-        private void removeLink_handler(object sender, EventArgs e)
+        private void removeAllLinks_handler(object sender, EventArgs e)
         {
-            ArrayList array = (ArrayList)((ToolStripMenuItem)sender).Tag;
-            if ((int)array[1] == 1)
-                ((SBox)array[0]).RemoveOutlink((int)array[2], (int)array[3]);
-            else
-                ((SBox)array[0]).RemoveVarlink((int)array[2], (int)array[3]);
+            SBox obj = (SBox)((ToolStripMenuItem)sender).Tag;
+            removeAllLinks(obj.Index);
+        }
 
+        private void removeAllLinks(int index)
+        {
+            IExportEntry export = pcc.getExport(index);
+            var props = export.GetProperties();
+            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
+            {
+                foreach (var prop in outLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                }
+            }
+            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
+            {
+                foreach (var prop in varLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                }
+            }
+            export.WriteProperties(props);
         }
 
         private void saveViewToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (CurrentObjects == null)
+            if (CurrentObjects.Count == 0)
                 return;
             saveView();
             MessageBox.Show("Done.");
         }
 
-        private void saveView(bool toFile = true, List<SaveData> extra = null)
+        List<SaveData> extraSaveData;
+        private void saveView(bool toFile = true)
         {
-            if (CurrentObjects == null || CurrentObjects.Count == 0)
+            if (CurrentObjects.Count == 0)
                 return;
             SavedPositions = new List<SaveData>();
             foreach (SObj p in graphEditor.nodeLayer)
@@ -585,14 +828,19 @@ namespace ME3Explorer
                     SavedPositions.Add(s);
                 }
             }
-            if (extra != null)
-                SavedPositions.AddRange(extra);
+            if (extraSaveData != null)
+            {
+                SavedPositions.AddRange(extraSaveData);
+                extraSaveData = null;
+            }
+
             if (toFile)
             {
                 string outputFile = JsonConvert.SerializeObject(SavedPositions);
-                if (!Directory.Exists(JSONpath.Remove(JSONpath.LastIndexOf('\\'))))
-                    Directory.CreateDirectory(JSONpath.Remove(JSONpath.LastIndexOf('\\')));
+                if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
                 File.WriteAllText(JSONpath, outputFile);
+                SavedPositions.Clear();
             }
             
         }
@@ -602,43 +850,20 @@ namespace ME3Explorer
             graphEditor.ScaleViewTo((float)Convert.ToDecimal(toolStripTextBox1.Text));
         }
 
-        private void openInPCCEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
-            PCCEditor2 p = new PCCEditor2();
-            p.MdiParent = this.MdiParent;
-            p.WindowState = FormWindowState.Maximized;
-            p.Show(); 
-            try
-            {
-
-                p.pcc = new PCCObject(CurrentFile);
-                p.SetView(2);
-                p.RefreshView();
-                p.InitStuff();
-                p.listBox1.SelectedIndex = l;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\n" + ex.Message);
-            }
+            PackageEditor p = new PackageEditor();
+            p.Show();
+            p.LoadFile(CurrentFile);
+            p.goToNumber(l);
         }
-
-        private void addInputLinkToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            SObj s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
-            if (s.GetType() == Type.GetType("ME3Explorer.SequenceObjects.SAction"))
-                ((SAction)s).AddInputLink();
-        }
-
+        
         private void addObjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentObjects == null)
+            if (CurrentObjects.Count == 0)
                 return;
             string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter object index", "ME3Explorer");
             if (result == "")
@@ -646,38 +871,17 @@ namespace ME3Explorer
             int i;
             if (int.TryParse(result, out i))
             {
-                if(i < pcc.Exports.Count)
+                if(i < pcc.ExportCount)
                 {
                     if (!CurrentObjects.Contains(i))
                     {
-                        byte[] buff = pcc.Exports[SequenceIndex].Data;
-                        List<byte> ListBuff = new List<byte>(buff);
-                        BitConverter.IsLittleEndian = true;
-                        List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[SequenceIndex]);
-                        for (int j = 0; j < p.Count(); j++)
+                        if (pcc.getExport(i).inheritsFrom("SequenceObject"))
                         {
-                            if (pcc.getNameEntry(p[j].Name) == "SequenceObjects")
-                            {
-                                int count = BitConverter.ToInt32(p[j].raw, 24);
-                                byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[j].raw, 16) + 4);
-                                byte[] countbuff = BitConverter.GetBytes(count + 1);
-                                for (int k = 0; k < 4; k++)
-                                {
-                                    ListBuff[p[j].offsetval - 8 + k] = sizebuff[k];
-                                    ListBuff[p[j].offsetval + k] = countbuff[k];
-                                }
-                                ListBuff.InsertRange(p[j].offsetval + 4 + count * 4, BitConverter.GetBytes(i + 1));
-                                pcc.Exports[SequenceIndex].Data = ListBuff.ToArray();
-                                SaveData s = new SaveData();
-                                s.index = i;
-                                s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
-                                s.Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2;
-                                List<SaveData> list = new List<SaveData>();
-                                list.Add(s);
-                                saveView(false, list);
-                                LoadSequence(SequenceIndex, false);
-                                break;
-                            }
+                            addObject(i);
+                        }
+                        else
+                        {
+                            MessageBox.Show(i + " is not a sequence object.");
                         }
                     }
                     else
@@ -696,281 +900,87 @@ namespace ME3Explorer
             }
         }
 
+        private void addObject(int index, bool removeLinks = true)
+        {
+            SaveData s = new SaveData();
+            s.index = index;
+            s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
+            s.Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2;
+            List<SaveData> list = new List<SaveData>();
+            list.Add(s);
+            extraSaveData = list;
+            addObjectToSequence(index, removeLinks, Sequence);
+        }
+
+        static void addObjectToSequence(int index, bool removeLinks, IExportEntry sequenceExport)
+        {
+            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                seqObjs.Add(new ObjectProperty(index + 1));
+                sequenceExport.WriteProperty(seqObjs);
+                PropertyCollection props = sequenceExport.GetProperties();
+
+                IExportEntry newObject = sequenceExport.FileRef.getExport(index);
+                PropertyCollection newObjectProps = newObject.GetProperties();
+                newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport.UIndex, "ParentSequence"));
+                if (removeLinks)
+                {
+                    var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var prop in outLinksProp)
+                        {
+                            prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                        }
+                    }
+                    var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var prop in varLinksProp)
+                        {
+                            prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                        }
+                    }
+                }
+                newObject.WriteProperties(newObjectProps);
+                newObject.idxLink = sequenceExport.UIndex;
+            }
+        }
+
         private void pg1_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
 
             int n = listBox1.SelectedIndex;
             if (n == -1 )
                 return;
-            n = CurrentObjects[n];
-            string name = e.ChangedItem.Label;
-            GridItem parent = e.ChangedItem.Parent;
-            //if (parent != null) name = parent.Label;
-            if (parent.Label == "data")
-            {
-                GridItem parent2 = parent.Parent;
-                if (parent2 != null) name = parent2.Label;
-            }
-            Type parentVal = null;
-            if (parent.Value != null)
-	        {
-                parentVal = parent.Value.GetType();
-	        }
-            if (name == "nameindex" || parentVal == typeof(Unreal.ColorProp) || parentVal == typeof(Unreal.VectorProp) || parentVal == typeof(Unreal.RotatorProp))
-            {
-                name = parent.Label;
-            }
-            PCCObject.ExportEntry ent = pcc.Exports[n];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, ent);
-            int m = -1;
-            for (int i = 0; i < p.Count; i++)
-                if (pcc.Names[p[i].Name] == name)
-                    m = i;
-            if (m == -1)
-                return;
-            byte[] buff2;
-            switch (p[m].TypeVal)
-            {
-                case PropertyReader.Type.BoolProperty:
-                    byte res = 0;
-                    if ((bool)e.ChangedItem.Value == true)
-                        res = 1;
-                    ent.Data[p[m].offsetval] = res;
-                    break;
-                case PropertyReader.Type.FloatProperty:
-                    buff2 = BitConverter.GetBytes((float)e.ChangedItem.Value);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    break;
-                case PropertyReader.Type.IntProperty:
-                case PropertyReader.Type.StringRefProperty:
-                    int newv = Convert.ToInt32(e.ChangedItem.Value);
-                    int oldv = Convert.ToInt32(e.OldValue);
-                    buff2 = BitConverter.GetBytes(newv);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    break;
-                case PropertyReader.Type.StrProperty:
-                    string s = Convert.ToString(e.ChangedItem.Value);
-                    int oldLength = -(int)BitConverter.ToInt64(ent.Data, p[m].offsetval);
-                    List<byte> stringBuff = new List<byte>(s.Length * 2);
-                    for (int i = 0; i < s.Length; i++)
-                    {
-                        stringBuff.AddRange(BitConverter.GetBytes(s[i]));
-                    }
-                    stringBuff.Add(0);
-                    stringBuff.Add(0);
-                    buff2 = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
-                    for (int i = 0; i < 4; i++)
-                        ent.Data[p[m].offsetval - 8 + i] = buff2[i];
-                    buff2 = BitConverter.GetBytes(-(s.LongCount() + 1));
-                    for (int i = 0; i < 8; i++)
-                        ent.Data[p[m].offsetval + i] = buff2[i];
-                    buff2 = new byte[ent.Data.Length - (oldLength * 2) + stringBuff.Count];
-                    int startLength = p[m].offsetval + 4;
-                    int startLength2 = startLength + (oldLength * 2);
-                    for (int i = 0; i < startLength; i++)
-                    {
-                        buff2[i] = ent.Data[i];
-                    }
-                    for (int i = 0; i < stringBuff.Count; i++)
-                    {
-                        buff2[i + startLength] = stringBuff[i];
-                    }
-                    startLength += stringBuff.Count;
-                    for (int i = 0; i < ent.Data.Length - startLength2; i++)
-                    {
-                        buff2[i + startLength] = ent.Data[i + startLength2];
-                    }
-                    ent.Data = buff2;
-                    break;
-                case PropertyReader.Type.StructProperty:
-                    if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.ColorProp))
-                    {
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Alpha":
-                                ent.Data[p[m].offsetval + 11] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Red":
-                                ent.Data[p[m].offsetval + 10] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Green":
-                                ent.Data[p[m].offsetval + 9] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            case "Blue":
-                                ent.Data[p[m].offsetval + 8] = Convert.ToByte(e.ChangedItem.Value);
-                                break;
-                            default:
-                                break;
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.VectorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "X":
-                                offset = 8;
-                                break;
-                            case "Y":
-                                offset = 12;
-                                break;
-                            case "Z":
-                                offset = 16;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.RotatorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Pitch":
-                                offset = 8;
-                                break;
-                            case "Yaw":
-                                offset = 12;
-                                break;
-                            case "Roll":
-                                offset = 16;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            int val = Convert.ToInt32(Convert.ToSingle(e.ChangedItem.Value) * 65536f / 360f);
-                            buff2 = BitConverter.GetBytes(val);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Label != "nameindex" && parentVal == typeof(Unreal.LinearColorProp))
-                    {
-                        int offset = 0;
-                        switch (e.ChangedItem.Label)
-                        {
-                            case "Red":
-                                offset = 8;
-                                break;
-                            case "Green":
-                                offset = 12;
-                                break;
-                            case "Blue":
-                                offset = 16;
-                                break;
-                            case "Alpha":
-                                offset = 20;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (offset != 0)
-                        {
-                            buff2 = BitConverter.GetBytes(Convert.ToSingle(e.ChangedItem.Value));
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + offset + i] = buff2[i];
-                        }
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    else if (e.ChangedItem.Value.GetType() == typeof(int))
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        if (e.ChangedItem.Label == "nameindex")
-                        {
-                            int val1 = Convert.ToInt32(e.ChangedItem.Value);
-                            buff2 = BitConverter.GetBytes(val1);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i] = buff2[i];
-                            int t = listBox1.SelectedIndex;
-                            listBox1.SelectedIndex = -1;
-                            listBox1.SelectedIndex = t;
-                        }
-                        else
-                        {
-                            string sidx = e.ChangedItem.Label.Replace("[", "");
-                            sidx = sidx.Replace("]", "");
-                            int index = Convert.ToInt32(sidx);
-                            buff2 = BitConverter.GetBytes(val);
-                            for (int i = 0; i < 4; i++)
-                                ent.Data[p[m].offsetval + i + index * 4 + 8] = buff2[i];
-                            int t = listBox1.SelectedIndex;
-                            listBox1.SelectedIndex = -1;
-                            listBox1.SelectedIndex = t;
-                        }
-                    }
-                    break;
-                case PropertyReader.Type.ByteProperty:
-                case PropertyReader.Type.NameProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        buff2 = BitConverter.GetBytes(val);
-                        for (int i = 0; i < 4; i++)
-                            ent.Data[p[m].offsetval + i] = buff2[i];
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    break;
-                case PropertyReader.Type.ObjectProperty:
-                    if (e.ChangedItem.Value.GetType() == typeof(int))
-                    {
-                        int val = Convert.ToInt32(e.ChangedItem.Value);
-                        buff2 = BitConverter.GetBytes(val);
-                        for (int i = 0; i < 4; i++)
-                            ent.Data[p[m].offsetval + i] = buff2[i];
-                        int t = listBox1.SelectedIndex;
-                        listBox1.SelectedIndex = -1;
-                        listBox1.SelectedIndex = t;
-                    }
-                    break;
-                default:
-                    return;
-            }
-            pcc.Exports[n] = ent;
-            pg1.ExpandAllGridItems();
+            PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
         }
 
         private void showOutputNumbersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SObj.OutputNumbers = showOutputNumbersToolStripMenuItem.Checked;
-            saveView(false);
             if(CurrentObjects != null)
-                LoadSequence(SequenceIndex, false);
+            {
+                RefreshView();
+            }
+
         }
 
         private void openInInterpEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (pcc.Game != MEGame.ME3)
+            {
+                MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             int n = CurrentObjects[listBox1.SelectedIndex];
             if (n == -1)
                 return;
-            InterpEditor.InterpEditor p = new InterpEditor.InterpEditor();
-            p.MdiParent = this.MdiParent;
-            p.WindowState = FormWindowState.Maximized;
+            Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
             p.LoadPCC(CurrentFile);
-            if (pcc.getClassName(Objects[listBox1.SelectedIndex].Index) == "InterpData")
+            if (pcc.getExport(Objects[listBox1.SelectedIndex].Index).ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
                 p.loadInterpData(n);
@@ -984,28 +994,337 @@ namespace ME3Explorer
 
         private void useGlobalSequenceRefSavesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentObjects == null)
+            if (CurrentObjects.Count == 0)
                 return;
-            SetupJSON(SequenceIndex);
+            SetupJSON(Sequence);
         }
 
         private void graphEditor_Click(object sender, EventArgs e)
         {
-
+            graphEditor.Focus();
         }
 
         private void loadAlternateTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TlkManager tm = new TlkManager();
-            tm.InitTlkManager();
-            tm.Show();
+            if (pcc != null)
+            {
+
+                if (pcc.Game == MEGame.ME3)
+                {
+                    TlkManager tm = new TlkManager();
+                    tm.InitTlkManager();
+                    tm.Show();
+                }
+                else if (pcc.Game == MEGame.ME2)
+                {
+                    ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
+                    tm.InitTlkManager();
+                    tm.Show();
+                }
+                else if (pcc.Game == MEGame.ME1)
+                {
+                    ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
+                    tm.InitTlkManager(talkFiles);
+                    tm.Show();
+                } 
+            }
         }
 
-        private void graphEditor_MouseEnter(object sender, EventArgs e)
+        private void SequenceEditor_DragDrop(object sender, DragEventArgs e)
         {
-            graphEditor.Focus();
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
+            if (DroppedFiles.Count > 0)
+            {
+                LoadFile(DroppedFiles[0]);
+            }
         }
 
+        private void SequenceEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void savePccToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            pcc.save();
+            MessageBox.Show("Done");
+        }
+
+        private void savePCCAsMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            string extension = Path.GetExtension(pcc.FileName);
+            d.Filter = $"*{extension}|*{extension}";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pcc.save(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
+        private void backMouseDown_Handler(object sender, PInputEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                contextMenuStrip2.Show(MousePosition);
+            }
+        }
+
+        void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = CurrentObjects[listBox1.SelectedIndex];
+            if (n == -1)
+                return;
+            cloneObject(n, Sequence);
+        }
+
+        static void cloneObject(int n, IExportEntry sequence, bool topLevel = true)
+        {
+            IMEPackage pcc = sequence.FileRef;
+            IExportEntry exp = pcc.getExport(n).Clone();
+            //needs to have the same index to work properly
+            if (exp.ClassName == "SeqVar_External")
+            {
+                exp.indexValue = pcc.getExport(n).indexValue;
+            }
+            pcc.addExport(exp);
+            addObjectToSequence(exp.Index, topLevel, sequence);
+            cloneSequence(exp, sequence);
+        }
+
+        static void cloneSequence(IExportEntry exp, IExportEntry parentSequence)
+        {
+            IMEPackage pcc = exp.FileRef;
+            if (exp.ClassName == "Sequence")
+            {
+                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs == null || seqObjs.Count == 0)
+                {
+                    return;
+                }
+
+                //store original list of sequence objects;
+                List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
+
+                //clear original sequence objects
+                seqObjs.Clear();
+                exp.WriteProperty(seqObjs);
+
+                //clone all children
+                for (int i = 0; i < oldObjects.Count; i++)
+                {
+                    cloneObject(oldObjects[i] - 1, exp, false);
+                }
+                
+                //re-point children's links to new objects
+                seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                foreach (var seqObj in seqObjs)
+                {
+                    IExportEntry obj = pcc.getExport(seqObj.Value - 1);
+                    var props = obj.GetProperties();
+                    var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var outLinkStruct in outLinksProp)
+                        {
+                            var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
+                            foreach (var link in links)
+                            {
+                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
+                                linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
+                            }
+                        }
+                    }
+                    var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var varLinkStruct in varLinksProp)
+                        {
+                            var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+                    var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                    if (eventLinksProp != null)
+                    {
+                        foreach (var eventLinkStruct in eventLinksProp)
+                        {
+                            var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+                    obj.WriteProperties(props);
+                }
+
+                //re-point sequence links to new objects
+                int oldObj = 0;
+                int newObj = 0;
+                var propCollection = exp.GetProperties();
+                var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inputLinksProp != null)
+                {
+                    foreach (var inLinkStruct in inputLinksProp)
+                    {
+                        var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
+                            var nameRef = linkAction.Value;
+                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            linkAction.Value = nameRef;
+                        }
+                    }
+                }
+                var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outputLinksProp != null)
+                {
+                    foreach (var outLinkStruct in outputLinksProp)
+                    {
+                        var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
+                            var nameRef = linkAction.Value;
+                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            linkAction.Value = nameRef;
+                        }
+                    }
+                }
+                exp.WriteProperties(propCollection);
+            }
+            else if (exp.ClassName == "SequenceReference")
+            {
+                //set OSequenceReference to new sequence
+                var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSeqRefProp == null || oSeqRefProp.Value == 0)
+                {
+                    return;
+                }
+                int oldSeqIndex = oSeqRefProp.Value;
+                oSeqRefProp.Value = exp.UIndex + 1;
+                exp.WriteProperty(oSeqRefProp);
+
+                //clone sequence
+                cloneObject(oldSeqIndex - 1, parentSequence, false);
+
+                //remove cloned sequence from SeqRef's parent's sequenceobjects
+                var seqObjs = parentSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                seqObjs.RemoveAt(seqObjs.Count - 1);
+                parentSequence.WriteProperty(seqObjs);
+
+                //set SequenceReference's linked name indices
+                List<int> inputIndices = new List<int>();
+                List<int> outputIndices = new List<int>();
+
+                IExportEntry newSequence = pcc.getExport(exp.Index + 1);
+                var props = newSequence.GetProperties();
+                var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    foreach (var inLink in inLinksProp)
+                    {
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.count);
+                    }
+                }
+                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    foreach (var outLinks in outLinksProp)
+                    {
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.count);
+                    }
+                }
+
+                props = exp.GetProperties();
+                inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    for (int i = 0; i < inLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        var nameRef = linkAction.Value;
+                        nameRef.count = inputIndices[i];
+                        linkAction.Value = nameRef;
+                    }
+                }
+                outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    for (int i = 0; i < outLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        var nameRef = linkAction.Value;
+                        nameRef.count = outputIndices[i];
+                        linkAction.Value = nameRef;
+                    }
+                }
+                exp.WriteProperties(props);
+
+                //set new Sequence's link and ParentSequence prop to SeqRef
+                newSequence.WriteProperty(new ObjectProperty(exp.UIndex, "ParentSequence"));
+                newSequence.idxLink = exp.UIndex;
+
+                //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
+                //ugly, but it should work
+                newSequence.WriteProperty(new FloatProperty(CLONED_SEQREF_MAGIC, "DefaultViewZoom"));
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (updatedExports.Contains(Sequence.Index))
+            {
+                //loaded sequence is no longer a sequence
+                if (!Sequence.ClassName.Contains("Sequence"))
+                {
+                    graphEditor.nodeLayer.RemoveAllChildren();
+                    graphEditor.edgeLayer.RemoveAllChildren();
+                    CurrentObjects.Clear();
+                    listBox1.Items.Clear();
+                }
+                RefreshView();
+                LoadSequences();
+                return;
+            }
+            
+            if (updatedExports.Intersect(CurrentObjects).Count() > 0)
+            {
+                RefreshView();
+            }
+            foreach (var i in updatedExports)
+            {
+                if (pcc.getExport(i).ClassName.Contains("Sequence"))
+                {
+                    LoadSequences();
+                    break;
+                }
+            }
+        }
     }
 
     public class ZoomController
@@ -1018,7 +1337,7 @@ namespace ME3Explorer
         {
             this.camera = graphEditor.Camera;
             camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += new PInputEventHandler(OnMouseWheel);
+            camera.MouseWheel += OnMouseWheel;
             graphEditor.KeyDown += OnKeyDown;
         }
 

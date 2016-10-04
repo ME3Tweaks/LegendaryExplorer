@@ -76,12 +76,11 @@ namespace UDKExplorer.UDK
         private void WriteFile(FileStream file)
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
             m.Write(Header, 0, Header.Length);
             NameOffset = (int)m.Length;
             foreach(NameEntry e in Names)
             {
-                m.Write(BitConverter.GetBytes((int)(e.name.Length + 1)), 0, 4);
+                m.Write(BitConverter.GetBytes(e.name.Length + 1), 0, 4);
                 for (int i = 0; i < e.name.Length; i++)
                     m.WriteByte((byte)e.name[i]);
                 m.WriteByte(0);
@@ -151,7 +150,6 @@ namespace UDKExplorer.UDK
 
         private void ReadFile(FileStream file)
         {
-            BitConverter.IsLittleEndian = true;
             file.Seek(0, SeekOrigin.Begin);
             ReadHeader(file);
             ReadNames(file);

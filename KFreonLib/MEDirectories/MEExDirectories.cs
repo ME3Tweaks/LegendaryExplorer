@@ -156,15 +156,15 @@ namespace KFreonLib.MEDirectories
             switch (whichgame)
             {
                 case 1:
-                    tempgamepath = ME1Directory.GamePath();
+                    tempgamepath = ME1Directory.gamePath;
                     PropertiesPathString = Properties.Settings.Default.ME1Directory;
                     break;
                 case 2:
-                    tempgamepath = ME2Directory.GamePath();
+                    tempgamepath = ME2Directory.gamePath;
                     PropertiesPathString = Properties.Settings.Default.ME2Directory;
                     break;
                 case 3:
-                    tempgamepath = ME3Directory.GamePath();
+                    tempgamepath = ME3Directory.gamePath;
                     PropertiesPathString = Properties.Settings.Default.ME3Directory;
                     break;
             }
@@ -196,19 +196,19 @@ namespace KFreonLib.MEDirectories
                 if (!String.IsNullOrEmpty(BIOGames[0]))
                 {
                     Properties.Settings.Default.ME1Directory = BIOGames[0];
-                    ME1Directory.GamePath(BIOGames[0]);
+                    ME1Directory.gamePath = BIOGames[0];
                 }
 
                 if (!String.IsNullOrEmpty(BIOGames[1]))
                 {
                     Properties.Settings.Default.ME2Directory = BIOGames[1];
-                    ME2Directory.GamePath(BIOGames[1]);
+                    ME2Directory.gamePath = BIOGames[1];
                 }
 
                 if (!String.IsNullOrEmpty(BIOGames[2]))
                 {
                     Properties.Settings.Default.ME3Directory = BIOGames[2];
-                    ME3Directory.GamePath(BIOGames[2]);
+                    ME3Directory.gamePath = BIOGames[2];
                 }
 
                 Properties.Settings.Default.Save();

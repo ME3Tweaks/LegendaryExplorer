@@ -51,7 +51,7 @@ namespace SaltTPF
 
         private UInt32[] InitCipher(byte[] password, CRC32 crcgen)
         {
-            UInt32[] Keys = new UInt32[] { 305419896, 591751049, 878082192 };
+            UInt32[] Keys = { 305419896, 591751049, 878082192 };
             for (int i = 0; i < password.Length; i++)
             {
                 Keys = UpdateKeys(password[i], Keys, crcgen);

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZMA
 {
@@ -31,12 +32,12 @@ namespace SevenZip.Compression.LZMA
         // these are the default properties, keeping it simple for now:
 		static object[] properties =
 				{
-					(Int32)(dictionary),
-					(Int32)(2),
-					(Int32)(3),
-					(Int32)(0),
-					(Int32)(2),
-					(Int32)(16),
+                    dictionary,
+                    2,
+                    3,
+                    0,
+                    2,
+                    16,
 					"bt4",
 					eos
 				};
@@ -56,36 +57,30 @@ namespace SevenZip.Compression.LZMA
             return outStream.ToArray();
         }
 
-        public static byte[] Decompress(byte[] inputBytes, int outSize)
+        public static byte[] Decompress(byte[] inputBytes, long decompressedSize)
         {
-            MemoryStream newInStream = new MemoryStream(inputBytes);
+            var compressed = new MemoryStream(inputBytes);
+            var decoder = new Decoder();
 
-            SevenZip.Compression.LZMA.Decoder decoder = new SevenZip.Compression.LZMA.Decoder();
-
-            newInStream.Seek(0, 0);
-            MemoryStream newOutStream = new MemoryStream();
-
-            byte[] properties2 = new byte[5];
-            if (newInStream.Read(properties2, 0, 5) != 5)
+            var properties2 = new byte[5];
+            if (compressed.Read(properties2, 0, 5) != 5)
+            {
                 throw (new Exception("input .lzma is too short"));
+            }
+
             decoder.SetDecoderProperties(properties2);
 
-            long compressedSize = newInStream.Length - newInStream.Position;
-            decoder.Code(newInStream, newOutStream, compressedSize, outSize, null);
+            var compressedSize = compressed.Length - compressed.Position;
+            var decompressed = new MemoryStream();
+            decoder.Code(compressed, decompressed, compressedSize, decompressedSize, null);
 
-            byte[] b = newOutStream.ToArray();
-			
-			/*if(b.Length > outSize)
-			{
-				byte[] output = new byte[outSize];
-				Array.Copy(b,output,outSize);
-				return output;
-			}*/
+            if (decompressed.Length != decompressedSize)
+                throw new Exception("Decompression Error");
 
-            return b;
+            return decompressed.ToArray();
         }
 
-		public static void SetFastByte(Int32 val)
+        public static void SetFastByte(Int32 val)
 		{
 			if(val < 5) val = 5;
 			if(val > 273) val = 273;

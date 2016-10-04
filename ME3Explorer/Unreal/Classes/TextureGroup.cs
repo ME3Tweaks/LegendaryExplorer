@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gibbed.IO;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -21,13 +22,13 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        PCCObject pccRef;
+        ME3Package pccRef;
         uint firstVal;
         uint otherVal;
 
         public List<ByteProp> enumTextureGroups { get; private set; }
 
-        public TextureGroup(PCCObject pccObj, byte[] data)
+        public TextureGroup(ME3Package pccObj, byte[] data)
         {
             enumTextureGroups = new List<ByteProp>();
             pccRef = pccObj;
@@ -73,13 +74,13 @@ namespace ME3Explorer.Unreal.Classes
         {
             MemoryStream buffer = new MemoryStream();
             buffer.WriteValueU32(firstVal);
-            buffer.WriteValueS32(pccRef.Names.FindIndex(name => name == "None"));
+            buffer.WriteValueS32(pccRef.findName("None"));
             buffer.Seek(16, SeekOrigin.Begin);
             buffer.WriteValueU32(otherVal);
             buffer.WriteValueS32(enumTextureGroups.Count);
             foreach (ByteProp byteProp in enumTextureGroups)
             {
-                buffer.WriteValueS32(pccRef.Names.FindIndex(name => name == byteProp.name));
+                buffer.WriteValueS32(pccRef.FindNameOrAdd(byteProp.name));
                 buffer.WriteValueS32(byteProp.value);
             }
 

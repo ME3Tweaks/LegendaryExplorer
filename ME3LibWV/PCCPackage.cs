@@ -11,14 +11,10 @@ namespace ME3LibWV
     {
         public struct MetaInfo
         {
-            public bool inDLC;
             public bool loaded;
             public bool loadfull;
             public bool compressed;
             public string filepath;
-            public string inDLCPath;
-            public int inDLCIndex;
-            public DLCPackage dlc;
         }        
         public struct HeaderInfo
         {
@@ -123,27 +119,7 @@ namespace ME3LibWV
             GeneralInfo = new MetaInfo();
             GeneralInfo.loaded = false;
         }
-        public PCCPackage(DLCPackage dlc, int Index, bool loadfull = true, bool verbosemode = false)
-        {
-            try
-            {
-                verbose = verbosemode;
-                MemoryStream m = dlc.DecompressEntry(Index);                
-                GeneralInfo = new MetaInfo();
-                GeneralInfo.inDLC = true;
-                GeneralInfo.loadfull = loadfull;                
-                GeneralInfo.filepath = dlc.MyFileName;
-                GeneralInfo.inDLCPath = dlc.Files[Index].FileName;
-                GeneralInfo.dlc = dlc;
-                GeneralInfo.inDLCIndex = Index;
-                Load(m);
-                GeneralInfo.loaded = true;
-            }
-            catch (Exception ex)
-            {
-                DebugLog.PrintLn("PCCPACKAGE::PCCPACKAGE ERROR:\n" + ex.Message);
-            }
-        }
+
         public PCCPackage(string pccpath, bool loadfull = true, bool verbosemode = false, bool closestream = false)
         {
             try
@@ -152,7 +128,6 @@ namespace ME3LibWV
                 FileStream fs = new FileStream(pccpath, FileMode.Open, FileAccess.ReadWrite);
                 GeneralInfo = new MetaInfo();
                 GeneralInfo.loadfull = loadfull;
-                GeneralInfo.inDLC = false;
                 GeneralInfo.filepath = pccpath;
                 Load(fs);
                 GeneralInfo.loaded = true;
@@ -175,7 +150,7 @@ namespace ME3LibWV
                 s = Names[index];
             return s;
         }
-        public string GetObject(int uindex)
+        public string getObjectName(int uindex)
         {
             if (uindex == 0)
                 return "Class";
@@ -199,7 +174,7 @@ namespace ME3LibWV
                 uindex = Imports[-uindex - 1].idxLink;
             while (uindex != 0)
             {
-                s = GetObject(uindex) + "." + s;
+                s = getObjectName(uindex) + "." + s;
                 if (uindex > 0)
                     uindex = Exports[uindex - 1].idxLink;
                 else
@@ -259,11 +234,11 @@ namespace ME3LibWV
                 return "Class";
             if (uindex > 0)
             {
-                return GetObject(Exports[uindex - 1].idxClass);
+                return getObjectName(Exports[uindex - 1].idxClass);
             }
             else
             {
-                return GetObject(Imports[-uindex - 1].idxClass);
+                return getObjectName(Imports[-uindex - 1].idxClass);
             }
         }
         public int[] GetLinkList(int uindex)
@@ -288,7 +263,7 @@ namespace ME3LibWV
                     res = e.Index;
             return res;
         }
-        public void Save()
+        public void Save(string filePath = null)
         {
             try
             {
@@ -409,14 +384,15 @@ namespace ME3LibWV
                 m.Write(BitConverter.GetBytes(Header.FreeZoneStart), 0, 4);
                 m.Write(BitConverter.GetBytes(Header.FreeZoneEnd), 0, 4);
                 DebugLog.PrintLn("Done generating.", true);
-                if (GeneralInfo.inDLC)
+                if (Source != null)
+                    Source.Close();
+                if (filePath == null)
                 {
+                    File.WriteAllBytes(GeneralInfo.filepath, m.ToArray()); 
                 }
                 else
                 {
-                    if (Source != null)
-                        Source.Close();                    
-                    File.WriteAllBytes(GeneralInfo.filepath, m.ToArray());
+                    File.WriteAllBytes(filePath, m.ToArray());
                 }
                 DebugLog.PrintLn("Done.", true);
             }
@@ -628,7 +604,7 @@ namespace ME3LibWV
                     byte[]buff = new byte[Header._offsetCompFlagEnd];
                     Source.Read(buff, 0, (int)Header._offsetCompFlagEnd);
                     Header.DeCompBuffer.Write(buff, 0, (int)Header._offsetCompFlagEnd);
-                    Header.DeCompBuffer.Write(BitConverter.GetBytes((int)0), 0, 4);
+                    Header.DeCompBuffer.Write(BitConverter.GetBytes(0), 0, 4);
                     Header.DeCompBuffer.Write(BitConverter.GetBytes(Header.unk7), 0, 4);
                     Header.DeCompBuffer.Write(BitConverter.GetBytes(Header.unk8), 0, 4);
                     Header.DeCompBuffer.Seek(Header._offsetFlag, 0);
@@ -867,7 +843,7 @@ namespace ME3LibWV
             {
                 text += "\0";
             }
-            s.Write(BitConverter.GetBytes((int)(-text.Length)), 0, 4);
+            s.Write(BitConverter.GetBytes(-text.Length), 0, 4);
             foreach (char c in text)
             {
                 s.WriteByte((byte)c);

@@ -157,9 +157,9 @@ namespace ME3Explorer.DialogEditor
         #endregion
 
         // Draw a border for when this control is used as an applet.
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs pe)
         {
-            base.OnPaint(e);
+            base.OnPaint(pe);
         }
     }
 }

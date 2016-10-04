@@ -43,7 +43,7 @@ namespace ME3LibWV.UnrealClasses
             foreach (int i in Objects)
                 if (i > 0)
                 {
-                    string c = pcc.GetObject(pcc.Exports[i - 1].idxClass);
+                    string c = pcc.getObjectName(pcc.Exports[i - 1].idxClass);
                     switch (c)
                     {
                         case "ModelComponent":
@@ -74,7 +74,7 @@ namespace ME3LibWV.UnrealClasses
             foreach (int i in Objects)
                 if (i > 0)
                 {
-                    string c = pcc.GetObject(pcc.Exports[i - 1].idxClass);
+                    string c = pcc.getObjectName(pcc.Exports[i - 1].idxClass);
                     bool found = false;
                     foreach (_DXRenderableObject m in RenderObjects)
                         if (m.MyIndex == i - 1)
@@ -85,14 +85,14 @@ namespace ME3LibWV.UnrealClasses
                         }
                     if (!found)
                     {
-                        TreeNode t2 = new TreeNode("E#" + (i - 1).ToString("d6") + " : " + pcc.GetObject(i));
+                        TreeNode t2 = new TreeNode("E#" + (i - 1).ToString("d6") + " : " + pcc.getObjectName(i));
                         t2.Name = i.ToString();
                         t.Nodes.Add(t2);
                     }
                 }
                 else if (i < 0)
                 {
-                    TreeNode t2 = new TreeNode("I#" + (-i - 1).ToString("d6") + " : " + pcc.GetObject(i));
+                    TreeNode t2 = new TreeNode("I#" + (-i - 1).ToString("d6") + " : " + pcc.getObjectName(i));
                     t2.Name = i.ToString();
                     t.Nodes.Add(t2);
                 }

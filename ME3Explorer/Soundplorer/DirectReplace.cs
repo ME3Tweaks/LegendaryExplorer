@@ -29,7 +29,7 @@ namespace ME3Explorer
         private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 textBox1.Text = d.FileName;
 
         }
@@ -39,21 +39,8 @@ namespace ME3Explorer
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.afc|*.afc";
             d.FileName = textBox2.Text;
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
                 textBox2.Text = d.FileName;
-        }
-
-        private void RunShell(string cmd, string args)
-        {
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(cmd, args);
-            procStartInfo.WorkingDirectory = Path.GetDirectoryName(cmd);
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -65,9 +52,6 @@ namespace ME3Explorer
         {
             status.Text = "Running...";            
             Application.DoEvents();
-            //old version was with CL tool
-            //string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            //RunShell(loc + "\\exec\\afc_fileswitch.exe", "\"" + textBox1.Text + "\" \"" + textBox2.Text + "\" " + textBox3.Text);
             if (!File.Exists(textBox1.Text) || !File.Exists(textBox2.Text))
             {
                 status.Text = "Err: File not found.";

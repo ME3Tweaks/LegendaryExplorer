@@ -12,7 +12,7 @@ namespace ME3Explorer.SubtitleScanner
         {
             if (s == null)
                 s = "";
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 

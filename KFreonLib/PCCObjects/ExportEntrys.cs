@@ -720,7 +720,7 @@ namespace KFreonLib.PCCObjects
         {
             if (_data == null)
             {
-                pccRef.listsStream.Seek((long)DataOffset, SeekOrigin.Begin);
+                pccRef.listsStream.Seek(DataOffset, SeekOrigin.Begin);
                 return pccRef.listsStream.ReadBytes(DataSize);
             }
             else
@@ -729,7 +729,7 @@ namespace KFreonLib.PCCObjects
 
         public void SetData(byte[] newData)
         {
-            pccRef.listsStream.Seek(pccRef.expDataEndOffset, SeekOrigin.Begin);
+            pccRef.listsStream.Seek(0, SeekOrigin.End);
             DataOffset = (uint)pccRef.listsStream.Position;
             DataSize = newData.Length;
             pccRef.listsStream.WriteBytes(newData);

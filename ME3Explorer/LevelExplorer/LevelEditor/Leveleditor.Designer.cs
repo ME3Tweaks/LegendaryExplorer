@@ -42,7 +42,7 @@
             this.modmakingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createModJobsFromCurrentChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportSceneTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportsceneTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -126,21 +126,21 @@
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPccToolStripMenuItem.Text = "Open PCC";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // saveAllToolStripMenuItem
             // 
             this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
-            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAllToolStripMenuItem.Text = "Save All";
             this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.saveAllToolStripMenuItem_Click);
             // 
             // unloadAllToolStripMenuItem
             // 
             this.unloadAllToolStripMenuItem.Name = "unloadAllToolStripMenuItem";
-            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.unloadAllToolStripMenuItem.Text = "Unload All";
             this.unloadAllToolStripMenuItem.Click += new System.EventHandler(this.unloadAllToolStripMenuItem_Click);
             // 
@@ -177,7 +177,7 @@
             this.transformToolStripMenuItem.CheckOnClick = true;
             this.transformToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
-            this.transformToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.transformToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.transformToolStripMenuItem.Text = "Transform";
             this.transformToolStripMenuItem.Click += new System.EventHandler(this.transformToolStripMenuItem_Click);
             // 
@@ -199,17 +199,17 @@
             // transferToolStripMenuItem
             // 
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportSceneTo3DSToolStripMenuItem});
+            this.ExportsceneTo3DSToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
             this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
-            // exportSceneTo3DSToolStripMenuItem
+            // ExportsceneTo3DSToolStripMenuItem
             // 
-            this.exportSceneTo3DSToolStripMenuItem.Name = "exportSceneTo3DSToolStripMenuItem";
-            this.exportSceneTo3DSToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.exportSceneTo3DSToolStripMenuItem.Text = "Export Scene to 3DS";
-            this.exportSceneTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportSceneTo3DSToolStripMenuItem_Click);
+            this.ExportsceneTo3DSToolStripMenuItem.Name = "ExportsceneTo3DSToolStripMenuItem";
+            this.ExportsceneTo3DSToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.ExportsceneTo3DSToolStripMenuItem.Text = "Export Scene to 3DS";
+            this.ExportsceneTo3DSToolStripMenuItem.Click += new System.EventHandler(this.ExportsceneTo3DSToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -659,7 +659,7 @@
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Leveleditor";
-            this.Text = "Leveleditor";
+            this.Text = "Level Explorer";
             this.Activated += new System.EventHandler(this.Leveleditor_Activated);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Leveleditor_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Leveleditor_KeyUp);
@@ -740,6 +740,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportSceneTo3DSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExportsceneTo3DSToolStripMenuItem;
     }
 }

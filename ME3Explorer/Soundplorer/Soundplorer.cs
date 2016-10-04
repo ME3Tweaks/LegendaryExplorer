@@ -10,13 +10,13 @@ using System.Windows.Forms;
 using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.MEDirectories;
 
 namespace ME3Explorer
 {
-    public partial class Soundplorer : Form
+    public partial class Soundplorer : WinFormsBase
     {
-        PCCObject pcc;
         public string CurrentFile;
         public List<int> ObjectIndexes;
         WwiseStream w;
@@ -25,12 +25,6 @@ namespace ME3Explorer
 
         public Soundplorer()
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
-            {
-                MessageBox.Show("This tool requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
-                this.Close();
-                return;
-            }
             InitializeComponent();
         }
 
@@ -38,11 +32,11 @@ namespace ME3Explorer
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    pcc = new PCCObject(d.FileName);
+                    LoadME3Package(d.FileName);
                     CurrentFile = d.FileName;
                     afcPath = "";
                     LoadObjects();
@@ -60,10 +54,11 @@ namespace ME3Explorer
         {
             listBox1.Items.Clear();
             ObjectIndexes = new List<int>();
-            for(int i=0;i<pcc.Exports.Count;i++)            
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            for (int i=0; i < Exports.Count; i++)            
             {
-                PCCObject.ExportEntry e = pcc.Exports[i];
-                Status.Text = "Scan object " + i + " / " + pcc.Exports.Count;
+                IExportEntry e = Exports[i];
+                Status.Text = "Scan object " + i + " / " + Exports.Count;
                 if (e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream")
                 {
                     string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
@@ -82,10 +77,10 @@ namespace ME3Explorer
             rtb1.Visible = true;
             hb1.Visible = false;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
-                w = new WwiseStream(pcc, index);                
+                w = new WwiseStream(pcc as ME3Package, index);                
                 string s = "#" + index + " WwiseStream : " + ex.ObjectName + "\n\n";
                 s += "Filename : \"" + w.FileName + "\"\n";
                 s += "Data size: " + w.DataSize + " bytes\n";                    
@@ -97,7 +92,7 @@ namespace ME3Explorer
             {
                 rtb1.Visible = false;
                 hb1.Visible = true;
-                wb = new WwiseBank(pcc, index);
+                wb = new WwiseBank(pcc as ME3Package, index);
                 hb1.ByteProvider = new DynamicByteProvider(wb.getBinary());
             }
         }
@@ -108,12 +103,20 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 Stop();
-                w = new WwiseStream(pcc, index);
-                string path = getPathToAFC();
+                w = new WwiseStream(pcc as ME3Package, index);
+                string path;
+                if (w.IsPCCStored)
+                {
+                    path = pcc.FileName;
+                }
+                else
+                {
+                    path = getPathToAFC();
+                }
                 if (path != "")
                 {
                     Status.Text = "Loading...";
@@ -125,7 +128,7 @@ namespace ME3Explorer
 
         private string getPathToAFC()
         {
-             string path = ME3Directory.cookedPath;
+            string path = ME3Directory.cookedPath;
             if (!File.Exists(path + w.FileName + ".afc"))
             {
                 if (!File.Exists(afcPath + w.FileName + ".afc"))
@@ -166,16 +169,24 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.wav|*.wav";
                 if(ex.ObjectName.Length > 4)
                     d.FileName = ex.ObjectName.Substring(0, ex.ObjectName.Length - 4);
-                if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (d.ShowDialog() == DialogResult.OK)
                 {
-                    string path = getPathToAFC();
+                    string path;
+                    if (w.IsPCCStored)
+                    {
+                        path = pcc.FileName;
+                    }
+                    else
+                    {
+                        path = getPathToAFC();
+                    }
                     if (path != "")
                     {
                         Status.Text = "Exporting...";
@@ -193,24 +204,33 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
+            if (w.IsPCCStored)
+            {
+                //TODO: enable replacing of PCC-stored sounds
+                MessageBox.Show("Cannot replace pcc-stored sounds.");
+                return;
+            }
             if (ex.ClassName == "WwiseStream")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.wav|*.wav";
-                if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (d.ShowDialog() == DialogResult.OK)
                 {
-                    string path = getPathToAFC();
+                    string path;
+                    if (w.IsPCCStored)
+                    {
+                        path = pcc.FileName;
+                    }
+                    else
+                    {
+                        path = getPathToAFC();
+                    }
                     if (path != "")
                     {
                         Status.Text = "Importing...";
                         w.ImportFromFile(d.FileName, path);
-                        byte[] buff = new byte[w.memsize];
-                        for (int i = 0; i < w.memsize; i++)
-                            buff[i] = w.memory[i];
-                        ex.Data = buff;
-                        Status.Text = "Saving...";
-                        pcc.altSaveToFile(CurrentFile, true);
+                        ex.Data = w.memory.TypedClone();
                         Status.Text = "Ready";
                         MessageBox.Show("Done");
                     }
@@ -221,12 +241,16 @@ namespace ME3Explorer
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (pcc != null)
-                if (CurrentFile != "")
-                    pcc.altSaveToFile(CurrentFile, true);
+                pcc.save();
         }
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (w.IsPCCStored)
+            {
+                MessageBox.Show("Cannot do an afc replace on a pcc-stored sound.");
+                return;
+            }
             DirectReplace dr = new DirectReplace();
             dr.MdiParent = this.MdiParent;
             dr.Show();
@@ -235,11 +259,35 @@ namespace ME3Explorer
             if (n == -1)
                 return;
             int index = ObjectIndexes[n];
-            PCCObject.ExportEntry ex = pcc.Exports[index];
+            IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
             {
                 dr.textBox3.Text = w.DataOffset.ToString();
                 dr.textBox2.Text = w.FileName + ".afc";
+            }
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            
+            if (updatedExports.Intersect(ObjectIndexes).Count() > 0)
+            {
+                LoadObjects();
+            }
+            else
+            {
+                foreach (var i in updatedExports)
+                {
+                    if (pcc.getExport(i).ClassName == "WwiseStream")
+                    {
+                        LoadObjects();
+                        break;
+                    }
+                }
             }
         }
     }

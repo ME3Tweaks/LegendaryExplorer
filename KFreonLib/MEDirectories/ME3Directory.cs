@@ -26,23 +26,20 @@ namespace KFreonLib.MEDirectories
                     _gamePath += '\\';
                 return _gamePath;
             }
-            private set { _gamePath = value; }
-        }
-        public static string GamePath(string path = null)
-        {
-            if (path != null)
+            set
             {
-                if (path.Contains("BIOGame"))
-                    path = path.Substring(0, path.LastIndexOf("BIOGame"));
-                _gamePath = path;
+                if (value != null)
+                {
+                    if (value.Contains("BIOGame"))
+                        value = value.Substring(0, value.LastIndexOf("BIOGame"));
+                }
+                _gamePath = value;
             }
-
-            return _gamePath;
         }
         public static string BIOGamePath { get { return (gamePath != null) ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BIOGame\") : null; } }
         public static string tocFile { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\PCConsoleTOC.bin") : null; } }
-        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : null; } }
-        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath , @"BIOGame\DLC\") : null; } }
+        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : "Not Found"; } }
+        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath , @"BIOGame\DLC\") : "Not Found"; } }
 
         // "C:\...\MyDocuments\BioWare\Mass Effect 3\" folder
         public static string BioWareDocPath { get { return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\BioWare\Mass Effect 3\"; } }
@@ -59,24 +56,31 @@ namespace KFreonLib.MEDirectories
 
         static ME3Directory()
         {
-            string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-            string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-            string subkey = @"BioWare\Mass Effect 3";
-            string keyName;
-
-            keyName = hkey32 + subkey;
-            string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null);
-            if (test != null)
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME3Directory))
             {
-                gamePath = test;
-                return;
+                gamePath = Properties.Settings.Default.ME3Directory;
             }
+            else
+            {
+                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
+                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                string subkey = @"BioWare\Mass Effect 3";
+                string keyName;
 
-            /*if (gamePath != null)
-                return;*/
+                keyName = hkey32 + subkey;
+                string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null);
+                if (test != null)
+                {
+                    gamePath = test;
+                    return;
+                }
 
-            keyName = hkey64 + subkey;
-            gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null);
+                /*if (gamePath != null)
+                    return;*/
+
+                keyName = hkey64 + subkey;
+                gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null); 
+            }
         }
 
         static List<string> _files = null;

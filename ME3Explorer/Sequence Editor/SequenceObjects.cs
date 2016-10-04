@@ -1,18 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Collections;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -26,9 +20,16 @@ namespace ME3Explorer.SequenceObjects
 
     public abstract class SObj : PNode
     {
-        public PCCObject pcc;
+        public IMEPackage pcc;
         public GraphEditor g;
-        protected static Color commentColor = Color.FromArgb(74, 63, 190);
+        public static ME1Explorer.TalkFiles talkfiles { get; set; }
+        static Color commentColor = Color.FromArgb(74, 63, 190);
+        static Color intColor = Color.FromArgb(34, 218, 218);//cyan
+        static Color floatColor = Color.FromArgb(23, 23, 213);//blue
+        static Color boolColor = Color.FromArgb(215, 37, 33); //red
+        static Color objectColor = Color.FromArgb(219, 39, 217);//purple
+        static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool draggingOutlink = false;
@@ -37,22 +38,21 @@ namespace ME3Explorer.SequenceObjects
         public static bool OutputNumbers;
 
         public int Index { get { return index;} }
-        public delegate void refreshDelegate();
-        public refreshDelegate refreshView;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
 
         protected int index;
+        protected IExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
 
-        public SObj(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
-            : base()
+        protected SObj(int idx, IMEPackage p, GraphEditor grapheditor)
         {
             pcc = p;
             g = grapheditor;
             index = idx;
-            comment = new SText(GetComment(index), commentColor, false);
+            export = pcc.getExport(index);
+            comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
@@ -60,12 +60,12 @@ namespace ME3Explorer.SequenceObjects
             this.Pickable = true;
         }
 
-        public SObj(int idx, float x, float y, PCCObject p)
-            : base()
+        protected SObj(int idx, IMEPackage p)
         {
             pcc = p;
             index = idx;
-            comment = new SText(GetComment(index), commentColor, false);
+            export = pcc.getExport(index);
+            comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
@@ -78,35 +78,16 @@ namespace ME3Explorer.SequenceObjects
         public virtual void Select() { }
         public virtual void Deselect() { }
 
-        protected string GetComment(int index)
+        protected string GetComment()
         {
             string res = "";
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "m_aObjComment")
-                {
-                    f = i;
-                    break;
-                }
-            if (f != -1)
+            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
+            if (comments != null)
             {
-                byte[] buff2 = p[f].raw;
-                BitConverter.IsLittleEndian = true;
-                int count = BitConverter.ToInt32(buff2, 24);
-                int pos = 28;
-                for (int i = 0; i < count; i++)
+                foreach (var s in comments)
                 {
-                    int len = BitConverter.ToInt32(buff2, pos);
-                    pos += 4;
-                    while (pos < buff2.Length && buff2[pos] != 0)
-                    {
-                        res += (char)buff2[pos];
-                        pos += 2;
-                    }
-                    res += "\n";
-                    pos += 2;
-                }
+                    res += s + "\n";
+                } 
             }
             return res;
         }
@@ -116,15 +97,15 @@ namespace ME3Explorer.SequenceObjects
             switch (t)
             {
                 case VarTypes.Int:
-                    return Color.FromArgb(34, 218, 218);//cyan
+                    return intColor;
                 case VarTypes.Float:
-                    return Color.FromArgb(23, 23, 213);//blue
+                    return floatColor;
                 case VarTypes.Bool:
-                    return Color.FromArgb(215, 37, 33); //red
+                    return boolColor;
                 case VarTypes.Object:
-                    return Color.FromArgb(219, 39, 217);//purple
+                    return objectColor;
                 case VarTypes.MatineeData:
-                    return Color.FromArgb(222, 123, 26);//orange
+                    return interpDataColor;
                 default:
                     return Color.Black;
             }
@@ -149,8 +130,6 @@ namespace ME3Explorer.SequenceObjects
             else
                 return VarTypes.Extern;
         }
-
-        
     }
     
     public class SVar : SObj
@@ -160,10 +139,10 @@ namespace ME3Explorer.SequenceObjects
         protected PPath shape;
         public string Value { get { return val.Text; } set { val.Text = value; } }
 
-        public SVar(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public SVar(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
         {
-            string s = pcc.Exports[index].ObjectName;
+            string s = export.ObjectName;
             s = s.Replace("BioSeqVar_", "");
             s = s.Replace("SFXSeqVar_", "");
             s = s.Replace("SeqVar_", "");
@@ -183,12 +162,12 @@ namespace ME3Explorer.SequenceObjects
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "VarName" || pcc.getNameEntry(prop.Name) == "varName")
+                if (prop.Name == "VarName" || prop.Name == "varName")
                 {
-                    SText VarName = new SText(pcc.getNameEntry(prop.Value.IntValue), Color.Red, false);
+                    SText VarName = new SText((prop as NameProperty).Value, Color.Red, false);
                     VarName.Pickable = false;
                     VarName.TextAlignment = StringAlignment.Center;
                     VarName.X = w / 2 - VarName.Width / 2;
@@ -198,153 +177,136 @@ namespace ME3Explorer.SequenceObjects
                 }
             }
             this.TranslateBy(x, y);
-            this.MouseEnter += new PInputEventHandler(OnMouseEnter);
-            this.MouseLeave += new PInputEventHandler(OnMouseLeave);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
         }
 
         public string GetValue()
         {
             try
             {
-                List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-                PropertyReader.Property property;
+                var props = export.GetProperties();
                 switch (type)
                 {
                     case VarTypes.Int:
-                        if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerInt")
+                        if (export.ObjectName == "BioSeqVar_StoryManagerInt")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += property.Value.StringValue + "\n";
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue + "\n";
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Int\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Int\n#" + m_nIndex.Value;
+                            }
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("IntValue"));
-                        if (property != null)
-                            return property.Value.IntValue.ToString();
-                        else
-                            return "0";
+                        var intValue = props.GetProp<IntProperty>("IntValue");
+                        if (intValue != null)
+                        {
+                            return intValue.Value.ToString();
+                        }
+                        return "0";
                     case VarTypes.Float:
-                        if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerFloat")
+                        if (export.ObjectName == "BioSeqVar_StoryManagerFloat")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += "\n" + property.Value.StringValue;
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue;
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Float\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Float\n#" + m_nIndex.Value;
+                            }
                         }
-                        foreach (PropertyReader.Property prop in p)
+                        var floatValue = props.GetProp<FloatProperty>("FloatValue");
+                        if (floatValue != null)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FloatValue")
-                            {
-                                return BitConverter.ToSingle(prop.raw, 24).ToString();
-                            }
+                            return floatValue.Value.ToString();
                         }
                         return "0.00";
                     case VarTypes.Bool:
-                        if (pcc.Exports[index].ObjectName == "BioSeqVar_StoryManagerBool")
+                        if (export.ObjectName == "BioSeqVar_StoryManagerBool")
                         {
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_sRefName"));
-                            if (property != null)
+                            var m_sRefName = props.GetProp<StrProperty>("m_sRefName");
+                            if (m_sRefName != null)
                             {
-                                if (comment.Text.Length > 0)
-                                {
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                    comment.Text += "\n" + property.Value.StringValue;
-                                }
-                                else
-                                {
-                                    comment.Text += property.Value.StringValue;
-                                    comment.TranslateBy(0, -1 * comment.Height);
-                                }
+                                appendToComment(m_sRefName);
                             }
-                            property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("m_nIndex"));
-                            if (property != null)
-                                return "Plot Bool\n#" + property.Value.IntValue;
+                            var m_nIndex = props.GetProp<IntProperty>("m_nIndex");
+                            if (m_nIndex != null)
+                            {
+                                return "Plot Bool\n#" + m_nIndex.Value;
+                            }
                         }
-                        property = p.FirstOrDefault(i => pcc.getNameEntry(i.Name).Equals("bValue"));
-                        if (property != null)
-                            return property.Value.IntValue > 0 ? "True" : "False";
-                        else
-                            return "False";
-                    case VarTypes.Object:
-                        if (pcc.Exports[index].ObjectName == "SeqVar_Player")
-                            return "Player";
-                        foreach (PropertyReader.Property prop in p)
+                        var bValue = props.GetProp<IntProperty>("bValue");
+                        if (bValue != null)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_sObjectTagToFind")
+                            return (bValue.Value == 1).ToString();
+                        }
+                        return "False";
+                    case VarTypes.Object:
+                        if (export.ObjectName == "SeqVar_Player")
+                            return "Player";
+                        foreach (var prop in props)
+                        {
+                            if (prop.Name == "m_sObjectTagToFind")
                             {
-                                return pcc.getNameEntry(prop.Value.IntValue);
+                                return (prop as StrProperty).Value;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "ObjValue")
+                            else if (prop.Name == "ObjValue")
                             {
-                                if (prop.Value.IntValue > 0)
-                                {
-                                    return pcc.Exports[prop.Value.IntValue - 1].ObjectName;
-                                }
-                                else
-                                {
-                                    return pcc.Imports[-1 * prop.Value.IntValue - 1].ObjectName;
-                                }
+                                return pcc.getEntry((prop as ObjectProperty).Value)?.ObjectName ?? "???";
                             }
                         }
                         return "???";
                     case VarTypes.StrRef:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (var prop in props)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "m_srValue" || pcc.getNameEntry(prop.Name) == "m_srStringID")
+                            if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                             {
-                                return TalkFiles.findDataById(prop.Value.IntValue);
+                                StringRefProperty strRefProp = prop as StringRefProperty;
+                                if (strRefProp != null)
+                                {
+                                    switch (pcc.Game)
+                                    {
+                                        case MEGame.ME1:
+                                            return talkfiles.findDataById(strRefProp.Value);
+                                        case MEGame.ME2:
+                                            return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
+                                        case MEGame.ME3:
+                                            return ME3TalkFiles.findDataById(strRefProp.Value);
+                                        default:
+                                            break;
+                                    }
+                                }
                             }
                         }
                         return "???";
                     case VarTypes.String:
-                        foreach (PropertyReader.Property prop in p)
+                        var strValue = props.GetProp<StrProperty>("StrValue");
+                        if (strValue != null)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "StrValue")
-                            {
-                                return prop.Value.StringValue;
-                            }
+                            return strValue.Value;
                         }
                         return "???";
                     case VarTypes.Extern:
-                        foreach (PropertyReader.Property prop in p)
+                        foreach (var prop in props)
                         {
-                            if (pcc.getNameEntry(prop.Name) == "FindVarName")//Named Variable
+                            if (prop.Name == "FindVarName")//Named Variable
                             {
-                                return "< " + pcc.getNameEntry(prop.Value.IntValue) + " >";
+                                return "< " + (prop as NameProperty) + " >";
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "NameValue")//SeqVar_Name
+                            else if (prop.Name == "NameValue")//SeqVar_Name
                             {
-                                return pcc.getNameEntry(prop.Value.IntValue);
+                                return (prop as NameProperty)?.Value;
                             }
-                            else if (pcc.getNameEntry(prop.Name) == "VariableLabel")//External
+                            else if (prop.Name == "VariableLabel")//External
                             {
-                                return "Extern:\n" + prop.Value.StringValue;
+                                return "Extern:\n" + (prop as StrProperty);
                             }
                         }
                         return "???";
@@ -357,6 +319,20 @@ namespace ME3Explorer.SequenceObjects
             catch (Exception)
             {
                 return "???";
+            }
+        }
+
+        void appendToComment(string s)
+        {
+            if (comment.Text.Length > 0)
+            {
+                comment.TranslateBy(0, -1 * comment.Height);
+                comment.Text += s + "\n";
+            }
+            else
+            {
+                comment.Text += s + "\n";
+                comment.TranslateBy(0, -1 * comment.Height);
             }
         }
 
@@ -395,6 +371,60 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
+    public class SFrame : SObj
+    {
+        protected PPath shape;
+        protected PPath titleBox;
+        public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+            float w = 0;
+            float h = 0;
+            var props = export.GetProperties();
+            foreach (var prop in props)
+            {
+                if (prop.Name == "SizeX")
+                {
+                    w = (prop as IntProperty);
+                }
+                if (prop.Name == "SizeY")
+                {
+                    h = (prop as IntProperty);
+                }
+            }
+            MakeTitleBox(s);
+            shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
+            outlinePen = new Pen(Color.Black);
+            shape.Pen = outlinePen;
+            shape.Brush = new SolidBrush(Color.Transparent);
+            shape.Pickable = false;
+            this.AddChild(shape);
+            titleBox.TranslateBy(0, -titleBox.Height);
+            this.AddChild(titleBox);
+            comment.Y -= titleBox.Height;
+            this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
+            this.TranslateBy(x, y);
+        }
+
+        protected void MakeTitleBox(string s)
+        {
+            s = "#" + index + " : " + s;
+            SText title = new SText(s, Color.FromArgb(255, 255, 128));
+            title.TextAlignment = StringAlignment.Center;
+            title.ConstrainWidthToTextWidth = false;
+            title.Width += 20;
+            title.X = 0;
+            title.Y = 3;
+            title.Pickable = false;
+            titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
+            titleBox.Pen = outlinePen;
+            titleBox.Brush = new SolidBrush(Color.FromArgb(112, 112, 112));
+            titleBox.AddChild(title);
+            titleBox.Pickable = false;
+        }
+    }
+
     public abstract class SBox : SObj
     {
         protected static Color titleBrush = Color.FromArgb(255, 255, 128);
@@ -407,7 +437,6 @@ namespace ME3Explorer.SequenceObjects
             public List<int> Links;
             public List<int> InputIndices;
             public string Desc;
-            public List<int> offsets;
         }
 
         public struct VarLink
@@ -434,23 +463,26 @@ namespace ME3Explorer.SequenceObjects
         public List<OutputLink> Outlinks;
         public List<VarLink> Varlinks;
 
-        public SBox(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
         {
             
         }
 
-        public SBox(int idx, float x, float y, PCCObject p)
-            : base(idx, x, y, p)
+        protected SBox(int idx, IMEPackage p)
+            : base(idx, p)
         {
             
         }
+
         public override void CreateConnections(ref List<SObj> objects) 
         {
             for (int i = 0; i < Outlinks.Count; i++)
             {
                 for (int j = 0; j < objects.Count; j++)
-                    for (int k = 0; k < Outlinks[i].Links.Count; k++ )
+                {
+                    for (int k = 0; k < Outlinks[i].Links.Count; k++)
+                    {
                         if (objects[j].Index == Outlinks[i].Links[k])
                         {
                             PPath p1 = Outlinks[i].node;
@@ -468,11 +500,15 @@ namespace ME3Explorer.SequenceObjects
                             ((ArrayList)edge.Tag).Add(Outlinks[i].InputIndices[k]);
                             g.addEdge(edge);
                         }
+                    }
+                }
             }
             for (int i = 0; i < Varlinks.Count; i++)
             {
                 for (int j = 0; j < objects.Count(); j++)
-                    for (int k = 0; k < Varlinks[i].Links.Count; k++ )
+                {
+                    for (int k = 0; k < Varlinks[i].Links.Count; k++)
+                    {
                         if (objects[j].Index == Varlinks[i].Links[k])
                         {
                             PPath p1 = Varlinks[i].node;
@@ -485,19 +521,21 @@ namespace ME3Explorer.SequenceObjects
                             ((ArrayList)p1.Tag).Add(edge);
                             ((ArrayList)p2.Tag).Add(edge);
                             edge.Tag = new ArrayList();
-                            if(p2.ChildrenCount > 1)
+                            if (p2.ChildrenCount > 1)
                                 edge.Pen = ((PPath)p2[1]).Pen;
                             ((ArrayList)edge.Tag).Add(p1);
                             ((ArrayList)edge.Tag).Add(p2);
                             ((ArrayList)edge.Tag).Add(-1);//is a var link
                             g.addEdge(edge);
-                         }
+                        }
+                    }
+                }
             }
         }
 
         protected float GetTitleBox(string s, float w)
         {
-            s = "#" + index.ToString() + " : " + s;
+            s = "#" + index + " : " + s;
             SText title = new SText(s,titleBrush);
             title.TextAlignment = StringAlignment.Center;
             title.ConstrainWidthToTextWidth = false;
@@ -520,69 +558,51 @@ namespace ME3Explorer.SequenceObjects
         protected void GetVarLinks()
         {
             Varlinks = new List<VarLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
-                {
-                    f = i;
-                    break;
-                }
-            if (f != -1)
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                foreach (var prop in varLinksProp)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    PropertyCollection props = prop.Properties;
+                    var linkedVars = props.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                    if (linkedVars != null)
                     {
-                        pos += p2[i].raw.Length;
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables")
+                        VarLink l = new VarLink();
+                        l.Links = new List<int>();
+                        l.Desc = props.GetProp<StrProperty>("LinkDesc");
+                        if (linkedVars.Count != 0)
                         {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            VarLink l = new VarLink();
-                            l.Links = new List<int>();
-                            l.offsets = new List<int>();
-                            l.Desc = p2[i + 1].Value.StringValue;
-                            l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
-                            if (count2 != 0)
+                            foreach (var objProp in linkedVars)
                             {
-                                for (int k = 0; k < count2; k += 1)
-                                {
-                                    l.Links.Add(BitConverter.ToInt32(p2[i].raw, 28 + k*4) - 1);
-                                    l.offsets.Add(pos + 28 + k*4 - p2[i].raw.Length);
-                                }
+                                l.Links.Add(objProp.Value - 1);
                             }
-                            else
-                            {
-                                l.Links.Add(-1);
-                                l.offsets.Add(-1);
-                            }
-                            l.type = getType(pcc.getClassName(p2[i + 2].Value.IntValue));
-                            l.writeable = p2[i + 7].Value.IntValue == 1;
-                            if (l.writeable)
-                            {//downward pointing triangle
-                                l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
-                                l.node.AddChild(PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
-                            }
-                            else
-                            {
-                                l.node = PPath.CreateRectangle(-4, 0, 8, 10);
-                                l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
-                            }
-                            l.node.Brush = new SolidBrush(getColor(l.type));
-                            l.node.Pen = new Pen(getColor(l.type));
-                            l.node.Pickable = false;
-                            l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-                            ((PPath)l.node[0]).Pen = l.node.Pen;
-                            l.node[0].X = l.node.X;
-                            l.node[0].Y = l.node.Y;
-                            l.node[0].AddInputEventListener(new VarDragHandler());
-                            Varlinks.Add(l);
                         }
+                        else
+                        {
+                            l.Links.Add(-1);
+                        }
+                        l.type = getType(pcc.getClassName(props.GetProp<ObjectProperty>("ExpectedType").Value));
+                        l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
+                        if (l.writeable)
+                        {   
+                            //downward pointing triangle
+                            l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
+                            l.node.AddChild(PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
+                        }
+                        else
+                        {
+                            l.node = PPath.CreateRectangle(-4, 0, 8, 10);
+                            l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
+                        }
+                        l.node.Brush = new SolidBrush(getColor(l.type));
+                        l.node.Pen = new Pen(getColor(l.type));
+                        l.node.Pickable = false;
+                        l.node[0].Brush = mostlyTransparentBrush;
+                        ((PPath)l.node[0]).Pen = l.node.Pen;
+                        l.node[0].X = l.node.X;
+                        l.node[0].Y = l.node.Y;
+                        l.node[0].AddInputEventListener(new VarDragHandler());
+                        Varlinks.Add(l);
                     }
                 }
             }
@@ -591,83 +611,46 @@ namespace ME3Explorer.SequenceObjects
         protected void GetOutputLinks()
         {
             Outlinks = new List<OutputLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
-                {
-                    f = i;
-                    break;
-                }
-            if (f != -1)
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                foreach (var prop in outLinksProp)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
+                    PropertyCollection props = prop.Properties;
+                    var linksProp = props.GetProp<ArrayProperty<StructProperty>>("Links");
+                    if (linksProp != null)
                     {
-                        pos += p2[i].raw.Length;
-                        string nm = pcc.getNameEntry(p2[i].Name);
-                        if (nm == "Links")
+                        OutputLink l = new OutputLink();
+                        l.Links = new List<int>();
+                        l.InputIndices = new List<int>();
+                        l.Desc = props.GetProp<StrProperty>("LinkDesc");
+                        if (linksProp.Count != 0)
                         {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            if (count2 != 0)
+                            for (int i = 0; i < linksProp.Count; i += 1)
                             {
-                                OutputLink l = new OutputLink();
-                                l.Links = new List<int>();
-                                l.InputIndices = new List<int>();
-                                l.offsets = new List<int>();
-                                l.Desc = p2[i + 1].Value.StringValue;
-                                if(l.Desc.Length > 0)
-                                    l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
-                                for (int k = 0; k < count2; k += 1)
-                                {
-                                    List<PropertyReader.Property> p3 = PropertyReader.ReadProp(pcc, p2[i].raw, 28 + k * 64);
-                                    l.Links.Add(p3[0].Value.IntValue - 1);
-                                    l.InputIndices.Add(p3[1].Value.IntValue);
-                                    l.offsets.Add(pos + p3[0].offsetval - p2[i].raw.Length);
-                                    if(OutputNumbers)
-                                        l.Desc = l.Desc + (k > 0 ? "," : ": ") + "#" + (p3[0].Value.IntValue - 1);
-                                }
-                                l.node = PPath.CreateRectangle(0, -4, 10, 8);
-                                l.node.Brush = outputBrush;
-                                l.node.Pickable = false;
-                                l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
-                                l.node[0].Brush = new SolidBrush(Color.FromArgb(1,255,255,255));
-                                l.node[0].X = l.node.X;
-                                l.node[0].Y = l.node.Y;
-                                l.node[0].AddInputEventListener(new OutputDragHandler());
-                                Outlinks.Add(l);
-                            }
-                            else
-                            {
-                                OutputLink l = new OutputLink();
-                                l.Links = new List<int>();
-                                l.InputIndices = new List<int>();
-                                l.offsets = new List<int>();
-                                l.Desc = p2[i + 1].Value.StringValue;
-                                l.Links.Add(-1);
-                                l.InputIndices.Add(0);
-                                l.Desc = l.Desc.Substring(0, l.Desc.Length - 1);
+                                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value - 1;
+                                l.Links.Add(linkedOp);
+                                l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
                                 if (OutputNumbers)
-                                    l.Desc = l.Desc + ": #-1";
-                                l.offsets.Add(-1);
-                                l.node = PPath.CreateRectangle(0, -4, 10, 8);
-                                l.node.Brush = outputBrush;
-                                l.node.Pickable = false;
-                                l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
-                                l.node[0].Brush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-                                l.node[0].X = l.node.X;
-                                l.node[0].Y = l.node.Y;
-                                l.node[0].AddInputEventListener(new OutputDragHandler());
-                                Outlinks.Add(l);
+                                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + (linkedOp);
                             }
-
                         }
+                        else
+                        {
+                            l.Links.Add(-1);
+                            l.InputIndices.Add(0);
+                            if (OutputNumbers)
+                                l.Desc = l.Desc + ": #-1";
+                        }
+                        l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                        l.node.Brush = outputBrush;
+                        l.node.Pickable = false;
+                        l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
+                        l.node[0].Brush = mostlyTransparentBrush;
+                        l.node[0].X = l.node.X;
+                        l.node[0].Y = l.node.Y;
+                        l.node[0].AddInputEventListener(new OutputDragHandler());
+                        Outlinks.Add(l);
                     }
                 }
             }
@@ -723,6 +706,7 @@ namespace ME3Explorer.SequenceObjects
                 }
             }
         }
+
         protected class VarDragHandler : PDragEventHandler
         {
 
@@ -781,312 +765,125 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            byte[] buff = this.pcc.Exports[start.Index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            OutputLink link = new OutputLink();
-            bool firstLink = false;
+            IExportEntry startExport = pcc.getExport(start.Index);
+            string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
                 if (l.node == n1)
                 {
                     if (l.Links.Contains(end.Index))
                         return;
-                    if (l.Links[0] == -1)
-                    {
-                        firstLink = true;
-                        l.Links.RemoveAt(0);
-                        l.offsets.RemoveAt(0);
-                        l.InputIndices.RemoveAt(0);
-                    }
-                    else
-                    {
-                        l.offsets.Add(l.offsets[l.offsets.Count - 1] + 64);
-                    }
-                    l.Links.Add(end.Index);
-                    link = l;
+                    linkDesc = l.Desc;
                     break;
                 }
             }
-            if (link.Links == null)
+            if (linkDesc == null)
                 return;
+            linkDesc = OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc;
             int inputIndex = -1;
             foreach (InputLink l in end.InLinks)
             {
                 if (l.node == n2)
                 {
                     inputIndex = l.index;
-                    link.InputIndices.Add(inputIndex);
                 }
             }
             if (inputIndex == -1)
                 return;
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, this.pcc.Exports[start.Index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
+            var outLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
+                foreach (var prop in outLinksProp)
                 {
-
-                    byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 64);
-                    for (int j = 0; j < 4; j++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        ListBuff[p[i].offsetval - 8 + j] = sizebuff[j];
-                    }
-                    f = i;
-                    break;
-                }
-            }
-            if (f != -1)
-            {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
-                    {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue + (p2[i + 1].Value.StringValue.Length == 0 ? "\0" : "" ) == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
-                        {
-                            if (firstLink)
-                                link.offsets.Add(pos + 52);
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 + 1);
-                            byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) + 64);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p[f].offsetval + pos + k] = countbuff[k];
-                                ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            MemoryStream m = new MemoryStream();
-                            m.Write(BitConverter.GetBytes(pcc.findName("LinkedOp")), 0, 4); //name: LinkedOp
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes(pcc.findName("ObjectProperty")), 0, 4); //type: ObjectProperty
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes((int)4), 0, 4); //size
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes(end.Index + 1), 0, 4);//value
-                            m.Write(BitConverter.GetBytes(pcc.findName("InputLinkIdx")), 0, 4); //name: InputLinkIdx
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes(pcc.findName("IntProperty")), 0, 4); //type: IntProperty
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes((int)4), 0, 4); //size
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            m.Write(BitConverter.GetBytes(inputIndex), 0, 4);//value
-                            m.Write(BitConverter.GetBytes(pcc.findName("None")), 0, 4); //name: None
-                            m.Write(BitConverter.GetBytes((int)0), 0, 4);
-                            ListBuff.InsertRange(p[f].offsetval + pos + 4 + count2 * 64, m.ToArray());
-                            pcc.Exports[start.Index].Data = ListBuff.ToArray();
-                            j = count; //break outer loop
-                            break;
-                        }
-                        pos += p2[i].raw.Length;
+                        var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
+                        linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
+                            new ObjectProperty(end.index + 1, "LinkedOp"),
+                            new IntProperty(inputIndex, "InputLinkIdx")));
+                        startExport.WriteProperty(outLinksProp);
+                        return;
                     }
                 }
             }
-            refreshView();
         }
 
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            byte[] buff = pcc.Exports[start.Index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            VarLink link = new VarLink();
-            bool firstLink = false;
+            IExportEntry startExport = pcc.getExport(start.Index);
+            string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
                 if (l.node == p1)
                 {
                     if (l.Links.Contains(end.Index))
                         return;
-                    if (l.Links[0] == -1)
-                    {
-                        firstLink = true;
-                        l.Links.RemoveAt(0);
-                        l.offsets.RemoveAt(0);
-                    }
-                    else
-                    {
-                        l.offsets.Add(l.offsets[l.offsets.Count -1] + 4);
-                    }
-                    l.Links.Add(end.Index);
-                    link = l;
+                    linkDesc = l.Desc;
                     break;
                 }
             }
-            if(link.Links == null)
+            if(linkDesc == null)
                 return;
-            BitConverter.IsLittleEndian = true;
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[start.Index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
+            var varLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
+                foreach (var prop in varLinksProp)
                 {
-                    
-                    byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) + 4);
-                    for (int j = 0; j < 4; j++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        ListBuff[p[i].offsetval - 8 + j] = sizebuff[j];
-                    }
-                    f = i;
-                    break;
-                }
-            }
-            if (f != -1)
-            {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for(int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
-                    {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
-                        {
-                            if (firstLink)
-                                link.offsets.Add(pos + 28);
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 + 1);
-                            byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) + 4);
-                            for(int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p[f].offsetval + pos + k] = countbuff[k];
-                                ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.InsertRange(p[f].offsetval + pos + 4 + count2 * 4, BitConverter.GetBytes(end.Index + 1));
-                            pcc.Exports[start.Index].Data = ListBuff.ToArray();
-                            j = count; //break outer loop
-                            break;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Index + 1));
+                        startExport.WriteProperty(varLinksProp);
                     }
                 }
             }
-            refreshView();
         }
 
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
-
-            byte[] buff = pcc.Exports[index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            BitConverter.IsLittleEndian = true;
-            OutputLink link = Outlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
+            string linkDesc = Outlinks[linkconnection].Desc;
+            linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
             {
-                if (pcc.getNameEntry(p[i].Name) == "OutputLinks")
+                foreach (var prop in outLinksProp)
                 {
-
-                    byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 64);
-                    for (int j = 0; j < 4; j++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        ListBuff[p[i].offsetval - 8 + j] = sizebuff[j];
-                    }
-                    f = i;
-                    break;
-                }
-            }
-            if (f != -1)
-            {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
-                    {
-                        if (pcc.getNameEntry(p2[i].Name) == "Links" && p2[i + 1].Value.StringValue == (OutputNumbers ? link.Desc.Substring(0, link.Desc.LastIndexOf(":")) : link.Desc) + '\0')
-                        {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 - 1);
-                            byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) - 64);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p[f].offsetval + pos + k] = countbuff[k];
-                                ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.RemoveRange(p[f].offsetval + pos + 4 + linkIndex * 64, 64);
-                            pcc.Exports[index].Data = ListBuff.ToArray();
-                            j = count; //break outer loop
-                            break;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<StructProperty>>("Links").RemoveAt(linkIndex);
+                        export.WriteProperty(outLinksProp);
+                        return;
                     }
                 }
             }
-            refreshView();
         }
 
         public void RemoveVarlink(int linkconnection, int linkIndex)
         {
-            byte[] buff = pcc.Exports[index].Data;
-            List<byte> ListBuff = new List<byte>(buff);
-            BitConverter.IsLittleEndian = true;
-            VarLink link = Varlinks[linkconnection];
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
+            string linkDesc = Varlinks[linkconnection].Desc;
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
             {
-                if (pcc.getNameEntry(p[i].Name) == "VariableLinks")
+                foreach (var prop in varLinksProp)
                 {
-
-                    byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p[i].raw, 16) - 4);
-                    for (int j = 0; j < 4; j++)
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        ListBuff[p[i].offsetval - 8 + j] = sizebuff[j];
-                    }
-                    f = i;
-                    break;
-                }
-            }
-            if (f != -1)
-            {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
-                {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-                    for (int i = 0; i < p2.Count(); i++)
-                    {
-                        if (pcc.getNameEntry(p2[i].Name) == "LinkedVariables" && p2[i + 1].Value.StringValue == link.Desc + '\0')
-                        {
-                            int count2 = BitConverter.ToInt32(p2[i].raw, 24);
-                            byte[] countbuff = BitConverter.GetBytes(count2 - 1);
-                            byte[] sizebuff = BitConverter.GetBytes(BitConverter.ToInt32(p2[i].raw, 16) - 4);
-                            for (int k = 0; k < 4; k++)
-                            {
-                                ListBuff[p[f].offsetval + pos + k] = countbuff[k];
-                                ListBuff[p[f].offsetval + pos - 8 + k] = sizebuff[k];
-                            }
-                            ListBuff.RemoveRange(p[f].offsetval + pos + 4 + linkIndex * 4, 4);
-                            pcc.Exports[index].Data = ListBuff.ToArray();
-                            j = count; //break outer loop
-                            break;
-                        }
-                        pos += p2[i].raw.Length;
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").RemoveAt(linkIndex);
+                        export.WriteProperty(varLinksProp);
+                        return;
                     }
                 }
             }
-            refreshView();
         }
-
     }
 
     public class SEvent : SBox
     {
-        public SEvent(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public SEvent(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
-            string s = pcc.Exports[index].ObjectName;
+            string s = export.ObjectName;
             s = s.Replace("BioSeqEvt_", "");
             s = s.Replace("SFXSeqEvt_", "");
             s = s.Replace("SeqEvt_", "");
@@ -1136,13 +933,13 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name).Contains("EventName") || pcc.getNameEntry(prop.Name) == "sScriptName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "InputLabel" || pcc.getNameEntry(prop.Name) == "sEvent")
-                    s += "\n\"" + prop.Value.StringValue + "\"";
+                if (prop.Name.Name.Contains("EventName") || prop.Name == "sScriptName")
+                    s += "\n\"" + (prop as NameProperty) + "\"";
+                else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
+                    s += "\n\"" + (prop as StrProperty) + "\"";
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1186,9 +983,9 @@ namespace ME3Explorer.SequenceObjects
 
         //public override bool Intersects(RectangleF bounds)
         //{
-        //    Region hitregion = new Region(titleBox.PathReference);
-        //    hitregion.Complement(outLinkBox.PathReference);
-        //    hitregion.Complement(varLinkBox.PathReference);
+        //    Region hitregion = new Region(outLinkBox.PathReference);
+        //    //hitregion.Union(titleBox.PathReference);
+        //    //hitregion.Union(varLinkBox.PathReference);
         //    return hitregion.IsVisible(bounds);
         //}
     }
@@ -1201,8 +998,8 @@ namespace ME3Explorer.SequenceObjects
         protected float originalX;
         protected float originalY;
 
-        public SAction(int idx, float x, float y, PCCObject p, GraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public SAction(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
+            : base(idx, p, grapheditor)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1210,8 +1007,8 @@ namespace ME3Explorer.SequenceObjects
             originalY = y;
         }
 
-        public SAction(int idx, float x, float y, PCCObject p)
-            : base(idx, x, y, p)
+        public SAction(int idx, float x, float y, IMEPackage p)
+            : base(idx, p)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1232,12 +1029,26 @@ namespace ME3Explorer.SequenceObjects
 
         public override void Layout(float x, float y)
         {
-            if (originalX != -1)
-                x = originalX;
-            if (originalY != -1)
-                y = originalY;
+            if (pcc.Game == MEGame.ME1)
+            {
+                // ==
+                if (Math.Abs(x - -0.1f) < float.Epsilon)
+                    x = originalX;
+                // ==
+                if (Math.Abs(y - -0.1f) < float.Epsilon)
+                    y = originalY;
+            }
+            else
+	        {
+                // ==
+                if (Math.Abs(originalX - -1) > float.Epsilon)
+                    x = originalX;
+                // ==
+                if (Math.Abs(originalY - -1) > float.Epsilon)
+                    y = originalY; 
+            }
             outlinePen = new Pen(Color.Black);
-            string s = pcc.Exports[index].ObjectName;
+            string s = export.ObjectName;
             s = s.Replace("BioSeqAct_", "");
             s = s.Replace("SFXSeqAct_", "");
             s = s.Replace("SeqAct_", "");
@@ -1299,20 +1110,45 @@ namespace ME3Explorer.SequenceObjects
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            foreach (PropertyReader.Property prop in props)
+            var props = export.GetProperties();
+            foreach (var prop in props)
             {
-                if (pcc.getNameEntry(prop.Name) == "oSequenceReference")
-                    s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "EventName" || pcc.getNameEntry(prop.Name) == "StateName")
-                    s += "\n\"" + pcc.getNameEntry(prop.Value.IntValue) + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "OutputLabel" || pcc.getNameEntry(prop.Name) == "m_sMovieName")
-                    s += "\n\"" + prop.Value.StringValue + "\"";
-                else if (pcc.getNameEntry(prop.Name) == "m_pEffect")
-                    if(prop.Value.IntValue > 0)
-                        s += "\n\"" + pcc.Exports[prop.Value.IntValue - 1].ObjectName + "\"";
+                if (prop.Name == "oSequenceReference")
+                {
+                    ObjectProperty objectProperty = (prop as ObjectProperty);
+                    if (pcc.Game == MEGame.ME1)
+                    {
+                        if (objectProperty.Value > 0)
+                        {
+                            string seqName = pcc.getEntry(objectProperty.Value).ObjectName;
+                            if (seqName == "Sequence")
+                            {
+                                var objNameProp = pcc.getExport(objectProperty.Value - 1).GetProperty<StrProperty>("ObjName");
+                                if (objNameProp != null)
+                                {
+                                    seqName = objNameProp;
+                                }
+                            }
+                            s += "\n\"" + seqName + "\"";
+                        }
+                        else
+                        {
+                            s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\"";
+                        }
+                    }
                     else
-                        s += "\n\"" + pcc.Imports[-prop.Value.IntValue - 1].ObjectName + "\"";
+                    {
+                        s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\""; 
+                    }
+                }
+                else if (prop.Name == "EventName" || prop.Name == "StateName")
+                    s += "\n\"" + (prop as NameProperty) + "\"";
+                else if (prop.Name == "OutputLabel" || prop.Name == "m_sMovieName")
+                    s += "\n\"" + (prop as StrProperty) + "\"";
+                else if (prop.Name == "m_pEffect")
+                {
+                    s += "\n\"" + pcc.getEntry((prop as ObjectProperty).Value).ObjectName + "\"";
+                }
             }
             float tW = GetTitleBox(s, w);
             if (tW > w)
@@ -1344,35 +1180,56 @@ namespace ME3Explorer.SequenceObjects
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc, pcc.Exports[index]);
-            int f = -1;
-            for (int i = 0; i < p.Count(); i++)
-                if (pcc.getNameEntry(p[i].Name) == "InputLinks")
-                {
-                    f = i;
-                    break;
-                }
-            if (f != -1)
+            var inputLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            if (export.ClassName == "SequenceReference")
             {
-                int pos = 28;
-                byte[] global = p[f].raw;
-                BitConverter.IsLittleEndian = true;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSequenceReference != null)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
+                    inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                }
+            }
+            if (inputLinksProp != null)
+            {
+                for (int i = 0; i < inputLinksProp.Count; i++)
+                {
                     InputLink l = new InputLink();
-                    l.Desc = p2[0].Value.StringValue;
+                    l.Desc = inputLinksProp[i].GetProp<StrProperty>("LinkDesc");
                     l.hasName = true;
-                    l.index = j;
+                    l.index = i;
                     l.node = PPath.CreateRectangle(0, -4, 10, 8);
                     l.node.Brush = outputBrush;
-                    l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-                    l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                    l.node.MouseEnter += OnMouseEnter;
+                    l.node.MouseLeave += OnMouseLeave;
                     l.node.AddInputEventListener(new InputDragHandler());
                     InLinks.Add(l);
-                    for (int i = 0; i < p2.Count(); i++)
-                        pos += p2[i].raw.Length;
+                }
+            }
+            else if (pcc.Game == MEGame.ME3)
+            {
+                try
+                {
+                    List<string> inputLinks = ME3UnrealObjectInfo.getSequenceObjectInfo(export.ClassName)?.inputLinks;
+                    if (inputLinks != null)
+                    {
+                        for (int i = 0; i < inputLinks.Count; i++)
+                        {
+                            InputLink l = new InputLink();
+                            l.Desc = inputLinks[i];
+                            l.hasName = true;
+                            l.index = i;
+                            l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                            l.node.Brush = outputBrush;
+                            l.node.MouseEnter += OnMouseEnter;
+                            l.node.MouseLeave += OnMouseLeave;
+                            l.node.AddInputEventListener(new InputDragHandler());
+                            InLinks.Add(l);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    InLinks.Clear();
                 }
             }
             if(this.Tag != null)
@@ -1382,6 +1239,8 @@ namespace ME3Explorer.SequenceObjects
                 foreach(PPath edge in ((ArrayList)this.Tag))
                 {
                     inputNum = (int)((ArrayList)edge.Tag)[2];
+                    //if there are inputs with an index greater than is accounted for by
+                    //the current number of inputs, create enough inputs to fill up to that index
                     if (inputNum + 1 > numInputs)
                     {
                         for (int i = numInputs; i <= inputNum; i++)
@@ -1389,8 +1248,8 @@ namespace ME3Explorer.SequenceObjects
                             InputLink l = new InputLink();
                             l.node = PPath.CreateRectangle(0, -4, 10, 8);
                             l.node.Brush = outputBrush;
-                            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-                            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
+                            l.node.MouseEnter += OnMouseEnter;
+                            l.node.MouseLeave += OnMouseLeave;
                             l.node.AddInputEventListener(new InputDragHandler());
                             l.Desc = ":" + i;
                             l.hasName = false;
@@ -1403,47 +1262,6 @@ namespace ME3Explorer.SequenceObjects
                         ((ArrayList)edge.Tag)[1] = InLinks[inputNum].node;
                 }
             }
-        }
-
-        public void AddInputLink()
-        {
-            int count = InLinks.Count;
-            InputLink l = new InputLink();
-            l.node = PPath.CreateRectangle(0, -4, 10, 8);
-            l.node.Brush = outputBrush;
-            l.node.MouseEnter += new PInputEventHandler(OnMouseEnter);
-            l.node.MouseLeave += new PInputEventHandler(OnMouseLeave);
-            l.node.AddInputEventListener(new InputDragHandler());
-            l.Desc = ":" + count;
-            l.index = count;
-            l.hasName = false;
-            InLinks.Add(l);
-
-            SText t2 = new SText(InLinks[count].Desc);
-            t2.X = 0;
-            if (count > 0)
-            {
-                t2.Y = InLinks[count - 1].node.Y + t2.Height;
-                box.Height += t2.Height;
-                bounds.Height += t2.Height;
-                varLinkBox.TranslateBy(0, t2.Height);
-            }
-            else
-            {
-                t2.Y = 8;
-                if (Outlinks.Count == 0)
-                {
-                    box.Height += t2.Height;
-                    bounds.Height += t2.Height;
-                    varLinkBox.TranslateBy(0, t2.Height);
-                }
-            }
-            t2.Pickable = false;
-            InLinks[count].node.X = -10;
-            InLinks[count].node.Y = t2.Y + t2.Height / 2 - 5;
-            t2.AddChild(InLinks[count].node);
-            inputLinkBox.AddChild(t2);
-            InvalidatePaint();
         }
 
         public class InputDragHandler : PDragEventHandler
@@ -1488,15 +1306,16 @@ namespace ME3Explorer.SequenceObjects
 
     public class SText : PText
     {
-        private Brush black = new SolidBrush(Color.Black);
+        private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        public static PrivateFontCollection fontcollection { get; set; }
+        private static PrivateFontCollection fontcollection;
+        private static Font kismetFont;
 
         public SText(string s, bool shadows = true)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-            base.Font = new Font(fontcollection.Families[0], 6);
+            base.Font = kismetFont;
 
             shadowRendering = shadows;
         }
@@ -1505,38 +1324,37 @@ namespace ME3Explorer.SequenceObjects
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
-            base.Font = new Font (fontcollection.Families[0], 6);
+            base.Font = kismetFont;
             shadowRendering = shadows;
         }
 
-        public static void LoadFont(string file)
+        public static void LoadFont()
         {
-            if(fontcollection == null)
-                fontcollection = new PrivateFontCollection();
-            fontcollection.AddFontFile(file);
-            if (fontcollection.Families.Length < 0)
+            if(fontcollection == null || fontcollection.Families.Length < 1)
             {
-                throw new InvalidOperationException("No font familiy found when loading font");
+                fontcollection = new PrivateFontCollection();
+                fontcollection.AddFontFile(@"exec\KismetFont.ttf");
+                kismetFont = new Font(fontcollection.Families[0], 6);
             }
         }
 
         protected override void Paint(PPaintContext paintContext)
         {
-            paintContext.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixel;
-            if (shadowRendering && base.Text != null && base.TextBrush != null && base.Font != null)
+            paintContext.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
+            //paints dropshadow
+            if (shadowRendering && paintContext.Scale >= 1 && base.Text != null && base.TextBrush != null && base.Font != null)
             {
                 Graphics g = paintContext.Graphics;
                 float renderedFontSize = base.Font.SizeInPoints * paintContext.Scale;
-                if(paintContext.Scale >= 1)
-                    if (renderedFontSize >= PUtil.GreekThreshold && renderedFontSize < PUtil.MaxFontSize)
-                    {
-                        RectangleF shadowbounds = new RectangleF();
-                        shadowbounds = Bounds;
-                        shadowbounds.Offset(1, 1);
-                        StringFormat stringformat = new StringFormat();
-                        stringformat.Alignment = base.TextAlignment;
-                        g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
-                    }
+                if (renderedFontSize >= PUtil.GreekThreshold && renderedFontSize < PUtil.MaxFontSize)
+                {
+                    RectangleF shadowbounds = new RectangleF();
+                    shadowbounds = Bounds;
+                    shadowbounds.Offset(1, 1);
+                    StringFormat stringformat = new StringFormat();
+                    stringformat.Alignment = base.TextAlignment;
+                    g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
+                }
             }
             base.Paint(paintContext);
         }

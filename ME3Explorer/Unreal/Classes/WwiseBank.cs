@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -11,7 +12,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public List<PropertyReader.Property> props;
         public List<byte[]> Chunks;
         public List<byte[]> HIRCObjects;
@@ -19,9 +20,9 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] didx_data;
         public byte[] data_data;
 
-        public WwiseBank(PCCObject Pcc, int Index)
+        public WwiseBank(ME3Package Pcc, int Index)
         {
-            BitConverter.IsLittleEndian = true;
+            
             MyIndex = Index;
             pcc = Pcc;
             memory = pcc.Exports[Index].Data;
@@ -31,7 +32,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc, pcc.Exports[MyIndex]);
+            props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
             BinaryOffset = props[props.Count - 1].offend + 0x10;
             ReadChunks();
         }
@@ -225,7 +226,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public bool ExportAllWEMFiles(string path)
         {
-            BitConverter.IsLittleEndian = true;
+            
             if (data_data == null || didx_data == null || data_data.Length == 0 || didx_data.Length == 0)
                 return false;
             int len = didx_data.Length - 8;
@@ -235,7 +236,7 @@ namespace ME3Explorer.Unreal.Classes
                 int id = BitConverter.ToInt32(didx_data, 0x8 + i * 0xC);
                 int start = BitConverter.ToInt32(didx_data, 0xC + i * 0xC) + 0x8;
                 int size = BitConverter.ToInt32(didx_data, 0x10 + i * 0xC);
-                FileStream fs = new FileStream(path + i.ToString("d4") + "_" + id.ToString("X8") + ".wem",FileMode.Create,FileAccess.Write);
+                FileStream fs = new FileStream(Path.Combine(path, i.ToString("d4") + "_" + id.ToString("X8") + ".wem") ,FileMode.Create,FileAccess.Write);
                 fs.Write(data_data, start, size);
                 fs.Close();
             }
@@ -259,7 +260,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] RecreateBinary()
         {
-            BitConverter.IsLittleEndian = true;
+            
             MemoryStream res = new MemoryStream();
             res.Write(memory, 0, BinaryOffset);
             int size = 0;

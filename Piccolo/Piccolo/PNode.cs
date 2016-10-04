@@ -1634,24 +1634,24 @@ namespace UMD.HCIL.Piccolo {
 		/// </summary>
 		/// <param name="listener">The new input listener</param>
 		public virtual void AddInputEventListener(PInputEventListener listener) {
-			KeyDown += new PInputEventHandler(listener.OnKeyDown);
-			KeyPress += new PInputEventHandler(listener.OnKeyPress);
-			KeyUp += new PInputEventHandler(listener.OnKeyUp);
-			Click += new PInputEventHandler(listener.OnClick);
-			DoubleClick += new PInputEventHandler(listener.OnDoubleClick);
-			MouseDown += new PInputEventHandler(listener.OnMouseDown);
-			MouseUp += new PInputEventHandler(listener.OnMouseUp);
-			MouseMove += new PInputEventHandler(listener.OnMouseMove);
-			MouseDrag += new PInputEventHandler(listener.OnMouseDrag);
-			MouseEnter += new PInputEventHandler(listener.OnMouseEnter);
-			MouseLeave += new PInputEventHandler(listener.OnMouseLeave);
-			MouseWheel += new PInputEventHandler(listener.OnMouseWheel);
-			DragEnter += new PInputEventHandler(listener.OnDragEnter);
-			DragLeave += new PInputEventHandler(listener.OnDragLeave);
-			DragOver += new PInputEventHandler(listener.OnDragOver);
-			DragDrop += new PInputEventHandler(listener.OnDragDrop);
-			GotFocus += new PInputEventHandler(listener.OnGotFocus);
-			LostFocus += new PInputEventHandler(listener.OnLostFocus);
+			KeyDown += listener.OnKeyDown;
+			KeyPress += listener.OnKeyPress;
+			KeyUp += listener.OnKeyUp;
+			Click += listener.OnClick;
+			DoubleClick += listener.OnDoubleClick;
+			MouseDown += listener.OnMouseDown;
+			MouseUp += listener.OnMouseUp;
+			MouseMove += listener.OnMouseMove;
+			MouseDrag += listener.OnMouseDrag;
+			MouseEnter += listener.OnMouseEnter;
+			MouseLeave += listener.OnMouseLeave;
+			MouseWheel += listener.OnMouseWheel;
+			DragEnter += listener.OnDragEnter;
+			DragLeave += listener.OnDragLeave;
+			DragOver += listener.OnDragOver;
+			DragDrop += listener.OnDragDrop;
+			GotFocus += listener.OnGotFocus;
+			LostFocus += listener.OnLostFocus;
 		}
 
 		/// <summary>
@@ -1660,24 +1660,24 @@ namespace UMD.HCIL.Piccolo {
 		/// </summary>
 		/// <param name="listener">The input listener to remove.</param>
 		public virtual void RemoveInputEventListener(PInputEventListener listener) {
-			KeyDown -= new PInputEventHandler(listener.OnKeyDown);
-			KeyPress -= new PInputEventHandler(listener.OnKeyPress);
-			KeyUp -= new PInputEventHandler(listener.OnKeyUp);
-			Click -= new PInputEventHandler(listener.OnClick);
-			DoubleClick -= new PInputEventHandler(listener.OnDoubleClick);
-			MouseDown -= new PInputEventHandler(listener.OnMouseDown);
-			MouseUp -= new PInputEventHandler(listener.OnMouseUp);
-			MouseMove -= new PInputEventHandler(listener.OnMouseMove);
-			MouseDrag -= new PInputEventHandler(listener.OnMouseDrag);
-			MouseEnter -= new PInputEventHandler(listener.OnMouseEnter);
-			MouseLeave -= new PInputEventHandler(listener.OnMouseLeave);
-			MouseWheel -= new PInputEventHandler(listener.OnMouseWheel);
-			DragEnter -= new PInputEventHandler(listener.OnDragEnter);
-			DragLeave -= new PInputEventHandler(listener.OnDragLeave);
-			DragOver -= new PInputEventHandler(listener.OnDragOver);
-			DragDrop -= new PInputEventHandler(listener.OnDragDrop);
-			GotFocus -= new PInputEventHandler(listener.OnGotFocus);
-			LostFocus -= new PInputEventHandler(listener.OnLostFocus);
+			KeyDown -= listener.OnKeyDown;
+			KeyPress -= listener.OnKeyPress;
+			KeyUp -= listener.OnKeyUp;
+			Click -= listener.OnClick;
+			DoubleClick -= listener.OnDoubleClick;
+			MouseDown -= listener.OnMouseDown;
+			MouseUp -= listener.OnMouseUp;
+			MouseMove -= listener.OnMouseMove;
+			MouseDrag -= listener.OnMouseDrag;
+			MouseEnter -= listener.OnMouseEnter;
+			MouseLeave -= listener.OnMouseLeave;
+			MouseWheel -= listener.OnMouseWheel;
+			DragEnter -= listener.OnDragEnter;
+			DragLeave -= listener.OnDragLeave;
+			DragOver -= listener.OnDragOver;
+			DragDrop -= listener.OnDragDrop;
+			GotFocus -= listener.OnGotFocus;
+			LostFocus -= listener.OnLostFocus;
 		}
 
 		/// <summary>
@@ -3494,7 +3494,7 @@ namespace UMD.HCIL.Piccolo {
 			printDialog.Document = printDocument;
 
 			if (printDialog.ShowDialog() == DialogResult.OK) {
-				printDocument.PrintPage += new PrintPageEventHandler(printDocument_PrintPage);
+				printDocument.PrintPage += printDocument_PrintPage;
 				printDocument.Print();
 			}
 		}
@@ -3505,7 +3505,7 @@ namespace UMD.HCIL.Piccolo {
 		/// <param name="sender">The source of the PrintPage event.</param>
 		/// <param name="e">The PrintPageEventArgs.</param>
 		protected virtual void printDocument_PrintPage(object sender, PrintPageEventArgs e) {
-			Graphics g = (Graphics)e.Graphics;
+			Graphics g = e.Graphics;
 
 			// Approximate the printable area of the page.  This approximation assumes
 			// the unprintable margins are distributed equally between the left and right,
@@ -4325,8 +4325,8 @@ namespace UMD.HCIL.Piccolo {
 			get {
 				StringBuilder result = new StringBuilder();
 
-				result.Append("bounds=" + bounds.ToString());
-				result.Append(",fullBounds=" + fullBoundsCache.ToString());
+				result.Append("bounds=" + bounds);
+				result.Append(",fullBounds=" + fullBoundsCache);
 				result.Append(",matrix=" + (matrix == null ? "null" : matrix.ToString()));
 				result.Append(",brush=" + (brush == null ? "null" : brush.ToString()));
 				if (brush != null && brush is SolidBrush) {

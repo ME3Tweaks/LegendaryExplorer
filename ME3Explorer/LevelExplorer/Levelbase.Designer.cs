@@ -32,12 +32,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.levelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInLeveleditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
-            this.levelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openInLeveleditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -46,9 +45,6 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.databaseToolStripMenuItem,
-            this.levelToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(623, 24);
@@ -60,15 +56,30 @@
             this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.databaseToolStripMenuItem.Text = "Database";
             // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.createToolStripMenuItem.Text = "Create";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
+            // 
+            // levelToolStripMenuItem
+            // 
+            this.levelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInLeveleditorToolStripMenuItem});
+            this.levelToolStripMenuItem.Name = "levelToolStripMenuItem";
+            this.levelToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.levelToolStripMenuItem.Text = "Level";
+            // 
+            // openInLeveleditorToolStripMenuItem
+            // 
+            this.openInLeveleditorToolStripMenuItem.Name = "openInLeveleditorToolStripMenuItem";
+            this.openInLeveleditorToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.openInLeveleditorToolStripMenuItem.Text = "Open in Leveleditor";
+            this.openInLeveleditorToolStripMenuItem.Click += new System.EventHandler(this.openInLeveleditorToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -112,21 +123,6 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
-            // levelToolStripMenuItem
-            // 
-            this.levelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInLeveleditorToolStripMenuItem});
-            this.levelToolStripMenuItem.Name = "levelToolStripMenuItem";
-            this.levelToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.levelToolStripMenuItem.Text = "Level";
-            // 
-            // openInLeveleditorToolStripMenuItem
-            // 
-            this.openInLeveleditorToolStripMenuItem.Name = "openInLeveleditorToolStripMenuItem";
-            this.openInLeveleditorToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.openInLeveleditorToolStripMenuItem.Text = "Open in Leveleditor";
-            this.openInLeveleditorToolStripMenuItem.Click += new System.EventHandler(this.openInLeveleditorToolStripMenuItem_Click);
-            // 
             // Levelbase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,9 +134,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Levelbase";
             this.Text = "Level database";
-            this.Activated += new System.EventHandler(this.Levelbase_Activated);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.Load += new System.EventHandler(this.Levelbase_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

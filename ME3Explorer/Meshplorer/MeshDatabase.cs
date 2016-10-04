@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 
@@ -39,7 +40,7 @@ namespace ME3Explorer.Meshplorer
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -56,43 +57,46 @@ namespace ME3Explorer.Meshplorer
                 DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
-                    DBEntry ent = new DBEntry();
-                    ent.filename = Path.GetFileName(file);
-                    ent.Objects = new List<ObjInf>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        PCCObject.ExportEntry ex = pcc.Exports[i];
-                        ObjInf obj;
-                        switch (ex.ClassName)
+                        DBEntry ent = new DBEntry();
+                        ent.filename = Path.GetFileName(file);
+                        ent.Objects = new List<ObjInf>();
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        for (int i = 0; i < Exports.Count; i++)
                         {
-                            case "StaticMesh":
-                                obj = new ObjInf();
-                                obj.Index = i;
-                                obj.Type = 0;
-                                obj.name = ex.ObjectName;
-                                ent.Objects.Add(obj);
-                                break;
-                            case "SkeletalMesh":
-                                obj = new ObjInf();
-                                obj.Index = i;
-                                obj.Type = 1;
-                                obj.name = ex.ObjectName;
-                                ent.Objects.Add(obj);
-                                break;
+                            IExportEntry ex = Exports[i];
+                            ObjInf obj;
+                            switch (ex.ClassName)
+                            {
+                                case "StaticMesh":
+                                    obj = new ObjInf();
+                                    obj.Index = i;
+                                    obj.Type = 0;
+                                    obj.name = ex.ObjectName;
+                                    ent.Objects.Add(obj);
+                                    break;
+                                case "SkeletalMesh":
+                                    obj = new ObjInf();
+                                    obj.Index = i;
+                                    obj.Type = 1;
+                                    obj.name = ex.ObjectName;
+                                    ent.Objects.Add(obj);
+                                    break;
+                            }
                         }
-                    }
-                    if (ent.Objects.Count != 0)
-                    {
-                        DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
-                        //foreach (ObjInf o in ent.Objects)
-                        //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
-                        //DebugOutput.Update();
-                        database.Add(ent);
-                    }
-                    else
-                    {
-                        DebugOutput.PrintLn("Nothing...", false);
+                        if (ent.Objects.Count != 0)
+                        {
+                            DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
+                            //foreach (ObjInf o in ent.Objects)
+                            //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
+                            //DebugOutput.Update();
+                            database.Add(ent);
+                        }
+                        else
+                        {
+                            DebugOutput.PrintLn("Nothing...", false);
+                        } 
                     }
                 }
                 catch (Exception ex)
@@ -141,17 +145,17 @@ namespace ME3Explorer.Meshplorer
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 int magic = 0x12345678;
-                BitConverter.IsLittleEndian = true;
+                
                 fs.Write(BitConverter.GetBytes(magic), 0, 4);
-                fs.Write(BitConverter.GetBytes((int)database.Count), 0, 4);
+                fs.Write(BitConverter.GetBytes(database.Count), 0, 4);
                 foreach (DBEntry ent in database)
                 {
                     WriteString(fs, ent.filename);
-                    fs.Write(BitConverter.GetBytes((int)ent.Objects.Count), 0, 4);
+                    fs.Write(BitConverter.GetBytes(ent.Objects.Count), 0, 4);
                     foreach (ObjInf o in ent.Objects)
                     {
-                        fs.Write(BitConverter.GetBytes((int)o.Index), 0, 4);
-                        fs.Write(BitConverter.GetBytes((int)o.Type), 0, 4);
+                        fs.Write(BitConverter.GetBytes(o.Index), 0, 4);
+                        fs.Write(BitConverter.GetBytes(o.Type), 0, 4);
                         WriteString(fs, o.name);
                     }
                 }
@@ -162,7 +166,7 @@ namespace ME3Explorer.Meshplorer
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);   
         }
 
@@ -211,7 +215,7 @@ namespace ME3Explorer.Meshplorer
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                BitConverter.IsLittleEndian = true;
+                
                 int magic = ReadInt32(fs);
                 if (magic != 0x12345678)
                 {

@@ -96,7 +96,7 @@ namespace ME3Explorer.Unreal
 
         public MemoryStream Save()
         {
-            BitConverter.IsLittleEndian = true;
+            
             foreach (Entry e in Entries)
             {
                 Memory.Seek(e.offset + 4, 0);

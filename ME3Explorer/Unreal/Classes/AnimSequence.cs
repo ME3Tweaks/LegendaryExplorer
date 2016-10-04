@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -58,20 +59,20 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public byte[] CompressedBlob;
         public int Unknown;
 
-        public AnimSequence(PCCObject Pcc, int Index)
+        public AnimSequence(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;            
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
+            
             Unknown = BitConverter.ToInt32(data, 0);
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
@@ -228,7 +229,6 @@ namespace ME3Explorer.Unreal.Classes
             foreach (PropertyReader.Property p in Props)
                 if (pcc.getNameEntry(p.Name) == "CompressedTrackOffsets")
                     buff = p.raw;
-            BitConverter.IsLittleEndian=true;
             for (int i = 0; i < CompressedTrackOffsets.Count; i++)
             {
                 m.Write(BitConverter.GetBytes(loc[i].X), 0, 4);
@@ -274,10 +274,10 @@ namespace ME3Explorer.Unreal.Classes
         public void SaveChanges()
         {
             MemoryStream m = new MemoryStream();
-            m.Write(BitConverter.GetBytes((int)Unknown), 0, 4);
+            m.Write(BitConverter.GetBytes(Unknown), 0, 4);
             foreach (PropertyReader.Property p in Props)
                 m.Write(p.raw, 0, p.raw.Length);
-            m.Write(BitConverter.GetBytes((int)CompressedBlob.Length), 0, 4);
+            m.Write(BitConverter.GetBytes(CompressedBlob.Length), 0, 4);
             m.Write(CompressedBlob, 0, CompressedBlob.Length);
             pcc.Exports[MyIndex].Data = m.ToArray();
         }

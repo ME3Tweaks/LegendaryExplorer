@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ME3Explorer.Unreal;
+using ME3Explorer.Packages;
+
 namespace ME3Explorer
 {
     public static class MPOpt
@@ -21,9 +23,5 @@ namespace ME3Explorer
         public static bool SKM_biflipZ = true;
         public static bool SKM_biflipW = false;
         public static bool SKM_tnW100 = true;
-
-        public static PCCObject pcc;
-        public static int SelectedObject;
-        public static int SelectedLOD;
     }
 }

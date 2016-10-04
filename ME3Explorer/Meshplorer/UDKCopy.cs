@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.Debugging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -17,9 +18,15 @@ namespace ME3Explorer.Meshplorer
     {
         public UDKExplorer.UDK.UDKObject udk;
         public List<int> Objects;
+        ME3Package pcc;
+        int SelectedObject;
+        int SelectedLOD;
 
-        public UDKCopy()
+        public UDKCopy(ME3Package _pcc, int obj, int lod)
         {
+            pcc = _pcc;
+            SelectedObject = obj;
+            SelectedLOD = lod;
             InitializeComponent();
         }
 
@@ -27,7 +34,7 @@ namespace ME3Explorer.Meshplorer
         {
             OpenFileDialog d = new OpenFileDialog();
              d.Filter = "*.u;*.upk;*.udk|*.u;*.upk;*.udk";
-             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+             if (d.ShowDialog() == DialogResult.OK)
              {
                  udk = new UDKExplorer.UDK.UDKObject(d.FileName);
                  Objects = new List<int>();
@@ -64,8 +71,8 @@ namespace ME3Explorer.Meshplorer
             int m = listBox2.SelectedIndex;
             if (m == -1)
                 return;
-            SkeletalMesh skm = new SkeletalMesh(MPOpt.pcc, MPOpt.SelectedObject);
-            SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[MPOpt.SelectedLOD];
+            SkeletalMesh skm = new SkeletalMesh(pcc, SelectedObject);
+            SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[SelectedLOD];
             UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);
             if (skm.Bones.Count != skmudk.Bones.Count)
             {
@@ -96,7 +103,7 @@ namespace ME3Explorer.Meshplorer
                 bool found = false;
                 for (int j = 0; j < skm.Bones.Count; j++)
                 {
-                    string pccb = MPOpt.pcc.getNameEntry(skm.Bones[j].Name);
+                    string pccb = pcc.getNameEntry(skm.Bones[j].Name);
                     if (pccb == udkb)
                     {
                         found = true;
@@ -159,26 +166,18 @@ namespace ME3Explorer.Meshplorer
                 vpcc.V = vudk.V;
                 lodpcc.VertexBufferGPUSkin.Vertices.Add(vpcc);
             }
-            skm.LODModels[MPOpt.SelectedLOD] = lodpcc;
+            skm.LODModels[SelectedLOD] = lodpcc;
             SerializingContainer con = new SerializingContainer();
             con.Memory = new MemoryStream();
             con.isLoading = false;
             skm.Serialize(con);
             int end = skm.GetPropertyEnd();
             MemoryStream mem = new MemoryStream();
-            mem.Write(MPOpt.pcc.Exports[MPOpt.SelectedObject].Data, 0, end);
+            mem.Write(pcc.Exports[SelectedObject].Data, 0, end);
             mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-            MPOpt.pcc.Exports[MPOpt.SelectedObject].Data = mem.ToArray();
-            MPOpt.pcc.altSaveToFile(MPOpt.pcc.pccFileName, true);
-            //SaveFileDialog d = new SaveFileDialog();
-            //d.Filter = "*.bin|*.bin";
-            //if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-            //    fs.Write(mem.ToArray(), 0, (int)mem.Length);
-            //    fs.Close();
-                MessageBox.Show("Done");
-            //}
+            pcc.Exports[SelectedObject].Data = mem.ToArray();
+            MessageBox.Show("Done");
+            Close();
         }
     }
 }

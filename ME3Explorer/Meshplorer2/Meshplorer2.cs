@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.Packages;
 using AmaroK86.MassEffect3;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
@@ -39,7 +40,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void scanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(ME3Directory.cookedPath))
+            if (string.IsNullOrEmpty(ME3Directory.cookedPath))
             {
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
@@ -84,20 +85,23 @@ namespace ME3Explorer.Meshplorer2
                                             }
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
-                                            PCCObject pcc = new PCCObject(loc + "temp\\" + filename);
-                                            for (int i = 0; i < pcc.Exports.Count; i++)
-                                                if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
-                                                    pcc.Exports[i].ClassName == "StaticMesh")
-                                                {
-                                                    EntryStruct ent = new EntryStruct();
-                                                    ent.DLCName = Path.GetFileName(DLCpath);
-                                                    ent.Filename = filename;
-                                                    ent.Index = i;
-                                                    ent.isDLC = true;
-                                                    ent.ObjectPath = pcc.Exports[i].GetFullPath;
-                                                    ent.isSkeletal = (pcc.Exports[i].ClassName == "SkeletalMesh");
-                                                    Entries.Add(ent);
-                                                }
+                                            using (ME3Package pcc = MEPackageHandler.OpenME3Package(loc + "temp\\" + filename))
+                                            {
+                                                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                                for (int i = 0; i < Exports.Count; i++)
+                                                    if (Exports[i].ClassName == "SkeletalMesh" ||
+                                                        Exports[i].ClassName == "StaticMesh")
+                                                    {
+                                                        EntryStruct ent = new EntryStruct();
+                                                        ent.DLCName = Path.GetFileName(DLCpath);
+                                                        ent.Filename = filename;
+                                                        ent.Index = i;
+                                                        ent.isDLC = true;
+                                                        ent.ObjectPath = Exports[i].GetFullPath;
+                                                        ent.isSkeletal = Exports[i].ClassName == "SkeletalMesh";
+                                                        Entries.Add(ent);
+                                                    } 
+                                            }
                                             File.Delete(loc + "temp\\" + filename);
                                         }
                                         if (count % 3 == 0)
@@ -130,20 +134,23 @@ namespace ME3Explorer.Meshplorer2
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    PCCObject pcc = new PCCObject(file);
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "SkeletalMesh" ||
-                            pcc.Exports[i].ClassName == "StaticMesh")
-                        {
-                            EntryStruct ent = new EntryStruct();
-                            ent.DLCName = "";
-                            ent.Filename = Path.GetFileName(file);
-                            ent.Index = i;
-                            ent.isDLC = false;
-                            ent.ObjectPath = pcc.Exports[i].GetFullPath;
-                            ent.isSkeletal = (pcc.Exports[i].ClassName == "SkeletalMesh");
-                            Entries.Add(ent);
-                        }
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                    {
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        for (int i = 0; i < Exports.Count; i++)
+                            if (Exports[i].ClassName == "SkeletalMesh" ||
+                                Exports[i].ClassName == "StaticMesh")
+                            {
+                                EntryStruct ent = new EntryStruct();
+                                ent.DLCName = "";
+                                ent.Filename = Path.GetFileName(file);
+                                ent.Index = i;
+                                ent.isDLC = false;
+                                ent.ObjectPath = Exports[i].GetFullPath;
+                                ent.isSkeletal = Exports[i].ClassName == "SkeletalMesh";
+                                Entries.Add(ent);
+                            } 
+                    }
                     if (count % 10 == 0)
                     {
                         Application.DoEvents();
@@ -271,14 +278,14 @@ namespace ME3Explorer.Meshplorer2
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                BitConverter.IsLittleEndian = true;
-                fs.Write(BitConverter.GetBytes((int)Entries.Count), 0, 4);
+                
+                fs.Write(BitConverter.GetBytes(Entries.Count), 0, 4);
                 foreach(EntryStruct es in Entries)
                 {
                     WriteString(fs, es.Filename);
                     WriteString(fs, es.DLCName);
                     WriteString(fs, es.ObjectPath);
-                    fs.Write(BitConverter.GetBytes((int)es.Index), 0, 4);
+                    fs.Write(BitConverter.GetBytes(es.Index), 0, 4);
                     if (es.isDLC)
                         fs.WriteByte(1);
                     else
@@ -295,7 +302,7 @@ namespace ME3Explorer.Meshplorer2
 
         public void WriteString(FileStream fs, string s)
         {
-            fs.Write(BitConverter.GetBytes((int)s.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
             fs.Write(GetBytes(s), 0, s.Length);
         }
 
@@ -336,7 +343,9 @@ namespace ME3Explorer.Meshplorer2
             {
                 if (t.Parent == null || t.Name == "")
                     return;
+                Renderer.STM?.pcc.Dispose();
                 Renderer.STM = null;
+                Renderer.SKM?.Owner.Dispose();
                 Renderer.SKM = null;
                 Renderer.CamDistance = 10;
                 Renderer.CamOffset = new Microsoft.DirectX.Vector3(0, 0, 0);
@@ -348,7 +357,7 @@ namespace ME3Explorer.Meshplorer2
                         EntryStruct en = Entries[i];
                         if (!en.isDLC)
                         {
-                            PCCObject pcc = new PCCObject(ME3Directory.cookedPath + en.Filename);
+                            ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
                                 Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -389,7 +398,7 @@ namespace ME3Explorer.Meshplorer2
                                         {
                                             try
                                             {
-                                                PCCObject pcc = new PCCObject(loc + filename);
+                                                ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
                                                     Renderer.SKM = new SkeletalMesh(pcc, en.Index);
@@ -467,7 +476,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void Meshplorer2_Load(object sender, EventArgs e)
         {
-            this.pb1.MouseWheel += new MouseEventHandler(MouseWheelHandler);
+            this.pb1.MouseWheel += MouseWheelHandler;
         }
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)
@@ -501,199 +510,206 @@ namespace ME3Explorer.Meshplorer2
 
         private void importLODToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
-            if (n == -1)
-                return;
-            int m = listBox2.SelectedIndex;
-            if (m == -1)
-                return;
-            TreeNode t1 = treeView1.SelectedNode;
-            if (t1 == null || t1.Parent == null || t1.Name == "")
-                return;
-            PCCObject pcc = new PCCObject();
-            SkeletalMesh skm = new SkeletalMesh();
-            EntryStruct en;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\";
-            if (DisplayStyle == 0)
+            ME3Package pcc = null;
+            try
             {
-                int o = 0;
-                if (!Int32.TryParse(t1.Name, out o))
+                int n = listBox1.SelectedIndex;
+                if (n == -1)
                     return;
-                en = Entries[o];                
-                if (!en.isDLC)
+                int m = listBox2.SelectedIndex;
+                if (m == -1)
+                    return;
+                TreeNode t1 = treeView1.SelectedNode;
+                if (t1 == null || t1.Parent == null || t1.Name == "")
+                    return;
+                SkeletalMesh skm = new SkeletalMesh();
+                EntryStruct en;
+                string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\";
+                if (DisplayStyle == 0)
                 {
-                    pcc = new PCCObject(ME3Directory.cookedPath + en.Filename);
-                    if (en.isSkeletal)
+                    int o = 0;
+                    if (!Int32.TryParse(t1.Name, out o))
+                        return;
+                    en = Entries[o];
+                    if (!en.isDLC)
                     {
-                        skm = new SkeletalMesh(pcc, en.Index);
+                        if (en.isSkeletal)
+                        {
+                            pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
+                            skm = new SkeletalMesh(pcc, en.Index);
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     else
                     {
-                        return;
-                    }
-                }
-                else
-                {                    
-                    string dirDLC = ME3Directory.DLCPath;
-                    dirDLC += en.DLCName;
-                    dirDLC += "\\CookedPCConsole\\Default.sfar";
-                    DLCBase dlc = new DLCBase(dirDLC);
-                    foreach (sfarFile file in dlc.fileList)
-                        try
-                        {
-                            string filename = Path.GetFileName(file.fileName);
-                            if (Path.GetExtension(filename).ToLower().EndsWith(".pcc") && filename == en.Filename)
+                        string dirDLC = ME3Directory.DLCPath;
+                        dirDLC += en.DLCName;
+                        dirDLC += "\\CookedPCConsole\\Default.sfar";
+                        DLCBase dlc = new DLCBase(dirDLC);
+                        foreach (sfarFile file in dlc.fileList)
+                            try
                             {
-                                if (File.Exists(loc + "dlc.pcc"))
-                                    File.Delete(loc + "dlc.pcc");
-                                using (Stream input = File.OpenRead(dirDLC), output = File.Create(loc + "dlc.pcc"))
+                                string filename = Path.GetFileName(file.fileName);
+                                if (Path.GetExtension(filename).ToLower().EndsWith(".pcc") && filename == en.Filename)
                                 {
-                                    AmaroK86.MassEffect3.DLCUnpack.DecompressEntry(file, input, output, dlc.CompressionScheme);
-                                }
-                                if (File.Exists(loc + "dlc.pcc"))
-                                {
-                                    try
+                                    if (File.Exists(loc + "dlc.pcc"))
+                                        File.Delete(loc + "dlc.pcc");
+                                    using (Stream input = File.OpenRead(dirDLC), output = File.Create(loc + "dlc.pcc"))
                                     {
-                                        pcc = new PCCObject(loc + "dlc.pcc");
-                                        if (en.isSkeletal)
+                                        AmaroK86.MassEffect3.DLCUnpack.DecompressEntry(file, input, output, dlc.CompressionScheme);
+                                    }
+                                    if (File.Exists(loc + "dlc.pcc"))
+                                    {
+                                        try
                                         {
-                                            skm = new SkeletalMesh(pcc, en.Index);
-                                            break;
+                                            if (en.isSkeletal)
+                                            {
+                                                pcc = MEPackageHandler.OpenME3Package(loc + "dlc.pcc");
+                                                skm = new SkeletalMesh(pcc, en.Index);
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                return;
+                                            }
                                         }
-                                        else
+                                        catch (Exception)
                                         {
                                             return;
                                         }
                                     }
-                                    catch (Exception)
-                                    {
-                                        return;
-                                    }
                                 }
                             }
-                        }
-                        catch (Exception)
-                        {
-                            return;
-                        }
-                }
-            }
-            else
-                return;
-            if (!skm.Loaded || !pcc.Loaded)
-                return;
-            SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[0];
-            UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);
-            UDKExplorer.UDK.Classes.SkeletalMesh.LODModelStruct lodudk = skmudk.LODModels[m];
-            lodpcc.Sections = new List<SkeletalMesh.SectionStruct>();
-            foreach (UDKExplorer.UDK.Classes.SkeletalMesh.SectionStruct secudk in lodudk.Sections)
-            {
-                SkeletalMesh.SectionStruct secpcc = new SkeletalMesh.SectionStruct();
-                secpcc.BaseIndex = secudk.BaseIndex;
-                secpcc.ChunkIndex = secudk.ChunkIndex;
-                secpcc.MaterialIndex = secudk.MaterialIndex;
-                secpcc.NumTriangles = secudk.NumTriangles;
-                lodpcc.Sections.Add(secpcc);
-            }
-            lodpcc.IndexBuffer = new SkeletalMesh.MultiSizeIndexContainerStruct();
-            lodpcc.IndexBuffer.IndexCount = lodudk.IndexBuffer.IndexCount;
-            lodpcc.IndexBuffer.IndexSize = lodudk.IndexBuffer.IndexSize;
-            lodpcc.IndexBuffer.Indexes = new List<ushort>();
-            foreach (ushort Idx in lodudk.IndexBuffer.Indexes)
-                lodpcc.IndexBuffer.Indexes.Add(Idx);
-            List<int> BoneMap = new List<int>();
-            for (int i = 0; i < skmudk.Bones.Count; i++)
-            {
-                string udkb = udk.GetName(skmudk.Bones[i].Name);
-                bool found = false;
-                for (int j = 0; j < skm.Bones.Count; j++)
-                {
-                    string pccb = pcc.getNameEntry(skm.Bones[j].Name);
-                    if (pccb == udkb)
-                    {
-                        found = true;
-                        BoneMap.Add(j);
-                        if (importBonesToolStripMenuItem.Checked)
-                        {
-                            SkeletalMesh.BoneStruct bpcc = skm.Bones[j];
-                            UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct budk = skmudk.Bones[i];
-                            bpcc.Orientation = budk.Orientation;
-                            bpcc.Position = budk.Position;
-                            skm.Bones[j] = bpcc;
-                        }
+                            catch (Exception)
+                            {
+                                return;
+                            }
                     }
                 }
-                if (!found)
+                else
+                    return;
+                if (!skm.Loaded || pcc == null)
+                    return;
+                SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[0];
+                UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);
+                UDKExplorer.UDK.Classes.SkeletalMesh.LODModelStruct lodudk = skmudk.LODModels[m];
+                lodpcc.Sections = new List<SkeletalMesh.SectionStruct>();
+                foreach (UDKExplorer.UDK.Classes.SkeletalMesh.SectionStruct secudk in lodudk.Sections)
                 {
-                    DebugOutput.PrintLn("ERROR: Cant Match Bone \"" + udkb + "\"");
-                    BoneMap.Add(0);
+                    SkeletalMesh.SectionStruct secpcc = new SkeletalMesh.SectionStruct();
+                    secpcc.BaseIndex = secudk.BaseIndex;
+                    secpcc.ChunkIndex = secudk.ChunkIndex;
+                    secpcc.MaterialIndex = secudk.MaterialIndex;
+                    secpcc.NumTriangles = secudk.NumTriangles;
+                    lodpcc.Sections.Add(secpcc);
                 }
-            }
+                lodpcc.IndexBuffer = new SkeletalMesh.MultiSizeIndexContainerStruct();
+                lodpcc.IndexBuffer.IndexCount = lodudk.IndexBuffer.IndexCount;
+                lodpcc.IndexBuffer.IndexSize = lodudk.IndexBuffer.IndexSize;
+                lodpcc.IndexBuffer.Indexes = new List<ushort>();
+                foreach (ushort Idx in lodudk.IndexBuffer.Indexes)
+                    lodpcc.IndexBuffer.Indexes.Add(Idx);
+                List<int> BoneMap = new List<int>();
+                for (int i = 0; i < skmudk.Bones.Count; i++)
+                {
+                    string udkb = udk.GetName(skmudk.Bones[i].Name);
+                    bool found = false;
+                    for (int j = 0; j < skm.Bones.Count; j++)
+                    {
+                        string pccb = pcc.getNameEntry(skm.Bones[j].Name);
+                        if (pccb == udkb)
+                        {
+                            found = true;
+                            BoneMap.Add(j);
+                            if (importBonesToolStripMenuItem.Checked)
+                            {
+                                SkeletalMesh.BoneStruct bpcc = skm.Bones[j];
+                                UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct budk = skmudk.Bones[i];
+                                bpcc.Orientation = budk.Orientation;
+                                bpcc.Position = budk.Position;
+                                skm.Bones[j] = bpcc;
+                            }
+                        }
+                    }
+                    if (!found)
+                    {
+                        DebugOutput.PrintLn("ERROR: Cant Match Bone \"" + udkb + "\"");
+                        BoneMap.Add(0);
+                    }
+                }
 
-            lodpcc.ActiveBones = new List<ushort>();
-            foreach (ushort Idx in lodudk.ActiveBones)
-                lodpcc.ActiveBones.Add((ushort)BoneMap[Idx]);
-            lodpcc.Chunks = new List<SkeletalMesh.SkelMeshChunkStruct>();
-            foreach (UDKExplorer.UDK.Classes.SkeletalMesh.SkelMeshChunkStruct chunkudk in lodudk.Chunks)
-            {
-                SkeletalMesh.SkelMeshChunkStruct chunkpcc = new SkeletalMesh.SkelMeshChunkStruct();
-                chunkpcc.BaseVertexIndex = chunkudk.BaseVertexIndex;
-                chunkpcc.MaxBoneInfluences = chunkudk.MaxBoneInfluences;
-                chunkpcc.NumRigidVertices = chunkudk.NumRigidVertices;
-                chunkpcc.NumSoftVertices = chunkudk.NumSoftVertices;
-                chunkpcc.BoneMap = new List<ushort>();
-                chunkpcc.RiginSkinVertices = new List<SkeletalMesh.RigidSkinVertexStruct>();
-                chunkpcc.SoftSkinVertices = new List<SkeletalMesh.SoftSkinVertexStruct>();
-                foreach (ushort Idx in chunkudk.BoneMap)
-                    chunkpcc.BoneMap.Add((ushort)BoneMap[Idx]);
-                lodpcc.Chunks.Add(chunkpcc);
+                lodpcc.ActiveBones = new List<ushort>();
+                foreach (ushort Idx in lodudk.ActiveBones)
+                    lodpcc.ActiveBones.Add((ushort)BoneMap[Idx]);
+                lodpcc.Chunks = new List<SkeletalMesh.SkelMeshChunkStruct>();
+                foreach (UDKExplorer.UDK.Classes.SkeletalMesh.SkelMeshChunkStruct chunkudk in lodudk.Chunks)
+                {
+                    SkeletalMesh.SkelMeshChunkStruct chunkpcc = new SkeletalMesh.SkelMeshChunkStruct();
+                    chunkpcc.BaseVertexIndex = chunkudk.BaseVertexIndex;
+                    chunkpcc.MaxBoneInfluences = chunkudk.MaxBoneInfluences;
+                    chunkpcc.NumRigidVertices = chunkudk.NumRigidVertices;
+                    chunkpcc.NumSoftVertices = chunkudk.NumSoftVertices;
+                    chunkpcc.BoneMap = new List<ushort>();
+                    chunkpcc.RiginSkinVertices = new List<SkeletalMesh.RigidSkinVertexStruct>();
+                    chunkpcc.SoftSkinVertices = new List<SkeletalMesh.SoftSkinVertexStruct>();
+                    foreach (ushort Idx in chunkudk.BoneMap)
+                        chunkpcc.BoneMap.Add((ushort)BoneMap[Idx]);
+                    lodpcc.Chunks.Add(chunkpcc);
+                }
+                lodpcc.Size = lodudk.Size;
+                lodpcc.NumVertices = lodudk.NumVertices;
+                lodpcc.RequiredBones = new List<byte>();
+                foreach (byte b in lodudk.RequiredBones)
+                    lodpcc.RequiredBones.Add(b);
+                lodpcc.VertexBufferGPUSkin = new SkeletalMesh.VertexBufferGPUSkinStruct();
+                lodpcc.VertexBufferGPUSkin.NumTexCoords = lodudk.VertexBufferGPUSkin.NumTexCoords;
+                lodpcc.VertexBufferGPUSkin.Extension = lodudk.VertexBufferGPUSkin.Extension;
+                lodpcc.VertexBufferGPUSkin.Origin = lodudk.VertexBufferGPUSkin.Origin;
+                lodpcc.VertexBufferGPUSkin.VertexSize = lodudk.VertexBufferGPUSkin.VertexSize;
+                lodpcc.VertexBufferGPUSkin.Vertices = new List<SkeletalMesh.GPUSkinVertexStruct>();
+                foreach (UDKExplorer.UDK.Classes.SkeletalMesh.GPUSkinVertexStruct vudk in lodudk.VertexBufferGPUSkin.Vertices)
+                {
+                    SkeletalMesh.GPUSkinVertexStruct vpcc = new SkeletalMesh.GPUSkinVertexStruct();
+                    vpcc.TangentX = vudk.TangentX;
+                    vpcc.TangentZ = vudk.TangentZ;
+                    vpcc.Position = vudk.Position;
+                    vpcc.InfluenceBones = vudk.InfluenceBones;
+                    vpcc.InfluenceWeights = vudk.InfluenceWeights;
+                    vpcc.U = vudk.U;
+                    vpcc.V = vudk.V;
+                    lodpcc.VertexBufferGPUSkin.Vertices.Add(vpcc);
+                }
+                for (int i = 0; i < skm.LODModels.Count; i++)
+                    skm.LODModels[i] = lodpcc;
+                SerializingContainer con = new SerializingContainer();
+                con.Memory = new MemoryStream();
+                con.isLoading = false;
+                skm.Serialize(con);
+                int end = skm.GetPropertyEnd();
+                MemoryStream mem = new MemoryStream();
+                mem.Write(pcc.Exports[en.Index].Data, 0, end);
+                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                pcc.Exports[en.Index].Data = mem.ToArray();
+                pcc.save();
+                if (!en.isDLC)
+                    MessageBox.Show("Done");
+                else
+                    MessageBox.Show("Done. The file is now in following folder, please replace it back to DLC :\n" + loc + "dlc.pcc");
+                globalTreeToolStripMenuItem.Visible =
+                optionsToolStripMenuItem.Visible =
+                transferToolStripMenuItem.Visible =
+                splitContainer1.Visible = true;
+                fileToolStripMenuItem.Visible =
+                importLODToolStripMenuItem.Visible =
+                splitContainer3.Visible = false;
             }
-            lodpcc.Size = lodudk.Size;
-            lodpcc.NumVertices = lodudk.NumVertices;
-            lodpcc.RequiredBones = new List<byte>();
-            foreach (byte b in lodudk.RequiredBones)
-                lodpcc.RequiredBones.Add(b);
-            lodpcc.VertexBufferGPUSkin = new SkeletalMesh.VertexBufferGPUSkinStruct();
-            lodpcc.VertexBufferGPUSkin.NumTexCoords = lodudk.VertexBufferGPUSkin.NumTexCoords;
-            lodpcc.VertexBufferGPUSkin.Extension = lodudk.VertexBufferGPUSkin.Extension;
-            lodpcc.VertexBufferGPUSkin.Origin = lodudk.VertexBufferGPUSkin.Origin;
-            lodpcc.VertexBufferGPUSkin.VertexSize = lodudk.VertexBufferGPUSkin.VertexSize;
-            lodpcc.VertexBufferGPUSkin.Vertices = new List<SkeletalMesh.GPUSkinVertexStruct>();
-            foreach (UDKExplorer.UDK.Classes.SkeletalMesh.GPUSkinVertexStruct vudk in lodudk.VertexBufferGPUSkin.Vertices)
+            finally
             {
-                SkeletalMesh.GPUSkinVertexStruct vpcc = new SkeletalMesh.GPUSkinVertexStruct();
-                vpcc.TangentX = vudk.TangentX;
-                vpcc.TangentZ = vudk.TangentZ;
-                vpcc.Position = vudk.Position;
-                vpcc.InfluenceBones = vudk.InfluenceBones;
-                vpcc.InfluenceWeights = vudk.InfluenceWeights;
-                vpcc.U = vudk.U;
-                vpcc.V = vudk.V;
-                lodpcc.VertexBufferGPUSkin.Vertices.Add(vpcc);
+                pcc?.Dispose();
             }
-            for (int i = 0; i < skm.LODModels.Count; i++)
-                skm.LODModels[i] = lodpcc;
-            SerializingContainer con = new SerializingContainer();
-            con.Memory = new MemoryStream();
-            con.isLoading = false;
-            skm.Serialize(con);
-            int end = skm.GetPropertyEnd();
-            MemoryStream mem = new MemoryStream();
-            mem.Write(pcc.Exports[en.Index].Data, 0, end);
-            mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-            pcc.Exports[en.Index].Data = mem.ToArray();
-            pcc.altSaveToFile(pcc.pccFileName, true);
-            if (!en.isDLC)
-                MessageBox.Show("Done");
-            else
-                MessageBox.Show("Done. The file is now in following folder, please replace it back to DLC :\n" + loc + "dlc.pcc");
-            globalTreeToolStripMenuItem.Visible =
-            optionsToolStripMenuItem.Visible =
-            transferToolStripMenuItem.Visible =
-            splitContainer1.Visible = true;
-            fileToolStripMenuItem.Visible =
-            importLODToolStripMenuItem.Visible =
-            splitContainer3.Visible = false;
         }
 
         private void openUPKToolStripMenuItem_Click(object sender, EventArgs e)
@@ -773,6 +789,12 @@ namespace ME3Explorer.Meshplorer2
         {
             if (e.KeyChar == (char)Keys.Enter)
                 FindNext();
+        }
+
+        private void Meshplorer2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Renderer.STM?.pcc.Dispose();
+            Renderer.SKM?.Owner.Dispose();
         }
     }
 }

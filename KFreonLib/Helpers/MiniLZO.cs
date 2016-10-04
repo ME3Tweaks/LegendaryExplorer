@@ -84,7 +84,6 @@ namespace KFreonLib.Helpers.ManagedLZO
             return dst;
         }
     }
-
     public static class MiniLZO
     {
         private const uint M2_MAX_LEN = 8;

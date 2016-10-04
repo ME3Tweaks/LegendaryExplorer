@@ -13,6 +13,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3LibWV.UnrealClasses;
 using UDKLibWV;
+using System.Diagnostics;
 
 namespace ME3Creator
 {
@@ -32,6 +33,7 @@ namespace ME3Creator
         public Form1()
         {
             InitializeComponent();
+            UnrealObjectInfo.loadfromJSON();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,11 +59,7 @@ namespace ME3Creator
             if (pcc != null && pcc.Source != null)
                 pcc.Source.Close();
             pcc = new PCCPackage(path, true, false);
-        }
-
-        public void LoadDLCFile(string path, int index)
-        {
-            pcc = new PCCPackage(new DLCPackage(path), index); 
+            interpreter1.Pcc = pcc;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -81,14 +79,7 @@ namespace ME3Creator
             timer1.Enabled = false;
             if (pcc == null)
                 return;
-            if (pcc.GeneralInfo.inDLC)
-            {
-                LoadDLCFile(pcc.GeneralInfo.filepath, pcc.GeneralInfo.inDLCIndex);
-            }
-            else
-            {
-                LoadBaseGameFile(pcc.GeneralInfo.filepath);
-            }
+            LoadBaseGameFile(pcc.GeneralInfo.filepath);
             RefreshAll();
             timer1.Enabled = true;
         }
@@ -124,10 +115,7 @@ namespace ME3Creator
             hb1.ByteProvider = new DynamicByteProvider(buff);
             treeView1.Nodes.Clear();
             TreeNode t;
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath.Replace("/", "\\")));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Nodes.Add(new TreeNode("Magic : 0x" + pcc.Header.magic.ToString("X8")));
             t.Nodes.Add(new TreeNode("Ver1 : 0x" + pcc.Header.ver1.ToString("X4")));
             t.Nodes.Add(new TreeNode("Ver2 : 0x" + pcc.Header.ver2.ToString("X4")));
@@ -197,7 +185,7 @@ namespace ME3Creator
             listBox2.Items.Clear();
             listBox2.Visible = false;
             for (int i = 0; i < pcc.Header.ImportCount; i++)
-                listBox2.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(-i - 1) + pcc.GetObject(-i - 1));
+                listBox2.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(-i - 1) + pcc.getObjectName(-i - 1));
             listBox2.Visible = true;
             treeView2.Nodes.Clear();
             #endregion
@@ -205,7 +193,7 @@ namespace ME3Creator
             listBox3.Items.Clear();
             listBox3.Visible = false;
             for (int i = 0; i < pcc.Header.ExportCount; i++)
-                listBox3.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                listBox3.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             listBox3.Visible = true;
             treeView3.Nodes.Clear();
             #endregion
@@ -213,7 +201,7 @@ namespace ME3Creator
             listBox4.Items.Clear();
             listBox4.Visible = false;
             for (int i = 0; i < pcc.Header.ExportCount; i++)
-                listBox4.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                listBox4.Items.Add(i.ToString("d8") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             listBox4.Visible = true;
             toolStripComboBox1.Items.Clear();
             Classes = new List<int>();
@@ -236,7 +224,7 @@ namespace ME3Creator
                 run = false;
                 for (int i = 0; i < Classes.Count - 1; i++)
                 {
-                    if (pcc.GetObject(Classes[i]).CompareTo(pcc.GetObject(Classes[i + 1])) > 0)
+                    if (pcc.getObjectName(Classes[i]).CompareTo(pcc.getObjectName(Classes[i + 1])) > 0)
                     {
                         int tmp = Classes[i];
                         Classes[i] = Classes[i + 1];
@@ -246,15 +234,12 @@ namespace ME3Creator
                 }
             }
             for (int i = 0; i < Classes.Count; i++)
-                toolStripComboBox1.Items.Add(pcc.GetObject(Classes[i]));
+                toolStripComboBox1.Items.Add(pcc.getObjectName(Classes[i]));
             toolStripComboBox1.SelectedIndex = 0;
             #endregion
             #region Exports3
             treeView4.Nodes.Clear();
-            if (pcc.GeneralInfo.inDLC)
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.inDLCPath));
-            else
-                t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
+            t = new TreeNode(Path.GetFileName(pcc.GeneralInfo.filepath));
             t.Name = "0";
             for (int i = 0; i < pcc.Header.ExportCount; i++)
             {
@@ -262,7 +247,7 @@ namespace ME3Creator
                 t2 = t;
                 for (int j = 0; j < list.Length; j++)
                 {
-                    s = pcc.GetObject(list[j]);
+                    s = pcc.getObjectName(list[j]);
                     bool f = false;
                     foreach(TreeNode t3 in t2.Nodes)
                         if (t3.Text == s)
@@ -305,7 +290,7 @@ namespace ME3Creator
                 t2 = t;
                 for (int j = 0; j < list.Length; j++)
                 {
-                    s = pcc.GetObject(list[j]);
+                    s = pcc.getObjectName(list[j]);
                     bool f = false;
                     foreach (TreeNode t3 in t2.Nodes)
                         if (t3.Text == s)
@@ -373,7 +358,7 @@ namespace ME3Creator
             treeView6.Nodes.Clear();
             DXHelper.cam = new Vector3(0, 0, 0);
             for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.GetObject(pcc.Exports[i].idxClass) == "Level")
+                if (pcc.getObjectName(pcc.Exports[i].idxClass) == "Level")
                 {
                     
                     DXHelper.level = new ME3LibWV.UnrealClasses.Level(pcc, i);                    
@@ -405,10 +390,10 @@ namespace ME3Creator
                 comboBox1.Items.Add(i.ToString("d6") + " : " + pcc.Names[i]);
             comboBox2.Items.Clear();
             for (int i = 0; i < pcc.Exports.Count; i++)
-                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.GetObject(i + 1));
+                comboBox2.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(i + 1) + pcc.getObjectName(i + 1));
             comboBox3.Items.Clear();
             for (int i = 0; i < pcc.Imports.Count; i++)
-                comboBox3.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.GetObject(-i - 1));
+                comboBox3.Items.Add(i.ToString("d6") + " : " + pcc.GetObjectPath(-i - 1) + pcc.getObjectName(-i - 1));
             if (comboBox1.Items.Count != 0)
                 comboBox1.SelectedIndex = 0;
             if (comboBox2.Items.Count != 0)
@@ -448,7 +433,7 @@ namespace ME3Creator
             treeView2.Nodes.Add("Unknown 1: 0x" + imp.Unk1.ToString("X8"));
             treeView2.Nodes.Add("Class: Index(" + imp.idxClass + ") = \"" + pcc.GetName(imp.idxClass) + "\"");
             treeView2.Nodes.Add("Unknown 2: 0x" + imp.Unk2.ToString("X8"));
-            treeView2.Nodes.Add("Link: Index(" + imp.idxLink + ") = \"" + pcc.GetObject(imp.idxLink) + "\"");
+            treeView2.Nodes.Add("Link: Index(" + imp.idxLink + ") = \"" + pcc.getObjectName(imp.idxLink) + "\"");
             treeView2.Nodes.Add("Name: Index(" + imp.idxName + ") = \"" + pcc.GetName(imp.idxName) + "\"");
             treeView2.Nodes.Add("Unknown 3: 0x" + imp.Unk3.ToString("X8"));
         }
@@ -460,9 +445,9 @@ namespace ME3Creator
                 return;
             PCCPackage.ExportEntry exp = pcc.Exports[n];
             treeView3.Nodes.Clear();
-            treeView3.Nodes.Add("Class: Index(" + exp.idxClass + ") = \"" + pcc.GetObject(exp.idxClass) + "\"");
-            treeView3.Nodes.Add("Parent: Index(" + exp.idxParent + ") = \"" + pcc.GetObject(exp.idxParent) + "\"");
-            treeView3.Nodes.Add("Link: Index(" + exp.idxLink + ") = \"" + pcc.GetObject(exp.idxLink) + "\"");
+            treeView3.Nodes.Add("Class: Index(" + exp.idxClass + ") = \"" + pcc.getObjectName(exp.idxClass) + "\"");
+            treeView3.Nodes.Add("Parent: Index(" + exp.idxParent + ") = \"" + pcc.getObjectName(exp.idxParent) + "\"");
+            treeView3.Nodes.Add("Link: Index(" + exp.idxLink + ") = \"" + pcc.getObjectName(exp.idxLink) + "\"");
             treeView3.Nodes.Add("Name: Index(" + exp.idxName + ") = \"" + pcc.GetName(exp.idxName) + "\"");
             treeView3.Nodes.Add("Index: 0x" + exp.Index.ToString("X8"));
             treeView3.Nodes.Add("Archetype: Index(" + exp.idxArchetype + ")");
@@ -491,7 +476,7 @@ namespace ME3Creator
             PCCPackage.ExportEntry exp = pcc.Exports[n];
             hb2.ByteProvider = new DynamicByteProvider(pcc.GetObjectData(n));            
             string s = "Flags (0x" + pcc.Exports[n].ObjectFlags.ToString("X8") + ") ";
-            s += "Class (" + pcc.GetObject(pcc.Exports[n].idxClass) + ")";
+            s += "Class (" + pcc.getObjectName(pcc.Exports[n].idxClass) + ")";
             labstate.Text = s;
             ReadProperties(n);
         }
@@ -525,16 +510,10 @@ namespace ME3Creator
 #endregion
         private void ReadProperties(int index)
         {
-            treeView5.Nodes.Clear();
             try
             {
-                PropMemory = pcc.GetObjectData(index);
-                PropReadPos = PropertyReader.detectStart(pcc, PropMemory, (uint)pcc.Exports[index].ObjectFlags);
-                List<PropHeader> l = ReadHeadersTillNone();
-                TreeNode t = new TreeNode("0000 : " + pcc.GetObject(index + 1));
-                t = GenerateTree(t, l);
-                t.Expand();
-                treeView5.Nodes.Add(t);
+                interpreter1.Index = index;
+                interpreter1.InitInterpreter();
             }
             catch (Exception ex)
             {
@@ -586,7 +565,7 @@ namespace ME3Creator
                             for (int i = 0; i < (p.size - 4) / 4; i++)
                             {
                                 int val = BitConverter.ToInt32(PropMemory, p.offset + 28 + i * 4);
-                                string s = (p.offset + 28 + i * 4).ToString("X4") + " : " + val.ToString();
+                                string s = (p.offset + 28 + i * 4).ToString("X4") + " : " + val;
                                 t.Nodes.Add(s);
                             }
                             ret.Nodes.Add(t);
@@ -608,7 +587,7 @@ namespace ME3Creator
                             for (int i = 0; i < p.size / 4; i++)
                             {
                                 int val = BitConverter.ToInt32(PropMemory, p.offset + 32 + i * 4);
-                                string s = (p.offset + 32 + i * 4).ToString("X4") + " : " + val.ToString();
+                                string s = (p.offset + 32 + i * 4).ToString("X4") + " : " + val;
                                 t.Nodes.Add(s);
                             }
                             ret.Nodes.Add(t);
@@ -624,7 +603,7 @@ namespace ME3Creator
             string s = p.offset.ToString("X4") + " : ";
             s += "Name: \"" + pcc.GetName(p.name) + "\" ";
             s += "Type: \"" + pcc.GetName(p.type) + "\" ";
-            s += "Size: " + p.size.ToString() + " Value: ";
+            s += "Size: " + p.size + " Value: ";
             switch (isType(pcc.GetName(p.type)))
             {
                 case 1:
@@ -645,7 +624,7 @@ namespace ME3Creator
                     break;
                 case 2:
                     float f = BitConverter.ToSingle(PropMemory, p.offset + 24);
-                    s += f.ToString() + "f";
+                    s += f + "f";
                     break;
                 case 0:
                 case 4:
@@ -653,17 +632,24 @@ namespace ME3Creator
                     s += "\"" + pcc.GetName(idx) + "\"";
                     break;
                 case 6:
-                    idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
-                    s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\"";
+                    if (p.size == 8)
+                    {
+                        idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
+                        int idx2 = BitConverter.ToInt32(PropMemory, p.offset + 32);
+                        s += "\"" + pcc.GetName(idx) + "\",\"" + pcc.GetName(idx2) + "\""; 
+                    }
+                    else
+                    {
+                        s += PropMemory[p.offset + 32].ToString();
+                    }
                     break;
                 case 7:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    s += idx.ToString() + "(count)";
+                    s += idx + "(count)";
                     break;
                 case 9:
                     idx = BitConverter.ToInt32(PropMemory, p.offset + 24);
-                    s += "#" + idx.ToString() ;
+                    s += "#" + idx ;
                     break;
             }
             TreeNode ret = new TreeNode(s);
@@ -750,6 +736,19 @@ namespace ME3Creator
                 return;
             pcc.Save();
             MessageBox.Show("Done.");
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.pcc|*.pcc";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pcc.Save(d.FileName);
+                MessageBox.Show("Done");
+            }
         }
 
         private void treeView4_MouseDown(object sender, MouseEventArgs e)
@@ -928,7 +927,7 @@ namespace ME3Creator
                 foreach (ME3LibWV.UnrealClasses._DXRenderableObject o in DXHelper.level.RenderObjects)
                     if (idx == o.MyIndex)
                     {
-                        string c = pcc.GetObject(pcc.Exports[idx].idxClass);
+                        string c = pcc.getObjectName(pcc.Exports[idx].idxClass);
                         switch (c)
                         {
                             case "StaticMeshActor":
@@ -1082,7 +1081,7 @@ namespace ME3Creator
                 int n = Convert.ToInt32(t.Name);
                 if (n > 0)
                 {
-                    string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+                    string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
                     switch(s)
                     {
                         case"StaticMeshActor":
@@ -1133,49 +1132,41 @@ namespace ME3Creator
                 case 1://Parent
                 case 2://Link
                 case 5://Archetype
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
+                    int idx = 0;
+                    int? nullableIntResult;
                     if (t.Index == 0)
-                        osel.Init(pcc, pcc.Exports[n].idxClass);
+                        idx = pcc.Exports[n].idxClass;
                     if (t.Index == 1)
-                        osel.Init(pcc, pcc.Exports[n].idxParent);
+                        idx = pcc.Exports[n].idxParent;
                     if (t.Index == 2)
-                        osel.Init(pcc, pcc.Exports[n].idxLink);
+                        idx = pcc.Exports[n].idxLink;
                     if (t.Index == 5)
-                        osel.Init(pcc, pcc.Exports[n].idxArchetype);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                        idx = pcc.Exports[n].idxArchetype;
+                    nullableIntResult = Objectselect.GetValue(pcc, idx);
+                    if (nullableIntResult == null)
                         return;
-                    osel.Close();
                     ex = pcc.Exports[n];
                     if(t.Index == 0)
-                        ex.idxClass = osel.Result;
+                        ex.idxClass = (int)nullableIntResult;
                     if (t.Index == 1)
-                        ex.idxParent = osel.Result;
+                        ex.idxParent = (int)nullableIntResult;
                     if (t.Index == 2)
-                        ex.idxLink = osel.Result;
+                        ex.idxLink = (int)nullableIntResult;
                     if (t.Index == 5)
-                        ex.idxArchetype = osel.Result;
+                        ex.idxArchetype = (int)nullableIntResult;
                     pcc.Exports[n] = ex;
                     RefreshAll();
                     break;
                 case 3://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
-                    nsel.Init(pcc, pcc.Exports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                    int intResult;
+                    intResult = Nameselect.GetValue(pcc, pcc.Exports[n].idxName);
+                    if (intResult != -1)
                     {
                         ex = pcc.Exports[n];
-                        ex.idxName = nsel.Result;
+                        ex.idxName = intResult;
                         pcc.Exports[n] = ex;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 case 4://Index
                     ex = pcc.Exports[n];
@@ -1217,50 +1208,42 @@ namespace ME3Creator
             if (t == null || n == -1 || isSelectOpen)
                 return;
             PCCPackage.ImportEntry imp;
+            int? nullableResult = 0;
             switch (t.Index)
             {
                 case 4://Link
-                    isSelectOpen = true;
-                    Objectselect osel = new Objectselect();
-                    osel.Init(pcc, pcc.Imports[n].idxLink);
-                    osel.Show();
-                    while (!osel.PressedOK && !osel.Aborted) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (osel.Aborted)
+                    nullableResult = Objectselect.GetValue(pcc, pcc.Imports[n].idxLink);
+                    if (nullableResult == null)
                         return;
-                    osel.Close();
                     imp = pcc.Imports[n];
-                    imp.idxLink = osel.Result;
+                    imp.idxLink = (int)nullableResult;
                     pcc.Imports[n] = imp;
                     RefreshAll();
                     break;
                 case 0://Package
                 case 2://Class
                 case 5://Name
-                    isSelectOpen = true;
-                    Nameselect nsel = new Nameselect();
+                    int result;
+                    int idx = 0;
                     if (t.Index == 0)
-                        nsel.Init(pcc, pcc.Imports[n].idxPackage);
+                        idx = pcc.Imports[n].idxPackage;
                     if (t.Index == 2)
-                        nsel.Init(pcc, pcc.Imports[n].idxClass);
+                        idx = pcc.Imports[n].idxClass;
                     if (t.Index == 5)
-                        nsel.Init(pcc, pcc.Imports[n].idxName);
-                    nsel.Show();
-                    while (nsel.Result == -1 && !nsel.IsDisposed) Application.DoEvents();
-                    isSelectOpen = false;
-                    if (nsel.Result != -2 && nsel.Result != -1)
+                        idx = pcc.Imports[n].idxName;
+                    result = Nameselect.GetValue(pcc, idx);
+                    if (result != -1)
                     {
                         imp = pcc.Imports[n];
                         if (t.Index == 0)
-                            imp.idxPackage = nsel.Result;
+                            imp.idxPackage = result;
                         if (t.Index == 2)
-                            imp.idxClass = nsel.Result;
+                            imp.idxClass = result;
                         if (t.Index == 5)
-                            imp.idxName = nsel.Result;
+                            imp.idxName = result;
                         pcc.Imports[n] = imp;
                         RefreshAll();
                     }
-                    nsel.Close();
                     break;
                 default:
                     break;
@@ -1275,7 +1258,7 @@ namespace ME3Creator
             int n = Convert.ToInt32(t.Name);
             if (n < 0)
                 return;
-            string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+            string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
             switch (s)
             {
                 case "StaticMeshActor":
@@ -1286,7 +1269,7 @@ namespace ME3Creator
                     int m = Convert.ToInt32(t2.Name);
                     if (m < 0)
                         return;
-                    string s2 = pcc.GetObject(pcc.Exports[m - 1].idxClass);
+                    string s2 = pcc.getObjectName(pcc.Exports[m - 1].idxClass);
                     if (s2 != "Level")
                         return;
                     foreach(_DXRenderableObject o in DXHelper.level.RenderObjects)
@@ -1357,10 +1340,10 @@ namespace ME3Creator
             int m = Convert.ToInt32(t2.Name);
             if (m < 0)
                 return;
-            string s2 = pcc.GetObject(pcc.Exports[m - 1].idxClass);
+            string s2 = pcc.getObjectName(pcc.Exports[m - 1].idxClass);
             if (s2 != "Level")
                 return;
-            string s = pcc.GetObject(pcc.Exports[n - 1].idxClass);
+            string s = pcc.getObjectName(pcc.Exports[n - 1].idxClass);
             timer1.Enabled = false;
             switch (s)
             {
@@ -1425,8 +1408,11 @@ namespace ME3Creator
 
         private void toolStripButton9_Click(object sender, EventArgs e)
         {
-            Hexconverter h = new Hexconverter();
-            h.Show();
+            string loc = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + @"\HexConverter.exe"))
+            {
+                Process.Start(loc + @"\HexConverter.exe");
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -1441,7 +1427,7 @@ namespace ME3Creator
                 listBox5.Items.Clear();
                 listBox5.Visible=false;
                 for (int i = 0; i < importpcc.Exports.Count; i++)
-                    listBox5.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(i + 1) + importpcc.GetObject(i + 1));
+                    listBox5.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(i + 1) + importpcc.getObjectName(i + 1));
                 listBox5.Visible = true;
             }
         }
@@ -1466,7 +1452,7 @@ namespace ME3Creator
                 listBox6.Items.Clear();
                 listBox6.Visible = false;
                 for (int i = 0; i < importpcc.Imports.Count; i++)
-                    listBox6.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(-i - 1) + importpcc.GetObject(-i - 1));
+                    listBox6.Items.Add(i.ToString("d6") + " : " + importpcc.GetObjectPath(-i - 1) + importpcc.getObjectName(-i - 1));
                 listBox6.Visible = true;
             }
         }
@@ -1540,7 +1526,7 @@ namespace ME3Creator
             {
                 foreach (PropertyReader.Property p in Props)
                 {
-                    ImportProperty(pcc, importpcc, p, res);
+                    PropertyReader.ImportProperty(pcc, importpcc, p, importpcc.getObjectName(ex.idxClass), res);
                 }
             }
             catch (Exception exe) 
@@ -1552,8 +1538,34 @@ namespace ME3Creator
                 pcc.Header.NameCount = namecount;
                 MessageBox.Show("Error occured while trying to importing : " + exe.Message);
             }
-            for (int i = end; i < idata.Length; i++)
-                res.WriteByte(idata[i]);
+            if (importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
+            {
+                SkeletalMesh skl = new SkeletalMesh(importpcc, n);
+                SkeletalMesh.BoneStruct bone;
+                for (int i = 0; i < skl.Bones.Count; i++)
+                {
+                    bone = skl.Bones[i];
+                    string s = importpcc.GetName(bone.Name);
+                    bone.Name = pcc.FindNameOrAdd(s);
+                    skl.Bones[i] = bone;
+                }
+                SkeletalMesh.TailNamesStruct tailName;
+                for (int i = 0; i < skl.TailNames.Count; i++)
+                {
+                    tailName = skl.TailNames[i];
+                    string s = importpcc.GetName(tailName.Name);
+                    tailName.Name = pcc.FindNameOrAdd(s);
+                    skl.TailNames[i] = tailName;
+                }
+                ME3LibWV.SerializingContainer container = new ME3LibWV.SerializingContainer(res);
+                container.isLoading = false;
+                skl.Serialize(container);
+            }
+            else
+            {
+                for (int i = end; i < idata.Length; i++)
+                    res.WriteByte(idata[i]);
+            }
             nex.DataLoaded = true;
             nex.Data = res.ToArray();
             nex.Datasize = nex.Data.Length;
@@ -1575,158 +1587,6 @@ namespace ME3Creator
             pcc.Header.ExportCount++;
             RefreshAll();
             MessageBox.Show("Done.");
-        }
-
-        public void ImportProperty(PCCPackage pcc, PCCPackage importpcc, PropertyReader.Property p, MemoryStream m)
-        {
-            string name = importpcc.GetName(p.Name);
-            int idxname = pcc.FindNameOrAdd(name);
-            m.Write(BitConverter.GetBytes(idxname), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            if (name == "None")
-                return;
-            string type = importpcc.GetName(BitConverter.ToInt32(p.raw, 8));
-            int idxtype = pcc.FindNameOrAdd(type);
-            m.Write(BitConverter.GetBytes(idxtype), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            string name2;
-            int idxname2;
-            int size, count, pos;
-            List<PropertyReader.Property> Props;
-            switch (type)
-            {
-                case "IntProperty":
-                case "FloatProperty":
-                case "ObjectProperty":
-                case "StringRefProperty":
-                    m.Write(BitConverter.GetBytes(4), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    break;
-                case "NameProperty":
-                    m.Write(BitConverter.GetBytes(8), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.GetName(p.Value.IntValue))), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    break;
-                case "BoolProperty":
-                    m.Write(new byte[8], 0, 8);
-                    m.WriteByte((byte)p.Value.IntValue);
-                    break;
-                case "ByteProperty": 
-                    name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    m.Write(BitConverter.GetBytes(8), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    break;
-                case "DelegateProperty":                    
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    if (size == 0xC)
-                    {
-                        name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 28));
-                        idxname2 = pcc.FindNameOrAdd(name2);
-                        m.Write(BitConverter.GetBytes(0xC), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    else
-                    {
-                        m.Write(BitConverter.GetBytes(size), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[24 + i]);
-                    }
-                    break;
-                case "StrProperty":
-                    name2 = p.Value.StringValue;
-                    m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
-                    foreach (char c in name2)
-                    {
-                        m.WriteByte((byte)c);
-                        m.WriteByte(0);
-                    }
-                    break;
-                case "StructProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    name2 = importpcc.GetName(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    pos = 32;
-                    Props = new List<PropertyReader.Property>();
-                    try
-                    {
-                        Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    if (Props.Count == 0)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else if (Props[0].TypeVal == PropertyReader.Type.Unknown)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else
-                    {
-                        foreach (PropertyReader.Property pp in Props)
-                            ImportProperty(pcc, importpcc, pp, m);
-                    }
-                    break;
-                case "ArrayProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    count = BitConverter.ToInt32(p.raw, 24);
-                    pos = 28;
-                    List<PropertyReader.Property> AllProps = new List<PropertyReader.Property>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        Props = new List<PropertyReader.Property>();
-                        int test1 = BitConverter.ToInt32(p.raw, pos);
-                        int test2 = BitConverter.ToInt32(p.raw, pos + 4);
-                        if (!importpcc.isName(test1) || test2 != 0)
-                            break;
-                        if (size > 24 && importpcc.GetName(test1) != "None")
-                            if (BitConverter.ToInt32(p.raw, pos + 12) != 0)
-                                break;
-                        try
-                        {
-                            Props = PropertyReader.ReadProp(importpcc, p.raw, pos);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                        AllProps.AddRange(Props);
-                        if (Props.Count != 0)
-                        {
-                            pos = Props[Props.Count - 1].offend;
-                        }
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0)
-                        foreach (PropertyReader.Property pp in AllProps)
-                            ImportProperty(pcc, importpcc, pp, m);
-                    else
-                        m.Write(p.raw, 28, size - 4);
-                    break;
-                default:
-                    throw new Exception(type);
-            }
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -1971,7 +1831,7 @@ namespace ME3Creator
         private void CopySTMfromUDK(MemoryStream m, UDKObject u, int idx)
         {
             UDKLibWV.Classes.StaticMesh stm = new UDKLibWV.Classes.StaticMesh(u, idx);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
             WriteName(m, pcc.FindNameOrAdd("BodySetup"));
             WriteName(m, pcc.FindNameOrAdd("ObjectProperty"));
             WriteInt(m, 4);
@@ -2035,7 +1895,7 @@ namespace ME3Creator
         private void WriteName(MemoryStream m, int idx)
         {
             WriteInt(m, idx);
-            m.Write(BitConverter.GetBytes((int)0), 0, 4);
+            m.Write(BitConverter.GetBytes(0), 0, 4);
         }
 
         private void hb2_SelectionLengthChanged(object sender, EventArgs e)
@@ -2043,11 +1903,14 @@ namespace ME3Creator
             int start = (int)hb2.SelectionStart;
             int len = (int)hb2.SelectionLength;
             int size = (int)hb2.ByteProvider.Length;
-            if (start != -1 && start + len < size && len > 0)
+            if (start != -1 && start + len <= size)
             {
                 string s = "Start=0x" + start.ToString("X8") + " ";
-                s += "Length=0x" + len.ToString("X8") + " ";
-                s += "End=0x" + (start + len - 1).ToString("X8");
+                if (len > 0)
+                {
+                    s += "Length=0x" + len.ToString("X8") + " ";
+                    s += "End=0x" + (start + len - 1).ToString("X8");
+                }
                 status4.Text = s;
             }
             else
@@ -2067,6 +1930,17 @@ namespace ME3Creator
             {
                 toolStripLabel1.Visible = toolStripTextBox1.Visible = false;
             }
+        }
+
+        private void editNameButton_Click(object sender, EventArgs e)
+        {
+            int n = listBox1.SelectedIndex;
+            if (pcc == null || n == -1 || newname.Text == "")
+            {
+                return;
+            }
+            pcc.Names[n] = newname.Text;
+            RefreshAll();
         }
 
         private void cloneToolStripMenuItem1_Click(object sender, EventArgs e)

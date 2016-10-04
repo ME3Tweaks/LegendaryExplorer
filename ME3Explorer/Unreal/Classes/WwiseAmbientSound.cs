@@ -14,6 +14,7 @@ using ME3Explorer.Unreal;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.Debugging;
+using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -35,7 +36,7 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public int MyIndex;
-        public PCCObject pcc;
+        public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public Matrix MyMatrix;
@@ -44,14 +45,14 @@ namespace ME3Explorer.Unreal.Classes
         public bool isSelected = false;
         public bool isEdited = false;
 
-        public WwiseAmbientSound(PCCObject Pcc, int Index)
+        public WwiseAmbientSound(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
             if (pcc.isExport(Index))
                 data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc, pcc.Exports[Index]);
-            BitConverter.IsLittleEndian = true;
+            Props = PropertyReader.getPropList(pcc.Exports[Index]);
+            
             foreach (PropertyReader.Property p in Props)
                 switch (pcc.getNameEntry(p.Name))
                 {
@@ -142,7 +143,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] Vector3ToBuff(Vector3 v)
         {
             MemoryStream m = new MemoryStream();
-            BitConverter.IsLittleEndian = true;
+            
             m.Write(BitConverter.GetBytes(v.X), 0, 4);
             m.Write(BitConverter.GetBytes(v.Y), 0, 4);
             m.Write(BitConverter.GetBytes(v.Z), 0, 4);
@@ -172,7 +173,7 @@ namespace ME3Explorer.Unreal.Classes
                     DebugOutput.PrintLn(MyIndex + " : cant find location property");
                 }
                 KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.pccFileName);
+                string currfile = Path.GetFileName(pcc.FileName);
                 mj.data = data;
                 mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
                 string lc = Path.GetDirectoryName(Application.ExecutablePath);

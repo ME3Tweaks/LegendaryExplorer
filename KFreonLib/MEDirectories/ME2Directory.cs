@@ -20,23 +20,20 @@ namespace KFreonLib.MEDirectories
                     _gamePath = KFreonLib.Misc.Methods.SelectGameLoc(2);*/
                 return _gamePath;
             }
-            private set { _gamePath = value; }
-        }
-
-        public static string GamePath(string path = null)
-        {
-            if (path != null)
+            set
             {
-                if (path.Contains("BioGame", StringComparison.OrdinalIgnoreCase))
-                    path = path.Substring(0, path.LastIndexOf("BioGame", StringComparison.OrdinalIgnoreCase));
-                _gamePath = path;
+                if (value != null)
+                {
+                    if (value.Contains("BioGame", StringComparison.OrdinalIgnoreCase))
+                        value = value.Substring(0, value.LastIndexOf("BioGame", StringComparison.OrdinalIgnoreCase));
+                }
+                _gamePath = value;
             }
-            return _gamePath;
         }
 
         public static string BioGamePath { get { return (gamePath != null) ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BioGame\") : null; } }
-        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath,  @"BioGame\CookedPC\") : null; } }
-        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BioGame\DLC\") : null; } }
+        public static string cookedPath { get { return (gamePath != null) ? Path.Combine(gamePath,  @"BioGame\CookedPC\") : "Not Found"; } }
+        public static string DLCPath { get { return (gamePath != null) ? Path.Combine(gamePath, @"BioGame\DLC\") : "Not Found"; } }
 
         // "C:\...\MyDocuments\BioWare\Mass Effect 2\" folder
         public static string BioWareDocPath { get { return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\BioWare\Mass Effect 2\"; } }
@@ -53,31 +50,38 @@ namespace KFreonLib.MEDirectories
 
         static ME2Directory()
         {
-            string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-            string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
-            string subkey = @"BioWare\Mass Effect 2";
-            string keyName;
-
-            keyName = hkey32 + subkey;
-            string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
-            if (test != null)
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME2Directory))
             {
-                gamePath = test;
-                return;
+                gamePath = Properties.Settings.Default.ME2Directory;
             }
-
-            /*if (gamePath != null)
+            else
             {
-                gamePath = gamePath + "\\";
-                return;
-            }*/
+                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
+                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                string subkey = @"BioWare\Mass Effect 2";
+                string keyName;
 
-            keyName = hkey64 + subkey;
-            gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
-            if (gamePath != null)
-            {
-                gamePath = gamePath + "\\";
-                return;
+                keyName = hkey32 + subkey;
+                string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                if (test != null)
+                {
+                    gamePath = test;
+                    return;
+                }
+
+                /*if (gamePath != null)
+                {
+                    gamePath = gamePath + "\\";
+                    return;
+                }*/
+
+                keyName = hkey64 + subkey;
+                gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                if (gamePath != null)
+                {
+                    gamePath = gamePath + "\\";
+                    return;
+                } 
             }
         }
 

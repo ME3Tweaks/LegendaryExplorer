@@ -291,7 +291,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.KeyCode;
 				}
-				throw new InvalidOperationException("Can't get the KeyCode from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get the KeyCode from a " + type + " event");
 			}
 		}
 
@@ -313,7 +313,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.KeyData;
 				}
-				throw new InvalidOperationException("Can't get the KeyData from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get the KeyData from a " + type + " event");
 			}
 		}
 
@@ -331,7 +331,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.KeyValue;
 				}
-				throw new InvalidOperationException("Can't get the KeyValue from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get the KeyValue from a " + type + " event");
 			}
 		}
 
@@ -367,7 +367,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Shift;
 				}
-				throw new InvalidOperationException("Can't get Shift from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get Shift from a " + type + " event");
 			}
 		}
 
@@ -384,7 +384,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Alt;
 				}
-				throw new InvalidOperationException("Can't get Alt from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get Alt from a " + type + " event");
 			}
 		}
 
@@ -401,7 +401,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Control;
 				}
-				throw new InvalidOperationException("Can't get Control from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get Control from a " + type + " event");
 			}
 		}
 
@@ -421,7 +421,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyPressEventArgs kpe = (KeyPressEventArgs)e;
 					return kpe.KeyChar;
 				}
-				throw new InvalidOperationException("Can't get KeyChar from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get KeyChar from a " + type + " event");
 			}
 		}
 
@@ -438,7 +438,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					MouseEventArgs me = (MouseEventArgs)e;
 					return me.Button;
 				}
-				throw new InvalidOperationException("Can't get Button from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get Button from a " + type + " event");
 			}
 		}
 
@@ -455,7 +455,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					MouseEventArgs me = (MouseEventArgs)e;
 					return me.Clicks;
 				}
-				throw new InvalidOperationException("Can't get Clicks from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get Clicks from a " + type + " event");
 			}
 		}
 
@@ -475,7 +475,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					MouseEventArgs me = (MouseEventArgs)e;
 					return me.Delta;
 				}
-				throw new InvalidOperationException("Can't get WheelDelta from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get WheelDelta from a " + type + " event");
 			}
 		}
 
@@ -493,7 +493,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					DragEventArgs de = (DragEventArgs)e;
 					return de.AllowedEffect;
 				}
-				throw new InvalidOperationException("Can't get AllowedDragDropEffects from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get AllowedDragDropEffects from a " + type + " event");
 			}
 		}
 
@@ -511,7 +511,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					DragEventArgs de = (DragEventArgs)e;
 					return de.Data;
 				}
-				throw new InvalidOperationException("Can't get DragDropData from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get DragDropData from a " + type + " event");
 			}
 		}
 
@@ -528,7 +528,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					DragEventArgs de = (DragEventArgs)e;
 					return de.Effect;
 				}
-				throw new InvalidOperationException("Can't get DragDropEffect from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get DragDropEffect from a " + type + " event");
 			}
 			set {
 				if (IsDragDropEvent) {
@@ -536,7 +536,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					de.Effect = value;
 				}
 				else {
-					throw new InvalidOperationException("Can't set DragDropEffect on a " + type.ToString() + " event");
+					throw new InvalidOperationException("Can't set DragDropEffect on a " + type + " event");
 				}
 			}
 		}
@@ -556,7 +556,7 @@ namespace UMD.HCIL.Piccolo.Event {
 				if (IsDragDropEvent) {
 					return ((DragEventArgs)e).KeyState;
 				}
-				throw new InvalidOperationException("Can't get DragDropKeyState from a " + type.ToString() + " event");
+				throw new InvalidOperationException("Can't get DragDropKeyState from a " + type + " event");
 			}
 		}
 

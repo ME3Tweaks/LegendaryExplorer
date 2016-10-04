@@ -163,7 +163,7 @@ namespace UMD.HCIL.Piccolo {
 				if (e.IsMouseEvent) {
 					currentCanvasPosition = new PointF(((MouseEventArgs)nextInput).X, ((MouseEventArgs)nextInput).Y);
 				} else {
-					Point pt = new Point((int)((DragEventArgs)nextInput).X, (int)((DragEventArgs)nextInput).Y);
+					Point pt = new Point(((DragEventArgs)nextInput).X, ((DragEventArgs)nextInput).Y);
 					currentCanvasPosition = nextWindowsSource.PointToClient(pt);
 				}
 
