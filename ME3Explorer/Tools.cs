@@ -385,7 +385,7 @@ namespace ME3Explorer
                 {
                     (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
                 },
-                tags = new List<string> { "developer", "coalesced", "ini", "bin" },
+                tags = new List<string> { "developer", "coal", "ini", "bin" },
                 subCategory = "Core",
                 description = "Coalesced Editor converts between xml and bin formats for ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.",
             });
