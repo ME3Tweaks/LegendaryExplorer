@@ -366,6 +366,18 @@ namespace ME3Explorer
             #region Create Mods
             set.Add(new Tool
             {
+                name = "Audio Editor",
+                type = typeof(Audio_Editor.AudioEditor),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new Audio_Editor.AudioEditor()).Show();
+                },
+                tags = new List<string> { "developer", "afc", "sound", "wwise" },
+                subCategory = "Core",
+            });
+            set.Add(new Tool
+            {
                 name = "Coalesced Editor",
                 type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,

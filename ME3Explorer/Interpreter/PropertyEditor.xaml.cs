@@ -24,52 +24,33 @@ namespace ME3Explorer
     /// </summary>
     public partial class PropertyEditor : UserControl, INotifyPropertyChanged
     {
-
-
-        public int RowHeight
-        {
-            get { return (int)GetValue(RowHeightProperty); }
-            set { SetValue(RowHeightProperty, value); }
-        }
-        public static readonly DependencyProperty RowHeightProperty =
-            DependencyProperty.Register("RowHeight", typeof(int), typeof(PropertyEditor), new PropertyMetadata(40));
-
-
-
-        public Thickness RowMargin
-        {
-            get { return (Thickness)GetValue(RowMarginProperty); }
-            set { SetValue(RowMarginProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for RowMargin.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RowMarginProperty =
-            DependencyProperty.Register("RowMargin", typeof(Thickness), typeof(PropertyEditor), new PropertyMetadata(new Thickness(0,2,0,2)));
-
-
-
-        public IExportEntry Export;
-
-        PropertyCollection _props;
         public PropertyCollection Props
         {
-            get { return _props; }
-
-            set
-            {
-                SetProperty(ref _props, value);
-            }
+            get { return (PropertyCollection)GetValue(PropsProperty); }
+            set { SetValue(PropsProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Props.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PropsProperty =
+            DependencyProperty.Register("Props", typeof(PropertyCollection), typeof(PropertyEditor), new PropertyMetadata());
+
+
+
+        public IMEPackage Pcc
+        {
+            get { return (IMEPackage)GetValue(PccProperty); }
+            set { SetValue(PccProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Pcc.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PccProperty =
+            DependencyProperty.Register("Pcc", typeof(IMEPackage), typeof(PropertyEditor), new PropertyMetadata());
+
+
 
         public PropertyEditor()
         {
             InitializeComponent();
-        }
-
-        public void SetExport(IExportEntry export)
-        {
-            Export = export;
-            Props = export.GetProperties();
         }
 
         #region Property Changed Notification
@@ -101,5 +82,53 @@ namespace ME3Explorer
             return true;
         }
         #endregion
+    }
+
+    [ValueConversion(typeof(int), typeof(string))]
+    public class UIndexToObjectNameConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            IMEPackage pcc = values[1] as IMEPackage;
+            if (values[0] is int && pcc != null)
+            {
+                int uIndex = (int)values[0];
+                return $"({pcc.getObjectName(uIndex)})";
+            }
+            return "()";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException("Cannot convert back");
+        }
+    }
+
+    [ValueConversion(typeof(int), typeof(string))]
+    public class StringRefToStringConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            IMEPackage pcc = values[1] as IMEPackage;
+            if (values[0] is int && pcc != null)
+            {
+                int strRef = (int)values[0];
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1:
+                        return $"\"{(new ME1Explorer.Unreal.Classes.BioTlkFileSet(pcc as ME1Package)).findDataById(strRef)}\"";
+                    case MEGame.ME2:
+                        return $"\"{ME2Explorer.ME2TalkFiles.findDataById(strRef)}\"";
+                    case MEGame.ME3:
+                        return $"\"{ME3TalkFiles.findDataById(strRef)}\"";
+                }
+            }
+            return "No Data";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException("Cannot convert back");
+        }
     }
 }

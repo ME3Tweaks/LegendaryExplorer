@@ -334,10 +334,10 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     compress an entire ME3 pcc into a byte array.
+        ///     compress an entire ME3 pcc into a stream.
         /// </summary>
         /// <param name="uncompressedPcc">uncompressed pcc stream.</param>
-        /// <returns>a compressed array of bytes.</returns>
+        /// <returns>compressed pcc stream</returns>
         public static Stream Compress(Stream uncompressedPcc)
         {
             uncompressedPcc.Position = 0;

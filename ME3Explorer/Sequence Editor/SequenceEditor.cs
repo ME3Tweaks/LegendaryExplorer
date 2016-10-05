@@ -1187,7 +1187,7 @@ namespace ME3Explorer
 
                             NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
                             var nameRef = linkAction.Value;
-                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            nameRef.Number = pcc.getExport(newObj - 1).indexValue;
                             linkAction.Value = nameRef;
                         }
                     }
@@ -1206,7 +1206,7 @@ namespace ME3Explorer
 
                             NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
                             var nameRef = linkAction.Value;
-                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            nameRef.Number = pcc.getExport(newObj - 1).indexValue;
                             linkAction.Value = nameRef;
                         }
                     }
@@ -1244,7 +1244,7 @@ namespace ME3Explorer
                 {
                     foreach (var inLink in inLinksProp)
                     {
-                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.count);
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
                 var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1252,7 +1252,7 @@ namespace ME3Explorer
                 {
                     foreach (var outLinks in outLinksProp)
                     {
-                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.count);
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
 
@@ -1264,7 +1264,7 @@ namespace ME3Explorer
                     {
                         NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
                         var nameRef = linkAction.Value;
-                        nameRef.count = inputIndices[i];
+                        nameRef.Number = inputIndices[i];
                         linkAction.Value = nameRef;
                     }
                 }
@@ -1275,7 +1275,7 @@ namespace ME3Explorer
                     {
                         NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
                         var nameRef = linkAction.Value;
-                        nameRef.count = outputIndices[i];
+                        nameRef.Number = outputIndices[i];
                         linkAction.Value = nameRef;
                     }
                 }

@@ -152,6 +152,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Audio Editor\AudioEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -168,6 +172,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Audio Editor\AudioEditor.xaml.cs">
+      <DependentUpon>AudioEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
     <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
     <Compile Include="CoalesceTool\CoalescedType.cs" />
@@ -354,6 +361,9 @@
     <Compile Include="Propertydb\PropertyDB.Designer.cs">
       <DependentUpon>PropertyDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\PropertyEditorHost.xaml.cs">
+      <DependentUpon>PropertyEditorHost.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PSAViewer\PSAViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -531,6 +541,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WPFBase.cs" />
+    <Compile Include="WPFConverters.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -737,6 +748,10 @@
     <Page Include="NativesEditor\Views\StateTaskListsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

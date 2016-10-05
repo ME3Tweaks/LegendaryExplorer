@@ -47,6 +47,20 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static List<string> GetEnumValues(MEGame game, string enumName, bool includeNone)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getEnumValues(enumName, includeNone);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getEnumValues(enumName, includeNone);
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.getEnumValues(enumName, includeNone);
+            }
+            return null;
+        }
+
         public static ArrayType GetArrayType(MEGame game, string propName, string typeName)
         {
             switch (game)
