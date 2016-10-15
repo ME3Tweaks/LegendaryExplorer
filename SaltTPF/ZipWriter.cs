@@ -9,7 +9,7 @@ namespace SaltTPF
 {
     public static class ZipWriter
     {
-        private class ZipEntry
+        private class WriterZipEntry
         {
             public UInt16 Time;
             public UInt16 Date;
@@ -19,18 +19,185 @@ namespace SaltTPF
             public long MainOffset;
             public String Filename;
 
-            public ZipEntry() { }
+            public WriterZipEntry() { }
         }
 
         public const UInt16 MinVers = 0x14;
-        public const UInt16 BitFlag = 0x9; // Set: Encrypted, Defer CRC
-        public const UInt16 ComprMethod = 0x8;
+        //public const UInt16 BitFlag = 0x9; // Set: Encrypted, Defer CRC - Texmod uses this one, but ours won't work if we do...
+        public const UInt16 BitFlag = 0x1;
+        public const UInt16 ComprMethod = 0x8;  // Deflate (default)
         public static uint tpfxor = 0x3FA43FA4;
-        public const UInt32 ExternalAttr = 0x81B40020;
+        public const UInt32 ExternalAttr = 0;
+        //public const UInt32 ExternalAttr = 0x81B40020;  // Texmod uses this one but ours won't work if we do...
+        static CRC32 crc = new CRC32();
 
-        public static void Repack(String filename, List<String> files)
+        static WriterZipEntry BuildEntry(Stream ms, string file, Func<byte[]> dataGetter)
         {
-            List<ZipEntry> Entries = new List<ZipEntry>();
+            bool FileOnDisk = dataGetter == null;
+
+            WriterZipEntry entry = new WriterZipEntry();
+            entry.MainOffset = ms.Position;
+            entry.Filename = FileOnDisk ? Path.GetFileName(file) : file;
+
+            //Header
+            ms.Write(BitConverter.GetBytes(ZipReader.filemagic), 0, 4);
+            ms.Write(BitConverter.GetBytes(MinVers), 0, 2);
+            ms.Write(BitConverter.GetBytes(BitFlag), 0, 2);
+            ms.Write(BitConverter.GetBytes(ComprMethod), 0, 2);
+
+            //Date/time
+            DateTime date = FileOnDisk ? new FileInfo(file).LastWriteTime : DateTime.Now;
+            ushort secs = 0;
+            ushort mins = 0;
+            ushort hours = 0;
+
+            ushort day = 0;
+            ushort month = 0;
+            ushort year = 0;
+
+            secs = (ushort)date.Second;
+            mins = (ushort)date.Minute;
+            hours = (ushort)date.Hour;
+
+            ushort datetime = (ushort)(secs / 2);
+            datetime |= (ushort)(mins >> 5);
+            datetime |= (ushort)(hours >> 11);
+            ms.Write(BitConverter.GetBytes(datetime), 0, 2);
+            entry.Time = datetime;
+
+            day = (ushort)date.Day;
+            month = (ushort)date.Month;
+            year = (ushort)date.Year;
+
+            datetime = day;
+            datetime &= (ushort)(month >> 5);
+            datetime &= (ushort)(year >> 9);
+            ms.Write(BitConverter.GetBytes(datetime), 0, 2);
+            entry.Date = datetime;
+
+            byte[] comprData;
+            Stream dataStream = null;
+            if (FileOnDisk)
+                dataStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            else
+                dataStream = new MemoryStream(dataGetter());
+
+            using (dataStream)
+            {
+                byte[] buff = new byte[dataStream.Length];
+                dataStream.Read(buff, 0, buff.Length);
+
+                // create and write local header
+                entry.CRC32 = crc.BlockChecksum(buff);
+                entry.UncLen = (UInt32)dataStream.Length;
+
+                ms.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
+
+                ms.Seek(4, SeekOrigin.Current); // Skip compressed size
+                ms.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
+
+                if (entry.Filename.ToLower().Contains("meresults"))
+                    entry.Filename = "texmod.def";
+
+                ms.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
+                ms.Write(BitConverter.GetBytes((ushort)0), 0, 2);  // extra
+
+                // Filename
+                foreach (char c in entry.Filename)
+                    ms.WriteByte((byte)c);
+
+                dataStream.Seek(0, SeekOrigin.Begin); // Rewind to compress entry
+                using (MemoryStream ms2 = new MemoryStream())
+                {
+                    using (DeflateStream deflator = new DeflateStream(ms2, CompressionMode.Compress))
+                        dataStream.CopyTo(deflator);
+
+                    comprData = ms2.ToArray();
+                }
+                entry.ComprLen = (uint)comprData.Length + 12;  // 12 is crypt header
+                ZipCrypto.EncryptData(ms, comprData, entry.CRC32); // Encrypt and write data
+            }
+
+            // Footer
+            ms.Write(BitConverter.GetBytes(ZipReader.datadescriptormagic), 0, 4);
+            ms.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
+            ms.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
+            ms.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
+
+            // Go back and write compressed length
+            ms.Seek(entry.MainOffset + 18, SeekOrigin.Begin);
+            ms.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
+
+            // Go to end for next entry
+            ms.Seek(0, SeekOrigin.End);
+            return entry;
+        }
+
+        static void WriteGlobalEntryHeader(ZipWriter.WriterZipEntry entry, Stream ms)
+        {
+            ms.Write(BitConverter.GetBytes(entry.Time), 0, 2);
+            ms.Write(BitConverter.GetBytes(entry.Date), 0, 2);
+            ms.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
+            ms.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
+            ms.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
+            ms.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
+            ms.Write(BitConverter.GetBytes(0), 0, 4); // 0 for extra field, 0 for comment
+            ms.Write(BitConverter.GetBytes(0), 0, 4); // 0 for disk no, 0 for internal attributes
+            ms.Write(BitConverter.GetBytes(ExternalAttr), 0, 4);
+            ms.Write(BitConverter.GetBytes((int)entry.MainOffset), 0, 4);
+            foreach (char c in entry.Filename)
+                ms.WriteByte((byte)c);
+        }
+
+        static void BuildTPF(Stream ms, string Author, string Comment, List<WriterZipEntry> Entries)
+        {
+            uint cdlen = 0;
+            uint cdpos = (uint)ms.Position;
+            for (int i = 0; i < Entries.Count; i++)
+            {
+                // Create and write Full entry header
+                ms.Write(BitConverter.GetBytes(ZipReader.dirfileheadermagic), 0, 4);
+                ms.Write(BitConverter.GetBytes(0), 0, 2);
+                ms.Write(BitConverter.GetBytes(ZipWriter.MinVers), 0, 2);
+                ms.Write(BitConverter.GetBytes(ZipWriter.BitFlag), 0, 2);
+                ms.Write(BitConverter.GetBytes(ZipWriter.ComprMethod), 0, 2);
+
+                ZipWriter.WriterZipEntry entry = Entries[i];
+                WriteGlobalEntryHeader(entry, ms);
+            }
+            cdlen = (uint)(ms.Position - cdpos);
+
+            // EOF Record
+            ms.Write(BitConverter.GetBytes(ZipReader.endofdirmagic), 0, 4);
+            ms.Write(BitConverter.GetBytes(0), 0, 4);  // Disk No = 0, // Start disk = 0
+            ms.Write(BitConverter.GetBytes((ushort)Entries.Count), 0, 2);
+            ms.Write(BitConverter.GetBytes((ushort)Entries.Count), 0, 2);
+            ms.Write(BitConverter.GetBytes(cdlen), 0, 4);
+            ms.Write(BitConverter.GetBytes(cdpos), 0, 4);
+
+            // KFreon: This is the created by/comment section. Seems to be required for Texmod.
+            string createdByANDComment = Author + "\r\n" + Comment;  // KFreon: Newline required by Texmod to seperate author and comment.
+            byte[] bytes = Encoding.Default.GetBytes(createdByANDComment);
+            ms.Write(BitConverter.GetBytes(createdByANDComment.Length), 0, 2);
+            ms.Write(bytes, 0, bytes.Length);
+
+
+            long streamlen = ms.Length;
+            ms.Seek(0, SeekOrigin.Begin); // XOR the file
+            // Why this way? Shouldn't be done like this
+            while (ms.Position < ms.Length)
+            {
+                int count = (ms.Position + 10000 <= ms.Length) ? 10000 : (int)(ms.Length - ms.Position);
+
+                byte[] buff2 = BuffXOR(ms, count);
+                ms.Seek(-count, SeekOrigin.Current);
+                ms.Write(buff2, 0, count);
+            }
+        }
+
+        public static void Repack(String filename, List<String> files, string Author = "", string Comment = "")
+        {
+            List<WriterZipEntry> Entries = new List<WriterZipEntry>();
             foreach (String file in files)
             {
                 if (!File.Exists(file))
@@ -39,149 +206,31 @@ namespace SaltTPF
 
             using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                CRC32 crcgen = new CRC32();
                 foreach (String file in files)
                 {
-                    ZipEntry entry = new ZipEntry();
-                    entry.MainOffset = fs.Position;
-                    entry.Filename = Path.GetFileName(file);
-
-                    //Header
-                    fs.Write(BitConverter.GetBytes(ZipReader.filemagic), 0, 4);
-                    fs.Write(BitConverter.GetBytes(MinVers), 0, 2);
-
-                    // TEST build version?
-                    //fs.Write(BitConverter.GetBytes(20), 0, 2);
-
-                    fs.Write(BitConverter.GetBytes(BitFlag), 0, 2);
-                    fs.Write(BitConverter.GetBytes(ComprMethod), 0, 2);
-
-                    //Date/time
-                    FileInfo finfo = new FileInfo(file);
-                    ushort secs = (ushort)finfo.LastWriteTime.Second;
-                    ushort mins = (ushort)finfo.LastWriteTime.Minute;
-                    ushort hours = (ushort)finfo.LastWriteTime.Hour;
-                    ushort datetime = (ushort)(secs / 2);
-                    datetime |= (ushort)(mins >> 5);
-                    datetime |= (ushort)(hours >> 11);
-                    fs.Write(BitConverter.GetBytes(datetime), 0, 2);
-                    entry.Time = datetime;
-
-                    ushort day = (ushort)finfo.LastWriteTime.Day;
-                    ushort month = (ushort)finfo.LastWriteTime.Month;
-                    ushort year = (ushort)finfo.LastWriteTime.Year;
-                    datetime = day;
-                    datetime &= (ushort)(month >> 5);
-                    datetime &= (ushort)(year >> 9);
-                    fs.Write(BitConverter.GetBytes(datetime), 0, 2);
-                    entry.Date = datetime;
-
-                    byte[] comprData;
-                    long temppos;
-                    using (FileStream fs2 = new FileStream(file, FileMode.Open, FileAccess.Read))
-                    {
-                        byte[] buff = new byte[fs2.Length];
-                        fs2.Read(buff, 0, buff.Length);
-
-                        entry.CRC32 = crcgen.BlockChecksum(buff);
-                        entry.UncLen = (UInt32)fs2.Length;
-
-                        fs.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
-
-                        fs.Seek(4, SeekOrigin.Current); // Skip compressed size
-                        fs.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
-
-                        if (entry.Filename.ToLower().Contains("meresults"))
-                            entry.Filename = "texmod.log";
-
-                        fs.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
-                        fs.Write(BitConverter.GetBytes((ushort)0), 0, 2);
-
-                        foreach (char c in entry.Filename)
-                            fs.WriteByte((byte)c);
-                        temppos = fs.Position;
-
-                        fs2.Seek(0, SeekOrigin.Begin); // Rewind
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            using (DeflateStream deflator = new DeflateStream(ms, CompressionMode.Compress))
-                                fs2.CopyTo(deflator);
-
-                            comprData = ms.ToArray();
-                        }
-                        entry.ComprLen = (uint)comprData.Length + 12;
-                    }
-
-                    fs.Seek(entry.MainOffset + 18, SeekOrigin.Begin);
-                    fs.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
-                    fs.Seek(temppos, SeekOrigin.Begin);
-                    ZipCrypto.EncryptData(fs, comprData); // Encrypt and write data
-
-                    fs.Write(BitConverter.GetBytes(ZipReader.datadescriptormagic), 0, 4);
-                    fs.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
-                    fs.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
-                    fs.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
+                    var entry = BuildEntry(fs, file, null);
                     Entries.Add(entry);
                 }
 
-                uint cdlen = 0;
-                uint cdpos = (uint)fs.Position;
-                for (int i = 0; i < Entries.Count; i++)
+                BuildTPF(fs, Author, Comment, Entries);
+            }
+        }
+
+        public static void Repack(string destination, List<Tuple<string, Func<byte[]>>> FilenamesAndDataGetters, string Author = "", string Comment = "")
+        {
+            List<WriterZipEntry> Entries = new List<WriterZipEntry>();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                foreach (var tex in FilenamesAndDataGetters)
                 {
-                    long start = fs.Position;
-                    fs.Write(BitConverter.GetBytes(ZipReader.dirfileheadermagic), 0, 4);
-                    fs.Write(BitConverter.GetBytes(ZipWriter.MinVers), 0, 2);
-                    fs.Write(BitConverter.GetBytes(ZipWriter.MinVers), 0, 2);
-                    fs.Write(BitConverter.GetBytes(ZipWriter.BitFlag), 0, 2);
-                    fs.Write(BitConverter.GetBytes(ZipWriter.ComprMethod), 0, 2);
-
-                    ZipWriter.ZipEntry entry = Entries[i];
-                    fs.Write(BitConverter.GetBytes(entry.Time), 0, 2);
-                    fs.Write(BitConverter.GetBytes(entry.Date), 0, 2);
-                    fs.Write(BitConverter.GetBytes(entry.CRC32), 0, 4);
-                    fs.Write(BitConverter.GetBytes(entry.ComprLen), 0, 4);
-                    fs.Write(BitConverter.GetBytes(entry.UncLen), 0, 4);
-                    fs.Write(BitConverter.GetBytes((ushort)entry.Filename.Length), 0, 2);
-
-                    fs.Write(BitConverter.GetBytes(0), 0, 4); // 0 for extra field
-
-                    fs.Write(BitConverter.GetBytes(0), 0, 4); // 0 for disk no, 0 for internal attributes
-                    fs.Write(BitConverter.GetBytes(0x81B40020), 0, 4);
-                    fs.Write(BitConverter.GetBytes((int)entry.MainOffset), 0, 4);
-                    foreach (char c in entry.Filename)
-                        fs.WriteByte((byte)c);
-                    long end = fs.Position;
-                    cdlen += (uint)(end - start);
+                    var entry = BuildEntry(ms, tex.Item1, tex.Item2);
+                    Entries.Add(entry);
                 }
 
-                fs.Write(BitConverter.GetBytes(ZipReader.endofdirmagic), 0, 4);
-                fs.Write(BitConverter.GetBytes(0), 0, 4);
-                fs.Write(BitConverter.GetBytes((ushort)Entries.Count), 0, 2);
-                fs.Write(BitConverter.GetBytes((ushort)Entries.Count), 0, 2);
-                fs.Write(BitConverter.GetBytes(cdlen), 0, 4);
-                fs.Write(BitConverter.GetBytes(cdpos), 0, 4);
-
-                string createdBy = " ";
-                string comment = " ";
-
-                string fullString = createdBy + "\n" + comment;
-
-                fs.Write(BitConverter.GetBytes(fullString.Length), 0, 2);
-                byte[] bytes = Encoding.Default.GetBytes(fullString);
-                fs.Write(bytes, 0, bytes.Length);
-
-
-                long streamlen = fs.Length;
-                fs.Seek(0, SeekOrigin.Begin); // XOR the file
-
-                while (fs.Position < fs.Length)
-                {
-                    int count = (fs.Position + 10000 <= fs.Length) ? 10000 : (int)(fs.Length - fs.Position);
-
-                    byte[] buff2 = BuffXOR(fs, count);
-                    fs.Seek(-count, SeekOrigin.Current);
-                    fs.Write(buff2, 0, count);
-                }
+                BuildTPF(ms, Author, Comment, Entries);
+                ms.Seek(0, SeekOrigin.Begin);
+                using (FileStream fs = new FileStream(destination, FileMode.Create))
+                    ms.CopyTo(fs);
             }
         }
 
