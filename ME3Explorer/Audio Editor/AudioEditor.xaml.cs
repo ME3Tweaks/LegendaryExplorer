@@ -46,7 +46,7 @@ namespace ME3Explorer.Audio_Editor
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            throw new NotImplementedException();
+            //TODO: implement handleUpdate
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)

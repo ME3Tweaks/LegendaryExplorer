@@ -152,6 +152,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Interpreter\AltPropertyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Audio Editor\AudioEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,6 +176,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
+      <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Audio Editor\AudioEditor.xaml.cs">
       <DependentUpon>AudioEditor.xaml</DependentUpon>
     </Compile>
@@ -310,11 +317,6 @@
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="PeriodicUpdater.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -327,6 +329,11 @@
     <Compile Include="Packages\ImportEntry.cs" />
     <Compile Include="Packages\ME1Package.cs" />
     <Compile Include="Packages\ME2Package.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -450,9 +457,6 @@
     </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
-      <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TlkEditor\TLKEditorDebugTools.cs" />
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
@@ -760,10 +764,6 @@
     <Page Include="FaceFXAnimSetEditor\FaceFXEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1201,11 +1201,8 @@
     <Resource Include="Resources\minimize_icon.ico" />
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
-    <Resource Include="TlkEditor\icon.png" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
     <Resource Include="Resources\TLKManager_icon_64x64.png" />
-    <Resource Include="Resources\TLK_editor_icon.ico" />
-    <Resource Include="Resources\TLK_editor_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
     <Resource Include="Resources\soundplorer_64x64.png" />
     <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
@@ -1333,6 +1330,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\plot_editor_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\TLK_ME1_editor_icon.ico" />
+    <Resource Include="Resources\TLK_ME23_editor_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

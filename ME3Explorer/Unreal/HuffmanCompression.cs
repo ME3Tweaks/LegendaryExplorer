@@ -10,7 +10,7 @@ namespace ME3Explorer
 {
     class HuffmanCompression
     {
-        private Version _inputFileVersion = new Version("1.0.0.0");
+        private Version _inputFileVersion = null;
         private List<TLKEntry> _inputData = new List<TLKEntry>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
         private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
@@ -85,13 +85,13 @@ namespace ME3Explorer
             File.Delete(fileName);
 
             /* converts Huffmann Tree to binary form */
-            List<Int32> treeBuffer = ConvertHuffmanTreeToBuffer();
+            List<int> treeBuffer = ConvertHuffmanTreeToBuffer();
 
             /* preparing data and entries for writing to file
              * entries list consists of pairs <String ID, Offset> */
             List<BitArray> binaryData = new List<BitArray>();
-            Dictionary<Int32, Int32> entries1 = new Dictionary<Int32, Int32>();
-            Dictionary<Int32, Int32> entries2 = new Dictionary<Int32, Int32>();
+            Dictionary<int, int> entries1 = new Dictionary<int, int>();
+            Dictionary<int, int> entries2 = new Dictionary<int, int>();
             int offset = 0;
 
             foreach (var entry in _inputData)
@@ -119,13 +119,13 @@ namespace ME3Explorer
             }
 
             /* preparing TLK Header */
-            Int32 magic = 7040084;
-            Int32 ver = 3;
-            Int32 min_ver = 2;
-            Int32 entry1Count = entries1.Count;
-            Int32 entry2Count = entries2.Count;
-            Int32 treeNodeCount = treeBuffer.Count() / 2;
-            Int32 dataLength = offset / 8;
+            int magic = 7040084;
+            int ver = 3;
+            int min_ver = 2;
+            int entry1Count = entries1.Count;
+            int entry2Count = entries2.Count;
+            int treeNodeCount = treeBuffer.Count() / 2;
+            int dataLength = offset / 8;
             if (offset % 8 > 0)
                 ++dataLength;
 
@@ -153,7 +153,7 @@ namespace ME3Explorer
             }
 
             /* writing HuffmanTree */
-            foreach (Int32 element in treeBuffer)
+            foreach (int element in treeBuffer)
             {
                 bw.Write(element);
             }
@@ -176,7 +176,7 @@ namespace ME3Explorer
             /* read and store TLK Tool version, which was used to create the XML file */
             while (xmlReader.Read())
             {
-                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "tlkFile")
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name.Equals("tlkFile", StringComparison.OrdinalIgnoreCase))
                 {
                     string toolVersion = xmlReader.GetAttribute("TLKToolVersion");
                     if (toolVersion != null)
@@ -184,12 +184,12 @@ namespace ME3Explorer
                     break;
                 }
             }
-            if (_inputFileVersion >= new Version("2.0.12"))
+            if (_inputFileVersion == null || _inputFileVersion >= new Version("2.0.12"))
             {
                 int position = 0;
                 while (xmlReader.Read())
                 {
-                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "String")
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name.Equals("String", StringComparison.OrdinalIgnoreCase))
                     {
                         int id = 0;
                         if (!int.TryParse(xmlReader.GetAttribute("id"), out id))
@@ -215,7 +215,7 @@ namespace ME3Explorer
             {
                 while (xmlReader.Read())
                 {
-                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "string")
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name.Equals("string", StringComparison.OrdinalIgnoreCase))
                     {
                         int id = 0, position = 0;
                         string data = "";
@@ -243,41 +243,6 @@ namespace ME3Explorer
                 }
             }
             xmlReader.Close();
-
-            /* code for XML files created BEFORE v. 1.0.3 */
-            Version lastEntryFixVersion = new Version("1.0.3");
-
-            /* check if someone isn't loading the bugged version < 1.0.3 */
-            if (_inputFileVersion < lastEntryFixVersion)
-            {
-                MessageBox.Show(
-                    Properties.Resources.AlertPre103XML, Properties.Resources.Warning,
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        /* maybe will be finished in the future */
-        private void LoadTxtInputData(string fileName)
-        {
-            StreamReader streamReader = new StreamReader(fileName);
-            string line;
-            int i = 1;
-
-            while (streamReader.Peek() != -1)
-            {
-                line = streamReader.ReadLine();
-                Console.WriteLine(i++);
-                Console.WriteLine(line);
-                char[] delimiterChars = { ':' };
-                string[] words = line.Split(delimiterChars);
-                Console.WriteLine("{0} words in text:", words.Length);
-                foreach (string s in words)
-                {
-                    Console.Write(s + " | ");
-                }
-                Console.WriteLine();
-            }
-            streamReader.Close();
         }
 
         /// <summary>
@@ -370,7 +335,7 @@ namespace ME3Explorer
         /// Converts a Huffman Tree to it's binary representation used by TLK format of Mass Effect 2.
         /// </summary>
         /// <returns></returns>
-        private List<Int32> ConvertHuffmanTreeToBuffer()
+        private List<int> ConvertHuffmanTreeToBuffer()
         {
             Queue <HuffmanNode> q = new Queue<HuffmanNode>();
             Dictionary<int, HuffmanNode> indices = new Dictionary<int, HuffmanNode>();
@@ -401,7 +366,7 @@ namespace ME3Explorer
                     q.Enqueue(node.Left);
             }
 
-            List<Int32> output = new List<Int32>();
+            List<int> output = new List<int>();
 
             foreach (HuffmanNode node in indices.Values)
             {

@@ -164,6 +164,7 @@
         <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
         <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
 
+        <BitmapImage x:Key="iconAudioEditor" UriSource="Resources/audio_editor_icon.ico"/>
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64x64.png"/>
@@ -184,7 +185,8 @@
         <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon.ico"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
-        <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/TLK_editor_64x64.png"/>
+        <BitmapImage x:Key="iconTLKEditorME1" UriSource="Resources/TLK_ME1_editor_icon.ico"/>
+        <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/TLK_ME23_editor_icon.ico"/>
         <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Icons/udk_explorer_64x64.png"/>
     </Application.Resources>

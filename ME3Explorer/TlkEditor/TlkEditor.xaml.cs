@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
@@ -13,7 +14,7 @@ namespace ME3Explorer
     public partial class TLKEditor : Window
     {
         private string _inputTlkFilePath = ConfigurationManager.AppSettings["InputTlkFilePath"];
-        private string _outputTextFilePath = ConfigurationManager.AppSettings["OutputTextFilePath"];
+        private string _outputXmlFilePath = ConfigurationManager.AppSettings["OutputTextFilePath"];
         private string _inputXmlFilePath = ConfigurationManager.AppSettings["InputXmlFilePath"];
         private string _outputTlkFilePath = ConfigurationManager.AppSettings["OutputTlkFilePath"];
 
@@ -25,8 +26,8 @@ namespace ME3Explorer
 
         public string OutputTextFilePath
         {
-            get { return _outputTextFilePath; }
-            set { _outputTextFilePath = value; }
+            get { return _outputXmlFilePath; }
+            set { _outputXmlFilePath = value; }
         }
 
         public string InputXmlFilePath
@@ -50,7 +51,7 @@ namespace ME3Explorer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
-            openFileDialog.Filter = Properties.Resources.TlkFilesFilter;
+            openFileDialog.Filter = "TLK Files (*.tlk)|*.tlk";
             if (openFileDialog.ShowDialog() == true)
             {
                 _inputTlkFilePath = openFileDialog.FileName;
@@ -58,14 +59,14 @@ namespace ME3Explorer
             }
         }
 
-        private void OutputTextFilePathButton_Click(object sender, RoutedEventArgs e)
+        private void OutputXmlFilePathButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = Properties.Resources.TextFilesFilter;
+            saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
             if (saveFileDialog.ShowDialog() == true)
             {
-                _outputTextFilePath = saveFileDialog.FileName;
-                TextOutputTextFilePath.Text = _outputTextFilePath;
+                _outputXmlFilePath = saveFileDialog.FileName;
+                TextOutputXmlFilePath.Text = _outputXmlFilePath;
             }
         }
 
@@ -73,7 +74,7 @@ namespace ME3Explorer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
-            openFileDialog.Filter = Properties.Resources.XmlFilesFilter;
+            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
             if (openFileDialog.ShowDialog() == true)
             {
                 _inputXmlFilePath = openFileDialog.FileName;
@@ -84,7 +85,7 @@ namespace ME3Explorer
         private void OutputTlkFilePathButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = Properties.Resources.TlkFilesFilter;
+            saveFileDialog.Filter = "TLK Files (*.tlk)|*.tlk";
             if (saveFileDialog.ShowDialog() == true)
             {
                 _outputTlkFilePath = saveFileDialog.FileName;
@@ -117,28 +118,26 @@ namespace ME3Explorer
                     tf.LoadTlkData(_inputTlkFilePath);
 
                     tf.ProgressChanged += loadingWorker.ReportProgress;
-                    tf.DumpToFile(_outputTextFilePath);
+                    tf.DumpToFile(_outputXmlFilePath);
                     // debug
                     // tf.PrintHuffmanTree();
                     tf.ProgressChanged -= loadingWorker.ReportProgress;
+                    MessageBox.Show("Finished reading TLK file.", "Done!",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (FileNotFoundException)
                 {
-                    MessageBox.Show(
-                        Properties.Resources.AlertExceptionTlkNotFound, Properties.Resources.Error,
+                    MessageBox.Show("Selected TLK file was not found or is corrupted.", "Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(
-                        Properties.Resources.AlertExceptionTlkFormat, Properties.Resources.Error,
+                    MessageBox.Show("Error reading TLK file!\nPlease make sure you have chosen a file in a TLK format for Mass Effect 2 or 3.", "Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch (Exception ex)
                 {
-                    string message = Properties.Resources.AlertExceptionGeneric;
-                    message += Properties.Resources.AlertExceptionGenericDescription + ex.Message;
-                    MessageBox.Show(message, Properties.Resources.Error,
+                    MessageBox.Show(ex.Message, "Error",
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             };
@@ -146,8 +145,6 @@ namespace ME3Explorer
             loadingWorker.RunWorkerCompleted += delegate
             {
                 BusyReading(false);
-                MessageBox.Show(Properties.Resources.AlertTlkLoadingFinished, Properties.Resources.Done,
-                    MessageBoxButton.OK, MessageBoxImage.Information);
             };
 
             loadingWorker.RunWorkerAsync();
@@ -169,11 +166,12 @@ namespace ME3Explorer
                     hc.LoadInputData(_inputXmlFilePath, debugVersion);
 
                     hc.SaveToTlkFile(_outputTlkFilePath);
+                    MessageBox.Show("Finished creating TLK file.", "Done!",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (FileNotFoundException)
                 {
-                    MessageBox.Show(
-                        Properties.Resources.AlertExceptionXmlNotFound, Properties.Resources.Error,
+                    MessageBox.Show("Selected XML file was not found or is corrupted.", "Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch (System.Xml.XmlException ex)
@@ -182,17 +180,13 @@ namespace ME3Explorer
                 }
                 catch (Exception ex)
                 {
-                    string message = Properties.Resources.AlertExceptionGeneric;
-                    message += Properties.Resources.AlertExceptionGenericDescription + ex.Message;
-                    MessageBox.Show(message, Properties.Resources.Error,
+                    MessageBox.Show(ex.Message, "Error",
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             };
             writingWorker.RunWorkerCompleted += delegate
             {
                 BusyWriting(false);
-                MessageBox.Show(Properties.Resources.AlertWritingTlkFinished, Properties.Resources.Done,
-                    MessageBoxButton.OK, MessageBoxImage.Information);
             };
 
             writingWorker.RunWorkerAsync();
@@ -246,7 +240,7 @@ namespace ME3Explorer
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             config.AppSettings.Settings["InputTlkFilePath"].Value = TextInputTlkFilePath.Text;
-            config.AppSettings.Settings["OutputTextFilePath"].Value = TextOutputTextFilePath.Text;
+            config.AppSettings.Settings["OutputTextFilePath"].Value = TextOutputXmlFilePath.Text;
             config.AppSettings.Settings["InputXmlFilePath"].Value = TextInputXmlFilePath.Text;
             config.AppSettings.Settings["OutputTlkFilePath"].Value = TextOutputTlkFilePath.Text;
 
@@ -254,11 +248,9 @@ namespace ME3Explorer
             ConfigurationManager.RefreshSection("appSettings");
         }
 
-        private void About_Click(object sender, RoutedEventArgs e)
+        private void ReportBugs_Click(object sender, RoutedEventArgs e)
         {
-            TLKEditorAboutWindow aboutWindow = new TLKEditorAboutWindow();
-            aboutWindow.Owner = this;
-            aboutWindow.ShowDialog();
+            Process.Start("https://github.com/ME3Explorer/ME3Explorer/issues");
         }
 
         private void HowTo_Click(object sender, RoutedEventArgs e)
@@ -268,14 +260,9 @@ namespace ME3Explorer
             howToWindow.Show();
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void Forums_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void root_Loaded(object sender, RoutedEventArgs e)
-        {
-            
+            Process.Start("http://me3explorer.freeforums.org/");
         }
     }
 }

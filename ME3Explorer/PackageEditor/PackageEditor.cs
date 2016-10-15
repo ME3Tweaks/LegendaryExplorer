@@ -529,7 +529,7 @@ namespace ME3Explorer
                 textBox1.Text = importEntry.ObjectName;
                 textBox2.Text = importEntry.ClassName;
                 textBox3.Text = importEntry.PackageFullName;
-                textBox4.Text = importEntry.header.Length + " bytes";
+                textBox4.Text = ImportEntry.byteSize + " bytes";
             }
         }
 

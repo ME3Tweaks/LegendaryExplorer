@@ -364,18 +364,18 @@ namespace ME3Explorer
             #endregion
 
             #region Create Mods
-            set.Add(new Tool
-            {
-                name = "Audio Editor",
-                type = typeof(Audio_Editor.AudioEditor),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
-                open = () =>
-                {
-                    (new Audio_Editor.AudioEditor()).Show();
-                },
-                tags = new List<string> { "developer", "afc", "sound", "wwise" },
-                subCategory = "Core",
-            });
+            //set.Add(new Tool
+            //{
+            //    name = "Audio Editor",
+            //    type = typeof(Audio_Editor.AudioEditor),
+            //    icon = Application.Current.FindResource("iconAudioEditor") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new Audio_Editor.AudioEditor()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "afc", "sound", "wwise" },
+            //    subCategory = "Core",
+            //});
             set.Add(new Tool
             {
                 name = "Coalesced Editor",
@@ -644,7 +644,7 @@ namespace ME3Explorer
             {
                 name = "ME3 + ME2 TLK Editor",
                 type = typeof(TLKEditor),
-                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
                 open = () =>
                 {
                     (new TLKEditor()).Show();
@@ -657,7 +657,7 @@ namespace ME3Explorer
             {
                 name = "ME1 TLK Editor",
                 type = typeof(TlkManager),
-                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
                 open = () =>
                 {
                     (new ME1Explorer.TlkManager(true)).Show();
