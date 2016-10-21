@@ -22,13 +22,11 @@ namespace KFreonLib.Scripting
             options.GenerateExecutable = false;
             options.GenerateInMemory = true;
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string[] dlls1 = Directory.GetFiles(path, "Amarok86*.dll", SearchOption.AllDirectories);
-            string[] dlls2 = Directory.GetFiles(path, "Gibbed.*.dll", SearchOption.AllDirectories);
-            string[] dlls3 = Directory.GetFiles(path, "SaltTPF.dll", SearchOption.AllDirectories);
-            options.ReferencedAssemblies.AddRange(dlls1.Select(f => Path.Combine(path, f)).ToArray());
-            options.ReferencedAssemblies.AddRange(dlls2.Select(f => Path.Combine(path, f)).ToArray());
-            options.ReferencedAssemblies.AddRange(dlls2.Select(f => Path.Combine(path, f)).ToArray());
             options.ReferencedAssemblies.Add(Assembly.GetExecutingAssembly().Location);
+            options.ReferencedAssemblies.Add(Path.Combine(path, "AmaroK86Lib.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "Gibbed.IO.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "Gibbed.MassEffect3.FileFormats.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "SaltTPF.dll"));
             options.ReferencedAssemblies.Add(Path.Combine(path, "ME3Explorer.exe"));
             options.ReferencedAssemblies.Add("System.dll");
             options.ReferencedAssemblies.Add("System.Core.dll");
