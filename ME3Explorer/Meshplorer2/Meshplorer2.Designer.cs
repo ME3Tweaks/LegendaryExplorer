@@ -97,7 +97,7 @@
             this.scanToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.globalTreeToolStripMenuItem.Name = "globalTreeToolStripMenuItem";
-            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.globalTreeToolStripMenuItem.Text = "Global Tree";
             // 
             // loadToolStripMenuItem
@@ -137,7 +137,7 @@
             this.previewWithTreeToolStripMenuItem.CheckOnClick = true;
             this.previewWithTreeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.previewWithTreeToolStripMenuItem.Name = "previewWithTreeToolStripMenuItem";
-            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.previewWithTreeToolStripMenuItem.Text = "Preview with Tree";
             // 
             // rotateToolStripMenuItem
@@ -146,14 +146,14 @@
             this.rotateToolStripMenuItem.CheckOnClick = true;
             this.rotateToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
             // importBonesToolStripMenuItem
             // 
             this.importBonesToolStripMenuItem.Name = "importBonesToolStripMenuItem";
-            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.importBonesToolStripMenuItem.Text = "Import Bones";
             this.importBonesToolStripMenuItem.Click += new System.EventHandler(this.importBonesToolStripMenuItem_Click);
             // 
@@ -162,7 +162,7 @@
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromUDKToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // importFromUDKToolStripMenuItem
@@ -278,6 +278,7 @@
             this.pb1.TabIndex = 0;
             this.pb1.TabStop = false;
             this.pb1.MouseHover += new System.EventHandler(this.pb1_MouseHover);
+            this.pb1.Resize += new System.EventHandler(this.pb1_Resize);
             // 
             // treeView2
             // 

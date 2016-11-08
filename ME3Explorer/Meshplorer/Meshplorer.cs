@@ -38,6 +38,7 @@ namespace ME3Explorer.Meshplorer
                 Preview3D.Cubes = new List<Preview3D.DXCube>();
                 Preview3D.Cubes.Add(c);
                 timer1.Enabled = true;
+                pb1_Resize(null, null); // set correct aspect ratio
             }
         }
 
@@ -836,6 +837,11 @@ namespace ME3Explorer.Meshplorer
                 return;
             pcc.save();
             MessageBox.Show("Done");
+        }
+
+        private void pb1_Resize(object sender, EventArgs e)
+        {
+            Preview3D.aspect = (float) pb1.Width / pb1.Height;
         }
     }
 }

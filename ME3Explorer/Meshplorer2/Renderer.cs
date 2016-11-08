@@ -29,6 +29,7 @@ namespace ME3Explorer.Meshplorer2
         public static StaticMesh STM;
         public static SkeletalMesh SKM;
         public static int LOD;
+        public static float aspect = 1.0f;
 
         public static void Refresh()
         {
@@ -94,7 +95,7 @@ namespace ME3Explorer.Meshplorer2
                     fAngle = iTime * (2.0f * (float)Math.PI) / 10000.0f;
                 device.Transform.World = Matrix.RotationZ(fAngle);
                 device.Transform.View = Matrix.LookAtLH(new Vector3(0.0f, CamDistance, CamDistance / 2) + CamOffset, new Vector3(0, 0, 0) + CamOffset, new Vector3(0.0f, 0.0f, 1.0f));
-                device.Transform.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, 1.0f, 1.0f, 100000.0f);
+                device.Transform.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, aspect, 1.0f, 100000.0f);
                 device.SetTexture(0, null);
                 RenderCoordsystem(device);
                 device.VertexFormat = CustomVertex.PositionColored.Format;

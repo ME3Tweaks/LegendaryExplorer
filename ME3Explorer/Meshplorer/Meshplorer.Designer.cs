@@ -154,35 +154,35 @@
             this.lODToolStripMenuItem.Text = "LOD";
             this.lODToolStripMenuItem.Visible = false;
             // 
-            // lOD1ToolStripMenuItem
+            // lOD0ToolStripMenuItem
             // 
-            this.lOD0ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
+            this.lOD0ToolStripMenuItem.Name = "lOD0ToolStripMenuItem";
             this.lOD0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD0ToolStripMenuItem.Text = "LOD 0";
             this.lOD0ToolStripMenuItem.Click += new System.EventHandler(this.lOD0ToolStripMenuItem_Click);
             // 
-            // lOD2ToolStripMenuItem
+            // lOD1ToolStripMenuItem
             // 
-            this.lOD1ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
+            this.lOD1ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
             this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD1ToolStripMenuItem.Text = "LOD 1";
             this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
             // 
-            // lOD3ToolStripMenuItem
+            // lOD2ToolStripMenuItem
             // 
-            this.lOD2ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
+            this.lOD2ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
             this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD2ToolStripMenuItem.Text = "LOD 2";
             this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
             // 
-            // lOD4ToolStripMenuItem
+            // lOD3ToolStripMenuItem
             // 
-            this.lOD3ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
+            this.lOD3ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
             this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD3ToolStripMenuItem.Text = "LOD 3";
             this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
             // 
@@ -197,7 +197,7 @@
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToPSKToolStripMenuItem
@@ -428,6 +428,7 @@
             this.pb1.Size = new System.Drawing.Size(197, 321);
             this.pb1.TabIndex = 0;
             this.pb1.TabStop = false;
+            this.pb1.Resize += new System.EventHandler(this.pb1_Resize);
             // 
             // hb1
             // 
