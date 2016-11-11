@@ -848,16 +848,22 @@ namespace ME3Explorer.Meshplorer
             SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Identity));
             if (CurrentMeshLODs.Count > 0)
             {
-                view.Wireframe = false;
-                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], CurrentTextureViews.ToArray());
-                view.Wireframe = true;
-                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                if (solidToolStripMenuItem.Checked)
+                {
+                    view.Wireframe = false;
+                    view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], CurrentTextureViews.ToArray());
+                }
+                if (wireframeToolStripMenuItem.Checked)
+                {
+                    view.Wireframe = true;
+                    view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                }
             }
         }
 
         private void view_Update(object sender, float e)
         {
-            if (rotatingToolStripMenuItem.Checked) view.Camera.Yaw += e;
+            if (rotatingToolStripMenuItem.Checked) view.Camera.Yaw += e * 0.05f;
             //view.Camera.Pitch = (float)Math.Sin(view.Time);
         }
         #endregion
