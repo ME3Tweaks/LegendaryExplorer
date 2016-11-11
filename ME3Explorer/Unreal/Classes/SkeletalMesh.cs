@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Packages;
+using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -603,12 +604,16 @@ namespace ME3Explorer.Unreal.Classes
 
         public List<CustomVertex.PositionTextured[]> DirectXSections;
 
+        public List<Scene3D.WorldMesh> LODMeshes;
+        private List<SharpDX.Direct3D11.Texture2D> Textures;
+        public List<SharpDX.Direct3D11.ShaderResourceView> TextureViews;
+
         public SkeletalMesh()
         {
             Loaded = true;
         }
 
-        public SkeletalMesh(ME3Package pcc, int Index)
+        public SkeletalMesh(SharpDX.Direct3D11.Device Device, ME3Package pcc, int Index)
         {
             Loaded = true;
             MyIndex = Index;
@@ -634,7 +639,7 @@ namespace ME3Explorer.Unreal.Classes
             catch
             {
             }
-            GenerateDXMeshes();
+            GeneratePreviewResources(Device);
         }
 
         public void Serialize(SerializingContainer Container)
@@ -777,8 +782,9 @@ namespace ME3Explorer.Unreal.Classes
                 Unk3[i] = Container + Unk3[i];
         }
 
-        private void GenerateDXMeshes()
+        private void GeneratePreviewResources(SharpDX.Direct3D11.Device Device)
         {
+            // Generate meshes for the legacy renderers.
             DirectXSections = new List<CustomVertex.PositionTextured[]>();
             for (int i = 0; i < LODModels.Count; i++)
             { 
@@ -791,6 +797,80 @@ namespace ME3Explorer.Unreal.Classes
                     list[j] = new CustomVertex.PositionTextured(v.Position, HalfToFloat(v.U), HalfToFloat(v.V));
                 }
                 DirectXSections.Add(list);
+            }
+
+            if (Device == null)
+                return;
+            // Generate meshes for the new scene renderer
+            LODMeshes = new List<WorldMesh>();
+            for (int i = 0; i < LODModels.Count; i++)
+            {
+                LODModelStruct lodmodel = LODModels[i];
+                // Generate a list of vertices and triangles
+                List<WorldVertex> vertices = new List<WorldVertex>();
+                for (int j = 0; j < lodmodel.VertexBufferGPUSkin.Vertices.Count; j++)
+                {
+                    GPUSkinVertexStruct v = lodmodel.VertexBufferGPUSkin.Vertices[j];
+                    vertices.Add(new WorldVertex(new SharpDX.Vector3(v.Position.X, v.Position.Z, v.Position.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(HalfToFloat(v.U), HalfToFloat(v.V)))); // Assume no normals. I'm not sure how to find them.
+                }
+                List<Scene3D.Triangle> triangles = new List<Scene3D.Triangle>();
+                for (int j = 0; j < lodmodel.IndexBuffer.Indexes.Count; j += 3) // Assume the number of indices is a multiple of 3.
+                {
+                    triangles.Add(new Scene3D.Triangle(lodmodel.IndexBuffer.Indexes[j], lodmodel.IndexBuffer.Indexes[j + 1], lodmodel.IndexBuffer.Indexes[j + 2]));
+                }
+                LODMeshes.Add(new WorldMesh(Device, triangles, vertices));
+            }
+            // Generate textures for the new scene renderer
+            Textures = new List<SharpDX.Direct3D11.Texture2D>();
+            TextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>();
+            for (int i = 0; i < MatInsts.Count; i++)
+            {
+                for (int j = 0; j < MatInsts[i].Textures.Count; j++)
+                {
+                    if (MatInsts[i].Textures[j].Desc.ToLower().Contains("diff") && MatInsts[i].Textures[j].Texture != null)
+                    {
+                        SharpDX.Direct3D11.Texture2DDescription desc = new SharpDX.Direct3D11.Texture2DDescription();
+                        SharpDX.Direct3D11.Texture2D tex = MatInsts[i].Textures[j].Texture.generatePreviewTexture(Device, out desc);
+                        Textures.Add(tex);
+
+                        SharpDX.Direct3D11.ShaderResourceViewDescription viewDesc = new SharpDX.Direct3D11.ShaderResourceViewDescription();
+                        viewDesc.Format = desc.Format;
+                        viewDesc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D;
+                        viewDesc.Texture2D.MostDetailedMip = 0;
+                        viewDesc.Texture2D.MipLevels = -1;
+
+                        SharpDX.Direct3D11.ShaderResourceView view = new SharpDX.Direct3D11.ShaderResourceView(Device, tex, viewDesc);
+                        TextureViews.Add(view);
+                    }
+                }
+            }
+        }
+
+        public void DisposePreviewResources()
+        {
+            if (LODMeshes != null)
+            {
+                foreach (Scene3D.WorldMesh mesh in LODMeshes)
+                {
+                    mesh.Dispose();
+                }
+                LODMeshes.Clear();
+            }
+            if (TextureViews != null)
+            {
+                foreach (SharpDX.Direct3D11.ShaderResourceView view in TextureViews)
+                {
+                    view.Dispose();
+                }
+                TextureViews.Clear();
+            }
+            if (Textures != null)
+            {
+                foreach (SharpDX.Direct3D11.Texture2D tex in Textures)
+                {
+                    tex.Dispose();
+                }
+                Textures.Clear();
             }
         }
 

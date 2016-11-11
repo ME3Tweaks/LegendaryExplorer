@@ -61,8 +61,8 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.view = new ME3Explorer.Scene3D.SceneRenderControl();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
-            this.pb1 = new System.Windows.Forms.PictureBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -78,7 +78,6 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -92,7 +91,7 @@
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(639, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(686, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -154,35 +153,35 @@
             this.lODToolStripMenuItem.Text = "LOD";
             this.lODToolStripMenuItem.Visible = false;
             // 
-            // lOD1ToolStripMenuItem
+            // lOD0ToolStripMenuItem
             // 
-            this.lOD0ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
+            this.lOD0ToolStripMenuItem.Name = "lOD0ToolStripMenuItem";
             this.lOD0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD0ToolStripMenuItem.Text = "LOD 0";
             this.lOD0ToolStripMenuItem.Click += new System.EventHandler(this.lOD0ToolStripMenuItem_Click);
             // 
-            // lOD2ToolStripMenuItem
+            // lOD1ToolStripMenuItem
             // 
-            this.lOD1ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
+            this.lOD1ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
             this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD1ToolStripMenuItem.Text = "LOD 1";
             this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
             // 
-            // lOD3ToolStripMenuItem
+            // lOD2ToolStripMenuItem
             // 
-            this.lOD2ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
+            this.lOD2ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
             this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD2ToolStripMenuItem.Text = "LOD 2";
             this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
             // 
-            // lOD4ToolStripMenuItem
+            // lOD3ToolStripMenuItem
             // 
-            this.lOD3ToolStripMenuItem.Name = "lOD4ToolStripMenuItem";
+            this.lOD3ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
             this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.lOD3ToolStripMenuItem.Text = "LOD 3";
             this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
             // 
@@ -197,7 +196,7 @@
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToPSKToolStripMenuItem
@@ -263,7 +262,6 @@
             this.rotatingToolStripMenuItem.Name = "rotatingToolStripMenuItem";
             this.rotatingToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.rotatingToolStripMenuItem.Text = "Rotating";
-            this.rotatingToolStripMenuItem.Click += new System.EventHandler(this.rotatingToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -292,7 +290,7 @@
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 478);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(639, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(686, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -303,7 +301,7 @@
             this.toolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(639, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(686, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -326,7 +324,8 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 16;
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // splitContainer1
@@ -343,7 +342,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(639, 429);
+            this.splitContainer1.Size = new System.Drawing.Size(686, 429);
             this.splitContainer1.SplitterDistance = 321;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -359,10 +358,10 @@
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.view);
             this.splitContainer2.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer2.Panel2.Controls.Add(this.pb1);
-            this.splitContainer2.Size = new System.Drawing.Size(639, 321);
-            this.splitContainer2.SplitterDistance = 438;
+            this.splitContainer2.Size = new System.Drawing.Size(686, 321);
+            this.splitContainer2.SplitterDistance = 359;
             this.splitContainer2.TabIndex = 4;
             // 
             // splitContainer3
@@ -378,8 +377,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(438, 321);
-            this.splitContainer3.SplitterDistance = 100;
+            this.splitContainer3.Size = new System.Drawing.Size(359, 321);
+            this.splitContainer3.SplitterDistance = 81;
             this.splitContainer3.TabIndex = 0;
             // 
             // listBox1
@@ -393,7 +392,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(100, 321);
+            this.listBox1.Size = new System.Drawing.Size(81, 321);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -403,9 +402,19 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(334, 321);
+            this.treeView1.Size = new System.Drawing.Size(274, 321);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
+            // view
+            // 
+            this.view.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.view.Location = new System.Drawing.Point(0, 0);
+            this.view.Name = "view";
+            this.view.Size = new System.Drawing.Size(323, 321);
+            this.view.TabIndex = 1;
+            this.view.Update += new System.EventHandler<float>(this.view_Update);
+            this.view.Render += new System.EventHandler(this.view_Render);
             // 
             // rtb1
             // 
@@ -414,20 +423,11 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(197, 321);
+            this.rtb1.Size = new System.Drawing.Size(323, 321);
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "";
             this.rtb1.Visible = false;
             this.rtb1.WordWrap = false;
-            // 
-            // pb1
-            // 
-            this.pb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pb1.Location = new System.Drawing.Point(0, 0);
-            this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(197, 321);
-            this.pb1.TabIndex = 0;
-            this.pb1.TabStop = false;
             // 
             // hb1
             // 
@@ -440,7 +440,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(639, 104);
+            this.hb1.Size = new System.Drawing.Size(686, 104);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -450,7 +450,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(639, 500);
+            this.ClientSize = new System.Drawing.Size(686, 500);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -480,7 +480,6 @@
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pb1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -518,7 +517,6 @@
         public System.Windows.Forms.ListBox listBox1;
         public System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.RichTextBox rtb1;
-        public System.Windows.Forms.PictureBox pb1;
         private Be.Windows.Forms.HexBox hb1;
         public System.Windows.Forms.ToolStripMenuItem dumpBinaryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFromUDKToolStripMenuItem;
@@ -527,5 +525,6 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;
+        private Scene3D.SceneRenderControl view;
     }
 }

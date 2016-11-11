@@ -341,7 +341,7 @@ namespace ME3Explorer.Unreal.Classes
             if (StaticMesh_ - 1 >= 0 && StaticMesh_ - 1 < pcc.Exports.Count)
                 if (pcc.Exports[StaticMesh_ - 1].ClassName == "StaticMesh")
                 {
-                    STM = new StaticMesh(pcc, StaticMesh_ - 1);
+                    STM = new StaticMesh(null, pcc, StaticMesh_ - 1);
                     STM.Mesh.Bounds.t = null;//save memory
                     STM.Mesh.Edges.t = null;
                     STM.Mesh.Buffers.t = null;

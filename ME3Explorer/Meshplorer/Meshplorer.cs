@@ -12,7 +12,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using Be.Windows.Forms;
-
+using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -32,18 +32,13 @@ namespace ME3Explorer.Meshplorer
 
         private void Meshplorer_Load(object sender, EventArgs e)
         {
-            if (Preview3D.InitializeGraphics(pb1))
-            {
-                Preview3D.DXCube c = Preview3D.NewCubeByOrigSize(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(1, 1, 1), 0);
-                Preview3D.Cubes = new List<Preview3D.DXCube>();
-                Preview3D.Cubes.Add(c);
-                timer1.Enabled = true;
-            }
+            view.LoadDirect3D();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Preview3D.Refresh();
+            view.UpdateScene();
+            view.Invalidate();
         }
 
         private void loadPCCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -110,34 +105,22 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadStaticMesh(int index)
         {
-            stm = new StaticMesh(pcc as ME3Package, index);
-            List<MaterialInstanceConstant> matInsts = stm.Mesh.Mat.MatInst;
-            bool foundTex = false;
-            try
+            stm = new StaticMesh(view.Device, pcc as ME3Package, index);
+
+            // Load preview textures
+            ClearCurrentTextures();
+            CurrentTextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>(stm.TextureViews);
+            if (CurrentTextureViews.Count == 0)
             {
-                for (int i = 0; i < matInsts.Count; i++)
-                {
-                    for (int j = 0; j < matInsts[i].Textures.Count; j++)
-                    {
-                        if (matInsts[i].Textures[j].Desc.Contains("Diffuse"))
-                        {
-                            Preview3D.setTex(matInsts[i].Textures[j].Texture);
-                            foundTex = true;
-                            break;
-                        }
-                    }
-                }
+                CurrentTextureViews.Add(view.DefaultTextureView);
             }
-            catch
-            {
-            }
-            if (!foundTex)
-            {
-                Preview3D.setTex();
-            }
-            Preview3D.StatMesh = stm;
-            //Preview3D.SkelMesh = null;
-            Preview3D.CamOffset = new Vector3(0, 0, 0);
+
+            // Load meshes for the LODs
+            ClearCurrentMeshLODs();
+            CurrentMeshLODs = new List<WorldMesh>(stm.LODMeshes);
+            CenterView();
+
+            // Update treeview
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(stm.ToTree());
@@ -147,59 +130,40 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadSkeletalMesh(int index)
         {
-            try
+            DisableLODs();
+            UnCheckLODs();
+            skm = new SkeletalMesh(view.Device, pcc as ME3Package, index);
+            skmold = new SkeletalMeshOld(pcc as ME3Package, index);
+            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
+
+            // Load preview textures
+            ClearCurrentTextures();
+            CurrentTextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>(skm.TextureViews);
+            if (CurrentTextureViews.Count == 0)
             {
-                DisableLODs();
-                UnCheckLODs();
-                skm = new SkeletalMesh(pcc as ME3Package, index);
-                skmold = new SkeletalMeshOld(pcc as ME3Package, index);
-                hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
-                bool foundTex = false;
-                try
-                {
-                    for (int i = 0; i < skm.MatInsts.Count; i++)
-                    {
-                        for (int j = 0; j < skm.MatInsts[i].Textures.Count; j++)
-                        {
-                            if (skm.MatInsts[i].Textures[j].Desc.Contains("Diffuse"))
-                            {
-                                Preview3D.setTex(skm.MatInsts[i].Textures[j].Texture);
-                                foundTex = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                }
-                if (!foundTex)
-                {
-                    Preview3D.setTex();
-                }
-                Preview3D.StatMesh = null;
-                Preview3D.SkelMesh = skm;
-                Preview3D.CamDistance = skm.Bounding.r * 2.0f;
-                Preview3D.CamOffset = skm.Bounding.origin;
-                treeView1.BeginUpdate();
-                treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(skm.ToTree());
-                treeView1.Nodes[0].Expand();
-                treeView1.EndUpdate();
-                lODToolStripMenuItem.Visible = true;
-                lOD0ToolStripMenuItem.Enabled = true;
-                lOD0ToolStripMenuItem.Checked = true;
-                if (skm.LODModels.Count > 1)
-                    lOD1ToolStripMenuItem.Enabled = true;
-                if (skm.LODModels.Count > 2)
-                    lOD2ToolStripMenuItem.Enabled = true;
-                if (skm.LODModels.Count > 3)
-                    lOD3ToolStripMenuItem.Enabled = true;
+                CurrentTextureViews.Add(view.DefaultTextureView);
             }
-            catch
-            {
-                return;
-            }
+
+            // Load preview LOD meshes
+            ClearCurrentMeshLODs();
+            CurrentMeshLODs = new List<WorldMesh>(skm.LODMeshes);
+            CenterView();
+
+            // Update treeview
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            treeView1.Nodes.Add(skm.ToTree());
+            treeView1.Nodes[0].Expand();
+            treeView1.EndUpdate();
+            lODToolStripMenuItem.Visible = true;
+            lOD0ToolStripMenuItem.Enabled = true;
+            lOD0ToolStripMenuItem.Checked = true;
+            if (skm.LODModels.Count > 1)
+                lOD1ToolStripMenuItem.Enabled = true;
+            if (skm.LODModels.Count > 2)
+                lOD2ToolStripMenuItem.Enabled = true;
+            if (skm.LODModels.Count > 3)
+                lOD3ToolStripMenuItem.Enabled = true;
         }
 
         public float dir;
@@ -210,6 +174,10 @@ namespace ME3Explorer.Meshplorer
                 dir = 1;
             if (e.KeyCode == Keys.Subtract)
                 dir = -1;
+            if (e.KeyCode == Keys.F)
+            {
+                CenterView();
+            }
         }
 
         private void Meshplorer_KeyUp(object sender, KeyEventArgs e)
@@ -219,7 +187,9 @@ namespace ME3Explorer.Meshplorer
 
         private void Meshplorer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Preview3D.device = null;
+            ClearCurrentTextures();
+            ClearCurrentMeshLODs();
+            view.Dispose();
         }
 
         private void exportToPSKToolStripMenuItem_Click(object sender, EventArgs e)
@@ -384,7 +354,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     timer1.Enabled = false;
-                    stm.ImportFromPsk(d.FileName);
+                    stm.ImportFromPsk(d.FileName, view.Device);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx = n;
                     IExportEntry en = pcc.Exports[idx];
@@ -415,28 +385,28 @@ namespace ME3Explorer.Meshplorer
 
         private void lOD0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 0;
+            CurrentLOD = 0;
             UnCheckLODs();
             lOD0ToolStripMenuItem.Checked = true;
         }
 
         private void lOD1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 1;
+            CurrentLOD = 1;
             UnCheckLODs();
             lOD1ToolStripMenuItem.Checked = true;
         }
 
         private void lOD2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 2;
+            CurrentLOD = 2;
             UnCheckLODs();
             lOD2ToolStripMenuItem.Checked = true;
         }
 
         private void lOD3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Preview3D.LOD = 3;
+            CurrentLOD = 3;
             UnCheckLODs();
             lOD3ToolStripMenuItem.Checked = true;
         }
@@ -455,11 +425,6 @@ namespace ME3Explorer.Meshplorer
             lOD1ToolStripMenuItem.Enabled = false;
             lOD2ToolStripMenuItem.Enabled = false;
             lOD3ToolStripMenuItem.Enabled = false;
-        }
-
-        private void rotatingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Preview3D.rotate = rotatingToolStripMenuItem.Checked;
         }
 
         private void exportTreeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -557,8 +522,7 @@ namespace ME3Explorer.Meshplorer
             stm = null;
             skm = null;
             skmold = null;
-            Preview3D.SkelMesh = null;
-            Preview3D.StatMesh = null;
+            ClearCurrentMeshLODs();
             if (pcc.getExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
             if (pcc.getExport(n).ClassName == "SkeletalMesh")
@@ -767,7 +731,7 @@ namespace ME3Explorer.Meshplorer
                 {
                     skm = null;
                     skmold = null;
-                    Preview3D.SkelMesh = null;
+                    ClearCurrentMeshLODs();
                     treeView1.Nodes.Clear();
                     hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
                     RefreshMeshList();
@@ -785,7 +749,7 @@ namespace ME3Explorer.Meshplorer
                 if (pcc.getExport(index).ClassName != "StaticMesh")
                 {
                     stm = null;
-                    Preview3D.StatMesh = null;
+                    ClearCurrentMeshLODs();
                     treeView1.Nodes.Clear();
                     hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
                     RefreshMeshList();
@@ -837,5 +801,65 @@ namespace ME3Explorer.Meshplorer
             pcc.save();
             MessageBox.Show("Done");
         }
+
+        #region 3D Viewport
+        private List<WorldMesh> CurrentMeshLODs = new List<WorldMesh>();
+        private int CurrentLOD = 0;
+        //private List<SharpDX.Direct3D11.Texture2D> CurrentTextures = new List<SharpDX.Direct3D11.Texture2D>();
+        private List<SharpDX.Direct3D11.ShaderResourceView> CurrentTextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>();
+
+        private void ClearCurrentMeshLODs()
+        {
+            foreach (WorldMesh m in CurrentMeshLODs)
+            {
+                m.Dispose();
+            }
+            CurrentMeshLODs.Clear();
+        }
+
+        private void ClearCurrentTextures()
+        {
+            foreach (SharpDX.Direct3D11.ShaderResourceView texview in CurrentTextureViews)
+            {
+                if (!texview.Equals(view.DefaultTextureView)) texview.Dispose();
+            }
+            CurrentTextureViews.Clear();
+        }
+
+        private void CenterView()
+        {
+            if (CurrentMeshLODs.Count > 0)
+            {
+                WorldMesh m = CurrentMeshLODs[CurrentLOD];
+                view.Camera.Position = m.AABBCenter;
+                view.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
+            }
+            else
+            {
+                view.Camera.Position = SharpDX.Vector3.Zero;
+                view.Camera.Pitch = (float) Math.PI / 3.0f;
+                view.Camera.Yaw = (float) Math.PI / 4.0f;
+            }
+        }
+
+        private void view_Render(object sender, EventArgs e)
+        {
+            view.DefaultEffect.PrepDraw(view.ImmediateContext);
+            SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Identity));
+            if (CurrentMeshLODs.Count > 0)
+            {
+                view.Wireframe = false;
+                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], CurrentTextureViews.ToArray());
+                view.Wireframe = true;
+                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, CurrentMeshLODs[CurrentLOD], new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            }
+        }
+
+        private void view_Update(object sender, float e)
+        {
+            if (rotatingToolStripMenuItem.Checked) view.Camera.Yaw += e;
+            //view.Camera.Pitch = (float)Math.Sin(view.Time);
+        }
+        #endregion
     }
 }

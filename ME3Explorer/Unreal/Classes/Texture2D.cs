@@ -12,6 +12,8 @@ using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
 using KFreonLib.MEDirectories;
+using SharpDX;
+using SharpDX.Direct3D11;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -60,7 +62,7 @@ namespace ME3Explorer.Unreal.Classes
                 byte[] rawData = expEntry.Data;
                 int propertiesOffset = PropertyReader.detectStart(pccObj, rawData, expEntry.ObjectFlags);
                 headerData = new byte[propertiesOffset];
-                Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
+                System.Buffer.BlockCopy(rawData, 0, headerData, 0, propertiesOffset);
                 pccOffset = (uint)expEntry.DataOffset;
                 List<PropertyReader.Property> tempProperties = PropertyReader.getPropList(expEntry);
                 texName = expEntry.ObjectName;
@@ -85,7 +87,7 @@ namespace ME3Explorer.Unreal.Classes
                 else
                 {
                     imageData = new byte[rawData.Length - dataOffset];
-                    Buffer.BlockCopy(rawData, (int)dataOffset, imageData, 0, (int)(rawData.Length - dataOffset));
+                    System.Buffer.BlockCopy(rawData, (int)dataOffset, imageData, 0, (int)(rawData.Length - dataOffset));
                 }
             }
             else
@@ -184,13 +186,27 @@ namespace ME3Explorer.Unreal.Classes
                 fileName = texName + "_" + imgInfo.imgSize + getFileFormat();
             }
 
+            byte[] imgBuffer = extractRawData(imgInfo, archiveDir);
+
+            if (getFileFormat() == ".dds")
+                imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+            else
+                imgFile = new TGA(fileName, imgInfo.imgSize, texFormat, imgBuffer);
+
+            byte[] saveImg = imgFile.ToArray();
+            using (FileStream outputImg = new FileStream(imgFile.fileName, FileMode.Create, FileAccess.Write))
+                outputImg.Write(saveImg, 0, saveImg.Length);
+        }
+
+        public byte[] extractRawData(ImageInfo imgInfo, string archiveDir = null)
+        {
             byte[] imgBuffer;
 
             switch (imgInfo.storageType)
             {
                 case storage.pccSto:
                     imgBuffer = new byte[imgInfo.uncSize];
-                    Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
+                    System.Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
                     break;
                 case storage.arcCpr:
                 case storage.arcUnc:
@@ -217,15 +233,7 @@ namespace ME3Explorer.Unreal.Classes
                 default:
                     throw new FormatException("Unsupported texture storage type");
             }
-
-            if (getFileFormat() == ".dds")
-                imgFile = new DDS(fileName, imgInfo.imgSize, texFormat, imgBuffer);
-            else
-                imgFile = new TGA(fileName, imgInfo.imgSize, texFormat, imgBuffer);
-
-            byte[] saveImg = imgFile.ToArray();
-            using (FileStream outputImg = new FileStream(imgFile.fileName, FileMode.Create, FileAccess.Write))
-                outputImg.Write(saveImg, 0, saveImg.Length);
+            return imgBuffer;
         }
 
         public void extractMaxImage(string archiveDir = null, string fileName = null)
@@ -532,6 +540,73 @@ namespace ME3Explorer.Unreal.Classes
                 case "A8R8G8B8": return ".tga";
                 default: throw new FormatException("Unknown ME3 texture format");
             }
+        }
+
+        // Creates a Direct3D texture that looks like this one.
+        public SharpDX.Direct3D11.Texture2D generatePreviewTexture(Device device, out Texture2DDescription description)
+        {
+            SharpDX.Direct3D11.Texture2D tex = null;
+            int width = (int)imgList[0].imgSize.width;
+            int height = (int)imgList[0].imgSize.height;
+            Console.WriteLine("Generating preview texture for Texture2D of format " + texFormat);
+
+            // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
+            DDSFormat format;
+            switch (texFormat)
+            {
+                case "DXT1":
+                    format = DDSFormat.DXT1;
+                    break;
+                case "DXT5":
+                    format = DDSFormat.DXT5;
+                    break;
+                case "V8U8":
+                    format = DDSFormat.V8U8;
+                    break;
+                case "G8":
+                    format = DDSFormat.G8;
+                    break;
+                case "A8R8G8B8":
+                    format = DDSFormat.ARGB;
+                    break;
+                default:
+                    throw new FormatException("Unknown ME3 texture format");
+            }
+            Bitmap bmp;
+            byte[] compressedData = extractRawData(imgList[0], ME3Directory.cookedPath);
+            bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(compressedData, format, width, height);
+
+            // Load the decompressed data into an array
+            System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            byte[] pixels = new byte[data.Stride * data.Height];
+            System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
+            bmp.UnlockBits(data);
+            bmp.Save("C:/Users/Admin/Desktop/me3tex_" + texFormat + ".png");
+
+            // Create description of texture
+            //Texture2DDescription desc = new Texture2DDescription();
+            description.Width = width;
+            description.Height = height;
+            description.MipLevels = 1;
+            description.ArraySize = 1;
+            description.Format = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
+            description.SampleDescription.Count = 1;
+            description.SampleDescription.Quality = 0;
+            description.Usage = ResourceUsage.Default;
+            description.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
+            description.CpuAccessFlags = 0;
+            description.OptionFlags = ResourceOptionFlags.GenerateMipMaps;
+
+            // Set up the texture data
+            int stride = width * 4; 
+            DataStream ds = new DataStream(height * stride, true, true);
+            ds.Write(pixels, 0, height * stride);
+            ds.Position = 0;
+            // Create texture
+            tex = new SharpDX.Direct3D11.Texture2D(device, description, new DataRectangle(ds.DataPointer, stride));
+            ds.Dispose();
+
+            return tex;
         }
 
         public void removeImage()

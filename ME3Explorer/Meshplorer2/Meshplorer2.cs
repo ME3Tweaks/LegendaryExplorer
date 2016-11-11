@@ -360,7 +360,7 @@ namespace ME3Explorer.Meshplorer2
                             ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
-                                Renderer.SKM = new SkeletalMesh(pcc, en.Index);
+                                Renderer.SKM = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
                                 Renderer.CamDistance = Renderer.SKM.Bounding.r * 2.0f;
                                 Renderer.CamOffset = Renderer.SKM.Bounding.origin;
                                 treeView2.Nodes.Clear();
@@ -401,7 +401,7 @@ namespace ME3Explorer.Meshplorer2
                                                 ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
-                                                    Renderer.SKM = new SkeletalMesh(pcc, en.Index);
+                                                    Renderer.SKM = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
                                                     Renderer.CamDistance = Renderer.SKM.Bounding.r * 2.0f;
                                                     Renderer.CamOffset = Renderer.SKM.Bounding.origin;
                                                     treeView2.Nodes.Clear();
@@ -536,7 +536,7 @@ namespace ME3Explorer.Meshplorer2
                         if (en.isSkeletal)
                         {
                             pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
-                            skm = new SkeletalMesh(pcc, en.Index);
+                            skm = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
                         }
                         else
                         {
@@ -568,7 +568,7 @@ namespace ME3Explorer.Meshplorer2
                                             if (en.isSkeletal)
                                             {
                                                 pcc = MEPackageHandler.OpenME3Package(loc + "dlc.pcc");
-                                                skm = new SkeletalMesh(pcc, en.Index);
+                                                skm = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
                                                 break;
                                             }
                                             else

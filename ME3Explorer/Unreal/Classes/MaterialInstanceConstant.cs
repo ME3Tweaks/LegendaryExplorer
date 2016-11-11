@@ -23,7 +23,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             public int TexIndex;
             public string Desc;
-            public Texture Texture;
+            public Texture2D Texture;
         }
 
         public MaterialInstanceConstant(ME3Package Pcc,int Idx)
@@ -64,10 +64,10 @@ namespace ME3Explorer.Unreal.Classes
                 TextureParam t = new TextureParam();
                 t.Desc = name;
                 t.TexIndex = Idx;
-                if (name.ToLower().Contains("diffuse") && Idx >0)
+                if (name.ToLower().Contains("diffuse") && Idx > 0)
                 {
                     Texture2D tex = new Texture2D(pcc, Idx - 1);
-                    string loc = Path.GetDirectoryName(Application.ExecutablePath);
+                    /*string loc = Path.GetDirectoryName(Application.ExecutablePath);
                     Texture2D.ImageInfo inf = new Texture2D.ImageInfo();
                     for (int j = 0; j < tex.imgList.Count(); j++)
                         if (tex.imgList[j].storageType != Texture2D.storage.empty)
@@ -87,7 +87,8 @@ namespace ME3Explorer.Unreal.Classes
                         {
                         }
                     else
-                        t.Texture = null;
+                        t.Texture = null;*/
+                    t.Texture = tex;
                 }
                 else
                     t.Texture = null;
