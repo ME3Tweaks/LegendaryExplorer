@@ -64,7 +64,7 @@ namespace ME3Explorer.Unreal.Classes
                 TextureParam t = new TextureParam();
                 t.Desc = name;
                 t.TexIndex = Idx;
-                if (name.ToLower().Contains("diffuse") && Idx > 0)
+                if (name.ToLower().Contains("diff") && Idx > 0)
                 {
                     Texture2D tex = new Texture2D(pcc, Idx - 1);
                     /*string loc = Path.GetDirectoryName(Application.ExecutablePath);
@@ -99,13 +99,23 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode(pcc.Exports[index].ObjectName);
+            TreeNode res = new TreeNode("#" + index + " \"" + pcc.Exports[index].ObjectName + "\"");
             for (int i = 0; i < Textures.Count(); i++)
             {
-                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1);
-                s += " " + pcc.getObjectName(Textures[i].TexIndex);
+                string s = Textures[i].Desc + " = #" + (Textures[i].TexIndex - 1);
+                s += " \"" + pcc.getObjectName(Textures[i].TexIndex) + "\"";
                 res.Nodes.Add(s);
             }
+            TreeNode propsnode = new TreeNode("Properties");
+            res.Nodes.Add(propsnode);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
+            for (int i = 0; i < props.Count(); i++) // Loop through props of export
+            {
+                string name = pcc.getNameEntry(props[i].Name);
+                TreeNode propnode = new TreeNode(name + " | " + props[i].TypeVal.ToString());
+                propsnode.Nodes.Add(propnode);
+            }
+
             return res;
         }
     }

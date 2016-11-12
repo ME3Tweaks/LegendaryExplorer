@@ -1502,18 +1502,16 @@ namespace ME3Explorer.Unreal.Classes
             */
             Textures = new List<SharpDX.Direct3D11.Texture2D>();
             TextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>();
-            if (Mesh.Mat.MatInst.Count() != 0)
+            foreach (MaterialInstanceConstant m in Mesh.Mat.MatInst)
             {
-                MaterialInstanceConstant m = Mesh.Mat.MatInst[0];
-                //Meshplorer.Preview3D.CurrentTex = null;
                 for (int i = 0; i < m.Textures.Count(); i++)
-                    if (m.Textures[i].Desc.ToLower().Contains("diffuse"))
+                {
+                    if (m.Textures[i].Desc.ToLower().Contains("diff") && m.Textures[i].Texture != null)
                     {
-                        Texture2D t = new Texture2D(pcc, m.Textures[i].TexIndex - 1);
                         try
                         {
                             SharpDX.Direct3D11.Texture2DDescription desc = new SharpDX.Direct3D11.Texture2DDescription();
-                            SharpDX.Direct3D11.Texture2D tex = t.generatePreviewTexture(Device, out desc);
+                            SharpDX.Direct3D11.Texture2D tex = m.Textures[i].Texture.generatePreviewTexture(Device, out desc);
                             Textures.Add(tex);
 
                             SharpDX.Direct3D11.ShaderResourceViewDescription viewDesc = new SharpDX.Direct3D11.ShaderResourceViewDescription();
@@ -1530,6 +1528,7 @@ namespace ME3Explorer.Unreal.Classes
 
                         }
                     }
+                }
             }
         }
 

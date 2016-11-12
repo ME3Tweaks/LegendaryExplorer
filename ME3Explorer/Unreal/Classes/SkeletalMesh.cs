@@ -1049,8 +1049,8 @@ namespace ME3Explorer.Unreal.Classes
         private TreeNode MaterialsToTree()
         {
             TreeNode res = new TreeNode("Materials");
-            for (int i = 0; i < Materials.Count; i++)
-                res.Nodes.Add(i + " : #" + Materials[i]);
+            foreach (MaterialInstanceConstant matconst in MatInsts)
+                res.Nodes.Add(matconst.ToTree());
             return res;
         }
 
