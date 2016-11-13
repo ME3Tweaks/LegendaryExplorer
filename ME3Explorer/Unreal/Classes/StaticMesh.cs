@@ -1506,7 +1506,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 for (int i = 0; i < m.Textures.Count(); i++)
                 {
-                    if (m.Textures[i].Desc.ToLower().Contains("diff") && m.Textures[i].Texture != null)
+                    if (m.Textures[i].Desc.ToLower().Contains("diff") || m.Textures[i].Desc.ToLower().Contains("tex") && m.Textures[i].Texture != null)
                     {
                         try
                         {

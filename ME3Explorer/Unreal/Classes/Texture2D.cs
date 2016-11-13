@@ -545,9 +545,18 @@ namespace ME3Explorer.Unreal.Classes
         // Creates a Direct3D texture that looks like this one.
         public SharpDX.Direct3D11.Texture2D generatePreviewTexture(Device device, out Texture2DDescription description)
         {
+            ImageInfo info = new ImageInfo();
+            foreach (ImageInfo i in imgList)
+            {
+                if (i.storageType != storage.empty)
+                {
+                    info = i;
+                    break;
+                }
+            }
             SharpDX.Direct3D11.Texture2D tex = null;
-            int width = (int)imgList[0].imgSize.width;
-            int height = (int)imgList[0].imgSize.height;
+            int width = (int)info.imgSize.width;
+            int height = (int)info.imgSize.height;
             Console.WriteLine("Generating preview texture for Texture2D of format " + texFormat);
 
             // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
@@ -573,7 +582,7 @@ namespace ME3Explorer.Unreal.Classes
                     throw new FormatException("Unknown ME3 texture format");
             }
             Bitmap bmp;
-            byte[] compressedData = extractRawData(imgList[0], ME3Directory.cookedPath);
+            byte[] compressedData = extractRawData(info, ME3Directory.cookedPath);
             bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(compressedData, format, width, height);
 
             // Load the decompressed data into an array
@@ -607,6 +616,48 @@ namespace ME3Explorer.Unreal.Classes
             ds.Dispose();
 
             return tex;
+        }
+
+        public Bitmap generatePreview()
+        {
+            ImageInfo info = new ImageInfo();
+            foreach (ImageInfo i in imgList)
+            {
+                if (i.storageType != storage.empty)
+                {
+                    info = i;
+                    break;
+                }
+            }
+            int width = (int)info.imgSize.width;
+            int height = (int)info.imgSize.height;
+            // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
+            DDSFormat format;
+            switch (texFormat)
+            {
+                case "DXT1":
+                    format = DDSFormat.DXT1;
+                    break;
+                case "DXT5":
+                    format = DDSFormat.DXT5;
+                    break;
+                case "V8U8":
+                    format = DDSFormat.V8U8;
+                    break;
+                case "G8":
+                    format = DDSFormat.G8;
+                    break;
+                case "A8R8G8B8":
+                    format = DDSFormat.ARGB;
+                    break;
+                default:
+                    throw new FormatException("Unknown ME3 texture format");
+            }
+            Bitmap bmp;
+            byte[] compressedData = extractRawData(info, ME3Directory.cookedPath);
+            bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(compressedData, format, width, height);
+
+            return bmp;
         }
 
         public void removeImage()
