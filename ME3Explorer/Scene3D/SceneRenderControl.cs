@@ -298,8 +298,8 @@ namespace ME3Explorer.Scene3D
             }
             if (Panning)
             {
-                Camera.Position += Camera.CameraLeft * (e.Location.X - lastMouse.X) * -Camera.FocusDepth * 0.004f;
-                Camera.Position += Camera.CameraUp * (e.Location.Y - lastMouse.Y) * Camera.FocusDepth * -0.004f;
+                Camera.Position += Camera.CameraLeft * (e.Location.X - lastMouse.X) * Camera.FocusDepth * 0.004f;
+                Camera.Position += Camera.CameraUp * (e.Location.Y - lastMouse.Y) * Camera.FocusDepth * 0.004f;
             }
             if (Zooming)
             {

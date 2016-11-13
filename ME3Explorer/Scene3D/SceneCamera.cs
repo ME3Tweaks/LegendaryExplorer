@@ -18,7 +18,7 @@ namespace ME3Explorer.Scene3D
         {
             get
             {
-                return (Vector3) Vector3.Transform(Vector3.UnitY, Matrix.RotationX(Pitch) * Matrix.RotationY(Yaw)) * new Vector3(1, -1, -1); 
+                return (Vector3) Vector3.Transform(Vector3.UnitY, Matrix.RotationX(Pitch) * Matrix.RotationY(Yaw)) * new Vector3(1, 1, -1); 
             }
         }
         public Vector3 CameraLeft
@@ -44,7 +44,7 @@ namespace ME3Explorer.Scene3D
         {
             get
             {
-                return Matrix.Translation(Position * new Vector3(1, -1, 1)) * Matrix.RotationY(Yaw) * Matrix.RotationX(Pitch) * Matrix.Translation(0, 0, FocusDepth);
+                return Matrix.Translation(-Position) * Matrix.RotationY(Yaw) * Matrix.RotationX(Pitch) * Matrix.Translation(0, 0, FocusDepth);
             }
         }
 
