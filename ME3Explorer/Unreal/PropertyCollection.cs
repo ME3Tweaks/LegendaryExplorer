@@ -1014,9 +1014,12 @@ namespace ME3Explorer.Unreal
         public StrProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             int count = stream.ReadValueS32();
+            var streamPos = stream.Position;
+            
             if (count < 0)
             {
-                Value = stream.ReadString(-count * 2, true, Encoding.Unicode);
+                count *= -2;
+                Value = stream.ReadString(count, true, Encoding.Unicode);
             }
             else if (count > 0)
             {
@@ -1026,6 +1029,13 @@ namespace ME3Explorer.Unreal
             {
                 Value = string.Empty;
             }
+
+            //for when the end of the string has multiple nulls at the end
+            if (stream.Position < streamPos + count)
+            {
+                stream.Seek(streamPos + count, SeekOrigin.Begin);
+            }
+
             PropType = PropertyType.StrProperty;
         }
 
