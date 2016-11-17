@@ -25,7 +25,6 @@ namespace ME3Explorer.Unreal.Classes
         {
             public int TexIndex;
             public string Desc;
-            public Texture2D Texture;
         }
 
         public MaterialInstanceConstant(ME3Package Pcc,int Idx)
@@ -66,50 +65,6 @@ namespace ME3Explorer.Unreal.Classes
                 TextureParam t = new TextureParam();
                 t.Desc = name;
                 t.TexIndex = Idx;
-                if (name.ToLower().Contains("diff") || name.ToLower().Contains("tex"))
-                {
-                    if (Idx > 0)
-                    {
-                        t.Texture = new Texture2D(pcc, Idx - 1);
-                    }
-                    else if (Idx < 0)
-                    {
-                        ImportEntry imp = pcc.getImport(-Idx - 1);
-                        // Load imported texture from the pcc it resides in.
-                        // Right now, all we can do is a brute force search. =(
-                        // Often there is more than result. Take the first result for now.
-                        try
-                        {
-                            bool exit = false;
-                            foreach (String path in Directory.GetFiles(ME3Directory.cookedPath, "*.pcc"))
-                            {
-                                using (ME3Package p = MEPackageHandler.OpenME3Package(path))
-                                {
-                                    foreach (IExportEntry export in p.Exports)
-                                    {
-                                        if (export.GetFullPath == imp.GetFullPath)
-                                        {
-                                            Console.WriteLine("Found texture " + export.GetFullPath + " in pcc " + Path.GetFileName(path) + " called " + p.FileName);
-                                            t.Texture = new Texture2D(p, export.Index);
-                                            if (t.Texture != null)
-                                            {
-                                                exit = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (exit) break;
-                            }
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                }
-                else
-                    t.Texture = null;
                 Textures.Add(t);
                 pos = tp[tp.Count -1].offend;
             }

@@ -174,7 +174,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public StaticMesh(SharpDX.Direct3D11.Device Device, ME3Package Pcc, int Index)
+        public StaticMesh(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             index = Index;
@@ -185,8 +185,6 @@ namespace ME3Explorer.Unreal.Classes
             memsize = memory.Length;
             props = PropertyReader.getPropList(pcc.Exports[index]);
             Deserialize();
-            if (Device != null)
-                GeneratePreviewResources(Device);
         }
 
         #region Deserialize Binary
@@ -1190,10 +1188,6 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         #region DirectX
-        public List<WorldMesh> LODMeshes;
-        public List<SharpDX.Direct3D11.ShaderResourceView> TextureViews;
-        public List<SharpDX.Direct3D11.Texture2D> Textures;
-
         public void DrawMesh(Device device)
         {
             device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
@@ -1418,148 +1412,6 @@ namespace ME3Explorer.Unreal.Classes
             pickDistance *= fInvDet;
             return true;
         }
-
-        public void GeneratePreviewResources(SharpDX.Direct3D11.Device Device)
-        {
-            if (Device == null)
-                return; // They didn't want a preview directx mesh made.
-
-            List<Triangle> triangles = new List<Triangle>();
-            List<WorldVertex> vertices = new List<WorldVertex>();
-                
-
-            // Gather all the vertex data
-            for (int i = 0; i < Mesh.Vertices.Points.Count; i++)
-            {
-                Vector3 pos = Mesh.Vertices.Points[i];
-                Vector2 uv = Mesh.Edges.UVSet[i].UVs[0];
-                // Note the reversal of the Z and Y coordinates. Unreal seems to think that Z should be up.
-                vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(pos.X, pos.Z, pos.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(uv.X, uv.Y)));
-            }
-
-            // Sometimes there might not be an index buffer.
-            // If there is one, use that. 
-            // Otherwise, assume that each vertex is uesd exactly once.
-            // Note that this is based on the earlier implementstion which didn't take LODs into consideration, which is odd considering that both the hit testing and the skeletalmesh class do.
-            if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.Indexes.Count > 0)
-            {
-                // Hey, we have indices all set up for us. How considerate.
-                for (int i = 0; i < Mesh.IdxBuf.Indexes.Count; i += 3)
-                {
-                    triangles.Add(new Triangle(Mesh.IdxBuf.Indexes[i], Mesh.IdxBuf.Indexes[i + 1], Mesh.IdxBuf.Indexes[i + 2]));
-                }
-            }
-            else
-            {
-                /* this doesn't always work.
-                // No indices here. Assume every three vertices is a new face.
-                for (int i = 0; i < Mesh.Vertices.Points.Count; i += 3)
-                {
-                    triangles.Add(new Triangle((uint) i, (uint) i + 1, (uint) i + 2));
-                }
-                */
-
-                // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-                for (int i = 0; i < Mesh.RawTris.RawTriangles.Count; i++)
-                {
-                    triangles.Add(new Triangle((uint)Mesh.RawTris.RawTriangles[i].v0, (uint)Mesh.RawTris.RawTriangles[i].v1, (uint)Mesh.RawTris.RawTriangles[i].v2));
-                }
-            }
-            LODMeshes = new List<WorldMesh>();
-            LODMeshes.Add(new WorldMesh(Device, triangles, vertices));
-
-            /* OLD CODE:
-            if (Mesh.IdxBuf.Indexes.Count() != 0)
-            {
-                Meshplorer.Preview3D.RawTriangles = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured[Mesh.IdxBuf.Indexes.Count()];
-                for (int i = 0; i < Mesh.IdxBuf.Indexes.Count(); i++)
-                {
-                    int idx = Mesh.IdxBuf.Indexes[i];
-                    Vector3 pos = Mesh.Vertices.Points[idx];
-                    Vector2 UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                }
-            }
-            else
-            {
-                Meshplorer.Preview3D.RawTriangles = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured[Mesh.RawTris.RawTriangles.Count() * 3];
-                for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
-                {
-                    int idx = Mesh.RawTris.RawTriangles[i].v0;
-                    Vector3 pos = Mesh.Vertices.Points[idx];
-                    Vector2 UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                    idx = Mesh.RawTris.RawTriangles[i].v1;
-                    pos = Mesh.Vertices.Points[idx];
-                    UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3 + 1] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                    idx = Mesh.RawTris.RawTriangles[i].v2;
-                    pos = Mesh.Vertices.Points[idx];
-                    UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3 + 2] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                }
-            }
-            */
-            Textures = new List<SharpDX.Direct3D11.Texture2D>();
-            TextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>();
-            foreach (MaterialInstanceConstant m in Mesh.Mat.MatInst)
-            {
-                for (int i = 0; i < m.Textures.Count(); i++)
-                {
-                    if (m.Textures[i].Desc.ToLower().Contains("diff") || m.Textures[i].Desc.ToLower().Contains("tex") && m.Textures[i].Texture != null)
-                    {
-                        try
-                        {
-                            SharpDX.Direct3D11.Texture2DDescription desc = new SharpDX.Direct3D11.Texture2DDescription();
-                            SharpDX.Direct3D11.Texture2D tex = m.Textures[i].Texture.generatePreviewTexture(Device, out desc);
-                            Textures.Add(tex);
-
-                            SharpDX.Direct3D11.ShaderResourceViewDescription viewDesc = new SharpDX.Direct3D11.ShaderResourceViewDescription();
-                            viewDesc.Format = desc.Format;
-                            viewDesc.Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D;
-                            viewDesc.Texture2D.MostDetailedMip = 0;
-                            viewDesc.Texture2D.MipLevels = -1;
-
-                            SharpDX.Direct3D11.ShaderResourceView view = new SharpDX.Direct3D11.ShaderResourceView(Device, tex, viewDesc);
-                            TextureViews.Add(view);
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                    }
-                }
-            }
-        }
-
-        public void DisposePreviewResources()
-        {
-            if (LODMeshes != null)
-            {
-                foreach (Scene3D.WorldMesh mesh in LODMeshes)
-                {
-                    mesh.Dispose();
-                }
-                LODMeshes.Clear();
-            }
-            if (TextureViews != null)
-            {
-                foreach (SharpDX.Direct3D11.ShaderResourceView view in TextureViews)
-                {
-                    view.Dispose();
-                }
-                TextureViews.Clear();
-            }
-            if (Textures != null)
-            {
-                foreach (SharpDX.Direct3D11.Texture2D tex in Textures)
-                {
-                    tex.Dispose();
-                }
-                Textures.Clear();
-            }
-        }
-
 
         #endregion
 
@@ -1919,7 +1771,7 @@ namespace ME3Explorer.Unreal.Classes
 
         #region Import
 
-        public void ImportFromPsk(string path, SharpDX.Direct3D11.Device Device)
+        public void ImportFromPsk(string path)
         {
             psk = new PSKFile();
             psk.ImportPSK(path);
@@ -2083,7 +1935,6 @@ namespace ME3Explorer.Unreal.Classes
             CalcTangentSpace();
 #endregion
             RecalculateBoundings();
-            GeneratePreviewResources(Device);
 
         }
 

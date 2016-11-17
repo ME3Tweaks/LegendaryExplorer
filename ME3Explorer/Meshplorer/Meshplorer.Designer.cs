@@ -53,6 +53,7 @@
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flushTextureCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
@@ -287,7 +288,8 @@
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportTreeToolStripMenuItem,
-            this.dumpBinaryToolStripMenuItem});
+            this.dumpBinaryToolStripMenuItem,
+            this.flushTextureCacheToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -295,16 +297,23 @@
             // exportTreeToolStripMenuItem
             // 
             this.exportTreeToolStripMenuItem.Name = "exportTreeToolStripMenuItem";
-            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.exportTreeToolStripMenuItem.Text = "Export Tree";
             this.exportTreeToolStripMenuItem.Click += new System.EventHandler(this.exportTreeToolStripMenuItem_Click);
             // 
             // dumpBinaryToolStripMenuItem
             // 
             this.dumpBinaryToolStripMenuItem.Name = "dumpBinaryToolStripMenuItem";
-            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.dumpBinaryToolStripMenuItem.Text = "Dump Binary";
             this.dumpBinaryToolStripMenuItem.Click += new System.EventHandler(this.dumpBinaryToolStripMenuItem_Click_1);
+            // 
+            // flushTextureCacheToolStripMenuItem
+            // 
+            this.flushTextureCacheToolStripMenuItem.Name = "flushTextureCacheToolStripMenuItem";
+            this.flushTextureCacheToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.flushTextureCacheToolStripMenuItem.Text = "Flush Texture Cache";
+            this.flushTextureCacheToolStripMenuItem.Click += new System.EventHandler(this.flushTextureCacheToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -550,5 +559,6 @@
         private Scene3D.SceneRenderControl view;
         private System.Windows.Forms.ToolStripMenuItem wireframeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem solidToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flushTextureCacheToolStripMenuItem;
     }
 }

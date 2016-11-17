@@ -28,7 +28,7 @@ namespace ME3Explorer.Scene3D
         private RasterizerState FillRasterizerState = null;
         private RasterizerState WireframeRasterizerState = null;
         public SamplerState SampleState { get; private set; } = null;
-        //public InputLayout VertexLayout { get; private set; } = null;
+        public PreviewTextureCache TextureCache { get; private set; } = null;
         public SceneCamera Camera = new SceneCamera();
         private bool wireframe = false;
         public bool Wireframe
@@ -123,6 +123,17 @@ namespace ME3Explorer.Scene3D
 
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, Properties.Resources.StandardShader);
+
+            List<string> pccfiles = new List<string>(KFreonLib.MEDirectories.ME3Directory.Files);
+            for (int i = pccfiles.Count - 1; i >= 0; i--)
+            {
+                if (!pccfiles[i].EndsWith(".pcc"))
+                {
+                    pccfiles.RemoveAt(i);
+                }
+            }
+            TextureCache = new PreviewTextureCache(Device, pccfiles);
+            TextureCache.StartLoader();
         }
 
         private void BuildBuffers()
@@ -200,6 +211,20 @@ namespace ME3Explorer.Scene3D
             return texture;
         }
 
+        public ShaderResourceView FindTextureOrDefault(string texfullname)
+        {
+            if (string.IsNullOrEmpty(texfullname))
+            {
+                return DefaultTextureView;
+            }
+            PreviewTextureState texstate = TextureCache.GetTexture(texfullname);
+            if (texstate == null || texstate.State != PreviewTextureCache.StateCode.Loaded)
+            {
+                return DefaultTextureView;
+            }
+            return texstate.Texture;
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -249,6 +274,8 @@ namespace ME3Explorer.Scene3D
         {
             if (!Ready)
                 return;
+
+            TextureCache.Dispose();
 
             DefaultTextureView.Dispose();
             DefaultTexture.Dispose();

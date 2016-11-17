@@ -561,6 +561,7 @@ namespace ME3Explorer.Unreal.Classes
 
             // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
             DDSFormat format;
+            SharpDX.DXGI.Format dxformat = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
             switch (texFormat)
             {
                 case "DXT1":
@@ -593,12 +594,11 @@ namespace ME3Explorer.Unreal.Classes
             bmp.Save("C:/Users/Admin/Desktop/me3tex_" + texFormat + ".png");
 
             // Create description of texture
-            //Texture2DDescription desc = new Texture2DDescription();
             description.Width = width;
             description.Height = height;
             description.MipLevels = 1;
             description.ArraySize = 1;
-            description.Format = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
+            description.Format = dxformat;
             description.SampleDescription.Count = 1;
             description.SampleDescription.Quality = 0;
             description.Usage = ResourceUsage.Default;

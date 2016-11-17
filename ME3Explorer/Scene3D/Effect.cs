@@ -54,7 +54,7 @@ namespace ME3Explorer.Scene3D
             Context.PixelShader.SetConstantBuffer(0, ConstantBuffer);
         }
 
-        public void RenderObject(DeviceContext Context, ConstantBufferData ConstantData, Mesh<Vertex> Mesh, params ShaderResourceView[] Textures)
+        public void RenderObject(DeviceContext Context, ConstantBufferData ConstantData, Mesh<Vertex> Mesh, int indexstart, int indexcount, params ShaderResourceView[] Textures)
         {
             // Push new data into the shaders' constant buffer
             Context.UpdateSubresource(ref ConstantData, ConstantBuffer);
@@ -70,7 +70,12 @@ namespace ME3Explorer.Scene3D
             }
 
             // Draw!!!
-            Context.DrawIndexed(Mesh.Triangles.Count * 3, 0, 0);
+            Context.DrawIndexed(indexcount, indexstart, 0);
+        }
+
+        public void RenderObject(DeviceContext context, ConstantBufferData ConstantData, Mesh<Vertex> Mesh, params ShaderResourceView[] Textures)
+        {
+            RenderObject(context, ConstantData, Mesh, 0, Mesh.Triangles.Count * 3, Textures);
         }
 
         public void Dispose()

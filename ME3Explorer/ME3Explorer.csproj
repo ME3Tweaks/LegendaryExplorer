@@ -414,6 +414,8 @@
     </Compile>
     <Compile Include="Scene3D\Effect.cs" />
     <Compile Include="Scene3D\Mesh.cs" />
+    <Compile Include="Scene3D\ModelPreview.cs" />
+    <Compile Include="Scene3D\PreviewTextureCache.cs" />
     <Compile Include="Scene3D\SceneCamera.cs" />
     <Compile Include="Scene3D\SceneRenderControl.cs">
       <SubType>UserControl</SubType>
