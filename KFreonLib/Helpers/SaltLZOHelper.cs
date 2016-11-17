@@ -8,6 +8,7 @@ using System.Diagnostics;
 using KFreonLib.PCCObjects;
 using KFreonLib.Helpers.ManagedLZO;
 using UsefulThings;
+using System.Windows;
 
 namespace KFreonLib.Helpers
 {
@@ -264,9 +265,15 @@ namespace KFreonLib.Helpers
                     {
                         LZO1X.Decompress(datain, dataout);
                     }
-                    catch
+                    catch (DllNotFoundException ex)
                     {
-                        throw new Exception("LZO decompression failed!");
+                        var mbResult = MessageBox.Show("Decompression failed! This may be the fault of a missing 2010 VC++ redistributable. Would you like to install this now?\n(make sure to restart ME3Explorer after installation.)",
+                            "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                        if (mbResult == MessageBoxResult.Yes)
+                        {
+                            Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=5555");
+                        }
+                        throw new Exception("LZO decompression failed!", ex);
                     }
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
