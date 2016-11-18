@@ -556,7 +556,6 @@ namespace ME3Explorer
                 {
                     PackageEditor pck = new PackageEditor();
                     pck.Show();
-                    pck.LoadMostRecent();
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3" },
                 subCategory = "Core",
