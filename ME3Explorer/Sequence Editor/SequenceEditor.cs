@@ -326,6 +326,24 @@ namespace ME3Explorer
             graphEditor.UseWaitCursor = false;
         }
 
+        public void GetObjects(IExportEntry export)
+        {
+            CurrentObjects = new List<int>();
+            listBox1.Items.Clear();
+            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                var objIndices = seqObjs.Select(x => x.Value - 1).ToList();
+                objIndices.Sort();
+                foreach (int seqObj in objIndices)
+                {
+                    CurrentObjects.Add(seqObj);
+                    IExportEntry exportEntry = pcc.getExport(seqObj);
+                    listBox1.Items.Add("#" + seqObj + " :" + exportEntry.ObjectName + " class: " + exportEntry.ClassName);
+                }
+            }
+        }
+
         private void SetupJSON(IExportEntry export)
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
@@ -577,20 +595,6 @@ namespace ME3Explorer
                     GraphEditor.UpdateEdge(edge);
                 }
             }
-        }
-
-        public void GetObjects(IExportEntry export)
-        {
-            CurrentObjects = new List<int>();
-            listBox1.Items.Clear();
-            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
-                foreach (ObjectProperty seqObj in seqObjs)
-                {
-                    int m = seqObj.Value - 1;
-                    CurrentObjects.Add(m);
-                    listBox1.Items.Add("#" + m + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
-                }
         }
 
         public void GetProperties(IExportEntry export)
